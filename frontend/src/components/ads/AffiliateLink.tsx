@@ -8,9 +8,12 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, Linking, Platform } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import apiService from '../../services/api';
+
+const affiliateIds = Constants.expoConfig?.extra?.affiliateIds || {};
 
 export type AffiliateProvider = 'booking' | 'expedia' | 'hotels' | 'airbnb' | 'viator' | 'klook';
 
@@ -81,49 +84,49 @@ const AFFILIATE_CONFIG: Record<AffiliateProvider, {
   baseUrl: string;
   icon: string;
   color: string;
-  affiliateId: string; // TODO: Replace with real affiliate IDs
+  affiliateId: string;
 }> = {
   booking: {
     name: 'Booking.com',
     baseUrl: 'https://www.booking.com/searchresults.html',
     icon: 'bed',
     color: '#003580',
-    affiliateId: 'YOUR_BOOKING_AFFILIATE_ID', // Replace with real ID
+    affiliateId: affiliateIds.booking || '',
   },
   expedia: {
     name: 'Expedia',
     baseUrl: 'https://www.expedia.com/Hotel-Search',
     icon: 'airplane',
     color: '#FFCB03',
-    affiliateId: 'YOUR_EXPEDIA_AFFILIATE_ID', // Replace with real ID
+    affiliateId: affiliateIds.expedia || '',
   },
   hotels: {
     name: 'Hotels.com',
     baseUrl: 'https://www.hotels.com/search.do',
     icon: 'home',
     color: '#D32F2F',
-    affiliateId: 'YOUR_HOTELS_AFFILIATE_ID', // Replace with real ID
+    affiliateId: affiliateIds.hotels || '',
   },
   airbnb: {
     name: 'Airbnb',
     baseUrl: 'https://www.airbnb.com/s',
     icon: 'home-heart',
     color: '#FF5A5F',
-    affiliateId: 'YOUR_AIRBNB_AFFILIATE_ID', // Replace with real ID
+    affiliateId: affiliateIds.airbnb || '',
   },
   viator: {
     name: 'Viator',
     baseUrl: 'https://www.viator.com/searchResults/all',
     icon: 'ticket',
     color: '#00B8D4',
-    affiliateId: 'YOUR_VIATOR_AFFILIATE_ID', // Replace with real ID
+    affiliateId: affiliateIds.viator || '',
   },
   klook: {
     name: 'Klook',
     baseUrl: 'https://www.klook.com/search',
     icon: 'map-marker',
     color: '#FF5722',
-    affiliateId: 'YOUR_KLOOK_AFFILIATE_ID', // Replace with real ID
+    affiliateId: affiliateIds.klook || '',
   },
 };
 

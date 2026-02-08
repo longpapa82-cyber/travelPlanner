@@ -10,6 +10,9 @@
 
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
+import Constants from 'expo-constants';
+
+const ADSENSE_CLIENT_ID = Constants.expoConfig?.extra?.adsenseClientId || 'ca-pub-XXXXXXXXXXXXXXXX';
 
 interface AdSenseProps {
   /**
@@ -107,7 +110,7 @@ const AdSense: React.FC<AdSenseProps> = ({
       const script = document.createElement('script');
       script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
       script.async = true;
-      script.setAttribute('data-ad-client', 'ca-pub-XXXXXXXXXXXXXXXX'); // Replace with your AdSense ID
+      script.setAttribute('data-ad-client', ADSENSE_CLIENT_ID);
       script.crossOrigin = 'anonymous';
 
       script.onload = () => {
@@ -157,7 +160,7 @@ const AdSense: React.FC<AdSenseProps> = ({
           display: 'block',
           textAlign: 'center',
         }}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // Replace with your AdSense ID
+        data-ad-client={ADSENSE_CLIENT_ID}
         data-ad-slot={adSlot}
         data-ad-format={format}
         data-ad-layout={layout}
