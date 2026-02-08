@@ -99,6 +99,15 @@ class ApiService {
     return response.data;
   }
 
+  async updateTrip(id: string, data: any) {
+    const response = await this.api.patch(`/trips/${id}`, data);
+    return response.data;
+  }
+
+  async deleteTrip(id: string) {
+    await this.api.delete(`/trips/${id}`);
+  }
+
   // Activity Methods
   async addActivity(tripId: string, itineraryId: string, activityData: any) {
     const response = await this.api.post(

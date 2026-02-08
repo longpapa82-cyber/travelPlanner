@@ -5,27 +5,30 @@ import HomeScreen from '../screens/main/HomeScreen';
 import TripsNavigator from './TripsNavigator';
 import ProfileScreen from '../screens/main/ProfileScreen';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import { theme } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { colors, darkColors } from '../constants/theme';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const MainNavigator = () => {
+  const { theme, isDark } = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.textSecondary,
         tabBarStyle: {
-          backgroundColor: theme.colors.white,
+          backgroundColor: isDark ? darkColors.background.secondary : colors.neutral[0],
           borderTopWidth: 1,
-          borderTopColor: theme.colors.border,
+          borderTopColor: isDark ? darkColors.border.light : colors.neutral[200],
           paddingBottom: 5,
           height: 60,
         },
         headerStyle: {
           backgroundColor: theme.colors.primary,
         },
-        headerTintColor: theme.colors.white,
+        headerTintColor: colors.neutral[0],
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -35,7 +38,7 @@ const MainNavigator = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          title: 'Home',
+          title: '홈',
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" size={size} color={color} />
           ),
@@ -45,7 +48,7 @@ const MainNavigator = () => {
         name="Trips"
         component={TripsNavigator}
         options={{
-          title: 'My Trips',
+          title: '내 여행',
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name="bag-suitcase" size={size} color={color} />
@@ -56,7 +59,7 @@ const MainNavigator = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          title: 'Profile',
+          title: '프로필',
           tabBarIcon: ({ color, size }) => (
             <Icon name="account" size={size} color={color} />
           ),

@@ -1,6 +1,7 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider } from './src/contexts/ThemeContext';
+import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { ToastProvider } from './src/components/feedback/Toast/ToastContext';
 import RootNavigator from './src/navigation/RootNavigator';
@@ -15,14 +16,24 @@ const queryClient = new QueryClient({
   },
 });
 
+const AppContent = () => {
+  const { isDark } = useTheme();
+
+  return (
+    <>
+      <RootNavigator />
+      <StatusBar style={isDark ? 'light' : 'dark'} />
+    </>
+  );
+};
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
           <ToastProvider>
-            <RootNavigator />
-            <StatusBar style="auto" />
+            <AppContent />
           </ToastProvider>
         </AuthProvider>
       </ThemeProvider>

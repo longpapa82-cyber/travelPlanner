@@ -23,6 +23,8 @@ import {
   Animated,
   Dimensions,
   TextInput,
+  Alert,
+  Platform,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -166,6 +168,38 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     });
   };
 
+  const handleDeleteTrip = (trip: Trip) => {
+    const doDelete = async () => {
+      try {
+        await apiService.deleteTrip(trip.id);
+        // Remove from local state immediately
+        setTrips(prev => prev.filter(t => t.id !== trip.id));
+      } catch (error: any) {
+        const msg = error.response?.data?.message || '여행 삭제 중 오류가 발생했습니다.';
+        if (Platform.OS === 'web' && typeof window !== 'undefined') {
+          window.alert(msg);
+        } else {
+          Alert.alert('오류', msg);
+        }
+      }
+    };
+
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      if (window.confirm(`"${trip.destination}" 여행을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+        doDelete();
+      }
+    } else {
+      Alert.alert(
+        '여행 삭제',
+        `"${trip.destination}" 여행을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`,
+        [
+          { text: '취소', style: 'cancel' },
+          { text: '삭제', style: 'destructive', onPress: doDelete },
+        ]
+      );
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ko-KR', {
@@ -267,8 +301,8 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               ]}
               style={styles.tripOverlay}
             >
-              {/* Status Badge */}
-              <View style={styles.statusBadge}>
+              {/* Status Badge + Delete */}
+              <View style={styles.cardTopRow}>
                 <View
                   style={[
                     styles.statusBadgeInner,
@@ -284,6 +318,16 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                     {statusConfig.text}
                   </Text>
                 </View>
+                {trip.status === 'completed' && (
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleDeleteTrip(trip)}
+                    activeOpacity={0.7}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  >
+                    <Icon name="delete-outline" size={20} color={colors.neutral[0]} />
+                  </TouchableOpacity>
+                )}
               </View>
 
               {/* Trip Content */}
@@ -767,8 +811,18 @@ const createStyles = (theme: any, isDark: boolean) =>
       justifyContent: 'space-between',
       padding: 20,
     },
-    statusBadge: {
-      alignSelf: 'flex-start',
+    cardTopRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    deleteButton: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     statusBadgeInner: {
       flexDirection: 'row',

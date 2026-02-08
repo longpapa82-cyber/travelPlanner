@@ -2,20 +2,21 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { RootStackParamList } from '../types';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
-import { theme } from '../constants/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const { theme } = useTheme();
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
     );
@@ -39,7 +40,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
   },
 });
 

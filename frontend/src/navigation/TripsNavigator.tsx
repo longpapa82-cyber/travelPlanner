@@ -5,18 +5,21 @@ import TripListScreen from '../screens/trips/TripListScreen';
 import TripDetailScreen from '../screens/trips/TripDetailScreen';
 import CreateTripScreen from '../screens/trips/CreateTripScreen';
 import EditTripScreen from '../screens/trips/EditTripScreen';
-import { theme } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { colors } from '../constants/theme';
 
 const Stack = createNativeStackNavigator<TripsStackParamList>();
 
 const TripsNavigator = () => {
+  const { theme } = useTheme();
+
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
           backgroundColor: theme.colors.primary,
         },
-        headerTintColor: theme.colors.white,
+        headerTintColor: colors.neutral[0],
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -25,22 +28,22 @@ const TripsNavigator = () => {
       <Stack.Screen
         name="TripList"
         component={TripListScreen}
-        options={{ title: 'My Trips' }}
+        options={{ title: '내 여행' }}
       />
       <Stack.Screen
         name="TripDetail"
         component={TripDetailScreen}
-        options={{ title: 'Trip Details' }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="CreateTrip"
         component={CreateTripScreen}
-        options={{ title: 'Create New Trip' }}
+        options={{ title: '새 여행 계획' }}
       />
       <Stack.Screen
         name="EditTrip"
         component={EditTripScreen}
-        options={{ title: 'Edit Trip' }}
+        options={{ title: '여행 수정' }}
       />
     </Stack.Navigator>
   );

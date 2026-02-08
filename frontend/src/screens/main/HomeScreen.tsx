@@ -9,7 +9,7 @@
  * - Beautiful typography
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,7 @@ import {
   ImageBackground,
   Platform,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -38,6 +39,7 @@ import { Section } from '../../components/layout/Section';
 import { FadeIn } from '../../components/animation/FadeIn';
 import { SlideIn } from '../../components/animation/SlideIn';
 import PopularDestinations from '../../components/PopularDestinations';
+import apiService from '../../services/api';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH * 0.75;
@@ -103,10 +105,30 @@ const FEATURED_DESTINATIONS = [
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { user } = useAuth();
   const { theme, isDark } = useTheme();
+  const [stats, setStats] = useState({ completed: 0, ongoing: 0, upcoming: 0 });
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
+
+  // Fetch trip stats
+  const fetchStats = useCallback(async () => {
+    try {
+      const trips = await apiService.getTrips();
+      const completed = trips.filter((t: any) => t.status === 'completed').length;
+      const ongoing = trips.filter((t: any) => t.status === 'ongoing').length;
+      const upcoming = trips.filter((t: any) => t.status === 'upcoming').length;
+      setStats({ completed, ongoing, upcoming });
+    } catch (error) {
+      // Silent fail - stats are non-critical
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchStats();
+    }, [fetchStats])
+  );
 
   useEffect(() => {
     // Start animations on mount
@@ -133,8 +155,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleDestinationPress = (destination: typeof FEATURED_DESTINATIONS[0]) => {
-    // TODO: Navigate to destination detail or create trip with pre-filled destination
-    console.log('Destination pressed:', destination.name);
+    navigation.navigate('Trips', { screen: 'CreateTrip' });
   };
 
   const styles = createStyles(theme, isDark);
@@ -193,20 +214,20 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         <View style={styles.statsContainer}>
           <Card elevation="sm" padding="md" style={styles.statCard}>
             <Icon name="airplane-takeoff" size={28} color={colors.primary[500]} />
-            <Text style={styles.statValue}>0</Text>
+            <Text style={styles.statValue}>{stats.completed}</Text>
             <Text style={styles.statLabel}>여행 완료</Text>
           </Card>
 
           <Card elevation="sm" padding="md" style={styles.statCard}>
             <Icon name="map-marker-multiple" size={28} color={colors.secondary[500]} />
-            <Text style={styles.statValue}>0</Text>
+            <Text style={styles.statValue}>{stats.ongoing}</Text>
             <Text style={styles.statLabel}>진행 중</Text>
           </Card>
 
           <Card elevation="sm" padding="md" style={styles.statCard}>
-            <Icon name="trophy" size={28} color={colors.accent} />
-            <Text style={styles.statValue}>NEW</Text>
-            <Text style={styles.statLabel}>환영합니다!</Text>
+            <Icon name="calendar-clock" size={28} color={colors.accent} />
+            <Text style={styles.statValue}>{stats.upcoming}</Text>
+            <Text style={styles.statLabel}>예정</Text>
           </Card>
         </View>
       </FadeIn>
@@ -214,9 +235,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       {/* Popular Destinations from Real Data */}
       <FadeIn duration={600} delay={300}>
         <PopularDestinations
-          onDestinationPress={(destination) => {
-            console.log('Popular destination pressed:', destination.destination);
-            // TODO: Navigate to create trip with pre-filled destination
+          onDestinationPress={() => {
+            navigation.navigate('Trips', { screen: 'CreateTrip' });
           }}
         />
       </FadeIn>
