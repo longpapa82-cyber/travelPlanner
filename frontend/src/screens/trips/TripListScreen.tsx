@@ -416,9 +416,25 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={styles.loadingText}>여행 목록을 불러오는 중...</Text>
+      <View style={styles.container}>
+        <ScrollView style={styles.content} contentContainerStyle={{ padding: 16, gap: 16 }}>
+          {[1, 2, 3].map((i) => (
+            <Animated.View
+              key={i}
+              style={[
+                styles.skeletonCard,
+                {
+                  backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100],
+                  opacity: fadeAnim,
+                },
+              ]}
+            >
+              <View style={[styles.skeletonLine, { width: '60%', height: 18, backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200] }]} />
+              <View style={[styles.skeletonLine, { width: '40%', height: 14, backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200], marginTop: 8 }]} />
+              <View style={[styles.skeletonLine, { width: '30%', height: 14, backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200], marginTop: 8 }]} />
+            </Animated.View>
+          ))}
+        </ScrollView>
       </View>
     );
   }
@@ -709,6 +725,15 @@ const createStyles = (theme: any, isDark: boolean) =>
       fontSize: 14,
       color: theme.colors.textSecondary,
       marginTop: 12,
+    },
+    skeletonCard: {
+      borderRadius: 16,
+      padding: 20,
+      height: 140,
+      justifyContent: 'flex-end',
+    },
+    skeletonLine: {
+      borderRadius: 6,
     },
     content: {
       flex: 1,

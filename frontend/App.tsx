@@ -5,6 +5,7 @@ import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { ToastProvider } from './src/components/feedback/Toast/ToastContext';
 import RootNavigator from './src/navigation/RootNavigator';
+import ErrorBoundary from './src/components/ErrorBoundary';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -29,14 +30,16 @@ const AppContent = () => {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <AuthProvider>
-          <ToastProvider>
-            <AppContent />
-          </ToastProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <AuthProvider>
+            <ToastProvider>
+              <AppContent />
+            </ToastProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }

@@ -42,7 +42,11 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
+    return this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.passwordHash')
+      .where('user.email = :email', { email })
+      .getOne();
   }
 
   async findByProviderAndId(
@@ -74,7 +78,15 @@ export class UsersService {
     currentPassword: string,
     newPassword: string,
   ): Promise<{ message: string }> {
-    const user = await this.findById(id);
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.passwordHash')
+      .where('user.id = :id', { id })
+      .getOne();
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
 
     if (!user.passwordHash) {
       throw new BadRequestException('소셜 로그인 계정은 비밀번호를 변경할 수 없습니다.');
