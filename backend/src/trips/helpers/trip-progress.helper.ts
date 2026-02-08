@@ -9,7 +9,10 @@ import { Itinerary, Activity } from '../entities/itinerary.entity';
 /**
  * 현재 날짜/시간 기준으로 여행 상태 계산
  */
-export function calculateTripStatus(trip: Trip, currentDate: Date = new Date()): TripStatus {
+export function calculateTripStatus(
+  trip: Trip,
+  currentDate: Date = new Date(),
+): TripStatus {
   const startDate = new Date(trip.startDate);
   const endDate = new Date(trip.endDate);
 
@@ -84,7 +87,9 @@ export function isActivityCompleted(
   activityDateTime.setHours(hours, minutes, 0, 0);
 
   if (activity.estimatedDuration) {
-    activityDateTime.setMinutes(activityDateTime.getMinutes() + activity.estimatedDuration);
+    activityDateTime.setMinutes(
+      activityDateTime.getMinutes() + activity.estimatedDuration,
+    );
   }
 
   // 현재 시간 (여행지 시간대 적용)
@@ -156,9 +161,13 @@ export function updateActivitiesCompletionStatus(
   itinerary: Itinerary,
   tripTimezoneOffset?: number,
 ): Activity[] {
-  return itinerary.activities.map(activity => ({
+  return itinerary.activities.map((activity) => ({
     ...activity,
-    completed: isActivityCompleted(activity, itinerary.date, tripTimezoneOffset),
+    completed: isActivityCompleted(
+      activity,
+      itinerary.date,
+      tripTimezoneOffset,
+    ),
   }));
 }
 
@@ -169,7 +178,7 @@ export function updateItinerariesCompletionStatus(
   itineraries: Itinerary[],
   tripTimezoneOffset?: number,
 ): Itinerary[] {
-  return itineraries.map(itinerary => ({
+  return itineraries.map((itinerary) => ({
     ...itinerary,
     isCompleted: isItineraryCompleted(itinerary, tripTimezoneOffset),
     activities: updateActivitiesCompletionStatus(itinerary, tripTimezoneOffset),

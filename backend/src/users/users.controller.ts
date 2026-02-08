@@ -31,7 +31,8 @@ export class UsersController {
   ) {
     const updateData: Record<string, any> = {};
     if (body.name !== undefined) updateData.name = body.name;
-    if (body.profileImage !== undefined) updateData.profileImage = body.profileImage;
+    if (body.profileImage !== undefined)
+      updateData.profileImage = body.profileImage;
 
     return this.usersService.update(req.user.userId, updateData);
   }
@@ -43,7 +44,9 @@ export class UsersController {
     @Body() body: { currentPassword: string; newPassword: string },
   ) {
     if (!body.currentPassword || !body.newPassword) {
-      throw new BadRequestException('현재 비밀번호와 새 비밀번호를 입력해주세요.');
+      throw new BadRequestException(
+        '현재 비밀번호와 새 비밀번호를 입력해주세요.',
+      );
     }
     if (body.newPassword.length < 8) {
       throw new BadRequestException('새 비밀번호는 8자 이상이어야 합니다.');

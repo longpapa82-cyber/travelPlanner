@@ -1,11 +1,18 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import { AuthProvider } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { AuthResponse, TokenPayload } from './interfaces/auth-response.interface';
+import {
+  AuthResponse,
+  TokenPayload,
+} from './interfaces/auth-response.interface';
 
 @Injectable()
 export class AuthService {
@@ -169,7 +176,9 @@ export class AuthService {
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('jwt.refreshSecret'),
-        expiresIn: this.configService.get<string>('jwt.refreshExpiresIn') as any,
+        expiresIn: this.configService.get<string>(
+          'jwt.refreshExpiresIn',
+        ) as any,
       }),
     ]);
 

@@ -1,4 +1,12 @@
-import { IsString, IsOptional, IsInt, IsUrl, IsDateString, Min, IsObject } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsInt,
+  IsUrl,
+  IsDateString,
+  Min,
+  IsObject,
+} from 'class-validator';
 
 export class TrackAffiliateClickDto {
   /**

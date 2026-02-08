@@ -116,7 +116,10 @@ export class TripStatusScheduler {
    * Returns true if status was updated, false otherwise
    */
   async validateAndUpdateTripStatus(trip: Trip): Promise<boolean> {
-    const correctStatus = this.calculateTripStatus(trip.startDate, trip.endDate);
+    const correctStatus = this.calculateTripStatus(
+      trip.startDate,
+      trip.endDate,
+    );
 
     if (trip.status !== correctStatus) {
       this.logger.log(

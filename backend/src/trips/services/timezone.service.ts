@@ -92,8 +92,7 @@ export class TimezoneService {
         },
       });
 
-      const { timeZoneId, timeZoneName, rawOffset, dstOffset } =
-        response.data;
+      const { timeZoneId, timeZoneName, rawOffset, dstOffset } = response.data;
 
       // Calculate total offset in seconds
       const totalOffset = rawOffset + dstOffset;

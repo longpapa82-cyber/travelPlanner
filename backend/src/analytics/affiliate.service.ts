@@ -61,7 +61,9 @@ export class AffiliateService {
 
       const saved = await this.affiliateClickRepository.save(click);
 
-      this.logger.log(`Tracked affiliate click: ${dto.provider} - ${dto.destination || 'N/A'}`);
+      this.logger.log(
+        `Tracked affiliate click: ${dto.provider} - ${dto.destination || 'N/A'}`,
+      );
 
       return saved;
     } catch (error) {
@@ -115,7 +117,7 @@ export class AffiliateService {
 
     // 제휴사별 그룹화
     const providerMap = new Map<string, AffiliateClick[]>();
-    clicks.forEach(click => {
+    clicks.forEach((click) => {
       if (!providerMap.has(click.provider)) {
         providerMap.set(click.provider, []);
       }
@@ -126,18 +128,20 @@ export class AffiliateService {
     const stats: AffiliateStats[] = [];
     for (const [provider, providerClicks] of providerMap.entries()) {
       const totalClicks = providerClicks.length;
-      const conversions = providerClicks.filter(c => c.converted).length;
-      const conversionRate = totalClicks > 0 ? (conversions / totalClicks) * 100 : 0;
+      const conversions = providerClicks.filter((c) => c.converted).length;
+      const conversionRate =
+        totalClicks > 0 ? (conversions / totalClicks) * 100 : 0;
 
       const totalRevenue = providerClicks
-        .filter(c => c.converted && c.conversionValue)
+        .filter((c) => c.converted && c.conversionValue)
         .reduce((sum, c) => sum + Number(c.conversionValue), 0);
 
       const totalCommission = providerClicks
-        .filter(c => c.converted && c.commission)
+        .filter((c) => c.converted && c.commission)
         .reduce((sum, c) => sum + Number(c.commission), 0);
 
-      const averageCommission = conversions > 0 ? totalCommission / conversions : 0;
+      const averageCommission =
+        conversions > 0 ? totalCommission / conversions : 0;
 
       stats.push({
         provider,
@@ -177,7 +181,7 @@ export class AffiliateService {
 
     // 날짜별 그룹화
     const dateMap = new Map<string, AffiliateClick[]>();
-    clicks.forEach(click => {
+    clicks.forEach((click) => {
       const dateKey = click.createdAt.toISOString().split('T')[0];
       if (!dateMap.has(dateKey)) {
         dateMap.set(dateKey, []);
@@ -188,12 +192,12 @@ export class AffiliateService {
     // 일별 통계 생성
     const dailyStats: AffiliateDailyStats[] = [];
     for (const [date, dayClicks] of dateMap.entries()) {
-      const conversions = dayClicks.filter(c => c.converted).length;
+      const conversions = dayClicks.filter((c) => c.converted).length;
       const revenue = dayClicks
-        .filter(c => c.converted && c.conversionValue)
+        .filter((c) => c.converted && c.conversionValue)
         .reduce((sum, c) => sum + Number(c.conversionValue), 0);
       const commission = dayClicks
-        .filter(c => c.converted && c.commission)
+        .filter((c) => c.converted && c.commission)
         .reduce((sum, c) => sum + Number(c.commission), 0);
 
       dailyStats.push({
@@ -254,33 +258,43 @@ export class AffiliateService {
     });
 
     const totalClicks = clicks.length;
-    const conversions = clicks.filter(c => c.converted);
+    const conversions = clicks.filter((c) => c.converted);
     const totalConversions = conversions.length;
-    const conversionRate = totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0;
+    const conversionRate =
+      totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0;
 
     const totalRevenue = conversions
-      .filter(c => c.conversionValue)
+      .filter((c) => c.conversionValue)
       .reduce((sum, c) => sum + Number(c.conversionValue), 0);
 
     const totalCommission = conversions
-      .filter(c => c.commission)
+      .filter((c) => c.commission)
       .reduce((sum, c) => sum + Number(c.commission), 0);
 
     // Top Provider
     const providerCounts = new Map<string, number>();
-    clicks.forEach(c => {
+    clicks.forEach((c) => {
       providerCounts.set(c.provider, (providerCounts.get(c.provider) || 0) + 1);
     });
-    const topProvider = Array.from(providerCounts.entries())
-      .sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
+    const topProvider =
+      Array.from(providerCounts.entries()).sort(
+        (a, b) => b[1] - a[1],
+      )[0]?.[0] || 'N/A';
 
     // Top Destination
     const destinationCounts = new Map<string, number>();
-    clicks.filter(c => c.destination).forEach(c => {
-      destinationCounts.set(c.destination!, (destinationCounts.get(c.destination!) || 0) + 1);
-    });
-    const topDestination = Array.from(destinationCounts.entries())
-      .sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
+    clicks
+      .filter((c) => c.destination)
+      .forEach((c) => {
+        destinationCounts.set(
+          c.destination!,
+          (destinationCounts.get(c.destination!) || 0) + 1,
+        );
+      });
+    const topDestination =
+      Array.from(destinationCounts.entries()).sort(
+        (a, b) => b[1] - a[1],
+      )[0]?.[0] || 'N/A';
 
     return {
       totalClicks,

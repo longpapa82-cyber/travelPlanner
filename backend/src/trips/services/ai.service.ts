@@ -51,11 +51,17 @@ export class AIService {
 
     try {
       // 사용자 데이터 기반 추천 정보 가져오기
-      const recommendations = await this.analyticsService.getDestinationRecommendations(
-        tripContext.destination
-      );
+      const recommendations =
+        await this.analyticsService.getDestinationRecommendations(
+          tripContext.destination,
+        );
 
-      const prompt = this.buildPrompt(tripContext, dayNumber, date, recommendations);
+      const prompt = this.buildPrompt(
+        tripContext,
+        dayNumber,
+        date,
+        recommendations,
+      );
 
       const completion = await this.openai.chat.completions.create({
         model: 'gpt-4o-mini',
@@ -114,10 +120,11 @@ export class AIService {
       day: 'numeric',
     });
 
-    const totalDays = Math.ceil(
-      (context.endDate.getTime() - context.startDate.getTime()) /
-        (1000 * 60 * 60 * 24),
-    ) + 1;
+    const totalDays =
+      Math.ceil(
+        (context.endDate.getTime() - context.startDate.getTime()) /
+          (1000 * 60 * 60 * 24),
+      ) + 1;
 
     let prompt = `Generate a detailed daily itinerary for day ${dayNumber} of ${totalDays} in ${context.destination}.
 
@@ -134,7 +141,10 @@ Trip Details:
       if (context.preferences.travelStyle) {
         prompt += `\n- Travel style: ${context.preferences.travelStyle}`;
       }
-      if (context.preferences.interests && context.preferences.interests.length > 0) {
+      if (
+        context.preferences.interests &&
+        context.preferences.interests.length > 0
+      ) {
         prompt += `\n- Interests: ${context.preferences.interests.join(', ')}`;
       }
     }
@@ -143,7 +153,10 @@ Trip Details:
     if (recommendations && recommendations.topActivities.length > 0) {
       prompt += `\n\nInsights from Recent Travelers (Last 3 Months):`;
 
-      if (recommendations.recommendedDuration && totalDays !== recommendations.recommendedDuration) {
+      if (
+        recommendations.recommendedDuration &&
+        totalDays !== recommendations.recommendedDuration
+      ) {
         prompt += `\n- Most travelers spend ${recommendations.recommendedDuration} days here (you have ${totalDays} days)`;
       }
 
@@ -156,11 +169,26 @@ Trip Details:
       }
 
       if (recommendations.bestMonths && recommendations.bestMonths.length > 0) {
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const bestMonthNames = recommendations.bestMonths.map(m => monthNames[m - 1]);
+        const monthNames = [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ];
+        const bestMonthNames = recommendations.bestMonths.map(
+          (m) => monthNames[m - 1],
+        );
         const currentMonth = date.getMonth() + 1;
         const isBestMonth = recommendations.bestMonths.includes(currentMonth);
-        prompt += `\n- Best months to visit: ${bestMonthNames.join(', ')}${isBestMonth ? ' (You\'re visiting during a popular month!)' : ''}`;
+        prompt += `\n- Best months to visit: ${bestMonthNames.join(', ')}${isBestMonth ? " (You're visiting during a popular month!)" : ''}`;
       }
 
       if (recommendations.topActivities.length > 0) {
@@ -211,12 +239,11 @@ Guidelines:
         title: activity.title || activity.name || 'Activity',
         description: activity.description || '',
         location: activity.location || activity.place || '',
-        estimatedDuration: Number(activity.estimatedDuration || activity.duration || 60),
+        estimatedDuration: Number(
+          activity.estimatedDuration || activity.duration || 60,
+        ),
         estimatedCost: Number(activity.estimatedCost || activity.cost || 0),
-        type:
-          activity.type ||
-          activity.category ||
-          'sightseeing',
+        type: activity.type || activity.category || 'sightseeing',
       }))
       .filter((activity) => activity.title && activity.location);
   }
@@ -224,12 +251,17 @@ Guidelines:
   async generateAllItineraries(
     tripContext: TripContext,
   ): Promise<{ dayNumber: number; date: Date; activities: ActivityDto[] }[]> {
-    const totalDays = Math.ceil(
-      (tripContext.endDate.getTime() - tripContext.startDate.getTime()) /
-        (1000 * 60 * 60 * 24),
-    ) + 1;
+    const totalDays =
+      Math.ceil(
+        (tripContext.endDate.getTime() - tripContext.startDate.getTime()) /
+          (1000 * 60 * 60 * 24),
+      ) + 1;
 
-    const itineraries: { dayNumber: number; date: Date; activities: ActivityDto[] }[] = [];
+    const itineraries: {
+      dayNumber: number;
+      date: Date;
+      activities: ActivityDto[];
+    }[] = [];
 
     for (let i = 0; i < totalDays; i++) {
       const date = new Date(tripContext.startDate);

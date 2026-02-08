@@ -46,7 +46,9 @@ export class AnalyticsController {
    * 특정 여행지에 대한 추천 정보
    */
   @Get('destination-recommendations')
-  async getDestinationRecommendations(@Query('destination') destination: string) {
+  async getDestinationRecommendations(
+    @Query('destination') destination: string,
+  ) {
     if (!destination) {
       return {
         error: 'destination parameter is required',

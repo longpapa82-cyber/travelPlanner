@@ -56,7 +56,7 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   async googleAuthCallback(@Req() req: any, @Res() res: any) {
-    const result = await this.authService.oauthLogin(req.user as any);
+    const result = await this.authService.oauthLogin(req.user);
     // Redirect to frontend with tokens
     const redirectUrl = `${process.env.FRONTEND_URL || 'exp://localhost:8081'}/auth/callback?accessToken=${result.accessToken}&refreshToken=${result.refreshToken}`;
     res.redirect(redirectUrl);
@@ -72,7 +72,7 @@ export class AuthController {
   @Get('apple/callback')
   @UseGuards(AppleAuthGuard)
   async appleAuthCallback(@Req() req: any, @Res() res: any) {
-    const result = await this.authService.oauthLogin(req.user as any);
+    const result = await this.authService.oauthLogin(req.user);
     // Redirect to frontend with tokens
     const redirectUrl = `${process.env.FRONTEND_URL || 'exp://localhost:8081'}/auth/callback?accessToken=${result.accessToken}&refreshToken=${result.refreshToken}`;
     res.redirect(redirectUrl);
@@ -88,7 +88,7 @@ export class AuthController {
   @Get('kakao/callback')
   @UseGuards(KakaoAuthGuard)
   async kakaoAuthCallback(@Req() req: any, @Res() res: any) {
-    const result = await this.authService.oauthLogin(req.user as any);
+    const result = await this.authService.oauthLogin(req.user);
     // Redirect to frontend with tokens
     const redirectUrl = `${process.env.FRONTEND_URL || 'exp://localhost:8081'}/auth/callback?accessToken=${result.accessToken}&refreshToken=${result.refreshToken}`;
     res.redirect(redirectUrl);

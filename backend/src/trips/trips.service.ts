@@ -44,7 +44,9 @@ export class TripsService {
     const startDate = new Date(createTripDto.startDate);
     const endDate = new Date(createTripDto.endDate);
     const numberOfDays =
-      Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      Math.ceil(
+        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+      ) + 1;
 
     // Create trip
     const trip = this.tripRepository.create({
@@ -55,10 +57,17 @@ export class TripsService {
 
     const savedTrip = await this.tripRepository.save(trip);
 
-    this.logger.log(`Creating trip ${savedTrip.id} with AI-generated itineraries`);
+    this.logger.log(
+      `Creating trip ${savedTrip.id} with AI-generated itineraries`,
+    );
 
     // Get location information for timezone and weather
-    let timezoneInfo: { timezone: string; timezoneId: string; timezoneOffset: number; localTime: string } | null = null;
+    let timezoneInfo: {
+      timezone: string;
+      timezoneId: string;
+      timezoneOffset: number;
+      localTime: string;
+    } | null = null;
     let locationInfo: { latitude: number; longitude: number } | null = null;
 
     try {
@@ -81,13 +90,13 @@ export class TripsService {
           startDate,
         );
         if (timezoneInfo) {
-          this.logger.log(
-            `Retrieved timezone: ${timezoneInfo.timezoneId}`,
-          );
+          this.logger.log(`Retrieved timezone: ${timezoneInfo.timezoneId}`);
         }
       }
     } catch (error) {
-      this.logger.warn(`Failed to get location/timezone information: ${error.message}`);
+      this.logger.warn(
+        `Failed to get location/timezone information: ${error.message}`,
+      );
     }
 
     try {
@@ -120,7 +129,9 @@ export class TripsService {
               );
             }
           } catch (error) {
-            this.logger.warn(`Failed to get weather for day ${aiItinerary.dayNumber}: ${error.message}`);
+            this.logger.warn(
+              `Failed to get weather for day ${aiItinerary.dayNumber}: ${error.message}`,
+            );
           }
         }
 
@@ -137,10 +148,14 @@ export class TripsService {
       }
 
       await this.itineraryRepository.save(itineraries);
-      this.logger.log(`Successfully generated ${itineraries.length} AI itineraries with weather data for trip ${savedTrip.id}`);
+      this.logger.log(
+        `Successfully generated ${itineraries.length} AI itineraries with weather data for trip ${savedTrip.id}`,
+      );
     } catch (error) {
       this.logger.error(`Failed to generate AI itineraries: ${error.message}`);
-      this.logger.log(`Falling back to empty itineraries for trip ${savedTrip.id}`);
+      this.logger.log(
+        `Falling back to empty itineraries for trip ${savedTrip.id}`,
+      );
 
       // Fallback: Create empty itineraries if AI generation fails
       const itineraries: Itinerary[] = [];
@@ -158,7 +173,9 @@ export class TripsService {
               date,
             );
           } catch (error) {
-            this.logger.warn(`Failed to get weather for day ${i + 1}: ${error.message}`);
+            this.logger.warn(
+              `Failed to get weather for day ${i + 1}: ${error.message}`,
+            );
           }
         }
 
@@ -182,7 +199,12 @@ export class TripsService {
   }
 
   async findAll(userId: string, queryDto?: any): Promise<Trip[]> {
-    const { search, status, sortBy = 'startDate', order = 'DESC' } = queryDto || {};
+    const {
+      search,
+      status,
+      sortBy = 'startDate',
+      order = 'DESC',
+    } = queryDto || {};
 
     // Build query
     const queryBuilder = this.tripRepository
@@ -482,12 +504,18 @@ export class TripsService {
     }
 
     // Create activity timestamp for validation
-    const dateStr = typeof itinerary.date === 'string' ? itinerary.date : new Date(itinerary.date).toISOString().split('T')[0];
+    const dateStr =
+      typeof itinerary.date === 'string'
+        ? itinerary.date
+        : new Date(itinerary.date).toISOString().split('T')[0];
     const activityDateTime = `${dateStr}T${addActivityDto.time}`;
     this.canModifyActivity(trip, activityDateTime);
 
     // For ongoing trips, cannot add past activities
-    if (trip.status === TripStatus.ONGOING && this.isActivityInPast(activityDateTime)) {
+    if (
+      trip.status === TripStatus.ONGOING &&
+      this.isActivityInPast(activityDateTime)
+    ) {
       throw new ForbiddenException(
         'Cannot add activities in the past during an ongoing trip.',
       );
@@ -534,26 +562,29 @@ export class TripsService {
       throw new NotFoundException('Itinerary not found');
     }
 
-    if (
-      activityIndex < 0 ||
-      activityIndex >= itinerary.activities.length
-    ) {
+    if (activityIndex < 0 || activityIndex >= itinerary.activities.length) {
       throw new NotFoundException('Activity not found at the specified index');
     }
 
     const existingActivity = itinerary.activities[activityIndex];
 
     // Check modification permission using existing activity time
-    const updDateStr = typeof itinerary.date === 'string' ? itinerary.date : new Date(itinerary.date).toISOString().split('T')[0];
+    const updDateStr =
+      typeof itinerary.date === 'string'
+        ? itinerary.date
+        : new Date(itinerary.date).toISOString().split('T')[0];
     const activityDateTime = `${updDateStr}T${existingActivity.time}`;
     this.canModifyActivity(trip, activityDateTime);
 
     // For ongoing trips with past activities, only allow marking as completed
-    if (trip.status === TripStatus.ONGOING && this.isActivityInPast(activityDateTime)) {
+    if (
+      trip.status === TripStatus.ONGOING &&
+      this.isActivityInPast(activityDateTime)
+    ) {
       // Check if trying to modify fields other than 'completed'
       const updateKeys = Object.keys(updateActivityDto);
-      const hasNonCompletedUpdate = updateKeys.some(key =>
-        key !== 'completed' && updateActivityDto[key] !== undefined
+      const hasNonCompletedUpdate = updateKeys.some(
+        (key) => key !== 'completed' && updateActivityDto[key] !== undefined,
       );
 
       if (hasNonCompletedUpdate) {
@@ -601,22 +632,25 @@ export class TripsService {
       throw new NotFoundException('Itinerary not found');
     }
 
-    if (
-      activityIndex < 0 ||
-      activityIndex >= itinerary.activities.length
-    ) {
+    if (activityIndex < 0 || activityIndex >= itinerary.activities.length) {
       throw new NotFoundException('Activity not found at the specified index');
     }
 
     const activityToDelete = itinerary.activities[activityIndex];
 
     // Check modification permission
-    const delDateStr = typeof itinerary.date === 'string' ? itinerary.date : new Date(itinerary.date).toISOString().split('T')[0];
+    const delDateStr =
+      typeof itinerary.date === 'string'
+        ? itinerary.date
+        : new Date(itinerary.date).toISOString().split('T')[0];
     const activityDateTime = `${delDateStr}T${activityToDelete.time}`;
     this.canModifyActivity(trip, activityDateTime);
 
     // For ongoing trips, cannot delete past activities
-    if (trip.status === TripStatus.ONGOING && this.isActivityInPast(activityDateTime)) {
+    if (
+      trip.status === TripStatus.ONGOING &&
+      this.isActivityInPast(activityDateTime)
+    ) {
       throw new ForbiddenException(
         'Cannot delete activities that have already occurred during an ongoing trip.',
       );
@@ -707,7 +741,9 @@ export class TripsService {
     }
 
     if (trip.userId !== userId) {
-      throw new ForbiddenException('You do not have permission to share this trip');
+      throw new ForbiddenException(
+        'You do not have permission to share this trip',
+      );
     }
 
     // Generate a secure random token
@@ -745,7 +781,9 @@ export class TripsService {
     });
 
     if (!trip) {
-      throw new NotFoundException('Shared trip not found or is no longer public');
+      throw new NotFoundException(
+        'Shared trip not found or is no longer public',
+      );
     }
 
     // Check if share token has expired
@@ -778,7 +816,9 @@ export class TripsService {
     }
 
     if (trip.userId !== userId) {
-      throw new ForbiddenException('You do not have permission to modify this trip');
+      throw new ForbiddenException(
+        'You do not have permission to modify this trip',
+      );
     }
 
     trip.shareToken = undefined;

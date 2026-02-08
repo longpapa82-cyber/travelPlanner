@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, AuthProvider } from './entities/user.entity';
@@ -58,10 +62,7 @@ export class UsersService {
     });
   }
 
-  async validatePassword(
-    user: User,
-    password: string,
-  ): Promise<boolean> {
+  async validatePassword(user: User, password: string): Promise<boolean> {
     if (!user.passwordHash) {
       return false;
     }
@@ -89,7 +90,9 @@ export class UsersService {
     }
 
     if (!user.passwordHash) {
-      throw new BadRequestException('소셜 로그인 계정은 비밀번호를 변경할 수 없습니다.');
+      throw new BadRequestException(
+        '소셜 로그인 계정은 비밀번호를 변경할 수 없습니다.',
+      );
     }
 
     const isValid = await bcrypt.compare(currentPassword, user.passwordHash);

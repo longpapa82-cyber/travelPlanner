@@ -148,7 +148,10 @@ describe('TripsController (Integration)', () => {
         .expect(201);
 
       expect(response.body).toEqual(mockTrip);
-      expect(tripsService.create).toHaveBeenCalledWith(mockUserId, createTripDto);
+      expect(tripsService.create).toHaveBeenCalledWith(
+        mockUserId,
+        createTripDto,
+      );
       expect(tripsService.create).toHaveBeenCalledTimes(1);
     });
 
@@ -362,10 +365,13 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(500); // NestJS converts unhandled exceptions to 500
 
-      expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, 'non-existent-id');
+      expect(tripsService.findOne).toHaveBeenCalledWith(
+        mockUserId,
+        'non-existent-id',
+      );
     });
 
-    it('should return 403 when trying to access another user\'s trip', async () => {
+    it("should return 403 when trying to access another user's trip", async () => {
       tripsService.findOne.mockRejectedValue({
         status: 403,
         response: { message: 'Forbidden' },
@@ -376,7 +382,10 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(500); // NestJS converts unhandled exceptions to 500
 
-      expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, 'other-user-trip');
+      expect(tripsService.findOne).toHaveBeenCalledWith(
+        mockUserId,
+        'other-user-trip',
+      );
     });
   });
 
@@ -397,7 +406,11 @@ describe('TripsController (Integration)', () => {
         .expect(200);
 
       expect(response.body).toEqual(updatedTrip);
-      expect(tripsService.update).toHaveBeenCalledWith(mockUserId, 'trip-123', updateTripDto);
+      expect(tripsService.update).toHaveBeenCalledWith(
+        mockUserId,
+        'trip-123',
+        updateTripDto,
+      );
       expect(tripsService.update).toHaveBeenCalledTimes(1);
     });
 
@@ -431,7 +444,11 @@ describe('TripsController (Integration)', () => {
         .send(updateDto)
         .expect(500); // NestJS converts unhandled exceptions to 500
 
-      expect(tripsService.update).toHaveBeenCalledWith(mockUserId, 'completed-trip-id', updateDto);
+      expect(tripsService.update).toHaveBeenCalledWith(
+        mockUserId,
+        'completed-trip-id',
+        updateDto,
+      );
     });
 
     it('should accept partial updates', async () => {
@@ -439,7 +456,10 @@ describe('TripsController (Integration)', () => {
         description: 'Only updating description',
       };
 
-      tripsService.update.mockResolvedValue({ ...mockTrip, ...partialUpdate } as any);
+      tripsService.update.mockResolvedValue({
+        ...mockTrip,
+        ...partialUpdate,
+      } as any);
 
       await request(app.getHttpServer())
         .patch('/trips/trip-123')
@@ -447,7 +467,11 @@ describe('TripsController (Integration)', () => {
         .send(partialUpdate)
         .expect(200);
 
-      expect(tripsService.update).toHaveBeenCalledWith(mockUserId, 'trip-123', partialUpdate);
+      expect(tripsService.update).toHaveBeenCalledWith(
+        mockUserId,
+        'trip-123',
+        partialUpdate,
+      );
     });
   });
 
@@ -475,7 +499,10 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(500); // NestJS converts unhandled exceptions to 500
 
-      expect(tripsService.remove).toHaveBeenCalledWith(mockUserId, 'non-existent-id');
+      expect(tripsService.remove).toHaveBeenCalledWith(
+        mockUserId,
+        'non-existent-id',
+      );
     });
   });
 
@@ -678,7 +705,11 @@ describe('TripsController (Integration)', () => {
         .expect(201);
 
       expect(response.body).toEqual(shareResponse);
-      expect(tripsService.generateShareToken).toHaveBeenCalledWith('trip-123', mockUserId, 7);
+      expect(tripsService.generateShareToken).toHaveBeenCalledWith(
+        'trip-123',
+        mockUserId,
+        7,
+      );
     });
 
     it('should generate share link without expiration', async () => {
@@ -712,7 +743,10 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(204);
 
-      expect(tripsService.disableSharing).toHaveBeenCalledWith('trip-123', mockUserId);
+      expect(tripsService.disableSharing).toHaveBeenCalledWith(
+        'trip-123',
+        mockUserId,
+      );
     });
   });
 
@@ -738,7 +772,10 @@ describe('TripsController (Integration)', () => {
         .expect(200);
 
       // First argument should always be userId from authenticated user
-      expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, expect.any(String));
+      expect(tripsService.findOne).toHaveBeenCalledWith(
+        mockUserId,
+        expect.any(String),
+      );
     });
   });
 
@@ -795,9 +832,17 @@ describe('TripsController (Integration)', () => {
       // Test multiple endpoints
       await request(testApp.getHttpServer()).get('/trips').expect(403);
       await request(testApp.getHttpServer()).get('/trips/trip-123').expect(403);
-      await request(testApp.getHttpServer()).post('/trips').send({}).expect(403);
-      await request(testApp.getHttpServer()).patch('/trips/trip-123').send({}).expect(403);
-      await request(testApp.getHttpServer()).delete('/trips/trip-123').expect(403);
+      await request(testApp.getHttpServer())
+        .post('/trips')
+        .send({})
+        .expect(403);
+      await request(testApp.getHttpServer())
+        .patch('/trips/trip-123')
+        .send({})
+        .expect(403);
+      await request(testApp.getHttpServer())
+        .delete('/trips/trip-123')
+        .expect(403);
 
       // No service methods should be called
       expect(tripsService.findAll).not.toHaveBeenCalled();
