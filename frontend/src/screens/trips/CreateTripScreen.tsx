@@ -25,7 +25,6 @@ import {
   Platform,
   ImageBackground,
   Animated,
-  Dimensions,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -38,8 +37,6 @@ import apiService from '../../services/api';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import DestinationInsights from '../../components/DestinationInsights';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
 

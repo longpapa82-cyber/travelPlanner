@@ -285,6 +285,68 @@ export class TripsService {
     await this.tripRepository.remove(trip);
   }
 
+  async duplicate(userId: string, id: string): Promise<Trip> {
+    const original = await this.findOne(userId, id);
+
+    // Calculate date offset from today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const originalStart = new Date(original.startDate);
+    const originalEnd = new Date(original.endDate);
+    const duration = originalEnd.getTime() - originalStart.getTime();
+
+    // New trip starts tomorrow
+    const newStart = new Date(today);
+    newStart.setDate(newStart.getDate() + 1);
+    const newEnd = new Date(newStart.getTime() + duration);
+
+    // Create duplicated trip
+    const newTrip = this.tripRepository.create({
+      userId,
+      destination: original.destination,
+      country: original.country,
+      city: original.city,
+      startDate: newStart,
+      endDate: newEnd,
+      numberOfTravelers: original.numberOfTravelers,
+      description: original.description
+        ? `${original.description} (복제)`
+        : `${original.destination} 여행 (복제)`,
+      status: 'upcoming' as any,
+    });
+
+    const savedTrip = await this.tripRepository.save(newTrip);
+
+    // Duplicate itineraries with shifted dates
+    if (original.itineraries && original.itineraries.length > 0) {
+      for (const itinerary of original.itineraries) {
+        const dayOffset = itinerary.dayNumber - 1;
+        const newDate = new Date(newStart);
+        newDate.setDate(newDate.getDate() + dayOffset);
+
+        // Clone activities (reset completion status)
+        const clonedActivities = itinerary.activities.map((activity) => ({
+          ...activity,
+          completed: false,
+        }));
+
+        const newItinerary = this.itineraryRepository.create({
+          tripId: savedTrip.id,
+          dayNumber: itinerary.dayNumber,
+          date: newDate,
+          activities: clonedActivities,
+          notes: itinerary.notes,
+          timezone: itinerary.timezone,
+          timezoneOffset: itinerary.timezoneOffset,
+        });
+
+        await this.itineraryRepository.save(newItinerary);
+      }
+    }
+
+    return this.findOne(userId, savedTrip.id);
+  }
+
   async updateItinerary(
     userId: string,
     tripId: string,

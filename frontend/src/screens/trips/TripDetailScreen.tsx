@@ -22,7 +22,6 @@ import {
   Alert,
   ImageBackground,
   Animated,
-  Dimensions,
   Platform,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -45,8 +44,6 @@ import { WeatherWidget } from '../../components/WeatherWidget';
 import { ProgressIndicator } from '../../components/ProgressIndicator';
 import { AdSense } from '../../components/ads';
 import AffiliateLink from '../../components/ads/AffiliateLink';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 type TripDetailScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'TripDetail'>;
 type TripDetailScreenRouteProp = RouteProp<TripsStackParamList, 'TripDetail'>;
@@ -97,6 +94,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
 
   // Share modal state
   const [shareModalVisible, setShareModalVisible] = useState(false);
+  const [isDuplicating, setIsDuplicating] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -142,6 +140,32 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const onRefresh = () => {
     setIsRefreshing(true);
     fetchTripDetails();
+  };
+
+  const handleDuplicateTrip = async () => {
+    if (isDuplicating) return;
+    setIsDuplicating(true);
+    try {
+      const newTrip = await apiService.duplicateTrip(tripId);
+      if (Platform.OS === 'web' && typeof window !== 'undefined') {
+        window.alert('여행이 복제되었습니다!');
+      } else {
+        Alert.alert('복제 완료', '여행이 복제되었습니다!', [
+          { text: '확인', onPress: () => navigation.navigate('TripDetail', { tripId: newTrip.id }) },
+        ]);
+        return;
+      }
+      navigation.navigate('TripDetail', { tripId: newTrip.id });
+    } catch (error: any) {
+      const msg = error.response?.data?.message || '여행 복제 중 오류가 발생했습니다.';
+      if (Platform.OS === 'web' && typeof window !== 'undefined') {
+        window.alert(msg);
+      } else {
+        Alert.alert('오류', msg);
+      }
+    } finally {
+      setIsDuplicating(false);
+    }
   };
 
   // Activity management handlers
@@ -422,6 +446,9 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               onPress={() => handleToggleActivityCompletion(itineraryId, index, activity)}
               activeOpacity={0.7}
               disabled={isCompletedTrip}
+              accessibilityLabel={`${activity.title} ${activityStatus === 'completed' ? '완료됨' : '미완료'}`}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: activityStatus === 'completed' }}
               style={[
                 styles.timelineDot,
                 {
@@ -466,6 +493,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                 onLongPress={drag}
                 style={styles.dragHandle}
                 disabled={isActive || !canModify}
+                accessibilityLabel="순서 변경"
+                accessibilityHint="길게 누르면 순서를 변경할 수 있습니다"
               >
                 <Icon
                   name="drag"
@@ -477,6 +506,11 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               <View style={styles.activityTimeSection}>
                 <Icon name="clock-outline" size={18} color={activityColor} />
                 <Text style={[styles.activityTime, { color: activityColor }]}>{activity.time}</Text>
+                {trip?.itineraries.find(it => it.id === itineraryId)?.timezone && (
+                  <Text style={[styles.activityTimezone, { color: theme.colors.textSecondary }]}>
+                    {trip.itineraries.find(it => it.id === itineraryId)!.timezone}
+                  </Text>
+                )}
               </View>
 
               <View style={styles.activityHeaderRight}>
@@ -488,12 +522,16 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                     <TouchableOpacity
                       style={styles.activityActionButton}
                       onPress={() => handleEditActivity(itineraryId, index, activity)}
+                      accessibilityLabel={`${activity.title} 수정`}
+                      accessibilityRole="button"
                     >
                       <Icon name="pencil" size={16} color={theme.colors.primary} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.activityActionButton}
                       onPress={() => handleDeleteActivity(itineraryId, index)}
+                      accessibilityLabel={`${activity.title} 삭제`}
+                      accessibilityRole="button"
                     >
                       <Icon name="delete" size={16} color={colors.error.main} />
                     </TouchableOpacity>
@@ -671,6 +709,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             },
           ]}
           onPress={() => handleAddActivity(itinerary.id)}
+          accessibilityLabel={`Day ${itinerary.dayNumber}에 활동 추가`}
+          accessibilityRole="button"
         >
           <Icon name="plus-circle" size={20} color={theme.colors.primary} />
           <Text style={[styles.addActivityText, { color: theme.colors.primary }]}>
@@ -768,6 +808,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => navigation.goBack()}
+              accessibilityLabel="뒤로 가기"
+              accessibilityRole="button"
             >
               <View style={styles.iconButtonInner}>
                 <Icon name="arrow-left" size={24} color={colors.neutral[0]} />
@@ -779,6 +821,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                 <TouchableOpacity
                   style={styles.editButton}
                   onPress={() => navigation.navigate('EditTrip', { tripId: trip.id })}
+                  accessibilityLabel="여행 정보 수정"
+                  accessibilityRole="button"
                 >
                   <View style={styles.iconButtonInner}>
                     <Icon name="pencil" size={24} color={colors.neutral[0]} />
@@ -787,8 +831,21 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               )}
 
               <TouchableOpacity
+                onPress={handleDuplicateTrip}
+                disabled={isDuplicating}
+                accessibilityLabel="여행 복제하기"
+                accessibilityRole="button"
+              >
+                <View style={styles.iconButtonInner}>
+                  <Icon name="content-copy" size={24} color={colors.neutral[0]} />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
                 style={styles.shareButton}
                 onPress={() => setShareModalVisible(true)}
+                accessibilityLabel="여행 공유하기"
+                accessibilityRole="button"
               >
                 <View style={styles.iconButtonInner}>
                   <Icon name="share-variant" size={24} color={colors.neutral[0]} />
@@ -1275,6 +1332,16 @@ const createStyles = (theme: any, isDark: boolean) =>
     activityTime: {
       fontSize: 16,
       fontWeight: '700',
+    },
+    activityTimezone: {
+      fontSize: 11,
+      fontWeight: '500',
+      marginLeft: 4,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
+      backgroundColor: isDark ? colors.neutral[700] : colors.neutral[100],
+      overflow: 'hidden',
     },
     activityHeaderRight: {
       flexDirection: 'row',

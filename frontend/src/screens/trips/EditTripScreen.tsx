@@ -21,7 +21,6 @@ import {
   Platform,
   ImageBackground,
   Animated,
-  Dimensions,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
@@ -33,8 +32,6 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 type EditTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'EditTrip'>;
 type EditTripScreenRouteProp = RouteProp<TripsStackParamList, 'EditTrip'>;

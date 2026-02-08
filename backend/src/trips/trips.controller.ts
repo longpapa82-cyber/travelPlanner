@@ -87,6 +87,11 @@ export class TripsController {
     );
   }
 
+  @Post(':id/duplicate')
+  duplicate(@Request() req, @Param('id') id: string) {
+    return this.tripsService.duplicate(req.user.userId, id);
+  }
+
   // ============================================
   // Activity Management Endpoints
   // ============================================

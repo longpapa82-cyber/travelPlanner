@@ -135,6 +135,8 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 style={styles.backButton}
                 onPress={() => navigation.goBack()}
                 disabled={isLoading}
+                accessibilityLabel="뒤로 가기"
+                accessibilityRole="button"
               >
                 <Icon name="arrow-left" size={24} color={colors.neutral[0]} />
               </TouchableOpacity>
@@ -162,6 +164,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 onChangeText={setName}
                 autoCapitalize="words"
                 editable={!isLoading}
+                accessibilityLabel="이름 입력"
               />
             </View>
 
@@ -178,6 +181,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 editable={!isLoading}
+                accessibilityLabel="이메일 입력"
               />
             </View>
 
@@ -193,10 +197,13 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
                 editable={!isLoading}
+                accessibilityLabel="비밀번호 입력"
               />
               <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.eyeIcon}
+                accessibilityLabel={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                accessibilityRole="button"
               >
                 <Icon
                   name={showPassword ? 'eye-outline' : 'eye-off-outline'}
@@ -242,10 +249,13 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 secureTextEntry={!showConfirmPassword}
                 autoCapitalize="none"
                 editable={!isLoading}
+                accessibilityLabel="비밀번호 확인 입력"
               />
               <TouchableOpacity
                 onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                 style={styles.eyeIcon}
+                accessibilityLabel={showConfirmPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                accessibilityRole="button"
               >
                 <Icon
                   name={showConfirmPassword ? 'eye-outline' : 'eye-off-outline'}
@@ -273,6 +283,8 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
               <TouchableOpacity
                 onPress={() => navigation.navigate('Login')}
                 disabled={isLoading}
+                accessibilityLabel="로그인으로 이동"
+                accessibilityRole="link"
               >
                 <Text style={styles.loginLink}>로그인</Text>
               </TouchableOpacity>

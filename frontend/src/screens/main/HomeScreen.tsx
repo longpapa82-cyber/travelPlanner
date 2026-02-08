@@ -17,10 +17,10 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Dimensions,
   Animated,
   ImageBackground,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -40,9 +40,6 @@ import { FadeIn } from '../../components/animation/FadeIn';
 import { SlideIn } from '../../components/animation/SlideIn';
 import PopularDestinations from '../../components/PopularDestinations';
 import apiService from '../../services/api';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const CARD_WIDTH = SCREEN_WIDTH * 0.75;
 
 type HomeScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<MainTabParamList, 'Home'>,
@@ -105,6 +102,8 @@ const FEATURED_DESTINATIONS = [
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { user } = useAuth();
   const { theme, isDark } = useTheme();
+  const { width: SCREEN_WIDTH } = useWindowDimensions();
+  const CARD_WIDTH = SCREEN_WIDTH * 0.75;
   const [stats, setStats] = useState({ completed: 0, ongoing: 0, upcoming: 0 });
 
   // Animation values
@@ -276,9 +275,11 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               ]}
             >
               <TouchableOpacity
-                style={styles.destinationCard}
+                style={[styles.destinationCard, { width: CARD_WIDTH }]}
                 onPress={() => handleDestinationPress(destination)}
                 activeOpacity={0.9}
+                accessibilityLabel={`${destination.name}, ${destination.country} 여행 계획 만들기`}
+                accessibilityRole="button"
               >
                 <Image
                   source={{ uri: destination.image }}
@@ -501,7 +502,6 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     paddingRight: theme.spacing.lg,
   },
   destinationCard: {
-    width: CARD_WIDTH,
     height: 400,
     borderRadius: theme.borderRadius.xl,
     marginRight: theme.spacing.md,

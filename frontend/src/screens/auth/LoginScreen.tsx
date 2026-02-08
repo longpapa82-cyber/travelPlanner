@@ -162,6 +162,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 editable={!isLoading}
+                accessibilityLabel="이메일 입력"
+                accessibilityHint="로그인에 사용할 이메일을 입력하세요"
               />
             </View>
 
@@ -177,10 +179,13 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
                 editable={!isLoading}
+                accessibilityLabel="비밀번호 입력"
               />
               <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.eyeIcon}
+                accessibilityLabel={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                accessibilityRole="button"
               >
                 <Icon
                   name={showPassword ? 'eye-outline' : 'eye-off-outline'}
@@ -216,6 +221,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 onPress={handleGoogleLogin}
                 disabled={isLoading}
                 activeOpacity={0.7}
+                accessibilityLabel="Google 계정으로 로그인"
+                accessibilityRole="button"
               >
                 <Icon name="google" size={22} color="#DB4437" />
                 <Text style={styles.socialButtonText}>Google로 계속하기</Text>
@@ -227,6 +234,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                   onPress={handleAppleLogin}
                   disabled={isLoading}
                   activeOpacity={0.7}
+                  accessibilityLabel="Apple 계정으로 로그인"
+                  accessibilityRole="button"
                 >
                   <Icon name="apple" size={22} color="#000000" />
                   <Text style={styles.socialButtonText}>Apple로 계속하기</Text>
@@ -238,6 +247,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 onPress={handleKakaoLogin}
                 disabled={isLoading}
                 activeOpacity={0.7}
+                accessibilityLabel="카카오 계정으로 로그인"
+                accessibilityRole="button"
               >
                 <Icon name="chat" size={22} color="#3C1E1E" />
                 <Text style={[styles.socialButtonText, styles.kakaoButtonText]}>
@@ -252,6 +263,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               <TouchableOpacity
                 onPress={() => navigation.navigate('Register')}
                 disabled={isLoading}
+                accessibilityLabel="회원가입으로 이동"
+                accessibilityRole="link"
               >
                 <Text style={styles.registerLink}>회원가입</Text>
               </TouchableOpacity>

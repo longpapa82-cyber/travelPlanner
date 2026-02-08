@@ -21,7 +21,6 @@ import {
   RefreshControl,
   ImageBackground,
   Animated,
-  Dimensions,
   TextInput,
   Alert,
   Platform,
@@ -36,8 +35,6 @@ import apiService from '../../services/api';
 import { useFocusEffect } from '@react-navigation/native';
 import Button from '../../components/core/Button';
 import { WeatherWidget } from '../../components/WeatherWidget';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 type TripListScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'TripList'>;
 
@@ -286,6 +283,9 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
           style={styles.tripCard}
           onPress={() => navigation.navigate('TripDetail', { tripId: trip.id })}
           activeOpacity={0.9}
+          accessibilityLabel={`${trip.destination} 여행, ${getStatusConfig(trip.status).text}`}
+          accessibilityRole="button"
+          accessibilityHint="여행 상세 보기"
         >
           <ImageBackground
             source={{ uri: imageUrl }}
@@ -324,6 +324,8 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                     onPress={() => handleDeleteTrip(trip)}
                     activeOpacity={0.7}
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    accessibilityLabel={`${trip.destination} 여행 삭제`}
+                    accessibilityRole="button"
                   >
                     <Icon name="delete-outline" size={20} color={colors.neutral[0]} />
                   </TouchableOpacity>
@@ -492,6 +494,8 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               placeholderTextColor={theme.colors.textSecondary}
               value={searchText}
               onChangeText={handleSearchChange}
+              accessibilityLabel="여행 검색"
+              accessibilityHint="여행지명 또는 설명을 입력하여 검색"
             />
             {searchText.length > 0 && (
               <TouchableOpacity onPress={() => handleSearchChange('')}>

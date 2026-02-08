@@ -13,11 +13,11 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
   FlatList,
   Animated,
   TouchableOpacity,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -26,8 +26,6 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { AuthStackParamList } from '../../types';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 type OnboardingScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList>;
@@ -67,6 +65,7 @@ const SLIDES: OnboardingSlide[] = [
 
 export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }) => {
   const { isDark } = useTheme();
+  const { width: SCREEN_WIDTH } = useWindowDimensions();
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -84,7 +83,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
   };
 
   const renderSlide = ({ item }: { item: OnboardingSlide }) => (
-    <View style={styles.slide}>
+    <View style={[styles.slide, { width: SCREEN_WIDTH }]}>
       <LinearGradient colors={item.gradient} style={styles.slideGradient}>
         <View style={styles.slideContent}>
           <View style={styles.iconContainer}>
@@ -170,6 +169,8 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
                 style={styles.skipButton}
                 onPress={handleSkip}
                 activeOpacity={0.7}
+                accessibilityLabel="건너뛰기"
+                accessibilityRole="button"
               >
                 <Text style={styles.skipButtonText}>건너뛰기</Text>
               </TouchableOpacity>
@@ -177,6 +178,8 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
                 style={styles.nextButton}
                 onPress={handleNext}
                 activeOpacity={0.8}
+                accessibilityLabel="다음 슬라이드"
+                accessibilityRole="button"
               >
                 <Text style={styles.nextButtonText}>다음</Text>
                 <Icon name="arrow-right" size={20} color={colors.primary[700]} />
@@ -188,6 +191,8 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
                 style={styles.startButton}
                 onPress={() => navigation.navigate('Login')}
                 activeOpacity={0.8}
+                accessibilityLabel="시작하기"
+                accessibilityRole="button"
               >
                 <Icon name="login" size={20} color={colors.primary[700]} />
                 <Text style={styles.startButtonText}>시작하기</Text>
@@ -196,6 +201,8 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
                 style={styles.registerLink}
                 onPress={() => navigation.navigate('Register')}
                 activeOpacity={0.7}
+                accessibilityLabel="회원가입으로 이동"
+                accessibilityRole="link"
               >
                 <Text style={styles.registerLinkText}>
                   계정이 없으신가요? 회원가입
@@ -215,7 +222,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary[700],
   },
   slide: {
-    width: SCREEN_WIDTH,
     flex: 1,
   },
   slideGradient: {

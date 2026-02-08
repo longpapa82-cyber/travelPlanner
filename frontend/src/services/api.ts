@@ -130,6 +130,11 @@ class ApiService {
     await this.api.delete(`/trips/${id}`);
   }
 
+  async duplicateTrip(id: string) {
+    const response = await this.api.post(`/trips/${id}/duplicate`);
+    return response.data;
+  }
+
   // Activity Methods
   async addActivity(tripId: string, itineraryId: string, activityData: any) {
     const response = await this.api.post(
