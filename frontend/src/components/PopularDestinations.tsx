@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import analyticsService, { DestinationStats } from '../services/analytics.service';
 import { theme } from '../constants/theme';
 
@@ -18,6 +19,7 @@ interface PopularDestinationsProps {
 export const PopularDestinations: React.FC<PopularDestinationsProps> = ({
   onDestinationPress,
 }) => {
+  const { t } = useTranslation('components');
   const [destinations, setDestinations] = useState<DestinationStats[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +48,7 @@ export const PopularDestinations: React.FC<PopularDestinationsProps> = ({
   if (loading) {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>인기 여행지</Text>
+        <Text style={styles.title}>{t('popularDestinations.title')}</Text>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
@@ -62,10 +64,10 @@ export const PopularDestinations: React.FC<PopularDestinationsProps> = ({
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons name="trending-up" size={24} color={theme.colors.primary} />
-        <Text style={styles.title}>최근 3개월 인기 여행지</Text>
+        <Text style={styles.title}>{t('popularDestinations.subtitle')}</Text>
       </View>
       <Text style={styles.subtitle}>
-        실제 여행자들이 가장 많이 선택한 여행지를 확인하세요
+        {t('popularDestinations.description')}
       </Text>
 
       <ScrollView
@@ -91,25 +93,25 @@ export const PopularDestinations: React.FC<PopularDestinationsProps> = ({
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
                 <Ionicons name="people" size={16} color={theme.colors.textSecondary} />
-                <Text style={styles.statText}>{destination.tripCount}명 방문</Text>
+                <Text style={styles.statText}>{t('popularDestinations.visitors', { count: destination.tripCount })}</Text>
               </View>
 
               <View style={styles.statItem}>
                 <Ionicons name="calendar" size={16} color={theme.colors.textSecondary} />
-                <Text style={styles.statText}>평균 {destination.averageDuration}일</Text>
+                <Text style={styles.statText}>{t('popularDestinations.avgDuration', { days: destination.averageDuration })}</Text>
               </View>
 
               <View style={styles.statItem}>
                 <Ionicons name="person" size={16} color={theme.colors.textSecondary} />
                 <Text style={styles.statText}>
-                  {destination.averageTravelers}명과 함께
+                  {t('popularDestinations.withTravelers', { count: destination.averageTravelers })}
                 </Text>
               </View>
             </View>
 
             {destination.popularMonths && destination.popularMonths.length > 0 && (
               <View style={styles.monthsContainer}>
-                <Text style={styles.monthsLabel}>인기 시즌:</Text>
+                <Text style={styles.monthsLabel}>{t('popularDestinations.popularSeason')}</Text>
                 <Text style={styles.monthsText}>
                   {destination.popularMonths
                     .map(m => analyticsService.getMonthAbbr(m))

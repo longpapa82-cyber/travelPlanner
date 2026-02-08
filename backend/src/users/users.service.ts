@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, AuthProvider } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { t } from '../common/i18n';
 
 @Injectable()
 export class UsersService {
@@ -78,6 +79,7 @@ export class UsersService {
     id: string,
     currentPassword: string,
     newPassword: string,
+    lang: 'ko' | 'en' | 'ja' = 'ko',
   ): Promise<{ message: string }> {
     const user = await this.userRepository
       .createQueryBuilder('user')
@@ -90,20 +92,18 @@ export class UsersService {
     }
 
     if (!user.passwordHash) {
-      throw new BadRequestException(
-        '소셜 로그인 계정은 비밀번호를 변경할 수 없습니다.',
-      );
+      throw new BadRequestException(t('password.socialNotAllowed', lang));
     }
 
     const isValid = await bcrypt.compare(currentPassword, user.passwordHash);
     if (!isValid) {
-      throw new BadRequestException('현재 비밀번호가 일치하지 않습니다.');
+      throw new BadRequestException(t('password.currentInvalid', lang));
     }
 
     const newHash = await bcrypt.hash(newPassword, 10);
     await this.userRepository.update(id, { passwordHash: newHash });
 
-    return { message: '비밀번호가 변경되었습니다.' };
+    return { message: t('password.changed', lang) };
   }
 
   async remove(id: string): Promise<void> {

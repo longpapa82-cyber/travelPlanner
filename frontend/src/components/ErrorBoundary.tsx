@@ -1,6 +1,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import i18next from 'i18next';
 import { colors } from '../constants/theme';
 
 interface Props {
@@ -35,14 +36,13 @@ class ErrorBoundary extends Component<Props, State> {
       return (
         <View style={styles.container}>
           <Icon name="alert-circle-outline" size={64} color={colors.neutral[400]} />
-          <Text style={styles.title}>문제가 발생했습니다</Text>
+          <Text style={styles.title}>{i18next.t('errorBoundary.title', { ns: 'common' })}</Text>
           <Text style={styles.message}>
-            앱에서 예기치 않은 오류가 발생했습니다.{'\n'}
-            다시 시도해 주세요.
+            {i18next.t('errorBoundary.message', { ns: 'common' })}
           </Text>
           <TouchableOpacity style={styles.button} onPress={this.handleRetry}>
             <Icon name="refresh" size={20} color={colors.neutral[0]} />
-            <Text style={styles.buttonText}>다시 시도</Text>
+            <Text style={styles.buttonText}>{i18next.t('errorBoundary.retry', { ns: 'common' })}</Text>
           </TouchableOpacity>
         </View>
       );

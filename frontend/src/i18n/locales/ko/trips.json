@@ -1,0 +1,199 @@
+{
+  "create": {
+    "title": "새 여행 만들기",
+    "destination": {
+      "title": "어디로 떠나시나요?",
+      "placeholder": "도시 또는 국가를 입력하세요",
+      "popular": "인기 여행지"
+    },
+    "destinations": {
+      "tokyo": "도쿄",
+      "osaka": "오사카",
+      "bangkok": "방콕",
+      "danang": "다낭",
+      "paris": "파리",
+      "singapore": "싱가포르",
+      "london": "런던",
+      "newyork": "뉴욕"
+    },
+    "duration": {
+      "title": "얼마나 머무시나요?",
+      "options": {
+        "3days": "3일",
+        "1week": "1주일",
+        "2weeks": "2주일",
+        "1month": "한 달"
+      },
+      "custom": "직접 입력",
+      "totalDays": "총 {{days}}일간의 여행"
+    },
+    "travelers": {
+      "title": "누구와 함께 가시나요?",
+      "options": {
+        "solo": "나 혼자",
+        "two": "2명",
+        "group": "3-4명",
+        "large": "5명 이상"
+      }
+    },
+    "dates": {
+      "title": "언제 떠나시나요?",
+      "start": "출발일",
+      "end": "도착일",
+      "selectStart": "출발일을 선택하세요",
+      "selectEnd": "도착일을 선택하세요"
+    },
+    "notes": {
+      "title": "특별한 계획이 있나요?",
+      "placeholder": "예: 맛집 위주로, 관광지 중심으로, 자유 여행...",
+      "optional": "(선택사항)"
+    },
+    "aiInfo": {
+      "title": "AI 자동 생성",
+      "description": "목적지와 일정에 맞춰 AI가 최적의 여행 계획을 자동으로 생성합니다"
+    },
+    "submit": "여행 계획 만들기",
+    "generating": "AI가 여행 계획을 만들고 있어요...",
+    "alerts": {
+      "destinationRequired": "여행지를 입력해주세요",
+      "datesRequired": "여행 날짜를 선택해주세요",
+      "createFailed": "여행 생성에 실패했습니다",
+      "startDateRequired": "출발일을 선택해주세요"
+    }
+  },
+  "list": {
+    "title": "내 여행",
+    "searchPlaceholder": "여행 검색...",
+    "filters": {
+      "all": "전체",
+      "upcoming": "예정",
+      "ongoing": "진행중",
+      "completed": "완료"
+    },
+    "sections": {
+      "ongoing": "진행중인 여행",
+      "upcoming": "다가오는 여행",
+      "completed": "완료된 여행"
+    },
+    "status": {
+      "upcoming": "예정",
+      "ongoing": "진행중",
+      "completed": "완료"
+    },
+    "empty": {
+      "title": "아직 계획된 여행이 없습니다",
+      "description": "새로운 여행을 계획해보세요!",
+      "cta": "AI 여행 계획 시작하기"
+    },
+    "card": {
+      "days": "{{days}}일",
+      "travelers": "{{count}}명",
+      "dDay": "D-{{days}}",
+      "dDayToday": "D-Day",
+      "dDayPassed": "D+{{days}}"
+    },
+    "alerts": {
+      "deleteTitle": "여행 삭제",
+      "deleteMessage": "'{{name}}'을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      "deleteFailed": "삭제에 실패했습니다",
+      "error": "오류"
+    },
+    "sort": {
+      "startDate": "출발일순",
+      "createdAt": "생성일순",
+      "destination": "목적지순"
+    }
+  },
+  "detail": {
+    "loading": "여행 정보를 불러오는 중...",
+    "notFound": {
+      "title": "여행 정보를 찾을 수 없습니다",
+      "description": "존재하지 않거나 삭제된 여행입니다",
+      "back": "돌아가기"
+    },
+    "status": {
+      "ongoing": "진행중",
+      "completed": "완료"
+    },
+    "completedBanner": {
+      "title": "여행 완료",
+      "description": "이 여행은 완료되어 수정할 수 없습니다. 소중한 추억을 확인해보세요!"
+    },
+    "readOnlyMessage": "완료된 활동은 수정할 수 없습니다",
+    "progress": "전체 진행률 {{percentage}}%",
+    "dayLabel": "Day {{day}}",
+    "emptyItinerary": "아직 일정이 생성되지 않았습니다",
+    "addActivity": "활동 추가",
+    "affiliateSection": "숙소 & 액티비티 예약",
+    "tabs": {
+      "itinerary": "일정",
+      "info": "정보",
+      "share": "공유"
+    },
+    "activityTypes": {
+      "meal": "식사",
+      "sightseeing": "관광",
+      "shopping": "쇼핑",
+      "experience": "체험",
+      "rest": "휴식",
+      "transport": "이동",
+      "accommodation": "숙소",
+      "other": "기타"
+    },
+    "alerts": {
+      "deleteTitle": "활동 삭제",
+      "deleteMessage": "이 활동을 삭제하시겠습니까?",
+      "deleteFailed": "삭제에 실패했습니다",
+      "error": "오류"
+    }
+  },
+  "edit": {
+    "title": "여행 수정",
+    "loading": "여행 정보를 불러오는 중...",
+    "notFound": "여행을 찾을 수 없습니다",
+    "goBack": "돌아가기",
+    "heroTitle": "여행 정보 수정",
+    "ongoingWarning": "진행 중인 여행입니다. 날짜 변경 시 주의하세요.",
+    "destination": {
+      "title": "여행 목적지",
+      "placeholder": "또는 직접 입력하세요"
+    },
+    "dates": {
+      "title": "여행 기간",
+      "changeWarning": "변경 주의",
+      "totalDays": "총 {{days}}일간의 여행"
+    },
+    "travelers": {
+      "title": "여행 인원",
+      "placeholder": "또는 직접 입력하세요"
+    },
+    "notes": {
+      "title": "여행 설명 (선택)",
+      "placeholder": "여행의 목적이나 특별한 요구사항을 자유롭게 입력하세요"
+    },
+    "submit": "여행 정보 저장",
+    "saving": "저장 중...",
+    "status": {
+      "upcoming": "예정",
+      "ongoing": "진행중",
+      "completed": "완료"
+    },
+    "alerts": {
+      "cannotEditCompleted": "완료된 여행은 수정할 수 없습니다.",
+      "cannotEditTitle": "수정 불가",
+      "loadError": "여행 정보를 불러올 수 없습니다.",
+      "destinationRequired": "여행 목적지를 입력해주세요.",
+      "requiredInput": "필수 입력",
+      "datesRequired": "여행 날짜를 선택해주세요.",
+      "endDateError": "종료일은 시작일 이후여야 합니다.",
+      "dateError": "날짜 오류",
+      "dateChangeWarningTitle": "날짜 변경 경고",
+      "dateChangeWarning": "진행 중인 여행의 날짜를 변경하면 일정에 영향을 줄 수 있습니다. 계속하시겠습니까?",
+      "continue": "계속",
+      "saveSuccess": "수정 완료",
+      "saveSuccessMessage": "여행 정보가 수정되었습니다.",
+      "saveFailed": "수정 실패",
+      "saveError": "여행 정보를 수정할 수 없습니다. 다시 시도해주세요."
+    }
+  }
+}

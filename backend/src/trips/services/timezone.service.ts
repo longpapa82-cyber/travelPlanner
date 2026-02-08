@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client } from '@googlemaps/google-maps-services-js';
 import { DateTime } from 'luxon';
+import { t } from '../../common/i18n';
 
 interface LocationInfo {
   latitude: number;
@@ -140,6 +141,7 @@ export class TimezoneService {
   calculateTimeDifference(
     destinationOffset: number,
     userTimezone: string = 'UTC',
+    lang: 'ko' | 'en' | 'ja' = 'ko',
   ): string {
     const userDateTime = DateTime.now().setZone(userTimezone);
     const userOffset = userDateTime.offset / 60; // Convert minutes to hours
@@ -147,7 +149,7 @@ export class TimezoneService {
     const difference = destinationOffset - userOffset;
 
     if (difference === 0) {
-      return '시차 없음';
+      return t('timezone.noDifference', lang);
     }
 
     const absDiff = Math.abs(difference);
@@ -156,13 +158,15 @@ export class TimezoneService {
 
     let timeStr = '';
     if (hours > 0) {
-      timeStr += `${hours}시간`;
+      timeStr += `${hours}${t('timezone.hours', lang)}`;
     }
     if (minutes > 0) {
-      timeStr += ` ${minutes}분`;
+      timeStr += ` ${minutes}${t('timezone.minutes', lang)}`;
     }
 
-    return difference > 0 ? `${timeStr} 빠름` : `${timeStr} 느림`;
+    return difference > 0
+      ? `${timeStr} ${t('timezone.ahead', lang)}`
+      : `${timeStr} ${t('timezone.behind', lang)}`;
   }
 
   /**

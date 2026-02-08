@@ -32,6 +32,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { colors, getColorWithOpacity } from '../../constants/theme';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import Button from '../../components/core/Button';
 import { Card } from '../../components/core/Card';
 import { Badge } from '../../components/core/Badge';
@@ -51,60 +53,71 @@ interface Props {
 }
 
 // Featured destinations with real Unsplash images
-const FEATURED_DESTINATIONS = [
+const getFeaturedDestinations = (t: TFunction) => [
   {
     id: '1',
-    name: '도쿄',
-    country: '일본',
+    name: t('destinations.tokyo.name'),
+    country: t('destinations.tokyo.country'),
     image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80',
-    description: '벚꽃과 전통이 어우러진 도시',
+    description: t('destinations.tokyo.description'),
     weather: '23°C',
     rating: 4.8,
   },
   {
     id: '2',
-    name: '파리',
-    country: '프랑스',
+    name: t('destinations.osaka.name'),
+    country: t('destinations.osaka.country'),
+    image: 'https://images.unsplash.com/photo-1590559899731-a382839e5549?w=800&q=80',
+    description: t('destinations.osaka.description'),
+    weather: '24°C',
+    rating: 4.7,
+  },
+  {
+    id: '3',
+    name: t('destinations.bangkok.name'),
+    country: t('destinations.bangkok.country'),
+    image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&q=80',
+    description: t('destinations.bangkok.description'),
+    weather: '32°C',
+    rating: 4.6,
+  },
+  {
+    id: '4',
+    name: t('destinations.danang.name'),
+    country: t('destinations.danang.country'),
+    image: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=800&q=80',
+    description: t('destinations.danang.description'),
+    weather: '28°C',
+    rating: 4.5,
+  },
+  {
+    id: '5',
+    name: t('destinations.paris.name'),
+    country: t('destinations.paris.country'),
     image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
-    description: '예술과 낭만의 도시',
+    description: t('destinations.paris.description'),
     weather: '18°C',
     rating: 4.9,
   },
   {
-    id: '3',
-    name: '뉴욕',
-    country: '미국',
-    image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&q=80',
-    description: '잠들지 않는 도시',
-    weather: '20°C',
+    id: '6',
+    name: t('destinations.singapore.name'),
+    country: t('destinations.singapore.country'),
+    image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80',
+    description: t('destinations.singapore.description'),
+    weather: '30°C',
     rating: 4.7,
-  },
-  {
-    id: '4',
-    name: '바르셀로나',
-    country: '스페인',
-    image: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800&q=80',
-    description: '가우디의 예술과 지중해',
-    weather: '25°C',
-    rating: 4.8,
-  },
-  {
-    id: '5',
-    name: '서울',
-    country: '한국',
-    image: 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=800&q=80',
-    description: '전통과 현대가 공존하는 도시',
-    weather: '22°C',
-    rating: 4.6,
   },
 ];
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { user } = useAuth();
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('home');
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const CARD_WIDTH = SCREEN_WIDTH * 0.75;
   const [stats, setStats] = useState({ completed: 0, ongoing: 0, upcoming: 0 });
+  const FEATURED_DESTINATIONS = getFeaturedDestinations(t);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -187,10 +200,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               },
             ]}
           >
-            <Text style={styles.heroGreeting}>안녕하세요 👋</Text>
-            <Text style={styles.heroTitle}>{user?.name}님,</Text>
+            <Text style={styles.heroGreeting}>{t('greeting')}</Text>
+            <Text style={styles.heroTitle}>{t('heroTitle', { name: user?.name })}</Text>
             <Text style={styles.heroSubtitle}>
-              다음 모험을 계획해볼까요?
+              {t('subtitle')}
             </Text>
 
             <View style={styles.heroActions}>
@@ -201,7 +214,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
                 onPress={handleCreateTrip}
                 style={styles.heroCTA}
               >
-                AI 여행 계획 만들기
+                {t('createTrip')}
               </Button>
             </View>
           </Animated.View>
@@ -214,19 +227,19 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           <Card elevation="sm" padding="md" style={styles.statCard}>
             <Icon name="airplane-takeoff" size={28} color={colors.primary[500]} />
             <Text style={styles.statValue}>{stats.completed}</Text>
-            <Text style={styles.statLabel}>여행 완료</Text>
+            <Text style={styles.statLabel}>{t('stats.completed')}</Text>
           </Card>
 
           <Card elevation="sm" padding="md" style={styles.statCard}>
             <Icon name="map-marker-multiple" size={28} color={colors.secondary[500]} />
             <Text style={styles.statValue}>{stats.ongoing}</Text>
-            <Text style={styles.statLabel}>진행 중</Text>
+            <Text style={styles.statLabel}>{t('stats.ongoing')}</Text>
           </Card>
 
           <Card elevation="sm" padding="md" style={styles.statCard}>
             <Icon name="calendar-clock" size={28} color={colors.accent} />
             <Text style={styles.statValue}>{stats.upcoming}</Text>
-            <Text style={styles.statLabel}>예정</Text>
+            <Text style={styles.statLabel}>{t('stats.upcoming')}</Text>
           </Card>
         </View>
       </FadeIn>
@@ -244,11 +257,11 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <View>
-            <Text style={styles.sectionTitle}>지금 떠나기 좋은 곳</Text>
-            <Text style={styles.sectionSubtitle}>인기 여행지를 둘러보세요</Text>
+            <Text style={styles.sectionTitle}>{t('featured.title')}</Text>
+            <Text style={styles.sectionSubtitle}>{t('featured.subtitle')}</Text>
           </View>
           <TouchableOpacity>
-            <Text style={styles.seeAllText}>전체보기 →</Text>
+            <Text style={styles.seeAllText}>{t('featured.seeAll')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -278,7 +291,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
                 style={[styles.destinationCard, { width: CARD_WIDTH }]}
                 onPress={() => handleDestinationPress(destination)}
                 activeOpacity={0.9}
-                accessibilityLabel={`${destination.name}, ${destination.country} 여행 계획 만들기`}
+                accessibilityLabel={`${destination.name}, ${destination.country} - ${t('createTrip')}`}
                 accessibilityRole="button"
               >
                 <Image
@@ -343,7 +356,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
       {/* Quick Actions */}
       <SlideIn direction="bottom" duration={500} delay={400}>
-        <Section title="빠른 실행" padding="lg" spacing="md">
+        <Section title={t('quickActions.title')} padding="lg" spacing="md">
           <View style={styles.quickActionsGrid}>
             <Card
               elevation="sm"
@@ -354,9 +367,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               <View style={[styles.quickActionIcon, { backgroundColor: colors.primary[100] }]}>
                 <Icon name="map-marker-multiple" size={28} color={colors.primary[600]} />
               </View>
-              <Text style={styles.quickActionTitle}>내 여행</Text>
+              <Text style={styles.quickActionTitle}>{t('quickActions.myTrips')}</Text>
               <Text style={styles.quickActionDescription}>
-                진행 중인 여행 확인
+                {t('quickActions.myTripsDesc')}
               </Text>
             </Card>
 
@@ -368,9 +381,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               <View style={[styles.quickActionIcon, { backgroundColor: colors.secondary[100] }]}>
                 <Icon name="compass-outline" size={28} color={colors.secondary[600]} />
               </View>
-              <Text style={styles.quickActionTitle}>여행 영감</Text>
+              <Text style={styles.quickActionTitle}>{t('quickActions.inspiration')}</Text>
               <Text style={styles.quickActionDescription}>
-                새로운 아이디어 탐색
+                {t('quickActions.inspirationDesc')}
               </Text>
             </Card>
           </View>
@@ -379,16 +392,16 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
       {/* Travel Tips */}
       <FadeIn duration={600} delay={600}>
-        <Section title="여행 팁" padding="lg" spacing="md">
+        <Section title={t('tip.sectionTitle')} padding="lg" spacing="md">
           <Card elevation="sm" padding="lg">
             <View style={{ flexDirection: 'row' }}>
               <View style={styles.tipIconContainer}>
                 <Icon name="lightbulb" size={24} color={colors.secondary[500]} />
               </View>
               <View style={styles.tipContent}>
-                <Text style={styles.tipTitle}>미리 계획하세요</Text>
+                <Text style={styles.tipTitle}>{t('tip.title')}</Text>
                 <Text style={styles.tipText}>
-                  여행 계획은 출발 2-3개월 전에 시작하는 것이 좋습니다. 항공권과 숙소가 저렴할 수 있어요!
+                  {t('tip.description')}
                 </Text>
               </View>
             </View>

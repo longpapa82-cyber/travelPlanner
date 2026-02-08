@@ -1,5 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import { TripsStackParamList } from '../types';
 import TripListScreen from '../screens/trips/TripListScreen';
 import TripDetailScreen from '../screens/trips/TripDetailScreen';
@@ -12,6 +13,7 @@ const Stack = createNativeStackNavigator<TripsStackParamList>();
 
 const TripsNavigator = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation('trips');
 
   return (
     <Stack.Navigator
@@ -28,7 +30,7 @@ const TripsNavigator = () => {
       <Stack.Screen
         name="TripList"
         component={TripListScreen}
-        options={{ title: '내 여행' }}
+        options={{ title: t('list.title') }}
       />
       <Stack.Screen
         name="TripDetail"
@@ -38,12 +40,12 @@ const TripsNavigator = () => {
       <Stack.Screen
         name="CreateTrip"
         component={CreateTripScreen}
-        options={{ title: '새 여행 계획' }}
+        options={{ title: t('create.title') }}
       />
       <Stack.Screen
         name="EditTrip"
         component={EditTripScreen}
-        options={{ title: '여행 수정' }}
+        options={{ title: t('edit.title') }}
       />
     </Stack.Navigator>
   );

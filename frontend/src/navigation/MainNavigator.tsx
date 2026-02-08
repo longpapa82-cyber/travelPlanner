@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useTranslation } from 'react-i18next';
 import { MainTabParamList } from '../types';
 import HomeScreen from '../screens/main/HomeScreen';
 import TripsNavigator from './TripsNavigator';
@@ -12,6 +13,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const MainNavigator = () => {
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('common');
 
   return (
     <Tab.Navigator
@@ -38,7 +40,7 @@ const MainNavigator = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          title: '홈',
+          title: t('tabs.home'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" size={size} color={color} />
           ),
@@ -48,7 +50,7 @@ const MainNavigator = () => {
         name="Trips"
         component={TripsNavigator}
         options={{
-          title: '내 여행',
+          title: t('tabs.trips'),
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name="bag-suitcase" size={size} color={color} />
@@ -59,7 +61,7 @@ const MainNavigator = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          title: '프로필',
+          title: t('tabs.profile'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="account" size={size} color={color} />
           ),

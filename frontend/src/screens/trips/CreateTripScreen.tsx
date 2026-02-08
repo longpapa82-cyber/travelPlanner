@@ -28,6 +28,8 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import { TripsStackParamList } from '../../types';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -45,29 +47,29 @@ interface Props {
 }
 
 // Popular destination suggestions
-const POPULAR_DESTINATIONS = [
-  { name: '도쿄', icon: 'torii-gate', color: colors.travel.sunset },
-  { name: '파리', icon: 'eiffel-tower', color: colors.travel.forest },
-  { name: '뉴욕', icon: 'city', color: colors.travel.ocean },
-  { name: '방콕', icon: 'palm-tree', color: colors.travel.sunset },
-  { name: '런던', icon: 'bridge', color: colors.neutral[600] },
-  { name: '바르셀로나', icon: 'beach', color: colors.warning.main },
+const getPopularDestinations = (t: TFunction) => [
+  { name: t('create.destinations.tokyo'), icon: 'torii-gate', color: colors.travel.sunset },
+  { name: t('create.destinations.osaka'), icon: 'eiffel-tower', color: colors.travel.forest },
+  { name: t('create.destinations.newyork'), icon: 'city', color: colors.travel.ocean },
+  { name: t('create.destinations.bangkok'), icon: 'palm-tree', color: colors.travel.sunset },
+  { name: t('create.destinations.london'), icon: 'bridge', color: colors.neutral[600] },
+  { name: t('create.destinations.barcelona'), icon: 'beach', color: colors.warning.main },
 ];
 
 // Duration quick picks (in days)
-const DURATION_OPTIONS = [
-  { days: 3, label: '3일', icon: 'calendar-week' },
-  { days: 7, label: '1주일', icon: 'calendar-week-begin' },
-  { days: 14, label: '2주일', icon: 'calendar-month' },
-  { days: 30, label: '한 달', icon: 'calendar-multiple' },
+const getDurationOptions = (t: TFunction) => [
+  { days: 3, label: t('create.duration.options.3days'), icon: 'calendar-week' },
+  { days: 7, label: t('create.duration.options.1week'), icon: 'calendar-week-begin' },
+  { days: 14, label: t('create.duration.options.2weeks'), icon: 'calendar-month' },
+  { days: 30, label: t('create.duration.options.1month'), icon: 'calendar-multiple' },
 ];
 
 // Traveler quick picks
-const TRAVELER_OPTIONS = [
-  { count: 1, label: '나 혼자', icon: 'account' },
-  { count: 2, label: '2명', icon: 'account-multiple' },
-  { count: 4, label: '3-4명', icon: 'account-group' },
-  { count: 6, label: '5명 이상', icon: 'account-supervisor' },
+const getTravelerOptions = (t: TFunction) => [
+  { count: 1, label: t('create.travelers.options.solo'), icon: 'account' },
+  { count: 2, label: t('create.travelers.options.two'), icon: 'account-multiple' },
+  { count: 4, label: t('create.travelers.options.group'), icon: 'account-group' },
+  { count: 6, label: t('create.travelers.options.large'), icon: 'account-supervisor' },
 ];
 
 const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
@@ -79,6 +81,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
+  const { t } = useTranslation('trips');
+
+  const POPULAR_DESTINATIONS = getPopularDestinations(t);
+  const DURATION_OPTIONS = getDurationOptions(t);
+  const TRAVELER_OPTIONS = getTravelerOptions(t);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -129,7 +136,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
     if (!destination.trim()) {
       showToast({
         type: 'warning',
-        message: '여행 목적지를 입력해주세요.',
+        message: t('create.alerts.destinationRequired'),
         position: 'top',
       });
       return;
@@ -138,7 +145,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
     if (!startDate || !endDate) {
       showToast({
         type: 'warning',
-        message: '여행 날짜를 선택해주세요.',
+        message: t('create.alerts.datesRequired'),
         position: 'top',
       });
       return;
@@ -150,7 +157,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
     if (start >= end) {
       showToast({
         type: 'error',
-        message: '종료일은 시작일 이후여야 합니다.',
+        message: t('create.alerts.startDateRequired'),
         position: 'top',
       });
       return;
@@ -170,7 +177,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
 
       showToast({
         type: 'success',
-        message: 'AI가 여행 일정을 자동으로 생성했습니다!',
+        message: t('create.generating'),
         position: 'top',
         duration: 2000,
       });
@@ -181,7 +188,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
       }, 500);
     } catch (error: any) {
       console.error('Trip creation error:', error);
-      const message = error.response?.data?.message || '여행 계획을 생성할 수 없습니다. 다시 시도해주세요.';
+      const message = error.response?.data?.message || t('create.alerts.createFailed');
 
       showToast({
         type: 'error',
@@ -197,7 +204,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   const formatDateForDisplay = (dateString: string): string => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
+    return date.toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -249,9 +256,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                 },
               ]}
             >
-              <Text style={styles.heroTitle}>다음 모험을 계획해볼까요?</Text>
+              <Text style={styles.heroTitle}>{t('create.hero.title')}</Text>
               <Text style={styles.heroSubtitle}>
-                AI가 당신만의 완벽한 여행 일정을 만들어드립니다
+                {t('create.hero.subtitle')}
               </Text>
             </Animated.View>
           </LinearGradient>
@@ -271,7 +278,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             <View style={styles.sectionHeader}>
               <Icon name="map-marker" size={24} color={theme.colors.primary} />
               <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                어디로 떠나시나요?
+                {t('create.destination.title')}
               </Text>
             </View>
 
@@ -330,7 +337,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
               </View>
               <TextInput
                 style={[styles.input, { color: theme.colors.text }]}
-                placeholder="또는 직접 입력하세요 (예: 제주도, 부산)"
+                placeholder={t('create.destination.placeholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={destination}
                 onChangeText={setDestination}
@@ -362,7 +369,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             <View style={styles.sectionHeader}>
               <Icon name="calendar-range" size={24} color={theme.colors.primary} />
               <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                얼마나 머무시나요?
+                {t('create.duration.title')}
               </Text>
             </View>
 
@@ -399,7 +406,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             {/* Date Inputs */}
             <View style={styles.dateRow}>
               <DatePickerField
-                label="시작일"
+                label={t('create.dates.start')}
                 value={startDate}
                 onChange={setStartDate}
                 minimumDate={new Date()}
@@ -412,7 +419,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                 style={styles.dateArrow}
               />
               <DatePickerField
-                label="종료일"
+                label={t('create.dates.end')}
                 value={endDate}
                 onChange={setEndDate}
                 minimumDate={startDate ? new Date(startDate + 'T00:00:00') : new Date()}
@@ -425,7 +432,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
               <View style={styles.durationDisplay}>
                 <Icon name="calendar" size={16} color={theme.colors.primary} />
                 <Text style={[styles.durationText, { color: theme.colors.primary }]}>
-                  총 {duration}일간의 여행
+                  {t('create.duration.totalDays', { days: duration })}
                 </Text>
               </View>
             )}
@@ -436,7 +443,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             <View style={styles.sectionHeader}>
               <Icon name="account-group" size={24} color={theme.colors.primary} />
               <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                누구와 함께 가시나요?
+                {t('create.travelers.title')}
               </Text>
             </View>
 
@@ -495,7 +502,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
               </View>
               <TextInput
                 style={[styles.input, { color: theme.colors.text }]}
-                placeholder="또는 직접 입력하세요"
+                placeholder={t('create.duration.custom')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={numberOfTravelers.toString()}
                 onChangeText={(text) => {
@@ -515,14 +522,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             <View style={styles.sectionHeader}>
               <Icon name="text" size={24} color={theme.colors.primary} />
               <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                특별한 계획이 있나요? (선택)
+                {t('create.notes.title')} {t('create.notes.optional')}
               </Text>
             </View>
 
             <View style={styles.textAreaWrapper}>
               <TextInput
                 style={[styles.textArea, { color: theme.colors.text }]}
-                placeholder="여행의 목적이나 특별한 요구사항을 자유롭게 입력하세요&#10;예: 벚꽃 명소 중심으로, 미식 투어, 가족 여행"
+                placeholder={t('create.notes.placeholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={description}
                 onChangeText={setDescription}
@@ -548,11 +555,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             <Icon name="robot" size={24} color={theme.colors.primary} />
             <View style={styles.infoContent}>
               <Text style={[styles.infoTitle, { color: theme.colors.primary }]}>
-                AI 자동 생성
+                {t('create.aiInfo.title')}
               </Text>
               <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>
-                최근 3개월간 여행 데이터를 분석하여{'\n'}
-                최적의 맞춤형 일정을 자동으로 생성합니다
+                {t('create.aiInfo.description')}
               </Text>
             </View>
           </View>
@@ -568,7 +574,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
               loading={isLoading}
               disabled={isLoading}
             >
-              {isLoading ? 'AI가 일정을 만드는 중...' : 'AI로 여행 계획 생성하기'}
+              {isLoading ? t('create.generating') : t('create.submit')}
             </Button>
           </View>
         </Animated.View>

@@ -1,0 +1,97 @@
+{
+  "activityModal": {
+    "addTitle": "アクティビティを追加",
+    "editTitle": "アクティビティを編集",
+    "time": "時間",
+    "title": "タイトル",
+    "titlePlaceholder": "アクティビティのタイトルを入力",
+    "location": "場所",
+    "locationPlaceholder": "場所を入力",
+    "description": "説明",
+    "descriptionPlaceholder": "説明を入力",
+    "type": "アクティビティタイプ",
+    "duration": "所要時間（分）",
+    "durationPlaceholder": "60",
+    "cost": "予算",
+    "costPlaceholder": "0",
+    "cancel": "キャンセル",
+    "add": "追加",
+    "save": "保存",
+    "validationError": "入力エラー",
+    "validationErrorMessage": "時間、タイトル、場所を入力してください",
+    "errorTitle": "エラー",
+    "saveError": "アクティビティの保存に失敗しました",
+    "types": {
+      "meal": "食事",
+      "sightseeing": "観光",
+      "shopping": "ショッピング",
+      "experience": "体験",
+      "rest": "休憩",
+      "transport": "移動",
+      "other": "その他"
+    }
+  },
+  "shareModal": {
+    "title": "旅行を共有",
+    "generate": "共有リンクを生成",
+    "generateButton": "リンクを生成",
+    "generateDescription": "共有リンクを作成して旅行プランを他の人と共有しましょう",
+    "generateError": "共有リンクの生成に失敗しました",
+    "linkTitle": "共有リンク",
+    "copy": "リンクをコピー",
+    "copied": "コピーしました！",
+    "copiedToClipboard": "クリップボードにコピーしました",
+    "copyError": "リンクのコピーに失敗しました",
+    "disable": "共有を無効化",
+    "disableConfirm": "共有を無効化しますか？既存のリンクからアクセスできなくなります。",
+    "disableAction": "無効化",
+    "disableSuccess": "共有が無効化されました",
+    "disableError": "共有の無効化に失敗しました",
+    "cancel": "キャンセル",
+    "error": "エラー",
+    "success": "成功",
+    "info": "共有リンクを通じて誰でもこの旅行プランを閲覧できます。リンクを無効化するとアクセスできなくなります。",
+    "expiry": {
+      "title": "有効期限",
+      "none": "期限なし",
+      "7days": "7日間",
+      "30days": "30日間",
+      "90days": "90日間"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "湿度",
+    "windSpeed": "風速",
+    "feelsLike": "体感",
+    "timezone": "現地時間",
+    "timeDiff": "時差",
+    "noData": "天気情報を取得できません"
+  },
+  "popularDestinations": {
+    "title": "人気の旅行先",
+    "subtitle": "直近3ヶ月の人気旅行先",
+    "description": "実際の旅行者が最も多く選んだ旅行先をチェック",
+    "visitors": "{{count}}人が訪問",
+    "avgDuration": "平均{{days}}日間",
+    "withTravelers": "{{count}}人と一緒に",
+    "popularSeason": "人気シーズン："
+  },
+  "progressIndicator": {
+    "title": "進捗状況",
+    "status": "{{completed}}件完了 / 全{{total}}件のアクティビティ"
+  },
+  "destinationInsights": {
+    "header": "実際の旅行者データに基づく推薦",
+    "avgDuration": "平均旅行期間",
+    "avgTravelers": "平均グループサイズ",
+    "popularBudget": "人気の予算",
+    "popularStyle": "人気のスタイル",
+    "popularSeason": "人気の旅行シーズン",
+    "bestNow": "今がベスト！",
+    "topActivities": "最近の旅行者に人気のアクティビティ (Top {{count}})",
+    "footer": "直近3ヶ月間にこの旅行先を訪れた実際の旅行者のデータです",
+    "loading": "旅行先情報を読み込み中...",
+    "days": "{{days}}日間",
+    "people": "{{count}}人"
+  }
+}

@@ -16,4 +16,5 @@ export const STORAGE_KEYS = {
   AUTH_TOKEN: '@travelplanner:auth_token',
   REFRESH_TOKEN: '@travelplanner:refresh_token',
   USER_DATA: '@travelplanner:user_data',
+  LANGUAGE: '@travelplanner:language',
 };

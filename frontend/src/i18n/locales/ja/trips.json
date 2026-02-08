@@ -1,0 +1,199 @@
+{
+  "create": {
+    "title": "新しい旅行を作成",
+    "destination": {
+      "title": "どこへ行きますか？",
+      "placeholder": "都市または国を入力",
+      "popular": "人気の旅行先"
+    },
+    "destinations": {
+      "tokyo": "東京",
+      "osaka": "大阪",
+      "bangkok": "バンコク",
+      "danang": "ダナン",
+      "paris": "パリ",
+      "singapore": "シンガポール",
+      "london": "ロンドン",
+      "newyork": "ニューヨーク"
+    },
+    "duration": {
+      "title": "どのくらい滞在しますか？",
+      "options": {
+        "3days": "3日間",
+        "1week": "1週間",
+        "2weeks": "2週間",
+        "1month": "1ヶ月"
+      },
+      "custom": "カスタム",
+      "totalDays": "{{days}}日間の旅行"
+    },
+    "travelers": {
+      "title": "誰と一緒に行きますか？",
+      "options": {
+        "solo": "一人旅",
+        "two": "2人",
+        "group": "3〜4人",
+        "large": "5人以上"
+      }
+    },
+    "dates": {
+      "title": "いつ出発しますか？",
+      "start": "出発日",
+      "end": "帰国日",
+      "selectStart": "出発日を選択",
+      "selectEnd": "帰国日を選択"
+    },
+    "notes": {
+      "title": "特別な予定はありますか？",
+      "placeholder": "例：グルメ中心、観光メイン、自由旅行...",
+      "optional": "（任意）"
+    },
+    "aiInfo": {
+      "title": "AI自動生成",
+      "description": "目的地とスケジュールに合わせてAIが最適な旅行プランを自動生成します"
+    },
+    "submit": "旅行プランを作成",
+    "generating": "AIが旅行プランを作成中...",
+    "alerts": {
+      "destinationRequired": "旅行先を入力してください",
+      "datesRequired": "旅行日程を選択してください",
+      "createFailed": "旅行の作成に失敗しました",
+      "startDateRequired": "出発日を選択してください"
+    }
+  },
+  "list": {
+    "title": "旅行一覧",
+    "searchPlaceholder": "旅行を検索...",
+    "filters": {
+      "all": "すべて",
+      "upcoming": "予定",
+      "ongoing": "進行中",
+      "completed": "完了"
+    },
+    "sections": {
+      "ongoing": "進行中の旅行",
+      "upcoming": "今後の旅行",
+      "completed": "完了した旅行"
+    },
+    "status": {
+      "upcoming": "予定",
+      "ongoing": "進行中",
+      "completed": "完了"
+    },
+    "empty": {
+      "title": "まだ旅行の予定がありません",
+      "description": "新しい旅行を計画しましょう！",
+      "cta": "AI旅行プランを始める"
+    },
+    "card": {
+      "days": "{{days}}日間",
+      "travelers": "{{count}}人",
+      "dDay": "D-{{days}}",
+      "dDayToday": "D-Day",
+      "dDayPassed": "D+{{days}}"
+    },
+    "alerts": {
+      "deleteTitle": "旅行を削除",
+      "deleteMessage": "「{{name}}」を削除しますか？この操作は元に戻せません。",
+      "deleteFailed": "削除に失敗しました",
+      "error": "エラー"
+    },
+    "sort": {
+      "startDate": "出発日順",
+      "createdAt": "作成日順",
+      "destination": "目的地順"
+    }
+  },
+  "detail": {
+    "loading": "旅行情報を読み込み中...",
+    "notFound": {
+      "title": "旅行情報が見つかりません",
+      "description": "存在しないか削除された旅行です",
+      "back": "戻る"
+    },
+    "status": {
+      "ongoing": "進行中",
+      "completed": "完了"
+    },
+    "completedBanner": {
+      "title": "旅行完了",
+      "description": "この旅行は完了しているため編集できません。大切な思い出をご確認ください！"
+    },
+    "readOnlyMessage": "完了したアクティビティは編集できません",
+    "progress": "全体進捗 {{percentage}}%",
+    "dayLabel": "Day {{day}}",
+    "emptyItinerary": "まだ旅程が作成されていません",
+    "addActivity": "アクティビティを追加",
+    "affiliateSection": "宿泊＆アクティビティ予約",
+    "tabs": {
+      "itinerary": "旅程",
+      "info": "情報",
+      "share": "共有"
+    },
+    "activityTypes": {
+      "meal": "食事",
+      "sightseeing": "観光",
+      "shopping": "ショッピング",
+      "experience": "体験",
+      "rest": "休憩",
+      "transport": "移動",
+      "accommodation": "宿泊",
+      "other": "その他"
+    },
+    "alerts": {
+      "deleteTitle": "アクティビティを削除",
+      "deleteMessage": "このアクティビティを削除しますか？",
+      "deleteFailed": "削除に失敗しました",
+      "error": "エラー"
+    }
+  },
+  "edit": {
+    "title": "旅行を編集",
+    "loading": "旅行情報を読み込み中...",
+    "notFound": "旅行が見つかりません",
+    "goBack": "戻る",
+    "heroTitle": "旅行情報を編集",
+    "ongoingWarning": "進行中の旅行です。日程変更にご注意ください。",
+    "destination": {
+      "title": "旅行先",
+      "placeholder": "または直接入力"
+    },
+    "dates": {
+      "title": "旅行期間",
+      "changeWarning": "注意",
+      "totalDays": "{{days}}日間の旅行"
+    },
+    "travelers": {
+      "title": "旅行人数",
+      "placeholder": "または直接入力"
+    },
+    "notes": {
+      "title": "旅行メモ（任意）",
+      "placeholder": "旅行の目的や特別な要望を自由に入力してください"
+    },
+    "submit": "旅行情報を保存",
+    "saving": "保存中...",
+    "status": {
+      "upcoming": "予定",
+      "ongoing": "進行中",
+      "completed": "完了"
+    },
+    "alerts": {
+      "cannotEditCompleted": "完了した旅行は編集できません。",
+      "cannotEditTitle": "編集不可",
+      "loadError": "旅行情報を読み込めません。",
+      "destinationRequired": "旅行先を入力してください。",
+      "requiredInput": "必須入力",
+      "datesRequired": "旅行日程を選択してください。",
+      "endDateError": "終了日は開始日以降にしてください。",
+      "dateError": "日付エラー",
+      "dateChangeWarningTitle": "日程変更の警告",
+      "dateChangeWarning": "進行中の旅行の日程を変更すると、スケジュールに影響する場合があります。続けますか？",
+      "continue": "続ける",
+      "saveSuccess": "変更を保存しました",
+      "saveSuccessMessage": "旅行情報が更新されました。",
+      "saveFailed": "保存に失敗",
+      "saveError": "旅行情報を保存できませんでした。もう一度お試しください。"
+    }
+  }
+}

@@ -9,6 +9,7 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, Linking, Platform } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import Constants from 'expo-constants';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import apiService from '../../services/api';
@@ -145,6 +146,7 @@ const AffiliateLink: React.FC<AffiliateLinkProps> = ({
   style,
 }) => {
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('common');
   const config = AFFILIATE_CONFIG[provider];
 
   /**
@@ -228,7 +230,7 @@ const AffiliateLink: React.FC<AffiliateLinkProps> = ({
     }
   };
 
-  const buttonLabel = label || `${config.name}에서 찾기`;
+  const buttonLabel = label || t('findOnProvider', { name: config.name });
 
   const buttonStyles = [
     styles.button,

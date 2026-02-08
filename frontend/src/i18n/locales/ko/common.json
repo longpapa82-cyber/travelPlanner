@@ -1,0 +1,28 @@
+{
+  "confirm": "확인",
+  "cancel": "취소",
+  "save": "저장",
+  "delete": "삭제",
+  "edit": "수정",
+  "close": "닫기",
+  "loading": "로딩 중...",
+  "error": "오류",
+  "success": "성공",
+  "retry": "다시 시도",
+  "back": "뒤로",
+  "next": "다음",
+  "done": "완료",
+  "search": "검색",
+  "seeAll": "전체보기 →",
+  "findOnProvider": "{{name}}에서 찾기",
+  "errorBoundary": {
+    "title": "문제가 발생했습니다",
+    "message": "앱에서 예기치 않은 오류가 발생했습니다.\n다시 시도해 주세요.",
+    "retry": "다시 시도"
+  },
+  "tabs": {
+    "home": "홈",
+    "trips": "내 여행",
+    "profile": "프로필"
+  }
+}

@@ -23,6 +23,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { AuthStackParamList } from '../../types';
@@ -39,36 +41,38 @@ interface OnboardingSlide {
   gradient: [string, string];
 }
 
-const SLIDES: OnboardingSlide[] = [
+const getSlides = (t: TFunction): OnboardingSlide[] => [
   {
     id: '1',
     icon: 'airplane-takeoff',
-    title: '목적지만 선택하세요',
-    description: 'AI가 여행지, 일정, 예산까지\n완벽한 여행 계획을 자동으로 만들어드립니다.',
+    title: t('onboarding.slides.plan.title'),
+    description: t('onboarding.slides.plan.description'),
     gradient: [colors.primary[500], colors.primary[700]],
   },
   {
     id: '2',
     icon: 'weather-sunny',
-    title: '현지 정보를 한눈에',
-    description: '날씨, 시차, 환율 등\n여행에 필요한 모든 정보를 제공합니다.',
+    title: t('onboarding.slides.customize.title'),
+    description: t('onboarding.slides.customize.description'),
     gradient: [colors.secondary[400], colors.secondary[600]],
   },
   {
     id: '3',
     icon: 'pencil-ruler',
-    title: '자유롭게 수정하세요',
-    description: '자동 생성된 일정을 원하는 대로\n추가, 수정, 삭제할 수 있습니다.',
+    title: t('onboarding.slides.weather.title'),
+    description: t('onboarding.slides.weather.description'),
     gradient: [colors.travel.ocean, colors.primary[800]],
   },
 ];
 
 export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }) => {
   const { isDark } = useTheme();
+  const { t } = useTranslation('auth');
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
+  const SLIDES = getSlides(t);
 
   const handleNext = () => {
     if (currentIndex < SLIDES.length - 1) {
@@ -169,19 +173,19 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
                 style={styles.skipButton}
                 onPress={handleSkip}
                 activeOpacity={0.7}
-                accessibilityLabel="건너뛰기"
+                accessibilityLabel={t('onboarding.skip')}
                 accessibilityRole="button"
               >
-                <Text style={styles.skipButtonText}>건너뛰기</Text>
+                <Text style={styles.skipButtonText}>{t('onboarding.skip')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.nextButton}
                 onPress={handleNext}
                 activeOpacity={0.8}
-                accessibilityLabel="다음 슬라이드"
+                accessibilityLabel={t('onboarding.next')}
                 accessibilityRole="button"
               >
-                <Text style={styles.nextButtonText}>다음</Text>
+                <Text style={styles.nextButtonText}>{t('onboarding.next')}</Text>
                 <Icon name="arrow-right" size={20} color={colors.primary[700]} />
               </TouchableOpacity>
             </>
@@ -191,21 +195,21 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
                 style={styles.startButton}
                 onPress={() => navigation.navigate('Login')}
                 activeOpacity={0.8}
-                accessibilityLabel="시작하기"
+                accessibilityLabel={t('onboarding.start')}
                 accessibilityRole="button"
               >
                 <Icon name="login" size={20} color={colors.primary[700]} />
-                <Text style={styles.startButtonText}>시작하기</Text>
+                <Text style={styles.startButtonText}>{t('onboarding.start')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.registerLink}
                 onPress={() => navigation.navigate('Register')}
                 activeOpacity={0.7}
-                accessibilityLabel="회원가입으로 이동"
+                accessibilityLabel={t('onboarding.noAccount')}
                 accessibilityRole="link"
               >
                 <Text style={styles.registerLinkText}>
-                  계정이 없으신가요? 회원가입
+                  {t('onboarding.noAccount')}
                 </Text>
               </TouchableOpacity>
             </View>

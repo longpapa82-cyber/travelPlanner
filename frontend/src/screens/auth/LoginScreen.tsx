@@ -28,6 +28,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import { colors, getColorWithOpacity } from '../../constants/theme';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { FadeIn } from '../../components/animation/FadeIn';
@@ -44,6 +45,7 @@ interface Props {
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { login, loginWithGoogle, loginWithApple, loginWithKakao } = useAuth();
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('auth');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -51,7 +53,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('입력 오류', '이메일과 비밀번호를 입력해주세요');
+      Alert.alert(t('login.alerts.inputError'), !email ? t('login.alerts.emailRequired') : t('login.alerts.passwordRequired'));
       return;
     }
 
@@ -60,8 +62,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       await login(email, password);
     } catch (error: any) {
       Alert.alert(
-        '로그인 실패',
-        error.response?.data?.message || '이메일 또는 비밀번호가 올바르지 않습니다'
+        t('login.alerts.loginFailed'),
+        error.response?.data?.message || t('login.alerts.invalidCredentials')
       );
     } finally {
       setIsLoading(false);
@@ -74,8 +76,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       await loginWithGoogle();
     } catch (error: any) {
       Alert.alert(
-        'Google 로그인 실패',
-        error.message || 'Google 로그인에 실패했습니다'
+        t('login.alerts.googleFailed'),
+        error.message || t('login.alerts.networkError')
       );
     } finally {
       setIsLoading(false);
@@ -88,8 +90,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       await loginWithApple();
     } catch (error: any) {
       Alert.alert(
-        'Apple 로그인 실패',
-        error.message || 'Apple 로그인에 실패했습니다'
+        t('login.alerts.appleFailed'),
+        error.message || t('login.alerts.networkError')
       );
     } finally {
       setIsLoading(false);
@@ -102,8 +104,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       await loginWithKakao();
     } catch (error: any) {
       Alert.alert(
-        'Kakao 로그인 실패',
-        error.message || 'Kakao 로그인에 실패했습니다'
+        t('login.alerts.kakaoFailed'),
+        error.message || t('login.alerts.networkError')
       );
     } finally {
       setIsLoading(false);
@@ -138,7 +140,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             >
               <Icon name="airplane-takeoff" size={64} color={colors.neutral[0]} />
               <Text style={styles.appName}>TravelPlanner</Text>
-              <Text style={styles.tagline}>AI가 만드는 완벽한 여행</Text>
+              <Text style={styles.tagline}>{t('login.tagline')}</Text>
             </LinearGradient>
           </ImageBackground>
         </FadeIn>
@@ -146,15 +148,15 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         {/* Login Form Card */}
         <SlideIn direction="bottom" duration={600} delay={200}>
           <Card elevation="lg" padding="xl" style={styles.formCard}>
-            <Text style={styles.formTitle}>로그인</Text>
-            <Text style={styles.formSubtitle}>여행을 시작하세요</Text>
+            <Text style={styles.formTitle}>{t('login.title')}</Text>
+            <Text style={styles.formSubtitle}>{t('login.subtitle')}</Text>
 
             {/* Email Input */}
             <View style={styles.inputContainer}>
               <Icon name="email-outline" size={20} color={colors.primary[400]} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="이메일"
+                placeholder={t('login.emailPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={email}
                 onChangeText={setEmail}
@@ -162,8 +164,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 editable={!isLoading}
-                accessibilityLabel="이메일 입력"
-                accessibilityHint="로그인에 사용할 이메일을 입력하세요"
+                accessibilityLabel={t('login.email')}
+                accessibilityHint={t('login.emailPlaceholder')}
               />
             </View>
 
@@ -172,19 +174,19 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               <Icon name="lock-outline" size={20} color={colors.primary[400]} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="비밀번호"
+                placeholder={t('login.passwordPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
                 editable={!isLoading}
-                accessibilityLabel="비밀번호 입력"
+                accessibilityLabel={t('login.password')}
               />
               <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.eyeIcon}
-                accessibilityLabel={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                accessibilityLabel={showPassword ? t('login.hidePassword') : t('login.showPassword')}
                 accessibilityRole="button"
               >
                 <Icon
@@ -204,13 +206,13 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               loading={isLoading}
               style={styles.loginButton}
             >
-              로그인
+              {t('login.submit')}
             </Button>
 
             {/* Divider */}
             <View style={styles.dividerContainer}>
               <View style={styles.divider} />
-              <Text style={styles.dividerText}>또는</Text>
+              <Text style={styles.dividerText}>{t('login.or')}</Text>
               <View style={styles.divider} />
             </View>
 
@@ -221,11 +223,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 onPress={handleGoogleLogin}
                 disabled={isLoading}
                 activeOpacity={0.7}
-                accessibilityLabel="Google 계정으로 로그인"
+                accessibilityLabel={t('login.socialGoogle')}
                 accessibilityRole="button"
               >
                 <Icon name="google" size={22} color="#DB4437" />
-                <Text style={styles.socialButtonText}>Google로 계속하기</Text>
+                <Text style={styles.socialButtonText}>{t('login.socialGoogle')}</Text>
               </TouchableOpacity>
 
               {Platform.OS === 'ios' && (
@@ -234,11 +236,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                   onPress={handleAppleLogin}
                   disabled={isLoading}
                   activeOpacity={0.7}
-                  accessibilityLabel="Apple 계정으로 로그인"
+                  accessibilityLabel={t('login.socialApple')}
                   accessibilityRole="button"
                 >
                   <Icon name="apple" size={22} color="#000000" />
-                  <Text style={styles.socialButtonText}>Apple로 계속하기</Text>
+                  <Text style={styles.socialButtonText}>{t('login.socialApple')}</Text>
                 </TouchableOpacity>
               )}
 
@@ -247,26 +249,26 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 onPress={handleKakaoLogin}
                 disabled={isLoading}
                 activeOpacity={0.7}
-                accessibilityLabel="카카오 계정으로 로그인"
+                accessibilityLabel={t('login.socialKakao')}
                 accessibilityRole="button"
               >
                 <Icon name="chat" size={22} color="#3C1E1E" />
                 <Text style={[styles.socialButtonText, styles.kakaoButtonText]}>
-                  Kakao로 계속하기
+                  {t('login.socialKakao')}
                 </Text>
               </TouchableOpacity>
             </View>
 
             {/* Sign Up Link */}
             <View style={styles.registerContainer}>
-              <Text style={styles.registerText}>계정이 없으신가요? </Text>
+              <Text style={styles.registerText}>{t('login.noAccount')} </Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate('Register')}
                 disabled={isLoading}
-                accessibilityLabel="회원가입으로 이동"
+                accessibilityLabel={t('login.register')}
                 accessibilityRole="link"
               >
-                <Text style={styles.registerLink}>회원가입</Text>
+                <Text style={styles.registerLink}>{t('login.register')}</Text>
               </TouchableOpacity>
             </View>
           </Card>

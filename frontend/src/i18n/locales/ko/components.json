@@ -1,0 +1,97 @@
+{
+  "activityModal": {
+    "addTitle": "활동 추가",
+    "editTitle": "활동 수정",
+    "time": "시간",
+    "title": "제목",
+    "titlePlaceholder": "활동 제목을 입력하세요",
+    "location": "장소",
+    "locationPlaceholder": "장소를 입력하세요",
+    "description": "설명",
+    "descriptionPlaceholder": "설명을 입력하세요",
+    "type": "활동 유형",
+    "duration": "예상 소요 시간 (분)",
+    "durationPlaceholder": "60",
+    "cost": "예상 비용 (원)",
+    "costPlaceholder": "0",
+    "cancel": "취소",
+    "add": "추가",
+    "save": "저장",
+    "validationError": "입력 오류",
+    "validationErrorMessage": "시간, 제목, 장소를 입력해주세요",
+    "errorTitle": "오류",
+    "saveError": "활동 저장에 실패했습니다",
+    "types": {
+      "meal": "식사",
+      "sightseeing": "관광",
+      "shopping": "쇼핑",
+      "experience": "체험",
+      "rest": "휴식",
+      "transport": "이동",
+      "other": "기타"
+    }
+  },
+  "shareModal": {
+    "title": "여행 공유",
+    "generate": "공유 링크 생성",
+    "generateButton": "링크 생성하기",
+    "generateDescription": "공유 링크를 생성하여 다른 사람들과 여행 계획을 공유하세요",
+    "generateError": "공유 링크 생성에 실패했습니다",
+    "linkTitle": "공유 링크",
+    "copy": "링크 복사",
+    "copied": "복사 완료!",
+    "copiedToClipboard": "클립보드에 복사되었습니다",
+    "copyError": "링크 복사에 실패했습니다",
+    "disable": "공유 비활성화",
+    "disableConfirm": "공유를 비활성화하시겠습니까? 기존 링크로 더 이상 접근할 수 없게 됩니다.",
+    "disableAction": "비활성화",
+    "disableSuccess": "공유가 비활성화되었습니다",
+    "disableError": "공유 비활성화에 실패했습니다",
+    "cancel": "취소",
+    "error": "오류",
+    "success": "성공",
+    "info": "공유 링크를 통해 누구나 이 여행 계획을 볼 수 있습니다. 링크를 비활성화하면 더 이상 접근할 수 없습니다.",
+    "expiry": {
+      "title": "만료 기간",
+      "none": "기간 제한 없음",
+      "7days": "7일",
+      "30days": "30일",
+      "90days": "90일"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "습도",
+    "windSpeed": "풍속",
+    "feelsLike": "체감",
+    "timezone": "현지 시간",
+    "timeDiff": "시차",
+    "noData": "날씨 정보를 불러올 수 없습니다"
+  },
+  "popularDestinations": {
+    "title": "인기 여행지",
+    "subtitle": "최근 3개월 인기 여행지",
+    "description": "실제 여행자들이 가장 많이 선택한 여행지를 확인하세요",
+    "visitors": "{{count}}명 방문",
+    "avgDuration": "평균 {{days}}일",
+    "withTravelers": "{{count}}명과 함께",
+    "popularSeason": "인기 시즌:"
+  },
+  "progressIndicator": {
+    "title": "진행 현황",
+    "status": "{{completed}}개 완료 / 총 {{total}}개 활동"
+  },
+  "destinationInsights": {
+    "header": "실제 여행자 데이터 기반 추천",
+    "avgDuration": "평균 여행 기간",
+    "avgTravelers": "평균 동행 인원",
+    "popularBudget": "인기 예산",
+    "popularStyle": "인기 스타일",
+    "popularSeason": "인기 여행 시즌",
+    "bestNow": "지금이 베스트!",
+    "topActivities": "최근 여행자들이 많이 한 활동 (Top {{count}})",
+    "footer": "최근 3개월간 이 여행지를 다녀온 실제 여행자들의 데이터입니다",
+    "loading": "여행지 정보를 불러오는 중...",
+    "days": "{{days}}일",
+    "people": "{{count}}명"
+  }
+}

@@ -12,7 +12,10 @@ import {
   Platform,
   Linking,
   ActivityIndicator,
+  FlatList,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { changeLanguage, getCurrentLanguage, LANGUAGE_LABELS, SUPPORTED_LANGUAGES, SupportedLanguage } from '../../i18n';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -22,6 +25,8 @@ import Button from '../../components/core/Button';
 import apiService from '../../services/api';
 
 const ProfileScreen = () => {
+  const { t } = useTranslation('profile');
+  const { t: tCommon } = useTranslation('common');
   const { user, logout } = useAuth();
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
@@ -29,6 +34,7 @@ const ProfileScreen = () => {
   // Modal states
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
   const [editName, setEditName] = useState(user?.name || '');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -40,28 +46,28 @@ const ProfileScreen = () => {
       if (window.confirm(message)) onConfirm();
     } else {
       Alert.alert(title, message, [
-        { text: '취소', style: 'cancel' },
-        { text: '확인', style: 'destructive', onPress: onConfirm },
+        { text: tCommon('cancel'), style: 'cancel' },
+        { text: tCommon('confirm'), style: 'destructive', onPress: onConfirm },
       ]);
     }
   };
 
   const handleLogout = () => {
-    confirm('로그아웃', '정말 로그아웃 하시겠습니까?', logout);
+    confirm(t('logout.title'), t('logout.message'), logout);
   };
 
   const handleSaveProfile = async () => {
     if (!editName.trim()) {
-      showToast({ type: 'warning', message: '이름을 입력해주세요.', position: 'top' });
+      showToast({ type: 'warning', message: t('editProfile.alerts.nameRequired'), position: 'top' });
       return;
     }
     setIsSaving(true);
     try {
       await apiService.updateProfile({ name: editName.trim() });
-      showToast({ type: 'success', message: '프로필이 수정되었습니다.', position: 'top' });
+      showToast({ type: 'success', message: t('editProfile.alerts.success'), position: 'top' });
       setShowEditProfile(false);
     } catch (error: any) {
-      showToast({ type: 'error', message: error.response?.data?.message || '수정에 실패했습니다.', position: 'top' });
+      showToast({ type: 'error', message: error.response?.data?.message || t('editProfile.alerts.failed'), position: 'top' });
     } finally {
       setIsSaving(false);
     }
@@ -69,48 +75,53 @@ const ProfileScreen = () => {
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword) {
-      showToast({ type: 'warning', message: '모든 필드를 입력해주세요.', position: 'top' });
+      showToast({ type: 'warning', message: t('changePassword.alerts.allFieldsRequired'), position: 'top' });
       return;
     }
     if (newPassword.length < 8) {
-      showToast({ type: 'warning', message: '새 비밀번호는 8자 이상이어야 합니다.', position: 'top' });
+      showToast({ type: 'warning', message: t('changePassword.alerts.minLength'), position: 'top' });
       return;
     }
     if (newPassword !== confirmPassword) {
-      showToast({ type: 'warning', message: '새 비밀번호가 일치하지 않습니다.', position: 'top' });
+      showToast({ type: 'warning', message: t('changePassword.alerts.mismatch'), position: 'top' });
       return;
     }
     setIsSaving(true);
     try {
       await apiService.changePassword(currentPassword, newPassword);
-      showToast({ type: 'success', message: '비밀번호가 변경되었습니다.', position: 'top' });
+      showToast({ type: 'success', message: t('changePassword.alerts.success'), position: 'top' });
       setShowChangePassword(false);
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (error: any) {
-      showToast({ type: 'error', message: error.response?.data?.message || '비밀번호 변경에 실패했습니다.', position: 'top' });
+      showToast({ type: 'error', message: error.response?.data?.message || t('changePassword.alerts.failed'), position: 'top' });
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDeleteAccount = () => {
-    confirm('계정 삭제', '정말 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.', async () => {
+    confirm(t('deleteAccount.title'), t('deleteAccount.message'), async () => {
       try {
         await apiService.deleteAccount();
         await logout();
-        showToast({ type: 'success', message: '계정이 삭제되었습니다.', position: 'top' });
+        showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
       } catch (error: any) {
-        showToast({ type: 'error', message: '계정 삭제에 실패했습니다.', position: 'top' });
+        showToast({ type: 'error', message: t('deleteAccount.alerts.failed'), position: 'top' });
       }
     });
   };
 
   const openUrl = (url: string) => {
     Linking.openURL(url).catch(() => {
-      showToast({ type: 'error', message: '링크를 열 수 없습니다.', position: 'top' });
+      showToast({ type: 'error', message: tCommon('error'), position: 'top' });
     });
+  };
+
+  const handleLanguageChange = async (lang: SupportedLanguage) => {
+    await changeLanguage(lang);
+    setShowLanguageSelector(false);
   };
 
   const isSocialAccount = user?.provider && user.provider !== 'email';
@@ -128,29 +139,36 @@ const ProfileScreen = () => {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>계정 정보</Text>
+        <Text style={styles.sectionTitle}>{t('sections.account')}</Text>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => { setEditName(user?.name || ''); setShowEditProfile(true); }}>
           <Icon name="account-edit-outline" size={24} color={theme.colors.textSecondary} />
-          <Text style={styles.menuText}>프로필 수정</Text>
+          <Text style={styles.menuText}>{t('menu.editProfile')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
         {!isSocialAccount && (
           <TouchableOpacity style={styles.menuItem} onPress={() => { setCurrentPassword(''); setNewPassword(''); setConfirmPassword(''); setShowChangePassword(true); }}>
             <Icon name="lock-outline" size={24} color={theme.colors.textSecondary} />
-            <Text style={styles.menuText}>비밀번호 변경</Text>
+            <Text style={styles.menuText}>{t('menu.changePassword')}</Text>
             <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
           </TouchableOpacity>
         )}
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>앱 설정</Text>
+        <Text style={styles.sectionTitle}>{t('sections.settings')}</Text>
+
+        <TouchableOpacity style={styles.menuItem} onPress={() => setShowLanguageSelector(true)}>
+          <Icon name="translate" size={24} color={theme.colors.textSecondary} />
+          <Text style={styles.menuText}>{t('menu.language')}</Text>
+          <Text style={styles.menuValue}>{LANGUAGE_LABELS[getCurrentLanguage()]}</Text>
+          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
 
         <View style={styles.menuItem}>
           <Icon name="theme-light-dark" size={24} color={theme.colors.textSecondary} />
-          <Text style={styles.menuText}>다크 모드</Text>
+          <Text style={styles.menuText}>{t('menu.darkMode')}</Text>
           <Switch
             value={isDark}
             onValueChange={toggleTheme}
@@ -161,23 +179,23 @@ const ProfileScreen = () => {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>지원</Text>
+        <Text style={styles.sectionTitle}>{t('sections.support')}</Text>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('mailto:support@travelplanner.app')}>
           <Icon name="help-circle-outline" size={24} color={theme.colors.textSecondary} />
-          <Text style={styles.menuText}>도움말</Text>
+          <Text style={styles.menuText}>{t('menu.help')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://travelplanner.app/terms')}>
           <Icon name="file-document-outline" size={24} color={theme.colors.textSecondary} />
-          <Text style={styles.menuText}>이용약관</Text>
+          <Text style={styles.menuText}>{t('menu.terms')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://travelplanner.app/privacy')}>
           <Icon name="shield-check-outline" size={24} color={theme.colors.textSecondary} />
-          <Text style={styles.menuText}>개인정보 처리방침</Text>
+          <Text style={styles.menuText}>{t('menu.privacy')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
       </View>
@@ -188,15 +206,15 @@ const ProfileScreen = () => {
           icon="logout"
           fullWidth
           onPress={handleLogout}
-          accessibilityLabel="로그아웃"
-          accessibilityHint="앱에서 로그아웃합니다"
+          accessibilityLabel={t('logout.button')}
+          accessibilityHint={t('logout.message')}
         >
-          로그아웃
+          {t('logout.button')}
         </Button>
       </View>
 
       <TouchableOpacity style={styles.deleteAccount} onPress={handleDeleteAccount}>
-        <Text style={styles.deleteAccountText}>계정 삭제</Text>
+        <Text style={styles.deleteAccountText}>{t('deleteAccount.button')}</Text>
       </TouchableOpacity>
 
       <Text style={styles.version}>Version 1.0.0</Text>
@@ -206,22 +224,22 @@ const ProfileScreen = () => {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: theme.colors.text }]}>프로필 수정</Text>
+              <Text style={[styles.modalTitle, { color: theme.colors.text }]}>{t('editProfile.title')}</Text>
               <TouchableOpacity onPress={() => setShowEditProfile(false)}>
                 <Icon name="close" size={24} color={theme.colors.textSecondary} />
               </TouchableOpacity>
             </View>
             <View style={styles.modalBody}>
-              <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>이름</Text>
+              <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('editProfile.name')}</Text>
               <TextInput
                 style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
                 value={editName}
                 onChangeText={setEditName}
-                placeholder="이름을 입력하세요"
+                placeholder={t('editProfile.namePlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
               />
               <Button variant="primary" fullWidth onPress={handleSaveProfile} loading={isSaving} disabled={isSaving}>
-                저장
+                {t('editProfile.save')}
               </Button>
             </View>
           </View>
@@ -233,42 +251,82 @@ const ProfileScreen = () => {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: theme.colors.text }]}>비밀번호 변경</Text>
+              <Text style={[styles.modalTitle, { color: theme.colors.text }]}>{t('changePassword.title')}</Text>
               <TouchableOpacity onPress={() => setShowChangePassword(false)}>
                 <Icon name="close" size={24} color={theme.colors.textSecondary} />
               </TouchableOpacity>
             </View>
             <View style={styles.modalBody}>
-              <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>현재 비밀번호</Text>
+              <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('changePassword.current')}</Text>
               <TextInput
                 style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
                 value={currentPassword}
                 onChangeText={setCurrentPassword}
-                placeholder="현재 비밀번호"
+                placeholder={t('changePassword.currentPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 secureTextEntry
               />
-              <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>새 비밀번호</Text>
+              <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('changePassword.new')}</Text>
               <TextInput
                 style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
                 value={newPassword}
                 onChangeText={setNewPassword}
-                placeholder="새 비밀번호 (8자 이상)"
+                placeholder={t('changePassword.newPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 secureTextEntry
               />
-              <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>새 비밀번호 확인</Text>
+              <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('changePassword.confirm')}</Text>
               <TextInput
                 style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
-                placeholder="새 비밀번호 확인"
+                placeholder={t('changePassword.confirmPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 secureTextEntry
               />
               <Button variant="primary" fullWidth onPress={handleChangePassword} loading={isSaving} disabled={isSaving}>
-                변경하기
+                {t('changePassword.submit')}
               </Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Language Selector Modal */}
+      <Modal visible={showLanguageSelector} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: theme.colors.text }]}>{t('languageSelector.title')}</Text>
+              <TouchableOpacity onPress={() => setShowLanguageSelector(false)}>
+                <Icon name="close" size={24} color={theme.colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.modalBody}>
+              <Text style={[styles.languageDescription, { color: theme.colors.textSecondary }]}>
+                {t('languageSelector.description')}
+              </Text>
+              {SUPPORTED_LANGUAGES.map((lang) => {
+                const isSelected = getCurrentLanguage() === lang;
+                return (
+                  <TouchableOpacity
+                    key={lang}
+                    style={[
+                      styles.languageOption,
+                      { borderColor: isSelected ? theme.colors.primary : theme.colors.border },
+                      isSelected && { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] },
+                    ]}
+                    onPress={() => handleLanguageChange(lang)}
+                  >
+                    <Text style={[styles.languageLabel, { color: theme.colors.text }]}>
+                      {LANGUAGE_LABELS[lang]}
+                    </Text>
+                    {isSelected && (
+                      <Icon name="check-circle" size={22} color={theme.colors.primary} />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </View>
         </View>
@@ -324,6 +382,11 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     ...theme.typography.body,
     color: theme.colors.text,
     marginLeft: theme.spacing.md,
+  },
+  menuValue: {
+    ...theme.typography.body,
+    color: theme.colors.textSecondary,
+    marginRight: theme.spacing.xs,
   },
   logoutButton: {
     flexDirection: 'row',
@@ -394,6 +457,23 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     borderRadius: 12,
     padding: 14,
     marginBottom: 4,
+  },
+  languageDescription: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  languageOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderWidth: 1,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+  languageLabel: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
 

@@ -6,12 +6,14 @@ import {
   Delete,
   Param,
   Body,
+  Headers,
   UseGuards,
   Request,
   BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { t, parseLang } from '../common/i18n';
 
 @Controller('users')
 export class UsersController {
@@ -42,27 +44,31 @@ export class UsersController {
   async changePassword(
     @Request() req,
     @Body() body: { currentPassword: string; newPassword: string },
+    @Headers('accept-language') acceptLanguage?: string,
   ) {
+    const lang = parseLang(acceptLanguage);
     if (!body.currentPassword || !body.newPassword) {
-      throw new BadRequestException(
-        '현재 비밀번호와 새 비밀번호를 입력해주세요.',
-      );
+      throw new BadRequestException(t('password.enterBoth', lang));
     }
     if (body.newPassword.length < 8) {
-      throw new BadRequestException('새 비밀번호는 8자 이상이어야 합니다.');
+      throw new BadRequestException(t('password.minLength', lang));
     }
     return this.usersService.changePassword(
       req.user.userId,
       body.currentPassword,
       body.newPassword,
+      lang,
     );
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('me')
-  async deleteAccount(@Request() req) {
+  async deleteAccount(
+    @Request() req,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
     await this.usersService.remove(req.user.userId);
-    return { message: '계정이 삭제되었습니다.' };
+    return { message: t('account.deleted', parseLang(acceptLanguage)) };
   }
 
   @UseGuards(JwtAuthGuard)

@@ -8,8 +8,10 @@ import {
   Modal,
 } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
+import { getDateLocale } from '../../utils/dateLocale';
 
 interface DatePickerProps {
   label: string;
@@ -29,12 +31,13 @@ const DatePickerField: React.FC<DatePickerProps> = ({
   disabled = false,
 }) => {
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('common');
   const [showPicker, setShowPicker] = useState(false);
 
   const formatForDisplay = (dateStr: string): string => {
     if (!dateStr) return '';
     const date = new Date(dateStr + 'T00:00:00');
-    return date.toLocaleDateString('ko-KR', {
+    return date.toLocaleDateString(getDateLocale(), {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -109,11 +112,11 @@ const DatePickerField: React.FC<DatePickerProps> = ({
             <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
               <View style={styles.modalHeader}>
                 <TouchableOpacity onPress={() => setShowPicker(false)}>
-                  <Text style={[styles.modalButton, { color: theme.colors.textSecondary }]}>취소</Text>
+                  <Text style={[styles.modalButton, { color: theme.colors.textSecondary }]}>{t('cancel')}</Text>
                 </TouchableOpacity>
                 <Text style={[styles.modalTitle, { color: theme.colors.text }]}>{label}</Text>
                 <TouchableOpacity onPress={() => setShowPicker(false)}>
-                  <Text style={[styles.modalButton, { color: theme.colors.primary }]}>완료</Text>
+                  <Text style={[styles.modalButton, { color: theme.colors.primary }]}>{t('done')}</Text>
                 </TouchableOpacity>
               </View>
               <DateTimePicker
@@ -127,7 +130,7 @@ const DatePickerField: React.FC<DatePickerProps> = ({
                     onChange(selectedDate.toISOString().split('T')[0]);
                   }
                 }}
-                locale="ko"
+                locale={getDateLocale()}
                 style={{ height: 200 }}
               />
             </View>

@@ -25,6 +25,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../types';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
@@ -43,6 +44,7 @@ interface Props {
 const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const { register } = useAuth();
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('auth');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -65,22 +67,22 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const handleRegister = async () => {
     // Validation
     if (!name || !email || !password || !confirmPassword) {
-      Alert.alert('입력 오류', '모든 필드를 입력해주세요');
+      Alert.alert(t('register.alerts.inputError'), t('register.alerts.nameRequired'));
       return;
     }
 
     if (!validateEmail(email)) {
-      Alert.alert('이메일 오류', '올바른 이메일 형식을 입력해주세요');
+      Alert.alert(t('register.alerts.emailError'), t('register.alerts.emailInvalid'));
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('비밀번호 오류', '비밀번호가 일치하지 않습니다');
+      Alert.alert(t('register.alerts.passwordError'), t('register.alerts.passwordMismatch'));
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert('비밀번호 오류', '비밀번호는 최소 6자 이상이어야 합니다');
+      Alert.alert(t('register.alerts.passwordError'), t('register.alerts.passwordMinLength'));
       return;
     }
 
@@ -89,8 +91,8 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
       await register(email, password, name);
     } catch (error: any) {
       Alert.alert(
-        '회원가입 실패',
-        error.response?.data?.message || '계정 생성에 실패했습니다'
+        t('register.alerts.registerFailed'),
+        error.response?.data?.message || t('register.alerts.networkError')
       );
     } finally {
       setIsLoading(false);
@@ -135,14 +137,14 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 style={styles.backButton}
                 onPress={() => navigation.goBack()}
                 disabled={isLoading}
-                accessibilityLabel="뒤로 가기"
+                accessibilityLabel={t('register.backAccessibility', 'Go back')}
                 accessibilityRole="button"
               >
                 <Icon name="arrow-left" size={24} color={colors.neutral[0]} />
               </TouchableOpacity>
               <Icon name="account-plus-outline" size={56} color={colors.neutral[0]} />
-              <Text style={styles.appName}>새로운 여행을 시작하세요</Text>
-              <Text style={styles.tagline}>몇 초면 계정이 준비됩니다</Text>
+              <Text style={styles.appName}>{t('register.subtitle')}</Text>
+              <Text style={styles.tagline}>{t('register.description')}</Text>
             </LinearGradient>
           </ImageBackground>
         </FadeIn>
@@ -150,21 +152,21 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         {/* Register Form Card */}
         <SlideIn direction="bottom" duration={600} delay={200}>
           <Card elevation="lg" padding="xl" style={styles.formCard}>
-            <Text style={styles.formTitle}>회원가입</Text>
-            <Text style={styles.formSubtitle}>정보를 입력해주세요</Text>
+            <Text style={styles.formTitle}>{t('register.title')}</Text>
+            <Text style={styles.formSubtitle}>{t('register.description')}</Text>
 
             {/* Name Input */}
             <View style={styles.inputContainer}>
               <Icon name="account-outline" size={20} color={colors.primary[400]} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="이름"
+                placeholder={t('register.namePlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={name}
                 onChangeText={setName}
                 autoCapitalize="words"
                 editable={!isLoading}
-                accessibilityLabel="이름 입력"
+                accessibilityLabel={t('register.name')}
               />
             </View>
 
@@ -173,7 +175,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
               <Icon name="email-outline" size={20} color={colors.primary[400]} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="이메일"
+                placeholder={t('register.emailPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={email}
                 onChangeText={setEmail}
@@ -181,7 +183,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 editable={!isLoading}
-                accessibilityLabel="이메일 입력"
+                accessibilityLabel={t('register.email')}
               />
             </View>
 
@@ -190,19 +192,19 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
               <Icon name="lock-outline" size={20} color={colors.primary[400]} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="비밀번호"
+                placeholder={t('register.passwordPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
                 editable={!isLoading}
-                accessibilityLabel="비밀번호 입력"
+                accessibilityLabel={t('register.password')}
               />
               <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.eyeIcon}
-                accessibilityLabel={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                accessibilityLabel={showPassword ? t('register.hidePassword', 'Hide password') : t('register.showPassword', 'Show password')}
                 accessibilityRole="button"
               >
                 <Icon
@@ -229,10 +231,10 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 </View>
                 <Text style={[styles.strengthText, { color: strengthColor }]}>
                   {passwordStrength === 'strong'
-                    ? '강력함'
+                    ? t('register.passwordStrength.strong')
                     : passwordStrength === 'medium'
-                    ? '보통'
-                    : '약함'}
+                    ? t('register.passwordStrength.medium')
+                    : t('register.passwordStrength.weak')}
                 </Text>
               </View>
             )}
@@ -242,19 +244,19 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
               <Icon name="lock-check-outline" size={20} color={colors.primary[400]} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="비밀번호 확인"
+                placeholder={t('register.confirmPasswordPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry={!showConfirmPassword}
                 autoCapitalize="none"
                 editable={!isLoading}
-                accessibilityLabel="비밀번호 확인 입력"
+                accessibilityLabel={t('register.confirmPassword')}
               />
               <TouchableOpacity
                 onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                 style={styles.eyeIcon}
-                accessibilityLabel={showConfirmPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                accessibilityLabel={showConfirmPassword ? t('register.hidePassword', 'Hide password') : t('register.showPassword', 'Show password')}
                 accessibilityRole="button"
               >
                 <Icon
@@ -274,19 +276,19 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
               loading={isLoading}
               style={styles.registerButton}
             >
-              계정 만들기
+              {t('register.submit')}
             </Button>
 
             {/* Login Link */}
             <View style={styles.loginContainer}>
-              <Text style={styles.loginText}>이미 계정이 있으신가요? </Text>
+              <Text style={styles.loginText}>{t('register.haveAccount')} </Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate('Login')}
                 disabled={isLoading}
-                accessibilityLabel="로그인으로 이동"
+                accessibilityLabel={t('register.login')}
                 accessibilityRole="link"
               >
-                <Text style={styles.loginLink}>로그인</Text>
+                <Text style={styles.loginLink}>{t('register.login')}</Text>
               </TouchableOpacity>
             </View>
           </Card>

@@ -21,9 +21,18 @@ import {
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 import apiService from '../services/api';
+
+const getExpiryOptions = (t: TFunction) => [
+  { label: t('shareModal.expiry.none'), value: undefined },
+  { label: t('shareModal.expiry.7days'), value: 7 },
+  { label: t('shareModal.expiry.30days'), value: 30 },
+  { label: t('shareModal.expiry.90days'), value: 90 },
+];
 
 interface ShareModalProps {
   visible: boolean;
@@ -41,18 +50,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   currentShareToken,
 }) => {
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('components');
   const [loading, setLoading] = useState(false);
   const [shareToken, setShareToken] = useState<string | undefined>(currentShareToken);
   const [shareUrl, setShareUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
   const [selectedExpiry, setSelectedExpiry] = useState<number | undefined>(undefined);
 
-  const EXPIRY_OPTIONS = [
-    { label: '기간 제한 없음', value: undefined },
-    { label: '7일', value: 7 },
-    { label: '30일', value: 30 },
-    { label: '90일', value: 90 },
-  ];
+  const EXPIRY_OPTIONS = getExpiryOptions(t);
 
   useEffect(() => {
     if (visible) {
@@ -83,8 +88,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       setCopied(false);
     } catch (error: any) {
       Alert.alert(
-        '오류',
-        error.response?.data?.message || '공유 링크 생성 중 오류가 발생했습니다.'
+        t('shareModal.error'),
+        error.response?.data?.message || t('shareModal.generateError')
       );
     } finally {
       setLoading(false);
@@ -100,21 +105,21 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       setTimeout(() => setCopied(false), 3000); // Reset after 3 seconds
 
       if (Platform.OS === 'web') {
-        Alert.alert('성공', '링크가 클립보드에 복사되었습니다.');
+        Alert.alert(t('shareModal.success'), t('shareModal.copiedToClipboard'));
       }
     } catch (error) {
-      Alert.alert('오류', '링크 복사에 실패했습니다.');
+      Alert.alert(t('shareModal.error'), t('shareModal.copyError'));
     }
   };
 
   const handleDisableSharing = async () => {
     Alert.alert(
-      '공유 비활성화',
-      '정말 공유를 비활성화하시겠습니까? 기존 링크는 더 이상 사용할 수 없습니다.',
+      t('shareModal.disable'),
+      t('shareModal.disableConfirm'),
       [
-        { text: '취소', style: 'cancel' },
+        { text: t('shareModal.cancel'), style: 'cancel' },
         {
-          text: '비활성화',
+          text: t('shareModal.disableAction'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -122,12 +127,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               await apiService.disableSharing(tripId);
               setShareToken(undefined);
               setShareUrl('');
-              Alert.alert('성공', '공유가 비활성화되었습니다.');
+              Alert.alert(t('shareModal.success'), t('shareModal.disableSuccess'));
               onClose();
             } catch (error: any) {
               Alert.alert(
-                '오류',
-                error.response?.data?.message || '공유 비활성화 중 오류가 발생했습니다.'
+                t('shareModal.error'),
+                error.response?.data?.message || t('shareModal.disableError')
               );
             } finally {
               setLoading(false);
@@ -154,7 +159,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             <View style={styles.headerLeft}>
               <Icon name="share-variant" size={24} color={theme.colors.primary} />
               <Text style={[styles.title, { color: theme.colors.text }]}>
-                여행 공유
+                {t('shareModal.title')}
               </Text>
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -174,16 +179,16 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           {!shareToken ? (
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                공유 링크 생성
+                {t('shareModal.generate')}
               </Text>
               <Text style={[styles.sectionDescription, { color: theme.colors.textSecondary }]}>
-                여행 계획을 다른 사람과 공유할 수 있는 링크를 생성합니다.
+                {t('shareModal.generateDescription')}
               </Text>
 
               {/* Expiry Options */}
               <View style={styles.expiryContainer}>
                 <Text style={[styles.expiryLabel, { color: theme.colors.text }]}>
-                  링크 유효 기간
+                  {t('shareModal.expiry.title')}
                 </Text>
                 <View style={styles.expiryOptions}>
                   {EXPIRY_OPTIONS.map((option) => (
@@ -236,7 +241,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 ) : (
                   <>
                     <Icon name="link-variant" size={20} color={colors.neutral[0]} />
-                    <Text style={styles.primaryButtonText}>링크 생성</Text>
+                    <Text style={styles.primaryButtonText}>{t('shareModal.generateButton')}</Text>
                   </>
                 )}
               </TouchableOpacity>
@@ -244,7 +249,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           ) : (
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                공유 링크
+                {t('shareModal.linkTitle')}
               </Text>
 
               {/* Share URL Display */}
@@ -294,7 +299,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                     },
                   ]}
                 >
-                  {copied ? '복사 완료!' : '링크 복사'}
+                  {copied ? t('shareModal.copied') : t('shareModal.copy')}
                 </Text>
               </TouchableOpacity>
 
@@ -310,7 +315,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               >
                 <Icon name="link-variant-off" size={20} color={colors.error.main} />
                 <Text style={[styles.dangerButtonText, { color: colors.error.main }]}>
-                  공유 비활성화
+                  {t('shareModal.disable')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -329,7 +334,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           >
             <Icon name="information-outline" size={18} color={theme.colors.primary} />
             <Text style={[styles.infoText, { color: theme.colors.text }]}>
-              공유 링크를 통해 누구나 이 여행 계획을 볼 수 있습니다. 개인정보는 공유되지 않습니다.
+              {t('shareModal.info')}
             </Text>
           </View>
         </View>

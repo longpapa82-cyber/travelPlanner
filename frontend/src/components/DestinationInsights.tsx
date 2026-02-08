@@ -7,6 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import analyticsService, {
   DestinationRecommendations,
 } from '../services/analytics.service';
@@ -21,6 +22,7 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
   destination,
   onRecommendationsLoaded,
 }) => {
+  const { t } = useTranslation('components');
   const [recommendations, setRecommendations] =
     useState<DestinationRecommendations | null>(null);
   const [loading, setLoading] = useState(false);
@@ -65,7 +67,7 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
       <View style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color={theme.colors.primary} />
-          <Text style={styles.loadingText}>여행지 정보를 불러오는 중...</Text>
+          <Text style={styles.loadingText}>{t('destinationInsights.loading')}</Text>
         </View>
       </View>
     );
@@ -82,7 +84,7 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons name="analytics" size={20} color={theme.colors.primary} />
-        <Text style={styles.headerTitle}>실제 여행자 데이터 기반 추천</Text>
+        <Text style={styles.headerTitle}>{t('destinationInsights.header')}</Text>
       </View>
 
       <View style={styles.insightsGrid}>
@@ -95,9 +97,9 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
               color={theme.colors.primary}
             />
             <Text style={styles.insightValue}>
-              {recommendations.recommendedDuration}일
+              {t('destinationInsights.days', { days: recommendations.recommendedDuration })}
             </Text>
-            <Text style={styles.insightLabel}>평균 여행 기간</Text>
+            <Text style={styles.insightLabel}>{t('destinationInsights.avgDuration')}</Text>
           </View>
         )}
 
@@ -110,9 +112,9 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
               color={theme.colors.secondary}
             />
             <Text style={styles.insightValue}>
-              {recommendations.recommendedTravelers}명
+              {t('destinationInsights.people', { count: recommendations.recommendedTravelers })}
             </Text>
-            <Text style={styles.insightLabel}>평균 동행 인원</Text>
+            <Text style={styles.insightLabel}>{t('destinationInsights.avgTravelers')}</Text>
           </View>
         )}
 
@@ -125,7 +127,7 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
               color={theme.colors.accent}
             />
             <Text style={styles.insightValue}>{recommendations.budget}</Text>
-            <Text style={styles.insightLabel}>인기 예산</Text>
+            <Text style={styles.insightLabel}>{t('destinationInsights.popularBudget')}</Text>
           </View>
         )}
 
@@ -138,7 +140,7 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
               color={theme.colors.warning}
             />
             <Text style={styles.insightValue}>{recommendations.travelStyle}</Text>
-            <Text style={styles.insightLabel}>인기 스타일</Text>
+            <Text style={styles.insightLabel}>{t('destinationInsights.popularStyle')}</Text>
           </View>
         )}
       </View>
@@ -152,7 +154,7 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
               size={18}
               color={theme.colors.textSecondary}
             />
-            <Text style={styles.monthsTitle}>인기 여행 시즌</Text>
+            <Text style={styles.monthsTitle}>{t('destinationInsights.popularSeason')}</Text>
           </View>
           <View style={styles.monthsContainer}>
             {recommendations.bestMonths.map((month) => (
@@ -175,7 +177,7 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
             ))}
             {isBestMonth && (
               <View style={styles.seasonBadge}>
-                <Text style={styles.seasonBadgeText}>지금이 베스트!</Text>
+                <Text style={styles.seasonBadgeText}>{t('destinationInsights.bestNow')}</Text>
               </View>
             )}
           </View>
@@ -192,7 +194,7 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
               color={theme.colors.textSecondary}
             />
             <Text style={styles.activitiesTitle}>
-              최근 여행자들이 많이 한 활동 (Top {Math.min(5, recommendations.topActivities.length)})
+              {t('destinationInsights.topActivities', { count: Math.min(5, recommendations.topActivities.length) })}
             </Text>
           </View>
           <ScrollView
@@ -214,7 +216,7 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
       <View style={styles.footer}>
         <Ionicons name="information-circle-outline" size={14} color={theme.colors.textTertiary} />
         <Text style={styles.footerText}>
-          최근 3개월간 이 여행지를 다녀온 실제 여행자들의 데이터입니다
+          {t('destinationInsights.footer')}
         </Text>
       </View>
     </View>

@@ -11,6 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useTranslation } from 'react-i18next';
 import { theme } from '../constants/theme';
 
 interface Activity {
@@ -31,14 +32,14 @@ interface ActivityModalProps {
   mode: 'add' | 'edit';
 }
 
-const ACTIVITY_TYPES = [
-  { value: 'meal', label: '식사', icon: 'silverware-fork-knife' },
-  { value: 'sightseeing', label: '관광', icon: 'camera' },
-  { value: 'shopping', label: '쇼핑', icon: 'shopping' },
-  { value: 'experience', label: '체험', icon: 'drama-masks' },
-  { value: 'relaxation', label: '휴식', icon: 'coffee' },
-  { value: 'transportation', label: '이동', icon: 'car' },
-  { value: 'other', label: '기타', icon: 'dots-horizontal' },
+const ACTIVITY_TYPES_META = [
+  { value: 'meal', key: 'activityModal.types.meal' as const, icon: 'silverware-fork-knife' },
+  { value: 'sightseeing', key: 'activityModal.types.sightseeing' as const, icon: 'camera' },
+  { value: 'shopping', key: 'activityModal.types.shopping' as const, icon: 'shopping' },
+  { value: 'experience', key: 'activityModal.types.experience' as const, icon: 'drama-masks' },
+  { value: 'relaxation', key: 'activityModal.types.rest' as const, icon: 'coffee' },
+  { value: 'transportation', key: 'activityModal.types.transport' as const, icon: 'car' },
+  { value: 'other', key: 'activityModal.types.other' as const, icon: 'dots-horizontal' },
 ];
 
 export const ActivityModal: React.FC<ActivityModalProps> = ({
@@ -48,6 +49,11 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
   activity,
   mode,
 }) => {
+  const { t } = useTranslation('components');
+  const activityTypes = ACTIVITY_TYPES_META.map(item => ({
+    ...item,
+    label: t(item.key),
+  }));
   const [formData, setFormData] = useState<Partial<Activity>>({
     time: '',
     title: '',
@@ -79,7 +85,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
   const handleSave = async () => {
     // Validation
     if (!formData.time || !formData.title || !formData.location) {
-      Alert.alert('입력 오류', '시간, 제목, 장소는 필수 입력 항목입니다.');
+      Alert.alert(t('activityModal.validationError'), t('activityModal.validationErrorMessage'));
       return;
     }
 
@@ -89,8 +95,8 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
       onClose();
     } catch (error: any) {
       Alert.alert(
-        '오류',
-        error.response?.data?.message || '활동 저장 중 오류가 발생했습니다.'
+        t('activityModal.errorTitle'),
+        error.response?.data?.message || t('activityModal.saveError')
       );
     } finally {
       setLoading(false);
@@ -104,7 +110,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
           {/* Header */}
           <View style={styles.header}>
             <Text style={styles.headerTitle}>
-              {mode === 'add' ? '활동 추가' : '활동 수정'}
+              {mode === 'add' ? t('activityModal.addTitle') : t('activityModal.editTitle')}
             </Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Icon name="close" size={24} color={theme.colors.text} />
@@ -115,7 +121,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
             {/* Time Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>
-                시간 <Text style={styles.required}>*</Text>
+                {t('activityModal.time')} <Text style={styles.required}>*</Text>
               </Text>
               <View style={styles.inputContainer}>
                 <Icon name="clock-outline" size={20} color={theme.colors.primary} />
@@ -131,13 +137,13 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
             {/* Title Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>
-                제목 <Text style={styles.required}>*</Text>
+                {t('activityModal.title')} <Text style={styles.required}>*</Text>
               </Text>
               <View style={styles.inputContainer}>
                 <Icon name="format-title" size={20} color={theme.colors.primary} />
                 <TextInput
                   style={styles.input}
-                  placeholder="활동 제목"
+                  placeholder={t('activityModal.titlePlaceholder')}
                   value={formData.title}
                   onChangeText={(text) => setFormData({ ...formData, title: text })}
                 />
@@ -147,13 +153,13 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
             {/* Location Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>
-                장소 <Text style={styles.required}>*</Text>
+                {t('activityModal.location')} <Text style={styles.required}>*</Text>
               </Text>
               <View style={styles.inputContainer}>
                 <Icon name="map-marker" size={20} color={theme.colors.primary} />
                 <TextInput
                   style={styles.input}
-                  placeholder="장소 또는 주소"
+                  placeholder={t('activityModal.locationPlaceholder')}
                   value={formData.location}
                   onChangeText={(text) => setFormData({ ...formData, location: text })}
                 />
@@ -162,10 +168,10 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 
             {/* Description Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>설명</Text>
+              <Text style={styles.label}>{t('activityModal.description')}</Text>
               <TextInput
                 style={[styles.inputContainer, styles.textArea]}
-                placeholder="활동에 대한 상세 설명"
+                placeholder={t('activityModal.descriptionPlaceholder')}
                 value={formData.description}
                 onChangeText={(text) => setFormData({ ...formData, description: text })}
                 multiline
@@ -176,9 +182,9 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 
             {/* Activity Type */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>활동 유형</Text>
+              <Text style={styles.label}>{t('activityModal.type')}</Text>
               <View style={styles.typeContainer}>
-                {ACTIVITY_TYPES.map((type) => (
+                {activityTypes.map((type) => (
                   <TouchableOpacity
                     key={type.value}
                     style={[
@@ -211,7 +217,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 
             {/* Duration Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>예상 소요 시간 (분)</Text>
+              <Text style={styles.label}>{t('activityModal.duration')}</Text>
               <View style={styles.inputContainer}>
                 <Icon name="timer-outline" size={20} color={theme.colors.primary} />
                 <TextInput
@@ -228,7 +234,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 
             {/* Cost Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>예상 비용 (원)</Text>
+              <Text style={styles.label}>{t('activityModal.cost')}</Text>
               <View style={styles.inputContainer}>
                 <Icon name="currency-usd" size={20} color={theme.colors.primary} />
                 <TextInput
@@ -251,7 +257,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
               onPress={onClose}
               disabled={loading}
             >
-              <Text style={styles.cancelButtonText}>취소</Text>
+              <Text style={styles.cancelButtonText}>{t('activityModal.cancel')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -263,7 +269,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
                 <ActivityIndicator color={theme.colors.white} />
               ) : (
                 <Text style={styles.saveButtonText}>
-                  {mode === 'add' ? '추가' : '저장'}
+                  {mode === 'add' ? t('activityModal.add') : t('activityModal.save')}
                 </Text>
               )}
             </TouchableOpacity>

@@ -1,0 +1,199 @@
+{
+  "create": {
+    "title": "Create New Trip",
+    "destination": {
+      "title": "Where are you heading?",
+      "placeholder": "Enter a city or country",
+      "popular": "Popular Destinations"
+    },
+    "destinations": {
+      "tokyo": "Tokyo",
+      "osaka": "Osaka",
+      "bangkok": "Bangkok",
+      "danang": "Da Nang",
+      "paris": "Paris",
+      "singapore": "Singapore",
+      "london": "London",
+      "newyork": "New York"
+    },
+    "duration": {
+      "title": "How long will you stay?",
+      "options": {
+        "3days": "3 days",
+        "1week": "1 week",
+        "2weeks": "2 weeks",
+        "1month": "1 month"
+      },
+      "custom": "Custom",
+      "totalDays": "{{days}}-day trip"
+    },
+    "travelers": {
+      "title": "Who's coming along?",
+      "options": {
+        "solo": "Just me",
+        "two": "2 people",
+        "group": "3-4 people",
+        "large": "5+ people"
+      }
+    },
+    "dates": {
+      "title": "When are you leaving?",
+      "start": "Departure",
+      "end": "Return",
+      "selectStart": "Select departure date",
+      "selectEnd": "Select return date"
+    },
+    "notes": {
+      "title": "Any special plans?",
+      "placeholder": "e.g., food-focused, sightseeing, free travel...",
+      "optional": "(Optional)"
+    },
+    "aiInfo": {
+      "title": "AI Auto-Generation",
+      "description": "AI will create the optimal travel plan based on your destination and schedule"
+    },
+    "submit": "Create Travel Plan",
+    "generating": "AI is creating your travel plan...",
+    "alerts": {
+      "destinationRequired": "Please enter a destination",
+      "datesRequired": "Please select travel dates",
+      "createFailed": "Failed to create trip",
+      "startDateRequired": "Please select a departure date"
+    }
+  },
+  "list": {
+    "title": "My Trips",
+    "searchPlaceholder": "Search trips...",
+    "filters": {
+      "all": "All",
+      "upcoming": "Upcoming",
+      "ongoing": "Ongoing",
+      "completed": "Completed"
+    },
+    "sections": {
+      "ongoing": "Ongoing Trips",
+      "upcoming": "Upcoming Trips",
+      "completed": "Completed Trips"
+    },
+    "status": {
+      "upcoming": "Upcoming",
+      "ongoing": "Ongoing",
+      "completed": "Completed"
+    },
+    "empty": {
+      "title": "No trips planned yet",
+      "description": "Start planning a new trip!",
+      "cta": "Start AI Travel Planning"
+    },
+    "card": {
+      "days": "{{days}} days",
+      "travelers": "{{count}} travelers",
+      "dDay": "D-{{days}}",
+      "dDayToday": "D-Day",
+      "dDayPassed": "D+{{days}}"
+    },
+    "alerts": {
+      "deleteTitle": "Delete Trip",
+      "deleteMessage": "Delete '{{name}}'? This action cannot be undone.",
+      "deleteFailed": "Failed to delete",
+      "error": "Error"
+    },
+    "sort": {
+      "startDate": "By departure",
+      "createdAt": "By created",
+      "destination": "By destination"
+    }
+  },
+  "detail": {
+    "loading": "Loading trip info...",
+    "notFound": {
+      "title": "Trip not found",
+      "description": "This trip doesn't exist or has been deleted",
+      "back": "Go back"
+    },
+    "status": {
+      "ongoing": "Ongoing",
+      "completed": "Completed"
+    },
+    "completedBanner": {
+      "title": "Trip Completed",
+      "description": "This trip is completed and cannot be edited. Check out your precious memories!"
+    },
+    "readOnlyMessage": "Completed activities cannot be edited",
+    "progress": "Overall progress {{percentage}}%",
+    "dayLabel": "Day {{day}}",
+    "emptyItinerary": "No itinerary created yet",
+    "addActivity": "Add Activity",
+    "affiliateSection": "Book Hotels & Activities",
+    "tabs": {
+      "itinerary": "Itinerary",
+      "info": "Info",
+      "share": "Share"
+    },
+    "activityTypes": {
+      "meal": "Meal",
+      "sightseeing": "Sightseeing",
+      "shopping": "Shopping",
+      "experience": "Experience",
+      "rest": "Rest",
+      "transport": "Transport",
+      "accommodation": "Accommodation",
+      "other": "Other"
+    },
+    "alerts": {
+      "deleteTitle": "Delete Activity",
+      "deleteMessage": "Delete this activity?",
+      "deleteFailed": "Failed to delete",
+      "error": "Error"
+    }
+  },
+  "edit": {
+    "title": "Edit Trip",
+    "loading": "Loading trip info...",
+    "notFound": "Trip not found",
+    "goBack": "Go Back",
+    "heroTitle": "Edit Trip Info",
+    "ongoingWarning": "This trip is ongoing. Be careful when changing dates.",
+    "destination": {
+      "title": "Destination",
+      "placeholder": "Or enter manually"
+    },
+    "dates": {
+      "title": "Trip Dates",
+      "changeWarning": "Caution",
+      "totalDays": "{{days}}-day trip"
+    },
+    "travelers": {
+      "title": "Travelers",
+      "placeholder": "Or enter manually"
+    },
+    "notes": {
+      "title": "Trip Notes (Optional)",
+      "placeholder": "Feel free to add any goals or special requirements"
+    },
+    "submit": "Save Trip Info",
+    "saving": "Saving...",
+    "status": {
+      "upcoming": "Upcoming",
+      "ongoing": "Ongoing",
+      "completed": "Completed"
+    },
+    "alerts": {
+      "cannotEditCompleted": "Completed trips cannot be edited.",
+      "cannotEditTitle": "Cannot Edit",
+      "loadError": "Failed to load trip info.",
+      "destinationRequired": "Please enter a destination.",
+      "requiredInput": "Required",
+      "datesRequired": "Please select travel dates.",
+      "endDateError": "End date must be after start date.",
+      "dateError": "Date Error",
+      "dateChangeWarningTitle": "Date Change Warning",
+      "dateChangeWarning": "Changing dates for an ongoing trip may affect the schedule. Continue?",
+      "continue": "Continue",
+      "saveSuccess": "Changes Saved",
+      "saveSuccessMessage": "Trip info has been updated.",
+      "saveFailed": "Save Failed",
+      "saveError": "Failed to save trip info. Please try again."
+    }
+  }
+}

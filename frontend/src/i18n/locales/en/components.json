@@ -1,0 +1,97 @@
+{
+  "activityModal": {
+    "addTitle": "Add Activity",
+    "editTitle": "Edit Activity",
+    "time": "Time",
+    "title": "Title",
+    "titlePlaceholder": "Enter activity title",
+    "location": "Location",
+    "locationPlaceholder": "Enter location",
+    "description": "Description",
+    "descriptionPlaceholder": "Enter description",
+    "type": "Activity Type",
+    "duration": "Estimated Duration (min)",
+    "durationPlaceholder": "60",
+    "cost": "Estimated Cost",
+    "costPlaceholder": "0",
+    "cancel": "Cancel",
+    "add": "Add",
+    "save": "Save",
+    "validationError": "Input Error",
+    "validationErrorMessage": "Please enter time, title, and location",
+    "errorTitle": "Error",
+    "saveError": "Failed to save activity",
+    "types": {
+      "meal": "Meal",
+      "sightseeing": "Sightseeing",
+      "shopping": "Shopping",
+      "experience": "Experience",
+      "rest": "Rest",
+      "transport": "Transport",
+      "other": "Other"
+    }
+  },
+  "shareModal": {
+    "title": "Share Trip",
+    "generate": "Generate Share Link",
+    "generateButton": "Generate Link",
+    "generateDescription": "Create a share link to share your travel plan with others",
+    "generateError": "Failed to generate share link",
+    "linkTitle": "Share Link",
+    "copy": "Copy Link",
+    "copied": "Copied!",
+    "copiedToClipboard": "Copied to clipboard",
+    "copyError": "Failed to copy link",
+    "disable": "Disable Sharing",
+    "disableConfirm": "Disable sharing? Existing links will no longer work.",
+    "disableAction": "Disable",
+    "disableSuccess": "Sharing has been disabled",
+    "disableError": "Failed to disable sharing",
+    "cancel": "Cancel",
+    "error": "Error",
+    "success": "Success",
+    "info": "Anyone with this link can view this travel plan. Disabling the link will revoke access.",
+    "expiry": {
+      "title": "Expiry Period",
+      "none": "No expiry",
+      "7days": "7 days",
+      "30days": "30 days",
+      "90days": "90 days"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "Humidity",
+    "windSpeed": "Wind",
+    "feelsLike": "Feels like",
+    "timezone": "Local Time",
+    "timeDiff": "Time Diff.",
+    "noData": "Weather data unavailable"
+  },
+  "popularDestinations": {
+    "title": "Popular Destinations",
+    "subtitle": "Trending in the last 3 months",
+    "description": "See the most popular destinations chosen by real travelers",
+    "visitors": "{{count}} visitors",
+    "avgDuration": "Avg. {{days}} days",
+    "withTravelers": "With {{count}} travelers",
+    "popularSeason": "Popular season:"
+  },
+  "progressIndicator": {
+    "title": "Progress",
+    "status": "{{completed}} done / {{total}} total activities"
+  },
+  "destinationInsights": {
+    "header": "Based on real traveler data",
+    "avgDuration": "Avg. Trip Duration",
+    "avgTravelers": "Avg. Group Size",
+    "popularBudget": "Popular Budget",
+    "popularStyle": "Popular Style",
+    "popularSeason": "Popular Travel Season",
+    "bestNow": "Best time is now!",
+    "topActivities": "Top activities by recent travelers (Top {{count}})",
+    "footer": "Based on real traveler data from the last 3 months",
+    "loading": "Loading destination info...",
+    "days": "{{days}} days",
+    "people": "{{count}} people"
+  }
+}

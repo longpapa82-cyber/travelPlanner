@@ -32,6 +32,7 @@ import DraggableFlatList, {
   RenderItemParams,
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
+import { useTranslation } from 'react-i18next';
 import { TripsStackParamList, Trip, Itinerary, Activity } from '../../types';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -84,6 +85,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('trips');
 
   // Activity modal state
   const [modalVisible, setModalVisible] = useState(false);
@@ -106,9 +108,9 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     } catch (error) {
       console.error('Failed to fetch trip details:', error);
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert('여행 정보를 불러올 수 없습니다.');
+        window.alert(t('detail.alerts.fetchError'));
       } else {
-        Alert.alert('오류', '여행 정보를 불러올 수 없습니다.');
+        Alert.alert(t('detail.alerts.error'), t('detail.alerts.fetchError'));
       }
     } finally {
       setIsLoading(false);
@@ -148,20 +150,20 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       const newTrip = await apiService.duplicateTrip(tripId);
       if (Platform.OS === 'web' && typeof window !== 'undefined') {
-        window.alert('여행이 복제되었습니다!');
+        window.alert(t('detail.alerts.duplicateSuccess'));
       } else {
-        Alert.alert('복제 완료', '여행이 복제되었습니다!', [
-          { text: '확인', onPress: () => navigation.navigate('TripDetail', { tripId: newTrip.id }) },
+        Alert.alert(t('detail.alerts.duplicateCompleteTitle'), t('detail.alerts.duplicateSuccess'), [
+          { text: t('detail.alerts.confirm'), onPress: () => navigation.navigate('TripDetail', { tripId: newTrip.id }) },
         ]);
         return;
       }
       navigation.navigate('TripDetail', { tripId: newTrip.id });
     } catch (error: any) {
-      const msg = error.response?.data?.message || '여행 복제 중 오류가 발생했습니다.';
+      const msg = error.response?.data?.message || t('detail.alerts.duplicateError');
       if (Platform.OS === 'web' && typeof window !== 'undefined') {
         window.alert(msg);
       } else {
-        Alert.alert('오류', msg);
+        Alert.alert(t('detail.alerts.error'), msg);
       }
     } finally {
       setIsDuplicating(false);
@@ -187,22 +189,22 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleDeleteActivity = (itineraryId: string, activityIndex: number) => {
     Alert.alert(
-      '활동 삭제',
-      '이 활동을 삭제하시겠습니까?',
+      t('detail.alerts.deleteTitle'),
+      t('detail.alerts.deleteMessage'),
       [
-        { text: '취소', style: 'cancel' },
+        { text: t('detail.alerts.cancel'), style: 'cancel' },
         {
-          text: '삭제',
+          text: t('detail.alerts.delete'),
           style: 'destructive',
           onPress: async () => {
             try {
               await apiService.deleteActivity(tripId, itineraryId, activityIndex);
               await fetchTripDetails(); // Refresh trip data
-              Alert.alert('성공', '활동이 삭제되었습니다.');
+              Alert.alert(t('detail.alerts.success'), t('detail.alerts.deleteSuccess'));
             } catch (error: any) {
               Alert.alert(
-                '오류',
-                error.response?.data?.message || '활동 삭제 중 오류가 발생했습니다.'
+                t('detail.alerts.error'),
+                error.response?.data?.message || t('detail.alerts.deleteError')
               );
             }
           },
@@ -228,8 +230,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       await fetchTripDetails(); // Refresh trip data
     } catch (error: any) {
       Alert.alert(
-        '오류',
-        error.response?.data?.message || '활동 상태 변경 중 오류가 발생했습니다.'
+        t('detail.alerts.error'),
+        error.response?.data?.message || t('detail.alerts.toggleError')
       );
     }
   };
@@ -261,15 +263,15 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       await fetchTripDetails(); // Refresh trip data
     } catch (error: any) {
       Alert.alert(
-        '오류',
-        error.response?.data?.message || '활동 순서 변경 중 오류가 발생했습니다.'
+        t('detail.alerts.error'),
+        error.response?.data?.message || t('detail.alerts.reorderError')
       );
     }
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
+    return date.toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -279,7 +281,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const formatDateShort = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
+    return date.toLocaleDateString(undefined, {
       month: 'short',
       day: 'numeric',
     });
@@ -446,7 +448,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               onPress={() => handleToggleActivityCompletion(itineraryId, index, activity)}
               activeOpacity={0.7}
               disabled={isCompletedTrip}
-              accessibilityLabel={`${activity.title} ${activityStatus === 'completed' ? '완료됨' : '미완료'}`}
+              accessibilityLabel={`${activity.title} ${activityStatus === 'completed' ? t('detail.accessibility.completed') : t('detail.accessibility.incomplete')}`}
               accessibilityRole="checkbox"
               accessibilityState={{ checked: activityStatus === 'completed' }}
               style={[
@@ -493,8 +495,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                 onLongPress={drag}
                 style={styles.dragHandle}
                 disabled={isActive || !canModify}
-                accessibilityLabel="순서 변경"
-                accessibilityHint="길게 누르면 순서를 변경할 수 있습니다"
+                accessibilityLabel={t('detail.accessibility.reorder')}
+                accessibilityHint={t('detail.accessibility.reorderHint')}
               >
                 <Icon
                   name="drag"
@@ -522,7 +524,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                     <TouchableOpacity
                       style={styles.activityActionButton}
                       onPress={() => handleEditActivity(itineraryId, index, activity)}
-                      accessibilityLabel={`${activity.title} 수정`}
+                      accessibilityLabel={`${activity.title} ${t('detail.accessibility.edit')}`}
                       accessibilityRole="button"
                     >
                       <Icon name="pencil" size={16} color={theme.colors.primary} />
@@ -530,7 +532,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                     <TouchableOpacity
                       style={styles.activityActionButton}
                       onPress={() => handleDeleteActivity(itineraryId, index)}
-                      accessibilityLabel={`${activity.title} 삭제`}
+                      accessibilityLabel={`${activity.title} ${t('detail.accessibility.delete')}`}
                       accessibilityRole="button"
                     >
                       <Icon name="delete" size={16} color={colors.error.main} />
@@ -556,13 +558,13 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               {activityStatus === 'ongoing' && (
                 <View style={[styles.statusBadge, { backgroundColor: colors.success.light }]}>
                   <Icon name="clock-fast" size={12} color={colors.success.main} />
-                  <Text style={[styles.statusBadgeText, { color: colors.success.main }]}>진행중</Text>
+                  <Text style={[styles.statusBadgeText, { color: colors.success.main }]}>{t('detail.status.ongoing')}</Text>
                 </View>
               )}
               {activityStatus === 'completed' && (
                 <View style={[styles.statusBadge, { backgroundColor: colors.neutral[200] }]}>
                   <Icon name="check" size={12} color={colors.neutral[600]} />
-                  <Text style={[styles.statusBadgeText, { color: colors.neutral[600] }]}>완료</Text>
+                  <Text style={[styles.statusBadgeText, { color: colors.neutral[600] }]}>{t('detail.status.completed')}</Text>
                 </View>
               )}
             </View>
@@ -601,7 +603,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               <View style={[styles.readOnlyMessage, { backgroundColor: isDark ? colors.neutral[700] : colors.neutral[100] }]}>
                 <Icon name="lock" size={14} color={theme.colors.textSecondary} />
                 <Text style={[styles.readOnlyMessageText, { color: theme.colors.textSecondary }]}>
-                  완료된 활동은 수정할 수 없습니다
+                  {t('detail.readOnlyMessage')}
                 </Text>
               </View>
             )}
@@ -610,14 +612,14 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               <View style={styles.activityMeta}>
                 <Icon name="timer-outline" size={14} color={theme.colors.textSecondary} />
                 <Text style={[styles.activityMetaText, { color: theme.colors.textSecondary }]}>
-                  {activity.estimatedDuration}분
+                  {t('detail.durationMinutes', { minutes: activity.estimatedDuration })}
                 </Text>
               </View>
               {activity.estimatedCost > 0 && (
                 <View style={styles.activityMeta}>
                   <Icon name="currency-usd" size={14} color={theme.colors.textSecondary} />
                   <Text style={[styles.activityMetaText, { color: theme.colors.textSecondary }]}>
-                    약 {activity.estimatedCost.toLocaleString()}원
+                    {t('detail.estimatedCost', { cost: activity.estimatedCost.toLocaleString() })}
                   </Text>
                 </View>
               )}
@@ -648,7 +650,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             },
           ]}
         >
-          <Text style={[styles.dayNumber, { color: theme.colors.primary }]}>Day {itinerary.dayNumber}</Text>
+          <Text style={[styles.dayNumber, { color: theme.colors.primary }]}>{t('detail.dayLabel', { day: itinerary.dayNumber })}</Text>
         </View>
         <Text style={[styles.dayDate, { color: theme.colors.textSecondary }]}>{formatDate(itinerary.date)}</Text>
       </View>
@@ -709,12 +711,12 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             },
           ]}
           onPress={() => handleAddActivity(itinerary.id)}
-          accessibilityLabel={`Day ${itinerary.dayNumber}에 활동 추가`}
+          accessibilityLabel={t('detail.accessibility.addActivityToDay', { day: itinerary.dayNumber })}
           accessibilityRole="button"
         >
           <Icon name="plus-circle" size={20} color={theme.colors.primary} />
           <Text style={[styles.addActivityText, { color: theme.colors.primary }]}>
-            활동 추가
+            {t('detail.addActivity')}
           </Text>
         </TouchableOpacity>
       )}
@@ -744,7 +746,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={styles.loadingText}>여행 정보를 불러오는 중...</Text>
+        <Text style={styles.loadingText}>{t('detail.loading')}</Text>
       </View>
     );
   }
@@ -763,14 +765,14 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           <Icon name="alert-circle-outline" size={60} color={colors.error.main} />
         </View>
         <Text style={[styles.errorTitle, { color: theme.colors.text }]}>
-          여행 정보를 찾을 수 없습니다
+          {t('detail.notFound.title')}
         </Text>
         <Text style={[styles.errorMessage, { color: theme.colors.textSecondary }]}>
-          존재하지 않거나 삭제된 여행입니다
+          {t('detail.notFound.description')}
         </Text>
         <View style={styles.errorButtonWrapper}>
           <Button variant="primary" size="md" icon="arrow-left" onPress={() => navigation.goBack()}>
-            돌아가기
+            {t('detail.notFound.back')}
           </Button>
         </View>
       </View>
@@ -789,10 +791,10 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             <Icon name="check-circle" size={20} color={colors.success.main} />
             <View style={styles.completedBannerTextContainer}>
               <Text style={[styles.completedBannerTitle, { color: theme.colors.text }]}>
-                여행 완료
+                {t('detail.completedBanner.title')}
               </Text>
               <Text style={[styles.completedBannerMessage, { color: theme.colors.textSecondary }]}>
-                이 여행은 완료되어 수정할 수 없습니다. 조회와 삭제만 가능합니다.
+                {t('detail.completedBanner.description')}
               </Text>
             </View>
           </View>
@@ -808,7 +810,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => navigation.goBack()}
-              accessibilityLabel="뒤로 가기"
+              accessibilityLabel={t('detail.accessibility.goBack')}
               accessibilityRole="button"
             >
               <View style={styles.iconButtonInner}>
@@ -821,7 +823,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                 <TouchableOpacity
                   style={styles.editButton}
                   onPress={() => navigation.navigate('EditTrip', { tripId: trip.id })}
-                  accessibilityLabel="여행 정보 수정"
+                  accessibilityLabel={t('detail.accessibility.editTrip')}
                   accessibilityRole="button"
                 >
                   <View style={styles.iconButtonInner}>
@@ -834,7 +836,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                 onPress={handleDuplicateTrip}
                 disabled={isDuplicating}
                 style={{ opacity: isDuplicating ? 0.5 : 1 }}
-                accessibilityLabel={isDuplicating ? '여행 복제 중' : '여행 복제하기'}
+                accessibilityLabel={isDuplicating ? t('detail.accessibility.duplicating') : t('detail.accessibility.duplicate')}
                 accessibilityRole="button"
               >
                 <View style={styles.iconButtonInner}>
@@ -849,7 +851,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               <TouchableOpacity
                 style={styles.shareButton}
                 onPress={() => setShareModalVisible(true)}
-                accessibilityLabel="여행 공유하기"
+                accessibilityLabel={t('detail.accessibility.share')}
                 accessibilityRole="button"
               >
                 <View style={styles.iconButtonInner}>
@@ -878,11 +880,11 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               </View>
               <View style={styles.heroMetaItem}>
                 <Icon name="calendar" size={16} color={colors.neutral[200]} />
-                <Text style={styles.heroMetaText}>{duration}일</Text>
+                <Text style={styles.heroMetaText}>{t('detail.durationDays', { count: duration })}</Text>
               </View>
               <View style={styles.heroMetaItem}>
                 <Icon name="account-group" size={16} color={colors.neutral[200]} />
-                <Text style={styles.heroMetaText}>{trip.numberOfTravelers || 1}명</Text>
+                <Text style={styles.heroMetaText}>{t('detail.travelers', { count: trip.numberOfTravelers || 1 })}</Text>
               </View>
             </View>
 
@@ -892,7 +894,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                 <View style={styles.heroProgressHeader}>
                   <Icon name="chart-arc" size={14} color={colors.neutral[200]} />
                   <Text style={styles.heroProgressText}>
-                    전체 진행률 {getTripProgress().percentage}%
+                    {t('detail.progress', { percentage: getTripProgress().percentage })}
                   </Text>
                 </View>
                 <View style={styles.heroProgressBarBackground}>
@@ -952,11 +954,11 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           <View style={styles.affiliateSectionHeader}>
             <Icon name="bookmark-outline" size={20} color={theme.colors.primary} />
             <Text style={[styles.affiliateSectionTitle, { color: theme.colors.text }]}>
-              숙소 & 액티비티 예약
+              {t('detail.affiliateSection')}
             </Text>
           </View>
           <Text style={[styles.affiliateSectionSubtitle, { color: theme.colors.textSecondary }]}>
-            {trip.destination}에서의 완벽한 여행을 위해
+            {t('detail.affiliateSubtitle', { destination: trip.destination })}
           </Text>
 
           <View style={styles.affiliateButtons}>
@@ -1035,10 +1037,10 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               <Icon name="calendar-blank" size={60} color={theme.colors.textSecondary} />
             </View>
             <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>
-              아직 일정이 생성되지 않았습니다
+              {t('detail.emptyItinerary')}
             </Text>
             <Text style={[styles.emptyMessage, { color: theme.colors.textSecondary }]}>
-              AI가 여행 일정을 생성하는 중입니다
+              {t('detail.emptyItineraryMessage')}
             </Text>
           </Animated.View>
         )}

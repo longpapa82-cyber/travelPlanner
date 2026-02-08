@@ -1,0 +1,65 @@
+{
+  "title": "プロフィール",
+  "guest": "ゲスト",
+  "sections": {
+    "account": "アカウント情報",
+    "settings": "アプリ設定",
+    "support": "サポート"
+  },
+  "menu": {
+    "editProfile": "プロフィール編集",
+    "changePassword": "パスワード変更",
+    "language": "言語",
+    "darkMode": "ダークモード",
+    "help": "ヘルプ",
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー"
+  },
+  "editProfile": {
+    "title": "プロフィール編集",
+    "name": "名前",
+    "namePlaceholder": "名前を入力",
+    "save": "保存",
+    "alerts": {
+      "nameRequired": "名前を入力してください",
+      "success": "プロフィールが更新されました",
+      "failed": "プロフィールの更新に失敗しました"
+    }
+  },
+  "changePassword": {
+    "title": "パスワード変更",
+    "current": "現在のパスワード",
+    "currentPlaceholder": "現在のパスワードを入力",
+    "new": "新しいパスワード",
+    "newPlaceholder": "新しいパスワードを入力（6文字以上）",
+    "confirm": "新しいパスワードの確認",
+    "confirmPlaceholder": "新しいパスワードを再入力",
+    "submit": "パスワードを変更",
+    "alerts": {
+      "allFieldsRequired": "すべての項目を入力してください",
+      "minLength": "新しいパスワードは6文字以上である必要があります",
+      "mismatch": "新しいパスワードが一致しません",
+      "success": "パスワードが変更されました",
+      "failed": "パスワードの変更に失敗しました"
+    }
+  },
+  "languageSelector": {
+    "title": "言語を選択",
+    "description": "アプリで使用する言語を選択してください"
+  },
+  "logout": {
+    "title": "ログアウト",
+    "message": "本当にログアウトしますか？",
+    "button": "ログアウト"
+  },
+  "deleteAccount": {
+    "title": "アカウント削除",
+    "message": "アカウントを削除すると、すべてのデータが完全に削除されます。本当に削除しますか？",
+    "button": "アカウントを削除",
+    "alerts": {
+      "success": "アカウントが削除されました",
+      "failed": "アカウントの削除に失敗しました"
+    }
+  },
+  "version": "バージョン"
+}

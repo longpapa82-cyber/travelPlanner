@@ -1,0 +1,65 @@
+{
+  "title": "Profile",
+  "guest": "Guest",
+  "sections": {
+    "account": "Account",
+    "settings": "Settings",
+    "support": "Support"
+  },
+  "menu": {
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "help": "Help",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
+  },
+  "editProfile": {
+    "title": "Edit Profile",
+    "name": "Name",
+    "namePlaceholder": "Enter your name",
+    "save": "Save",
+    "alerts": {
+      "nameRequired": "Please enter your name",
+      "success": "Profile updated successfully",
+      "failed": "Failed to update profile"
+    }
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "current": "Current Password",
+    "currentPlaceholder": "Enter current password",
+    "new": "New Password",
+    "newPlaceholder": "Enter new password (6+ characters)",
+    "confirm": "Confirm New Password",
+    "confirmPlaceholder": "Re-enter new password",
+    "submit": "Change Password",
+    "alerts": {
+      "allFieldsRequired": "Please fill in all fields",
+      "minLength": "New password must be at least 6 characters",
+      "mismatch": "New passwords do not match",
+      "success": "Password changed successfully",
+      "failed": "Failed to change password"
+    }
+  },
+  "languageSelector": {
+    "title": "Select Language",
+    "description": "Choose your preferred language"
+  },
+  "logout": {
+    "title": "Log Out",
+    "message": "Are you sure you want to log out?",
+    "button": "Log Out"
+  },
+  "deleteAccount": {
+    "title": "Delete Account",
+    "message": "Deleting your account will permanently remove all data. Are you sure?",
+    "button": "Delete Account",
+    "alerts": {
+      "success": "Account deleted successfully",
+      "failed": "Failed to delete account"
+    }
+  },
+  "version": "Version"
+}

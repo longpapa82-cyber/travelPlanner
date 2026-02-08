@@ -10,6 +10,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 
@@ -25,6 +26,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   variant = 'full',
 }) => {
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('components');
   const styles = createStyles(theme, isDark);
 
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -57,7 +59,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
       <View style={styles.header}>
         <View style={styles.labelContainer}>
           <Icon name="check-circle-outline" size={20} color={progressColor} />
-          <Text style={styles.label}>진행 현황</Text>
+          <Text style={styles.label}>{t('progressIndicator.title')}</Text>
         </View>
         <Text style={[styles.percentage, { color: progressColor }]}>
           {percentage}%
@@ -79,7 +81,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 
       {/* Status Text */}
       <Text style={styles.statusText}>
-        {completed}개 완료 / 총 {total}개 활동
+        {t('progressIndicator.status', { completed, total })}
       </Text>
     </View>
   );

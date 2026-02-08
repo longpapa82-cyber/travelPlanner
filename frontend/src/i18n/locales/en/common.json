@@ -1,0 +1,28 @@
+{
+  "confirm": "OK",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "close": "Close",
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "retry": "Retry",
+  "back": "Back",
+  "next": "Next",
+  "done": "Done",
+  "search": "Search",
+  "seeAll": "See all →",
+  "findOnProvider": "Find on {{name}}",
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "message": "An unexpected error occurred.\nPlease try again.",
+    "retry": "Try Again"
+  },
+  "tabs": {
+    "home": "Home",
+    "trips": "My Trips",
+    "profile": "Profile"
+  }
+}

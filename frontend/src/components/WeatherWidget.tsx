@@ -11,6 +11,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 import { Weather } from '../types';
@@ -77,6 +78,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
   compact = false,
 }) => {
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('components');
   const styles = createStyles(theme, isDark);
 
   if (!weather && !timezone) {
@@ -124,12 +126,12 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
           <View style={styles.detailsRow}>
             <View style={styles.detailItem}>
               <Icon name="water-percent" size={18} color={colors.primary[400]} />
-              <Text style={styles.detailText}>습도 {weather.humidity}%</Text>
+              <Text style={styles.detailText}>{t('weatherWidget.humidity')} {weather.humidity}%</Text>
             </View>
             {weather.windSpeed !== undefined && weather.windSpeed > 0 && (
               <View style={styles.detailItem}>
                 <Icon name="weather-windy" size={18} color={colors.primary[400]} />
-                <Text style={styles.detailText}>풍속 {weather.windSpeed.toFixed(1)}m/s</Text>
+                <Text style={styles.detailText}>{t('weatherWidget.windSpeed')} {weather.windSpeed.toFixed(1)}m/s</Text>
               </View>
             )}
           </View>

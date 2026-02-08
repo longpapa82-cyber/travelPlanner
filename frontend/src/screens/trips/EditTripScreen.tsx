@@ -25,6 +25,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 import { TripsStackParamList, Trip } from '../../types';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -32,6 +33,7 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
+import { getDateLocale } from '../../utils/dateLocale';
 
 type EditTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'EditTrip'>;
 type EditTripScreenRouteProp = RouteProp<TripsStackParamList, 'EditTrip'>;
@@ -41,22 +43,22 @@ interface Props {
   route: EditTripScreenRouteProp;
 }
 
-// Popular destination suggestions
-const POPULAR_DESTINATIONS = [
-  { name: '도쿄', icon: 'torii-gate', color: colors.travel.sunset },
-  { name: '파리', icon: 'eiffel-tower', color: colors.travel.forest },
-  { name: '뉴욕', icon: 'city', color: colors.travel.ocean },
-  { name: '방콕', icon: 'palm-tree', color: colors.travel.sunset },
-  { name: '런던', icon: 'bridge', color: colors.neutral[600] },
-  { name: '바르셀로나', icon: 'beach', color: colors.warning.main },
+// Popular destination suggestions (META pattern for i18n)
+const DESTINATION_META = [
+  { key: 'create.destinations.tokyo' as const, icon: 'torii-gate', color: colors.travel.sunset },
+  { key: 'create.destinations.osaka' as const, icon: 'eiffel-tower', color: colors.travel.forest },
+  { key: 'create.destinations.newyork' as const, icon: 'city', color: colors.travel.ocean },
+  { key: 'create.destinations.bangkok' as const, icon: 'palm-tree', color: colors.travel.sunset },
+  { key: 'create.destinations.london' as const, icon: 'bridge', color: colors.neutral[600] },
+  { key: 'create.destinations.barcelona' as const, icon: 'beach', color: colors.warning.main },
 ];
 
-// Traveler quick picks
-const TRAVELER_OPTIONS = [
-  { count: 1, label: '나 혼자', icon: 'account' },
-  { count: 2, label: '2명', icon: 'account-multiple' },
-  { count: 4, label: '3-4명', icon: 'account-group' },
-  { count: 6, label: '5명 이상', icon: 'account-supervisor' },
+// Traveler quick picks (META pattern for i18n)
+const TRAVELER_META = [
+  { count: 1, key: 'create.travelers.options.solo' as const, icon: 'account' },
+  { count: 2, key: 'create.travelers.options.two' as const, icon: 'account-multiple' },
+  { count: 4, key: 'create.travelers.options.group' as const, icon: 'account-group' },
+  { count: 6, key: 'create.travelers.options.large' as const, icon: 'account-supervisor' },
 ];
 
 const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
@@ -65,6 +67,11 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('trips');
+
+  // Derive translated arrays from META constants
+  const destinations = DESTINATION_META.map((d) => ({ ...d, name: t(d.key) }));
+  const travelerOptions = TRAVELER_META.map((m) => ({ ...m, label: t(m.key) }));
 
   // Form state
   const [destination, setDestination] = useState('');
@@ -104,9 +111,9 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       // Check if trip is completed - redirect to detail view
       if (data.status === 'completed') {
         if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-          window.alert('완료된 여행은 수정할 수 없습니다.');
+          window.alert(t('edit.alerts.cannotEditCompleted'));
         } else {
-          Alert.alert('수정 불가', '완료된 여행은 수정할 수 없습니다.');
+          Alert.alert(t('edit.alerts.cannotEditTitle'), t('edit.alerts.cannotEditCompleted'));
         }
         navigation.replace('TripDetail', { tripId });
         return;
@@ -122,9 +129,9 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
     } catch (error) {
       console.error('Failed to fetch trip details:', error);
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert('여행 정보를 불러올 수 없습니다.');
+        window.alert(t('edit.alerts.loadError'));
       } else {
-        Alert.alert('오류', '여행 정보를 불러올 수 없습니다.');
+        Alert.alert(t('common:error'), t('edit.alerts.loadError'));
       }
       navigation.goBack();
     } finally {
@@ -154,18 +161,18 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
     // Validation
     if (!destination.trim()) {
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert('여행 목적지를 입력해주세요.');
+        window.alert(t('edit.alerts.destinationRequired'));
       } else {
-        Alert.alert('필수 입력', '여행 목적지를 입력해주세요.');
+        Alert.alert(t('edit.alerts.requiredInput'), t('edit.alerts.destinationRequired'));
       }
       return;
     }
 
     if (!startDate || !endDate) {
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert('여행 날짜를 선택해주세요.');
+        window.alert(t('edit.alerts.datesRequired'));
       } else {
-        Alert.alert('필수 입력', '여행 날짜를 선택해주세요.');
+        Alert.alert(t('edit.alerts.requiredInput'), t('edit.alerts.datesRequired'));
       }
       return;
     }
@@ -175,9 +182,9 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
     if (start >= end) {
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert('종료일은 시작일 이후여야 합니다.');
+        window.alert(t('edit.alerts.endDateError'));
       } else {
-        Alert.alert('날짜 오류', '종료일은 시작일 이후여야 합니다.');
+        Alert.alert(t('edit.alerts.dateError'), t('edit.alerts.endDateError'));
       }
       return;
     }
@@ -189,17 +196,15 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
       if (startDate !== originalStart || endDate !== originalEnd) {
         if (Platform.OS === 'web') {
-          const confirmed = window.confirm(
-            '진행 중인 여행의 날짜를 변경하면 일정에 영향을 줄 수 있습니다. 계속하시겠습니까?'
-          );
+          const confirmed = window.confirm(t('edit.alerts.dateChangeWarning'));
           if (!confirmed) return;
         } else {
           Alert.alert(
-            '날짜 변경 경고',
-            '진행 중인 여행의 날짜를 변경하면 일정에 영향을 줄 수 있습니다. 계속하시겠습니까?',
+            t('edit.alerts.dateChangeWarningTitle'),
+            t('edit.alerts.dateChangeWarning'),
             [
-              { text: '취소', style: 'cancel' },
-              { text: '계속', onPress: () => saveTrip() },
+              { text: t('common:cancel'), style: 'cancel' },
+              { text: t('edit.alerts.continue'), onPress: () => saveTrip() },
             ]
           );
           return;
@@ -224,15 +229,15 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       await apiService.updateTrip(tripId, tripData);
 
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert('여행 정보가 수정되었습니다.');
+        window.alert(t('edit.alerts.saveSuccessMessage'));
         navigation.navigate('TripDetail', { tripId });
       } else {
         Alert.alert(
-          '수정 완료',
-          '여행 정보가 수정되었습니다.',
+          t('edit.alerts.saveSuccess'),
+          t('edit.alerts.saveSuccessMessage'),
           [
             {
-              text: '확인',
+              text: t('common:confirm'),
               onPress: () => navigation.navigate('TripDetail', { tripId }),
             },
           ]
@@ -240,12 +245,12 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       }
     } catch (error: any) {
       console.error('Trip update error:', error);
-      const message = error.response?.data?.message || '여행 정보를 수정할 수 없습니다. 다시 시도해주세요.';
+      const message = error.response?.data?.message || t('edit.alerts.saveError');
 
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
         window.alert(message);
       } else {
-        Alert.alert('수정 실패', message);
+        Alert.alert(t('edit.alerts.saveFailed'), message);
       }
     } finally {
       setIsSaving(false);
@@ -255,7 +260,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const formatDateForDisplay = (dateString: string): string => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
+    return date.toLocaleDateString(getDateLocale(), {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -263,12 +268,12 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const getStatusBadge = (status: string) => {
-    const statusMap: { [key: string]: { label: string; color: string; icon: string } } = {
-      upcoming: { label: '예정', color: colors.primary[500], icon: 'calendar-clock' },
-      ongoing: { label: '진행중', color: colors.success.main, icon: 'airplane' },
-      completed: { label: '완료', color: colors.neutral[500], icon: 'check-circle' },
+    const statusConfig: { [key: string]: { label: string; color: string; icon: string } } = {
+      upcoming: { label: t('edit.status.upcoming'), color: colors.primary[500], icon: 'calendar-clock' },
+      ongoing: { label: t('edit.status.ongoing'), color: colors.success.main, icon: 'airplane' },
+      completed: { label: t('edit.status.completed'), color: colors.neutral[500], icon: 'check-circle' },
     };
-    return statusMap[status] || statusMap.upcoming;
+    return statusConfig[status] || statusConfig.upcoming;
   };
 
   const duration = calculateDuration();
@@ -278,7 +283,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={styles.loadingText}>여행 정보를 불러오는 중...</Text>
+        <Text style={styles.loadingText}>{t('edit.loading')}</Text>
       </View>
     );
   }
@@ -287,10 +292,10 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
     return (
       <View style={styles.errorContainer}>
         <Text style={[styles.errorText, { color: theme.colors.text }]}>
-          여행을 찾을 수 없습니다
+          {t('edit.notFound')}
         </Text>
         <Button variant="primary" size="md" onPress={() => navigation.goBack()}>
-          돌아가기
+          {t('edit.goBack')}
         </Button>
       </View>
     );
@@ -341,7 +346,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
               ]}
             >
               <View style={styles.heroHeader}>
-                <Text style={styles.heroTitle}>여행 정보 수정</Text>
+                <Text style={styles.heroTitle}>{t('edit.heroTitle')}</Text>
                 <View style={[styles.statusBadge, { backgroundColor: statusBadge.color }]}>
                   <Icon name={statusBadge.icon} size={14} color={colors.neutral[0]} />
                   <Text style={styles.statusBadgeText}>{statusBadge.label}</Text>
@@ -354,7 +359,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 <View style={styles.warningBox}>
                   <Icon name="alert" size={16} color={colors.warning.main} />
                   <Text style={styles.warningText}>
-                    진행 중인 여행입니다. 날짜 변경 시 주의하세요.
+                    {t('edit.ongoingWarning')}
                   </Text>
                 </View>
               )}
@@ -376,13 +381,13 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
             <View style={styles.sectionHeader}>
               <Icon name="map-marker" size={24} color={theme.colors.primary} />
               <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                여행 목적지
+                {t('edit.destination.title')}
               </Text>
             </View>
 
             {/* Popular Destinations */}
             <View style={styles.quickPicks}>
-              {POPULAR_DESTINATIONS.map((dest, index) => (
+              {destinations.map((dest, index) => (
                 <TouchableOpacity
                   key={index}
                   style={[
@@ -436,7 +441,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
               </View>
               <TextInput
                 style={[styles.input, { color: theme.colors.text }]}
-                placeholder="또는 직접 입력하세요"
+                placeholder={t('edit.destination.placeholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={destination}
                 onChangeText={setDestination}
@@ -451,13 +456,13 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
             <View style={styles.sectionHeader}>
               <Icon name="calendar-range" size={24} color={theme.colors.primary} />
               <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                여행 기간
+                {t('edit.dates.title')}
               </Text>
               {isOngoing && (
                 <View style={styles.cautionBadge}>
                   <Icon name="alert" size={12} color={colors.warning.main} />
                   <Text style={[styles.cautionText, { color: colors.warning.main }]}>
-                    변경 주의
+                    {t('edit.dates.changeWarning')}
                   </Text>
                 </View>
               )}
@@ -466,7 +471,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
             {/* Date Inputs */}
             <View style={styles.dateRow}>
               <DatePickerField
-                label="시작일"
+                label={t('create.dates.start')}
                 value={startDate}
                 onChange={setStartDate}
                 disabled={isSaving}
@@ -478,7 +483,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 style={styles.dateArrow}
               />
               <DatePickerField
-                label="종료일"
+                label={t('create.dates.end')}
                 value={endDate}
                 onChange={setEndDate}
                 minimumDate={startDate ? new Date(startDate + 'T00:00:00') : undefined}
@@ -491,7 +496,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <View style={styles.durationDisplay}>
                 <Icon name="calendar" size={16} color={theme.colors.primary} />
                 <Text style={[styles.durationText, { color: theme.colors.primary }]}>
-                  총 {duration}일간의 여행
+                  {t('edit.dates.totalDays', { days: duration })}
                 </Text>
               </View>
             )}
@@ -502,13 +507,13 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
             <View style={styles.sectionHeader}>
               <Icon name="account-group" size={24} color={theme.colors.primary} />
               <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                여행 인원
+                {t('edit.travelers.title')}
               </Text>
             </View>
 
             {/* Traveler Quick Picks */}
             <View style={styles.quickPicks}>
-              {TRAVELER_OPTIONS.map((option, index) => (
+              {travelerOptions.map((option, index) => (
                 <TouchableOpacity
                   key={index}
                   style={[
@@ -562,7 +567,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
               </View>
               <TextInput
                 style={[styles.input, { color: theme.colors.text }]}
-                placeholder="또는 직접 입력하세요"
+                placeholder={t('edit.travelers.placeholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={numberOfTravelers.toString()}
                 onChangeText={(text) => {
@@ -582,14 +587,14 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
             <View style={styles.sectionHeader}>
               <Icon name="text" size={24} color={theme.colors.primary} />
               <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                여행 설명 (선택)
+                {t('edit.notes.title')}
               </Text>
             </View>
 
             <View style={styles.textAreaWrapper}>
               <TextInput
                 style={[styles.textArea, { color: theme.colors.text }]}
-                placeholder="여행의 목적이나 특별한 요구사항을 자유롭게 입력하세요"
+                placeholder={t('edit.notes.placeholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={description}
                 onChangeText={setDescription}
@@ -612,7 +617,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
               loading={isSaving}
               disabled={isSaving}
             >
-              {isSaving ? '저장 중...' : '여행 정보 저장'}
+              {isSaving ? t('edit.saving') : t('edit.submit')}
             </Button>
           </View>
         </Animated.View>

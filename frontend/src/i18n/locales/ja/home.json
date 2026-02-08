@@ -1,0 +1,57 @@
+{
+  "greeting": "こんにちは 👋",
+  "subtitle": "次の冒険を計画しましょう！",
+  "createTrip": "AI旅行プランを作成",
+  "stats": {
+    "completed": "完了",
+    "ongoing": "進行中",
+    "upcoming": "予定"
+  },
+  "featured": {
+    "title": "今おすすめの旅行先",
+    "subtitle": "人気の旅行先を探索",
+    "seeAll": "すべて見る →"
+  },
+  "destinations": {
+    "tokyo": {
+      "name": "東京",
+      "country": "日本",
+      "description": "伝統と現代が共存する都市"
+    },
+    "osaka": {
+      "name": "大阪",
+      "country": "日本",
+      "description": "グルメの街、活気ある街並み"
+    },
+    "bangkok": {
+      "name": "バンコク",
+      "country": "タイ",
+      "description": "黄金の寺院とナイトマーケット"
+    },
+    "danang": {
+      "name": "ダナン",
+      "country": "ベトナム",
+      "description": "美しいビーチとグルメ"
+    },
+    "paris": {
+      "name": "パリ",
+      "country": "フランス",
+      "description": "芸術とロマンスの都"
+    },
+    "singapore": {
+      "name": "シンガポール",
+      "country": "シンガポール",
+      "description": "未来都市でのグルメ旅"
+    }
+  },
+  "quickActions": {
+    "myTrips": "旅行一覧",
+    "myTripsDesc": "進行中の旅行を確認",
+    "inspiration": "旅のインスピレーション",
+    "inspirationDesc": "新しいアイデアを探索"
+  },
+  "tip": {
+    "title": "💡 事前に計画しましょう",
+    "description": "AIが現地の天気、人気スポット、移動ルートを考慮した最適な旅程を作成します。"
+  }
+}

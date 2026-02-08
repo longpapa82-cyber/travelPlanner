@@ -1,0 +1,57 @@
+{
+  "greeting": "Hello 👋",
+  "subtitle": "Ready to plan your next adventure?",
+  "createTrip": "Create AI Travel Plan",
+  "stats": {
+    "completed": "Completed",
+    "ongoing": "Ongoing",
+    "upcoming": "Upcoming"
+  },
+  "featured": {
+    "title": "Great Places to Visit Now",
+    "subtitle": "Explore popular destinations",
+    "seeAll": "See all →"
+  },
+  "destinations": {
+    "tokyo": {
+      "name": "Tokyo",
+      "country": "Japan",
+      "description": "Where tradition meets modernity"
+    },
+    "osaka": {
+      "name": "Osaka",
+      "country": "Japan",
+      "description": "City of flavors and vibrant streets"
+    },
+    "bangkok": {
+      "name": "Bangkok",
+      "country": "Thailand",
+      "description": "Golden temples and night markets"
+    },
+    "danang": {
+      "name": "Da Nang",
+      "country": "Vietnam",
+      "description": "Beautiful beaches and great food"
+    },
+    "paris": {
+      "name": "Paris",
+      "country": "France",
+      "description": "City of art and romance"
+    },
+    "singapore": {
+      "name": "Singapore",
+      "country": "Singapore",
+      "description": "A culinary journey in a futuristic city"
+    }
+  },
+  "quickActions": {
+    "myTrips": "My Trips",
+    "myTripsDesc": "Check ongoing trips",
+    "inspiration": "Inspiration",
+    "inspirationDesc": "Explore new ideas"
+  },
+  "tip": {
+    "title": "💡 Plan Ahead",
+    "description": "AI creates the optimal itinerary considering local weather, popular spots, and travel routes."
+  }
+}

@@ -33,6 +33,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import Button from '../../components/core/Button';
 import { WeatherWidget } from '../../components/WeatherWidget';
 
@@ -80,6 +81,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<'upcoming' | 'ongoing' | 'completed' | null>(null);
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation('trips');
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -172,26 +174,26 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
         // Remove from local state immediately
         setTrips(prev => prev.filter(t => t.id !== trip.id));
       } catch (error: any) {
-        const msg = error.response?.data?.message || '여행 삭제 중 오류가 발생했습니다.';
+        const msg = error.response?.data?.message || t('list.alerts.deleteFailed');
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
           window.alert(msg);
         } else {
-          Alert.alert('오류', msg);
+          Alert.alert(t('list.alerts.error'), msg);
         }
       }
     };
 
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      if (window.confirm(`"${trip.destination}" 여행을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+      if (window.confirm(t('list.alerts.deleteMessage', { name: trip.destination }))) {
         doDelete();
       }
     } else {
       Alert.alert(
-        '여행 삭제',
-        `"${trip.destination}" 여행을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`,
+        t('list.alerts.deleteTitle'),
+        t('list.alerts.deleteMessage', { name: trip.destination }),
         [
-          { text: '취소', style: 'cancel' },
-          { text: '삭제', style: 'destructive', onPress: doDelete },
+          { text: t('list.alerts.cancel'), style: 'cancel' },
+          { text: t('list.alerts.delete'), style: 'destructive', onPress: doDelete },
         ]
       );
     }
@@ -199,7 +201,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
+    return date.toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -208,7 +210,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
 
   const formatDateShort = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
+    return date.toLocaleDateString(undefined, {
       month: 'short',
       day: 'numeric',
     });
@@ -227,21 +229,21 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
         return {
           color: colors.travel.ocean,
           icon: 'calendar-clock',
-          text: '예정',
+          text: t('list.status.upcoming'),
           bgColor: colors.travel.ocean,
         };
       case 'ongoing':
         return {
           color: colors.success.main,
           icon: 'airplane',
-          text: '진행중',
+          text: t('list.status.ongoing'),
           bgColor: colors.success.main,
         };
       case 'completed':
         return {
           color: colors.neutral[500],
           icon: 'check-circle',
-          text: '완료',
+          text: t('list.status.completed'),
           bgColor: colors.neutral[500],
         };
       default:
@@ -283,9 +285,9 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
           style={styles.tripCard}
           onPress={() => navigation.navigate('TripDetail', { tripId: trip.id })}
           activeOpacity={0.9}
-          accessibilityLabel={`${trip.destination} 여행, ${getStatusConfig(trip.status).text}`}
+          accessibilityLabel={`${trip.destination} ${t('list.accessibility.trip')}, ${getStatusConfig(trip.status).text}`}
           accessibilityRole="button"
-          accessibilityHint="여행 상세 보기"
+          accessibilityHint={t('list.accessibility.viewDetail')}
         >
           <ImageBackground
             source={{ uri: imageUrl }}
@@ -324,7 +326,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                     onPress={() => handleDeleteTrip(trip)}
                     activeOpacity={0.7}
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    accessibilityLabel={`${trip.destination} 여행 삭제`}
+                    accessibilityLabel={`${trip.destination} ${t('list.accessibility.deleteTrip')}`}
                     accessibilityRole="button"
                   >
                     <Icon name="delete-outline" size={20} color={colors.neutral[0]} />
@@ -354,16 +356,16 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                 <View style={styles.infoRow}>
                   <View style={styles.infoItem}>
                     <Icon name="calendar" size={14} color={colors.neutral[300]} />
-                    <Text style={styles.infoText}>{duration}일</Text>
+                    <Text style={styles.infoText}>{t('list.info.days', { count: duration })}</Text>
                   </View>
                   <View style={styles.infoItem}>
                     <Icon name="format-list-checks" size={14} color={colors.neutral[300]} />
-                    <Text style={styles.infoText}>{trip.itineraries.length}개 일정</Text>
+                    <Text style={styles.infoText}>{t('list.info.itineraries', { count: trip.itineraries.length })}</Text>
                   </View>
                   {trip.numberOfTravelers && (
                     <View style={styles.infoItem}>
                       <Icon name="account-group" size={14} color={colors.neutral[300]} />
-                      <Text style={styles.infoText}>{trip.numberOfTravelers}명</Text>
+                      <Text style={styles.infoText}>{t('list.info.travelers', { count: trip.numberOfTravelers })}</Text>
                     </View>
                   )}
                 </View>
@@ -473,7 +475,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
             fullWidth
             onPress={() => navigation.navigate('CreateTrip')}
           >
-            새 여행 계획 만들기
+            {t('list.createButton')}
           </Button>
         </Animated.View>
 
@@ -490,12 +492,12 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
             <Icon name="magnify" size={20} color={theme.colors.textSecondary} />
             <TextInput
               style={[styles.searchInput, { color: theme.colors.text }]}
-              placeholder="여행지 또는 설명 검색..."
+              placeholder={t('list.searchPlaceholder')}
               placeholderTextColor={theme.colors.textSecondary}
               value={searchText}
               onChangeText={handleSearchChange}
-              accessibilityLabel="여행 검색"
-              accessibilityHint="여행지명 또는 설명을 입력하여 검색"
+              accessibilityLabel={t('list.accessibility.search')}
+              accessibilityHint={t('list.accessibility.searchHint')}
             />
             {searchText.length > 0 && (
               <TouchableOpacity onPress={() => handleSearchChange('')}>
@@ -540,7 +542,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                   },
                 ]}
               >
-                전체
+                {t('list.filters.all')}
               </Text>
             </TouchableOpacity>
 
@@ -570,7 +572,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                   },
                 ]}
               >
-                예정
+                {t('list.filters.upcoming')}
               </Text>
             </TouchableOpacity>
 
@@ -600,7 +602,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                   },
                 ]}
               >
-                진행중
+                {t('list.filters.ongoing')}
               </Text>
             </TouchableOpacity>
 
@@ -630,7 +632,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                   },
                 ]}
               >
-                완료
+                {t('list.filters.completed')}
               </Text>
             </TouchableOpacity>
           </ScrollView>
@@ -649,16 +651,16 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               <>
                 <View style={styles.resultHeader}>
                   <Text style={[styles.resultCount, { color: theme.colors.textSecondary }]}>
-                    {trips.length}개의 여행
+                    {t('list.resultCount', { count: trips.length })}
                   </Text>
                 </View>
                 {trips.map((trip, index) => renderTripCard(trip, index))}
               </>
             ) : (
               <>
-                {renderSection('진행중인 여행', groupedTrips.ongoing, 'airplane')}
-                {renderSection('다가오는 여행', groupedTrips.upcoming, 'calendar-clock')}
-                {renderSection('완료된 여행', groupedTrips.completed, 'check-circle')}
+                {renderSection(t('list.sections.ongoing'), groupedTrips.ongoing, 'airplane')}
+                {renderSection(t('list.sections.upcoming'), groupedTrips.upcoming, 'calendar-clock')}
+                {renderSection(t('list.sections.completed'), groupedTrips.completed, 'check-circle')}
               </>
             )}
           </Animated.View>
@@ -689,10 +691,10 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               />
             </View>
             <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>
-              아직 계획된 여행이 없습니다
+              {t('list.empty.title')}
             </Text>
             <Text style={[styles.emptyDescription, { color: theme.colors.textSecondary }]}>
-              첫 여행 계획을 만들어보세요!{'\n'}AI가 완벽한 일정을 만들어드립니다.
+              {t('list.empty.description')}
             </Text>
             <View style={styles.emptyButtonWrapper}>
               <Button
@@ -701,7 +703,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                 icon="sparkles"
                 onPress={() => navigation.navigate('CreateTrip')}
               >
-                AI 여행 계획 시작하기
+                {t('list.empty.cta')}
               </Button>
             </View>
           </Animated.View>

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { API_URL, STORAGE_KEYS } from '../constants/config';
 import { secureStorage } from '../utils/storage';
+import { getCurrentLanguage } from '../i18n';
 
 class ApiService {
   private api: AxiosInstance;
@@ -32,6 +33,7 @@ class ApiService {
           if (token) {
             config.headers.Authorization = `Bearer ${token}`;
           }
+          config.headers['Accept-Language'] = getCurrentLanguage();
         } catch (error) {
           console.error('Error loading auth token:', error);
         }

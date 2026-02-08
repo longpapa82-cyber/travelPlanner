@@ -1,0 +1,57 @@
+{
+  "greeting": "안녕하세요 👋",
+  "subtitle": "다음 모험을 계획해볼까요?",
+  "createTrip": "AI 여행 계획 만들기",
+  "stats": {
+    "completed": "여행 완료",
+    "ongoing": "진행 중",
+    "upcoming": "예정"
+  },
+  "featured": {
+    "title": "지금 떠나기 좋은 곳",
+    "subtitle": "인기 여행지를 둘러보세요",
+    "seeAll": "전체보기 →"
+  },
+  "destinations": {
+    "tokyo": {
+      "name": "도쿄",
+      "country": "일본",
+      "description": "전통과 현대가 공존하는 도시"
+    },
+    "osaka": {
+      "name": "오사카",
+      "country": "일본",
+      "description": "맛의 도시, 활기찬 거리"
+    },
+    "bangkok": {
+      "name": "방콕",
+      "country": "태국",
+      "description": "황금빛 사원과 야시장"
+    },
+    "danang": {
+      "name": "다낭",
+      "country": "베트남",
+      "description": "아름다운 해변과 맛집"
+    },
+    "paris": {
+      "name": "파리",
+      "country": "프랑스",
+      "description": "예술과 낭만의 도시"
+    },
+    "singapore": {
+      "name": "싱가포르",
+      "country": "싱가포르",
+      "description": "미래도시에서의 미식여행"
+    }
+  },
+  "quickActions": {
+    "myTrips": "내 여행",
+    "myTripsDesc": "진행 중인 여행 확인",
+    "inspiration": "여행 영감",
+    "inspirationDesc": "새로운 아이디어 탐색"
+  },
+  "tip": {
+    "title": "💡 미리 계획하세요",
+    "description": "AI가 현지 날씨, 인기 장소, 이동 경로까지 고려한 최적의 일정을 만들어드립니다."
+  }
+}
