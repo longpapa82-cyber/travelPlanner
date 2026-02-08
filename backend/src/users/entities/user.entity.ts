@@ -19,11 +19,11 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true, nullable: true })
-  email: string;
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  email?: string;
 
-  @Column({ nullable: true })
-  passwordHash: string;
+  @Column({ type: 'varchar', nullable: true })
+  passwordHash?: string;
 
   @Column({
     type: 'enum',
@@ -32,14 +32,14 @@ export class User {
   })
   provider: AuthProvider;
 
-  @Column({ nullable: true })
-  providerId: string;
+  @Column({ type: 'varchar', nullable: true })
+  providerId?: string;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   name: string;
 
-  @Column({ nullable: true })
-  profileImage: string;
+  @Column({ type: 'varchar', nullable: true })
+  profileImage?: string;
 
   @Column({ default: true })
   isActive: boolean;

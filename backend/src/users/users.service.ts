@@ -23,14 +23,14 @@ export class UsersService {
       email: data.email,
       passwordHash: data.password
         ? await bcrypt.hash(data.password, 10)
-        : null,
+        : undefined,
       name: data.name,
       provider: data.provider,
       providerId: data.providerId,
       profileImage: data.profileImage,
     });
 
-    return this.userRepository.save(user);
+    return await this.userRepository.save(user);
   }
 
   async findById(id: string): Promise<User> {

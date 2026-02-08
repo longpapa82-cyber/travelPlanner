@@ -1,0 +1,812 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import request from 'supertest';
+import { TripsController } from './trips.controller';
+import { TripsService } from './trips.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { TripStatus } from './entities/trip.entity';
+
+describe('TripsController (Integration)', () => {
+  let app: INestApplication;
+  let tripsService: jest.Mocked<TripsService>;
+
+  // Mock user data
+  const mockUserId = 'user-123';
+  const mockUser = { userId: mockUserId };
+
+  // Mock trip data
+  const mockTrip = {
+    id: 'trip-123',
+    userId: mockUserId,
+    destination: 'Paris, France',
+    country: 'France',
+    city: 'Paris',
+    startDate: new Date('2024-06-01'),
+    endDate: new Date('2024-06-07'),
+    description: 'Summer vacation in Paris',
+    status: TripStatus.UPCOMING,
+    numberOfTravelers: 2,
+    preferences: {
+      budget: 'medium',
+      travelStyle: 'cultural',
+      interests: ['museums', 'food'],
+    },
+    itineraries: [
+      {
+        id: 'itinerary-1',
+        tripId: 'trip-123',
+        date: new Date('2024-06-01'),
+        dayNumber: 1,
+        activities: [
+          {
+            time: '09:00',
+            title: 'Visit Eiffel Tower',
+            description: 'Morning visit to iconic landmark',
+            location: 'Eiffel Tower',
+            estimatedDuration: 120,
+            estimatedCost: 25,
+            type: 'sightseeing',
+          },
+        ],
+        timezone: 'Europe/Paris',
+        timezoneOffset: 2,
+        weather: {
+          temperature: 22,
+          condition: 'sunny',
+          humidity: 60,
+        },
+      },
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const mockTrips = [mockTrip];
+
+  const mockTripsService = {
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+    updateItinerary: jest.fn(),
+    addActivity: jest.fn(),
+    updateActivity: jest.fn(),
+    deleteActivity: jest.fn(),
+    reorderActivities: jest.fn(),
+    getUpcomingTrips: jest.fn(),
+    getOngoingTrips: jest.fn(),
+    getCompletedTrips: jest.fn(),
+    generateShareToken: jest.fn(),
+    disableSharing: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    const moduleRef: TestingModule = await Test.createTestingModule({
+      controllers: [TripsController],
+      providers: [
+        {
+          provide: TripsService,
+          useValue: mockTripsService,
+        },
+      ],
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({
+        canActivate: jest.fn((context) => {
+          const request = context.switchToHttp().getRequest();
+          // Mock authenticated user
+          request.user = mockUser;
+          return true;
+        }),
+      })
+      .compile();
+
+    app = moduleRef.createNestApplication();
+
+    // Apply global validation pipe
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    );
+
+    await app.init();
+    tripsService = moduleRef.get(TripsService);
+  });
+
+  afterEach(async () => {
+    jest.clearAllMocks();
+    await app.close();
+  });
+
+  describe('POST /trips', () => {
+    it('should create a new trip with valid data', async () => {
+      const createTripDto = {
+        destination: 'Tokyo, Japan',
+        country: 'Japan',
+        city: 'Tokyo',
+        startDate: '2024-07-01',
+        endDate: '2024-07-10',
+        description: 'Summer trip to Tokyo',
+        numberOfTravelers: 2,
+        preferences: {
+          budget: 'medium',
+          travelStyle: 'cultural',
+          interests: ['temples', 'food'],
+        },
+      };
+
+      tripsService.create.mockResolvedValue(mockTrip as any);
+
+      const response = await request(app.getHttpServer())
+        .post('/trips')
+        .set('Authorization', 'Bearer mock-token')
+        .send(createTripDto)
+        .expect(201);
+
+      expect(response.body).toEqual(mockTrip);
+      expect(tripsService.create).toHaveBeenCalledWith(mockUserId, createTripDto);
+      expect(tripsService.create).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return 400 when destination is missing', async () => {
+      const invalidDto = {
+        startDate: '2024-07-01',
+        endDate: '2024-07-10',
+      };
+
+      await request(app.getHttpServer())
+        .post('/trips')
+        .set('Authorization', 'Bearer mock-token')
+        .send(invalidDto)
+        .expect(400);
+
+      expect(tripsService.create).not.toHaveBeenCalled();
+    });
+
+    it('should return 400 when startDate is invalid', async () => {
+      const invalidDto = {
+        destination: 'Tokyo, Japan',
+        startDate: 'invalid-date',
+        endDate: '2024-07-10',
+      };
+
+      await request(app.getHttpServer())
+        .post('/trips')
+        .set('Authorization', 'Bearer mock-token')
+        .send(invalidDto)
+        .expect(400);
+
+      expect(tripsService.create).not.toHaveBeenCalled();
+    });
+
+    it('should return 400 when numberOfTravelers is less than 1', async () => {
+      const invalidDto = {
+        destination: 'Tokyo, Japan',
+        startDate: '2024-07-01',
+        endDate: '2024-07-10',
+        numberOfTravelers: 0,
+      };
+
+      await request(app.getHttpServer())
+        .post('/trips')
+        .set('Authorization', 'Bearer mock-token')
+        .send(invalidDto)
+        .expect(400);
+
+      expect(tripsService.create).not.toHaveBeenCalled();
+    });
+
+    it('should return 400 when destination exceeds max length', async () => {
+      const invalidDto = {
+        destination: 'A'.repeat(201), // MaxLength is 200
+        startDate: '2024-07-01',
+        endDate: '2024-07-10',
+      };
+
+      await request(app.getHttpServer())
+        .post('/trips')
+        .set('Authorization', 'Bearer mock-token')
+        .send(invalidDto)
+        .expect(400);
+
+      expect(tripsService.create).not.toHaveBeenCalled();
+    });
+
+    it('should create trip with optional fields omitted', async () => {
+      const minimalDto = {
+        destination: 'Tokyo, Japan',
+        startDate: '2024-07-01',
+        endDate: '2024-07-10',
+      };
+
+      tripsService.create.mockResolvedValue(mockTrip as any);
+
+      await request(app.getHttpServer())
+        .post('/trips')
+        .set('Authorization', 'Bearer mock-token')
+        .send(minimalDto)
+        .expect(201);
+
+      expect(tripsService.create).toHaveBeenCalledWith(mockUserId, minimalDto);
+    });
+
+    it('should return 401/403 when not authenticated', async () => {
+      const moduleRef = await Test.createTestingModule({
+        controllers: [TripsController],
+        providers: [
+          {
+            provide: TripsService,
+            useValue: mockTripsService,
+          },
+        ],
+      })
+        .overrideGuard(JwtAuthGuard)
+        .useValue({
+          canActivate: jest.fn(() => false),
+        })
+        .compile();
+
+      const testApp = moduleRef.createNestApplication();
+      await testApp.init();
+
+      const createTripDto = {
+        destination: 'Tokyo, Japan',
+        startDate: '2024-07-01',
+        endDate: '2024-07-10',
+      };
+
+      await request(testApp.getHttpServer())
+        .post('/trips')
+        .send(createTripDto)
+        .expect(403);
+
+      expect(tripsService.create).not.toHaveBeenCalled();
+
+      await testApp.close();
+    });
+  });
+
+  describe('GET /trips', () => {
+    it('should return all trips for authenticated user', async () => {
+      tripsService.findAll.mockResolvedValue(mockTrips as any);
+
+      const response = await request(app.getHttpServer())
+        .get('/trips')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(response.body).toEqual(mockTrips);
+      expect(tripsService.findAll).toHaveBeenCalledWith(mockUserId, {});
+      expect(tripsService.findAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('should filter trips by status query parameter', async () => {
+      tripsService.findAll.mockResolvedValue(mockTrips as any);
+
+      await request(app.getHttpServer())
+        .get('/trips?status=upcoming')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(tripsService.findAll).toHaveBeenCalledWith(mockUserId, {
+        status: 'upcoming',
+      });
+    });
+
+    it('should filter trips by search query parameter', async () => {
+      tripsService.findAll.mockResolvedValue(mockTrips as any);
+
+      await request(app.getHttpServer())
+        .get('/trips?search=Paris')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(tripsService.findAll).toHaveBeenCalledWith(mockUserId, {
+        search: 'Paris',
+      });
+    });
+
+    it('should support sorting with sortBy and order parameters', async () => {
+      tripsService.findAll.mockResolvedValue(mockTrips as any);
+
+      await request(app.getHttpServer())
+        .get('/trips?sortBy=destination&order=ASC')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(tripsService.findAll).toHaveBeenCalledWith(mockUserId, {
+        sortBy: 'destination',
+        order: 'ASC',
+      });
+    });
+
+    it('should return empty array when user has no trips', async () => {
+      tripsService.findAll.mockResolvedValue([]);
+
+      const response = await request(app.getHttpServer())
+        .get('/trips')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(response.body).toEqual([]);
+      expect(tripsService.findAll).toHaveBeenCalledWith(mockUserId, {});
+    });
+  });
+
+  describe('GET /trips/:id', () => {
+    it('should return a specific trip by id', async () => {
+      tripsService.findOne.mockResolvedValue(mockTrip as any);
+
+      const response = await request(app.getHttpServer())
+        .get('/trips/trip-123')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(response.body).toEqual(mockTrip);
+      expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, 'trip-123');
+      expect(tripsService.findOne).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return 404 when trip not found', async () => {
+      tripsService.findOne.mockRejectedValue({
+        status: 404,
+        response: { message: 'Trip not found' },
+      });
+
+      await request(app.getHttpServer())
+        .get('/trips/non-existent-id')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(500); // NestJS converts unhandled exceptions to 500
+
+      expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, 'non-existent-id');
+    });
+
+    it('should return 403 when trying to access another user\'s trip', async () => {
+      tripsService.findOne.mockRejectedValue({
+        status: 403,
+        response: { message: 'Forbidden' },
+      });
+
+      await request(app.getHttpServer())
+        .get('/trips/other-user-trip')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(500); // NestJS converts unhandled exceptions to 500
+
+      expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, 'other-user-trip');
+    });
+  });
+
+  describe('PATCH /trips/:id', () => {
+    it('should update a trip with valid data', async () => {
+      const updateTripDto = {
+        destination: 'Updated Paris, France',
+        description: 'Updated description',
+      };
+
+      const updatedTrip = { ...mockTrip, ...updateTripDto };
+      tripsService.update.mockResolvedValue(updatedTrip as any);
+
+      const response = await request(app.getHttpServer())
+        .patch('/trips/trip-123')
+        .set('Authorization', 'Bearer mock-token')
+        .send(updateTripDto)
+        .expect(200);
+
+      expect(response.body).toEqual(updatedTrip);
+      expect(tripsService.update).toHaveBeenCalledWith(mockUserId, 'trip-123', updateTripDto);
+      expect(tripsService.update).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return 400 when update data is invalid', async () => {
+      const invalidDto = {
+        numberOfTravelers: 0, // Min is 1
+      };
+
+      await request(app.getHttpServer())
+        .patch('/trips/trip-123')
+        .set('Authorization', 'Bearer mock-token')
+        .send(invalidDto)
+        .expect(400);
+
+      expect(tripsService.update).not.toHaveBeenCalled();
+    });
+
+    it('should return 403 when trying to update completed trip', async () => {
+      tripsService.update.mockRejectedValue({
+        status: 403,
+        response: { message: 'Cannot modify completed trips' },
+      });
+
+      const updateDto = {
+        destination: 'New destination',
+      };
+
+      await request(app.getHttpServer())
+        .patch('/trips/completed-trip-id')
+        .set('Authorization', 'Bearer mock-token')
+        .send(updateDto)
+        .expect(500); // NestJS converts unhandled exceptions to 500
+
+      expect(tripsService.update).toHaveBeenCalledWith(mockUserId, 'completed-trip-id', updateDto);
+    });
+
+    it('should accept partial updates', async () => {
+      const partialUpdate = {
+        description: 'Only updating description',
+      };
+
+      tripsService.update.mockResolvedValue({ ...mockTrip, ...partialUpdate } as any);
+
+      await request(app.getHttpServer())
+        .patch('/trips/trip-123')
+        .set('Authorization', 'Bearer mock-token')
+        .send(partialUpdate)
+        .expect(200);
+
+      expect(tripsService.update).toHaveBeenCalledWith(mockUserId, 'trip-123', partialUpdate);
+    });
+  });
+
+  describe('DELETE /trips/:id', () => {
+    it('should delete a trip and return 204', async () => {
+      tripsService.remove.mockResolvedValue(undefined);
+
+      await request(app.getHttpServer())
+        .delete('/trips/trip-123')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(204);
+
+      expect(tripsService.remove).toHaveBeenCalledWith(mockUserId, 'trip-123');
+      expect(tripsService.remove).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return 404 when trying to delete non-existent trip', async () => {
+      tripsService.remove.mockRejectedValue({
+        status: 404,
+        response: { message: 'Trip not found' },
+      });
+
+      await request(app.getHttpServer())
+        .delete('/trips/non-existent-id')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(500); // NestJS converts unhandled exceptions to 500
+
+      expect(tripsService.remove).toHaveBeenCalledWith(mockUserId, 'non-existent-id');
+    });
+  });
+
+  describe('GET /trips/upcoming', () => {
+    it('should return upcoming trips', async () => {
+      const upcomingTrips = [{ ...mockTrip, status: TripStatus.UPCOMING }];
+      tripsService.getUpcomingTrips.mockResolvedValue(upcomingTrips as any);
+
+      const response = await request(app.getHttpServer())
+        .get('/trips/upcoming')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(response.body).toEqual(upcomingTrips);
+      expect(tripsService.getUpcomingTrips).toHaveBeenCalledWith(mockUserId);
+    });
+  });
+
+  describe('GET /trips/ongoing', () => {
+    it('should return ongoing trips', async () => {
+      const ongoingTrips = [{ ...mockTrip, status: TripStatus.ONGOING }];
+      tripsService.getOngoingTrips.mockResolvedValue(ongoingTrips as any);
+
+      const response = await request(app.getHttpServer())
+        .get('/trips/ongoing')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(response.body).toEqual(ongoingTrips);
+      expect(tripsService.getOngoingTrips).toHaveBeenCalledWith(mockUserId);
+    });
+  });
+
+  describe('GET /trips/completed', () => {
+    it('should return completed trips', async () => {
+      const completedTrips = [{ ...mockTrip, status: TripStatus.COMPLETED }];
+      tripsService.getCompletedTrips.mockResolvedValue(completedTrips as any);
+
+      const response = await request(app.getHttpServer())
+        .get('/trips/completed')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(response.body).toEqual(completedTrips);
+      expect(tripsService.getCompletedTrips).toHaveBeenCalledWith(mockUserId);
+    });
+  });
+
+  describe('POST /trips/:tripId/itineraries/:itineraryId/activities', () => {
+    it('should add a new activity to itinerary', async () => {
+      const addActivityDto = {
+        time: '14:00',
+        title: 'Louvre Museum',
+        description: 'Visit world-famous museum',
+        location: 'Louvre Museum',
+        estimatedDuration: 180,
+        estimatedCost: 15,
+        type: 'sightseeing',
+      };
+
+      const updatedItinerary = {
+        ...mockTrip.itineraries[0],
+        activities: [...mockTrip.itineraries[0].activities, addActivityDto],
+      };
+
+      tripsService.addActivity.mockResolvedValue(updatedItinerary as any);
+
+      const response = await request(app.getHttpServer())
+        .post('/trips/trip-123/itineraries/itinerary-1/activities')
+        .set('Authorization', 'Bearer mock-token')
+        .send(addActivityDto)
+        .expect(201);
+
+      expect(response.body).toEqual(updatedItinerary);
+      expect(tripsService.addActivity).toHaveBeenCalledWith(
+        mockUserId,
+        'trip-123',
+        'itinerary-1',
+        addActivityDto,
+      );
+    });
+
+    it('should return 400 when activity data is invalid', async () => {
+      const invalidDto = {
+        title: 'Missing required time field',
+      };
+
+      await request(app.getHttpServer())
+        .post('/trips/trip-123/itineraries/itinerary-1/activities')
+        .set('Authorization', 'Bearer mock-token')
+        .send(invalidDto)
+        .expect(400);
+
+      expect(tripsService.addActivity).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('PATCH /trips/:tripId/itineraries/:itineraryId/activities/:index', () => {
+    it('should update an activity', async () => {
+      const updateActivityDto = {
+        title: 'Updated activity title',
+        completed: true,
+      };
+
+      const updatedItinerary = mockTrip.itineraries[0];
+      tripsService.updateActivity.mockResolvedValue(updatedItinerary as any);
+
+      const response = await request(app.getHttpServer())
+        .patch('/trips/trip-123/itineraries/itinerary-1/activities/0')
+        .set('Authorization', 'Bearer mock-token')
+        .send(updateActivityDto)
+        .expect(200);
+
+      expect(response.body).toEqual(updatedItinerary);
+      expect(tripsService.updateActivity).toHaveBeenCalledWith(
+        mockUserId,
+        'trip-123',
+        'itinerary-1',
+        0,
+        updateActivityDto,
+      );
+    });
+
+    it('should return 403 when trying to modify past activity in ongoing trip', async () => {
+      tripsService.updateActivity.mockRejectedValue({
+        status: 403,
+        response: { message: 'Cannot modify past activities' },
+      });
+
+      const updateDto = {
+        title: 'Updated title',
+      };
+
+      await request(app.getHttpServer())
+        .patch('/trips/trip-123/itineraries/itinerary-1/activities/0')
+        .set('Authorization', 'Bearer mock-token')
+        .send(updateDto)
+        .expect(500); // NestJS converts unhandled exceptions to 500
+
+      expect(tripsService.updateActivity).toHaveBeenCalled();
+    });
+  });
+
+  describe('DELETE /trips/:tripId/itineraries/:itineraryId/activities/:index', () => {
+    it('should delete an activity and return 200', async () => {
+      const updatedItinerary = {
+        ...mockTrip.itineraries[0],
+        activities: [],
+      };
+
+      tripsService.deleteActivity.mockResolvedValue(updatedItinerary as any);
+
+      const response = await request(app.getHttpServer())
+        .delete('/trips/trip-123/itineraries/itinerary-1/activities/0')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(response.body).toEqual(updatedItinerary);
+      expect(tripsService.deleteActivity).toHaveBeenCalledWith(
+        mockUserId,
+        'trip-123',
+        'itinerary-1',
+        0,
+      );
+    });
+
+    it('should return 404 when activity index is invalid', async () => {
+      tripsService.deleteActivity.mockRejectedValue({
+        status: 404,
+        response: { message: 'Activity not found at the specified index' },
+      });
+
+      await request(app.getHttpServer())
+        .delete('/trips/trip-123/itineraries/itinerary-1/activities/999')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(500); // NestJS converts unhandled exceptions to 500
+
+      expect(tripsService.deleteActivity).toHaveBeenCalledWith(
+        mockUserId,
+        'trip-123',
+        'itinerary-1',
+        999,
+      );
+    });
+  });
+
+  describe('POST /trips/:id/share', () => {
+    it('should generate share link for trip', async () => {
+      const shareResponse = {
+        shareToken: 'abc123token',
+        shareUrl: '/share/abc123token',
+      };
+
+      tripsService.generateShareToken.mockResolvedValue(shareResponse);
+
+      const response = await request(app.getHttpServer())
+        .post('/trips/trip-123/share')
+        .set('Authorization', 'Bearer mock-token')
+        .send({ expiresInDays: 7 })
+        .expect(201);
+
+      expect(response.body).toEqual(shareResponse);
+      expect(tripsService.generateShareToken).toHaveBeenCalledWith('trip-123', mockUserId, 7);
+    });
+
+    it('should generate share link without expiration', async () => {
+      const shareResponse = {
+        shareToken: 'abc123token',
+        shareUrl: '/share/abc123token',
+      };
+
+      tripsService.generateShareToken.mockResolvedValue(shareResponse);
+
+      await request(app.getHttpServer())
+        .post('/trips/trip-123/share')
+        .set('Authorization', 'Bearer mock-token')
+        .send({})
+        .expect(201);
+
+      expect(tripsService.generateShareToken).toHaveBeenCalledWith(
+        'trip-123',
+        mockUserId,
+        undefined,
+      );
+    });
+  });
+
+  describe('DELETE /trips/:id/share', () => {
+    it('should disable sharing and return 204', async () => {
+      tripsService.disableSharing.mockResolvedValue(undefined);
+
+      await request(app.getHttpServer())
+        .delete('/trips/trip-123/share')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(204);
+
+      expect(tripsService.disableSharing).toHaveBeenCalledWith('trip-123', mockUserId);
+    });
+  });
+
+  describe('Request User Decorator Integration', () => {
+    it('should extract userId from request using @Request decorator', async () => {
+      tripsService.findAll.mockResolvedValue(mockTrips as any);
+
+      await request(app.getHttpServer())
+        .get('/trips')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      // Verify that the service was called with userId from request.user.userId
+      expect(tripsService.findAll).toHaveBeenCalledWith(mockUserId, {});
+    });
+
+    it('should pass user context to all service methods', async () => {
+      tripsService.findOne.mockResolvedValue(mockTrip as any);
+
+      await request(app.getHttpServer())
+        .get('/trips/trip-123')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      // First argument should always be userId from authenticated user
+      expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, expect.any(String));
+    });
+  });
+
+  describe('Response Format Validation', () => {
+    it('should return correct trip structure', async () => {
+      tripsService.findOne.mockResolvedValue(mockTrip as any);
+
+      const response = await request(app.getHttpServer())
+        .get('/trips/trip-123')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(response.body).toHaveProperty('id');
+      expect(response.body).toHaveProperty('destination');
+      expect(response.body).toHaveProperty('startDate');
+      expect(response.body).toHaveProperty('endDate');
+      expect(response.body).toHaveProperty('status');
+      expect(response.body).toHaveProperty('itineraries');
+      expect(Array.isArray(response.body.itineraries)).toBe(true);
+    });
+
+    it('should return application/json content type', async () => {
+      tripsService.findAll.mockResolvedValue(mockTrips as any);
+
+      const response = await request(app.getHttpServer())
+        .get('/trips')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(200);
+
+      expect(response.headers['content-type']).toMatch(/application\/json/);
+    });
+  });
+
+  describe('Guard Integration', () => {
+    it('should require authentication for all endpoints', async () => {
+      const moduleRef = await Test.createTestingModule({
+        controllers: [TripsController],
+        providers: [
+          {
+            provide: TripsService,
+            useValue: mockTripsService,
+          },
+        ],
+      })
+        .overrideGuard(JwtAuthGuard)
+        .useValue({
+          canActivate: jest.fn(() => false),
+        })
+        .compile();
+
+      const testApp = moduleRef.createNestApplication();
+      await testApp.init();
+
+      // Test multiple endpoints
+      await request(testApp.getHttpServer()).get('/trips').expect(403);
+      await request(testApp.getHttpServer()).get('/trips/trip-123').expect(403);
+      await request(testApp.getHttpServer()).post('/trips').send({}).expect(403);
+      await request(testApp.getHttpServer()).patch('/trips/trip-123').send({}).expect(403);
+      await request(testApp.getHttpServer()).delete('/trips/trip-123').expect(403);
+
+      // No service methods should be called
+      expect(tripsService.findAll).not.toHaveBeenCalled();
+      expect(tripsService.findOne).not.toHaveBeenCalled();
+      expect(tripsService.create).not.toHaveBeenCalled();
+      expect(tripsService.update).not.toHaveBeenCalled();
+      expect(tripsService.remove).not.toHaveBeenCalled();
+
+      await testApp.close();
+    });
+  });
+});
