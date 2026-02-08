@@ -221,7 +221,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
         description: description.trim() || undefined,
       };
 
-      await apiService.getInstance().put(`/trips/${tripId}`, tripData);
+      await apiService.updateTrip(tripId, tripData);
 
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
         window.alert('여행 정보가 수정되었습니다.');

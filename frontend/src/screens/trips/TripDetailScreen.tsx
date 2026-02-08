@@ -833,11 +833,16 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               <TouchableOpacity
                 onPress={handleDuplicateTrip}
                 disabled={isDuplicating}
-                accessibilityLabel="여행 복제하기"
+                style={{ opacity: isDuplicating ? 0.5 : 1 }}
+                accessibilityLabel={isDuplicating ? '여행 복제 중' : '여행 복제하기'}
                 accessibilityRole="button"
               >
                 <View style={styles.iconButtonInner}>
-                  <Icon name="content-copy" size={24} color={colors.neutral[0]} />
+                  {isDuplicating ? (
+                    <ActivityIndicator size={24} color={colors.neutral[0]} />
+                  ) : (
+                    <Icon name="content-copy" size={24} color={colors.neutral[0]} />
+                  )}
                 </View>
               </TouchableOpacity>
 

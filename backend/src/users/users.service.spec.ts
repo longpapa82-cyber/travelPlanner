@@ -19,11 +19,11 @@ describe('UsersService', () => {
     passwordHash: 'hashed-password',
     name: 'Test User',
     provider: AuthProvider.EMAIL,
-    providerId: null,
-    profileImage: null,
+    providerId: undefined,
+    profileImage: undefined,
+    isActive: true,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
-    trips: [],
   };
 
   beforeEach(async () => {
@@ -256,7 +256,11 @@ describe('UsersService', () => {
 
     it('should work with all OAuth providers', async () => {
       // Test all providers
-      const providers = [AuthProvider.GOOGLE, AuthProvider.APPLE, AuthProvider.KAKAO];
+      const providers = [
+        AuthProvider.GOOGLE,
+        AuthProvider.APPLE,
+        AuthProvider.KAKAO,
+      ];
 
       for (const provider of providers) {
         repository.findOne.mockResolvedValue({
@@ -313,7 +317,10 @@ describe('UsersService', () => {
       const oauthUser = { ...mockUser, passwordHash: null };
 
       // Act
-      const result = await service.validatePassword(oauthUser as any, 'anypassword');
+      const result = await service.validatePassword(
+        oauthUser as any,
+        'anypassword',
+      );
 
       // Assert
       expect(bcrypt.compare).not.toHaveBeenCalled();

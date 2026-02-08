@@ -1,10 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { TripsService } from './trips.service';
 import { Trip, TripStatus } from './entities/trip.entity';
 import { Itinerary } from './entities/itinerary.entity';
@@ -75,8 +72,7 @@ describe('TripsService', () => {
   const mockLocationInfo = {
     latitude: 48.8566,
     longitude: 2.3522,
-    city: 'Paris',
-    country: 'France',
+    formattedAddress: 'Paris, France',
   };
 
   const mockTimezoneInfo = {
@@ -212,7 +208,10 @@ describe('TripsService', () => {
 
     it('should create trip with AI-generated itineraries successfully', async () => {
       const savedTrip = { ...mockTrip };
-      const itineraries = [mockItinerary, { ...mockItinerary, id: 'itinerary-790', dayNumber: 2 }];
+      const itineraries = [
+        mockItinerary,
+        { ...mockItinerary, id: 'itinerary-790', dayNumber: 2 },
+      ];
 
       tripRepository.create.mockReturnValue(mockTrip as Trip);
       tripRepository.save.mockResolvedValue(savedTrip as Trip);
@@ -220,9 +219,14 @@ describe('TripsService', () => {
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
       weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
-      itineraryRepository.create.mockImplementation((data) => data as Itinerary);
-      itineraryRepository.save.mockResolvedValue(itineraries as Itinerary[]);
-      tripRepository.findOne.mockResolvedValue({ ...savedTrip, itineraries } as Trip);
+      itineraryRepository.create.mockImplementation(
+        (data) => data as Itinerary,
+      );
+      itineraryRepository.save.mockResolvedValue(itineraries as any);
+      tripRepository.findOne.mockResolvedValue({
+        ...savedTrip,
+        itineraries,
+      } as Trip);
 
       const result = await service.create(mockUserId, createTripDto);
 
@@ -232,7 +236,9 @@ describe('TripsService', () => {
         numberOfTravelers: 2,
       });
       expect(tripRepository.save).toHaveBeenCalled();
-      expect(timezoneService.getLocationInfo).toHaveBeenCalledWith('Paris, France');
+      expect(timezoneService.getLocationInfo).toHaveBeenCalledWith(
+        'Paris, France',
+      );
       expect(aiService.generateAllItineraries).toHaveBeenCalled();
       expect(itineraryRepository.save).toHaveBeenCalled();
       expect(result).toBeDefined();
@@ -247,9 +253,14 @@ describe('TripsService', () => {
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
       weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
-      itineraryRepository.create.mockImplementation((data) => data as Itinerary);
-      itineraryRepository.save.mockResolvedValue([]);
-      tripRepository.findOne.mockResolvedValue({ ...savedTrip, itineraries: [] } as Trip);
+      itineraryRepository.create.mockImplementation(
+        (data) => data as Itinerary,
+      );
+      itineraryRepository.save.mockResolvedValue([] as any);
+      tripRepository.findOne.mockResolvedValue({
+        ...savedTrip,
+        itineraries: [],
+      } as Trip);
 
       await service.create(mockUserId, createTripDto);
 
@@ -264,7 +275,10 @@ describe('TripsService', () => {
     });
 
     it('should default numberOfTravelers to 1 if not provided', async () => {
-      const dtoWithoutTravelers = { ...createTripDto, numberOfTravelers: undefined };
+      const dtoWithoutTravelers = {
+        ...createTripDto,
+        numberOfTravelers: undefined,
+      };
       const savedTrip = { ...mockTrip, numberOfTravelers: 1 };
 
       tripRepository.create.mockReturnValue(savedTrip as Trip);
@@ -273,9 +287,14 @@ describe('TripsService', () => {
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
       weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
-      itineraryRepository.create.mockImplementation((data) => data as Itinerary);
-      itineraryRepository.save.mockResolvedValue([]);
-      tripRepository.findOne.mockResolvedValue({ ...savedTrip, itineraries: [] } as Trip);
+      itineraryRepository.create.mockImplementation(
+        (data) => data as Itinerary,
+      );
+      itineraryRepository.save.mockResolvedValue([] as any);
+      tripRepository.findOne.mockResolvedValue({
+        ...savedTrip,
+        itineraries: [],
+      } as Trip);
 
       await service.create(mockUserId, dtoWithoutTravelers);
 
@@ -292,16 +311,24 @@ describe('TripsService', () => {
       tripRepository.save.mockResolvedValue(savedTrip as Trip);
       timezoneService.getLocationInfo.mockResolvedValue(mockLocationInfo);
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
-      aiService.generateAllItineraries.mockRejectedValue(new Error('AI service unavailable'));
+      aiService.generateAllItineraries.mockRejectedValue(
+        new Error('AI service unavailable'),
+      );
       weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
-      itineraryRepository.create.mockImplementation((data) => data as Itinerary);
-      itineraryRepository.save.mockResolvedValue([]);
-      tripRepository.findOne.mockResolvedValue({ ...savedTrip, itineraries: [] } as Trip);
+      itineraryRepository.create.mockImplementation(
+        (data) => data as Itinerary,
+      );
+      itineraryRepository.save.mockResolvedValue([] as any);
+      tripRepository.findOne.mockResolvedValue({
+        ...savedTrip,
+        itineraries: [],
+      } as Trip);
 
       const result = await service.create(mockUserId, createTripDto);
 
       expect(itineraryRepository.save).toHaveBeenCalled();
-      const savedItineraries = itineraryRepository.save.mock.calls[0][0] as Itinerary[];
+      const savedItineraries = itineraryRepository.save.mock
+        .calls[0][0] as Itinerary[];
       expect(savedItineraries).toHaveLength(5); // 5 days
       expect(savedItineraries[0].activities).toEqual([]);
     });
@@ -310,11 +337,18 @@ describe('TripsService', () => {
       const savedTrip = { ...mockTrip };
       tripRepository.create.mockReturnValue(mockTrip as Trip);
       tripRepository.save.mockResolvedValue(savedTrip as Trip);
-      timezoneService.getLocationInfo.mockRejectedValue(new Error('Timezone API error'));
+      timezoneService.getLocationInfo.mockRejectedValue(
+        new Error('Timezone API error'),
+      );
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
-      itineraryRepository.create.mockImplementation((data) => data as Itinerary);
-      itineraryRepository.save.mockResolvedValue([]);
-      tripRepository.findOne.mockResolvedValue({ ...savedTrip, itineraries: [] } as Trip);
+      itineraryRepository.create.mockImplementation(
+        (data) => data as Itinerary,
+      );
+      itineraryRepository.save.mockResolvedValue([] as any);
+      tripRepository.findOne.mockResolvedValue({
+        ...savedTrip,
+        itineraries: [],
+      } as Trip);
 
       const result = await service.create(mockUserId, createTripDto);
 
@@ -329,10 +363,17 @@ describe('TripsService', () => {
       timezoneService.getLocationInfo.mockResolvedValue(mockLocationInfo);
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
-      weatherService.getWeatherForecast.mockRejectedValue(new Error('Weather API error'));
-      itineraryRepository.create.mockImplementation((data) => data as Itinerary);
-      itineraryRepository.save.mockResolvedValue([]);
-      tripRepository.findOne.mockResolvedValue({ ...savedTrip, itineraries: [] } as Trip);
+      weatherService.getWeatherForecast.mockRejectedValue(
+        new Error('Weather API error'),
+      );
+      itineraryRepository.create.mockImplementation(
+        (data) => data as Itinerary,
+      );
+      itineraryRepository.save.mockResolvedValue([] as any);
+      tripRepository.findOne.mockResolvedValue({
+        ...savedTrip,
+        itineraries: [],
+      } as Trip);
 
       const result = await service.create(mockUserId, createTripDto);
 
@@ -353,13 +394,19 @@ describe('TripsService', () => {
         getMany: jest.fn().mockResolvedValue(trips),
       };
 
-      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(queryBuilder);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
       const result = await service.findAll(mockUserId);
 
       expect(tripRepository.createQueryBuilder).toHaveBeenCalledWith('trip');
-      expect(queryBuilder.where).toHaveBeenCalledWith('trip.userId = :userId', { userId: mockUserId });
+      expect(queryBuilder.where).toHaveBeenCalledWith('trip.userId = :userId', {
+        userId: mockUserId,
+      });
       expect(result).toHaveLength(2);
     });
 
@@ -373,8 +420,12 @@ describe('TripsService', () => {
         getMany: jest.fn().mockResolvedValue([mockTrip]),
       };
 
-      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(queryBuilder);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
       const result = await service.findAll(mockUserId, { search: 'Paris' });
 
@@ -395,14 +446,23 @@ describe('TripsService', () => {
         getMany: jest.fn().mockResolvedValue([mockTrip]),
       };
 
-      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(queryBuilder);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
-      const result = await service.findAll(mockUserId, { status: TripStatus.UPCOMING });
-
-      expect(queryBuilder.andWhere).toHaveBeenCalledWith('trip.status = :status', {
+      const result = await service.findAll(mockUserId, {
         status: TripStatus.UPCOMING,
       });
+
+      expect(queryBuilder.andWhere).toHaveBeenCalledWith(
+        'trip.status = :status',
+        {
+          status: TripStatus.UPCOMING,
+        },
+      );
       expect(result).toBeDefined();
     });
 
@@ -416,12 +476,22 @@ describe('TripsService', () => {
         getMany: jest.fn().mockResolvedValue([mockTrip]),
       };
 
-      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(queryBuilder);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
-      await service.findAll(mockUserId, { sortBy: 'destination', order: 'ASC' });
+      await service.findAll(mockUserId, {
+        sortBy: 'destination',
+        order: 'ASC',
+      });
 
-      expect(queryBuilder.orderBy).toHaveBeenCalledWith('trip.destination', 'ASC');
+      expect(queryBuilder.orderBy).toHaveBeenCalledWith(
+        'trip.destination',
+        'ASC',
+      );
     });
 
     it('should sort trips by createdAt', async () => {
@@ -434,12 +504,19 @@ describe('TripsService', () => {
         getMany: jest.fn().mockResolvedValue([mockTrip]),
       };
 
-      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(queryBuilder);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
       await service.findAll(mockUserId, { sortBy: 'createdAt', order: 'DESC' });
 
-      expect(queryBuilder.orderBy).toHaveBeenCalledWith('trip.createdAt', 'DESC');
+      expect(queryBuilder.orderBy).toHaveBeenCalledWith(
+        'trip.createdAt',
+        'DESC',
+      );
     });
 
     it('should default sort to startDate DESC', async () => {
@@ -452,12 +529,19 @@ describe('TripsService', () => {
         getMany: jest.fn().mockResolvedValue([mockTrip]),
       };
 
-      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(queryBuilder);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
       await service.findAll(mockUserId);
 
-      expect(queryBuilder.orderBy).toHaveBeenCalledWith('trip.startDate', 'DESC');
+      expect(queryBuilder.orderBy).toHaveBeenCalledWith(
+        'trip.startDate',
+        'DESC',
+      );
     });
 
     it('should validate and update trip statuses', async () => {
@@ -471,12 +555,18 @@ describe('TripsService', () => {
         getMany: jest.fn().mockResolvedValue(trips),
       };
 
-      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(queryBuilder);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
       await service.findAll(mockUserId);
 
-      expect(tripStatusScheduler.validateAndUpdateTripStatus).toHaveBeenCalledTimes(2);
+      expect(
+        tripStatusScheduler.validateAndUpdateTripStatus,
+      ).toHaveBeenCalledTimes(2);
     });
 
     it('should sort itineraries by dayNumber', async () => {
@@ -498,8 +588,12 @@ describe('TripsService', () => {
         getMany: jest.fn().mockResolvedValue([tripWithItineraries]),
       };
 
-      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(queryBuilder);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
       const result = await service.findAll(mockUserId);
 
@@ -513,7 +607,9 @@ describe('TripsService', () => {
     it('should return a trip by id', async () => {
       const tripWithItineraries = { ...mockTrip, itineraries: [mockItinerary] };
       tripRepository.findOne.mockResolvedValue(tripWithItineraries as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
       const result = await service.findOne(mockUserId, mockTripId);
 
@@ -527,24 +623,26 @@ describe('TripsService', () => {
     it('should throw NotFoundException when trip not found', async () => {
       tripRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne(mockUserId, 'non-existent-id')).rejects.toThrow(
-        NotFoundException,
-      );
-      await expect(service.findOne(mockUserId, 'non-existent-id')).rejects.toThrow(
-        'Trip not found',
-      );
+      await expect(
+        service.findOne(mockUserId, 'non-existent-id'),
+      ).rejects.toThrow(NotFoundException);
+      await expect(
+        service.findOne(mockUserId, 'non-existent-id'),
+      ).rejects.toThrow('Trip not found');
     });
 
     it('should validate and update trip status', async () => {
       const tripWithItineraries = { ...mockTrip, itineraries: [mockItinerary] };
       tripRepository.findOne.mockResolvedValue(tripWithItineraries as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
       await service.findOne(mockUserId, mockTripId);
 
-      expect(tripStatusScheduler.validateAndUpdateTripStatus).toHaveBeenCalledWith(
-        tripWithItineraries,
-      );
+      expect(
+        tripStatusScheduler.validateAndUpdateTripStatus,
+      ).toHaveBeenCalledWith(tripWithItineraries);
     });
 
     it('should sort itineraries by dayNumber', async () => {
@@ -558,7 +656,9 @@ describe('TripsService', () => {
       };
 
       tripRepository.findOne.mockResolvedValue(tripWithItineraries as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
       const result = await service.findOne(mockUserId, mockTripId);
 
@@ -570,9 +670,9 @@ describe('TripsService', () => {
     it('should enforce user isolation - different user cannot access trip', async () => {
       tripRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('different-user-id', mockTripId)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.findOne('different-user-id', mockTripId),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -587,11 +687,17 @@ describe('TripsService', () => {
       const updatedTrip = { ...existingTrip, ...updateTripDto };
 
       tripRepository.findOne.mockResolvedValueOnce(existingTrip as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
       tripRepository.save.mockResolvedValue(updatedTrip as Trip);
       tripRepository.findOne.mockResolvedValueOnce(updatedTrip as Trip);
 
-      const result = await service.update(mockUserId, mockTripId, updateTripDto);
+      const result = await service.update(
+        mockUserId,
+        mockTripId,
+        updateTripDto,
+      );
 
       expect(tripRepository.save).toHaveBeenCalled();
       expect(result).toBeDefined();
@@ -606,43 +712,69 @@ describe('TripsService', () => {
     });
 
     it('should throw ForbiddenException when updating completed trip', async () => {
-      const completedTrip = { ...mockTrip, status: TripStatus.COMPLETED, itineraries: [] };
+      const completedTrip = {
+        ...mockTrip,
+        status: TripStatus.COMPLETED,
+        itineraries: [],
+      };
       tripRepository.findOne.mockResolvedValue(completedTrip as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
-      await expect(service.update(mockUserId, mockTripId, updateTripDto)).rejects.toThrow(
-        ForbiddenException,
-      );
-      await expect(service.update(mockUserId, mockTripId, updateTripDto)).rejects.toThrow(
-        'Cannot modify completed trips',
-      );
+      await expect(
+        service.update(mockUserId, mockTripId, updateTripDto),
+      ).rejects.toThrow(ForbiddenException);
+      await expect(
+        service.update(mockUserId, mockTripId, updateTripDto),
+      ).rejects.toThrow('Cannot modify completed trips');
     });
 
     it('should allow updating upcoming trips', async () => {
-      const upcomingTrip = { ...mockTrip, status: TripStatus.UPCOMING, itineraries: [] };
+      const upcomingTrip = {
+        ...mockTrip,
+        status: TripStatus.UPCOMING,
+        itineraries: [],
+      };
       const updatedTrip = { ...upcomingTrip, ...updateTripDto };
 
       tripRepository.findOne.mockResolvedValueOnce(upcomingTrip as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
       tripRepository.save.mockResolvedValue(updatedTrip as Trip);
       tripRepository.findOne.mockResolvedValueOnce(updatedTrip as Trip);
 
-      const result = await service.update(mockUserId, mockTripId, updateTripDto);
+      const result = await service.update(
+        mockUserId,
+        mockTripId,
+        updateTripDto,
+      );
 
       expect(result).toBeDefined();
       expect(tripRepository.save).toHaveBeenCalled();
     });
 
     it('should allow updating ongoing trips', async () => {
-      const ongoingTrip = { ...mockTrip, status: TripStatus.ONGOING, itineraries: [] };
+      const ongoingTrip = {
+        ...mockTrip,
+        status: TripStatus.ONGOING,
+        itineraries: [],
+      };
       const updatedTrip = { ...ongoingTrip, ...updateTripDto };
 
       tripRepository.findOne.mockResolvedValueOnce(ongoingTrip as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
       tripRepository.save.mockResolvedValue(updatedTrip as Trip);
       tripRepository.findOne.mockResolvedValueOnce(updatedTrip as Trip);
 
-      const result = await service.update(mockUserId, mockTripId, updateTripDto);
+      const result = await service.update(
+        mockUserId,
+        mockTripId,
+        updateTripDto,
+      );
 
       expect(result).toBeDefined();
       expect(tripRepository.save).toHaveBeenCalled();
@@ -653,7 +785,9 @@ describe('TripsService', () => {
     it('should delete a trip successfully', async () => {
       const tripToDelete = { ...mockTrip, itineraries: [] };
       tripRepository.findOne.mockResolvedValue(tripToDelete as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
       tripRepository.remove.mockResolvedValue(tripToDelete as Trip);
 
       await service.remove(mockUserId, mockTripId);
@@ -664,17 +798,17 @@ describe('TripsService', () => {
     it('should throw NotFoundException when trip not found', async () => {
       tripRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.remove(mockUserId, 'non-existent-id')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.remove(mockUserId, 'non-existent-id'),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should enforce user isolation - different user cannot delete trip', async () => {
       tripRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.remove('different-user-id', mockTripId)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.remove('different-user-id', mockTripId),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -688,11 +822,15 @@ describe('TripsService', () => {
         execute: jest.fn().mockResolvedValue({ affected: 1 }),
       };
 
-      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(queryBuilder);
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
 
       await service.updateTripStatus();
 
-      expect(queryBuilder.set).toHaveBeenCalledWith({ status: TripStatus.ONGOING });
+      expect(queryBuilder.set).toHaveBeenCalledWith({
+        status: TripStatus.ONGOING,
+      });
       expect(queryBuilder.where).toHaveBeenCalledWith('status = :status', {
         status: TripStatus.UPCOMING,
       });
@@ -707,14 +845,22 @@ describe('TripsService', () => {
         execute: jest.fn().mockResolvedValue({ affected: 1 }),
       };
 
-      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(queryBuilder);
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
 
       await service.updateTripStatus();
 
-      expect(queryBuilder.set).toHaveBeenNthCalledWith(2, { status: TripStatus.COMPLETED });
-      expect(queryBuilder.where).toHaveBeenNthCalledWith(2, 'status = :status', {
-        status: TripStatus.ONGOING,
+      expect(queryBuilder.set).toHaveBeenNthCalledWith(2, {
+        status: TripStatus.COMPLETED,
       });
+      expect(queryBuilder.where).toHaveBeenNthCalledWith(
+        2,
+        'status = :status',
+        {
+          status: TripStatus.ONGOING,
+        },
+      );
     });
   });
 
@@ -778,9 +924,16 @@ describe('TripsService', () => {
       const existingItinerary = { ...mockItinerary };
       const updatedItinerary = { ...existingItinerary, ...updateDto };
 
-      tripRepository.findOne.mockResolvedValue({ ...mockTrip, itineraries: [] } as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
-      itineraryRepository.findOne.mockResolvedValue(existingItinerary as Itinerary);
+      tripRepository.findOne.mockResolvedValue({
+        ...mockTrip,
+        itineraries: [],
+      } as Trip);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
+      itineraryRepository.findOne.mockResolvedValue(
+        existingItinerary as Itinerary,
+      );
       itineraryRepository.save.mockResolvedValue(updatedItinerary as Itinerary);
 
       const result = await service.updateItinerary(
@@ -795,8 +948,13 @@ describe('TripsService', () => {
     });
 
     it('should throw NotFoundException when itinerary not found', async () => {
-      tripRepository.findOne.mockResolvedValue({ ...mockTrip, itineraries: [] } as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripRepository.findOne.mockResolvedValue({
+        ...mockTrip,
+        itineraries: [],
+      } as Trip);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
       itineraryRepository.findOne.mockResolvedValue(null);
 
       await expect(
@@ -805,12 +963,20 @@ describe('TripsService', () => {
     });
 
     it('should throw ForbiddenException when updating completed trip itinerary', async () => {
-      const completedTrip = { ...mockTrip, status: TripStatus.COMPLETED, itineraries: [] };
+      const completedTrip = {
+        ...mockTrip,
+        status: TripStatus.COMPLETED,
+        itineraries: [],
+      };
       tripRepository.findOne.mockResolvedValue(completedTrip as Trip);
-      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(undefined);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(
+        false,
+      );
 
       await expect(
-        service.updateItinerary(mockUserId, mockTripId, mockItineraryId, { notes: 'test' }),
+        service.updateItinerary(mockUserId, mockTripId, mockItineraryId, {
+          notes: 'test',
+        }),
       ).rejects.toThrow(ForbiddenException);
     });
   });
@@ -827,9 +993,14 @@ describe('TripsService', () => {
       tripRepository.save.mockResolvedValue(mockTrip as Trip);
       timezoneService.getLocationInfo.mockResolvedValue(mockLocationInfo);
       aiService.generateAllItineraries.mockResolvedValue([]);
-      itineraryRepository.create.mockImplementation((data) => data as Itinerary);
-      itineraryRepository.save.mockResolvedValue([]);
-      tripRepository.findOne.mockResolvedValue({ ...mockTrip, itineraries: [] } as Trip);
+      itineraryRepository.create.mockImplementation(
+        (data) => data as Itinerary,
+      );
+      itineraryRepository.save.mockResolvedValue([] as any);
+      tripRepository.findOne.mockResolvedValue({
+        ...mockTrip,
+        itineraries: [],
+      } as Trip);
 
       await service.create(mockUserId, invalidDto);
 
@@ -850,9 +1021,14 @@ describe('TripsService', () => {
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
       weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
-      itineraryRepository.create.mockImplementation((data) => data as Itinerary);
-      itineraryRepository.save.mockResolvedValue([]);
-      tripRepository.findOne.mockResolvedValue({ ...mockTrip, itineraries: [] } as Trip);
+      itineraryRepository.create.mockImplementation(
+        (data) => data as Itinerary,
+      );
+      itineraryRepository.save.mockResolvedValue([] as any);
+      tripRepository.findOne.mockResolvedValue({
+        ...mockTrip,
+        itineraries: [],
+      } as Trip);
 
       const result = await service.create(mockUserId, minimalDto);
 
@@ -872,9 +1048,14 @@ describe('TripsService', () => {
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
       weatherService.getWeatherForecast.mockResolvedValue(null);
-      itineraryRepository.create.mockImplementation((data) => data as Itinerary);
-      itineraryRepository.save.mockResolvedValue([]);
-      tripRepository.findOne.mockResolvedValue({ ...savedTrip, itineraries: [] } as Trip);
+      itineraryRepository.create.mockImplementation(
+        (data) => data as Itinerary,
+      );
+      itineraryRepository.save.mockResolvedValue([] as any);
+      tripRepository.findOne.mockResolvedValue({
+        ...savedTrip,
+        itineraries: [],
+      } as Trip);
 
       const result = await service.create(mockUserId, {
         destination: 'Paris',
@@ -893,9 +1074,14 @@ describe('TripsService', () => {
       timezoneService.getTimezoneInfo.mockResolvedValue(null);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
       weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
-      itineraryRepository.create.mockImplementation((data) => data as Itinerary);
-      itineraryRepository.save.mockResolvedValue([]);
-      tripRepository.findOne.mockResolvedValue({ ...savedTrip, itineraries: [] } as Trip);
+      itineraryRepository.create.mockImplementation(
+        (data) => data as Itinerary,
+      );
+      itineraryRepository.save.mockResolvedValue([] as any);
+      tripRepository.findOne.mockResolvedValue({
+        ...savedTrip,
+        itineraries: [],
+      } as Trip);
 
       const result = await service.create(mockUserId, {
         destination: 'Paris',

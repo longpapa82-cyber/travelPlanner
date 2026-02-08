@@ -16,7 +16,7 @@ describe('AuthController (Integration)', () => {
     email: 'test@example.com',
     name: 'Test User',
     provider: AuthProvider.EMAIL,
-    profileImage: null,
+    profileImage: undefined as string | undefined,
   };
 
   const mockAuthResponse = {
@@ -122,7 +122,9 @@ describe('AuthController (Integration)', () => {
         .send(invalidDto)
         .expect(400);
 
-      expect(response.body.message).toContain('Password must be at least 6 characters long');
+      expect(response.body.message).toContain(
+        'Password must be at least 6 characters long',
+      );
       expect(authService.register).not.toHaveBeenCalled();
     });
 
@@ -275,7 +277,9 @@ describe('AuthController (Integration)', () => {
         .expect(200); // HttpCode(HttpStatus.OK)
 
       expect(response.body).toEqual(mockAuthResponse);
-      expect(authService.refreshToken).toHaveBeenCalledWith(refreshDto.refreshToken);
+      expect(authService.refreshToken).toHaveBeenCalledWith(
+        refreshDto.refreshToken,
+      );
       expect(authService.refreshToken).toHaveBeenCalledTimes(1);
     });
 
@@ -304,7 +308,9 @@ describe('AuthController (Integration)', () => {
         .send(refreshDto)
         .expect(500); // NestJS converts unhandled exceptions to 500
 
-      expect(authService.refreshToken).toHaveBeenCalledWith(refreshDto.refreshToken);
+      expect(authService.refreshToken).toHaveBeenCalledWith(
+        refreshDto.refreshToken,
+      );
     });
 
     it('should return 401 when refresh token is expired', async () => {
@@ -322,7 +328,9 @@ describe('AuthController (Integration)', () => {
         .send(refreshDto)
         .expect(500); // NestJS converts unhandled exceptions to 500
 
-      expect(authService.refreshToken).toHaveBeenCalledWith(refreshDto.refreshToken);
+      expect(authService.refreshToken).toHaveBeenCalledWith(
+        refreshDto.refreshToken,
+      );
     });
   });
 
@@ -370,9 +378,7 @@ describe('AuthController (Integration)', () => {
       const testApp = moduleRef.createNestApplication();
       await testApp.init();
 
-      await request(testApp.getHttpServer())
-        .get('/auth/me')
-        .expect(403); // Guard returns 403 when canActivate is false
+      await request(testApp.getHttpServer()).get('/auth/me').expect(403); // Guard returns 403 when canActivate is false
 
       expect(authService.getProfile).not.toHaveBeenCalled();
 

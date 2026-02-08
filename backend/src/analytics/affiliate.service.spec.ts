@@ -84,7 +84,11 @@ describe('AffiliateService', () => {
       mockRepository.create.mockReturnValue(mockClick as any);
       mockRepository.save.mockResolvedValue(mockClick as any);
 
-      const result = await service.trackClick(mockDto, 'user-uuid-1', mockRequest);
+      const result = await service.trackClick(
+        mockDto,
+        'user-uuid-1',
+        mockRequest,
+      );
 
       expect(repository.create).toHaveBeenCalledWith({
         provider: 'booking',
@@ -251,8 +255,12 @@ describe('AffiliateService', () => {
 
       const loggerSpy = jest.spyOn(service['logger'], 'error');
 
-      await expect(service.trackClick(mockDto)).rejects.toThrow('Database connection failed');
-      expect(loggerSpy).toHaveBeenCalledWith('Failed to track affiliate click: Database connection failed');
+      await expect(service.trackClick(mockDto)).rejects.toThrow(
+        'Database connection failed',
+      );
+      expect(loggerSpy).toHaveBeenCalledWith(
+        'Failed to track affiliate click: Database connection failed',
+      );
     });
 
     it('should log successful tracking', async () => {
@@ -269,7 +277,9 @@ describe('AffiliateService', () => {
 
       await service.trackClick(mockDto);
 
-      expect(loggerSpy).toHaveBeenCalledWith('Tracked affiliate click: booking - Tokyo');
+      expect(loggerSpy).toHaveBeenCalledWith(
+        'Tracked affiliate click: booking - Tokyo',
+      );
     });
 
     it('should log N/A when destination is not provided', async () => {
@@ -289,7 +299,9 @@ describe('AffiliateService', () => {
 
       await service.trackClick(dtoWithoutDestination);
 
-      expect(loggerSpy).toHaveBeenCalledWith('Tracked affiliate click: expedia - N/A');
+      expect(loggerSpy).toHaveBeenCalledWith(
+        'Tracked affiliate click: expedia - N/A',
+      );
     });
   });
 
@@ -319,9 +331,15 @@ describe('AffiliateService', () => {
 
       mockRepository.save.mockResolvedValue(updatedClick as AffiliateClick);
 
-      const result = await service.updateConversion(clickId, conversionValue, commission);
+      const result = await service.updateConversion(
+        clickId,
+        conversionValue,
+        commission,
+      );
 
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { id: clickId } });
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { id: clickId },
+      });
       expect(repository.save).toHaveBeenCalledWith(
         expect.objectContaining({
           converted: true,
@@ -377,7 +395,9 @@ describe('AffiliateService', () => {
       const result = await service.updateConversion(clickId, 100, 10);
 
       expect(result.convertedAt).toBeDefined();
-      expect(result.convertedAt!.getTime()).toBeGreaterThanOrEqual(beforeUpdate.getTime());
+      expect(result.convertedAt!.getTime()).toBeGreaterThanOrEqual(
+        beforeUpdate.getTime(),
+      );
     });
   });
 
@@ -436,7 +456,7 @@ describe('AffiliateService', () => {
       expect(stats).toHaveLength(2);
 
       // Booking stats (3 clicks)
-      const bookingStats = stats.find(s => s.provider === 'booking');
+      const bookingStats = stats.find((s) => s.provider === 'booking');
       expect(bookingStats).toBeDefined();
       expect(bookingStats!.totalClicks).toBe(3);
       expect(bookingStats!.conversions).toBe(2);
@@ -446,7 +466,7 @@ describe('AffiliateService', () => {
       expect(bookingStats!.averageCommission).toBe(40);
 
       // Expedia stats (2 clicks)
-      const expediaStats = stats.find(s => s.provider === 'expedia');
+      const expediaStats = stats.find((s) => s.provider === 'expedia');
       expect(expediaStats).toBeDefined();
       expect(expediaStats!.totalClicks).toBe(2);
       expect(expediaStats!.conversions).toBe(1);
@@ -484,8 +504,18 @@ describe('AffiliateService', () => {
 
     it('should handle zero conversions correctly', async () => {
       const mockClicks: Partial<AffiliateClick>[] = [
-        { id: '1', provider: 'airbnb', converted: false, createdAt: new Date() },
-        { id: '2', provider: 'airbnb', converted: false, createdAt: new Date() },
+        {
+          id: '1',
+          provider: 'airbnb',
+          converted: false,
+          createdAt: new Date(),
+        },
+        {
+          id: '2',
+          provider: 'airbnb',
+          converted: false,
+          createdAt: new Date(),
+        },
       ];
 
       mockRepository.find.mockResolvedValue(mockClicks as AffiliateClick[]);
@@ -733,7 +763,7 @@ describe('AffiliateService', () => {
       } as unknown as Request;
 
       const dto: TrackAffiliateClickDto = { provider: 'booking' };
-      mockRepository.create.mockImplementation((data) => data as any);
+      mockRepository.create.mockImplementation((data) => data);
       mockRepository.save.mockResolvedValue({} as any);
 
       service.trackClick(dto, undefined, request);
@@ -754,7 +784,7 @@ describe('AffiliateService', () => {
       } as unknown as Request;
 
       const dto: TrackAffiliateClickDto = { provider: 'booking' };
-      mockRepository.create.mockImplementation((data) => data as any);
+      mockRepository.create.mockImplementation((data) => data);
       mockRepository.save.mockResolvedValue({} as any);
 
       service.trackClick(dto, undefined, request);
@@ -773,7 +803,7 @@ describe('AffiliateService', () => {
       } as unknown as Request;
 
       const dto: TrackAffiliateClickDto = { provider: 'booking' };
-      mockRepository.create.mockImplementation((data) => data as any);
+      mockRepository.create.mockImplementation((data) => data);
       mockRepository.save.mockResolvedValue({} as any);
 
       service.trackClick(dto, undefined, request);
@@ -793,7 +823,7 @@ describe('AffiliateService', () => {
       } as unknown as Request;
 
       const dto: TrackAffiliateClickDto = { provider: 'booking' };
-      mockRepository.create.mockImplementation((data) => data as any);
+      mockRepository.create.mockImplementation((data) => data);
       mockRepository.save.mockResolvedValue({} as any);
 
       service.trackClick(dto, undefined, request);
@@ -813,7 +843,7 @@ describe('AffiliateService', () => {
       } as unknown as Request;
 
       const dto: TrackAffiliateClickDto = { provider: 'booking' };
-      mockRepository.create.mockImplementation((data) => data as any);
+      mockRepository.create.mockImplementation((data) => data);
       mockRepository.save.mockResolvedValue({} as any);
 
       service.trackClick(dto, undefined, request);
@@ -837,7 +867,9 @@ describe('AffiliateService', () => {
       const loggerErrorSpy = jest.spyOn(service['logger'], 'error');
 
       await expect(service.trackClick(dto)).rejects.toThrow('Database error');
-      expect(loggerErrorSpy).toHaveBeenCalledWith('Failed to track affiliate click: Database error');
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        'Failed to track affiliate click: Database error',
+      );
     });
 
     it('should handle null values in conversion updates gracefully', async () => {
@@ -852,11 +884,15 @@ describe('AffiliateService', () => {
         ...click,
         converted: true,
         convertedAt: new Date(),
-        conversionValue: null,
-        commission: null,
+        conversionValue: null as unknown as number,
+        commission: null as unknown as number,
       } as AffiliateClick);
 
-      const result = await service.updateConversion('click-1', null as any, null as any);
+      const result = await service.updateConversion(
+        'click-1',
+        null as any,
+        null as any,
+      );
 
       expect(result.converted).toBe(true);
       expect(result.conversionValue).toBeNull();
@@ -909,7 +945,7 @@ describe('AffiliateService', () => {
       } as unknown as Request;
 
       const dto: TrackAffiliateClickDto = { provider: 'booking' };
-      mockRepository.create.mockImplementation((data) => data as any);
+      mockRepository.create.mockImplementation((data) => data);
       mockRepository.save.mockResolvedValue({} as any);
 
       service.trackClick(dto, undefined, request);
