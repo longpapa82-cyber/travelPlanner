@@ -420,7 +420,8 @@ export class TripsService {
     }
 
     // Create activity timestamp for validation
-    const activityDateTime = `${itinerary.date.toISOString().split('T')[0]}T${addActivityDto.time}`;
+    const dateStr = typeof itinerary.date === 'string' ? itinerary.date : new Date(itinerary.date).toISOString().split('T')[0];
+    const activityDateTime = `${dateStr}T${addActivityDto.time}`;
     this.canModifyActivity(trip, activityDateTime);
 
     // For ongoing trips, cannot add past activities
@@ -481,7 +482,8 @@ export class TripsService {
     const existingActivity = itinerary.activities[activityIndex];
 
     // Check modification permission using existing activity time
-    const activityDateTime = `${itinerary.date.toISOString().split('T')[0]}T${existingActivity.time}`;
+    const updDateStr = typeof itinerary.date === 'string' ? itinerary.date : new Date(itinerary.date).toISOString().split('T')[0];
+    const activityDateTime = `${updDateStr}T${existingActivity.time}`;
     this.canModifyActivity(trip, activityDateTime);
 
     // For ongoing trips with past activities, only allow marking as completed
@@ -499,10 +501,13 @@ export class TripsService {
       }
     }
 
-    // Update activity fields
+    // Update activity fields (filter out undefined to prevent overwriting existing values)
+    const definedUpdates = Object.fromEntries(
+      Object.entries(updateActivityDto).filter(([_, v]) => v !== undefined),
+    );
     const updatedActivity = {
       ...existingActivity,
-      ...updateActivityDto,
+      ...definedUpdates,
     };
 
     itinerary.activities[activityIndex] = updatedActivity;
@@ -544,7 +549,8 @@ export class TripsService {
     const activityToDelete = itinerary.activities[activityIndex];
 
     // Check modification permission
-    const activityDateTime = `${itinerary.date.toISOString().split('T')[0]}T${activityToDelete.time}`;
+    const delDateStr = typeof itinerary.date === 'string' ? itinerary.date : new Date(itinerary.date).toISOString().split('T')[0];
+    const activityDateTime = `${delDateStr}T${activityToDelete.time}`;
     this.canModifyActivity(trip, activityDateTime);
 
     // For ongoing trips, cannot delete past activities

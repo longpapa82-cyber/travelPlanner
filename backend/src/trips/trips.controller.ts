@@ -106,6 +106,22 @@ export class TripsController {
     );
   }
 
+  // Static route must come BEFORE dynamic :index route
+  @Patch(':tripId/itineraries/:itineraryId/activities/reorder')
+  reorderActivities(
+    @Request() req,
+    @Param('tripId') tripId: string,
+    @Param('itineraryId') itineraryId: string,
+    @Body() reorderDto: ReorderActivitiesDto,
+  ) {
+    return this.tripsService.reorderActivities(
+      req.user.userId,
+      tripId,
+      itineraryId,
+      reorderDto,
+    );
+  }
+
   @Patch(':tripId/itineraries/:itineraryId/activities/:index')
   updateActivity(
     @Request() req,
@@ -136,21 +152,6 @@ export class TripsController {
       tripId,
       itineraryId,
       parseInt(index, 10),
-    );
-  }
-
-  @Patch(':tripId/itineraries/:itineraryId/activities/reorder')
-  reorderActivities(
-    @Request() req,
-    @Param('tripId') tripId: string,
-    @Param('itineraryId') itineraryId: string,
-    @Body() reorderDto: ReorderActivitiesDto,
-  ) {
-    return this.tripsService.reorderActivities(
-      req.user.userId,
-      tripId,
-      itineraryId,
-      reorderDto,
     );
   }
 
