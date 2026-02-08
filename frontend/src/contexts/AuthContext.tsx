@@ -40,6 +40,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Register auth expired callback so 401 responses trigger logout
+  useEffect(() => {
+    apiService.setOnAuthExpired(() => {
+      setUser(null);
+    });
+  }, []);
+
   // Check if user is already logged in on app start
   useEffect(() => {
     checkAuthStatus();

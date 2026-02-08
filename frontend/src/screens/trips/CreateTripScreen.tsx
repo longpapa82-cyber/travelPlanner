@@ -36,6 +36,7 @@ import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
 import Button from '../../components/core/Button';
+import DatePickerField from '../../components/core/DatePicker';
 import DestinationInsights from '../../components/DestinationInsights';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -400,38 +401,26 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
 
             {/* Date Inputs */}
             <View style={styles.dateRow}>
-              <View style={styles.dateInputWrapper}>
-                <Text style={[styles.dateLabel, { color: theme.colors.textSecondary }]}>
-                  시작일
-                </Text>
-                <TextInput
-                  style={[styles.dateInput, { color: theme.colors.text }]}
-                  placeholder="YYYY-MM-DD"
-                  placeholderTextColor={theme.colors.textSecondary}
-                  value={startDate}
-                  onChangeText={setStartDate}
-                  editable={!isLoading}
-                />
-              </View>
+              <DatePickerField
+                label="시작일"
+                value={startDate}
+                onChange={setStartDate}
+                minimumDate={new Date()}
+                disabled={isLoading}
+              />
               <Icon
                 name="arrow-right"
                 size={20}
                 color={theme.colors.textSecondary}
                 style={styles.dateArrow}
               />
-              <View style={styles.dateInputWrapper}>
-                <Text style={[styles.dateLabel, { color: theme.colors.textSecondary }]}>
-                  종료일
-                </Text>
-                <TextInput
-                  style={[styles.dateInput, { color: theme.colors.text }]}
-                  placeholder="YYYY-MM-DD"
-                  placeholderTextColor={theme.colors.textSecondary}
-                  value={endDate}
-                  onChangeText={setEndDate}
-                  editable={!isLoading}
-                />
-              </View>
+              <DatePickerField
+                label="종료일"
+                value={endDate}
+                onChange={setEndDate}
+                minimumDate={startDate ? new Date(startDate + 'T00:00:00') : new Date()}
+                disabled={isLoading}
+              />
             </View>
 
             {/* Duration Display */}

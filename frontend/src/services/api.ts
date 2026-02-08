@@ -4,6 +4,7 @@ import { secureStorage } from '../utils/storage';
 
 class ApiService {
   private api: AxiosInstance;
+  private onAuthExpired: (() => void) | null = null;
 
   constructor() {
     this.api = axios.create({
@@ -15,6 +16,10 @@ class ApiService {
     });
 
     this.setupInterceptors();
+  }
+
+  setOnAuthExpired(callback: () => void) {
+    this.onAuthExpired = callback;
   }
 
   private setupInterceptors() {
@@ -41,10 +46,10 @@ class ApiService {
       (response) => response,
       async (error: AxiosError) => {
         if (error.response?.status === 401) {
-          // Token expired or invalid - clear storage
+          // Token expired or invalid - clear storage and trigger logout
           await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
           await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-          // TODO: Navigate to login screen
+          this.onAuthExpired?.();
         }
 
         return Promise.reject(error);
@@ -76,6 +81,23 @@ class ApiService {
   async refreshToken(refreshToken: string) {
     const response = await this.api.post('/auth/refresh', { refreshToken });
     return response.data;
+  }
+
+  async updateProfile(data: { name?: string; profileImage?: string }) {
+    const response = await this.api.patch('/users/me', data);
+    return response.data;
+  }
+
+  async changePassword(currentPassword: string, newPassword: string) {
+    const response = await this.api.post('/users/me/password', {
+      currentPassword,
+      newPassword,
+    });
+    return response.data;
+  }
+
+  async deleteAccount() {
+    await this.api.delete('/users/me');
   }
 
   // Trips Methods

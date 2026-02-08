@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, AuthProvider } from './entities/user.entity';
@@ -67,6 +67,28 @@ export class UsersService {
   async update(id: string, data: Partial<User>): Promise<User> {
     await this.userRepository.update(id, data);
     return this.findById(id);
+  }
+
+  async changePassword(
+    id: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
+    const user = await this.findById(id);
+
+    if (!user.passwordHash) {
+      throw new BadRequestException('소셜 로그인 계정은 비밀번호를 변경할 수 없습니다.');
+    }
+
+    const isValid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!isValid) {
+      throw new BadRequestException('현재 비밀번호가 일치하지 않습니다.');
+    }
+
+    const newHash = await bcrypt.hash(newPassword, 10);
+    await this.userRepository.update(id, { passwordHash: newHash });
+
+    return { message: '비밀번호가 변경되었습니다.' };
   }
 
   async remove(id: string): Promise<void> {
