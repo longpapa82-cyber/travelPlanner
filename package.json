@@ -1,0 +1,29 @@
+{
+  "name": "travelplanner",
+  "version": "1.0.0",
+  "description": "전 세계 여행자들이 목적지만 선택하면 AI가 자동으로 최적화된 여행 계획을 수립해주는 모바일 우선 웹 서비스",
+  "main": "playwright.config.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "npx playwright test --config=tests/playwright.config.ts",
+    "test:parallel": "npx playwright test --config=tests/playwright.config.ts --workers=8",
+    "test:serial": "npx playwright test --config=tests/playwright.config.ts --workers=1",
+    "test:chromium": "npx playwright test --config=tests/playwright.config.ts --project=chromium-mobile",
+    "test:cross-browser": "npx playwright test --config=tests/playwright.config.ts --project=chromium-mobile --project=firefox-tablet --project=webkit-desktop",
+    "test:destructive": "npx playwright test --config=tests/playwright.config.ts --project=destructive",
+    "test:p0": "npx playwright test --config=tests/playwright.config.ts tests/e2e/02-login-home.spec.ts tests/e2e/03-trip-creation.spec.ts tests/e2e/04-trip-list.spec.ts tests/e2e/05-trip-detail-activities.spec.ts",
+    "test:report": "npx playwright show-report",
+    "test:shard1": "npx playwright test --config=tests/playwright.config.ts --shard=1/2 --workers=4",
+    "test:shard2": "npx playwright test --config=tests/playwright.config.ts --shard=2/2 --workers=4"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}
