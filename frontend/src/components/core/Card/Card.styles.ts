@@ -21,6 +21,7 @@ export const getCardStyles = ({ elevation, padding, borderRadius }: CardStylesPr
     sm: { padding: theme.spacing.sm },
     md: { padding: theme.spacing.md },
     lg: { padding: theme.spacing.lg },
+    xl: { padding: theme.spacing.xl },
   };
 
   return StyleSheet.create({

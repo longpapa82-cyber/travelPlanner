@@ -12,7 +12,7 @@
  * - Dark mode support
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -48,7 +48,7 @@ interface Props {
 
 // Popular destination suggestions
 const getPopularDestinations = (t: TFunction) => [
-  { name: t('create.destinations.tokyo'), icon: 'torii-gate', color: colors.travel.sunset },
+  { name: t('create.destinations.tokyo'), icon: 'temple-buddhist', color: colors.travel.sunset },
   { name: t('create.destinations.osaka'), icon: 'eiffel-tower', color: colors.travel.forest },
   { name: t('create.destinations.newyork'), icon: 'city', color: colors.travel.ocean },
   { name: t('create.destinations.bangkok'), icon: 'palm-tree', color: colors.travel.sunset },
@@ -85,6 +85,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
 
   const POPULAR_DESTINATIONS = getPopularDestinations(t);
   const DURATION_OPTIONS = getDurationOptions(t);
+
+  // 여행 생성 시 최소 출발일은 내일부터
+  const minStartDate = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
   const TRAVELER_OPTIONS = getTravelerOptions(t);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -110,10 +118,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleSelectDuration = (days: number) => {
-    const today = new Date();
-    const start = new Date(today);
-    const end = new Date(today);
-    end.setDate(end.getDate() + days);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const start = new Date(tomorrow);
+    const end = new Date(tomorrow);
+    end.setDate(end.getDate() + days - 1);
 
     setStartDate(start.toISOString().split('T')[0]);
     setEndDate(end.toISOString().split('T')[0]);
@@ -409,7 +418,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                 label={t('create.dates.start')}
                 value={startDate}
                 onChange={setStartDate}
-                minimumDate={new Date()}
+                minimumDate={minStartDate}
                 disabled={isLoading}
               />
               <Icon
@@ -422,7 +431,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                 label={t('create.dates.end')}
                 value={endDate}
                 onChange={setEndDate}
-                minimumDate={startDate ? new Date(startDate + 'T00:00:00') : new Date()}
+                minimumDate={startDate ? new Date(startDate + 'T00:00:00') : minStartDate}
                 disabled={isLoading}
               />
             </View>
@@ -568,7 +577,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             <Button
               variant="primary"
               size="lg"
-              icon="sparkles"
+              icon="creation"
               fullWidth
               onPress={handleCreateTrip}
               loading={isLoading}

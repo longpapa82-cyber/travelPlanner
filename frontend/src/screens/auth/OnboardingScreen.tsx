@@ -35,7 +35,7 @@ type OnboardingScreenProps = {
 
 interface OnboardingSlide {
   id: string;
-  icon: keyof typeof Icon.glyphMap;
+  icon: string;
   title: string;
   description: string;
   gradient: [string, string];
@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 24,
     paddingBottom: Platform.OS === 'web' ? 24 : 0,
+    zIndex: 10,
   },
   pagination: {
     flexDirection: 'row',

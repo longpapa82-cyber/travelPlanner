@@ -1,6 +1,10 @@
 {
   "create": {
     "title": "새 여행 만들기",
+    "hero": {
+      "title": "새로운 여행을 떠나볼까요?",
+      "subtitle": "목적지만 선택하면 AI가 최적의 여행 계획을 만들어드립니다"
+    },
     "destination": {
       "title": "어디로 떠나시나요?",
       "placeholder": "도시 또는 국가를 입력하세요",
@@ -14,7 +18,8 @@
       "paris": "파리",
       "singapore": "싱가포르",
       "london": "런던",
-      "newyork": "뉴욕"
+      "newyork": "뉴욕",
+      "barcelona": "바르셀로나"
     },
     "duration": {
       "title": "얼마나 머무시나요?",
@@ -121,10 +126,16 @@
     },
     "readOnlyMessage": "완료된 활동은 수정할 수 없습니다",
     "progress": "전체 진행률 {{percentage}}%",
+    "durationDays": "{{count}}일간",
+    "travelers": "{{count}}명",
+    "durationMinutes": "{{minutes}}분",
+    "estimatedCost": "₩{{cost}}",
     "dayLabel": "Day {{day}}",
     "emptyItinerary": "아직 일정이 생성되지 않았습니다",
+    "emptyItineraryMessage": "여행 일정을 추가해보세요",
     "addActivity": "활동 추가",
     "affiliateSection": "숙소 & 액티비티 예약",
+    "affiliateSubtitle": "{{destination}} 최고의 숙소와 체험을 예약하세요",
     "tabs": {
       "itinerary": "일정",
       "info": "정보",
@@ -140,11 +151,37 @@
       "accommodation": "숙소",
       "other": "기타"
     },
+    "accessibility": {
+      "completed": "완료됨",
+      "incomplete": "미완료",
+      "reorder": "순서 변경",
+      "reorderHint": "길게 눌러 순서를 변경하세요",
+      "edit": "수정",
+      "delete": "삭제",
+      "goBack": "뒤로 가기",
+      "editTrip": "여행 수정",
+      "duplicate": "여행 복제",
+      "duplicating": "복제 중...",
+      "share": "공유",
+      "addActivityToDay": "Day {{day}}에 활동 추가"
+    },
     "alerts": {
       "deleteTitle": "활동 삭제",
       "deleteMessage": "이 활동을 삭제하시겠습니까?",
       "deleteFailed": "삭제에 실패했습니다",
-      "error": "오류"
+      "error": "오류",
+      "fetchError": "여행 정보를 불러오는 데 실패했습니다",
+      "duplicateSuccess": "여행이 복제되었습니다",
+      "duplicateCompleteTitle": "복제 완료",
+      "duplicateError": "여행 복제에 실패했습니다",
+      "confirm": "확인",
+      "cancel": "취소",
+      "delete": "삭제",
+      "success": "성공",
+      "deleteSuccess": "여행이 삭제되었습니다",
+      "deleteError": "삭제에 실패했습니다",
+      "toggleError": "상태 변경에 실패했습니다",
+      "reorderError": "순서 변경에 실패했습니다"
     }
   },
   "edit": {

@@ -34,11 +34,14 @@ export interface Activity {
 }
 
 export interface Weather {
-  temp: number;
-  main: string;
-  description: string;
+  temp?: number;
+  temperature?: number;
+  main?: string;
+  condition?: string;
+  description?: string;
   humidity: number;
   windSpeed?: number;
+  icon?: string;
 }
 
 export interface Itinerary {

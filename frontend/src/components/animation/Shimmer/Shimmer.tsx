@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Animated, StyleSheet } from 'react-native';
 import { ShimmerProps } from './Shimmer.types';
 import { useTheme } from '../../../contexts/ThemeContext';
-import { theme } from '../../../constants/theme';
+import { colors, darkColors } from '../../../constants/theme';
 
 export const Shimmer: React.FC<ShimmerProps> = ({
   width = '100%',
@@ -17,11 +17,11 @@ export const Shimmer: React.FC<ShimmerProps> = ({
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   const defaultBaseColor = isDark
-    ? theme.darkColors.surface
-    : theme.colors.neutral[200];
+    ? darkColors.background.tertiary
+    : colors.neutral[200];
   const defaultHighlightColor = isDark
-    ? theme.darkColors.border
-    : theme.colors.neutral[100];
+    ? darkColors.border.light
+    : colors.neutral[100];
 
   useEffect(() => {
     const shimmerAnimation = Animated.loop(
@@ -53,7 +53,7 @@ export const Shimmer: React.FC<ShimmerProps> = ({
 
   const styles = StyleSheet.create({
     container: {
-      width,
+      width: width as number,
       height,
       borderRadius,
       backgroundColor: baseColor || defaultBaseColor,

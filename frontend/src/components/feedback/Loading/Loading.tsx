@@ -48,7 +48,7 @@ export const Loading: React.FC<LoadingProps> = ({
     }
   };
 
-  const spinnerColor = color || theme.colors.primary[500];
+  const spinnerColor = color || theme.colors.primary;
 
   const styles = StyleSheet.create({
     container: {
@@ -71,8 +71,8 @@ export const Loading: React.FC<LoadingProps> = ({
     },
     text: {
       marginTop: theme.spacing.md,
-      fontSize: theme.typography.body.md.fontSize,
-      fontWeight: theme.typography.body.md.fontWeight as any,
+      fontSize: theme.typography.body.medium.fontSize,
+      fontWeight: theme.typography.body.medium.fontWeight as any,
       color: theme.colors.text,
       textAlign: 'center',
     },

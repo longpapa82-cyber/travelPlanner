@@ -25,7 +25,8 @@ interface WeatherWidgetProps {
 }
 
 // 날씨 상태에 따른 아이콘 매핑
-const getWeatherIcon = (condition: string): string => {
+const getWeatherIcon = (condition: string | undefined | null): string => {
+  if (!condition) return 'weather-partly-cloudy';
   const conditionLower = condition.toLowerCase();
 
   if (conditionLower.includes('clear') || conditionLower.includes('sunny')) {
@@ -48,7 +49,8 @@ const getWeatherIcon = (condition: string): string => {
 };
 
 // 날씨 상태에 따른 색상
-const getWeatherColor = (condition: string): string => {
+const getWeatherColor = (condition: string | undefined | null): string => {
+  if (!condition) return colors.primary[500];
   const conditionLower = condition.toLowerCase();
 
   if (conditionLower.includes('clear') || conditionLower.includes('sunny')) {
@@ -85,8 +87,11 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
     return null;
   }
 
-  const weatherIcon = weather ? getWeatherIcon(weather.main) : 'help-circle-outline';
-  const weatherColor = weather ? getWeatherColor(weather.main) : colors.neutral[500];
+  // Backend uses "condition"/"temperature", frontend type has "main"/"temp" — support both
+  const weatherCondition = weather?.main || weather?.condition;
+  const weatherTemp = weather?.temp ?? weather?.temperature;
+  const weatherIcon = weather ? getWeatherIcon(weatherCondition) : 'help-circle-outline';
+  const weatherColor = weather ? getWeatherColor(weatherCondition) : colors.neutral[500];
 
   if (compact) {
     // 컴팩트 모드: 한 줄로 날씨와 시차 표시
@@ -95,7 +100,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
         {weather && (
           <View style={styles.compactItem}>
             <Icon name={weatherIcon} size={16} color={weatherColor} />
-            <Text style={styles.compactText}>{Math.round(weather.temp)}°C</Text>
+            <Text style={styles.compactText}>{Math.round(weatherTemp ?? 0)}°C</Text>
           </View>
         )}
         {timezoneOffset !== null && timezoneOffset !== undefined && (
@@ -117,8 +122,8 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
           <View style={styles.weatherHeader}>
             <Icon name={weatherIcon} size={40} color={weatherColor} />
             <View style={styles.weatherInfo}>
-              <Text style={styles.temperature}>{Math.round(weather.temp)}°C</Text>
-              <Text style={styles.condition}>{weather.description}</Text>
+              <Text style={styles.temperature}>{Math.round(weatherTemp ?? 0)}°C</Text>
+              <Text style={styles.condition}>{weather.description || weatherCondition || ''}</Text>
             </View>
           </View>
 

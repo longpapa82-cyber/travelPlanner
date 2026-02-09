@@ -78,7 +78,6 @@ export const Input: React.FC<InputProps> = ({
           textAlignVertical={multiline ? 'top' : 'center'}
           accessible
           accessibilityLabel={label || placeholder}
-          accessibilityRequired={required}
           accessibilityState={{ disabled }}
         />
 

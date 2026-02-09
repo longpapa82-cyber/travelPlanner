@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScreenProps } from './Screen.types';
 import { Loading } from '../../feedback/Loading';
-import { theme } from '../../../constants/theme';
+import { theme, darkColors } from '../../../constants/theme';
 import { useTheme } from '../../../contexts/ThemeContext';
 
 export const Screen: React.FC<ScreenProps> = ({
@@ -32,7 +32,7 @@ export const Screen: React.FC<ScreenProps> = ({
       flex: 1,
       backgroundColor:
         backgroundColor ||
-        (isDark ? theme.darkColors.background : theme.colors.background),
+        (isDark ? darkColors.background.primary : theme.colors.background),
     },
     content: {
       flex: 1,
@@ -71,7 +71,7 @@ export const Screen: React.FC<ScreenProps> = ({
         barStyle={isDark ? 'light-content' : 'dark-content'}
         backgroundColor={
           backgroundColor ||
-          (isDark ? theme.darkColors.background : theme.colors.background)
+          (isDark ? darkColors.background.primary : theme.colors.background)
         }
       />
       {header}

@@ -1,6 +1,10 @@
 {
   "create": {
     "title": "新しい旅行を作成",
+    "hero": {
+      "title": "新しい旅に出かけましょう！",
+      "subtitle": "目的地を選ぶだけで、AIが最適な旅行プランを作成します"
+    },
     "destination": {
       "title": "どこへ行きますか？",
       "placeholder": "都市または国を入力",
@@ -14,7 +18,8 @@
       "paris": "パリ",
       "singapore": "シンガポール",
       "london": "ロンドン",
-      "newyork": "ニューヨーク"
+      "newyork": "ニューヨーク",
+      "barcelona": "バルセロナ"
     },
     "duration": {
       "title": "どのくらい滞在しますか？",
@@ -121,10 +126,16 @@
     },
     "readOnlyMessage": "完了したアクティビティは編集できません",
     "progress": "全体進捗 {{percentage}}%",
+    "durationDays": "{{count}}日間",
+    "travelers": "{{count}}人",
+    "durationMinutes": "{{minutes}}分",
+    "estimatedCost": "¥{{cost}}",
     "dayLabel": "Day {{day}}",
     "emptyItinerary": "まだ旅程が作成されていません",
+    "emptyItineraryMessage": "旅程にアクティビティを追加しましょう",
     "addActivity": "アクティビティを追加",
     "affiliateSection": "宿泊＆アクティビティ予約",
+    "affiliateSubtitle": "{{destination}}の最高の宿泊施設と体験を予約",
     "tabs": {
       "itinerary": "旅程",
       "info": "情報",
@@ -140,11 +151,37 @@
       "accommodation": "宿泊",
       "other": "その他"
     },
+    "accessibility": {
+      "completed": "完了",
+      "incomplete": "未完了",
+      "reorder": "並べ替え",
+      "reorderHint": "長押しして並べ替え",
+      "edit": "編集",
+      "delete": "削除",
+      "goBack": "戻る",
+      "editTrip": "旅行を編集",
+      "duplicate": "旅行を複製",
+      "duplicating": "複製中...",
+      "share": "共有",
+      "addActivityToDay": "Day {{day}}にアクティビティを追加"
+    },
     "alerts": {
       "deleteTitle": "アクティビティを削除",
       "deleteMessage": "このアクティビティを削除しますか？",
       "deleteFailed": "削除に失敗しました",
-      "error": "エラー"
+      "error": "エラー",
+      "fetchError": "旅行情報の読み込みに失敗しました",
+      "duplicateSuccess": "旅行が複製されました",
+      "duplicateCompleteTitle": "複製完了",
+      "duplicateError": "旅行の複製に失敗しました",
+      "confirm": "確認",
+      "cancel": "キャンセル",
+      "delete": "削除",
+      "success": "成功",
+      "deleteSuccess": "旅行が削除されました",
+      "deleteError": "削除に失敗しました",
+      "toggleError": "状態の変更に失敗しました",
+      "reorderError": "並べ替えに失敗しました"
     }
   },
   "edit": {

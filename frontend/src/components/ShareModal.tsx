@@ -26,6 +26,7 @@ import { TFunction } from 'i18next';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 import apiService from '../services/api';
+import { APP_URL } from '../constants/config';
 
 const getExpiryOptions = (t: TFunction) => [
   { label: t('shareModal.expiry.none'), value: undefined },
@@ -74,8 +75,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     if (Platform.OS === 'web') {
       return window.location.origin;
     }
-    // For mobile apps, you would use your production URL
-    return 'https://yourapp.com'; // TODO: Replace with actual production URL
+    return APP_URL;
   };
 
   const handleGenerateLink = async () => {

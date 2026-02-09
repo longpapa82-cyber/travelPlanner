@@ -187,7 +187,23 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     setModalVisible(true);
   };
 
-  const handleDeleteActivity = (itineraryId: string, activityIndex: number) => {
+  const handleDeleteActivity = async (itineraryId: string, activityIndex: number) => {
+    // On web, Alert.alert() with button callbacks is unreliable — use window.confirm
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm(
+        `${t('detail.alerts.deleteTitle')}\n${t('detail.alerts.deleteMessage')}`
+      );
+      if (!confirmed) return;
+      try {
+        await apiService.deleteActivity(tripId, itineraryId, activityIndex);
+        await fetchTripDetails();
+        window.alert(t('detail.alerts.deleteSuccess'));
+      } catch (error: any) {
+        window.alert(error.response?.data?.message || t('detail.alerts.deleteError'));
+      }
+      return;
+    }
+
     Alert.alert(
       t('detail.alerts.deleteTitle'),
       t('detail.alerts.deleteMessage'),
@@ -199,7 +215,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           onPress: async () => {
             try {
               await apiService.deleteActivity(tripId, itineraryId, activityIndex);
-              await fetchTripDetails(); // Refresh trip data
+              await fetchTripDetails();
               Alert.alert(t('detail.alerts.success'), t('detail.alerts.deleteSuccess'));
             } catch (error: any) {
               Alert.alert(
@@ -219,11 +235,10 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     currentActivity: Activity
   ) => {
     try {
-      // Toggle completed status
+      // Toggle completed status — only send DTO-allowed fields
       const newCompletedStatus = !(currentActivity.completed ?? false);
 
       await apiService.updateActivity(tripId, itineraryId, activityIndex, {
-        ...currentActivity,
         completed: newCompletedStatus,
       });
 
@@ -701,7 +716,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       </View>
 
       {/* Add Activity Button - Only show for upcoming and ongoing trips */}
-      {trip.status !== 'completed' && (
+      {trip && trip.status !== 'completed' && (
         <TouchableOpacity
           style={[
             styles.addActivityButton,

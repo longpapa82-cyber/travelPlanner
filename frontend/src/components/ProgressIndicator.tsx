@@ -141,7 +141,6 @@ const createStyles = (theme: any, isDark: boolean) =>
     progressBar: {
       height: '100%',
       borderRadius: 4,
-      transition: 'width 0.3s ease',
     },
 
     // Status Text

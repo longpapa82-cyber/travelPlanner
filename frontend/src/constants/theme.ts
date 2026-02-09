@@ -500,8 +500,10 @@ export const theme = {
 
     // Neutral - 기존 코드 호환성
     background: colors.neutral[50],
+    surface: colors.neutral[0],
     text: colors.neutral[700],
     textSecondary: colors.neutral[400],
+    textTertiary: colors.neutral[500],
     white: colors.neutral[0],
 
     // Status Colors - 기존 코드 호환성

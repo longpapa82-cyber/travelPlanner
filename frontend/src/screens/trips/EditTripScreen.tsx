@@ -45,7 +45,7 @@ interface Props {
 
 // Popular destination suggestions (META pattern for i18n)
 const DESTINATION_META = [
-  { key: 'create.destinations.tokyo' as const, icon: 'torii-gate', color: colors.travel.sunset },
+  { key: 'create.destinations.tokyo' as const, icon: 'temple-buddhist', color: colors.travel.sunset },
   { key: 'create.destinations.osaka' as const, icon: 'eiffel-tower', color: colors.travel.forest },
   { key: 'create.destinations.newyork' as const, icon: 'city', color: colors.travel.ocean },
   { key: 'create.destinations.bangkok' as const, icon: 'palm-tree', color: colors.travel.sunset },

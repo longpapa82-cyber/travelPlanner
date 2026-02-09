@@ -1,6 +1,10 @@
 {
   "create": {
     "title": "Create New Trip",
+    "hero": {
+      "title": "Ready for a new adventure?",
+      "subtitle": "Just pick a destination and AI will create the perfect travel plan for you"
+    },
     "destination": {
       "title": "Where are you heading?",
       "placeholder": "Enter a city or country",
@@ -14,7 +18,8 @@
       "paris": "Paris",
       "singapore": "Singapore",
       "london": "London",
-      "newyork": "New York"
+      "newyork": "New York",
+      "barcelona": "Barcelona"
     },
     "duration": {
       "title": "How long will you stay?",
@@ -121,10 +126,16 @@
     },
     "readOnlyMessage": "Completed activities cannot be edited",
     "progress": "Overall progress {{percentage}}%",
+    "durationDays": "{{count}} days",
+    "travelers": "{{count}} travelers",
+    "durationMinutes": "{{minutes}} min",
+    "estimatedCost": "${{cost}}",
     "dayLabel": "Day {{day}}",
     "emptyItinerary": "No itinerary created yet",
+    "emptyItineraryMessage": "Add activities to your trip",
     "addActivity": "Add Activity",
     "affiliateSection": "Book Hotels & Activities",
+    "affiliateSubtitle": "Book the best stays and experiences in {{destination}}",
     "tabs": {
       "itinerary": "Itinerary",
       "info": "Info",
@@ -140,11 +151,37 @@
       "accommodation": "Accommodation",
       "other": "Other"
     },
+    "accessibility": {
+      "completed": "Completed",
+      "incomplete": "Incomplete",
+      "reorder": "Reorder",
+      "reorderHint": "Long press to reorder",
+      "edit": "Edit",
+      "delete": "Delete",
+      "goBack": "Go back",
+      "editTrip": "Edit trip",
+      "duplicate": "Duplicate trip",
+      "duplicating": "Duplicating...",
+      "share": "Share",
+      "addActivityToDay": "Add activity to Day {{day}}"
+    },
     "alerts": {
       "deleteTitle": "Delete Activity",
       "deleteMessage": "Delete this activity?",
       "deleteFailed": "Failed to delete",
-      "error": "Error"
+      "error": "Error",
+      "fetchError": "Failed to load trip info",
+      "duplicateSuccess": "Trip has been duplicated",
+      "duplicateCompleteTitle": "Duplication Complete",
+      "duplicateError": "Failed to duplicate trip",
+      "confirm": "OK",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "success": "Success",
+      "deleteSuccess": "Trip has been deleted",
+      "deleteError": "Failed to delete trip",
+      "toggleError": "Failed to update status",
+      "reorderError": "Failed to reorder"
     }
   },
   "edit": {

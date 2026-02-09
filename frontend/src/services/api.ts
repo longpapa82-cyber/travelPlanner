@@ -63,6 +63,15 @@ class ApiService {
     return this.api;
   }
 
+  // Generic HTTP methods for services
+  async get<T = any>(url: string, config?: Parameters<AxiosInstance['get']>[1]) {
+    return this.api.get<T>(url, config);
+  }
+
+  async post<T = any>(url: string, data?: any, config?: Parameters<AxiosInstance['post']>[2]) {
+    return this.api.post<T>(url, data, config);
+  }
+
   // Auth Methods
   async login(email: string, password: string) {
     const response = await this.api.post('/auth/login', { email, password });
@@ -104,7 +113,7 @@ class ApiService {
 
   // Trips Methods
   async createTrip(data: any) {
-    const response = await this.api.post('/trips', data);
+    const response = await this.api.post('/trips', data, { timeout: 120000 });
     return response.data;
   }
 

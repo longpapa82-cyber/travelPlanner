@@ -138,31 +138,33 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   };
 
   // Create theme object based on current mode
-  const currentTheme = isDark
+  const currentTheme: typeof lightTheme = isDark
     ? {
         ...lightTheme,
         colors: {
           // Dark mode overrides
-          primary: darkColors.primary,
-          primaryLight: colors.primary[200],
-          primaryDark: colors.primary[900],
+          primary: darkColors.primary as typeof lightTheme.colors.primary,
+          primaryLight: colors.primary[200] as typeof lightTheme.colors.primaryLight,
+          primaryDark: colors.primary[900] as typeof lightTheme.colors.primaryDark,
 
-          secondary: darkColors.secondary,
-          secondaryLight: colors.secondary[200],
-          secondaryDark: colors.secondary[900],
+          secondary: darkColors.secondary as typeof lightTheme.colors.secondary,
+          secondaryLight: colors.secondary[200] as typeof lightTheme.colors.secondaryLight,
+          secondaryDark: colors.secondary[900] as typeof lightTheme.colors.secondaryDark,
 
           accent: colors.accent,
 
-          background: darkColors.background.primary,
-          text: darkColors.text.primary,
-          textSecondary: darkColors.text.secondary,
-          white: darkColors.background.secondary,
+          background: darkColors.background.primary as typeof lightTheme.colors.background,
+          surface: darkColors.background.secondary as typeof lightTheme.colors.surface,
+          text: darkColors.text.primary as typeof lightTheme.colors.text,
+          textSecondary: darkColors.text.secondary as typeof lightTheme.colors.textSecondary,
+          textTertiary: darkColors.text.tertiary as typeof lightTheme.colors.textTertiary,
+          white: darkColors.background.secondary as typeof lightTheme.colors.white,
 
           success: colors.success.main,
           warning: colors.warning.main,
           error: colors.error.main,
 
-          border: darkColors.border.light,
+          border: darkColors.border.light as typeof lightTheme.colors.border,
         },
       }
     : lightTheme;

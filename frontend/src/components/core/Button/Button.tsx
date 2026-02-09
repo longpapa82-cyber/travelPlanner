@@ -137,7 +137,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <TouchableOpacity
       accessible
-      accessibilityRole="button" as AccessibilityRole
+      accessibilityRole={"button" as AccessibilityRole}
       accessibilityLabel={accessibilityLabel || (typeof children === 'string' ? children : undefined)}
       accessibilityHint={accessibilityHint}
       accessibilityState={{

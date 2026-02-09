@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from 'react-native';
+import * as Font from 'expo-font';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { AuthProvider } from './src/contexts/AuthContext';
@@ -31,13 +32,25 @@ const AppContent = () => {
 };
 
 export default function App() {
-  const [i18nReady, setI18nReady] = useState(false);
+  const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
-    initI18n().then(() => setI18nReady(true));
+    async function prepare() {
+      await Promise.all([
+        initI18n(),
+        Font.loadAsync({
+          'material-community': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
+          'ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+          'MaterialCommunityIcons': require('react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
+          'Ionicons': require('react-native-vector-icons/Fonts/Ionicons.ttf'),
+        }),
+      ]);
+      setAppReady(true);
+    }
+    prepare();
   }, []);
 
-  if (!i18nReady) {
+  if (!appReady) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" />
