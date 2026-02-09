@@ -1,5 +1,6 @@
 import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import OpenAI from 'openai';
 import { ActivityDto } from '../dto/update-itinerary.dto';
 import { AnalyticsService } from './analytics.service';
@@ -16,7 +17,14 @@ interface TripContext {
     travelStyle?: string;
     interests?: string[];
   };
+  language?: string;
 }
+
+const LANGUAGE_NAMES: Record<string, string> = {
+  ko: 'Korean',
+  en: 'English',
+  ja: 'Japanese',
+};
 
 @Injectable()
 export class AIService {
@@ -25,6 +33,7 @@ export class AIService {
 
   constructor(
     private configService: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @Inject(forwardRef(() => AnalyticsService))
     private analyticsService: AnalyticsService,
   ) {
@@ -49,6 +58,15 @@ export class AIService {
       return [];
     }
 
+    // Check cache for identical trip context + day
+    const lang = tripContext.language || 'ko';
+    const cacheKey = `ai:itinerary:${tripContext.destination}:${date.toISOString().split('T')[0]}:${tripContext.preferences?.travelStyle || 'default'}:${lang}`;
+    const cached = await this.cacheManager.get<ActivityDto[]>(cacheKey);
+    if (cached) {
+      this.logger.debug(`Cache hit for AI itinerary: ${cacheKey}`);
+      return cached;
+    }
+
     try {
       // 사용자 데이터 기반 추천 정보 가져오기
       const recommendations =
@@ -63,13 +81,13 @@ export class AIService {
         recommendations,
       );
 
+      const langName = LANGUAGE_NAMES[tripContext.language || 'ko'] || 'Korean';
       const completion = await this.openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
-            content:
-              'You are an expert travel planner. Generate detailed, realistic daily itineraries in JSON format. Consider travel time, opening hours, and local customs. Activities should be practical and well-timed.',
+            content: `You are an expert travel planner. Generate detailed, realistic daily itineraries in JSON format. Consider travel time, opening hours, and local customs. Activities should be practical and well-timed. IMPORTANT: All text content (title, description, location) MUST be written in ${langName}. Do NOT use English for these fields.`,
           },
           {
             role: 'user',
@@ -91,7 +109,11 @@ export class AIService {
       const activities = parsed.activities || parsed.itinerary || [];
 
       // Validate and format activities
-      return this.formatActivities(activities);
+      const result = this.formatActivities(activities);
+
+      // Cache AI response for 24 hours
+      await this.cacheManager.set(cacheKey, result, 86400000);
+      return result;
     } catch (error) {
       this.logger.error(
         `Failed to generate itinerary for day ${dayNumber}: ${error.message}`,

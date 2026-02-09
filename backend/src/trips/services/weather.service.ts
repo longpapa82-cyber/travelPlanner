@@ -1,5 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import axios from 'axios';
 
 interface WeatherData {
@@ -34,7 +35,10 @@ export class WeatherService {
   private apiKey: string | null = null;
   private readonly baseUrl = 'https://api.openweathermap.org/data/2.5';
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {
     const apiKey = this.configService.get<string>('OPENWEATHER_API_KEY');
     if (apiKey && apiKey !== '' && !apiKey.includes('your-')) {
       this.apiKey = apiKey;
@@ -57,6 +61,15 @@ export class WeatherService {
     if (!this.apiKey) {
       this.logger.warn('OpenWeather API not configured');
       return null;
+    }
+
+    // Check cache (key: lat/lon rounded to 2 decimals + date)
+    const dateStr = date.toISOString().split('T')[0];
+    const cacheKey = `weather:${latitude.toFixed(2)}:${longitude.toFixed(2)}:${dateStr}`;
+    const cached = await this.cacheManager.get<WeatherData>(cacheKey);
+    if (cached) {
+      this.logger.debug(`Cache hit for weather: ${cacheKey}`);
+      return cached;
     }
 
     try {
@@ -89,7 +102,7 @@ export class WeatherService {
         }
       }
 
-      return {
+      const result: WeatherData = {
         temperature: Math.round(closestForecast.main.temp),
         condition: closestForecast.weather[0].main,
         humidity: closestForecast.main.humidity,
@@ -99,6 +112,10 @@ export class WeatherService {
           : undefined,
         icon: closestForecast.weather[0].icon,
       };
+
+      // Cache for 30 minutes
+      await this.cacheManager.set(cacheKey, result, 1800000);
+      return result;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         this.logger.error(

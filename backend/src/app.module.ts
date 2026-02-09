@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -9,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { TripsModule } from './trips/trips.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 
+import { AppCacheModule } from './common/cache.module';
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import oauthConfig from './config/oauth.config';
@@ -25,12 +28,31 @@ import oauthConfig from './config/oauth.config';
     // Schedule Module - Cron jobs
     ScheduleModule.forRoot(),
 
+    // Throttler Module - Rate limiting
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'short',
+          ttl: 1000,
+          limit: 10,
+        },
+        {
+          name: 'medium',
+          ttl: 60000,
+          limit: 100,
+        },
+      ],
+    }),
+
     // TypeORM Module - Database connection
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions =>
         configService.get<TypeOrmModuleOptions>('database')!,
     }),
+
+    // Cache Module - Redis/Memory caching
+    AppCacheModule,
 
     // Feature Modules
     UsersModule,
@@ -39,6 +61,12 @@ import oauthConfig from './config/oauth.config';
     AnalyticsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

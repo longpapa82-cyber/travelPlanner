@@ -12,6 +12,7 @@ import {
   HttpStatus,
   Query,
 } from '@nestjs/common';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { TripsService } from './trips.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
@@ -28,8 +29,10 @@ export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 
   @Post()
+  @Throttle({ short: { ttl: 60000, limit: 5 } })
   create(@Request() req, @Body() createTripDto: CreateTripDto) {
-    return this.tripsService.create(req.user.userId, createTripDto);
+    const language = req.headers['accept-language'] || 'ko';
+    return this.tripsService.create(req.user.userId, createTripDto, language);
   }
 
   @Get()

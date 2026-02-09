@@ -39,7 +39,7 @@ export class TripsService {
     private readonly tripStatusScheduler: TripStatusScheduler,
   ) {}
 
-  async create(userId: string, createTripDto: CreateTripDto): Promise<Trip> {
+  async create(userId: string, createTripDto: CreateTripDto, language: string = 'ko'): Promise<Trip> {
     // Calculate number of days
     const startDate = new Date(createTripDto.startDate);
     const endDate = new Date(createTripDto.endDate);
@@ -109,6 +109,7 @@ export class TripsService {
         endDate,
         numberOfTravelers: createTripDto.numberOfTravelers || 1,
         preferences: createTripDto.preferences,
+        language,
       });
 
       // Create itineraries with AI-generated activities, timezone, and weather info

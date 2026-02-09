@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
-import { User, AuthProvider } from './entities/user.entity';
+import { User, AuthProvider, UserRole } from './entities/user.entity';
 
 // Mock bcrypt
 jest.mock('bcrypt');
@@ -21,6 +21,7 @@ describe('UsersService', () => {
     provider: AuthProvider.EMAIL,
     providerId: undefined,
     profileImage: undefined,
+    role: UserRole.USER,
     isActive: true,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),

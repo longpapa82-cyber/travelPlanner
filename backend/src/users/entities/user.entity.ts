@@ -14,6 +14,11 @@ export enum AuthProvider {
   KAKAO = 'kakao',
 }
 
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin',
+}
+
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -40,6 +45,13 @@ export class User {
 
   @Column({ type: 'varchar', nullable: true })
   profileImage?: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
 
   @Column({ default: true })
   isActive: boolean;

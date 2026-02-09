@@ -13,6 +13,7 @@ import {
 import { AffiliateService } from './affiliate.service';
 import { TrackAffiliateClickDto } from './dto/track-affiliate-click.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 import { Request } from 'express';
 
@@ -49,7 +50,7 @@ export class AffiliateController {
    * 관리자 전용 또는 제휴사 webhook
    */
   @Post('conversion/:clickId')
-  @UseGuards(JwtAuthGuard) // TODO: Admin guard or webhook authentication
+  @UseGuards(JwtAuthGuard, AdminGuard)
   async updateConversion(
     @Param('clickId') clickId: string,
     @Body() body: { conversionValue?: number; commission?: number },
@@ -76,7 +77,7 @@ export class AffiliateController {
    * - endDate: ISO format (optional)
    */
   @Get('stats')
-  @UseGuards(JwtAuthGuard) // TODO: Admin guard
+  @UseGuards(JwtAuthGuard, AdminGuard)
   async getProviderStats(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
@@ -102,7 +103,7 @@ export class AffiliateController {
    * - provider: 제휴사 필터 (optional)
    */
   @Get('daily')
-  @UseGuards(JwtAuthGuard) // TODO: Admin guard
+  @UseGuards(JwtAuthGuard, AdminGuard)
   async getDailyStats(
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
@@ -135,7 +136,7 @@ export class AffiliateController {
    * - days: 통계 기간 (기본: 30일)
    */
   @Get('summary')
-  @UseGuards(JwtAuthGuard) // TODO: Admin guard
+  @UseGuards(JwtAuthGuard, AdminGuard)
   async getSummaryStats(
     @Query('days', new DefaultValuePipe(30), ParseIntPipe) days: number,
   ) {

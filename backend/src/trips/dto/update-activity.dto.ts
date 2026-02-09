@@ -1,4 +1,10 @@
-import { IsString, IsOptional, IsNumber, Min } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsBoolean,
+  Min,
+} from 'class-validator';
 
 export class UpdateActivityDto {
   @IsOptional()
@@ -30,4 +36,8 @@ export class UpdateActivityDto {
   @IsOptional()
   @IsString()
   type?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  completed?: boolean;
 }
