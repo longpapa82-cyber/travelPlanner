@@ -23,31 +23,6 @@ export const formatDateShort = (dateString: string) => {
   });
 };
 
-export const getWeatherIcon = (main: string) => {
-  const iconMap: { [key: string]: string } = {
-    Clear: 'weather-sunny',
-    Clouds: 'weather-cloudy',
-    Rain: 'weather-rainy',
-    Snow: 'weather-snowy',
-    Thunderstorm: 'weather-lightning',
-    Drizzle: 'weather-rainy',
-    Mist: 'weather-fog',
-    Fog: 'weather-fog',
-  };
-  return iconMap[main] || 'weather-partly-cloudy';
-};
-
-export const getWeatherColor = (main: string) => {
-  const colorMap: { [key: string]: string } = {
-    Clear: '#F59E0B',
-    Clouds: '#6B7280',
-    Rain: '#3B82F6',
-    Snow: '#60A5FA',
-    Thunderstorm: '#8B5CF6',
-  };
-  return colorMap[main] || colors.neutral[500];
-};
-
 export const getActivityIcon = (type: string) => {
   const iconMap: { [key: string]: string } = {
     식사: 'silverware-fork-knife',
