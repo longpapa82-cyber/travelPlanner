@@ -1200,7 +1200,6 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         {/* Ad Banner */}
         {activeTab === 'itinerary' && (
           <AdBanner
-            adSenseSlot="1234567890"
             size="adaptive"
             style={{ marginHorizontal: 16 }}
           />
@@ -1245,7 +1244,6 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         {/* Bottom Ad Banner (after itineraries) */}
         {activeTab === 'itinerary' && trip.itineraries.length > 0 && (
           <AdBanner
-            adSenseSlot="0987654321"
             size="banner"
             style={{ marginHorizontal: 16 }}
           />
