@@ -47,18 +47,18 @@ interface Props {
 
 // Destination image mapping for common locations
 const DESTINATION_IMAGES: Record<string, string> = {
-  '도쿄': 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80',
-  '파리': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
-  '뉴욕': 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&q=80',
-  '런던': 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80',
-  '로마': 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80',
-  '바르셀로나': 'https://images.unsplash.com/photo-1562883676-8c7feb83f09b?w=800&q=80',
-  '서울': 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=800&q=80',
-  '방콕': 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&q=80',
-  '싱가포르': 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80',
-  '홍콩': 'https://images.unsplash.com/photo-1536599424071-5408d47d1ceb?w=800&q=80',
+  '도쿄': 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=75&fm=webp&fit=crop',
+  '파리': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=75&fm=webp&fit=crop',
+  '뉴욕': 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&q=75&fm=webp&fit=crop',
+  '런던': 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&q=75&fm=webp&fit=crop',
+  '로마': 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&q=75&fm=webp&fit=crop',
+  '바르셀로나': 'https://images.unsplash.com/photo-1562883676-8c7feb83f09b?w=400&q=75&fm=webp&fit=crop',
+  '서울': 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400&q=75&fm=webp&fit=crop',
+  '방콕': 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&q=75&fm=webp&fit=crop',
+  '싱가포르': 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&q=75&fm=webp&fit=crop',
+  '홍콩': 'https://images.unsplash.com/photo-1536599424071-5408d47d1ceb?w=400&q=75&fm=webp&fit=crop',
   // Default fallback
-  'default': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80',
+  'default': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&q=75&fm=webp&fit=crop',
 };
 
 // Get image URL for destination

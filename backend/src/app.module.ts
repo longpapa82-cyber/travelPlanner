@@ -5,6 +5,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { DevThrottlerGuard } from './common/guards/dev-throttler.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { TypeOrmModule as TypeOrmFeatureModule } from '@nestjs/typeorm';
+import { Trip } from './trips/entities/trip.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -55,6 +57,9 @@ import emailConfig from './config/email.config';
 
     // Cache Module - Redis/Memory caching
     AppCacheModule,
+
+    // Entity for AppController (sitemap, OG tags)
+    TypeOrmFeatureModule.forFeature([Trip]),
 
     // Feature Modules
     UsersModule,
