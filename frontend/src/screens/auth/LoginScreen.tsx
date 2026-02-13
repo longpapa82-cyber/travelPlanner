@@ -26,7 +26,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../types';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth, TwoFactorRequiredError } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { colors, getColorWithOpacity } from '../../constants/theme';
@@ -95,6 +95,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await login(email, password);
     } catch (error: any) {
+      if (error instanceof TwoFactorRequiredError) {
+        navigation.navigate('TwoFactorLogin', { tempToken: error.tempToken });
+        return;
+      }
       setLoginError(error.response?.data?.message || t('login.alerts.invalidCredentials'));
     } finally {
       setIsLoading(false);

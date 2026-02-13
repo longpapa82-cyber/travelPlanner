@@ -10,11 +10,21 @@ import {
   OAuthResult,
 } from '../services/oauth.service';
 
+export class TwoFactorRequiredError extends Error {
+  tempToken: string;
+  constructor(tempToken: string) {
+    super('Two-factor authentication required');
+    this.name = 'TwoFactorRequiredError';
+    this.tempToken = tempToken;
+  }
+}
+
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  completeTwoFactorLogin: (tempToken: string, code: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithApple: () => Promise<void>;
@@ -82,7 +92,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response: AuthResponse = await apiService.login(email, password);
+      const response = await apiService.login(email, password);
+
+      // Check if 2FA is required
+      if ('requiresTwoFactor' in response && response.requiresTwoFactor) {
+        throw new TwoFactorRequiredError(response.tempToken);
+      }
+
+      const authResponse = response as AuthResponse;
+
+      // Store tokens
+      await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, authResponse.accessToken);
+      await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authResponse.refreshToken);
+
+      setUser(authResponse.user);
+      registerPushAfterLogin();
+    } catch (error) {
+      if (error instanceof TwoFactorRequiredError) throw error;
+      console.error('Login error:', error);
+      throw error;
+    }
+  };
+
+  const completeTwoFactorLogin = async (tempToken: string, code: string) => {
+    try {
+      const response: AuthResponse = await apiService.verifyTwoFactor(tempToken, code);
 
       // Store tokens
       await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
@@ -91,7 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.user);
       registerPushAfterLogin();
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('2FA verification error:', error);
       throw error;
     }
   };
@@ -181,6 +215,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoading,
     isAuthenticated: !!user,
     login,
+    completeTwoFactorLogin,
     register,
     loginWithGoogle,
     loginWithApple,
