@@ -34,6 +34,7 @@ import { FadeIn } from '../../components/animation/FadeIn';
 import { SlideIn } from '../../components/animation/SlideIn';
 import Button from '../../components/core/Button';
 import { Card } from '../../components/core/Card';
+import { getHeroImageUrl } from '../../utils/images';
 
 type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
 
@@ -122,7 +123,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         {/* Hero Header */}
         <FadeIn duration={800}>
           <ImageBackground
-            source={{ uri: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80' }}
+            source={{ uri: getHeroImageUrl('register', { width: 800 }) }}
             style={styles.heroBackground}
             imageStyle={styles.heroImage}
           >

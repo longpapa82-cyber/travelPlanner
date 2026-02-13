@@ -9,7 +9,7 @@
  * - Beautiful typography
  */
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -44,6 +44,7 @@ import PopularDestinations from '../../components/PopularDestinations';
 import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import apiService from '../../services/api';
 import { AdBanner } from '../../components/ads';
+import { getDestinationImageUrl, getHeroImageUrl } from '../../utils/images';
 
 type HomeScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<MainTabParamList, 'Home'>,
@@ -60,7 +61,7 @@ const getFeaturedDestinations = (t: TFunction) => [
     id: '1',
     name: t('destinations.tokyo.name'),
     country: t('destinations.tokyo.country'),
-    image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=75&fm=webp&fit=crop',
+    image: getDestinationImageUrl('도쿄'),
     description: t('destinations.tokyo.description'),
     weather: '23°C',
     rating: 4.8,
@@ -69,7 +70,7 @@ const getFeaturedDestinations = (t: TFunction) => [
     id: '2',
     name: t('destinations.osaka.name'),
     country: t('destinations.osaka.country'),
-    image: 'https://images.unsplash.com/photo-1590559899731-a382839e5549?w=400&q=75&fm=webp&fit=crop',
+    image: getDestinationImageUrl('오사카'),
     description: t('destinations.osaka.description'),
     weather: '24°C',
     rating: 4.7,
@@ -78,7 +79,7 @@ const getFeaturedDestinations = (t: TFunction) => [
     id: '3',
     name: t('destinations.bangkok.name'),
     country: t('destinations.bangkok.country'),
-    image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&q=75&fm=webp&fit=crop',
+    image: getDestinationImageUrl('방콕'),
     description: t('destinations.bangkok.description'),
     weather: '32°C',
     rating: 4.6,
@@ -87,7 +88,7 @@ const getFeaturedDestinations = (t: TFunction) => [
     id: '4',
     name: t('destinations.danang.name'),
     country: t('destinations.danang.country'),
-    image: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=400&q=75&fm=webp&fit=crop',
+    image: getDestinationImageUrl('다낭'),
     description: t('destinations.danang.description'),
     weather: '28°C',
     rating: 4.5,
@@ -96,7 +97,7 @@ const getFeaturedDestinations = (t: TFunction) => [
     id: '5',
     name: t('destinations.paris.name'),
     country: t('destinations.paris.country'),
-    image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=75&fm=webp&fit=crop',
+    image: getDestinationImageUrl('파리'),
     description: t('destinations.paris.description'),
     weather: '18°C',
     rating: 4.9,
@@ -105,7 +106,7 @@ const getFeaturedDestinations = (t: TFunction) => [
     id: '6',
     name: t('destinations.singapore.name'),
     country: t('destinations.singapore.country'),
-    image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&q=75&fm=webp&fit=crop',
+    image: getDestinationImageUrl('싱가포르'),
     description: t('destinations.singapore.description'),
     weather: '30°C',
     rating: 4.7,
@@ -174,7 +175,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     navigation.navigate('Trips', { screen: 'CreateTrip' });
   };
 
-  const styles = createStyles(theme, isDark);
+  const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
   return (
     <ScrollView
@@ -184,7 +185,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       <EmailVerificationBanner />
       {/* Hero Section */}
       <ImageBackground
-        source={{ uri: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&q=80' }}
+        source={{ uri: getHeroImageUrl('travelDefault', { width: 1200 }) }}
         style={styles.heroSection}
         resizeMode="cover"
         testID="home-hero"

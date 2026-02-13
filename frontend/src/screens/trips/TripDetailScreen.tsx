@@ -10,7 +10,7 @@
  * - Dark mode support
  */
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -51,6 +51,7 @@ import { AdBanner } from '../../components/ads';
 import AffiliateLink from '../../components/ads/AffiliateLink';
 import { TripMapView } from '../../components/TripMapView';
 import { BudgetSummary } from '../../components/BudgetSummary';
+import { getDestinationImageUrl } from '../../utils/images';
 
 type TripDetailScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'TripDetail'>;
 type TripDetailScreenRouteProp = RouteProp<TripsStackParamList, 'TripDetail'>;
@@ -59,31 +60,6 @@ interface Props {
   navigation: TripDetailScreenNavigationProp;
   route: TripDetailScreenRouteProp;
 }
-
-// Destination image mapping (reuse from TripListScreen)
-const DESTINATION_IMAGES: Record<string, string> = {
-  '도쿄': 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80',
-  '파리': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
-  '뉴욕': 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&q=80',
-  '런던': 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80',
-  '로마': 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80',
-  '바르셀로나': 'https://images.unsplash.com/photo-1562883676-8c7feb83f09b?w=800&q=80',
-  '서울': 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=800&q=80',
-  '방콕': 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&q=80',
-  '싱가포르': 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80',
-  '홍콩': 'https://images.unsplash.com/photo-1536599424071-5408d47d1ceb?w=800&q=80',
-  'default': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80',
-};
-
-const getDestinationImage = (destination: string): string => {
-  if (DESTINATION_IMAGES[destination]) {
-    return DESTINATION_IMAGES[destination];
-  }
-  const matchingKey = Object.keys(DESTINATION_IMAGES).find(key =>
-    destination.includes(key) || key.includes(destination)
-  );
-  return matchingKey ? DESTINATION_IMAGES[matchingKey] : DESTINATION_IMAGES['default'];
-};
 
 const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { tripId } = route.params;
@@ -830,6 +806,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             handleReorderActivities(itinerary.id, newOrder);
           }}
           scrollEnabled={false}
+          maxToRenderPerBatch={5}
+          initialNumToRender={5}
         />
       </View>
 
@@ -873,7 +851,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     </Animated.View>
   );
 
-  const styles = createStyles(theme, isDark);
+  const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
   if (isLoading) {
     const skelBg = isDark ? colors.neutral[700] : colors.neutral[200];
@@ -935,7 +913,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const imageUrl = trip.coverImage
     ? (trip.coverImage.startsWith('http') ? trip.coverImage : `${API_URL.replace('/api', '')}${trip.coverImage}`)
-    : getDestinationImage(trip.destination);
+    : getDestinationImageUrl(trip.destination, { width: 800 });
   const duration = getDuration();
 
   return (

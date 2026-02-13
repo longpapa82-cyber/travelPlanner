@@ -28,7 +28,7 @@ import { useTheme } from '../../../contexts/ThemeContext';
 import { ButtonProps } from './Button.types';
 import { styles, getVariantStyles, getSizeStyles } from './Button.styles';
 
-const Button: React.FC<ButtonProps> = ({
+const Button: React.FC<ButtonProps> = React.memo(({
   variant = 'primary',
   size = 'md',
   fullWidth = false,
@@ -167,6 +167,7 @@ const Button: React.FC<ButtonProps> = ({
       </Animated.View>
     </TouchableOpacity>
   );
-};
+});
 
+Button.displayName = 'Button';
 export default Button;

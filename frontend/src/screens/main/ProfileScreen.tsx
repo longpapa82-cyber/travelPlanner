@@ -12,7 +12,6 @@ import {
   Platform,
   Linking,
   ActivityIndicator,
-  FlatList,
   Image,
   Clipboard,
 } from 'react-native';

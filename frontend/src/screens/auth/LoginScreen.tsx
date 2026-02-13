@@ -35,6 +35,7 @@ import { FadeIn } from '../../components/animation/FadeIn';
 import { SlideIn } from '../../components/animation/SlideIn';
 import Button from '../../components/core/Button';
 import { Card } from '../../components/core/Card';
+import { getHeroImageUrl } from '../../utils/images';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -157,7 +158,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         {/* Hero Header with Background */}
         <FadeIn duration={800}>
           <ImageBackground
-            source={{ uri: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80' }}
+            source={{ uri: getHeroImageUrl('travelDefault', { width: 800 }) }}
             style={styles.heroBackground}
             imageStyle={styles.heroImage}
           >

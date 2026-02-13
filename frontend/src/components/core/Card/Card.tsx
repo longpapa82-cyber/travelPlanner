@@ -4,7 +4,7 @@ import { CardProps } from './Card.types';
 import { getCardStyles } from './Card.styles';
 import { useTheme } from '../../../contexts/ThemeContext';
 
-export const Card: React.FC<CardProps> = ({
+export const Card: React.FC<CardProps> = React.memo(({
   elevation = 'sm',
   padding = 'md',
   borderRadius,
@@ -36,4 +36,6 @@ export const Card: React.FC<CardProps> = ({
       {children}
     </View>
   );
-};
+});
+
+Card.displayName = 'Card';

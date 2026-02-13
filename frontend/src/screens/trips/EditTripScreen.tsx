@@ -34,6 +34,7 @@ import apiService from '../../services/api';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import { getDateLocale } from '../../utils/dateLocale';
+import { getHeroImageUrl } from '../../utils/images';
 
 type EditTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'EditTrip'>;
 type EditTripScreenRouteProp = RouteProp<TripsStackParamList, 'EditTrip'>;
@@ -342,7 +343,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
         {/* Hero Section */}
         <ImageBackground
           source={{
-            uri: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&q=80',
+            uri: getHeroImageUrl('travelDefault', { width: 1200 }),
           }}
           style={styles.hero}
         >

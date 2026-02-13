@@ -10,7 +10,7 @@
  * - Empty state with engaging visuals
  */
 
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -39,43 +39,13 @@ import Button from '../../components/core/Button';
 import { WeatherWidget } from '../../components/WeatherWidget';
 import { AdBanner } from '../../components/ads';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { getDestinationImageUrl } from '../../utils/images';
 
 type TripListScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'TripList'>;
 
 interface Props {
   navigation: TripListScreenNavigationProp;
 }
-
-// Destination image mapping for common locations
-const DESTINATION_IMAGES: Record<string, string> = {
-  '도쿄': 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=75&fm=webp&fit=crop',
-  '파리': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=75&fm=webp&fit=crop',
-  '뉴욕': 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&q=75&fm=webp&fit=crop',
-  '런던': 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&q=75&fm=webp&fit=crop',
-  '로마': 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&q=75&fm=webp&fit=crop',
-  '바르셀로나': 'https://images.unsplash.com/photo-1562883676-8c7feb83f09b?w=400&q=75&fm=webp&fit=crop',
-  '서울': 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400&q=75&fm=webp&fit=crop',
-  '방콕': 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&q=75&fm=webp&fit=crop',
-  '싱가포르': 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&q=75&fm=webp&fit=crop',
-  '홍콩': 'https://images.unsplash.com/photo-1536599424071-5408d47d1ceb?w=400&q=75&fm=webp&fit=crop',
-  // Default fallback
-  'default': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&q=75&fm=webp&fit=crop',
-};
-
-// Get image URL for destination
-const getDestinationImage = (destination: string): string => {
-  // Try to find exact match
-  if (DESTINATION_IMAGES[destination]) {
-    return DESTINATION_IMAGES[destination];
-  }
-
-  // Try to find partial match (e.g., "도쿄, 일본" matches "도쿄")
-  const matchingKey = Object.keys(DESTINATION_IMAGES).find(key =>
-    destination.includes(key) || key.includes(destination)
-  );
-
-  return matchingKey ? DESTINATION_IMAGES[matchingKey] : DESTINATION_IMAGES['default'];
-};
 
 interface AdvancedFilters {
   country: string;
@@ -207,13 +177,13 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     fetchTrips({ search: searchText || undefined, status: status || undefined });
   }, [searchText, appliedFilters]);
 
-  const activeFilterCount = [
+  const activeFilterCount = useMemo(() => [
     appliedFilters.country,
     appliedFilters.startDateFrom,
     appliedFilters.startDateTo,
     appliedFilters.budgetMin,
     appliedFilters.budgetMax,
-  ].filter(Boolean).length;
+  ].filter(Boolean).length, [appliedFilters]);
 
   const handleApplyFilters = () => {
     setAppliedFilters({ ...advancedFilters });
@@ -359,18 +329,15 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
-  const groupTripsByStatus = () => {
-    const grouped = {
-      ongoing: trips.filter(t => t.status === 'ongoing'),
-      upcoming: trips.filter(t => t.status === 'upcoming'),
-      completed: trips.filter(t => t.status === 'completed'),
-    };
-    return grouped;
-  };
+  const groupedTrips = useMemo(() => ({
+    ongoing: trips.filter(t => t.status === 'ongoing'),
+    upcoming: trips.filter(t => t.status === 'upcoming'),
+    completed: trips.filter(t => t.status === 'completed'),
+  }), [trips]);
 
   const renderTripCard = (trip: Trip, index: number) => {
     const statusConfig = getStatusConfig(trip.status);
-    const imageUrl = getDestinationImage(trip.destination);
+    const imageUrl = getDestinationImageUrl(trip.destination, { width: 400 });
     const duration = getDaysDuration(trip.startDate, trip.endDate);
 
     return (
@@ -520,7 +487,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     );
   };
 
-  const styles = createStyles(theme, isDark);
+  const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
   if (isLoading) {
     return (
@@ -547,13 +514,13 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     );
   }
 
-  const groupedTrips = groupTripsByStatus();
   const isFiltered = searchText.length > 0 || selectedStatus !== null;
 
   return (
     <View style={styles.container}>
       <ScrollView
         style={styles.content}
+        removeClippedSubviews={Platform.OS !== 'web'}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}

@@ -40,6 +40,7 @@ import { useNotifications } from '../../contexts/NotificationContext';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import DestinationInsights from '../../components/DestinationInsights';
+import { getHeroImageUrl } from '../../utils/images';
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
 
@@ -280,7 +281,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
         {/* Hero Section */}
         <ImageBackground
           source={{
-            uri: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80',
+            uri: getHeroImageUrl('createTrip', { width: 1200 }),
           }}
           style={styles.hero}
         >

@@ -72,7 +72,7 @@ const formatTimezoneOffset = (offset: number): string => {
   return `UTC${sign}${offset}`;
 };
 
-export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
+export const WeatherWidget: React.FC<WeatherWidgetProps> = React.memo(({
   weather,
   timezone,
   timezoneOffset,
@@ -161,7 +161,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
       )}
     </View>
   );
-};
+});
 
 const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   // 컴팩트 모드
@@ -255,4 +255,5 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   },
 });
 
+WeatherWidget.displayName = 'WeatherWidget';
 export default WeatherWidget;
