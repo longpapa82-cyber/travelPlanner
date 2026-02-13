@@ -12,9 +12,14 @@
   "back": "Back",
   "next": "Next",
   "done": "Done",
+  "copy": "Copy",
   "search": "Search",
+  "like": "Like",
+  "share": "Share",
+  "clear": "Clear",
   "seeAll": "See all →",
   "findOnProvider": "Find on {{name}}",
+  "offlineMode": "Offline mode — showing cached data",
   "errorBoundary": {
     "title": "Something went wrong",
     "message": "An unexpected error occurred.\nPlease try again.",
@@ -24,5 +29,14 @@
     "home": "Home",
     "trips": "My Trips",
     "profile": "Profile"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "Email verification needed",
+      "message": "Please check your inbox to verify your email",
+      "resend": "Resend",
+      "sent": "Verification email resent",
+      "error": "Failed to resend"
+    }
   }
 }

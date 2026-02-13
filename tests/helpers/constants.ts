@@ -12,6 +12,11 @@ export const WORKERS = {
   W6: { email: 'test-w6@test.com', name: 'Worker6 User', password: TEST_PASSWORD },
   W7: { email: 'test-w7@test.com', name: 'Worker7 User', password: TEST_PASSWORD },
   W8: { email: 'test-w8@test.com', name: 'Worker8 User', password: TEST_PASSWORD },
+  W9: { email: 'test-w9@test.com', name: 'Worker9 Journey', password: TEST_PASSWORD },
+  W10: { email: 'test-w10@test.com', name: 'Worker10 Lifecycle', password: TEST_PASSWORD },
+  W11: { email: 'test-w11@test.com', name: 'Worker11 A11y', password: TEST_PASSWORD },
+  W12: { email: 'test-w12@test.com', name: 'Worker12 Visual', password: TEST_PASSWORD },
+  W13: { email: 'test-w13@test.com', name: 'Worker13 Network', password: TEST_PASSWORD },
   DESTROY: { email: 'test-destroy@test.com', name: 'Destroy User', password: TEST_PASSWORD },
 };
 

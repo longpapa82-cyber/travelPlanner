@@ -9,7 +9,13 @@
   "menu": {
     "editProfile": "프로필 수정",
     "changePassword": "비밀번호 변경",
+    "twoFactor": "2단계 인증",
+    "twoFactorEnabled": "활성화됨",
+    "twoFactorDisabled": "비활성화",
     "language": "언어",
+    "notifications": "알림 설정",
+    "notificationsEnabled": "활성화됨",
+    "notificationsDisabled": "비활성화",
     "darkMode": "다크 모드",
     "help": "도움말",
     "terms": "이용약관",
@@ -61,5 +67,25 @@
       "failed": "계정 삭제에 실패했습니다"
     }
   },
-  "version": "버전"
+  "version": "버전",
+  "analytics": {
+    "title": "여행 통계",
+    "totalTrips": "전체 여행",
+    "completedTrips": "완료",
+    "ongoingTrips": "진행 중",
+    "upcomingTrips": "예정",
+    "totalDays": "총 여행일",
+    "avgDuration": "평균 기간",
+    "days": "일",
+    "countriesVisited": "방문 국가",
+    "countries": "개국",
+    "totalSpent": "총 지출",
+    "totalBudget": "총 예산",
+    "topDestinations": "인기 여행지",
+    "times": "회",
+    "activities": "활동 현황",
+    "completedOf": "{{completed}} / {{total}} 완료",
+    "noData": "여행 데이터가 없습니다",
+    "loading": "통계 로딩 중..."
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,7 @@ interface Activity {
   location: string;
   estimatedDuration?: number;
   estimatedCost?: number;
+  actualCost?: number;
   type?: string;
 }
 
@@ -64,6 +65,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
     type: 'other',
   });
   const [loading, setLoading] = useState(false);
+  const savingRef = useRef(false);
 
   useEffect(() => {
     if (activity) {
@@ -83,9 +85,14 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
   }, [activity, visible]);
 
   const handleSave = async () => {
+    // Ref-based guard prevents double-execution (onPress + onClick may both fire on web)
+    if (savingRef.current) return;
+    savingRef.current = true;
+
     // Validation
     if (!formData.time || !formData.title || !formData.location) {
       Alert.alert(t('activityModal.validationError'), t('activityModal.validationErrorMessage'));
+      savingRef.current = false;
       return;
     }
 
@@ -100,6 +107,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
       );
     } finally {
       setLoading(false);
+      savingRef.current = false;
     }
   };
 
@@ -248,6 +256,25 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
                 />
               </View>
             </View>
+
+            {/* Actual Cost Input */}
+            {mode === 'edit' && (
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>{t('activityModal.actualCost')}</Text>
+                <View style={styles.inputContainer}>
+                  <Icon name="cash-check" size={20} color="#16A34A" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="0"
+                    keyboardType="numeric"
+                    value={formData.actualCost?.toString() || ''}
+                    onChangeText={(text) =>
+                      setFormData({ ...formData, actualCost: parseInt(text) || 0 })
+                    }
+                  />
+                </View>
+              </View>
+            )}
           </ScrollView>
 
           {/* Footer Buttons */}
@@ -261,8 +288,12 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
             </TouchableOpacity>
 
             <TouchableOpacity
+              testID="activity-save-button"
+              accessibilityRole="button"
               style={[styles.button, styles.saveButton]}
               onPress={handleSave}
+              // @ts-ignore Web-only: RNW passes onClick to DOM element for browser compatibility
+              onClick={handleSave}
               disabled={loading}
             >
               {loading ? (

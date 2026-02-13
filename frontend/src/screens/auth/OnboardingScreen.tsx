@@ -8,14 +8,14 @@
  * - 모바일 최적화
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   Animated,
-  TouchableOpacity,
+  Pressable,
   Platform,
   useWindowDimensions,
 } from 'react-native';
@@ -72,19 +72,25 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
+  const scrollTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const SLIDES = getSlides(t);
 
-  const handleNext = () => {
-    if (currentIndex < SLIDES.length - 1) {
-      flatListRef.current?.scrollToIndex({ index: currentIndex + 1 });
+  const handleNext = useCallback(() => {
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < SLIDES.length) {
+      flatListRef.current?.scrollToOffset({
+        offset: nextIndex * SCREEN_WIDTH,
+        animated: true,
+      });
+      setCurrentIndex(nextIndex);
     } else {
       navigation.navigate('Login');
     }
-  };
+  }, [currentIndex, SLIDES.length, SCREEN_WIDTH, navigation]);
 
-  const handleSkip = () => {
+  const handleSkip = useCallback(() => {
     navigation.navigate('Login');
-  };
+  }, [navigation]);
 
   const renderSlide = ({ item }: { item: OnboardingSlide }) => (
     <View style={[styles.slide, { width: SCREEN_WIDTH }]}>
@@ -138,84 +144,114 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
 
   const isLastSlide = currentIndex === SLIDES.length - 1;
 
+  const isWeb = Platform.OS === 'web';
+  const ControlsWrapper = isWeb ? View : SafeAreaView;
+  const controlsProps = isWeb ? {} : { edges: ['bottom'] as const };
+
+  // Web: bypass RN Responder system with native DOM onClick
+  const webClick = (handler: () => void) =>
+    isWeb ? { onClick: (e: any) => { e.stopPropagation(); handler(); } } : {};
+
   return (
     <View style={styles.container}>
-      <Animated.FlatList
-        ref={flatListRef}
-        data={SLIDES}
-        renderItem={renderSlide}
-        keyExtractor={(item) => item.id}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
-        )}
-        onMomentumScrollEnd={(event) => {
-          const index = Math.round(
-            event.nativeEvent.contentOffset.x / SCREEN_WIDTH
-          );
-          setCurrentIndex(index);
-        }}
-        scrollEventThrottle={16}
-      />
+      <View style={[styles.slideArea, isWeb && { pointerEvents: 'auto' as const }]}>
+        <Animated.FlatList
+          ref={flatListRef}
+          data={SLIDES}
+          renderItem={renderSlide}
+          keyExtractor={(item) => item.id}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            {
+              useNativeDriver: false,
+              listener: isWeb ? (event: any) => {
+                clearTimeout(scrollTimeout.current);
+                scrollTimeout.current = setTimeout(() => {
+                  const x = event.nativeEvent.contentOffset.x;
+                  const index = Math.round(x / SCREEN_WIDTH);
+                  setCurrentIndex(index);
+                }, 150);
+              } : undefined,
+            }
+          )}
+          onMomentumScrollEnd={!isWeb ? (event) => {
+            const index = Math.round(
+              event.nativeEvent.contentOffset.x / SCREEN_WIDTH
+            );
+            setCurrentIndex(index);
+          } : undefined}
+          scrollEventThrottle={16}
+        />
+      </View>
 
-      <SafeAreaView style={styles.controls} edges={['bottom']}>
-        {/* Pagination Dots */}
+      <ControlsWrapper style={styles.controls} {...controlsProps}>
         {renderPagination()}
 
-        {/* Buttons */}
         <View style={styles.buttonContainer}>
           {!isLastSlide ? (
             <>
-              <TouchableOpacity
-                style={styles.skipButton}
+              <Pressable
+                style={({ pressed }) => [
+                  styles.skipButton,
+                  pressed && styles.buttonPressed,
+                ]}
                 onPress={handleSkip}
-                activeOpacity={0.7}
                 accessibilityLabel={t('onboarding.skip')}
                 accessibilityRole="button"
+                {...webClick(handleSkip)}
               >
                 <Text style={styles.skipButtonText}>{t('onboarding.skip')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.nextButton}
+              </Pressable>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.nextButton,
+                  pressed && styles.nextButtonPressed,
+                ]}
                 onPress={handleNext}
-                activeOpacity={0.8}
                 accessibilityLabel={t('onboarding.next')}
                 accessibilityRole="button"
+                {...webClick(handleNext)}
               >
                 <Text style={styles.nextButtonText}>{t('onboarding.next')}</Text>
                 <Icon name="arrow-right" size={20} color={colors.primary[700]} />
-              </TouchableOpacity>
+              </Pressable>
             </>
           ) : (
             <View style={styles.lastSlideButtons}>
-              <TouchableOpacity
-                style={styles.startButton}
+              <Pressable
+                style={({ pressed }) => [
+                  styles.startButton,
+                  pressed && styles.nextButtonPressed,
+                ]}
                 onPress={() => navigation.navigate('Login')}
-                activeOpacity={0.8}
                 accessibilityLabel={t('onboarding.start')}
                 accessibilityRole="button"
+                {...webClick(() => navigation.navigate('Login'))}
               >
                 <Icon name="login" size={20} color={colors.primary[700]} />
                 <Text style={styles.startButtonText}>{t('onboarding.start')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.registerLink}
+              </Pressable>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.registerLink,
+                  pressed && styles.buttonPressed,
+                ]}
                 onPress={() => navigation.navigate('Register')}
-                activeOpacity={0.7}
                 accessibilityLabel={t('onboarding.noAccount')}
                 accessibilityRole="link"
+                {...webClick(() => navigation.navigate('Register'))}
               >
                 <Text style={styles.registerLinkText}>
                   {t('onboarding.noAccount')}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           )}
         </View>
-      </SafeAreaView>
+      </ControlsWrapper>
     </View>
   );
 };
@@ -224,6 +260,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.primary[700],
+  },
+  slideArea: {
+    flex: 1,
+    overflow: 'hidden',
+    zIndex: 0,
   },
   slide: {
     flex: 1,
@@ -236,7 +277,7 @@ const styles = StyleSheet.create({
   slideContent: {
     alignItems: 'center',
     paddingHorizontal: 40,
-    paddingBottom: 120,
+    paddingBottom: 40,
   },
   iconContainer: {
     width: 140,
@@ -262,13 +303,11 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   controls: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     paddingHorizontal: 24,
     paddingBottom: Platform.OS === 'web' ? 24 : 0,
+    backgroundColor: colors.primary[700],
     zIndex: 10,
+    position: 'relative',
   },
   pagination: {
     flexDirection: 'row',
@@ -290,7 +329,8 @@ const styles = StyleSheet.create({
   skipButton: {
     paddingVertical: 14,
     paddingHorizontal: 20,
-  },
+    ...(Platform.OS === 'web' ? { cursor: 'pointer' } : {}),
+  } as any,
   skipButtonText: {
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.7)',
@@ -304,7 +344,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     borderRadius: 28,
     gap: 8,
-  },
+    ...(Platform.OS === 'web' ? { cursor: 'pointer' } : {}),
+  } as any,
   nextButtonText: {
     fontSize: 16,
     fontWeight: '600',
@@ -325,7 +366,8 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     gap: 10,
     width: '100%',
-  },
+    ...(Platform.OS === 'web' ? { cursor: 'pointer' } : {}),
+  } as any,
   startButtonText: {
     fontSize: 18,
     fontWeight: '700',
@@ -333,10 +375,18 @@ const styles = StyleSheet.create({
   },
   registerLink: {
     paddingVertical: 8,
-  },
+    ...(Platform.OS === 'web' ? { cursor: 'pointer' } : {}),
+  } as any,
   registerLinkText: {
     fontSize: 15,
     color: 'rgba(255, 255, 255, 0.8)',
     fontWeight: '500',
+  },
+  buttonPressed: {
+    opacity: 0.7,
+  },
+  nextButtonPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.98 }],
   },
 });

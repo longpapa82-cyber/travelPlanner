@@ -124,6 +124,103 @@ export const SEED_TRIPS = {
     },
   ],
 
+  // W9: 3 trips for returning user journey (1 upcoming, 1 ongoing, 1 completed)
+  W9: [
+    {
+      destination: '도쿄',
+      startDate: futureDate(7),
+      endDate: futureDate(11),
+      numberOfTravelers: 2,
+      description: 'W9 도쿄 예정 여행',
+    },
+    {
+      destination: '방콕',
+      startDate: pastDate(1),
+      endDate: futureDate(3),
+      numberOfTravelers: 2,
+      description: 'W9 방콕 진행중 여행',
+    },
+    {
+      destination: '파리',
+      startDate: pastDate(20),
+      endDate: pastDate(14),
+      numberOfTravelers: 3,
+      description: 'W9 파리 완료 여행',
+    },
+  ],
+
+  // W10: 2 trips for trip lifecycle (1 upcoming to progress through, 1 completed for review)
+  W10: [
+    {
+      destination: '오사카',
+      startDate: pastDate(1),
+      endDate: futureDate(4),
+      numberOfTravelers: 2,
+      description: 'W10 오사카 라이프사이클 테스트',
+    },
+    {
+      destination: '런던',
+      startDate: pastDate(15),
+      endDate: pastDate(10),
+      numberOfTravelers: 2,
+      description: 'W10 런던 완료 여행',
+    },
+  ],
+
+  // W11: 2 trips for accessibility testing
+  W11: [
+    {
+      destination: '뉴욕',
+      startDate: futureDate(10),
+      endDate: futureDate(14),
+      numberOfTravelers: 2,
+      description: 'W11 접근성 테스트용',
+    },
+    {
+      destination: '싱가포르',
+      startDate: pastDate(1),
+      endDate: futureDate(3),
+      numberOfTravelers: 3,
+      description: 'W11 싱가포르 진행중',
+    },
+  ],
+
+  // W12: 2 trips for visual regression testing
+  W12: [
+    {
+      destination: '도쿄',
+      startDate: futureDate(5),
+      endDate: futureDate(9),
+      numberOfTravelers: 2,
+      description: 'W12 비주얼 테스트용',
+    },
+    {
+      destination: '바르셀로나',
+      startDate: pastDate(30),
+      endDate: pastDate(24),
+      numberOfTravelers: 4,
+      description: 'W12 바르셀로나 완료',
+    },
+  ],
+
+  // W13: 2 trips for network/data/business tests
+  W13: [
+    {
+      destination: '다낭',
+      startDate: futureDate(8),
+      endDate: futureDate(12),
+      numberOfTravelers: 2,
+      description: 'W13 네트워크 테스트용',
+    },
+    {
+      destination: '홍콩',
+      startDate: pastDate(2),
+      endDate: futureDate(2),
+      numberOfTravelers: 2,
+      description: 'W13 홍콩 진행중',
+    },
+  ],
+
   // DESTROY: 1 trip for destructive tests
   DESTROY: [
     {

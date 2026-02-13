@@ -107,6 +107,46 @@
       "startDate": "出発日順",
       "createdAt": "作成日順",
       "destination": "目的地順"
+    },
+    "advancedFilters": {
+      "toggle": "詳細フィルター",
+      "country": "国",
+      "countryPlaceholder": "国名を入力",
+      "dateRange": "出発日範囲",
+      "dateFrom": "開始",
+      "dateTo": "終了",
+      "budget": "予算範囲",
+      "budgetMin": "最小",
+      "budgetMax": "最大",
+      "reset": "フィルターをリセット",
+      "apply": "適用",
+      "activeCount": "フィルター{{count}}件適用中"
+    },
+    "resultCount": "{{count}}件の旅行",
+    "createButton": "新しい旅行を作成",
+    "info": {
+      "days": "{{count}}日間",
+      "itineraries": "{{count}}日程",
+      "travelers": "{{count}}人"
+    },
+    "accessibility": {
+      "trip": "旅行",
+      "viewDetail": "旅行詳細を見る",
+      "deleteTrip": "削除",
+      "search": "旅行を検索",
+      "searchHint": "目的地で旅行を検索"
+    },
+    "alerts": {
+      "deleteTitle": "旅行を削除",
+      "deleteMessage": "「{{name}}」を削除しますか？この操作は元に戻せません。",
+      "deleteFailed": "削除に失敗しました",
+      "error": "エラー",
+      "cancel": "キャンセル",
+      "delete": "削除"
+    },
+    "pagination": {
+      "showMore": "もっと見る",
+      "showing": "{{shown}} / {{total}}件"
     }
   },
   "detail": {
@@ -138,8 +178,25 @@
     "affiliateSubtitle": "{{destination}}の最高の宿泊施設と体験を予約",
     "tabs": {
       "itinerary": "旅程",
+      "map": "地図",
       "info": "情報",
       "share": "共有"
+    },
+    "map": {
+      "noLocations": "表示する場所がありません",
+      "noLocationsMessage": "位置情報付きの新しい旅行を作成してみましょう",
+      "activitiesCount": "{{count}}件のアクティビティ"
+    },
+    "budget": {
+      "title": "予算概要",
+      "total": "総予算",
+      "estimated": "見積費用",
+      "spent": "実際の支出",
+      "remaining": "残り予算",
+      "byCategory": "カテゴリ別",
+      "byDay": "日別",
+      "perDay": "1日平均",
+      "dayLabel": "Day {{day}}"
     },
     "activityTypes": {
       "meal": "食事",
@@ -163,6 +220,7 @@
       "duplicate": "旅行を複製",
       "duplicating": "複製中...",
       "share": "共有",
+      "exportIcal": "カレンダーにエクスポート",
       "addActivityToDay": "Day {{day}}にアクティビティを追加"
     },
     "alerts": {
@@ -182,6 +240,28 @@
       "deleteError": "削除に失敗しました",
       "toggleError": "状態の変更に失敗しました",
       "reorderError": "並べ替えに失敗しました"
+    },
+    "photos": {
+      "addCover": "カバー写真を追加",
+      "changeCover": "カバー写真を変更",
+      "addPhoto": "写真を追加",
+      "photoCount": "写真{{count}}枚",
+      "uploadSuccess": "写真がアップロードされました",
+      "uploadFailed": "写真のアップロードに失敗しました",
+      "viewAll": "すべての写真を見る"
+    },
+    "collaboration": {
+      "title": "共同旅行者",
+      "invite": "招待",
+      "emailPlaceholder": "メールアドレスを入力",
+      "roleViewer": "閲覧のみ",
+      "roleEditor": "編集可能",
+      "owner": "オーナー",
+      "remove": "削除",
+      "inviteSuccess": "招待を送信しました",
+      "inviteFailed": "招待に失敗しました",
+      "removeFailed": "削除に失敗しました",
+      "noCollaborators": "共同旅行者がいません"
     }
   },
   "edit": {

@@ -13,6 +13,7 @@
     "duration": "所要時間（分）",
     "durationPlaceholder": "60",
     "cost": "予算",
+    "actualCost": "実際の支出",
     "costPlaceholder": "0",
     "cancel": "キャンセル",
     "add": "追加",

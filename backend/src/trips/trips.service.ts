@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
   Logger,
 } from '@nestjs/common';
 import { randomBytes } from 'crypto';
@@ -9,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { Trip, TripStatus } from './entities/trip.entity';
 import { Itinerary } from './entities/itinerary.entity';
+import { Collaborator, CollaboratorRole } from './entities/collaborator.entity';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { UpdateItineraryDto } from './dto/update-itinerary.dto';
@@ -33,6 +35,8 @@ export class TripsService {
     private readonly tripRepository: Repository<Trip>,
     @InjectRepository(Itinerary)
     private readonly itineraryRepository: Repository<Itinerary>,
+    @InjectRepository(Collaborator)
+    private readonly collaboratorRepository: Repository<Collaborator>,
     private readonly aiService: AIService,
     private readonly timezoneService: TimezoneService,
     private readonly weatherService: WeatherService,
@@ -199,12 +203,22 @@ export class TripsService {
     return this.findOne(userId, savedTrip.id);
   }
 
-  async findAll(userId: string, queryDto?: any): Promise<Trip[]> {
+  async findAll(
+    userId: string,
+    queryDto?: any,
+  ): Promise<{ trips: Trip[]; total: number; page: number; limit: number }> {
     const {
       search,
       status,
+      country,
+      startDateFrom,
+      startDateTo,
+      budgetMin,
+      budgetMax,
       sortBy = 'startDate',
       order = 'DESC',
+      page = 1,
+      limit = 50,
     } = queryDto || {};
 
     // Build query
@@ -216,7 +230,7 @@ export class TripsService {
     // Search filter (destination or description)
     if (search) {
       queryBuilder.andWhere(
-        '(trip.destination LIKE :search OR trip.description LIKE :search)',
+        '(trip.destination ILIKE :search OR trip.description ILIKE :search OR trip.country ILIKE :search OR trip.city ILIKE :search)',
         { search: `%${search}%` },
       );
     }
@@ -226,6 +240,34 @@ export class TripsService {
       queryBuilder.andWhere('trip.status = :status', { status });
     }
 
+    // Country filter
+    if (country) {
+      queryBuilder.andWhere('trip.country ILIKE :country', {
+        country: `%${country}%`,
+      });
+    }
+
+    // Date range filter
+    if (startDateFrom) {
+      queryBuilder.andWhere('trip.startDate >= :startDateFrom', {
+        startDateFrom,
+      });
+    }
+    if (startDateTo) {
+      queryBuilder.andWhere('trip.startDate <= :startDateTo', { startDateTo });
+    }
+
+    // Budget range filter
+    if (budgetMin !== undefined) {
+      queryBuilder.andWhere('trip.totalBudget >= :budgetMin', { budgetMin });
+    }
+    if (budgetMax !== undefined) {
+      queryBuilder.andWhere('trip.totalBudget <= :budgetMax', { budgetMax });
+    }
+
+    // Get total count before pagination
+    const total = await queryBuilder.getCount();
+
     // Sorting
     const orderDirection = order === 'ASC' ? 'ASC' : 'DESC';
     if (sortBy === 'destination') {
@@ -233,9 +275,11 @@ export class TripsService {
     } else if (sortBy === 'createdAt') {
       queryBuilder.orderBy('trip.createdAt', orderDirection);
     } else {
-      // Default: sortBy startDate
       queryBuilder.orderBy('trip.startDate', orderDirection);
     }
+
+    // Pagination
+    queryBuilder.skip((page - 1) * limit).take(limit);
 
     const trips = await queryBuilder.getMany();
 
@@ -251,7 +295,7 @@ export class TripsService {
       }
     });
 
-    return trips;
+    return { trips, total, page, limit };
   }
 
   async findOne(userId: string, id: string): Promise<Trip> {
@@ -829,5 +873,185 @@ export class TripsService {
     await this.tripRepository.save(trip);
 
     this.logger.log(`Disabled sharing for trip ${tripId}`);
+  }
+
+  async getUserStats(userId: string) {
+    const trips = await this.tripRepository.find({
+      where: { userId },
+      relations: ['itineraries'],
+    });
+
+    const completed = trips.filter((t) => t.status === TripStatus.COMPLETED);
+    const ongoing = trips.filter((t) => t.status === TripStatus.ONGOING);
+    const upcoming = trips.filter((t) => t.status === TripStatus.UPCOMING);
+
+    // Total travel days
+    let totalDays = 0;
+    trips.forEach((t) => {
+      const start = new Date(t.startDate);
+      const end = new Date(t.endDate);
+      totalDays += Math.ceil(
+        (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
+      );
+    });
+
+    // Countries visited
+    const countriesSet = new Set<string>();
+    trips.forEach((t) => {
+      if (t.country) countriesSet.add(t.country);
+    });
+
+    // Average trip duration
+    const avgDuration =
+      trips.length > 0 ? Math.round(totalDays / trips.length) : 0;
+
+    // Total spending and budget
+    let totalSpent = 0;
+    let totalBudget = 0;
+    trips.forEach((t) => {
+      if (t.totalBudget) totalBudget += Number(t.totalBudget);
+      (t.itineraries || []).forEach((it) => {
+        (it.activities || []).forEach((a: any) => {
+          if (a.actualCost) totalSpent += Number(a.actualCost);
+          else if (a.estimatedCost) totalSpent += Number(a.estimatedCost);
+        });
+      });
+    });
+
+    // Top destinations (by frequency)
+    const destCount: Record<string, number> = {};
+    trips.forEach((t) => {
+      destCount[t.destination] = (destCount[t.destination] || 0) + 1;
+    });
+    const topDestinations = Object.entries(destCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([destination, count]) => ({ destination, count }));
+
+    // Activities completed
+    let totalActivities = 0;
+    let completedActivities = 0;
+    trips.forEach((t) => {
+      (t.itineraries || []).forEach((it) => {
+        (it.activities || []).forEach((a: any) => {
+          totalActivities++;
+          if (a.completed) completedActivities++;
+        });
+      });
+    });
+
+    return {
+      totalTrips: trips.length,
+      completedTrips: completed.length,
+      ongoingTrips: ongoing.length,
+      upcomingTrips: upcoming.length,
+      totalDays,
+      avgDuration,
+      countriesVisited: countriesSet.size,
+      countries: Array.from(countriesSet),
+      totalSpent: Math.round(totalSpent),
+      totalBudget: Math.round(totalBudget),
+      topDestinations,
+      totalActivities,
+      completedActivities,
+    };
+  }
+
+  // ============ Collaboration Methods ============
+
+  async addCollaborator(
+    tripId: string,
+    userId: string,
+    targetEmail: string,
+    role: CollaboratorRole = CollaboratorRole.VIEWER,
+  ) {
+    const trip = await this.tripRepository.findOne({ where: { id: tripId } });
+    if (!trip) throw new NotFoundException('Trip not found');
+    if (trip.userId !== userId) {
+      throw new ForbiddenException('Only trip owner can add collaborators');
+    }
+
+    // Find the target user by email
+    const targetUser = await this.tripRepository.manager
+      .getRepository('User')
+      .findOne({ where: { email: targetEmail } });
+    if (!targetUser) {
+      throw new NotFoundException('User not found with this email');
+    }
+
+    if ((targetUser as any).id === userId) {
+      throw new BadRequestException('Cannot add yourself as a collaborator');
+    }
+
+    const existing = await this.collaboratorRepository.findOne({
+      where: { tripId, userId: (targetUser as any).id },
+    });
+    if (existing) {
+      existing.role = role;
+      return this.collaboratorRepository.save(existing);
+    }
+
+    const collaborator = this.collaboratorRepository.create({
+      tripId,
+      userId: (targetUser as any).id,
+      role,
+      invitedBy: userId,
+    });
+    return this.collaboratorRepository.save(collaborator);
+  }
+
+  async removeCollaborator(tripId: string, userId: string, collaboratorId: string) {
+    const trip = await this.tripRepository.findOne({ where: { id: tripId } });
+    if (!trip) throw new NotFoundException('Trip not found');
+    if (trip.userId !== userId) {
+      throw new ForbiddenException('Only trip owner can remove collaborators');
+    }
+
+    const collab = await this.collaboratorRepository.findOne({
+      where: { id: collaboratorId, tripId },
+    });
+    if (!collab) throw new NotFoundException('Collaborator not found');
+
+    await this.collaboratorRepository.remove(collab);
+  }
+
+  async getCollaborators(tripId: string, userId: string) {
+    const trip = await this.tripRepository.findOne({ where: { id: tripId } });
+    if (!trip) throw new NotFoundException('Trip not found');
+
+    // Owner or collaborator can view
+    if (trip.userId !== userId) {
+      const collab = await this.collaboratorRepository.findOne({
+        where: { tripId, userId },
+      });
+      if (!collab) throw new ForbiddenException('Access denied');
+    }
+
+    return this.collaboratorRepository.find({
+      where: { tripId },
+      relations: ['user'],
+      order: { createdAt: 'ASC' },
+    });
+  }
+
+  async updateCollaboratorRole(
+    tripId: string,
+    userId: string,
+    collaboratorId: string,
+    role: CollaboratorRole,
+  ) {
+    const trip = await this.tripRepository.findOne({ where: { id: tripId } });
+    if (!trip) throw new NotFoundException('Trip not found');
+    if (trip.userId !== userId) {
+      throw new ForbiddenException('Only trip owner can update roles');
+    }
+
+    const collab = await this.collaboratorRepository.findOne({
+      where: { id: collaboratorId, tripId },
+    });
+    if (!collab) throw new NotFoundException('Collaborator not found');
+
+    collab.role = role;
+    return this.collaboratorRepository.save(collab);
   }
 }

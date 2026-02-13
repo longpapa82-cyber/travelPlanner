@@ -69,7 +69,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [mode, setMode] = useState<ThemeMode>('system');
+  const [mode, setMode] = useState<ThemeMode>('light');
   const [isDark, setIsDark] = useState(false);
 
   // Get system theme
@@ -96,12 +96,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
           setMode(parsedMode);
           setIsDark(resolveTheme(parsedMode));
         } else {
-          // Default to system theme
-          setIsDark(getSystemTheme());
+          // Default to light theme
+          setIsDark(false);
         }
       } catch (error) {
         console.error('Failed to load theme:', error);
-        setIsDark(getSystemTheme());
+        setIsDark(false);
       }
     };
 

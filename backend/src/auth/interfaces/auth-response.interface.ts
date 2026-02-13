@@ -5,6 +5,7 @@ export interface AuthResponse {
     name: string;
     provider: string;
     profileImage?: string | null;
+    isEmailVerified?: boolean;
   };
   accessToken: string;
   refreshToken: string;

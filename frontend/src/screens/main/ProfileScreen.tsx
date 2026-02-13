@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,8 @@ import {
   Linking,
   ActivityIndicator,
   FlatList,
+  Image,
+  Clipboard,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage, getCurrentLanguage, LANGUAGE_LABELS, SUPPORTED_LANGUAGES, SupportedLanguage } from '../../i18n';
@@ -22,6 +24,7 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { colors } from '../../constants/theme';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import Button from '../../components/core/Button';
+import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import apiService from '../../services/api';
 
 const ProfileScreen = () => {
@@ -30,6 +33,8 @@ const ProfileScreen = () => {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
+
+  const { t: tAuth } = useTranslation('auth');
 
   // Modal states
   const [showEditProfile, setShowEditProfile] = useState(false);
@@ -40,6 +45,35 @@ const ProfileScreen = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  // 2FA states
+  const [show2FAModal, setShow2FAModal] = useState(false);
+  const [twoFAStep, setTwoFAStep] = useState<'setup' | 'verify' | 'backup' | 'disable'>('setup');
+  const [twoFAQrCode, setTwoFAQrCode] = useState('');
+  const [twoFASecret, setTwoFASecret] = useState('');
+  const [twoFACode, setTwoFACode] = useState('');
+  const [twoFABackupCodes, setTwoFABackupCodes] = useState<string[]>([]);
+  const [is2FASaving, setIs2FASaving] = useState(false);
+
+  // Analytics states
+  const [stats, setStats] = useState<any>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  const fetchStats = useCallback(async () => {
+    try {
+      setStatsLoading(true);
+      const data = await apiService.getUserStats();
+      setStats(data);
+    } catch {
+      setStats(null);
+    } finally {
+      setStatsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
   const confirm = (title: string, message: string, onConfirm: () => void) => {
     if (Platform.OS === 'web' && typeof window !== 'undefined' && window.confirm) {
@@ -130,36 +164,163 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <EmailVerificationBanner />
       <View style={styles.profileHeader}>
         <View style={styles.avatarContainer}>
           <Icon name="account-circle" size={100} color={theme.colors.primary} />
         </View>
-        <Text style={styles.name}>{user?.name}</Text>
-        <Text style={styles.email}>{user?.email}</Text>
+        <Text style={styles.name} testID="profile-name">{user?.name}</Text>
+        <Text style={styles.email} testID="profile-email">{user?.email}</Text>
+      </View>
+
+      {/* Analytics Dashboard */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('analytics.title')}</Text>
+        {statsLoading ? (
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <ActivityIndicator size="small" color={theme.colors.primary} />
+            <Text style={{ color: theme.colors.textSecondary, fontSize: 13, marginTop: 8 }}>{t('analytics.loading')}</Text>
+          </View>
+        ) : stats && stats.totalTrips > 0 ? (
+          <View style={{ padding: 16, gap: 16 }}>
+            {/* Trip counts row */}
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              {[
+                { label: t('analytics.completedTrips'), value: stats.completedTrips, color: colors.success?.main || '#22C55E' },
+                { label: t('analytics.ongoingTrips'), value: stats.ongoingTrips, color: colors.primary?.[500] || '#3B82F6' },
+                { label: t('analytics.upcomingTrips'), value: stats.upcomingTrips, color: colors.warning?.main || '#F59E0B' },
+              ].map((item) => (
+                <View key={item.label} style={{ flex: 1, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50], borderRadius: 12, padding: 12, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 24, fontWeight: '700', color: item.color }}>{item.value}</Text>
+                  <Text style={{ fontSize: 11, color: theme.colors.textSecondary, marginTop: 2 }}>{item.label}</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Key stats row */}
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              {[
+                { icon: 'calendar-range' as const, label: t('analytics.totalDays'), value: `${stats.totalDays}${t('analytics.days')}` },
+                { icon: 'earth' as const, label: t('analytics.countriesVisited'), value: `${stats.countriesVisited}${t('analytics.countries')}` },
+                { icon: 'clock-outline' as const, label: t('analytics.avgDuration'), value: `${stats.avgDuration}${t('analytics.days')}` },
+              ].map((item) => (
+                <View key={item.label} style={{ flex: 1, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50], borderRadius: 12, padding: 12, alignItems: 'center' }}>
+                  <Icon name={item.icon} size={20} color={theme.colors.primary} />
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: theme.colors.text, marginTop: 4 }}>{item.value}</Text>
+                  <Text style={{ fontSize: 11, color: theme.colors.textSecondary, marginTop: 2 }}>{item.label}</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Budget info */}
+            {stats.totalSpent > 0 && (
+              <View style={{ backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50], borderRadius: 12, padding: 14, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={{ alignItems: 'center', flex: 1 }}>
+                  <Text style={{ fontSize: 11, color: theme.colors.textSecondary }}>{t('analytics.totalSpent')}</Text>
+                  <Text style={{ fontSize: 18, fontWeight: '700', color: theme.colors.text, marginTop: 2 }}>
+                    ${stats.totalSpent.toLocaleString()}
+                  </Text>
+                </View>
+                {stats.totalBudget > 0 && (
+                  <View style={{ alignItems: 'center', flex: 1 }}>
+                    <Text style={{ fontSize: 11, color: theme.colors.textSecondary }}>{t('analytics.totalBudget')}</Text>
+                    <Text style={{ fontSize: 18, fontWeight: '700', color: theme.colors.text, marginTop: 2 }}>
+                      ${stats.totalBudget.toLocaleString()}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
+
+            {/* Top destinations */}
+            {stats.topDestinations?.length > 0 && (
+              <View>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.textSecondary, marginBottom: 8 }}>{t('analytics.topDestinations')}</Text>
+                {stats.topDestinations.map((dest: any) => (
+                  <View key={dest.destination} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 6, gap: 8 }}>
+                    <Icon name="map-marker" size={16} color={theme.colors.primary} />
+                    <Text style={{ flex: 1, fontSize: 14, color: theme.colors.text }}>{dest.destination}</Text>
+                    <Text style={{ fontSize: 13, color: theme.colors.textSecondary }}>{dest.count}{t('analytics.times')}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Activities completion */}
+            {stats.totalActivities > 0 && (
+              <View style={{ backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50], borderRadius: 12, padding: 14 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.textSecondary, marginBottom: 8 }}>{t('analytics.activities')}</Text>
+                <View style={{ height: 6, backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200], borderRadius: 3, overflow: 'hidden' }}>
+                  <View style={{ height: 6, backgroundColor: colors.success?.main || '#22C55E', borderRadius: 3, width: `${(stats.completedActivities / stats.totalActivities) * 100}%` }} />
+                </View>
+                <Text style={{ fontSize: 12, color: theme.colors.textSecondary, marginTop: 6 }}>
+                  {t('analytics.completedOf', { completed: stats.completedActivities, total: stats.totalActivities })}
+                </Text>
+              </View>
+            )}
+          </View>
+        ) : (
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <Icon name="chart-line" size={40} color={theme.colors.textSecondary} />
+            <Text style={{ color: theme.colors.textSecondary, fontSize: 14, marginTop: 8 }}>{t('analytics.noData')}</Text>
+          </View>
+        )}
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('sections.account')}</Text>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => { setEditName(user?.name || ''); setShowEditProfile(true); }}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => { setEditName(user?.name || ''); setShowEditProfile(true); }} accessibilityRole="button" accessibilityLabel={t('menu.editProfile')}>
           <Icon name="account-edit-outline" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.editProfile')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
         {!isSocialAccount && (
-          <TouchableOpacity style={styles.menuItem} onPress={() => { setCurrentPassword(''); setNewPassword(''); setConfirmPassword(''); setShowChangePassword(true); }}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => { setCurrentPassword(''); setNewPassword(''); setConfirmPassword(''); setShowChangePassword(true); }} accessibilityRole="button" accessibilityLabel={t('menu.changePassword')}>
             <Icon name="lock-outline" size={24} color={theme.colors.textSecondary} />
             <Text style={styles.menuText}>{t('menu.changePassword')}</Text>
             <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
           </TouchableOpacity>
         )}
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={async () => {
+            if (user?.isTwoFactorEnabled) {
+              setTwoFAStep('disable');
+              setTwoFACode('');
+              setShow2FAModal(true);
+            } else {
+              try {
+                setIs2FASaving(true);
+                const data = await apiService.setupTwoFactor();
+                setTwoFAQrCode(data.qrCodeDataUrl);
+                setTwoFASecret(data.secret);
+                setTwoFAStep('setup');
+                setTwoFACode('');
+                setShow2FAModal(true);
+              } catch {
+                showToast({ type: 'error', message: tAuth('twoFactor.alerts.setupFailed'), position: 'top' });
+              } finally {
+                setIs2FASaving(false);
+              }
+            }
+          }}
+        >
+          <Icon name="shield-lock-outline" size={24} color={theme.colors.textSecondary} />
+          <Text style={styles.menuText}>{t('menu.twoFactor')}</Text>
+          <Text style={[styles.menuValue, { color: user?.isTwoFactorEnabled ? colors.success.main : theme.colors.textSecondary }]}>
+            {user?.isTwoFactorEnabled ? t('menu.twoFactorEnabled') : t('menu.twoFactorDisabled')}
+          </Text>
+          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('sections.settings')}</Text>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => setShowLanguageSelector(true)}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => setShowLanguageSelector(true)} accessibilityRole="button" accessibilityLabel={t('menu.language')}>
           <Icon name="translate" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.language')}</Text>
           <Text style={styles.menuValue}>{LANGUAGE_LABELS[getCurrentLanguage()]}</Text>
@@ -174,6 +335,8 @@ const ProfileScreen = () => {
             onValueChange={toggleTheme}
             trackColor={{ false: theme.colors.border, true: theme.colors.primary }}
             thumbColor={isDark ? theme.colors.white : theme.colors.textSecondary}
+            accessibilityLabel={t('menu.darkMode')}
+            accessibilityRole="switch"
           />
         </View>
       </View>
@@ -181,19 +344,19 @@ const ProfileScreen = () => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('sections.support')}</Text>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('mailto:support@travelplanner.app')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('mailto:support@travelplanner.app')} accessibilityRole="link" accessibilityLabel={t('menu.help')}>
           <Icon name="help-circle-outline" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.help')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://travelplanner.app/terms')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://travelplanner.app/terms')} accessibilityRole="link" accessibilityLabel={t('menu.terms')}>
           <Icon name="file-document-outline" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.terms')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://travelplanner.app/privacy')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://travelplanner.app/privacy')} accessibilityRole="link" accessibilityLabel={t('menu.privacy')}>
           <Icon name="shield-check-outline" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.privacy')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
@@ -202,7 +365,7 @@ const ProfileScreen = () => {
 
       <View style={{ padding: theme.spacing.xl }}>
         <Button
-          variant="danger"
+          variant="outline"
           icon="logout"
           fullWidth
           onPress={handleLogout}
@@ -331,6 +494,160 @@ const ProfileScreen = () => {
           </View>
         </View>
       </Modal>
+
+      {/* 2FA Modal */}
+      <Modal visible={show2FAModal} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
+                {twoFAStep === 'disable' ? tAuth('twoFactor.disable.title') : tAuth('twoFactor.setup.title')}
+              </Text>
+              <TouchableOpacity onPress={() => setShow2FAModal(false)}>
+                <Icon name="close" size={24} color={theme.colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+
+            {/* Setup step - show QR */}
+            {twoFAStep === 'setup' && (
+              <View style={{ gap: 16, alignItems: 'center' }}>
+                <Text style={{ color: theme.colors.textSecondary, fontSize: 14, textAlign: 'center' }}>
+                  {tAuth('twoFactor.setup.description')}
+                </Text>
+                {twoFAQrCode ? (
+                  <Image source={{ uri: twoFAQrCode }} style={{ width: 200, height: 200, borderRadius: 8 }} />
+                ) : null}
+                <View style={{ backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100], borderRadius: 8, padding: 12, width: '100%' }}>
+                  <Text style={{ color: theme.colors.textSecondary, fontSize: 12 }}>
+                    {tAuth('twoFactor.setup.manualEntry')}
+                  </Text>
+                  <Text style={{ color: theme.colors.text, fontSize: 16, fontWeight: '700', fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', marginTop: 4 }}>
+                    {twoFASecret}
+                  </Text>
+                </View>
+                <Button variant="primary" fullWidth onPress={() => setTwoFAStep('verify')}>
+                  {tCommon('next')}
+                </Button>
+              </View>
+            )}
+
+            {/* Verify step - enter code */}
+            {twoFAStep === 'verify' && (
+              <View style={{ gap: 16 }}>
+                <Text style={{ color: theme.colors.textSecondary, fontSize: 14 }}>
+                  {tAuth('twoFactor.setup.enterCode')}
+                </Text>
+                <TextInput
+                  style={[styles.modalInput, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
+                  placeholder={tAuth('twoFactor.codePlaceholder')}
+                  placeholderTextColor={theme.colors.textSecondary}
+                  value={twoFACode}
+                  onChangeText={setTwoFACode}
+                  keyboardType="number-pad"
+                  maxLength={6}
+                  autoFocus
+                />
+                <Button
+                  variant="primary"
+                  fullWidth
+                  loading={is2FASaving}
+                  onPress={async () => {
+                    try {
+                      setIs2FASaving(true);
+                      const data = await apiService.enableTwoFactor(twoFACode);
+                      setTwoFABackupCodes(data.backupCodes);
+                      setTwoFAStep('backup');
+                      showToast({ type: 'success', message: tAuth('twoFactor.alerts.enableSuccess'), position: 'top' });
+                    } catch {
+                      showToast({ type: 'error', message: tAuth('twoFactor.alerts.invalidCode'), position: 'top' });
+                    } finally {
+                      setIs2FASaving(false);
+                    }
+                  }}
+                >
+                  {tAuth('twoFactor.setup.enable')}
+                </Button>
+              </View>
+            )}
+
+            {/* Backup codes step */}
+            {twoFAStep === 'backup' && (
+              <View style={{ gap: 16 }}>
+                <Text style={{ color: theme.colors.text, fontSize: 16, fontWeight: '700' }}>
+                  {tAuth('twoFactor.setup.backupCodesTitle')}
+                </Text>
+                <Text style={{ color: theme.colors.textSecondary, fontSize: 14 }}>
+                  {tAuth('twoFactor.setup.backupCodesDescription')}
+                </Text>
+                <View style={{ backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100], borderRadius: 8, padding: 16 }}>
+                  {twoFABackupCodes.map((code, i) => (
+                    <Text key={i} style={{ color: theme.colors.text, fontSize: 16, fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', paddingVertical: 2 }}>
+                      {code}
+                    </Text>
+                  ))}
+                </View>
+                <TouchableOpacity
+                  style={{ alignItems: 'center', padding: 8 }}
+                  onPress={() => {
+                    const text = twoFABackupCodes.join('\n');
+                    if (Platform.OS === 'web') {
+                      navigator.clipboard?.writeText(text);
+                    } else {
+                      Clipboard?.setString?.(text);
+                    }
+                    showToast({ type: 'success', message: tAuth('twoFactor.setup.backupCodesCopied'), position: 'top' });
+                  }}
+                >
+                  <Text style={{ color: theme.colors.primary, fontWeight: '600' }}>
+                    {tCommon('copy')}
+                  </Text>
+                </TouchableOpacity>
+                <Button variant="primary" fullWidth onPress={() => setShow2FAModal(false)}>
+                  {tAuth('twoFactor.setup.done')}
+                </Button>
+              </View>
+            )}
+
+            {/* Disable step */}
+            {twoFAStep === 'disable' && (
+              <View style={{ gap: 16 }}>
+                <Text style={{ color: theme.colors.textSecondary, fontSize: 14 }}>
+                  {tAuth('twoFactor.disable.description')}
+                </Text>
+                <TextInput
+                  style={[styles.modalInput, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
+                  placeholder={tAuth('twoFactor.codePlaceholder')}
+                  placeholderTextColor={theme.colors.textSecondary}
+                  value={twoFACode}
+                  onChangeText={setTwoFACode}
+                  keyboardType="number-pad"
+                  maxLength={6}
+                  autoFocus
+                />
+                <Button
+                  variant="danger"
+                  fullWidth
+                  loading={is2FASaving}
+                  onPress={async () => {
+                    try {
+                      setIs2FASaving(true);
+                      await apiService.disableTwoFactor(twoFACode);
+                      setShow2FAModal(false);
+                      showToast({ type: 'success', message: tAuth('twoFactor.alerts.disableSuccess'), position: 'top' });
+                    } catch {
+                      showToast({ type: 'error', message: tAuth('twoFactor.alerts.invalidCode'), position: 'top' });
+                    } finally {
+                      setIs2FASaving(false);
+                    }
+                  }}
+                >
+                  {tAuth('twoFactor.disable.confirm')}
+                </Button>
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -410,7 +727,7 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   },
   deleteAccountText: {
     ...theme.typography.caption,
-    color: theme.colors.error || colors.error?.main || '#EF4444',
+    color: colors.neutral[400],
     textDecorationLine: 'underline',
   },
   version: {

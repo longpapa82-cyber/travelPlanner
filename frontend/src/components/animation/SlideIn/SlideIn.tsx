@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated } from 'react-native';
+import { Animated, Platform } from 'react-native';
 import { SlideInProps, SlideInDirection } from './SlideIn.types';
 
 export const SlideIn: React.FC<SlideInProps> = ({
@@ -45,20 +45,20 @@ export const SlideIn: React.FC<SlideInProps> = ({
           friction: 8,
           tension: 40,
           delay,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.spring(translateY, {
           toValue: 0,
           friction: 8,
           tension: 40,
           delay,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(opacity, {
           toValue: 1,
           duration,
           delay,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]).start(({ finished }) => {
         if (finished && onAnimationComplete) {
@@ -70,17 +70,17 @@ export const SlideIn: React.FC<SlideInProps> = ({
         Animated.timing(translateX, {
           toValue: initial.x,
           duration,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(translateY, {
           toValue: initial.y,
           duration,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(opacity, {
           toValue: 0,
           duration,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]).start();
     }

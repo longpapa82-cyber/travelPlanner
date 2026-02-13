@@ -13,6 +13,7 @@
     "duration": "예상 소요 시간 (분)",
     "durationPlaceholder": "60",
     "cost": "예상 비용 (원)",
+    "actualCost": "실제 지출 (원)",
     "costPlaceholder": "0",
     "cancel": "취소",
     "add": "추가",

@@ -7,6 +7,7 @@ export default ({ config }) => ({
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
+  scheme: 'travelplanner',
   splash: {
     image: './assets/splash-icon.png',
     resizeMode: 'contain',
@@ -15,6 +16,17 @@ export default ({ config }) => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.travelplanner.app',
+    usesAppleSignIn: true,
+    associatedDomains: [
+      'applinks:travelplanner.app',
+    ],
+    infoPlist: {
+      CFBundleURLTypes: [
+        {
+          CFBundleURLSchemes: ['travelplanner'],
+        },
+      ],
+    },
   },
   android: {
     adaptiveIcon: {
@@ -23,15 +35,44 @@ export default ({ config }) => ({
     },
     edgeToEdgeEnabled: true,
     package: 'com.travelplanner.app',
+    intentFilters: [
+      {
+        action: 'VIEW',
+        autoVerify: true,
+        data: [
+          { scheme: 'travelplanner' },
+          { scheme: 'https', host: 'travelplanner.app', pathPrefix: '/auth' },
+        ],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
+    ],
   },
   web: {
     favicon: './assets/favicon.png',
     bundler: 'metro',
   },
-  plugins: ['expo-web-browser'],
+  plugins: [
+    'expo-web-browser',
+    'expo-apple-authentication',
+    [
+      'expo-notifications',
+      {
+        icon: './assets/icon.png',
+        color: '#3B82F6',
+      },
+    ],
+    [
+      'react-native-google-mobile-ads',
+      {
+        androidAppId: process.env.ADMOB_ANDROID_APP_ID || 'ca-app-pub-3940256099942544~3347511713',
+        iosAppId: process.env.ADMOB_IOS_APP_ID || 'ca-app-pub-3940256099942544~1458002511',
+      },
+    ],
+  ],
   extra: {
-    apiUrl: process.env.API_URL || 'http://localhost:3000/api',
+    apiUrl: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api',
     adsenseClientId: process.env.ADSENSE_CLIENT_ID || '',
+    adsenseDefaultSlot: process.env.ADSENSE_DEFAULT_SLOT || '',
     affiliateIds: {
       booking: process.env.AFFILIATE_BOOKING_ID || '',
       expedia: process.env.AFFILIATE_EXPEDIA_ID || '',
@@ -40,6 +81,17 @@ export default ({ config }) => ({
       viator: process.env.AFFILIATE_VIATOR_ID || '',
       klook: process.env.AFFILIATE_KLOOK_ID || '',
     },
+    admob: {
+      bannerAdUnitId: {
+        ios: process.env.ADMOB_IOS_BANNER_ID || '',
+        android: process.env.ADMOB_ANDROID_BANNER_ID || '',
+      },
+      interstitialAdUnitId: {
+        ios: process.env.ADMOB_IOS_INTERSTITIAL_ID || '',
+        android: process.env.ADMOB_ANDROID_INTERSTITIAL_ID || '',
+      },
+    },
+    sentryDsn: process.env.SENTRY_DSN || '',
     eas: {
       projectId: process.env.EAS_PROJECT_ID || '',
     },

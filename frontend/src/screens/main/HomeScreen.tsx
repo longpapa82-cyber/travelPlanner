@@ -41,7 +41,9 @@ import { Section } from '../../components/layout/Section';
 import { FadeIn } from '../../components/animation/FadeIn';
 import { SlideIn } from '../../components/animation/SlideIn';
 import PopularDestinations from '../../components/PopularDestinations';
+import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import apiService from '../../services/api';
+import { AdBanner } from '../../components/ads';
 
 type HomeScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<MainTabParamList, 'Home'>,
@@ -148,12 +150,12 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 800,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
         duration: 600,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]).start();
   }, []);
@@ -177,11 +179,13 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       style={styles.container}
       showsVerticalScrollIndicator={false}
     >
+      <EmailVerificationBanner />
       {/* Hero Section */}
       <ImageBackground
         source={{ uri: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&q=80' }}
         style={styles.heroSection}
         resizeMode="cover"
+        testID="home-hero"
       >
         <LinearGradient
           colors={[
@@ -223,7 +227,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
       {/* Quick Stats - Using new Card component */}
       <FadeIn duration={600} delay={200}>
-        <View style={styles.statsContainer}>
+        <View style={styles.statsContainer} testID="trip-stats">
           <Card elevation="sm" padding="md" style={styles.statCard}>
             <Icon name="airplane-takeoff" size={28} color={colors.primary[500]} />
             <Text style={styles.statValue}>{stats.completed}</Text>
@@ -260,7 +264,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.sectionTitle}>{t('featured.title')}</Text>
             <Text style={styles.sectionSubtitle}>{t('featured.subtitle')}</Text>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel={t('featured.seeAll')}>
             <Text style={styles.seeAllText}>{t('featured.seeAll')}</Text>
           </TouchableOpacity>
         </View>
@@ -340,10 +344,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
                   {/* Actions */}
                   <View style={styles.destinationActions}>
-                    <TouchableOpacity style={styles.iconButton}>
+                    <TouchableOpacity style={styles.iconButton} accessibilityLabel={t('common:like')}>
                       <Icon name="heart-outline" size={20} color={colors.neutral[0]} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton}>
+                    <TouchableOpacity style={styles.iconButton} accessibilityLabel={t('common:share')}>
                       <Icon name="share-variant" size={20} color={colors.neutral[0]} />
                     </TouchableOpacity>
                   </View>
@@ -363,6 +367,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               padding="lg"
               onPress={handleViewTrips}
               style={styles.quickActionCard}
+              accessibilityRole="button"
+              accessibilityLabel={t('quickActions.myTrips')}
             >
               <View style={[styles.quickActionIcon, { backgroundColor: colors.primary[100] }]}>
                 <Icon name="map-marker-multiple" size={28} color={colors.primary[600]} />
@@ -377,6 +383,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               elevation="sm"
               padding="lg"
               style={styles.quickActionCard}
+              accessibilityRole="button"
+              accessibilityLabel={t('quickActions.inspiration')}
             >
               <View style={[styles.quickActionIcon, { backgroundColor: colors.secondary[100] }]}>
                 <Icon name="compass-outline" size={28} color={colors.secondary[600]} />
@@ -408,6 +416,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           </Card>
         </Section>
       </FadeIn>
+
+      {/* Ad Banner */}
+      <AdBanner size="adaptive" style={{ marginHorizontal: 16 }} />
 
       {/* Bottom Spacing */}
       <View style={{ height: 40 }} />

@@ -12,9 +12,14 @@
   "back": "戻る",
   "next": "次へ",
   "done": "完了",
+  "copy": "コピー",
   "search": "検索",
+  "like": "いいね",
+  "share": "共有",
+  "clear": "クリア",
   "seeAll": "すべて見る →",
   "findOnProvider": "{{name}}で探す",
+  "offlineMode": "オフラインモード — キャッシュデータを表示中",
   "errorBoundary": {
     "title": "問題が発生しました",
     "message": "予期しないエラーが発生しました。\nもう一度お試しください。",
@@ -24,5 +29,14 @@
     "home": "ホーム",
     "trips": "旅行",
     "profile": "プロフィール"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "メール認証が必要です",
+      "message": "受信トレイを確認して認証を完了してください",
+      "resend": "再送信",
+      "sent": "認証メールを再送信しました",
+      "error": "再送信に失敗しました"
+    }
   }
 }

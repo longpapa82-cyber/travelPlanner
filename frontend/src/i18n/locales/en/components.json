@@ -13,6 +13,7 @@
     "duration": "Estimated Duration (min)",
     "durationPlaceholder": "60",
     "cost": "Estimated Cost",
+    "actualCost": "Actual Spent",
     "costPlaceholder": "0",
     "cancel": "Cancel",
     "add": "Add",

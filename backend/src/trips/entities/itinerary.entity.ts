@@ -14,10 +14,15 @@ export interface Activity {
   title: string;
   description: string;
   location: string;
+  latitude?: number;
+  longitude?: number;
   estimatedDuration?: number;
   estimatedCost?: number;
+  actualCost?: number;
+  currency?: string;
   type?: string;
   completed?: boolean;
+  photos?: string[];
 }
 
 export interface WeatherInfo {

@@ -23,6 +23,8 @@ import {
   ImageBackground,
   Animated,
   Platform,
+  Modal,
+  TextInput,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
@@ -37,14 +39,18 @@ import { TripsStackParamList, Trip, Itinerary, Activity } from '../../types';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import apiService from '../../services/api';
+import { API_URL } from '../../constants/config';
 import Button from '../../components/core/Button';
 import { ActivityModal } from '../../components/ActivityModal';
 import { ShareModal } from '../../components/ShareModal';
 import { WeatherWidget } from '../../components/WeatherWidget';
 import { ProgressIndicator } from '../../components/ProgressIndicator';
-import { AdSense } from '../../components/ads';
+import { AdBanner } from '../../components/ads';
 import AffiliateLink from '../../components/ads/AffiliateLink';
+import { TripMapView } from '../../components/TripMapView';
+import { BudgetSummary } from '../../components/BudgetSummary';
 
 type TripDetailScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'TripDetail'>;
 type TripDetailScreenRouteProp = RouteProp<TripsStackParamList, 'TripDetail'>;
@@ -98,6 +104,16 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const [shareModalVisible, setShareModalVisible] = useState(false);
   const [isDuplicating, setIsDuplicating] = useState(false);
 
+  // Collaboration state
+  const [collaborators, setCollaborators] = useState<any[]>([]);
+  const [showCollabModal, setShowCollabModal] = useState(false);
+  const [collabEmail, setCollabEmail] = useState('');
+  const [collabRole, setCollabRole] = useState<'viewer' | 'editor'>('viewer');
+  const [isInviting, setIsInviting] = useState(false);
+
+  // Tab state: 'itinerary' | 'map'
+  const [activeTab, setActiveTab] = useState<'itinerary' | 'map'>('itinerary');
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
 
@@ -122,18 +138,41 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     fetchTripDetails();
   }, [tripId]);
 
+  // Auto-refresh every 5 minutes for ongoing trips (real-time progress)
+  useEffect(() => {
+    if (!trip || trip.status !== 'ongoing') return;
+    const interval = setInterval(() => {
+      fetchTripDetails();
+    }, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [trip?.status, tripId]);
+
+  // Calculate which day of the trip we are on
+  const getTripDayInfo = (): { currentDay: number; totalDays: number } | null => {
+    if (!trip || trip.status !== 'ongoing') return null;
+    const start = new Date(trip.startDate);
+    start.setHours(0, 0, 0, 0);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const end = new Date(trip.endDate);
+    end.setHours(0, 0, 0, 0);
+    const currentDay = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const totalDays = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    return { currentDay: Math.max(1, Math.min(currentDay, totalDays)), totalDays };
+  };
+
   useEffect(() => {
     if (!isLoading && trip) {
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
           duration: 600,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: 500,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]).start();
     }
@@ -168,6 +207,80 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     } finally {
       setIsDuplicating(false);
     }
+  };
+
+  const handleExportIcal = () => {
+    const url = apiService.getExportIcalUrl(tripId);
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      window.open(url, '_blank');
+    } else {
+      import('react-native').then(({ Linking }) => Linking.openURL(url));
+    }
+  };
+
+  const handleChangeCoverPhoto = async () => {
+    const permResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permResult.granted) return;
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 0.8,
+    });
+    if (result.canceled || !result.assets?.[0]) return;
+    try {
+      const { url } = await apiService.uploadPhoto(result.assets[0].uri);
+      await apiService.updateTrip(tripId, { coverImage: url } as any);
+      setTrip((prev) => prev ? { ...prev, coverImage: url } : prev);
+    } catch {
+      Alert.alert(t('detail.alerts.error'), t('detail.photos.uploadFailed'));
+    }
+  };
+
+  const fetchCollaborators = async () => {
+    try {
+      const data = await apiService.getCollaborators(tripId);
+      setCollaborators(data);
+    } catch {
+      setCollaborators([]);
+    }
+  };
+
+  useEffect(() => {
+    if (trip) fetchCollaborators();
+  }, [trip?.id]);
+
+  const handleInviteCollaborator = async () => {
+    if (!collabEmail.trim()) return;
+    try {
+      setIsInviting(true);
+      await apiService.addCollaborator(tripId, collabEmail.trim(), collabRole);
+      setCollabEmail('');
+      fetchCollaborators();
+      Alert.alert(t('detail.collaboration.inviteSuccess'));
+    } catch {
+      Alert.alert(t('detail.alerts.error'), t('detail.collaboration.inviteFailed'));
+    } finally {
+      setIsInviting(false);
+    }
+  };
+
+  const handleRemoveCollaborator = (collabId: string) => {
+    Alert.alert(t('detail.collaboration.remove'), '', [
+      { text: t('detail.alerts.cancel'), style: 'cancel' },
+      {
+        text: t('detail.alerts.delete'),
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await apiService.removeCollaborator(tripId, collabId);
+            fetchCollaborators();
+          } catch {
+            Alert.alert(t('detail.alerts.error'), t('detail.collaboration.removeFailed'));
+          }
+        },
+      },
+    ]);
   };
 
   // Activity management handlers
@@ -253,22 +366,26 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleSaveActivity = async (activityData: Partial<Activity>) => {
     try {
+      // Only send fields allowed by the backend DTO
+      const { time, title, description, location, estimatedDuration, estimatedCost, actualCost, type } = activityData;
+      const sanitizedData = { time, title, description, location, estimatedDuration, estimatedCost, actualCost, type };
+
       if (modalMode === 'add') {
-        await apiService.addActivity(tripId, selectedItineraryId, activityData);
+        await apiService.addActivity(tripId, selectedItineraryId, sanitizedData);
       } else {
         if (selectedActivityIndex !== null) {
           await apiService.updateActivity(
             tripId,
             selectedItineraryId,
             selectedActivityIndex,
-            activityData
+            sanitizedData
           );
         }
       }
-      await fetchTripDetails(); // Refresh trip data
+      await fetchTripDetails();
       setModalVisible(false);
     } catch (error: any) {
-      throw error; // Let ActivityModal handle the error display
+      throw error;
     }
   };
 
@@ -494,6 +611,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
 
           {/* Activity Card */}
           <View
+            testID="activity-card"
             style={[
               styles.activityCard,
               {
@@ -794,7 +912,9 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     );
   }
 
-  const imageUrl = getDestinationImage(trip.destination);
+  const imageUrl = trip.coverImage
+    ? (trip.coverImage.startsWith('http') ? trip.coverImage : `${API_URL.replace('/api', '')}${trip.coverImage}`)
+    : getDestinationImage(trip.destination);
   const duration = getDuration();
 
   return (
@@ -816,7 +936,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         )}
 
         {/* Hero Section */}
-        <ImageBackground source={{ uri: imageUrl }} style={styles.hero}>
+        <ImageBackground source={{ uri: imageUrl }} style={styles.hero} testID="detail-hero">
         <LinearGradient
           colors={['rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']}
           style={styles.heroGradient}
@@ -864,6 +984,26 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               </TouchableOpacity>
 
               <TouchableOpacity
+                onPress={handleExportIcal}
+                accessibilityLabel={t('detail.accessibility.exportIcal')}
+                accessibilityRole="button"
+              >
+                <View style={styles.iconButtonInner}>
+                  <Icon name="calendar-export" size={24} color={colors.neutral[0]} />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={handleChangeCoverPhoto}
+                accessibilityLabel={trip.coverImage ? t('detail.photos.changeCover') : t('detail.photos.addCover')}
+                accessibilityRole="button"
+              >
+                <View style={styles.iconButtonInner}>
+                  <Icon name="camera" size={24} color={colors.neutral[0]} />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
                 style={styles.shareButton}
                 onPress={() => setShareModalVisible(true)}
                 accessibilityLabel={t('detail.accessibility.share')}
@@ -907,6 +1047,13 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             {trip.status === 'ongoing' && getTripProgress().total > 0 && (
               <View style={styles.heroProgressContainer}>
                 <View style={styles.heroProgressHeader}>
+                  {getTripDayInfo() && (
+                    <View style={styles.heroDayBadge}>
+                      <Text style={styles.heroDayBadgeText}>
+                        Day {getTripDayInfo()!.currentDay}/{getTripDayInfo()!.totalDays}
+                      </Text>
+                    </View>
+                  )}
                   <Icon name="chart-arc" size={14} color={colors.neutral[200]} />
                   <Text style={styles.heroProgressText}>
                     {t('detail.progress', { percentage: getTripProgress().percentage })}
@@ -938,8 +1085,38 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         }
         showsVerticalScrollIndicator={false}
       >
+        {/* Tab Bar */}
+        <View style={[styles.tabBar, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[0] }]}>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'itinerary' && styles.tabActive]}
+            onPress={() => setActiveTab('itinerary')}
+          >
+            <Icon name="calendar-text" size={18} color={activeTab === 'itinerary' ? colors.primary[500] : colors.neutral[400]} />
+            <Text style={[styles.tabText, activeTab === 'itinerary' && styles.tabTextActive]}>
+              {t('detail.tabs.itinerary')}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'map' && styles.tabActive]}
+            onPress={() => setActiveTab('map')}
+          >
+            <Icon name="map-outline" size={18} color={activeTab === 'map' ? colors.primary[500] : colors.neutral[400]} />
+            <Text style={[styles.tabText, activeTab === 'map' && styles.tabTextActive]}>
+              {t('detail.tabs.map')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Map View */}
+        {activeTab === 'map' && (
+          <TripMapView
+            itineraries={trip.itineraries}
+            destination={trip.destination}
+          />
+        )}
+
         {/* Trip Description */}
-        {trip.description && (
+        {activeTab === 'itinerary' && trip.description && (
           <Animated.View
             style={[
               styles.descriptionCard,
@@ -956,8 +1133,11 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           </Animated.View>
         )}
 
+        {/* Budget Summary */}
+        {activeTab === 'itinerary' && <BudgetSummary trip={trip} />}
+
         {/* Affiliate Links Section */}
-        <Animated.View
+        {activeTab === 'itinerary' && <Animated.View
           style={[
             styles.affiliateSection,
             {
@@ -1016,59 +1196,94 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               style={styles.affiliateButton}
             />
           </View>
-        </Animated.View>
+        </Animated.View>}
 
-        {/* AdSense Banner */}
-        <AdSense
-          adSlot="1234567890"
-          format="auto"
-          fullWidthResponsive
-          testMode={__DEV__}
-        />
+        {/* Ad Banner */}
+        {activeTab === 'itinerary' && (
+          <AdBanner
+            adSenseSlot="1234567890"
+            size="adaptive"
+            style={{ marginHorizontal: 16 }}
+          />
+        )}
 
         {/* Itineraries */}
-        {trip.itineraries.length > 0 ? (
-          trip.itineraries
-            .sort((a, b) => a.dayNumber - b.dayNumber)
-            .map((itinerary, index) => renderItinerary(itinerary, index))
-        ) : (
-          <Animated.View
-            style={[
-              styles.emptyState,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: slideAnim }],
-              },
-            ]}
-          >
-            <View
+        {activeTab === 'itinerary' && (
+          trip.itineraries.length > 0 ? (
+            trip.itineraries
+              .sort((a, b) => a.dayNumber - b.dayNumber)
+              .map((itinerary, index) => renderItinerary(itinerary, index))
+          ) : (
+            <Animated.View
               style={[
-                styles.emptyIconContainer,
+                styles.emptyState,
                 {
-                  backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100],
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }],
                 },
               ]}
             >
-              <Icon name="calendar-blank" size={60} color={theme.colors.textSecondary} />
-            </View>
-            <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>
-              {t('detail.emptyItinerary')}
-            </Text>
-            <Text style={[styles.emptyMessage, { color: theme.colors.textSecondary }]}>
-              {t('detail.emptyItineraryMessage')}
-            </Text>
-          </Animated.View>
+              <View
+                style={[
+                  styles.emptyIconContainer,
+                  {
+                    backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100],
+                  },
+                ]}
+              >
+                <Icon name="calendar-blank" size={60} color={theme.colors.textSecondary} />
+              </View>
+              <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>
+                {t('detail.emptyItinerary')}
+              </Text>
+              <Text style={[styles.emptyMessage, { color: theme.colors.textSecondary }]}>
+                {t('detail.emptyItineraryMessage')}
+              </Text>
+            </Animated.View>
+          )
         )}
 
-        {/* Bottom AdSense Banner (after itineraries) */}
-        {trip.itineraries.length > 0 && (
-          <AdSense
-            adSlot="0987654321"
-            format="auto"
-            fullWidthResponsive
-            testMode={__DEV__}
+        {/* Bottom Ad Banner (after itineraries) */}
+        {activeTab === 'itinerary' && trip.itineraries.length > 0 && (
+          <AdBanner
+            adSenseSlot="0987654321"
+            size="banner"
+            style={{ marginHorizontal: 16 }}
           />
         )}
+
+        {/* Collaboration Section */}
+        <View style={[styles.collabSection, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <Text style={[styles.collabTitle, { color: theme.colors.text }]}>
+              <Icon name="account-group" size={20} color={theme.colors.primary} />{' '}
+              {t('detail.collaboration.title')}
+            </Text>
+            <TouchableOpacity onPress={() => setShowCollabModal(true)} style={{ backgroundColor: theme.colors.primary, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}>
+              <Text style={{ color: '#fff', fontSize: 13, fontWeight: '600' }}>{t('detail.collaboration.invite')}</Text>
+            </TouchableOpacity>
+          </View>
+          {collaborators.length === 0 ? (
+            <Text style={{ color: theme.colors.textSecondary, fontSize: 14, textAlign: 'center', paddingVertical: 12 }}>
+              {t('detail.collaboration.noCollaborators')}
+            </Text>
+          ) : (
+            collaborators.map((c: any) => (
+              <View key={c.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.colors.border }}>
+                <Icon name="account-circle" size={32} color={theme.colors.textSecondary} />
+                <View style={{ flex: 1, marginLeft: 10 }}>
+                  <Text style={{ color: theme.colors.text, fontSize: 14, fontWeight: '500' }}>{c.user?.name || c.user?.email}</Text>
+                  <Text style={{ color: theme.colors.textSecondary, fontSize: 12 }}>
+                    {c.role === 'editor' ? t('detail.collaboration.roleEditor') : t('detail.collaboration.roleViewer')}
+                  </Text>
+                </View>
+                <TouchableOpacity onPress={() => handleRemoveCollaborator(c.id)}>
+                  <Icon name="close-circle-outline" size={22} color={theme.colors.error || colors.error?.main || '#EF4444'} />
+                </TouchableOpacity>
+              </View>
+            ))
+          )}
+        </View>
 
         <View style={{ height: 40 }} />
       </ScrollView>
@@ -1081,6 +1296,71 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         activity={selectedActivity}
         mode={modalMode}
       />
+
+      {/* Collaboration Invite Modal */}
+      <Modal visible={showCollabModal} transparent animationType="slide">
+        <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' }}>
+          <View style={{ backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0], borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, paddingBottom: 34 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <Text style={{ fontSize: 18, fontWeight: '700', color: theme.colors.text }}>{t('detail.collaboration.invite')}</Text>
+              <TouchableOpacity onPress={() => setShowCollabModal(false)}>
+                <Icon name="close" size={24} color={theme.colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+
+            <TextInput
+              style={{ fontSize: 16, borderWidth: 1, borderColor: isDark ? colors.neutral[600] : colors.neutral[300], borderRadius: 12, padding: 14, color: theme.colors.text, marginBottom: 12 }}
+              placeholder={t('detail.collaboration.emailPlaceholder')}
+              placeholderTextColor={theme.colors.textSecondary}
+              value={collabEmail}
+              onChangeText={setCollabEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+              {(['viewer', 'editor'] as const).map((r) => (
+                <TouchableOpacity
+                  key={r}
+                  onPress={() => setCollabRole(r)}
+                  style={{
+                    flex: 1,
+                    paddingVertical: 10,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: collabRole === r ? theme.colors.primary : (isDark ? colors.neutral[600] : colors.neutral[300]),
+                    backgroundColor: collabRole === r ? (isDark ? colors.primary?.[900] || '#1e3a5f' : colors.primary?.[50] || '#eff6ff') : 'transparent',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Icon name={r === 'editor' ? 'pencil' : 'eye'} size={18} color={collabRole === r ? theme.colors.primary : theme.colors.textSecondary} />
+                  <Text style={{ color: collabRole === r ? theme.colors.primary : theme.colors.textSecondary, fontSize: 13, marginTop: 4, fontWeight: collabRole === r ? '600' : '400' }}>
+                    {r === 'editor' ? t('detail.collaboration.roleEditor') : t('detail.collaboration.roleViewer')}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <TouchableOpacity
+              onPress={handleInviteCollaborator}
+              disabled={isInviting || !collabEmail.trim()}
+              style={{
+                backgroundColor: theme.colors.primary,
+                borderRadius: 12,
+                paddingVertical: 14,
+                alignItems: 'center',
+                opacity: isInviting || !collabEmail.trim() ? 0.5 : 1,
+              }}
+            >
+              {isInviting ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>{t('detail.collaboration.invite')}</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Share Modal */}
       <ShareModal
@@ -1213,6 +1493,18 @@ const createStyles = (theme: any, isDark: boolean) =>
       alignItems: 'center',
       gap: 6,
       marginBottom: 8,
+    },
+    heroDayBadge: {
+      backgroundColor: 'rgba(255, 255, 255, 0.25)',
+      paddingHorizontal: 8,
+      paddingVertical: 2,
+      borderRadius: 10,
+      marginRight: 4,
+    },
+    heroDayBadgeText: {
+      fontSize: 11,
+      fontWeight: '700',
+      color: colors.neutral[0],
     },
     heroProgressText: {
       fontSize: 13,
@@ -1563,6 +1855,46 @@ const createStyles = (theme: any, isDark: boolean) =>
     affiliateButton: {
       flex: Platform.OS === 'web' ? 0 : 1,
       minWidth: Platform.OS === 'web' ? 160 : undefined,
+    },
+    tabBar: {
+      flexDirection: 'row',
+      borderRadius: 12,
+      marginHorizontal: 16,
+      marginTop: 16,
+      marginBottom: 8,
+      padding: 4,
+      ...theme.shadows.sm,
+    },
+    tab: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 6,
+      paddingVertical: 10,
+      borderRadius: 10,
+    },
+    tabActive: {
+      backgroundColor: isDark ? colors.primary[900] : colors.primary[50],
+    },
+    tabText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.neutral[400],
+    },
+    tabTextActive: {
+      color: colors.primary[500],
+    },
+    collabSection: {
+      marginHorizontal: 20,
+      marginBottom: 8,
+      padding: 20,
+      borderRadius: 16,
+      ...theme.shadows.sm,
+    },
+    collabTitle: {
+      fontSize: 18,
+      fontWeight: '700',
     },
   });
 

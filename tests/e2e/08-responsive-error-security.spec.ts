@@ -37,10 +37,9 @@ async function loginViaApi(page: import('@playwright/test').Page) {
 
   await page.reload({ waitUntil: 'networkidle' });
 
-  // Wait for home screen to load
-  await expect(
-    page.locator('text=/안녕하세요|AI 여행 계획 만들기|여행 완료/i').first(),
-  ).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
+  // Wait for home screen to load (language-agnostic: check nav tab)
+  const homeTab = page.locator(SEL.nav.homeTab).first();
+  await homeTab.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
 }
 
 // ────────────────────────────────────────────────────────────────

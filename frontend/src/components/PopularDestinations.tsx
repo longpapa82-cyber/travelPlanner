@@ -61,7 +61,7 @@ export const PopularDestinations: React.FC<PopularDestinationsProps> = ({
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="popular-destinations">
       <View style={styles.header}>
         <Ionicons name="trending-up" size={24} color={theme.colors.primary} />
         <Text style={styles.title}>{t('popularDestinations.subtitle')}</Text>

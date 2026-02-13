@@ -34,6 +34,11 @@ export class UpdateActivityDto {
   estimatedCost?: number;
 
   @IsOptional()
+  @IsNumber()
+  @Min(0)
+  actualCost?: number;
+
+  @IsOptional()
   @IsString()
   type?: string;
 

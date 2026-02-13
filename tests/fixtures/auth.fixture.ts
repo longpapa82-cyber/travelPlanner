@@ -23,7 +23,7 @@ export const test = base.extend<AuthFixtures>({
   },
 
   workerUser: async ({}, use, workerInfo) => {
-    const keys: WorkerKey[] = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'DESTROY'];
+    const keys: WorkerKey[] = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10', 'W11', 'W12', 'W13', 'DESTROY'];
     const key = keys[workerInfo.workerIndex % keys.length] || 'W1';
     await use(WORKERS[key]);
   },
@@ -44,10 +44,10 @@ export const test = base.extend<AuthFixtures>({
       await page.goto('about:blank');
       await page.evaluate((authState) => {
         if (authState.accessToken) {
-          localStorage.setItem('auth_token', authState.accessToken);
+          localStorage.setItem('@travelplanner:auth_token', authState.accessToken);
         }
         if (authState.refreshToken) {
-          localStorage.setItem('refresh_token', authState.refreshToken);
+          localStorage.setItem('@travelplanner:refresh_token', authState.refreshToken);
         }
       }, state);
     }

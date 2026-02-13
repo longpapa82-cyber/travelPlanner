@@ -107,6 +107,46 @@
       "startDate": "출발일순",
       "createdAt": "생성일순",
       "destination": "목적지순"
+    },
+    "advancedFilters": {
+      "toggle": "상세 필터",
+      "country": "국가",
+      "countryPlaceholder": "국가명 입력",
+      "dateRange": "출발일 범위",
+      "dateFrom": "시작",
+      "dateTo": "종료",
+      "budget": "예산 범위",
+      "budgetMin": "최소",
+      "budgetMax": "최대",
+      "reset": "필터 초기화",
+      "apply": "적용",
+      "activeCount": "필터 {{count}}개 적용중"
+    },
+    "resultCount": "{{count}}개의 여행",
+    "createButton": "새 여행 만들기",
+    "info": {
+      "days": "{{count}}일간",
+      "itineraries": "{{count}}일정",
+      "travelers": "{{count}}명"
+    },
+    "accessibility": {
+      "trip": "여행",
+      "viewDetail": "여행 상세 보기",
+      "deleteTrip": "삭제",
+      "search": "여행 검색",
+      "searchHint": "목적지로 여행 검색"
+    },
+    "alerts": {
+      "deleteTitle": "여행 삭제",
+      "deleteMessage": "'{{name}}'을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      "deleteFailed": "삭제에 실패했습니다",
+      "error": "오류",
+      "cancel": "취소",
+      "delete": "삭제"
+    },
+    "pagination": {
+      "showMore": "더 보기",
+      "showing": "{{shown}} / {{total}}개"
     }
   },
   "detail": {
@@ -138,8 +178,25 @@
     "affiliateSubtitle": "{{destination}} 최고의 숙소와 체험을 예약하세요",
     "tabs": {
       "itinerary": "일정",
+      "map": "지도",
       "info": "정보",
       "share": "공유"
+    },
+    "map": {
+      "noLocations": "표시할 위치 정보가 없습니다",
+      "noLocationsMessage": "활동에 위치 좌표가 포함된 새 여행을 만들어보세요",
+      "activitiesCount": "{{count}}개의 활동"
+    },
+    "budget": {
+      "title": "예산 요약",
+      "total": "총 예산",
+      "estimated": "예상 비용",
+      "spent": "실제 지출",
+      "remaining": "남은 예산",
+      "byCategory": "카테고리별",
+      "byDay": "일자별",
+      "perDay": "일 평균",
+      "dayLabel": "Day {{day}}"
     },
     "activityTypes": {
       "meal": "식사",
@@ -163,6 +220,7 @@
       "duplicate": "여행 복제",
       "duplicating": "복제 중...",
       "share": "공유",
+      "exportIcal": "캘린더로 내보내기",
       "addActivityToDay": "Day {{day}}에 활동 추가"
     },
     "alerts": {
@@ -182,6 +240,28 @@
       "deleteError": "삭제에 실패했습니다",
       "toggleError": "상태 변경에 실패했습니다",
       "reorderError": "순서 변경에 실패했습니다"
+    },
+    "photos": {
+      "addCover": "커버 사진 추가",
+      "changeCover": "커버 사진 변경",
+      "addPhoto": "사진 추가",
+      "photoCount": "사진 {{count}}장",
+      "uploadSuccess": "사진이 업로드되었습니다",
+      "uploadFailed": "사진 업로드에 실패했습니다",
+      "viewAll": "모든 사진 보기"
+    },
+    "collaboration": {
+      "title": "공동 여행자",
+      "invite": "초대하기",
+      "emailPlaceholder": "이메일 주소 입력",
+      "roleViewer": "보기 전용",
+      "roleEditor": "편집 가능",
+      "owner": "소유자",
+      "remove": "제거",
+      "inviteSuccess": "초대가 전송되었습니다",
+      "inviteFailed": "초대에 실패했습니다",
+      "removeFailed": "제거에 실패했습니다",
+      "noCollaborators": "아직 공동 여행자가 없습니다"
     }
   },
   "edit": {

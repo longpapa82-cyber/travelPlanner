@@ -1,4 +1,4 @@
-export const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3001/api';
+export const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 export const APP_URL = process.env.EXPO_PUBLIC_APP_URL || 'http://localhost:8081';
 
 export const OAUTH_CONFIG = {

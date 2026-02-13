@@ -64,8 +64,17 @@ export class Trip {
     interests?: string[];
   };
 
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  totalBudget?: number;
+
+  @Column({ type: 'varchar', length: 3, default: 'USD' })
+  budgetCurrency: string;
+
   @Column({ type: 'varchar', length: 100, nullable: true, unique: true })
   shareToken?: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  coverImage?: string;
 
   @Column({ type: 'boolean', default: false })
   isPublic: boolean;

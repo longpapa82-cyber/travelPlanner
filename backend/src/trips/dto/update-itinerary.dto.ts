@@ -23,6 +23,14 @@ export class ActivityDto {
 
   @IsNumber()
   @IsOptional()
+  latitude?: number;
+
+  @IsNumber()
+  @IsOptional()
+  longitude?: number;
+
+  @IsNumber()
+  @IsOptional()
   estimatedDuration?: number;
 
   @IsNumber()

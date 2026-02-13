@@ -54,4 +54,8 @@ export class UpdateTripDto {
   @IsEnum(TripStatus)
   @IsOptional()
   status?: TripStatus;
+
+  @IsString()
+  @IsOptional()
+  coverImage?: string;
 }

@@ -53,6 +53,33 @@ export class User {
   })
   role: UserRole;
 
+  @Column({ default: false })
+  isEmailVerified: boolean;
+
+  @Column({ type: 'varchar', nullable: true, select: false })
+  emailVerificationToken?: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  emailVerificationExpiry?: Date;
+
+  @Column({ type: 'varchar', nullable: true, select: false })
+  passwordResetToken?: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  passwordResetExpiry?: Date;
+
+  @Column({ default: false })
+  isTwoFactorEnabled: boolean;
+
+  @Column({ type: 'varchar', nullable: true, select: false })
+  twoFactorSecret?: string;
+
+  @Column({ type: 'simple-array', nullable: true, select: false })
+  twoFactorBackupCodes?: string[];
+
+  @Column({ type: 'varchar', nullable: true })
+  pushToken?: string;
+
   @Column({ default: true })
   isActive: boolean;
 

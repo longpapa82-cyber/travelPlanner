@@ -9,11 +9,17 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { AppleStrategy } from './strategies/apple.strategy';
 import { KakaoStrategy } from './strategies/kakao.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
+import { EmailModule } from '../email/email.module';
+import { NotificationService } from '../common/notification.service';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([User]),
     UsersModule,
+    EmailModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -34,7 +40,8 @@ import { UsersModule } from '../users/users.module';
     GoogleStrategy,
     AppleStrategy,
     KakaoStrategy,
+    NotificationService,
   ],
-  exports: [AuthService],
+  exports: [AuthService, NotificationService],
 })
 export class AuthModule {}

@@ -23,6 +23,8 @@ describe('UsersService', () => {
     profileImage: undefined,
     role: UserRole.USER,
     isActive: true,
+    isEmailVerified: false,
+    isTwoFactorEnabled: false,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated } from 'react-native';
+import { Animated, Platform } from 'react-native';
 import { ScaleInProps } from './ScaleIn.types';
 
 export const ScaleIn: React.FC<ScaleInProps> = ({
@@ -25,13 +25,13 @@ export const ScaleIn: React.FC<ScaleInProps> = ({
           friction: 8,
           tension: 40,
           delay,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(opacity, {
           toValue: 1,
           duration,
           delay,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]).start(({ finished }) => {
         if (finished && onAnimationComplete) {
@@ -43,12 +43,12 @@ export const ScaleIn: React.FC<ScaleInProps> = ({
         Animated.timing(scale, {
           toValue: initialScale,
           duration,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(opacity, {
           toValue: 0,
           duration,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]).start();
     }

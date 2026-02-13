@@ -197,6 +197,17 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
+            {/* Forgot Password Link */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPassword')}
+              disabled={isLoading}
+              style={styles.forgotPasswordContainer}
+              accessibilityLabel={t('login.forgotPassword')}
+              accessibilityRole="link"
+            >
+              <Text style={styles.forgotPasswordText}>{t('login.forgotPassword')}</Text>
+            </TouchableOpacity>
+
             {/* Login Button */}
             <Button
               variant="primary"
@@ -357,6 +368,17 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   },
   eyeIcon: {
     padding: theme.spacing.sm,
+  },
+
+  // Forgot Password
+  forgotPasswordContainer: {
+    alignSelf: 'flex-end',
+    marginBottom: theme.spacing.sm,
+  },
+  forgotPasswordText: {
+    fontSize: 14,
+    color: colors.primary[600],
+    fontWeight: '600',
   },
 
   // Login Button

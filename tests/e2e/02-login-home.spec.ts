@@ -61,10 +61,9 @@ async function performLogin(
 // Helper: Wait for home screen to be fully visible
 // ────────────────────────────────────────────────────────────────
 async function waitForHomeScreen(page: import('@playwright/test').Page) {
-  // Home screen shows greeting text, stats, or the create trip CTA
-  await expect(
-    page.locator('text=/안녕하세요|AI 여행 계획 만들기|여행 완료/i').first(),
-  ).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
+  // Home screen: wait for nav tab to be visible (language-agnostic)
+  const homeTab = page.locator(SEL.nav.homeTab).first();
+  await homeTab.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -187,7 +186,7 @@ test.describe('TC-3: Login', () => {
     // Click the eye icon to toggle visibility
     // The toggle button has accessibilityLabel "비밀번호 표시" (showPassword) initially
     const toggleButton = page.locator(
-      '[accessibilityLabel*="비밀번호 표시"], [accessibilityLabel*="Show password"], [aria-label*="비밀번호 표시"], [aria-label*="Show password"]',
+      '[aria-label*="비밀번호 표시"], [aria-label*="Show password"]',
     ).first();
     await toggleButton.click();
 
@@ -197,7 +196,7 @@ test.describe('TC-3: Login', () => {
 
     // Toggle back
     const hideButton = page.locator(
-      '[accessibilityLabel*="비밀번호 숨기기"], [accessibilityLabel*="Hide password"], [aria-label*="비밀번호 숨기기"], [aria-label*="Hide password"]',
+      '[aria-label*="비밀번호 숨기기"], [aria-label*="Hide password"]',
     ).first();
     await hideButton.click();
 
@@ -466,7 +465,7 @@ test.describe('TC-4: Home Screen', () => {
 
     // Click on a destination card (e.g. the first visible one)
     const destinationCard = page.locator(
-      '[accessibilityLabel*="여행 계획 만들기"], [accessibilityLabel*="Create"], [aria-label*="여행 계획 만들기"]',
+      '[aria-label*="여행 계획 만들기"], [aria-label*="Create"]',
     ).first();
 
     const cardVisible = await destinationCard

@@ -9,7 +9,7 @@ export const SEL = {
     emailInput: 'input[placeholder*="이메일"], input[placeholder*="email" i]',
     passwordInput: 'input[type="password"]',
     nameInput: 'input[placeholder*="이름"], input[placeholder*="name" i]',
-    loginButton: 'text=/로그인|Login|ログイン/i',
+    loginButton: 'text=/로그인|Log ?In|ログイン/i',
     registerButton: 'text=/회원가입|Sign Up|Register/i',
     skipButton: 'text=/건너뛰기|Skip|スキップ/i',
     nextButton: 'text=/다음|Next|次へ/i',
@@ -19,16 +19,16 @@ export const SEL = {
   // Navigation
   nav: {
     homeTab: 'text=/홈|Home|ホーム/i',
-    tripsTab: 'text=/여행|Trips|旅行/i',
+    tripsTab: 'text=/내 여행|My Trips|旅行/i',
     profileTab: 'text=/프로필|Profile|プロフィール/i',
-    backButton: '[accessibilityLabel*="뒤로"], [accessibilityLabel*="back" i], [accessibilityLabel*="戻る"]',
+    backButton: '[aria-label*="뒤로"], [aria-label*="back" i], [aria-label*="戻る"]',
   },
 
   // Home
   home: {
     heroSection: '[data-testid="home-hero"]',
     statsCard: '[data-testid="trip-stats"]',
-    newTripButton: 'text=/새 여행|New Trip|新しい旅行/i',
+    newTripButton: 'text=/AI 여행 계획 만들기|Create AI Travel Plan|AI旅行プランを作成/i',
     popularDestinations: '[data-testid="popular-destinations"]',
   },
 
@@ -42,27 +42,27 @@ export const SEL = {
     endDateField: 'text=/도착일|Return|帰国日/i',
     notesInput: 'textarea, input[placeholder*="예:"], input[placeholder*="e.g."]',
     submitButton: 'text=/여행 계획 만들기|Create Travel Plan|旅行プランを作成/i',
-    loadingText: 'text=/AI가.*만들/i',
+    loadingText: 'text=/AI가.*만들|AI is creating|AI.*creating.*plan/i',
   },
 
   // Trip List
   list: {
     searchInput: 'input[placeholder*="검색"], input[placeholder*="Search" i]',
-    filterAll: 'text=/전체|All|すべて/i',
-    filterUpcoming: 'text=/예정|Upcoming|予定/i',
-    filterOngoing: 'text=/진행중|Ongoing|進行中/i',
-    filterCompleted: 'text=/완료|Completed|完了/i',
+    filterAll: '[data-testid="filter-all"]',
+    filterUpcoming: '[data-testid="filter-upcoming"]',
+    filterOngoing: '[data-testid="filter-ongoing"]',
+    filterCompleted: '[data-testid="filter-completed"]',
     tripCard: '[data-testid="trip-card"]',
     emptyState: 'text=/아직.*여행|No trips|まだ旅行/i',
-    deleteButton: '[accessibilityLabel*="삭제"], [accessibilityLabel*="delete" i]',
+    deleteButton: '[aria-label*="삭제"], [aria-label*="delete" i]',
   },
 
   // Trip Detail
   detail: {
     heroImage: '[data-testid="detail-hero"]',
-    editButton: 'text=/수정|Edit|編集/i',
-    duplicateButton: '[accessibilityLabel*="복제"], [accessibilityLabel*="duplicate" i]',
-    shareButton: '[accessibilityLabel*="공유"], [accessibilityLabel*="share" i]',
+    editButton: '[aria-label*="수정"], [aria-label*="edit" i]',
+    duplicateButton: '[aria-label*="복제"], [aria-label*="duplicate" i]',
+    shareButton: '[aria-label*="공유"], [aria-label*="share" i]',
     dayHeader: (day: number) => `text=Day ${day}`,
     activityCard: '[data-testid="activity-card"]',
     addActivityButton: 'text=/활동 추가|Add Activity|アクティビティを追加/i',
@@ -73,10 +73,10 @@ export const SEL = {
 
   // Activity
   activity: {
-    editIcon: '[accessibilityLabel*="수정"], [accessibilityLabel*="edit" i]',
-    deleteIcon: '[accessibilityLabel*="삭제"], [accessibilityLabel*="delete" i]',
-    toggleCircle: '[accessibilityLabel*="완료"], [accessibilityLabel*="complete" i]',
-    dragHandle: '[accessibilityLabel*="순서"], [accessibilityLabel*="reorder" i]',
+    editIcon: '[aria-label*="수정"], [aria-label*="edit" i]',
+    deleteIcon: '[aria-label*="삭제"], [aria-label*="delete" i]',
+    toggleCircle: '[aria-label*="완료"], [aria-label*="complete" i]',
+    dragHandle: '[aria-label*="순서"], [aria-label*="reorder" i]',
     modal: {
       titleInput: 'input[placeholder*="제목"], input[placeholder*="title" i]',
       locationInput: 'input[placeholder*="장소"], input[placeholder*="location" i]',
@@ -97,7 +97,7 @@ export const SEL = {
   profile: {
     nameDisplay: '[data-testid="profile-name"]',
     emailDisplay: '[data-testid="profile-email"]',
-    editNameButton: 'text=/이름 변경|Change Name/i',
+    editNameButton: 'text=/프로필 수정|이름 변경|Edit Profile|Change Name/i',
     changePasswordButton: 'text=/비밀번호 변경|Change Password/i',
     languageSelector: 'text=/언어|Language|言語/i',
     darkModeToggle: 'text=/다크 모드|Dark Mode|ダークモード/i',

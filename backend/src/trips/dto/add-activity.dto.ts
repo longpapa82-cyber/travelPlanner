@@ -26,6 +26,14 @@ export class AddActivityDto {
 
   @IsOptional()
   @IsNumber()
+  latitude?: number;
+
+  @IsOptional()
+  @IsNumber()
+  longitude?: number;
+
+  @IsOptional()
+  @IsNumber()
   @Min(0)
   estimatedDuration?: number;
 
@@ -33,6 +41,15 @@ export class AddActivityDto {
   @IsNumber()
   @Min(0)
   estimatedCost?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  actualCost?: number;
+
+  @IsOptional()
+  @IsString()
+  currency?: string;
 
   @IsOptional()
   @IsString()

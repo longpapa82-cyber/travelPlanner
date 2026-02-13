@@ -36,6 +36,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
+import { useNotifications } from '../../contexts/NotificationContext';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import DestinationInsights from '../../components/DestinationInsights';
@@ -81,6 +82,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
+  const { scheduleTripReminders } = useNotifications();
   const { t } = useTranslation('trips');
 
   const POPULAR_DESTINATIONS = getPopularDestinations(t);
@@ -103,12 +105,12 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 600,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
         duration: 500,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]).start();
   }, []);
@@ -183,6 +185,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
       };
 
       const trip = await apiService.createTrip(tripData);
+
+      // Schedule trip reminder notifications
+      scheduleTripReminders(trip).catch(() => {});
 
       showToast({
         type: 'success',

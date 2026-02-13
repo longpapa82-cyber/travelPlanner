@@ -56,6 +56,56 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     en: 'behind',
     ja: '遅れ',
   },
+  'email.verification.sent': {
+    ko: '인증 이메일이 발송되었습니다.',
+    en: 'Verification email has been sent.',
+    ja: '認証メールを送信しました。',
+  },
+  'email.verification.invalid': {
+    ko: '유효하지 않은 인증 토큰입니다.',
+    en: 'Invalid verification token.',
+    ja: '無効な認証トークンです。',
+  },
+  'email.verification.expired': {
+    ko: '인증 토큰이 만료되었습니다.',
+    en: 'Verification token has expired.',
+    ja: '認証トークンの有効期限が切れています。',
+  },
+  'email.verification.success': {
+    ko: '이메일이 성공적으로 인증되었습니다.',
+    en: 'Email has been verified successfully.',
+    ja: 'メールアドレスが正常に認証されました。',
+  },
+  'email.already.verified': {
+    ko: '이미 인증된 이메일입니다.',
+    en: 'Email is already verified.',
+    ja: 'メールアドレスはすでに認証済みです。',
+  },
+  'password.reset.sent': {
+    ko: '비밀번호 재설정 이메일이 발송되었습니다.',
+    en: 'Password reset email has been sent.',
+    ja: 'パスワードリセットメールを送信しました。',
+  },
+  'password.reset.invalid': {
+    ko: '유효하지 않은 재설정 토큰입니다.',
+    en: 'Invalid reset token.',
+    ja: '無効なリセットトークンです。',
+  },
+  'password.reset.expired': {
+    ko: '재설정 토큰이 만료되었습니다.',
+    en: 'Reset token has expired.',
+    ja: 'リセットトークンの有効期限が切れています。',
+  },
+  'password.reset.success': {
+    ko: '비밀번호가 성공적으로 재설정되었습니다.',
+    en: 'Password has been reset successfully.',
+    ja: 'パスワードが正常にリセットされました。',
+  },
+  'password.reset.socialNotAllowed': {
+    ko: '소셜 로그인 계정은 비밀번호를 재설정할 수 없습니다.',
+    en: 'Social login accounts cannot reset password.',
+    ja: 'ソーシャルログインアカウントではパスワードをリセットできません。',
+  },
 };
 
 export function parseLang(acceptLanguage?: string): SupportedLang {

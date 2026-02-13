@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Animated, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ToastProps, ToastType } from './Toast.types';
 import { theme } from '../../../constants/theme';
@@ -25,12 +25,12 @@ export const Toast: React.FC<ToastComponentProps> = ({
           toValue: 0,
           friction: 8,
           tension: 40,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(opacity, {
           toValue: 1,
           duration: 200,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]).start();
     } else {
@@ -38,12 +38,12 @@ export const Toast: React.FC<ToastComponentProps> = ({
         Animated.timing(translateY, {
           toValue: position === 'top' ? -100 : 100,
           duration: 200,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(opacity, {
           toValue: 0,
           duration: 200,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]).start();
     }
@@ -122,7 +122,7 @@ export const Toast: React.FC<ToastComponentProps> = ({
         },
       ]}
     >
-      <View style={styles.toast} accessible accessibilityRole="alert">
+      <View style={styles.toast} accessible accessibilityRole="alert" testID="toast">
         <View style={styles.iconContainer}>
           <Icon name={typeConfig.icon} size={24} color={typeConfig.iconColor} />
         </View>

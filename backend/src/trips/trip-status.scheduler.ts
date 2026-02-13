@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan, MoreThanOrEqual, Between } from 'typeorm';
 import { Trip, TripStatus } from './entities/trip.entity';
+import { NotificationService } from '../common/notification.service';
 
 /**
  * TripStatusScheduler
@@ -20,6 +21,8 @@ export class TripStatusScheduler {
   constructor(
     @InjectRepository(Trip)
     private tripRepository: Repository<Trip>,
+    @Optional() @Inject(NotificationService)
+    private notificationService?: NotificationService,
   ) {}
 
   /**
@@ -109,6 +112,46 @@ export class TripStatusScheduler {
 
     // Otherwise, trip is upcoming
     return TripStatus.UPCOMING;
+  }
+
+  /**
+   * Cron job: Send departure reminders at 9 AM daily
+   * Notifies users whose trips start tomorrow
+   */
+  @Cron('0 9 * * *')
+  async handleDepartureReminders() {
+    if (!this.notificationService) return;
+
+    try {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+
+      const dayAfter = new Date(tomorrow);
+      dayAfter.setDate(dayAfter.getDate() + 1);
+
+      const departingTrips = await this.tripRepository.find({
+        where: {
+          status: TripStatus.UPCOMING,
+          startDate: Between(tomorrow, dayAfter),
+        },
+      });
+
+      for (const trip of departingTrips) {
+        await this.notificationService.sendToUser(
+          trip.userId,
+          '✈️ 내일 출발!',
+          `${trip.destination} 여행이 내일 시작됩니다. 준비되셨나요?`,
+          { type: 'trip_departure', tripId: trip.id },
+        );
+      }
+
+      if (departingTrips.length > 0) {
+        this.logger.log(`Sent ${departingTrips.length} departure reminders`);
+      }
+    } catch (error) {
+      this.logger.error('Failed to send departure reminders', error);
+    }
   }
 
   /**

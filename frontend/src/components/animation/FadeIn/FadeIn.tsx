@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated } from 'react-native';
+import { Animated, Platform } from 'react-native';
 import { FadeInProps } from './FadeIn.types';
 
 export const FadeIn: React.FC<FadeInProps> = ({
@@ -18,7 +18,7 @@ export const FadeIn: React.FC<FadeInProps> = ({
         toValue: 1,
         duration,
         delay,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }).start(({ finished }) => {
         if (finished && onAnimationComplete) {
           onAnimationComplete();
@@ -28,7 +28,7 @@ export const FadeIn: React.FC<FadeInProps> = ({
       Animated.timing(opacity, {
         toValue: 0,
         duration,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }).start();
     }
   }, [visible, duration, delay]);

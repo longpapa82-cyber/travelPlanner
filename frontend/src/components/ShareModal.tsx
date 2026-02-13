@@ -153,7 +153,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <View style={styles.modalContainer}>
+        <View style={styles.modalContainer} testID="share-modal">
           {/* Header */}
           <View style={styles.header}>
             <View style={styles.headerLeft}>

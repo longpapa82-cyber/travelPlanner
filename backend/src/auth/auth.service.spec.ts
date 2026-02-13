@@ -1,18 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { UnauthorizedException, ConflictException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
+import { EmailService } from '../email/email.service';
 import { AuthProvider } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { AuthResponse } from './interfaces/auth-response.interface';
 
 describe('AuthService', () => {
   let service: AuthService;
   let usersService: jest.Mocked<UsersService>;
   let jwtService: jest.Mocked<JwtService>;
   let configService: jest.Mocked<ConfigService>;
+  let cacheManager: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   const mockUser = {
     id: 'test-user-id',
@@ -47,12 +51,25 @@ describe('AuthService', () => {
       get: jest.fn(),
     };
 
+    const mockCacheManager = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn(),
+    };
+
+    const mockEmailService = {
+      sendVerificationEmail: jest.fn(),
+      sendPasswordResetEmail: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         { provide: UsersService, useValue: mockUsersService },
         { provide: JwtService, useValue: mockJwtService },
         { provide: ConfigService, useValue: mockConfigService },
+        { provide: EmailService, useValue: mockEmailService },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
       ],
     }).compile();
 
@@ -60,6 +77,7 @@ describe('AuthService', () => {
     usersService = module.get(UsersService);
     jwtService = module.get(JwtService);
     configService = module.get(ConfigService);
+    cacheManager = module.get(CACHE_MANAGER);
 
     // Default config mock responses
     configService.get.mockImplementation((key: string) => {
@@ -482,6 +500,114 @@ describe('AuthService', () => {
     });
   });
 
+  describe('createOAuthTempCode', () => {
+    const oauthUser = {
+      providerId: 'google-123',
+      email: 'oauth@example.com',
+      name: 'OAuth User',
+      profileImage: 'https://example.com/image.jpg',
+      provider: 'GOOGLE' as const,
+    };
+
+    it('should store OAuth user data in cache and return a code', async () => {
+      cacheManager.set.mockResolvedValue(undefined);
+
+      const code = await service.createOAuthTempCode(oauthUser);
+
+      expect(code).toBeDefined();
+      expect(typeof code).toBe('string');
+      expect(code.length).toBeGreaterThan(0);
+      expect(cacheManager.set).toHaveBeenCalledWith(
+        `oauth:code:${code}`,
+        JSON.stringify(oauthUser),
+        60000,
+      );
+    });
+
+    it('should generate unique codes for each call', async () => {
+      cacheManager.set.mockResolvedValue(undefined);
+
+      const code1 = await service.createOAuthTempCode(oauthUser);
+      const code2 = await service.createOAuthTempCode(oauthUser);
+
+      expect(code1).not.toBe(code2);
+    });
+  });
+
+  describe('exchangeOAuthCode', () => {
+    const oauthUser = {
+      providerId: 'google-123',
+      email: 'oauth@example.com',
+      name: 'OAuth User',
+      profileImage: 'https://example.com/image.jpg',
+      provider: 'GOOGLE' as const,
+    };
+
+    it('should exchange a valid code for auth tokens', async () => {
+      cacheManager.get.mockResolvedValue(JSON.stringify(oauthUser));
+      cacheManager.del.mockResolvedValue(undefined);
+      usersService.findByProviderAndId.mockResolvedValue(null);
+      usersService.create.mockResolvedValue({
+        ...mockUser,
+        provider: AuthProvider.GOOGLE,
+        providerId: oauthUser.providerId,
+      } as any);
+      jwtService.signAsync
+        .mockResolvedValueOnce(mockTokens.accessToken)
+        .mockResolvedValueOnce(mockTokens.refreshToken);
+
+      const result = await service.exchangeOAuthCode('valid-code');
+
+      expect(cacheManager.get).toHaveBeenCalledWith('oauth:code:valid-code');
+      expect(cacheManager.del).toHaveBeenCalledWith('oauth:code:valid-code');
+      expect(result.accessToken).toBe(mockTokens.accessToken);
+      expect(result.refreshToken).toBe(mockTokens.refreshToken);
+    });
+
+    it('should throw UnauthorizedException for invalid code', async () => {
+      cacheManager.get.mockResolvedValue(null);
+
+      await expect(service.exchangeOAuthCode('invalid-code')).rejects.toThrow(
+        UnauthorizedException,
+      );
+      await expect(service.exchangeOAuthCode('invalid-code')).rejects.toThrow(
+        'Invalid or expired OAuth code',
+      );
+      expect(cacheManager.del).not.toHaveBeenCalled();
+    });
+
+    it('should throw UnauthorizedException for expired code', async () => {
+      cacheManager.get.mockResolvedValue(null);
+
+      await expect(service.exchangeOAuthCode('expired-code')).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
+
+    it('should be one-time use — code deleted after exchange', async () => {
+      cacheManager.get.mockResolvedValueOnce(JSON.stringify(oauthUser));
+      cacheManager.del.mockResolvedValue(undefined);
+      usersService.findByProviderAndId.mockResolvedValue(null);
+      usersService.create.mockResolvedValue({
+        ...mockUser,
+        provider: AuthProvider.GOOGLE,
+      } as any);
+      jwtService.signAsync
+        .mockResolvedValueOnce(mockTokens.accessToken)
+        .mockResolvedValueOnce(mockTokens.refreshToken);
+
+      // First exchange succeeds
+      await service.exchangeOAuthCode('one-time-code');
+      expect(cacheManager.del).toHaveBeenCalledWith('oauth:code:one-time-code');
+
+      // Second attempt with same code fails (cache returns null)
+      cacheManager.get.mockResolvedValueOnce(null);
+      await expect(
+        service.exchangeOAuthCode('one-time-code'),
+      ).rejects.toThrow(UnauthorizedException);
+    });
+  });
+
   describe('token generation', () => {
     it('should generate tokens with correct configuration', async () => {
       // Arrange
@@ -568,9 +694,10 @@ describe('AuthService', () => {
 
       const result = await loginPromise;
 
-      // Assert
-      expect(result.accessToken).toBe(mockTokens.accessToken);
-      expect(result.refreshToken).toBe(mockTokens.refreshToken);
+      // Assert - login may return AuthResponse or 2FA pending; in this test user has no 2FA
+      const authResult = result as AuthResponse;
+      expect(authResult.accessToken).toBe(mockTokens.accessToken);
+      expect(authResult.refreshToken).toBe(mockTokens.refreshToken);
       expect(jwtService.signAsync).toHaveBeenCalledTimes(2);
     });
   });

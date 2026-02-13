@@ -17,10 +17,16 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/config/data-source.ts",
+    "migration:generate": "npm run typeorm -- migration:generate src/migrations/$npm_config_name",
+    "migration:run": "npm run typeorm -- migration:run",
+    "migration:revert": "npm run typeorm -- migration:revert",
+    "migration:show": "npm run typeorm -- migration:show"
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.2",
+    "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/cache-manager": "^3.1.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
@@ -31,6 +37,8 @@
     "@nestjs/schedule": "^6.1.1",
     "@nestjs/throttler": "^6.5.0",
     "@nestjs/typeorm": "^11.0.0",
+    "@sentry/nestjs": "^10.38.0",
+    "@sentry/profiling-node": "^10.38.0",
     "@types/passport-google-oauth20": "^2.0.17",
     "@types/passport-local": "^1.0.38",
     "@types/passport-oauth2": "^1.8.0",
@@ -40,9 +48,13 @@
     "cache-manager-ioredis-yet": "^2.1.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
+    "handlebars": "^4.7.8",
+    "helmet": "^8.1.0",
     "ioredis": "^5.9.2",
     "luxon": "^3.7.2",
+    "nodemailer": "^8.0.1",
     "openai": "^6.16.0",
+    "otplib": "^13.2.1",
     "passport": "^0.7.0",
     "passport-apple": "^2.0.2",
     "passport-google-oauth20": "^2.0.0",
@@ -50,8 +62,10 @@
     "passport-local": "^1.0.0",
     "passport-oauth2": "^1.8.0",
     "pg": "^8.17.2",
+    "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "sharp": "^0.34.5",
     "typeorm": "^0.3.28"
   },
   "devDependencies": {
@@ -63,8 +77,12 @@
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.10.7",
+    "@types/nodemailer": "^7.0.9",
     "@types/passport-jwt": "^4.0.1",
+    "@types/qrcode": "^1.5.6",
+    "@types/sharp": "^0.31.1",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
@@ -92,6 +110,9 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@scure|@otplib|@noble|otplib)/)"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],

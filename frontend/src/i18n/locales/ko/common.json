@@ -12,9 +12,14 @@
   "back": "뒤로",
   "next": "다음",
   "done": "완료",
+  "copy": "복사",
   "search": "검색",
+  "like": "좋아요",
+  "share": "공유",
+  "clear": "지우기",
   "seeAll": "전체보기 →",
   "findOnProvider": "{{name}}에서 찾기",
+  "offlineMode": "오프라인 모드 — 캐시된 데이터를 표시 중",
   "errorBoundary": {
     "title": "문제가 발생했습니다",
     "message": "앱에서 예기치 않은 오류가 발생했습니다.\n다시 시도해 주세요.",
@@ -24,5 +29,14 @@
     "home": "홈",
     "trips": "내 여행",
     "profile": "프로필"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "이메일 인증이 필요합니다",
+      "message": "메일함을 확인하여 인증을 완료해주세요",
+      "resend": "재전송",
+      "sent": "인증 메일이 재전송되었습니다",
+      "error": "재전송에 실패했습니다"
+    }
   }
 }

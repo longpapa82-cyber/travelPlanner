@@ -5,6 +5,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthProvider } from '../users/entities/user.entity';
+import { NotificationService } from '../common/notification.service';
 
 describe('AuthController (Integration)', () => {
   let app: INestApplication;
@@ -31,6 +32,8 @@ describe('AuthController (Integration)', () => {
     refreshToken: jest.fn(),
     getProfile: jest.fn(),
     oauthLogin: jest.fn(),
+    createOAuthTempCode: jest.fn(),
+    exchangeOAuthCode: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -40,6 +43,10 @@ describe('AuthController (Integration)', () => {
         {
           provide: AuthService,
           useValue: mockAuthService,
+        },
+        {
+          provide: NotificationService,
+          useValue: { registerPushToken: jest.fn(), removePushToken: jest.fn() },
         },
       ],
     })
@@ -342,6 +349,8 @@ describe('AuthController (Integration)', () => {
         name: mockUser.name,
         provider: mockUser.provider,
         profileImage: mockUser.profileImage,
+        isEmailVerified: false,
+        isTwoFactorEnabled: false,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -366,6 +375,10 @@ describe('AuthController (Integration)', () => {
           {
             provide: AuthService,
             useValue: mockAuthService,
+          },
+          {
+            provide: NotificationService,
+            useValue: { registerPushToken: jest.fn(), removePushToken: jest.fn() },
           },
         ],
       })
@@ -392,6 +405,8 @@ describe('AuthController (Integration)', () => {
         name: mockUser.name,
         provider: mockUser.provider,
         profileImage: mockUser.profileImage,
+        isEmailVerified: false,
+        isTwoFactorEnabled: false,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -516,6 +531,38 @@ describe('AuthController (Integration)', () => {
         .expect(200);
 
       expect(response.headers['content-type']).toMatch(/application\/json/);
+    });
+  });
+
+  describe('POST /auth/oauth/exchange', () => {
+    it('should exchange a valid OAuth code for tokens', async () => {
+      authService.exchangeOAuthCode.mockResolvedValue(mockAuthResponse);
+
+      const response = await request(app.getHttpServer())
+        .post('/auth/oauth/exchange')
+        .send({ code: 'valid-oauth-code' })
+        .expect(200);
+
+      expect(response.body).toEqual(mockAuthResponse);
+      expect(authService.exchangeOAuthCode).toHaveBeenCalledWith('valid-oauth-code');
+    });
+
+    it('should return 400 when code is missing', async () => {
+      await request(app.getHttpServer())
+        .post('/auth/oauth/exchange')
+        .send({})
+        .expect(400);
+
+      expect(authService.exchangeOAuthCode).not.toHaveBeenCalled();
+    });
+
+    it('should return 400 when code is empty string', async () => {
+      await request(app.getHttpServer())
+        .post('/auth/oauth/exchange')
+        .send({ code: '' })
+        .expect(400);
+
+      expect(authService.exchangeOAuthCode).not.toHaveBeenCalled();
     });
   });
 

@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { DevThrottlerGuard } from './common/guards/dev-throttler.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,13 +16,14 @@ import { AppCacheModule } from './common/cache.module';
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import oauthConfig from './config/oauth.config';
+import emailConfig from './config/email.config';
 
 @Module({
   imports: [
     // Config Module - Load environment variables
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, jwtConfig, oauthConfig],
+      load: [databaseConfig, jwtConfig, oauthConfig, emailConfig],
       envFilePath: ['.env'],
     }),
 
@@ -65,7 +67,7 @@ import oauthConfig from './config/oauth.config';
     AppService,
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard,
+      useClass: DevThrottlerGuard,
     },
   ],
 })

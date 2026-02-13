@@ -22,7 +22,8 @@ export class ApiHelper {
     method: string,
     path: string,
     body?: any,
-    token?: string
+    token?: string,
+    retries: number = 3,
   ): Promise<any> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -32,19 +33,30 @@ export class ApiHelper {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const res = await fetch(`${this.baseUrl}${path}`, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined,
-    });
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      const res = await fetch(`${this.baseUrl}${path}`, {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
+      });
 
-    if (!res.ok && res.status !== 204) {
-      const text = await res.text().catch(() => '');
-      throw new Error(`API ${method} ${path} failed: ${res.status} ${text}`);
+      // Retry on 429 (Too Many Requests) with exponential backoff
+      if (res.status === 429 && attempt < retries) {
+        const waitMs = Math.min(2000 * Math.pow(2, attempt), 15000);
+        await new Promise((r) => setTimeout(r, waitMs));
+        continue;
+      }
+
+      if (!res.ok && res.status !== 204) {
+        const text = await res.text().catch(() => '');
+        throw new Error(`API ${method} ${path} failed: ${res.status} ${text}`);
+      }
+
+      if (res.status === 204) return null;
+      return res.json().catch(() => null);
     }
 
-    if (res.status === 204) return null;
-    return res.json().catch(() => null);
+    throw new Error(`API ${method} ${path} failed: max retries exceeded (429)`);
   }
 
   async register(user: UserCredentials): Promise<any> {

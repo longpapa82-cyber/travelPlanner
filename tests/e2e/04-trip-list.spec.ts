@@ -34,8 +34,8 @@ test.describe('TC-6: Trip List', () => {
     await page.goto(`${BASE_URL}`);
     await page.evaluate(
       ({ at, rt }) => {
-        localStorage.setItem('auth_token', at);
-        localStorage.setItem('refresh_token', rt);
+        localStorage.setItem('@travelplanner:auth_token', at);
+        localStorage.setItem('@travelplanner:refresh_token', rt);
       },
       { at: accessToken, rt: refreshToken },
     );
@@ -58,8 +58,8 @@ test.describe('TC-6: Trip List', () => {
     await page.goto(`${BASE_URL}`);
     await page.evaluate(
       ({ at, rt }) => {
-        localStorage.setItem('auth_token', at);
-        localStorage.setItem('refresh_token', rt);
+        localStorage.setItem('@travelplanner:auth_token', at);
+        localStorage.setItem('@travelplanner:refresh_token', rt);
       },
       { at: accessToken, rt: refreshToken },
     );

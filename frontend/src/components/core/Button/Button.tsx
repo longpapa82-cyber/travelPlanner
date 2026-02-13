@@ -21,6 +21,7 @@ import {
   Animated,
   ActivityIndicator,
   AccessibilityRole,
+  Platform,
 } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../../contexts/ThemeContext';
@@ -58,7 +59,7 @@ const Button: React.FC<ButtonProps> = ({
 
     Animated.spring(scaleAnim, {
       toValue: 0.95,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
   };
 
@@ -69,7 +70,7 @@ const Button: React.FC<ButtonProps> = ({
       toValue: 1,
       friction: 3,
       tension: 40,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
   };
 

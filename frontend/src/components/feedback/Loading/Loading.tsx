@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Modal,
   Animated,
+  Platform,
 } from 'react-native';
 import { LoadingProps, LoadingSize } from './Loading.types';
 import { theme } from '../../../constants/theme';
@@ -25,13 +26,13 @@ export const Loading: React.FC<LoadingProps> = ({
       Animated.timing(opacity, {
         toValue: 1,
         duration: 200,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }).start();
     } else {
       Animated.timing(opacity, {
         toValue: 0,
         duration: 200,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }).start();
     }
   }, [visible, overlay]);
@@ -83,7 +84,7 @@ export const Loading: React.FC<LoadingProps> = ({
   }
 
   const renderSpinner = () => (
-    <View style={styles.container}>
+    <View style={styles.container} testID="loading">
       <ActivityIndicator size={getSpinnerSize(size)} color={spinnerColor} />
       {text && <Text style={styles.text}>{text}</Text>}
     </View>

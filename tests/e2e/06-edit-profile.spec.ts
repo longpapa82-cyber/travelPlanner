@@ -31,8 +31,8 @@ async function loginAndNavigate(page: import('@playwright/test').Page, path?: st
   // Inject auth tokens into localStorage
   await page.evaluate((token) => {
     try {
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('refresh_token', '');
+      localStorage.setItem('@travelplanner:auth_token', token);
+      localStorage.setItem('@travelplanner:refresh_token', '');
     } catch {
       /* no-op */
     }
@@ -954,8 +954,8 @@ test.describe('TC-9: Profile', () => {
     await page.goto(`${BASE_URL}`, { waitUntil: 'domcontentloaded' });
     await page.evaluate((token) => {
       try {
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('refresh_token', '');
+        localStorage.setItem('@travelplanner:auth_token', token);
+        localStorage.setItem('@travelplanner:refresh_token', '');
       } catch {
         /* no-op */
       }

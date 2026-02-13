@@ -60,7 +60,7 @@ test.beforeAll(async () => {
 async function loginViaStorage(page: any) {
   await page.goto(`${BASE_URL}`);
   await page.evaluate((t: string) => {
-    localStorage.setItem('auth_token', t);
+    localStorage.setItem('@travelplanner:auth_token', t);
   }, token);
 }
 
@@ -69,7 +69,7 @@ async function navigateToTrip(page: any, tripId: string) {
   // Try direct URL first, then fall back to navigating through the list
   await page.goto(`${BASE_URL}`);
   await page.evaluate((t: string) => {
-    localStorage.setItem('auth_token', t);
+    localStorage.setItem('@travelplanner:auth_token', t);
   }, token);
 
   // Navigate to trips tab then click into the specific trip
@@ -157,7 +157,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
         await backButton.click();
       } else {
         // Fallback: look for arrow-left icon button in the hero
-        const arrowBack = page.locator('[accessibilityLabel*="뒤로"], [aria-label*="뒤로"], [accessibilityLabel*="back"]').first();
+        const arrowBack = page.locator('[aria-label*="뒤로"], [aria-label*="back" i]').first();
         await arrowBack.click();
       }
 
@@ -717,7 +717,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
       await expect(page.locator('text=오사카').first()).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
 
       // Click the edit button in the hero section
-      const editButton = page.locator('[accessibilityLabel*="여행 수정"], [accessibilityLabel*="edit" i], [aria-label*="여행 수정"]').first();
+      const editButton = page.locator('[aria-label*="여행 수정"], [aria-label*="edit" i]').first();
 
       if (await editButton.isVisible({ timeout: TIMEOUTS.MEDIUM }).catch(() => false)) {
         await editButton.click();
@@ -757,7 +757,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
         await duplicateButton.click();
       } else {
         // Fallback: look by aria-label
-        const dupAlt = page.locator('[accessibilityLabel*="복제"], [accessibilityLabel*="duplicate" i], [aria-label*="복제"]').first();
+        const dupAlt = page.locator('[aria-label*="복제"], [aria-label*="duplicate" i]').first();
         await dupAlt.click();
       }
 

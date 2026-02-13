@@ -9,7 +9,13 @@
   "menu": {
     "editProfile": "Edit Profile",
     "changePassword": "Change Password",
+    "twoFactor": "Two-Factor Auth",
+    "twoFactorEnabled": "Enabled",
+    "twoFactorDisabled": "Disabled",
     "language": "Language",
+    "notifications": "Notifications",
+    "notificationsEnabled": "Enabled",
+    "notificationsDisabled": "Disabled",
     "darkMode": "Dark Mode",
     "help": "Help",
     "terms": "Terms of Service",
@@ -61,5 +67,25 @@
       "failed": "Failed to delete account"
     }
   },
-  "version": "Version"
+  "version": "Version",
+  "analytics": {
+    "title": "Travel Stats",
+    "totalTrips": "Total Trips",
+    "completedTrips": "Completed",
+    "ongoingTrips": "Ongoing",
+    "upcomingTrips": "Upcoming",
+    "totalDays": "Total Days",
+    "avgDuration": "Avg Duration",
+    "days": "days",
+    "countriesVisited": "Countries",
+    "countries": "countries",
+    "totalSpent": "Total Spent",
+    "totalBudget": "Total Budget",
+    "topDestinations": "Top Destinations",
+    "times": "times",
+    "activities": "Activities",
+    "completedOf": "{{completed}} / {{total}} done",
+    "noData": "No travel data yet",
+    "loading": "Loading stats..."
+  }
 }

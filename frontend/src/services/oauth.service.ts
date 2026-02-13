@@ -1,6 +1,7 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
 import { Platform } from 'react-native';
+import * as Crypto from 'expo-crypto';
 
 // Enable dismissal of the browser on iOS
 WebBrowser.maybeCompleteAuthSession();
@@ -10,30 +11,42 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 export type OAuthProvider = 'google' | 'apple' | 'kakao';
 
 export interface OAuthResult {
-  accessToken: string;
-  refreshToken: string;
+  code: string;
 }
 
 /**
- * Initiates OAuth flow with the specified provider
+ * Initiates OAuth flow with the specified provider.
+ * On web: full-page redirect (handled by WebOAuthCallbackHandler in App.tsx).
+ * On mobile: Expo WebBrowser popup.
  */
 export async function signInWithOAuth(
   provider: OAuthProvider
 ): Promise<OAuthResult | null> {
   try {
-    // Build OAuth URL
-    const authUrl = `${API_URL}/auth/${provider}`;
+    // Generate CSRF state parameter
+    const state = Crypto.randomUUID();
 
-    // Open browser for OAuth
+    // Build OAuth URL with state
+    const authUrl = `${API_URL}/auth/${provider}?state=${state}`;
+
+    // Web: redirect the current page. The callback is handled by
+    // WebOAuthCallbackHandler in App.tsx when the page reloads at /auth/callback.
+    if (Platform.OS === 'web') {
+      sessionStorage.setItem('oauth_state', state);
+      window.location.href = authUrl;
+      // This promise never resolves — the page navigates away.
+      return new Promise(() => {});
+    }
+
+    // Mobile: use Expo's WebBrowser
     const result = await WebBrowser.openAuthSessionAsync(
       authUrl,
       makeRedirectUri()
     );
 
     if (result.type === 'success' && result.url) {
-      // Parse tokens from redirect URL
-      const tokens = parseTokensFromUrl(result.url);
-      return tokens;
+      const callbackResult = parseOAuthCallback(result.url, state);
+      return callbackResult;
     }
 
     return null;
@@ -47,7 +60,11 @@ export async function signInWithOAuth(
  * Creates the redirect URI for OAuth callback
  */
 function makeRedirectUri(): string {
-  // Development: Use Expo Go redirect
+  if (Platform.OS === 'web') {
+    return `${window.location.origin}/auth/callback`;
+  }
+
+  // Mobile development: Use Expo Go redirect
   if (__DEV__) {
     const scheme = 'exp';
     const host = 'localhost';
@@ -55,26 +72,31 @@ function makeRedirectUri(): string {
     return `${scheme}://${host}:${port}/auth/callback`;
   }
 
-  // Production: Use app scheme
+  // Mobile production: Use app scheme
   return Linking.createURL('/auth/callback');
 }
 
 /**
- * Parses access and refresh tokens from OAuth callback URL
+ * Parses authorization code from OAuth callback URL and validates state
  */
-function parseTokensFromUrl(url: string): OAuthResult | null {
+function parseOAuthCallback(url: string, expectedState: string): OAuthResult | null {
   try {
     const parsed = Linking.parse(url);
-    const accessToken = parsed.queryParams?.accessToken as string;
-    const refreshToken = parsed.queryParams?.refreshToken as string;
+    const code = parsed.queryParams?.code as string;
+    const returnedState = parsed.queryParams?.state as string;
 
-    if (accessToken && refreshToken) {
-      return { accessToken, refreshToken };
+    if (returnedState && returnedState !== expectedState) {
+      console.error('OAuth state mismatch — possible CSRF attack');
+      return null;
+    }
+
+    if (code) {
+      return { code };
     }
 
     return null;
   } catch (error) {
-    console.error('Failed to parse tokens from URL:', error);
+    console.error('Failed to parse OAuth callback URL:', error);
     return null;
   }
 }
@@ -90,7 +112,6 @@ export async function signInWithGoogle(): Promise<OAuthResult | null> {
  * Apple Sign-In
  */
 export async function signInWithApple(): Promise<OAuthResult | null> {
-  // Apple Sign-In is only available on iOS
   if (Platform.OS !== 'ios') {
     throw new Error('Apple Sign-In is only available on iOS');
   }

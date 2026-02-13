@@ -84,7 +84,7 @@ const AdSense: React.FC<AdSenseProps> = ({
 
     // Skip in test mode
     if (testMode) {
-      console.log('AdSense: Test mode enabled - showing placeholder');
+      if (__DEV__) console.debug('AdSense: Test mode enabled — showing placeholder');
       return;
     }
 
@@ -114,7 +114,7 @@ const AdSense: React.FC<AdSenseProps> = ({
       script.crossOrigin = 'anonymous';
 
       script.onload = () => {
-        console.log('AdSense script loaded');
+        if (__DEV__) console.debug('AdSense script loaded');
         initializeAdSense();
       };
 

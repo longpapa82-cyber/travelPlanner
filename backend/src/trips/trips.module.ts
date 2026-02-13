@@ -7,14 +7,18 @@ import { ShareController } from './share.controller';
 import { AnalyticsController } from './analytics.controller';
 import { Trip } from './entities/trip.entity';
 import { Itinerary } from './entities/itinerary.entity';
+import { Collaborator } from './entities/collaborator.entity';
 import { AIService } from './services/ai.service';
 import { TimezoneService } from './services/timezone.service';
 import { WeatherService } from './services/weather.service';
 import { AnalyticsService } from './services/analytics.service';
 import { TripStatusScheduler } from './trip-status.scheduler';
+import { User } from '../users/entities/user.entity';
+import { NotificationService } from '../common/notification.service';
+import { ImageService } from '../common/image.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Trip, Itinerary]), ConfigModule],
+  imports: [TypeOrmModule.forFeature([Trip, Itinerary, Collaborator, User]), ConfigModule],
   providers: [
     TripsService,
     AIService,
@@ -22,6 +26,8 @@ import { TripStatusScheduler } from './trip-status.scheduler';
     WeatherService,
     AnalyticsService,
     TripStatusScheduler,
+    NotificationService,
+    ImageService,
   ],
   controllers: [TripsController, ShareController, AnalyticsController],
   exports: [TripsService, AnalyticsService],

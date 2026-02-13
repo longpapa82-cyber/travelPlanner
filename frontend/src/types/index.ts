@@ -5,6 +5,8 @@ export interface User {
   name: string;
   provider: 'email' | 'google' | 'apple' | 'kakao';
   profileImage?: string;
+  isEmailVerified?: boolean;
+  isTwoFactorEnabled?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -27,10 +29,15 @@ export interface Activity {
   type: string;
   title: string;
   location: string;
+  latitude?: number;
+  longitude?: number;
   description: string;
   estimatedCost: number;
+  actualCost?: number;
+  currency?: string;
   estimatedDuration: number;
   completed?: boolean;
+  photos?: string[];
 }
 
 export interface Weather {
@@ -71,8 +78,11 @@ export interface Trip {
   description?: string;
   numberOfTravelers?: number;
   preferences?: TripPreferences;
+  totalBudget?: number;
+  budgetCurrency?: string;
   shareToken?: string;
   isPublic?: boolean;
+  coverImage?: string;
   shareExpiresAt?: string;
   itineraries: Itinerary[];
   createdAt: string;
@@ -101,6 +111,9 @@ export type AuthStackParamList = {
   Onboarding: undefined;
   Login: undefined;
   Register: undefined;
+  ForgotPassword: undefined;
+  ResetPassword: { token: string };
+  VerifyEmail: { token: string };
 };
 
 export type MainTabParamList = {

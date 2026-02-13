@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosError } from 'axios';
 import { API_URL, STORAGE_KEYS } from '../constants/config';
 import { secureStorage } from '../utils/storage';
 import { getCurrentLanguage } from '../i18n';
+import { offlineCache } from './offlineCache';
 
 class ApiService {
   private api: AxiosInstance;
@@ -83,10 +84,45 @@ class ApiService {
     return response.data;
   }
 
+  // Email Verification
+  async verifyEmail(token: string) {
+    const response = await this.api.post('/auth/verify-email', { token });
+    return response.data;
+  }
+
+  async resendVerification(email: string) {
+    const response = await this.api.post('/auth/resend-verification', { email });
+    return response.data;
+  }
+
+  // Password Reset
+  async forgotPassword(email: string) {
+    const response = await this.api.post('/auth/forgot-password', { email });
+    return response.data;
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    const response = await this.api.post('/auth/reset-password', { token, newPassword });
+    return response.data;
+  }
+
+  async exchangeOAuthCode(code: string) {
+    const response = await this.api.post('/auth/oauth/exchange', { code });
+    return response.data;
+  }
+
   // User Methods
   async getProfile() {
-    const response = await this.api.get('/auth/me');
-    return response.data;
+    try {
+      const response = await this.api.get('/auth/me');
+      const data = response.data;
+      offlineCache.set('profile', data).catch(() => {});
+      return data;
+    } catch (error) {
+      const cached = await offlineCache.get('profile');
+      if (cached) return cached;
+      throw error;
+    }
   }
 
   async refreshToken(refreshToken: string) {
@@ -111,6 +147,31 @@ class ApiService {
     await this.api.delete('/users/me');
   }
 
+  // 2FA Methods
+  async setupTwoFactor() {
+    const response = await this.api.post('/auth/2fa/setup');
+    return response.data;
+  }
+
+  async enableTwoFactor(code: string) {
+    const response = await this.api.post('/auth/2fa/enable', { code });
+    return response.data;
+  }
+
+  async disableTwoFactor(code: string) {
+    const response = await this.api.post('/auth/2fa/disable', { code });
+    return response.data;
+  }
+
+  async verifyTwoFactor(tempToken: string, code: string) {
+    const response = await this.api.post(
+      '/auth/2fa/verify',
+      { code },
+      { headers: { Authorization: `Bearer ${tempToken}` } }
+    );
+    return response.data;
+  }
+
   // Trips Methods
   async createTrip(data: any) {
     const response = await this.api.post('/trips', data, { timeout: 120000 });
@@ -120,16 +181,45 @@ class ApiService {
   async getTrips(params?: {
     search?: string;
     status?: 'upcoming' | 'ongoing' | 'completed';
+    country?: string;
+    startDateFrom?: string;
+    startDateTo?: string;
+    budgetMin?: number;
+    budgetMax?: number;
     sortBy?: 'startDate' | 'createdAt' | 'destination';
     order?: 'ASC' | 'DESC';
+    page?: number;
+    limit?: number;
   }) {
-    const response = await this.api.get('/trips', { params });
-    return response.data;
+    try {
+      const response = await this.api.get('/trips', { params });
+      const data = response.data;
+      // Cache trips for offline use
+      const cacheKey = `trips:${params?.status || 'all'}`;
+      offlineCache.set(cacheKey, data).catch(() => {});
+      return data;
+    } catch (error) {
+      // Return cached data if network fails
+      const cacheKey = `trips:${params?.status || 'all'}`;
+      const cached = await offlineCache.get(cacheKey);
+      if (cached) return cached;
+      throw error;
+    }
   }
 
   async getTripById(id: string) {
-    const response = await this.api.get(`/trips/${id}`);
-    return response.data;
+    try {
+      const response = await this.api.get(`/trips/${id}`);
+      const data = response.data;
+      // Cache individual trip for offline use
+      offlineCache.set(`trip:${id}`, data).catch(() => {});
+      return data;
+    } catch (error) {
+      // Return cached data if network fails
+      const cached = await offlineCache.get(`trip:${id}`);
+      if (cached) return cached;
+      throw error;
+    }
   }
 
   async updateTrip(id: string, data: any) {
@@ -144,6 +234,10 @@ class ApiService {
   async duplicateTrip(id: string) {
     const response = await this.api.post(`/trips/${id}/duplicate`);
     return response.data;
+  }
+
+  getExportIcalUrl(id: string): string {
+    return `${API_URL}/trips/${id}/export/ical`;
   }
 
   // Activity Methods
@@ -229,6 +323,54 @@ class ApiService {
       params: { limit },
     });
     return response.data;
+  }
+
+  async getUserStats() {
+    const response = await this.api.get('/trips/my-stats');
+    return response.data;
+  }
+
+  async uploadPhoto(uri: string): Promise<{ url: string }> {
+    const formData = new FormData();
+    const filename = uri.split('/').pop() || 'photo.jpg';
+    const match = /\.(\w+)$/.exec(filename);
+    const type = match ? `image/${match[1]}` : 'image/jpeg';
+    formData.append('photo', { uri, name: filename, type } as any);
+    const response = await this.api.post('/trips/upload/photo', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  }
+
+  // Collaboration
+  async getCollaborators(tripId: string) {
+    const response = await this.api.get(`/trips/${tripId}/collaborators`);
+    return response.data;
+  }
+
+  async addCollaborator(tripId: string, email: string, role: 'viewer' | 'editor' = 'viewer') {
+    const response = await this.api.post(`/trips/${tripId}/collaborators`, { email, role });
+    return response.data;
+  }
+
+  async updateCollaboratorRole(tripId: string, collabId: string, role: 'viewer' | 'editor') {
+    const response = await this.api.patch(`/trips/${tripId}/collaborators/${collabId}`, { role });
+    return response.data;
+  }
+
+  async removeCollaborator(tripId: string, collabId: string) {
+    const response = await this.api.delete(`/trips/${tripId}/collaborators/${collabId}`);
+    return response.data;
+  }
+
+  // Push Notifications
+  async registerPushToken(token: string) {
+    const response = await this.api.post('/auth/push-token', { token });
+    return response.data;
+  }
+
+  async removePushToken() {
+    await this.api.post('/auth/push-token/remove');
   }
 
   async getTripAffiliateClicks(tripId: string) {

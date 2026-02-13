@@ -107,6 +107,46 @@
       "startDate": "By departure",
       "createdAt": "By created",
       "destination": "By destination"
+    },
+    "advancedFilters": {
+      "toggle": "Filters",
+      "country": "Country",
+      "countryPlaceholder": "Enter country",
+      "dateRange": "Departure date range",
+      "dateFrom": "From",
+      "dateTo": "To",
+      "budget": "Budget range",
+      "budgetMin": "Min",
+      "budgetMax": "Max",
+      "reset": "Reset filters",
+      "apply": "Apply",
+      "activeCount": "{{count}} filter(s) active"
+    },
+    "resultCount": "{{count}} trip(s)",
+    "createButton": "Create New Trip",
+    "info": {
+      "days": "{{count}} days",
+      "itineraries": "{{count}} itineraries",
+      "travelers": "{{count}} travelers"
+    },
+    "accessibility": {
+      "trip": "trip",
+      "viewDetail": "View trip details",
+      "deleteTrip": "Delete",
+      "search": "Search trips",
+      "searchHint": "Search trips by destination"
+    },
+    "alerts": {
+      "deleteTitle": "Delete Trip",
+      "deleteMessage": "Delete '{{name}}'? This action cannot be undone.",
+      "deleteFailed": "Failed to delete",
+      "error": "Error",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "pagination": {
+      "showMore": "Show more",
+      "showing": "{{shown}} / {{total}}"
     }
   },
   "detail": {
@@ -138,8 +178,25 @@
     "affiliateSubtitle": "Book the best stays and experiences in {{destination}}",
     "tabs": {
       "itinerary": "Itinerary",
+      "map": "Map",
       "info": "Info",
       "share": "Share"
+    },
+    "map": {
+      "noLocations": "No locations to display",
+      "noLocationsMessage": "Create a new trip to see activities with location data",
+      "activitiesCount": "{{count}} activities"
+    },
+    "budget": {
+      "title": "Budget Summary",
+      "total": "Total Budget",
+      "estimated": "Estimated",
+      "spent": "Spent",
+      "remaining": "Remaining",
+      "byCategory": "By Category",
+      "byDay": "By Day",
+      "perDay": "Per Day",
+      "dayLabel": "Day {{day}}"
     },
     "activityTypes": {
       "meal": "Meal",
@@ -163,6 +220,7 @@
       "duplicate": "Duplicate trip",
       "duplicating": "Duplicating...",
       "share": "Share",
+      "exportIcal": "Export to calendar",
       "addActivityToDay": "Add activity to Day {{day}}"
     },
     "alerts": {
@@ -182,6 +240,28 @@
       "deleteError": "Failed to delete trip",
       "toggleError": "Failed to update status",
       "reorderError": "Failed to reorder"
+    },
+    "photos": {
+      "addCover": "Add cover photo",
+      "changeCover": "Change cover photo",
+      "addPhoto": "Add photo",
+      "photoCount": "{{count}} photos",
+      "uploadSuccess": "Photo uploaded",
+      "uploadFailed": "Failed to upload photo",
+      "viewAll": "View all photos"
+    },
+    "collaboration": {
+      "title": "Collaborators",
+      "invite": "Invite",
+      "emailPlaceholder": "Enter email address",
+      "roleViewer": "Viewer",
+      "roleEditor": "Editor",
+      "owner": "Owner",
+      "remove": "Remove",
+      "inviteSuccess": "Invitation sent",
+      "inviteFailed": "Failed to invite",
+      "removeFailed": "Failed to remove",
+      "noCollaborators": "No collaborators yet"
     }
   },
   "edit": {

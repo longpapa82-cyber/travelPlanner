@@ -328,14 +328,14 @@ describe('TripsController (Integration)', () => {
     });
 
     it('should return empty array when user has no trips', async () => {
-      tripsService.findAll.mockResolvedValue([]);
+      tripsService.findAll.mockResolvedValue({ trips: [], total: 0, page: 1, limit: 20 });
 
       const response = await request(app.getHttpServer())
         .get('/trips')
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
-      expect(response.body).toEqual([]);
+      expect(response.body.trips).toEqual([]);
       expect(tripsService.findAll).toHaveBeenCalledWith(mockUserId, {});
     });
   });

@@ -24,8 +24,8 @@ async function globalSetup() {
       console.log(`  ⚠️  ${user.email}: ${e.message?.slice(0, 80)}`);
     }
 
-    // Small delay to avoid rate limits on registration
-    await new Promise((r) => setTimeout(r, 1500));
+    // Delay to avoid rate limits on registration (3 reqs/60s per IP)
+    await new Promise((r) => setTimeout(r, 3000));
   }
 
   // 2. Login all users and save auth state
@@ -43,7 +43,7 @@ async function globalSetup() {
       console.log(`  ❌ Login failed: ${user.email} — ${e.message?.slice(0, 80)}`);
     }
 
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 2000));
   }
 
   // 3. Create seed trips for workers that need them
@@ -53,6 +53,11 @@ async function globalSetup() {
     { key: 'W6', trips: SEED_TRIPS.W6 },
     { key: 'W7', trips: SEED_TRIPS.W7 },
     { key: 'W8', trips: SEED_TRIPS.W8 },
+    { key: 'W9', trips: SEED_TRIPS.W9 },
+    { key: 'W10', trips: SEED_TRIPS.W10 },
+    { key: 'W11', trips: SEED_TRIPS.W11 },
+    { key: 'W12', trips: SEED_TRIPS.W12 },
+    { key: 'W13', trips: SEED_TRIPS.W13 },
     { key: 'DESTROY', trips: SEED_TRIPS.DESTROY },
   ];
 
@@ -69,7 +74,7 @@ async function globalSetup() {
         console.log(`  📍 Created trip: ${tripData.destination} for ${key} (id: ${trip?.id?.slice(0, 8)})`);
 
         // Add sample activities to first itinerary if trip has itineraries
-        if (trip?.itineraries?.length > 0 && (key === 'W5' || key === 'W6')) {
+        if (trip?.itineraries?.length > 0 && (key === 'W5' || key === 'W6' || key === 'W9' || key === 'W10' || key === 'W11')) {
           const itinerary = trip.itineraries[0];
           try {
             await api.addActivity(token, trip.id, itinerary.id, SAMPLE_ACTIVITY);

@@ -11,7 +11,9 @@ export default registerAs(
     password: process.env.DB_PASSWORD || 'postgres',
     database: process.env.DB_DATABASE || 'travelplanner',
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+    migrations: [__dirname + '/../migrations/*{.ts,.js}'],
     synchronize: process.env.NODE_ENV === 'development', // Auto-create tables in dev
+    migrationsRun: process.env.NODE_ENV === 'production', // Auto-run migrations in production
     logging: process.env.NODE_ENV === 'development',
     ssl:
       process.env.NODE_ENV === 'production'

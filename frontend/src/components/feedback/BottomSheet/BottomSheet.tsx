@@ -10,6 +10,7 @@ import {
   Animated,
   PanResponder,
   ScrollView,
+  Platform,
 } from 'react-native';
 import { BottomSheetProps, BottomSheetHeight } from './BottomSheet.types';
 import { theme } from '../../../constants/theme';
@@ -55,12 +56,12 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
           toValue: 0,
           friction: 8,
           tension: 40,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(opacity, {
           toValue: 1,
           duration: 200,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]).start();
     } else {
@@ -68,12 +69,12 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
         Animated.timing(translateY, {
           toValue: SCREEN_HEIGHT,
           duration: 200,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(opacity, {
           toValue: 0,
           duration: 200,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]).start();
     }
@@ -98,7 +99,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
             toValue: 0,
             friction: 8,
             tension: 40,
-            useNativeDriver: true,
+            useNativeDriver: Platform.OS !== 'web',
           }).start();
         }
       },

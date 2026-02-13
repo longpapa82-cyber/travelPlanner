@@ -58,6 +58,29 @@ export default defineConfig({
       grep: /@crossbrowser/,
     },
 
+    // ── Accessibility: axe-core scans, runs after primary ───────
+    {
+      name: 'accessibility',
+      dependencies: ['chromium-mobile'],
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEWPORTS.MOBILE,
+      },
+      grep: /@accessibility/,
+    },
+
+    // ── Visual Regression: screenshot comparisons ─────────────
+    {
+      name: 'visual-regression',
+      dependencies: ['chromium-mobile'],
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEWPORTS.MOBILE,
+      },
+      grep: /@visual/,
+      snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
+    },
+
     // ── Destructive: serial, runs last ──────────────────────────
     {
       name: 'destructive',

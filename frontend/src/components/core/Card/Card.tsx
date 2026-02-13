@@ -10,6 +10,7 @@ export const Card: React.FC<CardProps> = ({
   onPress,
   children,
   style,
+  ...a11yProps
 }) => {
   const styles = getCardStyles({ elevation, padding, borderRadius });
 
@@ -21,6 +22,7 @@ export const Card: React.FC<CardProps> = ({
         activeOpacity={0.8}
         accessible
         accessibilityRole="button"
+        {...a11yProps}
       >
         {children}
       </TouchableOpacity>
@@ -28,7 +30,7 @@ export const Card: React.FC<CardProps> = ({
   }
 
   return (
-    <View style={[styles.container, style]} accessible>
+    <View style={[styles.container, style]} accessible {...a11yProps}>
       {children}
     </View>
   );

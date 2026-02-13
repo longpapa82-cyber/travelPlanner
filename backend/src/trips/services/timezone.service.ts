@@ -136,6 +136,39 @@ export class TimezoneService {
   }
 
   /**
+   * Geocode a list of activity locations within a destination context
+   */
+  async geocodeActivities(
+    activities: { location: string }[],
+    destination: string,
+  ): Promise<{ latitude: number; longitude: number }[]> {
+    if (!this.apiKey) {
+      return activities.map(() => ({ latitude: 0, longitude: 0 }));
+    }
+
+    const results: { latitude: number; longitude: number }[] = [];
+    for (const activity of activities) {
+      try {
+        const query = `${activity.location}, ${destination}`;
+        const response = await this.googleMapsClient.geocode({
+          params: { address: query, key: this.apiKey },
+        });
+        if (response.data.results.length > 0) {
+          const loc = response.data.results[0].geometry.location;
+          results.push({ latitude: loc.lat, longitude: loc.lng });
+        } else {
+          results.push({ latitude: 0, longitude: 0 });
+        }
+      } catch {
+        results.push({ latitude: 0, longitude: 0 });
+      }
+      // Small delay to respect rate limits
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    return results;
+  }
+
+  /**
    * Calculate time difference between destination and user's timezone
    */
   calculateTimeDifference(

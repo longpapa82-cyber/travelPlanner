@@ -1,6 +1,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import * as Sentry from '@sentry/react-native';
 import i18next from 'i18next';
 import { colors } from '../constants/theme';
 
@@ -24,6 +25,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    Sentry.captureException(error, { extra: { componentStack: errorInfo.componentStack } });
     console.error('ErrorBoundary caught:', error, errorInfo);
   }
 

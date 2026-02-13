@@ -32,10 +32,12 @@ import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
+import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/core/Button';
 import { WeatherWidget } from '../../components/WeatherWidget';
+import { AdBanner } from '../../components/ads';
 
 type TripListScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'TripList'>;
 
@@ -74,12 +76,34 @@ const getDestinationImage = (destination: string): string => {
   return matchingKey ? DESTINATION_IMAGES[matchingKey] : DESTINATION_IMAGES['default'];
 };
 
+interface AdvancedFilters {
+  country: string;
+  startDateFrom: string;
+  startDateTo: string;
+  budgetMin: string;
+  budgetMax: string;
+}
+
+const EMPTY_FILTERS: AdvancedFilters = {
+  country: '',
+  startDateFrom: '',
+  startDateTo: '',
+  budgetMin: '',
+  budgetMax: '',
+};
+
 const TripListScreen: React.FC<Props> = ({ navigation }) => {
   const [trips, setTrips] = useState<Trip[]>([]);
+  const [totalTrips, setTotalTrips] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<'upcoming' | 'ongoing' | 'completed' | null>(null);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
+  const [appliedFilters, setAppliedFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('trips');
 
@@ -87,22 +111,70 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
   const slideAnim = useRef(new Animated.Value(30)).current;
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const TRIPS_PER_PAGE = 20;
+
+  const buildParams = (overrides?: {
+    search?: string;
+    status?: 'upcoming' | 'ongoing' | 'completed';
+    page?: number;
+    filters?: AdvancedFilters;
+  }) => {
+    const filters = overrides?.filters ?? appliedFilters;
+    return {
+      search: (overrides?.search ?? searchText) || undefined,
+      status: (overrides?.status ?? selectedStatus) || undefined,
+      country: filters.country || undefined,
+      startDateFrom: filters.startDateFrom || undefined,
+      startDateTo: filters.startDateTo || undefined,
+      budgetMin: filters.budgetMin ? Number(filters.budgetMin) : undefined,
+      budgetMax: filters.budgetMax ? Number(filters.budgetMax) : undefined,
+      sortBy: 'startDate' as const,
+      order: 'DESC' as const,
+      page: overrides?.page ?? 1,
+      limit: TRIPS_PER_PAGE,
+    };
+  };
+
   const fetchTrips = async (params?: {
     search?: string;
     status?: 'upcoming' | 'ongoing' | 'completed';
+    page?: number;
+    filters?: AdvancedFilters;
   }) => {
     try {
-      const data = await apiService.getTrips({
-        ...params,
-        sortBy: 'startDate',
-        order: 'DESC',
-      });
-      setTrips(data);
+      const data = await apiService.getTrips(buildParams(params));
+      // Handle both paginated response { trips, total } and legacy array response
+      if (data && Array.isArray(data.trips)) {
+        setTrips(data.trips);
+        setTotalTrips(data.total);
+        setCurrentPage(data.page || 1);
+      } else if (Array.isArray(data)) {
+        setTrips(data);
+        setTotalTrips(data.length);
+        setCurrentPage(1);
+      }
     } catch (error) {
       console.error('Failed to fetch trips:', error);
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
+    }
+  };
+
+  const loadMoreTrips = async () => {
+    if (isLoadingMore || trips.length >= totalTrips) return;
+    setIsLoadingMore(true);
+    try {
+      const nextPage = currentPage + 1;
+      const data = await apiService.getTrips(buildParams({ page: nextPage }));
+      if (data && Array.isArray(data.trips)) {
+        setTrips(prev => [...prev, ...data.trips]);
+        setCurrentPage(nextPage);
+      }
+    } catch (error) {
+      console.error('Failed to load more trips:', error);
+    } finally {
+      setIsLoadingMore(false);
     }
   };
 
@@ -117,21 +189,44 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
 
     // Set new timeout for debounced search
     searchTimeoutRef.current = setTimeout(() => {
-      fetchTrips({
-        search: text || undefined,
-        status: selectedStatus || undefined,
-      });
+      fetchTrips({ search: text || undefined, status: selectedStatus || undefined });
     }, 500);
-  }, [selectedStatus]);
+  }, [selectedStatus, appliedFilters]);
 
   // Handle status filter change
   const handleStatusFilterChange = useCallback((status: 'upcoming' | 'ongoing' | 'completed' | null) => {
     setSelectedStatus(status);
+    fetchTrips({ search: searchText || undefined, status: status || undefined });
+  }, [searchText, appliedFilters]);
+
+  const activeFilterCount = [
+    appliedFilters.country,
+    appliedFilters.startDateFrom,
+    appliedFilters.startDateTo,
+    appliedFilters.budgetMin,
+    appliedFilters.budgetMax,
+  ].filter(Boolean).length;
+
+  const handleApplyFilters = () => {
+    setAppliedFilters({ ...advancedFilters });
+    setShowAdvancedFilters(false);
     fetchTrips({
       search: searchText || undefined,
-      status: status || undefined,
+      status: selectedStatus || undefined,
+      filters: advancedFilters,
     });
-  }, [searchText]);
+  };
+
+  const handleResetFilters = () => {
+    setAdvancedFilters(EMPTY_FILTERS);
+    setAppliedFilters(EMPTY_FILTERS);
+    setShowAdvancedFilters(false);
+    fetchTrips({
+      search: searchText || undefined,
+      status: selectedStatus || undefined,
+      filters: EMPTY_FILTERS,
+    });
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -148,12 +243,12 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
         Animated.timing(fadeAnim, {
           toValue: 1,
           duration: 600,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: 500,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]).start();
     }
@@ -288,6 +383,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
           accessibilityLabel={`${trip.destination} ${t('list.accessibility.trip')}, ${getStatusConfig(trip.status).text}`}
           accessibilityRole="button"
           accessibilityHint={t('list.accessibility.viewDetail')}
+          testID="trip-card"
         >
           <ImageBackground
             source={{ uri: imageUrl }}
@@ -458,6 +554,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
           />
         }
       >
+        <EmailVerificationBanner />
         {/* Create Button */}
         <Animated.View
           style={[
@@ -500,7 +597,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               accessibilityHint={t('list.accessibility.searchHint')}
             />
             {searchText.length > 0 && (
-              <TouchableOpacity onPress={() => handleSearchChange('')}>
+              <TouchableOpacity onPress={() => handleSearchChange('')} accessibilityRole="button" accessibilityLabel={t('common:clear')}>
                 <Icon name="close-circle" size={20} color={theme.colors.textSecondary} />
               </TouchableOpacity>
             )}
@@ -522,6 +619,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
             contentContainerStyle={styles.filterChipsContainer}
           >
             <TouchableOpacity
+              testID="filter-all"
               style={[
                 styles.filterChip,
                 {
@@ -547,6 +645,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
+              testID="filter-upcoming"
               style={[
                 styles.filterChip,
                 {
@@ -577,6 +676,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
+              testID="filter-ongoing"
               style={[
                 styles.filterChip,
                 {
@@ -607,6 +707,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
+              testID="filter-completed"
               style={[
                 styles.filterChip,
                 {
@@ -635,8 +736,135 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                 {t('list.filters.completed')}
               </Text>
             </TouchableOpacity>
+
+            {/* Advanced Filter Toggle */}
+            <TouchableOpacity
+              style={[
+                styles.filterChip,
+                {
+                  backgroundColor: activeFilterCount > 0
+                    ? colors.primary[500]
+                    : isDark ? colors.neutral[800] : colors.neutral[100],
+                },
+              ]}
+              onPress={() => {
+                setShowAdvancedFilters(!showAdvancedFilters);
+                if (!showAdvancedFilters) setAdvancedFilters({ ...appliedFilters });
+              }}
+            >
+              <Icon
+                name="tune-variant"
+                size={16}
+                color={activeFilterCount > 0 ? colors.neutral[0] : theme.colors.text}
+              />
+              <Text
+                style={[
+                  styles.filterChipText,
+                  {
+                    color: activeFilterCount > 0
+                      ? colors.neutral[0]
+                      : theme.colors.text,
+                  },
+                ]}
+              >
+                {activeFilterCount > 0
+                  ? t('list.advancedFilters.activeCount', { count: activeFilterCount })
+                  : t('list.advancedFilters.toggle')}
+              </Text>
+            </TouchableOpacity>
           </ScrollView>
         </Animated.View>
+
+        {/* Advanced Filter Panel */}
+        {showAdvancedFilters && (
+          <View style={[styles.advancedFilterPanel, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}>
+            {/* Country */}
+            <View style={styles.advFilterRow}>
+              <Text style={[styles.advFilterLabel, { color: theme.colors.text }]}>
+                {t('list.advancedFilters.country')}
+              </Text>
+              <TextInput
+                style={[styles.advFilterInput, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
+                placeholder={t('list.advancedFilters.countryPlaceholder')}
+                placeholderTextColor={theme.colors.textSecondary}
+                value={advancedFilters.country}
+                onChangeText={(v) => setAdvancedFilters(f => ({ ...f, country: v }))}
+              />
+            </View>
+
+            {/* Date Range */}
+            <View style={styles.advFilterRow}>
+              <Text style={[styles.advFilterLabel, { color: theme.colors.text }]}>
+                {t('list.advancedFilters.dateRange')}
+              </Text>
+              <View style={styles.advFilterRowInner}>
+                <TextInput
+                  style={[styles.advFilterInputHalf, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
+                  placeholder={t('list.advancedFilters.dateFrom')}
+                  placeholderTextColor={theme.colors.textSecondary}
+                  value={advancedFilters.startDateFrom}
+                  onChangeText={(v) => setAdvancedFilters(f => ({ ...f, startDateFrom: v }))}
+                  keyboardType="numbers-and-punctuation"
+                />
+                <Text style={{ color: theme.colors.textSecondary }}>~</Text>
+                <TextInput
+                  style={[styles.advFilterInputHalf, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
+                  placeholder={t('list.advancedFilters.dateTo')}
+                  placeholderTextColor={theme.colors.textSecondary}
+                  value={advancedFilters.startDateTo}
+                  onChangeText={(v) => setAdvancedFilters(f => ({ ...f, startDateTo: v }))}
+                  keyboardType="numbers-and-punctuation"
+                />
+              </View>
+            </View>
+
+            {/* Budget Range */}
+            <View style={styles.advFilterRow}>
+              <Text style={[styles.advFilterLabel, { color: theme.colors.text }]}>
+                {t('list.advancedFilters.budget')}
+              </Text>
+              <View style={styles.advFilterRowInner}>
+                <TextInput
+                  style={[styles.advFilterInputHalf, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
+                  placeholder={t('list.advancedFilters.budgetMin')}
+                  placeholderTextColor={theme.colors.textSecondary}
+                  value={advancedFilters.budgetMin}
+                  onChangeText={(v) => setAdvancedFilters(f => ({ ...f, budgetMin: v }))}
+                  keyboardType="numeric"
+                />
+                <Text style={{ color: theme.colors.textSecondary }}>~</Text>
+                <TextInput
+                  style={[styles.advFilterInputHalf, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
+                  placeholder={t('list.advancedFilters.budgetMax')}
+                  placeholderTextColor={theme.colors.textSecondary}
+                  value={advancedFilters.budgetMax}
+                  onChangeText={(v) => setAdvancedFilters(f => ({ ...f, budgetMax: v }))}
+                  keyboardType="numeric"
+                />
+              </View>
+            </View>
+
+            {/* Action Buttons */}
+            <View style={styles.advFilterActions}>
+              <TouchableOpacity
+                style={[styles.advFilterResetBtn, { borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
+                onPress={handleResetFilters}
+              >
+                <Text style={{ color: theme.colors.textSecondary, fontWeight: '600', fontSize: 14 }}>
+                  {t('list.advancedFilters.reset')}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.advFilterApplyBtn, { backgroundColor: colors.primary[500] }]}
+                onPress={handleApplyFilters}
+              >
+                <Text style={{ color: colors.neutral[0], fontWeight: '600', fontSize: 14 }}>
+                  {t('list.advancedFilters.apply')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
         {trips.length > 0 ? (
           <Animated.View
@@ -700,13 +928,41 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               <Button
                 variant="primary"
                 size="lg"
-                icon="sparkles"
+                icon="creation"
                 onPress={() => navigation.navigate('CreateTrip')}
               >
                 {t('list.empty.cta')}
               </Button>
             </View>
           </Animated.View>
+        )}
+
+        {/* Ad Banner */}
+        {trips.length > 0 && <AdBanner size="adaptive" style={{ marginHorizontal: 16 }} />}
+
+        {/* Load More */}
+        {trips.length > 0 && trips.length < totalTrips && (
+          <View style={styles.loadMoreWrapper}>
+            <TouchableOpacity
+              style={[styles.loadMoreBtn, { borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
+              onPress={loadMoreTrips}
+              disabled={isLoadingMore}
+            >
+              {isLoadingMore ? (
+                <ActivityIndicator size="small" color={theme.colors.primary} />
+              ) : (
+                <>
+                  <Icon name="chevron-down" size={18} color={theme.colors.primary} />
+                  <Text style={{ color: theme.colors.primary, fontWeight: '600', fontSize: 14 }}>
+                    {t('list.pagination.showMore')}
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+            <Text style={{ color: theme.colors.textSecondary, fontSize: 12, marginTop: 4 }}>
+              {t('list.pagination.showing', { shown: trips.length, total: totalTrips })}
+            </Text>
+          </View>
         )}
 
         <View style={{ height: 40 }} />
@@ -947,6 +1203,71 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
     emptyButtonWrapper: {
       width: '100%',
+    },
+    advancedFilterPanel: {
+      marginHorizontal: 20,
+      marginTop: 8,
+      borderRadius: 12,
+      padding: 16,
+      gap: 12,
+    },
+    advFilterRow: {
+      gap: 6,
+    },
+    advFilterLabel: {
+      fontSize: 13,
+      fontWeight: '600',
+    },
+    advFilterInput: {
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      fontSize: 14,
+    },
+    advFilterRowInner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    advFilterInputHalf: {
+      flex: 1,
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      fontSize: 14,
+    },
+    advFilterActions: {
+      flexDirection: 'row',
+      gap: 8,
+      marginTop: 4,
+    },
+    advFilterResetBtn: {
+      flex: 1,
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingVertical: 10,
+      alignItems: 'center',
+    },
+    advFilterApplyBtn: {
+      flex: 1,
+      borderRadius: 8,
+      paddingVertical: 10,
+      alignItems: 'center',
+    },
+    loadMoreWrapper: {
+      alignItems: 'center',
+      paddingVertical: 16,
+    },
+    loadMoreBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      borderWidth: 1,
+      borderRadius: 20,
+      paddingHorizontal: 20,
+      paddingVertical: 10,
     },
   });
 

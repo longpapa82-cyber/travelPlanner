@@ -20,7 +20,14 @@ interface AuthContextType {
   loginWithApple: () => Promise<void>;
   loginWithKakao: () => Promise<void>;
   logout: () => Promise<void>;
+  registerPushAfterLogin: () => void;
 }
+
+// Push token registration callback — set by NotificationContext bridge
+let pushRegistrationCallback: (() => void) | null = null;
+export const setPushRegistrationCallback = (cb: (() => void) | null) => {
+  pushRegistrationCallback = cb;
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -60,12 +67,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Token exists, get user profile
         const profile = await apiService.getProfile();
         setUser(profile);
+        registerPushAfterLogin();
       }
     } catch (error) {
       console.error('Error checking auth status:', error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const registerPushAfterLogin = () => {
+    pushRegistrationCallback?.();
   };
 
   const login = async (email: string, password: string) => {
@@ -77,6 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
 
       setUser(response.user);
+      registerPushAfterLogin();
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -103,13 +116,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       throw new Error('OAuth authentication failed');
     }
 
-    // Store tokens
-    await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, result.accessToken);
-    await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, result.refreshToken);
+    // Exchange the one-time code for JWT tokens via secure API call
+    const authResponse: AuthResponse = await apiService.exchangeOAuthCode(result.code);
 
-    // Get user profile
-    const profile = await apiService.getProfile();
-    setUser(profile);
+    // Store tokens
+    await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, authResponse.accessToken);
+    await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authResponse.refreshToken);
+
+    setUser(authResponse.user);
+    registerPushAfterLogin();
   };
 
   const loginWithGoogle = async () => {
@@ -144,6 +159,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     try {
+      // Remove push token from backend before clearing auth
+      try {
+        await apiService.removePushToken();
+      } catch (_) {
+        // best-effort — don't block logout
+      }
+
       // Clear tokens
       await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
       await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
@@ -164,6 +186,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loginWithApple,
     loginWithKakao,
     logout,
+    registerPushAfterLogin,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

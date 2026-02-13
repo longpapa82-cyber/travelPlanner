@@ -364,7 +364,7 @@ test.describe('TC-15 — Performance', { tag: '@destructive' }, () => {
     // Set auth token before navigating
     await page.goto('about:blank');
     await page.evaluate((t) => {
-      localStorage.setItem('auth_token', t);
+      localStorage.setItem('@travelplanner:auth_token', t);
     }, token);
 
     const startTime = await page.evaluate(() => performance.now());
@@ -385,7 +385,7 @@ test.describe('TC-15 — Performance', { tag: '@destructive' }, () => {
   test('15.2: Trip list load — list renders within 2 seconds', { tag: '@destructive' }, async ({ page }) => {
     await page.goto('about:blank');
     await page.evaluate((t) => {
-      localStorage.setItem('auth_token', t);
+      localStorage.setItem('@travelplanner:auth_token', t);
     }, token);
     await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
     await page.locator(SEL.nav.homeTab).waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });
@@ -418,7 +418,7 @@ test.describe('TC-15 — Performance', { tag: '@destructive' }, () => {
   test('15.3: Trip detail load — fully rendered within 3 seconds', { tag: '@destructive' }, async ({ page }) => {
     await page.goto('about:blank');
     await page.evaluate((t) => {
-      localStorage.setItem('auth_token', t);
+      localStorage.setItem('@travelplanner:auth_token', t);
     }, token);
     await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
     await page.locator(SEL.nav.homeTab).waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });
@@ -465,7 +465,7 @@ test.describe('TC-15 — Performance', { tag: '@destructive' }, () => {
   test('15.4: Search responsiveness — results within 1.5 seconds after debounce', { tag: '@destructive' }, async ({ page }) => {
     await page.goto('about:blank');
     await page.evaluate((t) => {
-      localStorage.setItem('auth_token', t);
+      localStorage.setItem('@travelplanner:auth_token', t);
     }, token);
     await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
     await page.locator(SEL.nav.homeTab).waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });
@@ -515,7 +515,7 @@ test.describe('TC-15 — Performance', { tag: '@destructive' }, () => {
 
     await page.goto('about:blank');
     await page.evaluate((t) => {
-      localStorage.setItem('auth_token', t);
+      localStorage.setItem('@travelplanner:auth_token', t);
     }, token);
     await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
     await page.locator(SEL.nav.homeTab).waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });
@@ -569,7 +569,7 @@ test.describe('TC-15 — Performance', { tag: '@destructive' }, () => {
   test('15.6: Image lazy loading — images load on demand during scroll', { tag: '@destructive' }, async ({ page }) => {
     await page.goto('about:blank');
     await page.evaluate((t) => {
-      localStorage.setItem('auth_token', t);
+      localStorage.setItem('@travelplanner:auth_token', t);
     }, token);
     await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
     await page.locator(SEL.nav.homeTab).waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });

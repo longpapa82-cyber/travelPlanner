@@ -1,5 +1,6 @@
 {
   "greeting": "こんにちは 👋",
+  "heroTitle": "{{name}}さんの旅",
   "subtitle": "次の冒険を計画しましょう！",
   "createTrip": "AI旅行プランを作成",
   "stats": {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
+import { View, Animated, StyleSheet, Platform } from 'react-native';
 import { ShimmerProps } from './Shimmer.types';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { colors, darkColors } from '../../../constants/theme';
@@ -29,12 +29,12 @@ export const Shimmer: React.FC<ShimmerProps> = ({
         Animated.timing(animatedValue, {
           toValue: 1,
           duration: duration / 2,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(animatedValue, {
           toValue: 0,
           duration: duration / 2,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ])
     );

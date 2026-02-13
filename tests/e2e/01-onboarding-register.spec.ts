@@ -308,7 +308,7 @@ test.describe('TC-2: Registration', () => {
     // Click the eye icon to toggle visibility
     // The eye icon is the TouchableOpacity with accessibilityLabel containing "비밀번호 표시" or "Show password"
     const eyeToggle = page.locator(
-      '[aria-label*="비밀번호 표시"], [aria-label*="Show password"], [accessibilityLabel*="비밀번호 표시"]'
+      '[aria-label*="비밀번호 표시"], [aria-label*="Show password"]'
     ).first();
     await eyeToggle.click();
 
@@ -320,7 +320,7 @@ test.describe('TC-2: Registration', () => {
 
     // Toggle back to hidden
     const eyeHideToggle = page.locator(
-      '[aria-label*="비밀번호 숨기기"], [aria-label*="Hide password"], [accessibilityLabel*="비밀번호 숨기기"]'
+      '[aria-label*="비밀번호 숨기기"], [aria-label*="Hide password"]'
     ).first();
     await eyeHideToggle.click();
 

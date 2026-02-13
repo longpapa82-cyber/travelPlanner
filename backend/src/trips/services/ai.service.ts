@@ -4,6 +4,7 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import OpenAI from 'openai';
 import { ActivityDto } from '../dto/update-itinerary.dto';
 import { AnalyticsService } from './analytics.service';
+import { TimezoneService } from './timezone.service';
 
 interface TripContext {
   destination: string;
@@ -36,6 +37,7 @@ export class AIService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @Inject(forwardRef(() => AnalyticsService))
     private analyticsService: AnalyticsService,
+    private timezoneService: TimezoneService,
   ) {
     const apiKey = this.configService.get<string>('OPENAI_API_KEY');
     if (apiKey && apiKey !== '' && !apiKey.includes('your-')) {
@@ -110,6 +112,22 @@ export class AIService {
 
       // Validate and format activities
       const result = this.formatActivities(activities);
+
+      // Geocode activity locations
+      try {
+        const coords = await this.timezoneService.geocodeActivities(
+          result,
+          tripContext.destination,
+        );
+        for (let i = 0; i < result.length; i++) {
+          if (coords[i] && coords[i].latitude !== 0) {
+            result[i].latitude = coords[i].latitude;
+            result[i].longitude = coords[i].longitude;
+          }
+        }
+      } catch (error) {
+        this.logger.warn(`Geocoding failed for activities: ${error.message}`);
+      }
 
       // Cache AI response for 24 hours
       await this.cacheManager.set(cacheKey, result, 86400000);
@@ -261,6 +279,8 @@ Guidelines:
         title: activity.title || activity.name || 'Activity',
         description: activity.description || '',
         location: activity.location || activity.place || '',
+        latitude: activity.latitude ? Number(activity.latitude) : undefined,
+        longitude: activity.longitude ? Number(activity.longitude) : undefined,
         estimatedDuration: Number(
           activity.estimatedDuration || activity.duration || 60,
         ),

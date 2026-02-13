@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, AuthProvider } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { t } from '../common/i18n';
 
 @Injectable()
@@ -108,5 +109,158 @@ export class UsersService {
 
   async remove(id: string): Promise<void> {
     await this.userRepository.delete(id);
+  }
+
+  async generateEmailVerificationToken(userId: string): Promise<string> {
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    await this.userRepository
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        emailVerificationToken: token,
+        emailVerificationExpiry: expiry,
+      })
+      .where('id = :id', { id: userId })
+      .execute();
+
+    return token;
+  }
+
+  async verifyEmail(
+    token: string,
+    lang: 'ko' | 'en' | 'ja' = 'ko',
+  ): Promise<User> {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.emailVerificationToken')
+      .where('user.emailVerificationToken = :token', { token })
+      .getOne();
+
+    if (!user) {
+      throw new BadRequestException(t('email.verification.invalid', lang));
+    }
+
+    if (
+      user.emailVerificationExpiry &&
+      user.emailVerificationExpiry < new Date()
+    ) {
+      throw new BadRequestException(t('email.verification.expired', lang));
+    }
+
+    await this.userRepository.update(user.id, {
+      isEmailVerified: true,
+      emailVerificationToken: undefined,
+      emailVerificationExpiry: undefined,
+    });
+
+    return this.findById(user.id);
+  }
+
+  async generatePasswordResetToken(
+    email: string,
+    lang: 'ko' | 'en' | 'ja' = 'ko',
+  ): Promise<{ token: string; user: User } | null> {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      return null; // Don't reveal if email exists
+    }
+
+    if (user.provider !== AuthProvider.EMAIL) {
+      throw new BadRequestException(t('password.reset.socialNotAllowed', lang));
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await this.userRepository
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        passwordResetToken: token,
+        passwordResetExpiry: expiry,
+      })
+      .where('id = :id', { id: user.id })
+      .execute();
+
+    return { token, user };
+  }
+
+  async resetPassword(
+    token: string,
+    newPassword: string,
+    lang: 'ko' | 'en' | 'ja' = 'ko',
+  ): Promise<User> {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.passwordResetToken')
+      .where('user.passwordResetToken = :token', { token })
+      .getOne();
+
+    if (!user) {
+      throw new BadRequestException(t('password.reset.invalid', lang));
+    }
+
+    if (user.passwordResetExpiry && user.passwordResetExpiry < new Date()) {
+      throw new BadRequestException(t('password.reset.expired', lang));
+    }
+
+    const newHash = await bcrypt.hash(newPassword, 10);
+    await this.userRepository.update(user.id, {
+      passwordHash: newHash,
+      passwordResetToken: undefined,
+      passwordResetExpiry: undefined,
+    });
+
+    return this.findById(user.id);
+  }
+
+  // ============ 2FA Methods ============
+
+  async findByIdWithTwoFactor(id: string): Promise<User> {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.twoFactorSecret')
+      .addSelect('user.twoFactorBackupCodes')
+      .where('user.id = :id', { id })
+      .getOne();
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return user;
+  }
+
+  async setTwoFactorSecret(userId: string, secret: string): Promise<void> {
+    await this.userRepository.update(userId, { twoFactorSecret: secret });
+  }
+
+  async enableTwoFactor(
+    userId: string,
+    backupCodes: string[],
+  ): Promise<void> {
+    await this.userRepository.update(userId, {
+      isTwoFactorEnabled: true,
+      twoFactorBackupCodes: backupCodes,
+    });
+  }
+
+  async disableTwoFactor(userId: string): Promise<void> {
+    await this.userRepository.update(userId, {
+      isTwoFactorEnabled: false,
+      twoFactorSecret: undefined,
+      twoFactorBackupCodes: undefined,
+    });
+  }
+
+  async updateBackupCodes(
+    userId: string,
+    codes: string[],
+  ): Promise<void> {
+    await this.userRepository.update(userId, {
+      twoFactorBackupCodes: codes,
+    });
   }
 }
