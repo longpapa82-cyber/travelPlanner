@@ -16,6 +16,7 @@ import {
   Clipboard,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import * as ImagePicker from 'expo-image-picker';
 import { changeLanguage, getCurrentLanguage, LANGUAGE_LABELS, SUPPORTED_LANGUAGES, SupportedLanguage } from '../../i18n';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -29,7 +30,7 @@ import apiService from '../../services/api';
 const ProfileScreen = () => {
   const { t } = useTranslation('profile');
   const { t: tCommon } = useTranslation('common');
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
 
@@ -53,6 +54,9 @@ const ProfileScreen = () => {
   const [twoFACode, setTwoFACode] = useState('');
   const [twoFABackupCodes, setTwoFABackupCodes] = useState<string[]>([]);
   const [is2FASaving, setIs2FASaving] = useState(false);
+
+  // Photo upload state
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
   // Analytics states
   const [stats, setStats] = useState<any>(null);
@@ -97,6 +101,7 @@ const ProfileScreen = () => {
     setIsSaving(true);
     try {
       await apiService.updateProfile({ name: editName.trim() });
+      await refreshUser();
       showToast({ type: 'success', message: t('editProfile.alerts.success'), position: 'top' });
       setShowEditProfile(false);
     } catch (error: any) {
@@ -146,6 +151,34 @@ const ProfileScreen = () => {
     });
   };
 
+  const handlePickProfilePhoto = async () => {
+    if (isUploadingPhoto) return;
+    try {
+      const permResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permResult.granted) {
+        showToast({ type: 'warning', message: t('editProfile.alerts.permissionDenied'), position: 'top' });
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+      if (result.canceled || !result.assets?.[0]?.uri) return;
+
+      setIsUploadingPhoto(true);
+      const uploaded = await apiService.uploadPhoto(result.assets[0].uri);
+      await apiService.updateProfile({ profileImage: uploaded.url });
+      await refreshUser();
+      showToast({ type: 'success', message: t('editProfile.alerts.photoSuccess'), position: 'top' });
+    } catch (error: any) {
+      showToast({ type: 'error', message: error.response?.data?.message || t('editProfile.alerts.photoFailed'), position: 'top' });
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
+
   const openUrl = (url: string) => {
     Linking.openURL(url).catch(() => {
       showToast({ type: 'error', message: tCommon('error'), position: 'top' });
@@ -165,9 +198,27 @@ const ProfileScreen = () => {
     <ScrollView style={styles.container}>
       <EmailVerificationBanner />
       <View style={styles.profileHeader}>
-        <View style={styles.avatarContainer}>
-          <Icon name="account-circle" size={100} color={theme.colors.primary} />
-        </View>
+        <TouchableOpacity
+          style={styles.avatarContainer}
+          onPress={handlePickProfilePhoto}
+          disabled={isUploadingPhoto}
+          activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel={t('editProfile.changePhoto')}
+        >
+          {user?.profileImage ? (
+            <Image source={{ uri: user.profileImage }} style={styles.avatarImage} />
+          ) : (
+            <Icon name="account-circle" size={100} color={theme.colors.primary} />
+          )}
+          <View style={[styles.cameraBadge, { backgroundColor: theme.colors.primary }]}>
+            {isUploadingPhoto ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Icon name="camera" size={16} color="#fff" />
+            )}
+          </View>
+        </TouchableOpacity>
         <Text style={styles.name} testID="profile-name">{user?.name}</Text>
         <Text style={styles.email} testID="profile-email">{user?.email}</Text>
       </View>
@@ -681,6 +732,24 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   },
   avatarContainer: {
     marginBottom: theme.spacing.md,
+    position: 'relative',
+  },
+  avatarImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  cameraBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: theme.colors.white,
   },
   name: {
     ...theme.typography.h2,

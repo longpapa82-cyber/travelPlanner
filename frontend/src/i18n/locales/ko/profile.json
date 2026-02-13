@@ -25,11 +25,15 @@
     "title": "프로필 수정",
     "name": "이름",
     "namePlaceholder": "이름을 입력하세요",
+    "changePhoto": "프로필 사진 변경",
     "save": "저장",
     "alerts": {
       "nameRequired": "이름을 입력해주세요",
       "success": "프로필이 수정되었습니다",
-      "failed": "프로필 수정에 실패했습니다"
+      "failed": "프로필 수정에 실패했습니다",
+      "photoSuccess": "프로필 사진이 변경되었습니다",
+      "photoFailed": "프로필 사진 변경에 실패했습니다",
+      "permissionDenied": "사진 접근 권한이 필요합니다"
     }
   },
   "changePassword": {

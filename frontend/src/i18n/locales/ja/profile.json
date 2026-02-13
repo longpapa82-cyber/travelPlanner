@@ -25,11 +25,15 @@
     "title": "プロフィール編集",
     "name": "名前",
     "namePlaceholder": "名前を入力",
+    "changePhoto": "プロフィール写真を変更",
     "save": "保存",
     "alerts": {
       "nameRequired": "名前を入力してください",
       "success": "プロフィールが更新されました",
-      "failed": "プロフィールの更新に失敗しました"
+      "failed": "プロフィールの更新に失敗しました",
+      "photoSuccess": "プロフィール写真が更新されました",
+      "photoFailed": "プロフィール写真の更新に失敗しました",
+      "permissionDenied": "写真へのアクセス許可が必要です"
     }
   },
   "changePassword": {

@@ -30,6 +30,7 @@ interface AuthContextType {
   loginWithApple: () => Promise<void>;
   loginWithKakao: () => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
   registerPushAfterLogin: () => void;
 }
 
@@ -191,6 +192,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const refreshUser = async () => {
+    try {
+      const profile = await apiService.getProfile();
+      setUser(profile);
+    } catch (error) {
+      console.error('Error refreshing user:', error);
+    }
+  };
+
   const logout = async () => {
     try {
       // Remove push token from backend before clearing auth
@@ -221,6 +231,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loginWithApple,
     loginWithKakao,
     logout,
+    refreshUser,
     registerPushAfterLogin,
   };
 

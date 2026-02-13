@@ -25,11 +25,15 @@
     "title": "Edit Profile",
     "name": "Name",
     "namePlaceholder": "Enter your name",
+    "changePhoto": "Change profile photo",
     "save": "Save",
     "alerts": {
       "nameRequired": "Please enter your name",
       "success": "Profile updated successfully",
-      "failed": "Failed to update profile"
+      "failed": "Failed to update profile",
+      "photoSuccess": "Profile photo updated",
+      "photoFailed": "Failed to update profile photo",
+      "permissionDenied": "Photo access permission required"
     }
   },
   "changePassword": {
