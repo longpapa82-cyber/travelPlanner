@@ -255,6 +255,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
               style={styles.backButton}
               onPress={() => navigation.goBack()}
               disabled={isLoading}
+              accessibilityRole="button"
+              accessibilityLabel={t('common:back', { defaultValue: 'Go back' })}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <View style={styles.backButtonInner}>
                 <Icon name="arrow-left" size={24} color={colors.neutral[0]} />
@@ -317,6 +320,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                     },
                   ]}
                   onPress={() => handleSelectDestination(dest.name)}
+                  accessibilityRole="button"
+                  accessibilityLabel={dest.name}
+                  accessibilityState={{ selected: destination === dest.name }}
                 >
                   <Icon
                     name={dest.icon}
@@ -357,6 +363,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                 onChangeText={setDestination}
                 editable={!isLoading}
                 autoCapitalize="words"
+                accessibilityLabel={t('create.destination.title')}
               />
             </View>
 
@@ -402,6 +409,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                     },
                   ]}
                   onPress={() => handleSelectDuration(option.days)}
+                  accessibilityRole="button"
+                  accessibilityLabel={option.label}
                 >
                   <Icon
                     name={option.icon}
@@ -482,6 +491,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                     },
                   ]}
                   onPress={() => handleSelectTravelers(option.count)}
+                  accessibilityRole="button"
+                  accessibilityLabel={option.label}
+                  accessibilityState={{ selected: numberOfTravelers === option.count }}
                 >
                   <Icon
                     name={option.icon}
@@ -527,6 +539,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                 }}
                 keyboardType="number-pad"
                 editable={!isLoading}
+                accessibilityLabel={t('create.travelers.title')}
               />
             </View>
           </View>
@@ -551,6 +564,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                 numberOfLines={4}
                 textAlignVertical="top"
                 editable={!isLoading}
+                accessibilityLabel={t('create.notes.title')}
               />
             </View>
           </View>

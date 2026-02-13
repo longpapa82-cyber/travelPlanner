@@ -354,6 +354,9 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
               style={styles.backButton}
               onPress={() => navigation.goBack()}
               disabled={isSaving}
+              accessibilityRole="button"
+              accessibilityLabel={t('common:back', { defaultValue: 'Go back' })}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <View style={styles.backButtonInner}>
                 <Icon name="arrow-left" size={24} color={colors.neutral[0]} />
@@ -431,6 +434,9 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   ]}
                   onPress={() => handleSelectDestination(dest.name)}
                   disabled={isSaving}
+                  accessibilityRole="button"
+                  accessibilityLabel={dest.name}
+                  accessibilityState={{ selected: destination === dest.name }}
                 >
                   <Icon
                     name={dest.icon}
@@ -470,6 +476,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 value={destination}
                 onChangeText={setDestination}
                 editable={!isSaving}
+                accessibilityLabel={t('edit.destination.title')}
                 autoCapitalize="words"
               />
             </View>
@@ -557,6 +564,9 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   ]}
                   onPress={() => handleSelectTravelers(option.count)}
                   disabled={isSaving}
+                  accessibilityRole="button"
+                  accessibilityLabel={option.label}
+                  accessibilityState={{ selected: numberOfTravelers === option.count }}
                 >
                   <Icon
                     name={option.icon}
@@ -594,6 +604,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 placeholder={t('edit.travelers.placeholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={numberOfTravelers.toString()}
+                accessibilityLabel={t('edit.travelers.title')}
                 onChangeText={(text) => {
                   const num = parseInt(text);
                   if (!isNaN(num) && num > 0) {
@@ -623,6 +634,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 value={description}
                 onChangeText={setDescription}
                 multiline
+                accessibilityLabel={t('edit.notes.title')}
                 numberOfLines={4}
                 textAlignVertical="top"
                 editable={!isSaving}
