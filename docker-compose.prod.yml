@@ -22,6 +22,13 @@ services:
     networks:
       - travelplanner
     restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.25
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
     # Reload nginx every 6 hours to pick up renewed certificates
     command: >
       /bin/sh -c "
@@ -42,21 +49,51 @@ services:
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     networks:
       - travelplanner
+    mem_limit: 64m
+    cpus: 0.1
 
   # Override frontend to not expose ports directly (proxy handles it)
   frontend:
     ports: !reset []
+    mem_limit: 128m
+    cpus: 0.25
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   # Override backend to not expose ports directly
   backend:
     ports: !reset []
+    mem_limit: 512m
+    cpus: 1.0
+    logging:
+      driver: json-file
+      options:
+        max-size: '50m'
+        max-file: '5'
 
   # Don't expose DB/Redis to host in production
   postgres:
     ports: !reset []
+    mem_limit: 512m
+    cpus: 1.0
+    logging:
+      driver: json-file
+      options:
+        max-size: '20m'
+        max-file: '3'
 
   redis:
     ports: !reset []
+    mem_limit: 256m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
 networks:
   travelplanner:
