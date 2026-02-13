@@ -824,6 +824,8 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               <TouchableOpacity
                 style={[styles.advFilterResetBtn, { borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
                 onPress={handleResetFilters}
+                accessibilityRole="button"
+                accessibilityLabel={t('list.advancedFilters.reset')}
               >
                 <Text style={{ color: theme.colors.textSecondary, fontWeight: '600', fontSize: 14 }}>
                   {t('list.advancedFilters.reset')}
@@ -832,6 +834,8 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               <TouchableOpacity
                 style={[styles.advFilterApplyBtn, { backgroundColor: colors.primary[500] }]}
                 onPress={handleApplyFilters}
+                accessibilityRole="button"
+                accessibilityLabel={t('list.advancedFilters.apply')}
               >
                 <Text style={{ color: colors.neutral[0], fontWeight: '600', fontSize: 14 }}>
                   {t('list.advancedFilters.apply')}
@@ -956,6 +960,8 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               style={[styles.loadMoreBtn, { borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
               onPress={loadMoreTrips}
               disabled={isLoadingMore}
+              accessibilityRole="button"
+              accessibilityLabel={t('list.pagination.showMore')}
             >
               {isLoadingMore ? (
                 <ActivityIndicator size="small" color={theme.colors.primary} />

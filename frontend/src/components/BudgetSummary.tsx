@@ -143,6 +143,9 @@ export const BudgetSummary: React.FC<Props> = ({ trip }) => {
               activeTab === tab.key && { borderBottomColor: colors.primary[500], borderBottomWidth: 2 },
             ]}
             onPress={() => setActiveTab(tab.key)}
+            accessibilityRole="tab"
+            accessibilityLabel={tab.label}
+            accessibilityState={{ selected: activeTab === tab.key }}
           >
             <Text style={[
               styles.tabText,
