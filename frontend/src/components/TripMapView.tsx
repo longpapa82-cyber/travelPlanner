@@ -26,6 +26,7 @@ interface Props {
 }
 
 const ACTIVITY_TYPE_COLORS: Record<string, string> = {
+  // English keys
   sightseeing: colors.primary[500],
   food: colors.secondary[500],
   shopping: '#8B5CF6',
@@ -39,6 +40,14 @@ const ACTIVITY_TYPE_COLORS: Record<string, string> = {
   rest: '#06B6D4',
   transport: colors.neutral[500],
   other: colors.neutral[400],
+  // Korean keys (backend data values)
+  관광: colors.primary[500],
+  식사: colors.secondary[500],
+  쇼핑: '#8B5CF6',
+  이동: colors.neutral[500],
+  숙소: '#059669',
+  체험: '#7C3AED',
+  휴식: '#06B6D4',
 };
 
 // Google Static Maps API only accepts single-character labels (0-9, A-Z)
@@ -79,6 +88,7 @@ const calculateZoom = (
 };
 
 const ACTIVITY_TYPE_ICONS: Record<string, string> = {
+  // English keys
   sightseeing: 'camera',
   food: 'silverware-fork-knife',
   shopping: 'shopping',
@@ -92,6 +102,14 @@ const ACTIVITY_TYPE_ICONS: Record<string, string> = {
   rest: 'coffee',
   transport: 'car',
   other: 'map-marker',
+  // Korean keys (backend data values)
+  관광: 'camera',
+  식사: 'silverware-fork-knife',
+  쇼핑: 'shopping',
+  이동: 'car',
+  숙소: 'bed',
+  체험: 'ticket',
+  휴식: 'coffee',
 };
 
 export const TripMapView: React.FC<Props> = ({ itineraries, destination }) => {
@@ -205,7 +223,7 @@ export const TripMapView: React.FC<Props> = ({ itineraries, destination }) => {
               isDark && selectedDay !== null && styles.textMuted,
             ]}
           >
-            All
+            {t('detail.map.allDays')}
           </Text>
         </TouchableOpacity>
         {dayNumbers.map((day) => (
@@ -225,7 +243,7 @@ export const TripMapView: React.FC<Props> = ({ itineraries, destination }) => {
                 isDark && selectedDay !== day && styles.textMuted,
               ]}
             >
-              Day {day}
+              {t('detail.map.dayLabel', { day })}
             </Text>
           </TouchableOpacity>
         ))}
@@ -257,10 +275,10 @@ export const TripMapView: React.FC<Props> = ({ itineraries, destination }) => {
           <View style={styles.mapPlaceholder}>
             <Icon name="google-maps" size={40} color={colors.primary[500]} />
             <Text style={[styles.mapPlaceholderText, isDark && styles.textDark]}>
-              {t('detail.map.openInMaps', 'Google Maps에서 보기')}
+              {t('detail.map.openInMaps')}
             </Text>
             <Text style={[styles.mapPlaceholderSub, isDark && styles.textMuted]}>
-              {t('detail.map.tapToOpen', '탭하여 지도 열기')}
+              {t('detail.map.tapToOpen')}
             </Text>
           </View>
         )}
@@ -306,7 +324,7 @@ export const TripMapView: React.FC<Props> = ({ itineraries, destination }) => {
                 </Text>
                 <View style={[styles.dayBadge, { backgroundColor: `${typeColor}20` }]}>
                   <Text style={[styles.dayBadgeText, { color: typeColor }]}>
-                    Day {activity.dayNumber}
+                    {t('detail.map.dayLabel', { day: activity.dayNumber })}
                   </Text>
                 </View>
               </View>
@@ -317,7 +335,7 @@ export const TripMapView: React.FC<Props> = ({ itineraries, destination }) => {
                 </Text>
               </View>
               <Text style={[styles.activityTime, isDark && styles.textMuted]}>
-                {activity.time} · {activity.estimatedDuration}min
+                {activity.time} · {t('detail.map.durationMin', { min: activity.estimatedDuration })}
               </Text>
             </View>
             <Icon name="chevron-right" size={20} color={colors.neutral[400]} />

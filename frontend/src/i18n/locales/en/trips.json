@@ -200,7 +200,12 @@
     "map": {
       "noLocations": "No locations to display",
       "noLocationsMessage": "Create a new trip to see activities with location data",
-      "activitiesCount": "{{count}} activities"
+      "activitiesCount": "{{count}} activities",
+      "allDays": "All",
+      "dayLabel": "Day {{day}}",
+      "openInMaps": "View in Google Maps",
+      "tapToOpen": "Tap to open map",
+      "durationMin": "{{min}}min"
     },
     "budget": {
       "title": "Budget Summary",

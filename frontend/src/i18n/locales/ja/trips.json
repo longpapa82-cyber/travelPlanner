@@ -200,7 +200,12 @@
     "map": {
       "noLocations": "表示する場所がありません",
       "noLocationsMessage": "位置情報付きの新しい旅行を作成してみましょう",
-      "activitiesCount": "{{count}}件のアクティビティ"
+      "activitiesCount": "{{count}}件のアクティビティ",
+      "allDays": "全て",
+      "dayLabel": "{{day}}日目",
+      "openInMaps": "Google Mapsで表示",
+      "tapToOpen": "タップして地図を開く",
+      "durationMin": "{{min}}分"
     },
     "budget": {
       "title": "予算概要",

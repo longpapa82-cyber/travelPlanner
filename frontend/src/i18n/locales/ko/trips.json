@@ -200,7 +200,12 @@
     "map": {
       "noLocations": "표시할 위치 정보가 없습니다",
       "noLocationsMessage": "활동에 위치 좌표가 포함된 새 여행을 만들어보세요",
-      "activitiesCount": "{{count}}개의 활동"
+      "activitiesCount": "{{count}}개의 활동",
+      "allDays": "전체",
+      "dayLabel": "{{day}}일차",
+      "openInMaps": "Google Maps에서 보기",
+      "tapToOpen": "탭하여 지도 열기",
+      "durationMin": "{{min}}분"
     },
     "budget": {
       "title": "예산 요약",
