@@ -32,6 +32,7 @@ import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
+import { trackEvent } from '../../services/eventTracker';
 import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -166,6 +167,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
 
     // Set new timeout for debounced search
     searchTimeoutRef.current = setTimeout(() => {
+      if (text) trackEvent('search', { query: text });
       fetchTrips({ search: text || undefined, status: selectedStatus || undefined });
     }, 500);
   }, [selectedStatus, appliedFilters]);
@@ -173,6 +175,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
   // Handle status filter change
   const handleStatusFilterChange = useCallback((status: 'upcoming' | 'ongoing' | 'completed' | null) => {
     setSelectedStatus(status);
+    trackEvent('filter_applied', { status: status || 'all' });
     fetchTrips({ search: searchText || undefined, status: status || undefined });
   }, [searchText, appliedFilters]);
 
@@ -244,6 +247,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
       try {
         await apiService.deleteTrip(trip.id);
         setTrips(prev => prev.filter(t => t.id !== trip.id));
+        trackEvent('trip_deleted', { tripId: trip.id });
         showToast({ type: 'success', message: t('detail.alerts.deleteSuccess'), position: 'top' });
       } catch (error: any) {
         const msg = error.response?.data?.message || t('list.alerts.deleteFailed');

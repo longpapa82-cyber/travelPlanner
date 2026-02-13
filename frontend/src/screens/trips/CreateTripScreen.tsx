@@ -36,6 +36,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
+import { trackEvent } from '../../services/eventTracker';
 import { useNotifications } from '../../contexts/NotificationContext';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
@@ -221,6 +222,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
 
       // Schedule trip reminder notifications
       scheduleTripReminders(trip).catch(() => {});
+      trackEvent('trip_created', { destination: destination.trim() });
 
       showToast({
         type: 'success',

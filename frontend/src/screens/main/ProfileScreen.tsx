@@ -26,6 +26,7 @@ import { useToast } from '../../components/feedback/Toast/ToastContext';
 import Button from '../../components/core/Button';
 import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import apiService from '../../services/api';
+import { trackEvent } from '../../services/eventTracker';
 
 const ProfileScreen = () => {
   const { t } = useTranslation('profile');
@@ -624,6 +625,7 @@ const ProfileScreen = () => {
                       const data = await apiService.enableTwoFactor(twoFACode);
                       setTwoFABackupCodes(data.backupCodes);
                       setTwoFAStep('backup');
+                      trackEvent('2fa_enabled');
                       showToast({ type: 'success', message: tAuth('twoFactor.alerts.enableSuccess'), position: 'top' });
                     } catch {
                       showToast({ type: 'error', message: tAuth('twoFactor.alerts.invalidCode'), position: 'top' });
@@ -700,6 +702,7 @@ const ProfileScreen = () => {
                       setIs2FASaving(true);
                       await apiService.disableTwoFactor(twoFACode);
                       setShow2FAModal(false);
+                      trackEvent('2fa_disabled');
                       showToast({ type: 'success', message: tAuth('twoFactor.alerts.disableSuccess'), position: 'top' });
                     } catch {
                       showToast({ type: 'error', message: tAuth('twoFactor.alerts.invalidCode'), position: 'top' });

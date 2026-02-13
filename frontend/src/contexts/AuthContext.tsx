@@ -4,6 +4,7 @@ import { STORAGE_KEYS } from '../constants/config';
 import apiService from '../services/api';
 import { secureStorage } from '../utils/storage';
 import { offlineCache } from '../services/offlineCache';
+import { trackEvent, flushEvents } from '../services/eventTracker';
 import {
   signInWithGoogle,
   signInWithApple,
@@ -108,6 +109,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authResponse.refreshToken);
 
       setUser(authResponse.user);
+      trackEvent('login', { method: 'email' });
       registerPushAfterLogin();
     } catch (error) {
       if (error instanceof TwoFactorRequiredError) throw error;
@@ -124,6 +126,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
 
       setUser(response.user);
+      trackEvent('login', { method: '2fa' });
       registerPushAfterLogin();
     } catch (error) {
       throw error;
@@ -139,6 +142,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
 
       setUser(response.user);
+      trackEvent('register', { method: 'email' });
     } catch (error) {
       throw error;
     }
@@ -164,6 +168,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const result = await signInWithGoogle();
       await handleOAuthResult(result);
+      trackEvent('login', { method: 'google' });
     } catch (error) {
       throw error;
     }
@@ -173,6 +178,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const result = await signInWithApple();
       await handleOAuthResult(result);
+      trackEvent('login', { method: 'apple' });
     } catch (error) {
       throw error;
     }
@@ -182,6 +188,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const result = await signInWithKakao();
       await handleOAuthResult(result);
+      trackEvent('login', { method: 'kakao' });
     } catch (error) {
       throw error;
     }
@@ -198,6 +205,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     try {
+      // Track logout and flush pending events before clearing auth
+      trackEvent('logout');
+      flushEvents();
+
       // Remove push token from backend before clearing auth
       try {
         await apiService.removePushToken();

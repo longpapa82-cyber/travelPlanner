@@ -31,6 +31,7 @@ import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
+import { trackEvent } from '../../services/eventTracker';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import { getDateLocale } from '../../utils/dateLocale';
@@ -225,6 +226,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       };
 
       await apiService.updateTrip(tripId, tripData);
+      trackEvent('trip_edited', { tripId });
 
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
         window.alert(t('edit.alerts.saveSuccessMessage'));

@@ -31,6 +31,7 @@ import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
+import { trackEvent } from '../../services/eventTracker';
 import { API_URL } from '../../constants/config';
 import Button from '../../components/core/Button';
 import { ActivityModal } from '../../components/ActivityModal';
@@ -87,6 +88,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       const data = await apiService.getTripById(tripId);
       setTrip(data);
+      trackEvent('trip_viewed', { tripId });
     } catch (error) {
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
         window.alert(t('detail.alerts.fetchError'));
@@ -155,6 +157,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     setIsDuplicating(true);
     try {
       const newTrip = await apiService.duplicateTrip(tripId);
+      trackEvent('trip_duplicated', { tripId });
       if (Platform.OS === 'web' && typeof window !== 'undefined') {
         window.alert(t('detail.alerts.duplicateSuccess'));
       } else {
@@ -199,6 +202,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       const { url } = await apiService.uploadPhoto(result.assets[0].uri);
       await apiService.updateTrip(tripId, { coverImage: url } as any);
       setTrip((prev) => prev ? { ...prev, coverImage: url } : prev);
+      trackEvent('cover_changed', { tripId });
     } catch {
       Alert.alert(t('detail.alerts.error'), t('detail.photos.uploadFailed'));
     }
@@ -230,6 +234,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       if (!confirmed) return;
       try {
         await apiService.deleteActivity(tripId, itineraryId, activityIndex);
+        trackEvent('activity_deleted', { tripId });
         await fetchTripDetails();
         window.alert(t('detail.alerts.deleteSuccess'));
       } catch (error: any) {
@@ -249,6 +254,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           onPress: async () => {
             try {
               await apiService.deleteActivity(tripId, itineraryId, activityIndex);
+              trackEvent('activity_deleted', { tripId });
               await fetchTripDetails();
               Alert.alert(t('detail.alerts.success'), t('detail.alerts.deleteSuccess'));
             } catch (error: any) {
@@ -295,6 +301,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         }
       }
       await fetchTripDetails();
+      trackEvent(modalMode === 'add' ? 'activity_added' : 'activity_edited', { tripId });
       setModalVisible(false);
     } catch (error: any) {
       throw error;
@@ -420,7 +427,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           onDuplicate={handleDuplicateTrip}
           onExportIcal={handleExportIcal}
           onChangeCoverPhoto={handleChangeCoverPhoto}
-          onShare={() => setShareModalVisible(true)}
+          onShare={() => { trackEvent('trip_shared', { tripId: trip.id }); setShareModalVisible(true); }}
         />
 
         <ScrollView
