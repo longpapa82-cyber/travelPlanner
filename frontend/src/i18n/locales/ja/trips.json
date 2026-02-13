@@ -185,7 +185,7 @@
     "travelers": "{{count}}人",
     "durationMinutes": "{{minutes}}分",
     "estimatedCost": "¥{{cost}}",
-    "dayLabel": "Day {{day}}",
+    "dayLabel": "{{day}}日目",
     "emptyItinerary": "まだ旅程が作成されていません",
     "emptyItineraryMessage": "旅程にアクティビティを追加しましょう",
     "addActivity": "アクティビティを追加",
@@ -216,7 +216,7 @@
       "byCategory": "カテゴリ別",
       "byDay": "日別",
       "perDay": "1日平均",
-      "dayLabel": "Day {{day}}"
+      "dayLabel": "{{day}}日目"
     },
     "activityTypes": {
       "meal": "食事",

@@ -185,7 +185,7 @@
     "travelers": "{{count}}명",
     "durationMinutes": "{{minutes}}분",
     "estimatedCost": "₩{{cost}}",
-    "dayLabel": "Day {{day}}",
+    "dayLabel": "{{day}}일차",
     "emptyItinerary": "아직 일정이 생성되지 않았습니다",
     "emptyItineraryMessage": "여행 일정을 추가해보세요",
     "addActivity": "활동 추가",
@@ -216,7 +216,7 @@
       "byCategory": "카테고리별",
       "byDay": "일자별",
       "perDay": "일 평균",
-      "dayLabel": "Day {{day}}"
+      "dayLabel": "{{day}}일차"
     },
     "activityTypes": {
       "meal": "식사",

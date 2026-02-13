@@ -13,6 +13,7 @@ interface Props {
 type TabKey = 'overview' | 'category' | 'daily';
 
 const CATEGORY_ICONS: Record<string, string> = {
+  // English keys
   meal: 'silverware-fork-knife',
   sightseeing: 'binoculars',
   shopping: 'shopping',
@@ -21,9 +22,18 @@ const CATEGORY_ICONS: Record<string, string> = {
   transport: 'bus',
   accommodation: 'bed',
   other: 'dots-horizontal',
+  // Korean keys (backend data values)
+  식사: 'silverware-fork-knife',
+  관광: 'binoculars',
+  쇼핑: 'shopping',
+  체험: 'star',
+  휴식: 'coffee',
+  이동: 'bus',
+  숙소: 'bed',
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
+  // English keys
   meal: '#F59E0B',
   sightseeing: '#3B82F6',
   shopping: '#EC4899',
@@ -32,6 +42,14 @@ const CATEGORY_COLORS: Record<string, string> = {
   transport: '#6366F1',
   accommodation: '#EF4444',
   other: '#6B7280',
+  // Korean keys (backend data values)
+  식사: '#F59E0B',
+  관광: '#3B82F6',
+  쇼핑: '#EC4899',
+  체험: '#8B5CF6',
+  휴식: '#10B981',
+  이동: '#6366F1',
+  숙소: '#EF4444',
 };
 
 export const BudgetSummary: React.FC<Props> = ({ trip }) => {
