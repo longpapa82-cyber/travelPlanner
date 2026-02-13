@@ -138,7 +138,7 @@ ${tripEntries}
     url,
     image: ogImage,
     provider: { '@type': 'Organization', name: 'TravelPlanner' },
-  })}</script>
+  }).replace(/</g, '\\u003c')}</script>
   <script>window.location.replace("${url}");</script>
 </head>
 <body>

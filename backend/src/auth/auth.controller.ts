@@ -66,6 +66,7 @@ export class AuthController {
   // Email Verification
   @Post('verify-email')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ short: { ttl: 60000, limit: 5 } })
   async verifyEmail(
     @Body() verifyEmailDto: VerifyEmailDto,
     @Headers('accept-language') acceptLanguage?: string,
@@ -105,6 +106,7 @@ export class AuthController {
 
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ short: { ttl: 60000, limit: 3 } })
   async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
     @Headers('accept-language') acceptLanguage?: string,

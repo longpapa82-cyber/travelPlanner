@@ -125,7 +125,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       setMode(newMode);
       setIsDark(resolveTheme(newMode));
       await storage.setItem(THEME_STORAGE_KEY, newMode);
-      console.log('Theme changed to:', newMode, 'isDark:', resolveTheme(newMode));
+      // Theme persisted successfully
     } catch (error) {
       console.error('Failed to save theme:', error);
     }

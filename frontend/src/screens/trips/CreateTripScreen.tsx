@@ -409,8 +409,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
               <DestinationInsights
                 destination={destination}
                 onRecommendationsLoaded={(recommendations) => {
-                  console.log('Recommendations loaded:', recommendations);
-                  // Optionally auto-fill recommended values
+                  // Auto-fill recommended values
                   if (recommendations.recommendedDuration && !startDate && !endDate) {
                     handleSelectDuration(recommendations.recommendedDuration);
                   }
