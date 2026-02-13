@@ -59,6 +59,12 @@
     },
     "submit": "旅行プランを作成",
     "generating": "AIが旅行プランを作成中...",
+    "progress": {
+      "analyzing": "目的地を分析中",
+      "planning": "旅程を作成中",
+      "weather": "天気情報を確認中",
+      "finalizing": "旅行プランを完成中"
+    },
     "alerts": {
       "destinationRequired": "旅行先を入力してください",
       "datesRequired": "旅行日程を選択してください",
@@ -88,7 +94,16 @@
     "empty": {
       "title": "まだ旅行の予定がありません",
       "description": "新しい旅行を計画しましょう！",
-      "cta": "AI旅行プランを始める"
+      "cta": "AI旅行プランを始める",
+      "noResults": "検索結果がありません",
+      "noResultsDescription": "別の検索ワードやフィルターをお試しください",
+      "clearFilters": "フィルターをクリア"
+    },
+    "error": {
+      "title": "旅行一覧を読み込めません",
+      "description": "ネットワーク接続を確認して再試行してください",
+      "retry": "再試行",
+      "refreshFailed": "更新に失敗しました"
     },
     "card": {
       "days": "{{days}}日間",

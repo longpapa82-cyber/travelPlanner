@@ -38,6 +38,7 @@ import { useTranslation } from 'react-i18next';
 import Button from '../../components/core/Button';
 import { WeatherWidget } from '../../components/WeatherWidget';
 import { AdBanner } from '../../components/ads';
+import { useToast } from '../../components/feedback/Toast/ToastContext';
 
 type TripListScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'TripList'>;
 
@@ -106,6 +107,8 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
   const [appliedFilters, setAppliedFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('trips');
+  const { showToast } = useToast();
+  const [fetchError, setFetchError] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -142,6 +145,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     filters?: AdvancedFilters;
   }) => {
     try {
+      setFetchError(false);
       const data = await apiService.getTrips(buildParams(params));
       // Handle both paginated response { trips, total } and legacy array response
       if (data && Array.isArray(data.trips)) {
@@ -155,6 +159,10 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
       }
     } catch (error) {
       console.error('Failed to fetch trips:', error);
+      setFetchError(true);
+      if (isRefreshing) {
+        showToast({ type: 'error', message: t('list.error.refreshFailed'), position: 'top' });
+      }
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -908,31 +916,65 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                 {
                   backgroundColor: isDark
                     ? colors.neutral[800]
-                    : colors.primary[50],
+                    : fetchError ? `${colors.error.main}15` : colors.primary[50],
                 },
               ]}
             >
               <Icon
-                name="bag-suitcase-outline"
+                name={fetchError ? 'wifi-off' : (searchText || selectedStatus) ? 'magnify-close' : 'bag-suitcase-outline'}
                 size={80}
-                color={theme.colors.primary}
+                color={fetchError ? colors.error.main : theme.colors.primary}
               />
             </View>
             <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>
-              {t('list.empty.title')}
+              {fetchError
+                ? t('list.error.title')
+                : (searchText || selectedStatus)
+                  ? t('list.empty.noResults')
+                  : t('list.empty.title')}
             </Text>
             <Text style={[styles.emptyDescription, { color: theme.colors.textSecondary }]}>
-              {t('list.empty.description')}
+              {fetchError
+                ? t('list.error.description')
+                : (searchText || selectedStatus)
+                  ? t('list.empty.noResultsDescription')
+                  : t('list.empty.description')}
             </Text>
             <View style={styles.emptyButtonWrapper}>
-              <Button
-                variant="primary"
-                size="lg"
-                icon="creation"
-                onPress={() => navigation.navigate('CreateTrip')}
-              >
-                {t('list.empty.cta')}
-              </Button>
+              {fetchError ? (
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon="refresh"
+                  onPress={() => fetchTrips()}
+                >
+                  {t('list.error.retry')}
+                </Button>
+              ) : (searchText || selectedStatus) ? (
+                <Button
+                  variant="outline"
+                  size="lg"
+                  icon="filter-remove"
+                  onPress={() => {
+                    setSearchText('');
+                    setSelectedStatus(null);
+                    setAppliedFilters(EMPTY_FILTERS);
+                    setAdvancedFilters(EMPTY_FILTERS);
+                    fetchTrips({ search: undefined, status: undefined, filters: EMPTY_FILTERS });
+                  }}
+                >
+                  {t('list.empty.clearFilters')}
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon="creation"
+                  onPress={() => navigation.navigate('CreateTrip')}
+                >
+                  {t('list.empty.cta')}
+                </Button>
+              )}
             </View>
           </Animated.View>
         )}

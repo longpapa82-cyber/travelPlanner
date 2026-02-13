@@ -59,6 +59,12 @@
     },
     "submit": "여행 계획 만들기",
     "generating": "AI가 여행 계획을 만들고 있어요...",
+    "progress": {
+      "analyzing": "목적지 분석 중",
+      "planning": "일정 생성 중",
+      "weather": "날씨 정보 확인 중",
+      "finalizing": "여행 계획 완성 중"
+    },
     "alerts": {
       "destinationRequired": "여행지를 입력해주세요",
       "datesRequired": "여행 날짜를 선택해주세요",
@@ -88,7 +94,16 @@
     "empty": {
       "title": "아직 계획된 여행이 없습니다",
       "description": "새로운 여행을 계획해보세요!",
-      "cta": "AI 여행 계획 시작하기"
+      "cta": "AI 여행 계획 시작하기",
+      "noResults": "검색 결과가 없습니다",
+      "noResultsDescription": "다른 검색어나 필터를 사용해보세요",
+      "clearFilters": "필터 초기화"
+    },
+    "error": {
+      "title": "여행 목록을 불러올 수 없습니다",
+      "description": "네트워크 연결을 확인하고 다시 시도해주세요",
+      "retry": "다시 시도",
+      "refreshFailed": "새로고침에 실패했습니다"
     },
     "card": {
       "days": "{{days}}일",

@@ -128,10 +128,12 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   // Fetch trip stats
   const fetchStats = useCallback(async () => {
     try {
-      const trips = await apiService.getTrips();
-      const completed = trips.filter((t: any) => t.status === 'completed').length;
-      const ongoing = trips.filter((t: any) => t.status === 'ongoing').length;
-      const upcoming = trips.filter((t: any) => t.status === 'upcoming').length;
+      const data = await apiService.getTrips();
+      // Handle both paginated { trips, total } and legacy array response
+      const tripList = Array.isArray(data) ? data : (data?.trips ?? []);
+      const completed = tripList.filter((t: any) => t.status === 'completed').length;
+      const ongoing = tripList.filter((t: any) => t.status === 'ongoing').length;
+      const upcoming = tripList.filter((t: any) => t.status === 'upcoming').length;
       setStats({ completed, ongoing, upcoming });
     } catch (error) {
       // Silent fail - stats are non-critical

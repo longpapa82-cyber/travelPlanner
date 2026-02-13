@@ -50,21 +50,51 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    if (emailError) setEmailError('');
+    if (loginError) setLoginError('');
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    if (passwordError) setPasswordError('');
+    if (loginError) setLoginError('');
+  };
+
+  const handleEmailBlur = () => {
+    if (email && !isValidEmail(email)) {
+      setEmailError(t('login.validation.emailInvalid'));
+    }
+  };
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert(t('login.alerts.inputError'), !email ? t('login.alerts.emailRequired') : t('login.alerts.passwordRequired'));
-      return;
+    let hasError = false;
+    if (!email) {
+      setEmailError(t('login.alerts.emailRequired'));
+      hasError = true;
+    } else if (!isValidEmail(email)) {
+      setEmailError(t('login.validation.emailInvalid'));
+      hasError = true;
     }
+    if (!password) {
+      setPasswordError(t('login.alerts.passwordRequired'));
+      hasError = true;
+    }
+    if (hasError) return;
 
     setIsLoading(true);
+    setLoginError('');
     try {
       await login(email, password);
     } catch (error: any) {
-      Alert.alert(
-        t('login.alerts.loginFailed'),
-        error.response?.data?.message || t('login.alerts.invalidCredentials')
-      );
+      setLoginError(error.response?.data?.message || t('login.alerts.invalidCredentials'));
     } finally {
       setIsLoading(false);
     }
@@ -152,14 +182,15 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.formSubtitle}>{t('login.subtitle')}</Text>
 
             {/* Email Input */}
-            <View style={styles.inputContainer}>
-              <Icon name="email-outline" size={20} color={colors.primary[400]} style={styles.inputIcon} />
+            <View style={[styles.inputContainer, emailError ? styles.inputError : null]}>
+              <Icon name="email-outline" size={20} color={emailError ? colors.error.main : colors.primary[400]} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
                 placeholder={t('login.emailPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={handleEmailChange}
+                onBlur={handleEmailBlur}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -168,16 +199,17 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 accessibilityHint={t('login.emailPlaceholder')}
               />
             </View>
+            {emailError ? <Text style={styles.fieldError}>{emailError}</Text> : null}
 
             {/* Password Input */}
-            <View style={styles.inputContainer}>
-              <Icon name="lock-outline" size={20} color={colors.primary[400]} style={styles.inputIcon} />
+            <View style={[styles.inputContainer, passwordError ? styles.inputError : null]}>
+              <Icon name="lock-outline" size={20} color={passwordError ? colors.error.main : colors.primary[400]} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
                 placeholder={t('login.passwordPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={handlePasswordChange}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
                 editable={!isLoading}
@@ -196,6 +228,15 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 />
               </TouchableOpacity>
             </View>
+            {passwordError ? <Text style={styles.fieldError}>{passwordError}</Text> : null}
+
+            {/* Login Error Banner */}
+            {loginError ? (
+              <View style={styles.loginErrorBanner}>
+                <Icon name="alert-circle-outline" size={18} color={colors.error.main} />
+                <Text style={styles.loginErrorText}>{loginError}</Text>
+              </View>
+            ) : null}
 
             {/* Forgot Password Link */}
             <TouchableOpacity
@@ -368,6 +409,31 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   },
   eyeIcon: {
     padding: theme.spacing.sm,
+  },
+  inputError: {
+    borderColor: colors.error.main,
+  },
+  fieldError: {
+    fontSize: 13,
+    color: colors.error.main,
+    marginTop: -theme.spacing.xs,
+    marginBottom: theme.spacing.sm,
+    marginLeft: theme.spacing.sm,
+  },
+  loginErrorBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: isDark ? `${colors.error.main}20` : `${colors.error.main}10`,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.md,
+    marginBottom: theme.spacing.md,
+    gap: theme.spacing.sm,
+  },
+  loginErrorText: {
+    flex: 1,
+    fontSize: 14,
+    color: colors.error.main,
+    lineHeight: 20,
   },
 
   // Forgot Password

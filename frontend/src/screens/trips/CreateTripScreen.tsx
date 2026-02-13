@@ -80,6 +80,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   const [numberOfTravelers, setNumberOfTravelers] = useState(1);
   const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [generationStep, setGenerationStep] = useState(0);
+  const progressAnim = useRef(new Animated.Value(0)).current;
+  const stepTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
   const { scheduleTripReminders } = useNotifications();
@@ -175,6 +178,30 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
     }
 
     setIsLoading(true);
+    setGenerationStep(0);
+    progressAnim.setValue(0);
+
+    // Animate progress steps to simulate multi-phase generation
+    const steps = [0, 1, 2, 3];
+    let stepIndex = 0;
+    Animated.timing(progressAnim, {
+      toValue: 0.2,
+      duration: 400,
+      useNativeDriver: false,
+    }).start();
+
+    stepTimerRef.current = setInterval(() => {
+      stepIndex++;
+      if (stepIndex < steps.length) {
+        setGenerationStep(stepIndex);
+        Animated.timing(progressAnim, {
+          toValue: (stepIndex + 1) / (steps.length + 1),
+          duration: 600,
+          useNativeDriver: false,
+        }).start();
+      }
+    }, 2000);
+
     try {
       const tripData = {
         destination: destination.trim(),
@@ -185,6 +212,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
       };
 
       const trip = await apiService.createTrip(tripData);
+
+      // Complete the progress bar
+      if (stepTimerRef.current) clearInterval(stepTimerRef.current);
+      Animated.timing(progressAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
 
       // Schedule trip reminder notifications
       scheduleTripReminders(trip).catch(() => {});
@@ -211,7 +246,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
         duration: 4000,
       });
     } finally {
+      if (stepTimerRef.current) clearInterval(stepTimerRef.current);
       setIsLoading(false);
+      setGenerationStep(0);
     }
   };
 
@@ -591,12 +628,69 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             </View>
           </View>
 
+          {/* Generation Progress */}
+          {isLoading && (
+            <View style={styles.progressContainer}>
+              <View style={styles.progressBarBg}>
+                <Animated.View
+                  style={[
+                    styles.progressBarFill,
+                    {
+                      width: progressAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0%', '100%'],
+                      }),
+                    },
+                  ]}
+                />
+              </View>
+              <View style={styles.progressSteps}>
+                {[
+                  { icon: 'map-search-outline', text: t('create.progress.analyzing') },
+                  { icon: 'calendar-edit', text: t('create.progress.planning') },
+                  { icon: 'weather-partly-cloudy', text: t('create.progress.weather') },
+                  { icon: 'check-circle-outline', text: t('create.progress.finalizing') },
+                ].map((step, idx) => (
+                  <View
+                    key={idx}
+                    style={[
+                      styles.progressStep,
+                      idx <= generationStep ? styles.progressStepActive : null,
+                    ]}
+                  >
+                    <Icon
+                      name={step.icon}
+                      size={18}
+                      color={idx <= generationStep ? theme.colors.primary : theme.colors.textSecondary}
+                    />
+                    <Text
+                      style={[
+                        styles.progressStepText,
+                        {
+                          color: idx <= generationStep
+                            ? theme.colors.primary
+                            : theme.colors.textSecondary,
+                          fontWeight: idx === generationStep ? '700' : '500',
+                        },
+                      ]}
+                    >
+                      {step.text}
+                    </Text>
+                    {idx === generationStep && (
+                      <ActivityIndicator size="small" color={theme.colors.primary} style={{ marginLeft: 4 }} />
+                    )}
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
           {/* Create Button */}
           <View style={styles.createButtonWrapper}>
             <Button
               variant="primary"
               size="lg"
-              icon="creation"
+              icon={isLoading ? undefined : 'creation'}
               fullWidth
               onPress={handleCreateTrip}
               loading={isLoading}
@@ -789,6 +883,39 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
     createButtonWrapper: {
       marginTop: 8,
+    },
+    progressContainer: {
+      marginBottom: 20,
+      padding: 16,
+      backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50],
+      borderRadius: 12,
+    },
+    progressBarBg: {
+      height: 6,
+      backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200],
+      borderRadius: 3,
+      overflow: 'hidden',
+      marginBottom: 16,
+    },
+    progressBarFill: {
+      height: '100%',
+      backgroundColor: colors.primary[500],
+      borderRadius: 3,
+    },
+    progressSteps: {
+      gap: 10,
+    },
+    progressStep: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      opacity: 0.5,
+    },
+    progressStepActive: {
+      opacity: 1,
+    },
+    progressStepText: {
+      fontSize: 14,
     },
   });
 

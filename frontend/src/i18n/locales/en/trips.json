@@ -59,6 +59,12 @@
     },
     "submit": "Create Travel Plan",
     "generating": "AI is creating your travel plan...",
+    "progress": {
+      "analyzing": "Analyzing destination",
+      "planning": "Creating itinerary",
+      "weather": "Checking weather info",
+      "finalizing": "Finalizing your plan"
+    },
     "alerts": {
       "destinationRequired": "Please enter a destination",
       "datesRequired": "Please select travel dates",
@@ -88,7 +94,16 @@
     "empty": {
       "title": "No trips planned yet",
       "description": "Start planning a new trip!",
-      "cta": "Start AI Travel Planning"
+      "cta": "Start AI Travel Planning",
+      "noResults": "No results found",
+      "noResultsDescription": "Try a different search term or filter",
+      "clearFilters": "Clear Filters"
+    },
+    "error": {
+      "title": "Unable to load trips",
+      "description": "Check your network connection and try again",
+      "retry": "Try Again",
+      "refreshFailed": "Failed to refresh"
     },
     "card": {
       "days": "{{days}} days",
