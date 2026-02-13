@@ -1098,7 +1098,7 @@ const createStyles = (theme: any, isDark: boolean) =>
     tripCard: {
       borderRadius: 20,
       overflow: 'hidden',
-      backgroundColor: theme.colors.white,
+      backgroundColor: isDark ? colors.neutral[800] : colors.neutral[300],
       ...theme.shadows.lg,
     },
     tripImage: {
