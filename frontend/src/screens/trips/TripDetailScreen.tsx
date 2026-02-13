@@ -876,10 +876,31 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const styles = createStyles(theme, isDark);
 
   if (isLoading) {
+    const skelBg = isDark ? colors.neutral[700] : colors.neutral[200];
+    const skelBase = isDark ? colors.neutral[800] : colors.neutral[100];
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={styles.loadingText}>{t('detail.loading')}</Text>
+        {/* Hero skeleton */}
+        <View style={{ width: '100%', height: 220, backgroundColor: skelBase }} />
+        <View style={{ padding: 16, gap: 12 }}>
+          <View style={{ width: '70%', height: 22, borderRadius: 6, backgroundColor: skelBg }} />
+          <View style={{ width: '40%', height: 16, borderRadius: 6, backgroundColor: skelBg }} />
+          <View style={{ width: '55%', height: 14, borderRadius: 6, backgroundColor: skelBg, marginTop: 4 }} />
+          {/* Day tabs skeleton */}
+          <View style={{ flexDirection: 'row', gap: 8, marginTop: 16 }}>
+            {[80, 60, 60].map((w, i) => (
+              <View key={i} style={{ width: w, height: 36, borderRadius: 18, backgroundColor: skelBg }} />
+            ))}
+          </View>
+          {/* Activity cards skeleton */}
+          {[1, 2, 3].map((i) => (
+            <View key={i} style={{ backgroundColor: skelBase, borderRadius: 12, padding: 14, gap: 8, marginTop: 8 }}>
+              <View style={{ width: '60%', height: 16, borderRadius: 4, backgroundColor: skelBg }} />
+              <View style={{ width: '80%', height: 12, borderRadius: 4, backgroundColor: skelBg }} />
+              <View style={{ width: '35%', height: 12, borderRadius: 4, backgroundColor: skelBg }} />
+            </View>
+          ))}
+        </View>
       </View>
     );
   }

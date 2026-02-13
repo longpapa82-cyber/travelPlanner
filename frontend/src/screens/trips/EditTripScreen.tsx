@@ -280,10 +280,34 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const styles = createStyles(theme, isDark);
 
   if (isLoading) {
+    const skelBg = isDark ? colors.neutral[700] : colors.neutral[200];
+    const skelBase = isDark ? colors.neutral[800] : colors.neutral[100];
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={styles.loadingText}>{t('edit.loading')}</Text>
+        {/* Hero image skeleton */}
+        <View style={{ width: '100%', height: 200, backgroundColor: skelBase }} />
+        <View style={{ padding: 16, gap: 14 }}>
+          {/* Status badge skeleton */}
+          <View style={{ width: 100, height: 28, borderRadius: 14, backgroundColor: skelBg }} />
+          {/* Title input skeleton */}
+          <View style={{ width: '80%', height: 20, borderRadius: 6, backgroundColor: skelBg }} />
+          <View style={{ width: '100%', height: 48, borderRadius: 10, backgroundColor: skelBase, marginTop: 4 }} />
+          {/* Date fields skeleton */}
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>
+            <View style={{ flex: 1, height: 48, borderRadius: 10, backgroundColor: skelBase }} />
+            <View style={{ flex: 1, height: 48, borderRadius: 10, backgroundColor: skelBase }} />
+          </View>
+          {/* Duration badge skeleton */}
+          <View style={{ width: 120, height: 24, borderRadius: 12, backgroundColor: skelBg, alignSelf: 'center', marginTop: 4 }} />
+          {/* Description skeleton */}
+          <View style={{ width: '50%', height: 18, borderRadius: 6, backgroundColor: skelBg, marginTop: 12 }} />
+          <View style={{ width: '100%', height: 80, borderRadius: 10, backgroundColor: skelBase }} />
+          {/* Budget + travelers skeleton */}
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>
+            <View style={{ flex: 1, height: 48, borderRadius: 10, backgroundColor: skelBase }} />
+            <View style={{ flex: 1, height: 48, borderRadius: 10, backgroundColor: skelBase }} />
+          </View>
+        </View>
       </View>
     );
   }

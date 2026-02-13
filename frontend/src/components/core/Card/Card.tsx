@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { CardProps } from './Card.types';
 import { getCardStyles } from './Card.styles';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 export const Card: React.FC<CardProps> = ({
   elevation = 'sm',
@@ -12,7 +13,8 @@ export const Card: React.FC<CardProps> = ({
   style,
   ...a11yProps
 }) => {
-  const styles = getCardStyles({ elevation, padding, borderRadius });
+  const { isDark } = useTheme();
+  const styles = getCardStyles({ elevation, padding, borderRadius, isDark });
 
   if (onPress) {
     return (

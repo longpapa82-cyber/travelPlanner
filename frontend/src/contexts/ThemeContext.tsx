@@ -45,7 +45,7 @@ export interface ThemeContextValue {
   // Theme objects
   theme: typeof lightTheme;
   themeV2: typeof themeV2;
-  colors: typeof colors | typeof darkColors;
+  colors: typeof colors;
 
   // Actions
   setTheme: (mode: ThemeMode) => void;
@@ -169,7 +169,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       }
     : lightTheme;
 
-  const currentColors = isDark ? darkColors : colors;
+  const currentColors = colors;
 
   const value: ThemeContextValue = {
     mode,

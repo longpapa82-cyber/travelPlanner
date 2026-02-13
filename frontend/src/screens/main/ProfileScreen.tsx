@@ -177,9 +177,26 @@ const ProfileScreen = () => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('analytics.title')}</Text>
         {statsLoading ? (
-          <View style={{ padding: 20, alignItems: 'center' }}>
-            <ActivityIndicator size="small" color={theme.colors.primary} />
-            <Text style={{ color: theme.colors.textSecondary, fontSize: 13, marginTop: 8 }}>{t('analytics.loading')}</Text>
+          <View style={{ padding: 16, gap: 16 }}>
+            {/* Trip counts skeleton */}
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              {[1, 2, 3].map((i) => (
+                <View key={i} style={{ flex: 1, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100], borderRadius: 12, padding: 12, alignItems: 'center', gap: 6 }}>
+                  <View style={{ width: 32, height: 28, borderRadius: 6, backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200] }} />
+                  <View style={{ width: 48, height: 12, borderRadius: 4, backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200] }} />
+                </View>
+              ))}
+            </View>
+            {/* Key stats skeleton */}
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              {[1, 2, 3].map((i) => (
+                <View key={i} style={{ flex: 1, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100], borderRadius: 12, padding: 12, alignItems: 'center', gap: 6 }}>
+                  <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200] }} />
+                  <View style={{ width: 36, height: 18, borderRadius: 4, backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200] }} />
+                  <View style={{ width: 48, height: 12, borderRadius: 4, backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200] }} />
+                </View>
+              ))}
+            </View>
           </View>
         ) : stats && stats.totalTrips > 0 ? (
           <View style={{ padding: 16, gap: 16 }}>
