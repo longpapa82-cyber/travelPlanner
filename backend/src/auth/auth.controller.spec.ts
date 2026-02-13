@@ -97,7 +97,7 @@ describe('AuthController (Integration)', () => {
         .expect(201);
 
       expect(response.body).toEqual(mockAuthResponse);
-      expect(authService.register).toHaveBeenCalledWith(registerDto);
+      expect(authService.register).toHaveBeenCalledWith(registerDto, 'ko');
       expect(authService.register).toHaveBeenCalledTimes(1);
     });
 
@@ -146,7 +146,7 @@ describe('AuthController (Integration)', () => {
         .send(invalidDto)
         .expect(400);
 
-      expect(response.body.message).toContain('email');
+      expect(response.body.message.some((m: string) => m.includes('email'))).toBe(true);
       expect(authService.register).not.toHaveBeenCalled();
     });
 
@@ -161,7 +161,7 @@ describe('AuthController (Integration)', () => {
         .send(invalidDto)
         .expect(400);
 
-      expect(response.body.message).toContain('name');
+      expect(response.body.message.some((m: string) => m.includes('name'))).toBe(true);
       expect(authService.register).not.toHaveBeenCalled();
     });
 
@@ -182,7 +182,7 @@ describe('AuthController (Integration)', () => {
         .send(registerDto)
         .expect(500); // NestJS converts unhandled exceptions to 500
 
-      expect(authService.register).toHaveBeenCalledWith(registerDto);
+      expect(authService.register).toHaveBeenCalledWith(registerDto, 'ko');
     });
   });
 
@@ -230,7 +230,7 @@ describe('AuthController (Integration)', () => {
         .send(invalidDto)
         .expect(400);
 
-      expect(response.body.message).toContain('password');
+      expect(response.body.message.some((m: string) => m.includes('password'))).toBe(true);
       expect(authService.login).not.toHaveBeenCalled();
     });
 
@@ -343,6 +343,7 @@ describe('AuthController (Integration)', () => {
 
   describe('GET /auth/me', () => {
     it('should return user profile when authenticated', async () => {
+      const now = new Date();
       const mockProfile = {
         id: mockUser.id,
         email: mockUser.email,
@@ -351,8 +352,8 @@ describe('AuthController (Integration)', () => {
         profileImage: mockUser.profileImage,
         isEmailVerified: false,
         isTwoFactorEnabled: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: now,
+        updatedAt: now,
       };
 
       authService.getProfile.mockResolvedValue(mockProfile);
@@ -362,7 +363,17 @@ describe('AuthController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
-      expect(response.body).toEqual(mockProfile);
+      // JSON serialization converts Dates to strings and drops undefined fields
+      expect(response.body).toEqual({
+        id: mockUser.id,
+        email: mockUser.email,
+        name: mockUser.name,
+        provider: mockUser.provider,
+        isEmailVerified: false,
+        isTwoFactorEnabled: false,
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
+      });
       expect(authService.getProfile).toHaveBeenCalledWith(mockUser.id);
       expect(authService.getProfile).toHaveBeenCalledTimes(1);
     });
@@ -623,7 +634,7 @@ describe('AuthController (Integration)', () => {
         .send(validDto)
         .expect(201);
 
-      expect(authService.register).toHaveBeenCalledWith(validDto);
+      expect(authService.register).toHaveBeenCalledWith(validDto, 'ko');
     });
   });
 });

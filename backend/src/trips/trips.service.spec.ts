@@ -5,6 +5,7 @@ import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { TripsService } from './trips.service';
 import { Trip, TripStatus } from './entities/trip.entity';
 import { Itinerary } from './entities/itinerary.entity';
+import { Collaborator } from './entities/collaborator.entity';
 import { AIService } from './services/ai.service';
 import { TimezoneService } from './services/timezone.service';
 import { WeatherService } from './services/weather.service';
@@ -144,6 +145,16 @@ describe('TripsService', () => {
             create: jest.fn(),
             save: jest.fn(),
             findOne: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(Collaborator),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+            create: jest.fn(),
+            save: jest.fn(),
+            remove: jest.fn(),
           },
         },
         {
@@ -392,6 +403,9 @@ describe('TripsService', () => {
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue(trips),
+        getCount: jest.fn().mockResolvedValue(2),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
       };
 
       tripRepository.createQueryBuilder = jest
@@ -407,7 +421,7 @@ describe('TripsService', () => {
       expect(queryBuilder.where).toHaveBeenCalledWith('trip.userId = :userId', {
         userId: mockUserId,
       });
-      expect(result).toHaveLength(2);
+      expect(result.trips).toHaveLength(2);
     });
 
     it('should filter trips by search term', async () => {
@@ -418,6 +432,9 @@ describe('TripsService', () => {
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([mockTrip]),
+        getCount: jest.fn().mockResolvedValue(1),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
       };
 
       tripRepository.createQueryBuilder = jest
@@ -430,7 +447,7 @@ describe('TripsService', () => {
       const result = await service.findAll(mockUserId, { search: 'Paris' });
 
       expect(queryBuilder.andWhere).toHaveBeenCalledWith(
-        '(trip.destination LIKE :search OR trip.description LIKE :search)',
+        '(trip.destination ILIKE :search OR trip.description ILIKE :search OR trip.country ILIKE :search OR trip.city ILIKE :search)',
         { search: '%Paris%' },
       );
       expect(result).toBeDefined();
@@ -444,6 +461,9 @@ describe('TripsService', () => {
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([mockTrip]),
+        getCount: jest.fn().mockResolvedValue(1),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
       };
 
       tripRepository.createQueryBuilder = jest
@@ -474,6 +494,9 @@ describe('TripsService', () => {
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([mockTrip]),
+        getCount: jest.fn().mockResolvedValue(1),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
       };
 
       tripRepository.createQueryBuilder = jest
@@ -502,6 +525,9 @@ describe('TripsService', () => {
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([mockTrip]),
+        getCount: jest.fn().mockResolvedValue(1),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
       };
 
       tripRepository.createQueryBuilder = jest
@@ -527,6 +553,9 @@ describe('TripsService', () => {
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([mockTrip]),
+        getCount: jest.fn().mockResolvedValue(1),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
       };
 
       tripRepository.createQueryBuilder = jest
@@ -553,6 +582,9 @@ describe('TripsService', () => {
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue(trips),
+        getCount: jest.fn().mockResolvedValue(2),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
       };
 
       tripRepository.createQueryBuilder = jest
@@ -586,6 +618,9 @@ describe('TripsService', () => {
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([tripWithItineraries]),
+        getCount: jest.fn().mockResolvedValue(1),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
       };
 
       tripRepository.createQueryBuilder = jest
@@ -597,9 +632,9 @@ describe('TripsService', () => {
 
       const result = await service.findAll(mockUserId);
 
-      expect(result[0].itineraries[0].dayNumber).toBe(1);
-      expect(result[0].itineraries[1].dayNumber).toBe(2);
-      expect(result[0].itineraries[2].dayNumber).toBe(3);
+      expect(result.trips[0].itineraries[0].dayNumber).toBe(1);
+      expect(result.trips[0].itineraries[1].dayNumber).toBe(2);
+      expect(result.trips[0].itineraries[2].dayNumber).toBe(3);
     });
   });
 
@@ -727,7 +762,7 @@ describe('TripsService', () => {
       ).rejects.toThrow(ForbiddenException);
       await expect(
         service.update(mockUserId, mockTripId, updateTripDto),
-      ).rejects.toThrow('Cannot modify completed trips');
+      ).rejects.toThrow('Cannot modify completed trips. Completed trips are read-only.');
     });
 
     it('should allow updating upcoming trips', async () => {

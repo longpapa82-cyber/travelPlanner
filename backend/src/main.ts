@@ -4,7 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import helmet from 'helmet';
 import { initSentry } from './common/sentry';
-import { SentryExceptionFilter } from './common/filters/sentry-exception.filter';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { AppModule } from './app.module';
 
 // Initialize Sentry before app creation
@@ -52,10 +52,8 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Global exception filter (Sentry reports 5xx errors)
-  if (process.env.SENTRY_DSN) {
-    app.useGlobalFilters(new SentryExceptionFilter(app.getHttpAdapter()));
-  }
+  // Global exception filter (consistent error responses + Sentry reporting)
+  app.useGlobalFilters(new AllExceptionsFilter(app.getHttpAdapter()));
 
   // Global validation pipe
   app.useGlobalPipes(

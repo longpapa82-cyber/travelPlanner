@@ -4,7 +4,11 @@ import request from 'supertest';
 import { TripsController } from './trips.controller';
 import { TripsService } from './trips.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ImageService } from '../common/image.service';
 import { TripStatus } from './entities/trip.entity';
+
+// Helper to simulate JSON serialization (Date -> string, undefined fields dropped)
+const jsonify = (obj: any) => JSON.parse(JSON.stringify(obj));
 
 describe('TripsController (Integration)', () => {
   let app: INestApplication;
@@ -89,6 +93,10 @@ describe('TripsController (Integration)', () => {
           provide: TripsService,
           useValue: mockTripsService,
         },
+        {
+          provide: ImageService,
+          useValue: { processUpload: jest.fn() },
+        },
       ],
     })
       .overrideGuard(JwtAuthGuard)
@@ -147,10 +155,11 @@ describe('TripsController (Integration)', () => {
         .send(createTripDto)
         .expect(201);
 
-      expect(response.body).toEqual(mockTrip);
+      expect(response.body).toEqual(jsonify(mockTrip));
       expect(tripsService.create).toHaveBeenCalledWith(
         mockUserId,
         createTripDto,
+        expect.any(String),
       );
       expect(tripsService.create).toHaveBeenCalledTimes(1);
     });
@@ -234,7 +243,7 @@ describe('TripsController (Integration)', () => {
         .send(minimalDto)
         .expect(201);
 
-      expect(tripsService.create).toHaveBeenCalledWith(mockUserId, minimalDto);
+      expect(tripsService.create).toHaveBeenCalledWith(mockUserId, minimalDto, expect.any(String));
     });
 
     it('should return 401/403 when not authenticated', async () => {
@@ -244,6 +253,10 @@ describe('TripsController (Integration)', () => {
           {
             provide: TripsService,
             useValue: mockTripsService,
+          },
+          {
+            provide: ImageService,
+            useValue: { processUpload: jest.fn() },
           },
         ],
       })
@@ -282,7 +295,7 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
-      expect(response.body).toEqual(mockTrips);
+      expect(response.body).toEqual(jsonify(mockTrips));
       expect(tripsService.findAll).toHaveBeenCalledWith(mockUserId, {});
       expect(tripsService.findAll).toHaveBeenCalledTimes(1);
     });
@@ -349,7 +362,7 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
-      expect(response.body).toEqual(mockTrip);
+      expect(response.body).toEqual(jsonify(mockTrip));
       expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, 'trip-123');
       expect(tripsService.findOne).toHaveBeenCalledTimes(1);
     });
@@ -405,7 +418,7 @@ describe('TripsController (Integration)', () => {
         .send(updateTripDto)
         .expect(200);
 
-      expect(response.body).toEqual(updatedTrip);
+      expect(response.body).toEqual(jsonify(updatedTrip));
       expect(tripsService.update).toHaveBeenCalledWith(
         mockUserId,
         'trip-123',
@@ -516,7 +529,7 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
-      expect(response.body).toEqual(upcomingTrips);
+      expect(response.body).toEqual(jsonify(upcomingTrips));
       expect(tripsService.getUpcomingTrips).toHaveBeenCalledWith(mockUserId);
     });
   });
@@ -531,7 +544,7 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
-      expect(response.body).toEqual(ongoingTrips);
+      expect(response.body).toEqual(jsonify(ongoingTrips));
       expect(tripsService.getOngoingTrips).toHaveBeenCalledWith(mockUserId);
     });
   });
@@ -546,7 +559,7 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
-      expect(response.body).toEqual(completedTrips);
+      expect(response.body).toEqual(jsonify(completedTrips));
       expect(tripsService.getCompletedTrips).toHaveBeenCalledWith(mockUserId);
     });
   });
@@ -576,7 +589,7 @@ describe('TripsController (Integration)', () => {
         .send(addActivityDto)
         .expect(201);
 
-      expect(response.body).toEqual(updatedItinerary);
+      expect(response.body).toEqual(jsonify(updatedItinerary));
       expect(tripsService.addActivity).toHaveBeenCalledWith(
         mockUserId,
         'trip-123',
@@ -616,7 +629,7 @@ describe('TripsController (Integration)', () => {
         .send(updateActivityDto)
         .expect(200);
 
-      expect(response.body).toEqual(updatedItinerary);
+      expect(response.body).toEqual(jsonify(updatedItinerary));
       expect(tripsService.updateActivity).toHaveBeenCalledWith(
         mockUserId,
         'trip-123',
@@ -660,7 +673,7 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
-      expect(response.body).toEqual(updatedItinerary);
+      expect(response.body).toEqual(jsonify(updatedItinerary));
       expect(tripsService.deleteActivity).toHaveBeenCalledWith(
         mockUserId,
         'trip-123',
@@ -704,7 +717,7 @@ describe('TripsController (Integration)', () => {
         .send({ expiresInDays: 7 })
         .expect(201);
 
-      expect(response.body).toEqual(shareResponse);
+      expect(response.body).toEqual(jsonify(shareResponse));
       expect(tripsService.generateShareToken).toHaveBeenCalledWith(
         'trip-123',
         mockUserId,
@@ -817,6 +830,10 @@ describe('TripsController (Integration)', () => {
           {
             provide: TripsService,
             useValue: mockTripsService,
+          },
+          {
+            provide: ImageService,
+            useValue: { processUpload: jest.fn() },
           },
         ],
       })

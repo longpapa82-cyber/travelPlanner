@@ -30,12 +30,19 @@ describe('UsersService', () => {
   };
 
   beforeEach(async () => {
+    const mockQueryBuilder = {
+      addSelect: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      getOne: jest.fn(),
+    };
+
     const mockRepository = {
       create: jest.fn(),
       save: jest.fn(),
       findOne: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
+      createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -182,21 +189,25 @@ describe('UsersService', () => {
   describe('findByEmail', () => {
     it('should return user if found by email', async () => {
       // Arrange
-      repository.findOne.mockResolvedValue(mockUser);
+      const qb = repository.createQueryBuilder('user');
+      (qb as any).getOne.mockResolvedValue(mockUser);
 
       // Act
       const result = await service.findByEmail(mockUser.email!);
 
       // Assert
-      expect(repository.findOne).toHaveBeenCalledWith({
-        where: { email: mockUser.email },
+      expect(repository.createQueryBuilder).toHaveBeenCalledWith('user');
+      expect((qb as any).addSelect).toHaveBeenCalledWith('user.passwordHash');
+      expect((qb as any).where).toHaveBeenCalledWith('user.email = :email', {
+        email: mockUser.email,
       });
       expect(result).toEqual(mockUser);
     });
 
     it('should return null if user not found', async () => {
       // Arrange
-      repository.findOne.mockResolvedValue(null);
+      const qb = repository.createQueryBuilder('user');
+      (qb as any).getOne.mockResolvedValue(null);
 
       // Act
       const result = await service.findByEmail('nonexistent@example.com');
@@ -208,14 +219,15 @@ describe('UsersService', () => {
     it('should handle email case sensitivity', async () => {
       // Arrange
       const email = 'Test@Example.COM';
-      repository.findOne.mockResolvedValue(mockUser);
+      const qb = repository.createQueryBuilder('user');
+      (qb as any).getOne.mockResolvedValue(mockUser);
 
       // Act
       await service.findByEmail(email);
 
       // Assert
-      expect(repository.findOne).toHaveBeenCalledWith({
-        where: { email },
+      expect((qb as any).where).toHaveBeenCalledWith('user.email = :email', {
+        email,
       });
     });
   });

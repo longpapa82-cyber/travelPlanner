@@ -24,6 +24,8 @@ describe('AuthService', () => {
     name: 'Test User',
     provider: AuthProvider.EMAIL,
     profileImage: null,
+    isEmailVerified: false,
+    isTwoFactorEnabled: false,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -40,6 +42,7 @@ describe('AuthService', () => {
       validatePassword: jest.fn(),
       findById: jest.fn(),
       findByProviderAndId: jest.fn(),
+      generateEmailVerificationToken: jest.fn().mockResolvedValue('mock-verification-token'),
     };
 
     const mockJwtService = {
@@ -128,6 +131,7 @@ describe('AuthService', () => {
           name: mockUser.name,
           provider: mockUser.provider,
           profileImage: null,
+          isEmailVerified: false,
         },
         accessToken: mockTokens.accessToken,
         refreshToken: mockTokens.refreshToken,
@@ -204,6 +208,7 @@ describe('AuthService', () => {
           name: mockUser.name,
           provider: mockUser.provider,
           profileImage: null,
+          isEmailVerified: false,
         },
         accessToken: mockTokens.accessToken,
         refreshToken: mockTokens.refreshToken,
@@ -306,6 +311,8 @@ describe('AuthService', () => {
         name: mockUser.name,
         provider: mockUser.provider,
         profileImage: mockUser.profileImage,
+        isEmailVerified: mockUser.isEmailVerified,
+        isTwoFactorEnabled: mockUser.isTwoFactorEnabled,
         createdAt: mockUser.createdAt,
         updatedAt: mockUser.updatedAt,
       });
@@ -348,13 +355,13 @@ describe('AuthService', () => {
 
       // Assert
       expect(usersService.findByProviderAndId).toHaveBeenCalledWith(
-        'GOOGLE',
+        AuthProvider.GOOGLE,
         oauthUser.providerId,
       );
       expect(usersService.create).toHaveBeenCalledWith({
         email: oauthUser.email,
         name: oauthUser.name,
-        provider: 'GOOGLE',
+        provider: AuthProvider.GOOGLE,
         providerId: oauthUser.providerId,
         profileImage: oauthUser.profileImage,
       });
@@ -380,7 +387,7 @@ describe('AuthService', () => {
 
       // Assert
       expect(usersService.findByProviderAndId).toHaveBeenCalledWith(
-        'GOOGLE',
+        AuthProvider.GOOGLE,
         oauthUser.providerId,
       );
       expect(usersService.create).not.toHaveBeenCalled();
@@ -388,6 +395,13 @@ describe('AuthService', () => {
     });
 
     it('should handle OAuth login for all providers', async () => {
+      // Map uppercase provider names to lowercase AuthProvider enum values
+      const providerMap: Record<string, AuthProvider> = {
+        GOOGLE: AuthProvider.GOOGLE,
+        APPLE: AuthProvider.APPLE,
+        KAKAO: AuthProvider.KAKAO,
+      };
+
       // Test Google
       await testOAuthProvider('GOOGLE');
       // Test Apple
@@ -399,7 +413,7 @@ describe('AuthService', () => {
         usersService.findByProviderAndId.mockResolvedValue(null);
         usersService.create.mockResolvedValue({
           ...mockUser,
-          provider: AuthProvider[provider],
+          provider: providerMap[provider],
         } as any);
         jwtService.signAsync
           .mockResolvedValueOnce(mockTokens.accessToken)
@@ -407,7 +421,7 @@ describe('AuthService', () => {
 
         await service.oauthLogin({ ...oauthUser, provider });
         expect(usersService.findByProviderAndId).toHaveBeenCalledWith(
-          provider,
+          providerMap[provider],
           oauthUser.providerId,
         );
       }
@@ -438,7 +452,7 @@ describe('AuthService', () => {
       expect(usersService.create).toHaveBeenCalledWith({
         email: undefined,
         name: appleUser.name,
-        provider: 'APPLE',
+        provider: AuthProvider.APPLE,
         providerId: appleUser.providerId,
         profileImage: undefined,
       });
@@ -472,7 +486,7 @@ describe('AuthService', () => {
       expect(usersService.create).toHaveBeenCalledWith({
         email: undefined,
         name: kakaoUser.name,
-        provider: 'KAKAO',
+        provider: AuthProvider.KAKAO,
         providerId: kakaoUser.providerId,
         profileImage: kakaoUser.profileImage,
       });
