@@ -21,6 +21,7 @@ import { AIService } from './services/ai.service';
 import { TimezoneService } from './services/timezone.service';
 import { WeatherService } from './services/weather.service';
 import { TripStatusScheduler } from './trip-status.scheduler';
+import { NotificationService } from '../common/notification.service';
 import {
   calculateTripStatus,
   updateItinerariesCompletionStatus,
@@ -41,6 +42,7 @@ export class TripsService {
     private readonly timezoneService: TimezoneService,
     private readonly weatherService: WeatherService,
     private readonly tripStatusScheduler: TripStatusScheduler,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async create(userId: string, createTripDto: CreateTripDto, language: string = 'ko'): Promise<Trip> {
@@ -997,7 +999,19 @@ export class TripsService {
       role,
       invitedBy: userId,
     });
-    return this.collaboratorRepository.save(collaborator);
+    const saved = await this.collaboratorRepository.save(collaborator);
+
+    // Send notification to the invited user
+    this.notificationService
+      .sendToUser(
+        (targetUser as any).id,
+        '🤝 여행 초대',
+        `${trip.destination} 여행에 초대되었습니다`,
+        { type: 'collaborator_invite', tripId },
+      )
+      .catch((err) => this.logger.warn('Failed to send collaborator notification', err));
+
+    return saved;
   }
 
   async removeCollaborator(tripId: string, userId: string, collaboratorId: string) {

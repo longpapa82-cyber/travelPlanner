@@ -53,6 +53,18 @@ export class TripStatusScheduler {
         trip.status = TripStatus.ONGOING;
         await this.tripRepository.save(trip);
         upcomingToOngoing++;
+
+        // Notify user that their trip has started
+        if (this.notificationService) {
+          this.notificationService
+            .sendToUser(
+              trip.userId,
+              '🌍 여행 시작!',
+              `${trip.destination} 여행이 시작되었습니다. 즐거운 여행 되세요!`,
+              { type: 'trip_started', tripId: trip.id },
+            )
+            .catch((err) => this.logger.warn('Failed to send trip start notification', err));
+        }
       }
 
       // Update ongoing → completed
@@ -68,6 +80,18 @@ export class TripStatusScheduler {
         trip.status = TripStatus.COMPLETED;
         await this.tripRepository.save(trip);
         ongoingToCompleted++;
+
+        // Notify user that their trip is complete
+        if (this.notificationService) {
+          this.notificationService
+            .sendToUser(
+              trip.userId,
+              '✅ 여행 완료!',
+              `${trip.destination} 여행이 완료되었습니다. 추억을 확인해보세요!`,
+              { type: 'trip_completed', tripId: trip.id },
+            )
+            .catch((err) => this.logger.warn('Failed to send trip complete notification', err));
+        }
       }
 
       this.logger.log(

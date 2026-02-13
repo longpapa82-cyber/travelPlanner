@@ -10,6 +10,7 @@ import { AIService } from './services/ai.service';
 import { TimezoneService } from './services/timezone.service';
 import { WeatherService } from './services/weather.service';
 import { TripStatusScheduler } from './trip-status.scheduler';
+import { NotificationService } from '../common/notification.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 
@@ -180,6 +181,13 @@ describe('TripsService', () => {
           provide: TripStatusScheduler,
           useValue: {
             validateAndUpdateTripStatus: jest.fn(),
+          },
+        },
+        {
+          provide: NotificationService,
+          useValue: {
+            sendToUser: jest.fn().mockResolvedValue(undefined),
+            sendToMultipleUsers: jest.fn().mockResolvedValue(undefined),
           },
         },
       ],
