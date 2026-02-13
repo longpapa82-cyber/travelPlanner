@@ -84,6 +84,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   const [budgetCurrency, setBudgetCurrency] = useState('USD');
   const [isLoading, setIsLoading] = useState(false);
   const [generationStep, setGenerationStep] = useState(0);
+  const [fieldErrors, setFieldErrors] = useState<{ destination?: string; dates?: string }>({});
   const progressAnim = useRef(new Animated.Value(0)).current;
   const stepTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { theme, isDark } = useTheme();
@@ -123,6 +124,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleSelectDestination = (dest: string) => {
     setDestination(dest);
+    if (dest.trim()) setFieldErrors(prev => ({ ...prev, destination: undefined }));
   };
 
   const handleSelectDuration = (days: number) => {
@@ -134,6 +136,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
 
     setStartDate(start.toISOString().split('T')[0]);
     setEndDate(end.toISOString().split('T')[0]);
+    setFieldErrors(prev => ({ ...prev, dates: undefined }));
   };
 
   const handleSelectTravelers = (count: number) => {
@@ -149,36 +152,25 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleCreateTrip = async () => {
-    // Validation
+    // Inline validation
+    const errors: { destination?: string; dates?: string } = {};
     if (!destination.trim()) {
-      showToast({
-        type: 'warning',
-        message: t('create.alerts.destinationRequired'),
-        position: 'top',
-      });
-      return;
+      errors.destination = t('create.alerts.destinationRequired');
     }
-
     if (!startDate || !endDate) {
-      showToast({
-        type: 'warning',
-        message: t('create.alerts.datesRequired'),
-        position: 'top',
-      });
+      errors.dates = t('create.alerts.datesRequired');
+    } else {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      if (start >= end) {
+        errors.dates = t('create.alerts.startDateRequired');
+      }
+    }
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
-
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (start >= end) {
-      showToast({
-        type: 'error',
-        message: t('create.alerts.startDateRequired'),
-        position: 'top',
-      });
-      return;
-    }
+    setFieldErrors({});
 
     setIsLoading(true);
     setGenerationStep(0);
@@ -394,21 +386,27 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             </View>
 
             {/* Custom Destination Input */}
-            <View style={styles.inputWrapper}>
+            <View style={[styles.inputWrapper, fieldErrors.destination && styles.inputError]}>
               <View style={styles.inputIconContainer}>
-                <Icon name="magnify" size={20} color={theme.colors.textSecondary} />
+                <Icon name="magnify" size={20} color={fieldErrors.destination ? colors.error.main : theme.colors.textSecondary} />
               </View>
               <TextInput
                 style={[styles.input, { color: theme.colors.text }]}
                 placeholder={t('create.destination.placeholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={destination}
-                onChangeText={setDestination}
+                onChangeText={(text) => {
+                  setDestination(text);
+                  if (text.trim()) setFieldErrors(prev => ({ ...prev, destination: undefined }));
+                }}
                 editable={!isLoading}
                 autoCapitalize="words"
                 accessibilityLabel={t('create.destination.title')}
               />
             </View>
+            {fieldErrors.destination && (
+              <Text style={styles.errorText}>{fieldErrors.destination}</Text>
+            )}
 
             {/* Destination Insights */}
             {destination && destination.trim().length >= 2 && (
@@ -473,7 +471,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
               <DatePickerField
                 label={t('create.dates.start')}
                 value={startDate}
-                onChange={setStartDate}
+                onChange={(val) => {
+                  setStartDate(val);
+                  if (val && endDate) setFieldErrors(prev => ({ ...prev, dates: undefined }));
+                }}
                 minimumDate={minStartDate}
                 disabled={isLoading}
               />
@@ -486,11 +487,17 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
               <DatePickerField
                 label={t('create.dates.end')}
                 value={endDate}
-                onChange={setEndDate}
+                onChange={(val) => {
+                  setEndDate(val);
+                  if (startDate && val) setFieldErrors(prev => ({ ...prev, dates: undefined }));
+                }}
                 minimumDate={startDate ? new Date(startDate + 'T00:00:00') : minStartDate}
                 disabled={isLoading}
               />
             </View>
+            {fieldErrors.dates && (
+              <Text style={styles.errorText}>{fieldErrors.dates}</Text>
+            )}
 
             {/* Duration Display */}
             {duration && duration > 0 && (
@@ -877,6 +884,17 @@ const createStyles = (theme: any, isDark: boolean) =>
       borderColor: isDark ? colors.neutral[700] : colors.neutral[200],
       paddingHorizontal: 16,
       height: 56,
+    },
+    inputError: {
+      borderColor: colors.error.main,
+      borderWidth: 1.5,
+    },
+    errorText: {
+      color: colors.error.main,
+      fontSize: 13,
+      fontWeight: '500',
+      marginTop: 6,
+      marginLeft: 4,
     },
     inputIconContainer: {
       marginRight: 12,

@@ -82,6 +82,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [description, setDescription] = useState('');
   const [totalBudget, setTotalBudget] = useState('');
   const [budgetCurrency, setBudgetCurrency] = useState('USD');
+  const [fieldErrors, setFieldErrors] = useState<{ destination?: string; dates?: string }>({});
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -146,6 +147,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleSelectDestination = (dest: string) => {
     setDestination(dest);
+    if (dest.trim()) setFieldErrors(prev => ({ ...prev, destination: undefined }));
   };
 
   const handleSelectTravelers = (count: number) => {
@@ -163,36 +165,25 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const handleSaveTrip = async () => {
     if (!trip) return;
 
-    // Validation
+    // Inline validation
+    const errors: { destination?: string; dates?: string } = {};
     if (!destination.trim()) {
-      if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert(t('edit.alerts.destinationRequired'));
-      } else {
-        Alert.alert(t('edit.alerts.requiredInput'), t('edit.alerts.destinationRequired'));
-      }
-      return;
+      errors.destination = t('edit.alerts.destinationRequired');
     }
-
     if (!startDate || !endDate) {
-      if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert(t('edit.alerts.datesRequired'));
-      } else {
-        Alert.alert(t('edit.alerts.requiredInput'), t('edit.alerts.datesRequired'));
+      errors.dates = t('edit.alerts.datesRequired');
+    } else {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      if (start >= end) {
+        errors.dates = t('edit.alerts.endDateError');
       }
+    }
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
-
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (start >= end) {
-      if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert(t('edit.alerts.endDateError'));
-      } else {
-        Alert.alert(t('edit.alerts.dateError'), t('edit.alerts.endDateError'));
-      }
-      return;
-    }
+    setFieldErrors({});
 
     // Warning for ongoing trips if dates changed
     if (trip.status === 'ongoing') {
@@ -473,21 +464,27 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
             </View>
 
             {/* Custom Destination Input */}
-            <View style={styles.inputWrapper}>
+            <View style={[styles.inputWrapper, fieldErrors.destination && styles.inputError]}>
               <View style={styles.inputIconContainer}>
-                <Icon name="magnify" size={20} color={theme.colors.textSecondary} />
+                <Icon name="magnify" size={20} color={fieldErrors.destination ? colors.error.main : theme.colors.textSecondary} />
               </View>
               <TextInput
                 style={[styles.input, { color: theme.colors.text }]}
                 placeholder={t('edit.destination.placeholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={destination}
-                onChangeText={setDestination}
+                onChangeText={(text) => {
+                  setDestination(text);
+                  if (text.trim()) setFieldErrors(prev => ({ ...prev, destination: undefined }));
+                }}
                 editable={!isSaving}
                 accessibilityLabel={t('edit.destination.title')}
                 autoCapitalize="words"
               />
             </View>
+            {fieldErrors.destination && (
+              <Text style={styles.fieldErrorText}>{fieldErrors.destination}</Text>
+            )}
           </View>
 
           {/* Duration */}
@@ -512,7 +509,10 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <DatePickerField
                 label={t('create.dates.start')}
                 value={startDate}
-                onChange={setStartDate}
+                onChange={(val) => {
+                  setStartDate(val);
+                  if (val && endDate) setFieldErrors(prev => ({ ...prev, dates: undefined }));
+                }}
                 disabled={isSaving}
               />
               <Icon
@@ -524,11 +524,17 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <DatePickerField
                 label={t('create.dates.end')}
                 value={endDate}
-                onChange={setEndDate}
+                onChange={(val) => {
+                  setEndDate(val);
+                  if (startDate && val) setFieldErrors(prev => ({ ...prev, dates: undefined }));
+                }}
                 minimumDate={startDate ? new Date(startDate + 'T00:00:00') : undefined}
                 disabled={isSaving}
               />
             </View>
+            {fieldErrors.dates && (
+              <Text style={styles.fieldErrorText}>{fieldErrors.dates}</Text>
+            )}
 
             {/* Duration Display */}
             {duration && duration > 0 && (
@@ -910,6 +916,17 @@ const createStyles = (theme: any, isDark: boolean) =>
       borderColor: isDark ? colors.neutral[700] : colors.neutral[200],
       paddingHorizontal: 16,
       height: 56,
+    },
+    inputError: {
+      borderColor: colors.error.main,
+      borderWidth: 1.5,
+    },
+    fieldErrorText: {
+      color: colors.error.main,
+      fontSize: 13,
+      fontWeight: '500',
+      marginTop: 6,
+      marginLeft: 4,
     },
     inputIconContainer: {
       marginRight: 12,

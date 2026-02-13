@@ -244,8 +244,8 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     const doDelete = async () => {
       try {
         await apiService.deleteTrip(trip.id);
-        // Remove from local state immediately
         setTrips(prev => prev.filter(t => t.id !== trip.id));
+        showToast({ type: 'success', message: t('detail.alerts.deleteSuccess'), position: 'top' });
       } catch (error: any) {
         const msg = error.response?.data?.message || t('list.alerts.deleteFailed');
         if (Platform.OS === 'web' && typeof window !== 'undefined') {

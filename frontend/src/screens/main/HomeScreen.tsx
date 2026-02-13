@@ -40,6 +40,7 @@ import { Badge } from '../../components/core/Badge';
 import { Section } from '../../components/layout/Section';
 import { FadeIn } from '../../components/animation/FadeIn';
 import { SlideIn } from '../../components/animation/SlideIn';
+import { Shimmer } from '../../components/animation/Shimmer';
 import PopularDestinations from '../../components/PopularDestinations';
 import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import apiService from '../../services/api';
@@ -120,6 +121,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const CARD_WIDTH = SCREEN_WIDTH * 0.75;
   const [stats, setStats] = useState({ completed: 0, ongoing: 0, upcoming: 0 });
+  const [isStatsLoading, setIsStatsLoading] = useState(true);
   const FEATURED_DESTINATIONS = getFeaturedDestinations(t);
 
   // Animation values
@@ -128,6 +130,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   // Fetch trip stats
   const fetchStats = useCallback(async () => {
+    setIsStatsLoading(true);
     try {
       const data = await apiService.getTrips();
       // Handle both paginated { trips, total } and legacy array response
@@ -138,6 +141,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       setStats({ completed, ongoing, upcoming });
     } catch (error) {
       // Silent fail - stats are non-critical
+    } finally {
+      setIsStatsLoading(false);
     }
   }, []);
 
@@ -231,23 +236,37 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       {/* Quick Stats - Using new Card component */}
       <FadeIn duration={600} delay={200}>
         <View style={styles.statsContainer} testID="trip-stats">
-          <Card elevation="sm" padding="md" style={styles.statCard}>
-            <Icon name="airplane-takeoff" size={28} color={colors.primary[500]} />
-            <Text style={styles.statValue}>{stats.completed}</Text>
-            <Text style={styles.statLabel}>{t('stats.completed')}</Text>
-          </Card>
+          {isStatsLoading ? (
+            <>
+              {[colors.primary[500], colors.secondary[500], colors.accent].map((color, i) => (
+                <Card key={i} elevation="sm" padding="md" style={styles.statCard}>
+                  <Shimmer width={28} height={28} borderRadius={14} />
+                  <Shimmer width={40} height={24} borderRadius={4} style={{ marginTop: 8 }} />
+                  <Shimmer width={50} height={12} borderRadius={4} style={{ marginTop: 4 }} />
+                </Card>
+              ))}
+            </>
+          ) : (
+            <>
+              <Card elevation="sm" padding="md" style={styles.statCard}>
+                <Icon name="airplane-takeoff" size={28} color={colors.primary[500]} />
+                <Text style={styles.statValue}>{stats.completed}</Text>
+                <Text style={styles.statLabel}>{t('stats.completed')}</Text>
+              </Card>
 
-          <Card elevation="sm" padding="md" style={styles.statCard}>
-            <Icon name="map-marker-multiple" size={28} color={colors.secondary[500]} />
-            <Text style={styles.statValue}>{stats.ongoing}</Text>
-            <Text style={styles.statLabel}>{t('stats.ongoing')}</Text>
-          </Card>
+              <Card elevation="sm" padding="md" style={styles.statCard}>
+                <Icon name="map-marker-multiple" size={28} color={colors.secondary[500]} />
+                <Text style={styles.statValue}>{stats.ongoing}</Text>
+                <Text style={styles.statLabel}>{t('stats.ongoing')}</Text>
+              </Card>
 
-          <Card elevation="sm" padding="md" style={styles.statCard}>
-            <Icon name="calendar-clock" size={28} color={colors.accent} />
-            <Text style={styles.statValue}>{stats.upcoming}</Text>
-            <Text style={styles.statLabel}>{t('stats.upcoming')}</Text>
-          </Card>
+              <Card elevation="sm" padding="md" style={styles.statCard}>
+                <Icon name="calendar-clock" size={28} color={colors.accent} />
+                <Text style={styles.statValue}>{stats.upcoming}</Text>
+                <Text style={styles.statLabel}>{t('stats.upcoming')}</Text>
+              </Card>
+            </>
+          )}
         </View>
       </FadeIn>
 
