@@ -32,6 +32,11 @@
     "trips": "내 여행",
     "profile": "프로필"
   },
+  "pwa": {
+    "installTitle": "앱으로 설치하기",
+    "installMessage": "홈 화면에 추가하면 더 빠르게 이용할 수 있어요",
+    "install": "설치"
+  },
   "emailVerification": {
     "banner": {
       "title": "이메일 인증이 필요합니다",

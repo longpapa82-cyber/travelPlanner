@@ -32,6 +32,11 @@
     "trips": "My Trips",
     "profile": "Profile"
   },
+  "pwa": {
+    "installTitle": "Install as app",
+    "installMessage": "Add to home screen for a faster experience",
+    "install": "Install"
+  },
   "emailVerification": {
     "banner": {
       "title": "Email verification needed",

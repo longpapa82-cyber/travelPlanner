@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, Platform, View, Text, StyleSheet } from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import * as Font from 'expo-font';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { ToastProvider } from './src/components/feedback/Toast/ToastContext';
@@ -11,6 +11,7 @@ import { NotificationProvider } from './src/contexts/NotificationContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import ErrorBoundary from './src/components/ErrorBoundary';
 import { OfflineBanner } from './src/components/OfflineBanner';
+import { PWAInstallPrompt } from './src/components/PWAInstallPrompt';
 import { initI18n } from './src/i18n';
 import { initSentry } from './src/common/sentry';
 import { initWebVitals } from './src/common/web-vitals';
@@ -25,6 +26,27 @@ initWebVitals();
 if (Platform.OS === 'web' && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+
+  // Listen for SW update notifications — reload to pick up new cached assets
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data?.type === 'SW_UPDATED') {
+      window.location.reload();
+    }
+  });
+}
+
+// React Query online manager: pause mutations when offline, resume when back online
+if (Platform.OS === 'web' && typeof window !== 'undefined') {
+  onlineManager.setEventListener((setOnline) => {
+    const onlineHandler = () => setOnline(true);
+    const offlineHandler = () => setOnline(false);
+    window.addEventListener('online', onlineHandler);
+    window.addEventListener('offline', offlineHandler);
+    return () => {
+      window.removeEventListener('online', onlineHandler);
+      window.removeEventListener('offline', offlineHandler);
+    };
   });
 }
 
@@ -126,6 +148,7 @@ const AppContent = () => {
     <>
       <OfflineBanner />
       <RootNavigator />
+      <PWAInstallPrompt />
       <StatusBar style={isDark ? 'light' : 'dark'} />
     </>
   );

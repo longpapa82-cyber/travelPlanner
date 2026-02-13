@@ -32,6 +32,11 @@
     "trips": "旅行",
     "profile": "プロフィール"
   },
+  "pwa": {
+    "installTitle": "アプリとしてインストール",
+    "installMessage": "ホーム画面に追加すると、より快適にご利用いただけます",
+    "install": "インストール"
+  },
   "emailVerification": {
     "banner": {
       "title": "メール認証が必要です",
