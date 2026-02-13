@@ -80,6 +80,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   const [endDate, setEndDate] = useState('');
   const [numberOfTravelers, setNumberOfTravelers] = useState(1);
   const [description, setDescription] = useState('');
+  const [totalBudget, setTotalBudget] = useState('');
+  const [budgetCurrency, setBudgetCurrency] = useState('USD');
   const [isLoading, setIsLoading] = useState(false);
   const [generationStep, setGenerationStep] = useState(0);
   const progressAnim = useRef(new Animated.Value(0)).current;
@@ -204,12 +206,15 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
     }, 2000);
 
     try {
+      const budgetNum = totalBudget ? parseFloat(totalBudget) : undefined;
       const tripData = {
         destination: destination.trim(),
         startDate,
         endDate,
         numberOfTravelers,
         description: description.trim() || undefined,
+        totalBudget: budgetNum && budgetNum > 0 ? budgetNum : undefined,
+        budgetCurrency: budgetNum && budgetNum > 0 ? budgetCurrency : undefined,
       };
 
       const trip = await apiService.createTrip(tripData);
@@ -606,6 +611,81 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             </View>
           </View>
 
+          {/* Budget */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Icon name="wallet-outline" size={24} color={theme.colors.primary} />
+              <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                {t('create.budget.title')}
+              </Text>
+            </View>
+
+            <View style={styles.budgetRow}>
+              {/* Currency Selector */}
+              <View style={styles.currencySelector}>
+                {['KRW', 'USD', 'JPY', 'EUR'].map((cur) => (
+                  <TouchableOpacity
+                    key={cur}
+                    style={[
+                      styles.currencyChip,
+                      {
+                        backgroundColor:
+                          budgetCurrency === cur
+                            ? theme.colors.primary
+                            : isDark
+                            ? colors.neutral[800]
+                            : colors.neutral[100],
+                        borderColor:
+                          budgetCurrency === cur
+                            ? theme.colors.primary
+                            : theme.colors.border,
+                      },
+                    ]}
+                    onPress={() => setBudgetCurrency(cur)}
+                    disabled={isLoading}
+                    accessibilityRole="button"
+                    accessibilityLabel={cur}
+                    accessibilityState={{ selected: budgetCurrency === cur }}
+                  >
+                    <Text
+                      style={[
+                        styles.currencyChipText,
+                        {
+                          color:
+                            budgetCurrency === cur
+                              ? colors.neutral[0]
+                              : theme.colors.text,
+                        },
+                      ]}
+                    >
+                      {cur}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* Budget Amount Input */}
+              <View style={styles.inputWrapper}>
+                <View style={styles.inputIconContainer}>
+                  <Icon name="cash" size={20} color={theme.colors.textSecondary} />
+                </View>
+                <TextInput
+                  style={[styles.input, { color: theme.colors.text }]}
+                  placeholder={t('create.budget.placeholder')}
+                  placeholderTextColor={theme.colors.textSecondary}
+                  value={totalBudget}
+                  onChangeText={(text) => {
+                    const cleaned = text.replace(/[^0-9.]/g, '');
+                    setTotalBudget(cleaned);
+                  }}
+                  keyboardType="decimal-pad"
+                  editable={!isLoading}
+                  accessibilityLabel={t('create.budget.title')}
+                />
+              </View>
+            </View>
+          </View>
+
           {/* Info Box */}
           <View
             style={[
@@ -860,6 +940,24 @@ const createStyles = (theme: any, isDark: boolean) =>
       fontSize: 16,
       lineHeight: 22,
       minHeight: 88,
+    },
+    budgetRow: {
+      gap: 12,
+    },
+    currencySelector: {
+      flexDirection: 'row',
+      gap: 8,
+      marginBottom: 12,
+    },
+    currencyChip: {
+      paddingHorizontal: 14,
+      paddingVertical: 8,
+      borderRadius: 16,
+      borderWidth: 1,
+    },
+    currencyChipText: {
+      fontSize: 13,
+      fontWeight: '700',
     },
     infoBox: {
       flexDirection: 'row',

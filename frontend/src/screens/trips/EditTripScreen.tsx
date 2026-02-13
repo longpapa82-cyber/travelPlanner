@@ -80,6 +80,8 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [endDate, setEndDate] = useState('');
   const [numberOfTravelers, setNumberOfTravelers] = useState(1);
   const [description, setDescription] = useState('');
+  const [totalBudget, setTotalBudget] = useState('');
+  const [budgetCurrency, setBudgetCurrency] = useState('USD');
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -127,6 +129,8 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       setEndDate(data.endDate.split('T')[0]);
       setNumberOfTravelers(data.numberOfTravelers || 1);
       setDescription(data.description || '');
+      setTotalBudget(data.totalBudget ? String(data.totalBudget) : '');
+      setBudgetCurrency(data.budgetCurrency || 'USD');
     } catch (error) {
       console.error('Failed to fetch trip details:', error);
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
@@ -219,12 +223,15 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const saveTrip = async () => {
     setIsSaving(true);
     try {
+      const budgetNum = totalBudget ? parseFloat(totalBudget) : undefined;
       const tripData = {
         destination: destination.trim(),
         startDate,
         endDate,
         numberOfTravelers,
         description: description.trim() || undefined,
+        totalBudget: budgetNum && budgetNum > 0 ? budgetNum : undefined,
+        budgetCurrency: budgetNum && budgetNum > 0 ? budgetCurrency : undefined,
       };
 
       await apiService.updateTrip(tripId, tripData);
@@ -643,6 +650,81 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
             </View>
           </View>
 
+          {/* Budget */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Icon name="wallet-outline" size={24} color={theme.colors.primary} />
+              <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                {t('edit.budget.title')}
+              </Text>
+            </View>
+
+            <View style={styles.budgetRow}>
+              {/* Currency Selector */}
+              <View style={styles.currencySelector}>
+                {['KRW', 'USD', 'JPY', 'EUR'].map((cur) => (
+                  <TouchableOpacity
+                    key={cur}
+                    style={[
+                      styles.currencyChip,
+                      {
+                        backgroundColor:
+                          budgetCurrency === cur
+                            ? theme.colors.primary
+                            : isDark
+                            ? colors.neutral[800]
+                            : colors.neutral[100],
+                        borderColor:
+                          budgetCurrency === cur
+                            ? theme.colors.primary
+                            : theme.colors.border,
+                      },
+                    ]}
+                    onPress={() => setBudgetCurrency(cur)}
+                    disabled={isSaving}
+                    accessibilityRole="button"
+                    accessibilityLabel={cur}
+                    accessibilityState={{ selected: budgetCurrency === cur }}
+                  >
+                    <Text
+                      style={[
+                        styles.currencyChipText,
+                        {
+                          color:
+                            budgetCurrency === cur
+                              ? colors.neutral[0]
+                              : theme.colors.text,
+                        },
+                      ]}
+                    >
+                      {cur}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* Budget Amount Input */}
+              <View style={styles.inputWrapper}>
+                <View style={styles.inputIconContainer}>
+                  <Icon name="cash" size={20} color={theme.colors.textSecondary} />
+                </View>
+                <TextInput
+                  style={[styles.input, { color: theme.colors.text }]}
+                  placeholder={t('edit.budget.placeholder')}
+                  placeholderTextColor={theme.colors.textSecondary}
+                  value={totalBudget}
+                  onChangeText={(text) => {
+                    const cleaned = text.replace(/[^0-9.]/g, '');
+                    setTotalBudget(cleaned);
+                  }}
+                  keyboardType="decimal-pad"
+                  editable={!isSaving}
+                  accessibilityLabel={t('edit.budget.title')}
+                />
+              </View>
+            </View>
+          </View>
+
           {/* Save Button */}
           <View style={styles.saveButtonWrapper}>
             <Button
@@ -891,6 +973,24 @@ const createStyles = (theme: any, isDark: boolean) =>
       fontSize: 16,
       lineHeight: 22,
       minHeight: 88,
+    },
+    budgetRow: {
+      gap: 12,
+    },
+    currencySelector: {
+      flexDirection: 'row',
+      gap: 8,
+      marginBottom: 12,
+    },
+    currencyChip: {
+      paddingHorizontal: 14,
+      paddingVertical: 8,
+      borderRadius: 16,
+      borderWidth: 1,
+    },
+    currencyChipText: {
+      fontSize: 13,
+      fontWeight: '700',
     },
     saveButtonWrapper: {
       marginTop: 8,

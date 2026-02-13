@@ -53,6 +53,11 @@
       "placeholder": "例：グルメ中心、観光メイン、自由旅行...",
       "optional": "（任意）"
     },
+    "budget": {
+      "title": "旅行予算（任意）",
+      "placeholder": "総予算を入力",
+      "currency": "通貨"
+    },
     "aiInfo": {
       "title": "AI自動生成",
       "description": "目的地とスケジュールに合わせてAIが最適な旅行プランを自動生成します"
@@ -307,6 +312,11 @@
     "notes": {
       "title": "旅行メモ（任意）",
       "placeholder": "旅行の目的や特別な要望を自由に入力してください"
+    },
+    "budget": {
+      "title": "旅行予算（任意）",
+      "placeholder": "総予算を入力",
+      "currency": "通貨"
     },
     "submit": "旅行情報を保存",
     "saving": "保存中...",

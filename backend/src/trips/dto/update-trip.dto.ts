@@ -3,6 +3,7 @@ import {
   IsDateString,
   IsOptional,
   IsInt,
+  IsNumber,
   Min,
   IsObject,
   IsEnum,
@@ -58,4 +59,14 @@ export class UpdateTripDto {
   @IsString()
   @IsOptional()
   coverImage?: string;
+
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  totalBudget?: number;
+
+  @IsString()
+  @MaxLength(3)
+  @IsOptional()
+  budgetCurrency?: string;
 }

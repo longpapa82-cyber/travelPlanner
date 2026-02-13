@@ -53,6 +53,11 @@
       "placeholder": "예: 맛집 위주로, 관광지 중심으로, 자유 여행...",
       "optional": "(선택사항)"
     },
+    "budget": {
+      "title": "여행 예산 (선택)",
+      "placeholder": "총 예산 입력",
+      "currency": "통화"
+    },
     "aiInfo": {
       "title": "AI 자동 생성",
       "description": "목적지와 일정에 맞춰 AI가 최적의 여행 계획을 자동으로 생성합니다"
@@ -307,6 +312,11 @@
     "notes": {
       "title": "여행 설명 (선택)",
       "placeholder": "여행의 목적이나 특별한 요구사항을 자유롭게 입력하세요"
+    },
+    "budget": {
+      "title": "여행 예산 (선택)",
+      "placeholder": "총 예산 입력",
+      "currency": "통화"
     },
     "submit": "여행 정보 저장",
     "saving": "저장 중...",

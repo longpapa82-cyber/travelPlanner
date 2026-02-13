@@ -53,6 +53,11 @@
       "placeholder": "e.g., food-focused, sightseeing, free travel...",
       "optional": "(Optional)"
     },
+    "budget": {
+      "title": "Trip Budget (Optional)",
+      "placeholder": "Enter total budget",
+      "currency": "Currency"
+    },
     "aiInfo": {
       "title": "AI Auto-Generation",
       "description": "AI will create the optimal travel plan based on your destination and schedule"
@@ -307,6 +312,11 @@
     "notes": {
       "title": "Trip Notes (Optional)",
       "placeholder": "Feel free to add any goals or special requirements"
+    },
+    "budget": {
+      "title": "Trip Budget (Optional)",
+      "placeholder": "Enter total budget",
+      "currency": "Currency"
     },
     "submit": "Save Trip Info",
     "saving": "Saving...",

@@ -3,6 +3,7 @@ import {
   IsDateString,
   IsOptional,
   IsInt,
+  IsNumber,
   Min,
   IsObject,
   IsArray,
@@ -46,4 +47,14 @@ export class CreateTripDto {
     travelStyle?: string;
     interests?: string[];
   };
+
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  totalBudget?: number;
+
+  @IsString()
+  @MaxLength(3)
+  @IsOptional()
+  budgetCurrency?: string;
 }

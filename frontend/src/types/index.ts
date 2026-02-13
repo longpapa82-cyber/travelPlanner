@@ -99,6 +99,8 @@ export interface CreateTripDto {
   description?: string;
   numberOfTravelers?: number;
   preferences?: TripPreferences;
+  totalBudget?: number;
+  budgetCurrency?: string;
 }
 
 // Navigation types
