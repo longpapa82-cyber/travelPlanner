@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { memo, useMemo, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -112,7 +112,7 @@ const ACTIVITY_TYPE_ICONS: Record<string, string> = {
   휴식: 'coffee',
 };
 
-export const TripMapView: React.FC<Props> = ({ itineraries, destination }) => {
+export const TripMapView: React.FC<Props> = memo(({ itineraries, destination }) => {
   const { t } = useTranslation('trips');
   const { theme, isDark } = useTheme();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -344,7 +344,7 @@ export const TripMapView: React.FC<Props> = ({ itineraries, destination }) => {
       })}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

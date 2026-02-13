@@ -78,7 +78,6 @@ const AdSense: React.FC<AdSenseProps> = ({
   useEffect(() => {
     // Only run on web platform
     if (Platform.OS !== 'web') {
-      console.warn('AdSense: This component only works on web platform');
       return;
     }
 
@@ -98,10 +97,10 @@ const AdSense: React.FC<AdSenseProps> = ({
             isInitialized.current = true;
           }
         } else {
-          console.warn('AdSense: adsbygoogle script not loaded yet');
+          if (__DEV__) console.warn('AdSense: adsbygoogle script not loaded yet');
         }
       } catch (error) {
-        console.error('AdSense initialization error:', error);
+        if (__DEV__) console.error('AdSense initialization error:', error);
       }
     };
 
@@ -119,7 +118,7 @@ const AdSense: React.FC<AdSenseProps> = ({
       };
 
       script.onerror = () => {
-        console.error('Failed to load AdSense script');
+        if (__DEV__) console.error('Failed to load AdSense script');
       };
 
       document.head.appendChild(script);

@@ -128,7 +128,6 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
         setCurrentPage(1);
       }
     } catch (error) {
-      console.error('Failed to fetch trips:', error);
       setFetchError(true);
       if (isRefreshing) {
         showToast({ type: 'error', message: t('list.error.refreshFailed'), position: 'top' });
@@ -150,7 +149,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
         setCurrentPage(nextPage);
       }
     } catch (error) {
-      console.error('Failed to load more trips:', error);
+      // Silent fail — previous page data preserved
     } finally {
       setIsLoadingMore(false);
     }

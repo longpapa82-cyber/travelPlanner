@@ -212,9 +212,8 @@ const AffiliateLink: React.FC<AffiliateLinkProps> = ({
         variant,
         size,
       },
-    }).catch(error => {
-      // Silent fail - don't interrupt user experience
-      console.warn('Analytics tracking failed:', error);
+    }).catch(() => {
+      // Silent fail — don't interrupt user experience
     });
 
     // Open URL
@@ -222,11 +221,9 @@ const AffiliateLink: React.FC<AffiliateLinkProps> = ({
       const canOpen = await Linking.canOpenURL(url);
       if (canOpen) {
         await Linking.openURL(url);
-      } else {
-        console.error('Cannot open URL:', url);
       }
     } catch (error) {
-      console.error('Failed to open affiliate link:', error);
+      // Silent fail — URL couldn't be opened
     }
   };
 

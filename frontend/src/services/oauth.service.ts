@@ -51,7 +51,6 @@ export async function signInWithOAuth(
 
     return null;
   } catch (error) {
-    console.error(`OAuth ${provider} error:`, error);
     throw error;
   }
 }
@@ -86,7 +85,7 @@ function parseOAuthCallback(url: string, expectedState: string): OAuthResult | n
     const returnedState = parsed.queryParams?.state as string;
 
     if (returnedState && returnedState !== expectedState) {
-      console.error('OAuth state mismatch — possible CSRF attack');
+      if (__DEV__) console.warn('OAuth state mismatch — possible CSRF attack');
       return null;
     }
 
@@ -96,7 +95,6 @@ function parseOAuthCallback(url: string, expectedState: string): OAuthResult | n
 
     return null;
   } catch (error) {
-    console.error('Failed to parse OAuth callback URL:', error);
     return null;
   }
 }

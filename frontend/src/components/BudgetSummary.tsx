@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -52,7 +52,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   숙소: '#EF4444',
 };
 
-export const BudgetSummary: React.FC<Props> = ({ trip }) => {
+export const BudgetSummary: React.FC<Props> = memo(({ trip }) => {
   const { t } = useTranslation('trips');
   const { t: tComp } = useTranslation('components');
   const { isDark } = useTheme();
@@ -290,7 +290,7 @@ export const BudgetSummary: React.FC<Props> = ({ trip }) => {
       )}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

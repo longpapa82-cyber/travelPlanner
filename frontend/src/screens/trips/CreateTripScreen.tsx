@@ -234,7 +234,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
         navigation.navigate('TripDetail', { tripId: trip.id });
       }, 500);
     } catch (error: any) {
-      console.error('Trip creation error:', error);
       const message = error.response?.data?.message || t('create.alerts.createFailed');
 
       showToast({

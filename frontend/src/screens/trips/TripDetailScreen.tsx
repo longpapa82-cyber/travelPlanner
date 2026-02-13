@@ -87,7 +87,6 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       const data = await apiService.getTripById(tripId);
       setTrip(data);
     } catch (error) {
-      console.error('Failed to fetch trip details:', error);
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
         window.alert(t('detail.alerts.fetchError'));
       } else {

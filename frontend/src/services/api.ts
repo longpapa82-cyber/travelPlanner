@@ -36,7 +36,7 @@ class ApiService {
           }
           config.headers['Accept-Language'] = getCurrentLanguage();
         } catch (error) {
-          console.error('Error loading auth token:', error);
+          // Silent fail — proceed without auth token
         }
 
         return config;
@@ -312,8 +312,7 @@ class ApiService {
       const response = await this.api.post('/analytics/affiliate/track', data);
       return response.data;
     } catch (error) {
-      // Silent fail - don't block user experience
-      console.warn('Failed to track affiliate click:', error);
+      // Silent fail — don't block user experience
       return null;
     }
   }

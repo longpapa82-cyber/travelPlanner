@@ -81,7 +81,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         registerPushAfterLogin();
       }
     } catch (error) {
-      console.error('Error checking auth status:', error);
+      // Silent fail - user sees login screen
     } finally {
       setIsLoading(false);
     }
@@ -110,7 +110,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       registerPushAfterLogin();
     } catch (error) {
       if (error instanceof TwoFactorRequiredError) throw error;
-      console.error('Login error:', error);
       throw error;
     }
   };
@@ -126,7 +125,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.user);
       registerPushAfterLogin();
     } catch (error) {
-      console.error('2FA verification error:', error);
       throw error;
     }
   };
@@ -141,7 +139,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       setUser(response.user);
     } catch (error) {
-      console.error('Register error:', error);
       throw error;
     }
   };
@@ -167,7 +164,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const result = await signInWithGoogle();
       await handleOAuthResult(result);
     } catch (error) {
-      console.error('Google login error:', error);
       throw error;
     }
   };
@@ -177,7 +173,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const result = await signInWithApple();
       await handleOAuthResult(result);
     } catch (error) {
-      console.error('Apple login error:', error);
       throw error;
     }
   };
@@ -187,7 +182,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const result = await signInWithKakao();
       await handleOAuthResult(result);
     } catch (error) {
-      console.error('Kakao login error:', error);
       throw error;
     }
   };
@@ -197,7 +191,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const profile = await apiService.getProfile();
       setUser(profile);
     } catch (error) {
-      console.error('Error refreshing user:', error);
+      // Silent fail - UI remains with stale data
     }
   };
 
@@ -216,7 +210,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       setUser(null);
     } catch (error) {
-      console.error('Logout error:', error);
+      // Silent fail - force clear user state regardless
+      setUser(null);
     }
   };
 

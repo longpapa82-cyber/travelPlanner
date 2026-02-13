@@ -40,7 +40,6 @@ export const secureStorage = {
         });
         return credentials ? credentials.password : null;
       } catch (error) {
-        console.error(`Error getting item ${key}:`, error);
         return null;
       }
     }
@@ -60,7 +59,7 @@ export const secureStorage = {
           service: key,
         });
       } catch (error) {
-        console.error(`Error removing item ${key}:`, error);
+        // Silent fail — best-effort removal
       }
     }
   },
@@ -83,7 +82,7 @@ export const secureStorage = {
         await Keychain.resetGenericPassword({ service: 'auth_token' });
         await Keychain.resetGenericPassword({ service: 'refresh_token' });
       } catch (error) {
-        console.error('Error clearing storage:', error);
+        // Silent fail — best-effort clear
       }
     }
   },

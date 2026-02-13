@@ -51,7 +51,6 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
         setRecommendations(null);
       }
     } catch (error) {
-      console.error('Failed to load destination recommendations:', error);
       setRecommendations(null);
     } finally {
       setLoading(false);

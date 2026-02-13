@@ -100,7 +100,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
           setIsDark(false);
         }
       } catch (error) {
-        console.error('Failed to load theme:', error);
         setIsDark(false);
       }
     };
@@ -127,7 +126,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       await storage.setItem(THEME_STORAGE_KEY, newMode);
       // Theme persisted successfully
     } catch (error) {
-      console.error('Failed to save theme:', error);
+      // Silent fail — theme still applied in memory
     }
   };
 

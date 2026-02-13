@@ -44,7 +44,7 @@ class ErrorBoundary extends Component<Props, State> {
       extra: { componentStack: errorInfo.componentStack },
     });
     this.setState({ eventId: eventId ?? null });
-    console.error('ErrorBoundary caught:', error, errorInfo);
+    if (__DEV__) console.error('ErrorBoundary caught:', error, errorInfo);
   }
 
   componentDidUpdate(_prevProps: Props, prevState: State) {

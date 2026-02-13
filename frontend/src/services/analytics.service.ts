@@ -47,7 +47,6 @@ class AnalyticsService {
       });
       return response.data;
     } catch (error) {
-      console.error('Failed to fetch popular destinations:', error);
       return [];
     }
   }
@@ -62,7 +61,6 @@ class AnalyticsService {
       });
       return response.data;
     } catch (error) {
-      console.error('Failed to fetch travel trends:', error);
       return [];
     }
   }
@@ -75,7 +73,6 @@ class AnalyticsService {
       const response = await api.get<UserPreferenceStats>('/analytics/user-preferences');
       return response.data;
     } catch (error) {
-      console.error('Failed to fetch user preferences:', error);
       return null;
     }
   }
@@ -95,7 +92,6 @@ class AnalyticsService {
       );
       return response.data;
     } catch (error) {
-      console.error('Failed to fetch destination recommendations:', error);
       return null;
     }
   }

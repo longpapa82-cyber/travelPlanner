@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -33,7 +33,7 @@ export const PopularDestinations: React.FC<PopularDestinationsProps> = ({
       const data = await analyticsService.getPopularDestinations(5);
       setDestinations(data);
     } catch (error) {
-      console.error('Failed to load popular destinations:', error);
+      // Silent fail — component shows nothing when empty
     } finally {
       setLoading(false);
     }
@@ -228,4 +228,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PopularDestinations;
+export default memo(PopularDestinations);

@@ -45,8 +45,7 @@ const EmailVerificationBanner: React.FC = () => {
     try {
       await apiService.resendVerification(user.email);
     } catch (error: any) {
-      // Silent fail - the banner will remain visible for retry
-      console.warn('Failed to resend verification email:', error);
+      // Silent fail — banner remains visible for retry
     } finally {
       setIsResending(false);
     }

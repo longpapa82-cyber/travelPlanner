@@ -165,7 +165,6 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       setExpoPushToken(token);
       return token;
     } catch (error) {
-      console.error('Failed to get push token:', error);
       return null;
     }
   }, [hasPermission]);
@@ -175,7 +174,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       await apiService.removePushToken();
       setExpoPushToken(null);
     } catch (error) {
-      console.error('Failed to remove push token:', error);
+      // Silent fail — best-effort removal
     }
   }, []);
 

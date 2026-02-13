@@ -133,7 +133,6 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       setTotalBudget(data.totalBudget ? String(data.totalBudget) : '');
       setBudgetCurrency(data.budgetCurrency || 'USD');
     } catch (error) {
-      console.error('Failed to fetch trip details:', error);
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
         window.alert(t('edit.alerts.loadError'));
       } else {
@@ -243,7 +242,6 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
         );
       }
     } catch (error: any) {
-      console.error('Trip update error:', error);
       const message = error.response?.data?.message || t('edit.alerts.saveError');
 
       if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {

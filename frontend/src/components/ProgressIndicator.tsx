@@ -7,7 +7,7 @@
  * - 다크모드 지원
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -151,4 +151,4 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
   });
 
-export default ProgressIndicator;
+export default memo(ProgressIndicator);
