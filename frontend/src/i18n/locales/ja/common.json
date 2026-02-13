@@ -21,9 +21,11 @@
   "findOnProvider": "{{name}}で探す",
   "offlineMode": "オフラインモード — キャッシュデータを表示中",
   "errorBoundary": {
-    "title": "問題が発生しました",
-    "message": "予期しないエラーが発生しました。\nもう一度お試しください。",
-    "retry": "再試行"
+    "title": "道に迷ってしまいました",
+    "message": "予期しないエラーが発生しました。\nご心配なく、すぐに解決します！",
+    "retry": "もう一度試す",
+    "goHome": "ホームに戻る",
+    "errorId": "エラーID: {{id}}"
   },
   "tabs": {
     "home": "ホーム",

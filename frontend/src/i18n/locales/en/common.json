@@ -21,9 +21,11 @@
   "findOnProvider": "Find on {{name}}",
   "offlineMode": "Offline mode — showing cached data",
   "errorBoundary": {
-    "title": "Something went wrong",
-    "message": "An unexpected error occurred.\nPlease try again.",
-    "retry": "Try Again"
+    "title": "We got a bit lost",
+    "message": "An unexpected error occurred.\nDon't worry, we'll get you back on track!",
+    "retry": "Try Again",
+    "goHome": "Go Home",
+    "errorId": "Error ID: {{id}}"
   },
   "tabs": {
     "home": "Home",
