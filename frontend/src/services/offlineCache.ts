@@ -88,4 +88,15 @@ export const offlineCache = {
       // ignore
     }
   },
+
+  async clearAll(): Promise<void> {
+    try {
+      const keys = await storage.getAllKeys();
+      for (const key of keys) {
+        await storage.removeItem(key);
+      }
+    } catch {
+      // ignore
+    }
+  },
 };

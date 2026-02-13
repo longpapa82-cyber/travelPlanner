@@ -3,6 +3,7 @@ import { User, AuthResponse } from '../types';
 import { STORAGE_KEYS } from '../constants/config';
 import apiService from '../services/api';
 import { secureStorage } from '../utils/storage';
+import { offlineCache } from '../services/offlineCache';
 import {
   signInWithGoogle,
   signInWithApple,
@@ -204,9 +205,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // best-effort — don't block logout
       }
 
-      // Clear tokens
+      // Clear tokens and cached data
       await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
       await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+      await offlineCache.clearAll();
 
       setUser(null);
     } catch (error) {

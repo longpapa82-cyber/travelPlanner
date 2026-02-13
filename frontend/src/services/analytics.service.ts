@@ -1,4 +1,5 @@
 import api from './api';
+import { offlineCache } from './offlineCache';
 
 export interface DestinationStats {
   destination: string;
@@ -45,9 +46,11 @@ class AnalyticsService {
       const response = await api.get<DestinationStats[]>('/analytics/popular-destinations', {
         params: { limit },
       });
+      offlineCache.set(`popular-destinations:${limit}`, response.data).catch(() => {});
       return response.data;
     } catch (error) {
-      return [];
+      const cached = await offlineCache.get<DestinationStats[]>(`popular-destinations:${limit}`);
+      return cached || [];
     }
   }
 
@@ -59,9 +62,11 @@ class AnalyticsService {
       const response = await api.get<TravelTrend[]>('/analytics/travel-trends', {
         params: { limit },
       });
+      offlineCache.set(`travel-trends:${limit}`, response.data).catch(() => {});
       return response.data;
     } catch (error) {
-      return [];
+      const cached = await offlineCache.get<TravelTrend[]>(`travel-trends:${limit}`);
+      return cached || [];
     }
   }
 
@@ -71,9 +76,10 @@ class AnalyticsService {
   async getUserPreferences(): Promise<UserPreferenceStats | null> {
     try {
       const response = await api.get<UserPreferenceStats>('/analytics/user-preferences');
+      offlineCache.set('user-preferences', response.data).catch(() => {});
       return response.data;
     } catch (error) {
-      return null;
+      return (await offlineCache.get<UserPreferenceStats>('user-preferences')) || null;
     }
   }
 

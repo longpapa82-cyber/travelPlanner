@@ -325,8 +325,16 @@ class ApiService {
   }
 
   async getUserStats() {
-    const response = await this.api.get('/trips/my-stats');
-    return response.data;
+    try {
+      const response = await this.api.get('/trips/my-stats');
+      const data = response.data;
+      offlineCache.set('user-stats', data).catch(() => {});
+      return data;
+    } catch (error) {
+      const cached = await offlineCache.get('user-stats');
+      if (cached) return cached;
+      throw error;
+    }
   }
 
   async uploadPhoto(uri: string): Promise<{ url: string }> {

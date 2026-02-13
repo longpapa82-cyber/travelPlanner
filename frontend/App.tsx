@@ -13,6 +13,7 @@ import ErrorBoundary from './src/components/ErrorBoundary';
 import { OfflineBanner } from './src/components/OfflineBanner';
 import { PWAInstallPrompt } from './src/components/PWAInstallPrompt';
 import { initI18n } from './src/i18n';
+import { offlineCache } from './src/services/offlineCache';
 import { initSentry } from './src/common/sentry';
 import { initWebVitals } from './src/common/web-vitals';
 import { API_URL, STORAGE_KEYS } from './src/constants/config';
@@ -171,6 +172,7 @@ function App() {
     async function prepare() {
       await Promise.all([
         initI18n(),
+        offlineCache.clearExpired(),
         Font.loadAsync({
           'material-community': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
           'ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),

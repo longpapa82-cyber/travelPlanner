@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { AppState, View, Text, StyleSheet, Platform } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../constants/theme';
 
+const PING_URL = (process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api') + '/health';
+
 export const OfflineBanner: React.FC = () => {
   const { t } = useTranslation('common');
   const [isOffline, setIsOffline] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      // Web: use native online/offline events
       const handleOnline = () => setIsOffline(false);
       const handleOffline = () => setIsOffline(true);
       setIsOffline(!navigator.onLine);
@@ -20,7 +24,32 @@ export const OfflineBanner: React.FC = () => {
         window.removeEventListener('offline', handleOffline);
       };
     }
-    return undefined;
+
+    // Native: periodic lightweight ping
+    const checkNetwork = async () => {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        await fetch(PING_URL, { method: 'HEAD', signal: controller.signal });
+        clearTimeout(timeout);
+        setIsOffline(false);
+      } catch {
+        setIsOffline(true);
+      }
+    };
+
+    checkNetwork();
+    intervalRef.current = setInterval(checkNetwork, 15000);
+
+    // Re-check when app comes to foreground
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') checkNetwork();
+    });
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      sub.remove();
+    };
   }, []);
 
   if (!isOffline) return null;

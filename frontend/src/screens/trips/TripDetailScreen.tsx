@@ -37,6 +37,7 @@ import { ActivityModal } from '../../components/ActivityModal';
 import { ShareModal } from '../../components/ShareModal';
 import { TripMapView } from '../../components/TripMapView';
 import { BudgetSummary } from '../../components/BudgetSummary';
+import TripPhotoGallery from '../../components/TripPhotoGallery';
 import { AdBanner } from '../../components/ads';
 import AffiliateLink from '../../components/ads/AffiliateLink';
 import { getDestinationImageUrl } from '../../utils/images';
@@ -481,6 +482,9 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               </Text>
             </Animated.View>
           )}
+
+          {/* Photo Gallery */}
+          {activeTab === 'itinerary' && <TripPhotoGallery trip={trip} />}
 
           {/* Budget Summary */}
           {activeTab === 'itinerary' && <BudgetSummary trip={trip} />}
