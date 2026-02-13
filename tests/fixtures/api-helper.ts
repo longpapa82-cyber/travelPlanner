@@ -181,6 +181,30 @@ export class ApiHelper {
     );
   }
 
+  // Collaborator methods
+  async addCollaborator(
+    token: string,
+    tripId: string,
+    email: string,
+    role: 'viewer' | 'editor' = 'viewer'
+  ): Promise<any> {
+    return this.request(
+      'POST',
+      `/trips/${tripId}/collaborators`,
+      { email, role },
+      token
+    );
+  }
+
+  async getCollaborators(token: string, tripId: string): Promise<any[]> {
+    const data = await this.request('GET', `/trips/${tripId}/collaborators`, undefined, token);
+    return Array.isArray(data) ? data : [];
+  }
+
+  async removeCollaborator(token: string, tripId: string, collabId: string): Promise<void> {
+    await this.request('DELETE', `/trips/${tripId}/collaborators/${collabId}`, undefined, token);
+  }
+
   async deleteUser(token: string): Promise<void> {
     await this.request('DELETE', '/users/me', undefined, token);
   }
