@@ -14,6 +14,7 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -329,6 +330,9 @@ export class TripsController {
     }),
   )
   async uploadPhoto(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('No image file provided');
+    }
     const result = await this.imageService.processUpload(file.path, {
       maxWidth: 1200,
       quality: 80,

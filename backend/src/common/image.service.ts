@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import sharp from 'sharp';
 import { join, parse } from 'path';
 import { existsSync, mkdirSync, unlinkSync } from 'fs';
@@ -26,13 +26,34 @@ const DEFAULTS: Required<ProcessOptions> = {
   thumbnailSize: 200,
 };
 
+/** Allowed image formats verified via magic bytes */
+const ALLOWED_FORMATS = new Set(['jpeg', 'png', 'gif', 'webp']);
+
 @Injectable()
 export class ImageService {
   private readonly logger = new Logger(ImageService.name);
 
   /**
-   * Process an uploaded image: resize, convert to WebP, optionally generate thumbnail.
-   * Removes the original file after processing.
+   * Validate that the file is a genuine image by reading its magic bytes
+   * via sharp metadata. Throws BadRequestException if invalid.
+   */
+  async validateImage(filePath: string): Promise<void> {
+    try {
+      const metadata = await sharp(filePath).metadata();
+      if (!metadata.format || !ALLOWED_FORMATS.has(metadata.format)) {
+        throw new BadRequestException(
+          `Unsupported image format: ${metadata.format || 'unknown'}`,
+        );
+      }
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      throw new BadRequestException('File is not a valid image');
+    }
+  }
+
+  /**
+   * Process an uploaded image: validate, resize, convert to WebP, optionally
+   * generate thumbnail. Always removes the original file after processing.
    */
   async processUpload(
     filePath: string,
@@ -42,6 +63,9 @@ export class ImageService {
     const { dir, name } = parse(filePath);
     const outputName = `${name}.webp`;
     const outputPath = join(dir, outputName);
+
+    // Validate magic bytes before processing
+    await this.validateImage(filePath);
 
     try {
       await sharp(filePath)
@@ -80,8 +104,10 @@ export class ImageService {
       return result;
     } catch (error) {
       this.logger.error(`Image processing failed: ${error}`);
-      // Fallback: return original file URL
-      return { url: this.toUrlPath(filePath) };
+      // Clean up uploaded file on failure — never serve unprocessed uploads
+      this.safeDelete(filePath);
+      this.safeDelete(outputPath);
+      throw new BadRequestException('Image processing failed');
     }
   }
 
@@ -89,5 +115,14 @@ export class ImageService {
   private toUrlPath(absolutePath: string): string {
     const uploadsIdx = absolutePath.indexOf('/uploads/');
     return uploadsIdx >= 0 ? absolutePath.slice(uploadsIdx) : absolutePath;
+  }
+
+  /** Delete a file without throwing */
+  private safeDelete(filePath: string): void {
+    try {
+      if (existsSync(filePath)) unlinkSync(filePath);
+    } catch {
+      // best-effort cleanup
+    }
   }
 }

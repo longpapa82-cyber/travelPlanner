@@ -5,20 +5,30 @@ import {
   IsBoolean,
   IsNumber,
   ValidateNested,
+  MaxLength,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
+
+const stripHtml = ({ value }: { value: unknown }) =>
+  typeof value === 'string' ? value.replace(/<[^>]*>/g, '') : value;
 
 export class ActivityDto {
   @IsString()
   time: string;
 
   @IsString()
+  @MaxLength(200)
+  @Transform(stripHtml)
   title: string;
 
   @IsString()
+  @MaxLength(2000)
+  @Transform(stripHtml)
   description: string;
 
   @IsString()
+  @MaxLength(300)
+  @Transform(stripHtml)
   location: string;
 
   @IsNumber()
@@ -39,6 +49,8 @@ export class ActivityDto {
 
   @IsString()
   @IsOptional()
+  @MaxLength(50)
+  @Transform(stripHtml)
   type?: string;
 }
 
@@ -51,6 +63,8 @@ export class UpdateItineraryDto {
 
   @IsString()
   @IsOptional()
+  @MaxLength(5000)
+  @Transform(stripHtml)
   notes?: string;
 
   @IsBoolean()

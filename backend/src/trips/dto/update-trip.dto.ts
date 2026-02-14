@@ -9,22 +9,29 @@ import {
   IsEnum,
   MaxLength,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { TripStatus } from '../entities/trip.entity';
+
+const stripHtml = ({ value }: { value: unknown }) =>
+  typeof value === 'string' ? value.replace(/<[^>]*>/g, '') : value;
 
 export class UpdateTripDto {
   @IsString()
   @MaxLength(200)
   @IsOptional()
+  @Transform(stripHtml)
   destination?: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(100)
+  @Transform(stripHtml)
   country?: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(100)
+  @Transform(stripHtml)
   city?: string;
 
   @IsDateString()
@@ -37,6 +44,8 @@ export class UpdateTripDto {
 
   @IsString()
   @IsOptional()
+  @MaxLength(2000)
+  @Transform(stripHtml)
   description?: string;
 
   @IsInt()

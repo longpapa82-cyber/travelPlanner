@@ -9,20 +9,28 @@ import {
   IsArray,
   MaxLength,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
+
+/** Strip HTML tags to prevent stored XSS */
+const stripHtml = ({ value }: { value: unknown }) =>
+  typeof value === 'string' ? value.replace(/<[^>]*>/g, '') : value;
 
 export class CreateTripDto {
   @IsString()
   @MaxLength(200)
+  @Transform(stripHtml)
   destination: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(100)
+  @Transform(stripHtml)
   country?: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(100)
+  @Transform(stripHtml)
   city?: string;
 
   @IsDateString()
@@ -33,6 +41,8 @@ export class CreateTripDto {
 
   @IsString()
   @IsOptional()
+  @MaxLength(2000)
+  @Transform(stripHtml)
   description?: string;
 
   @IsInt()

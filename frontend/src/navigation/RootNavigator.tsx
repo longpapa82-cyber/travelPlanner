@@ -33,6 +33,9 @@ const linking: LinkingOptions<RootStackParamList> = {
         screens: {
           Login: 'login',
           Onboarding: 'onboarding',
+          ForgotPassword: 'forgot-password',
+          ResetPassword: 'reset-password',
+          VerifyEmail: 'verify-email',
         },
       },
     },
