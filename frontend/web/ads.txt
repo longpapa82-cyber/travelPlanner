@@ -1,0 +1,6 @@
+# Google AdSense Authorization
+# Replace pub-XXXXXXXXXXXXXXXX with your actual AdSense Publisher ID
+# after your AdSense account is approved.
+#
+# Format: google.com, pub-ID, DIRECT, f08c47fec0942fa0
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

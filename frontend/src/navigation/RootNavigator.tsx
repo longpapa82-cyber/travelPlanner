@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { useTrackingTransparency } from '../hooks/useTrackingTransparency';
 import { RootStackParamList } from '../types';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
@@ -45,6 +46,7 @@ const linking: LinkingOptions<RootStackParamList> = {
 const RootNavigator = () => {
   const { isAuthenticated, isLoading } = useAuth();
   const { theme } = useTheme();
+  useTrackingTransparency();
 
   if (isLoading) {
     return (

@@ -26,6 +26,8 @@ export default ({ config }) => ({
           CFBundleURLSchemes: ['travelplanner'],
         },
       ],
+      NSUserTrackingUsageDescription:
+        '맞춤형 여행 광고를 제공하기 위해 활동 추적 권한이 필요합니다. This helps us show you relevant travel deals.',
     },
   },
   android: {
@@ -61,6 +63,7 @@ export default ({ config }) => ({
         color: '#3B82F6',
       },
     ],
+    'expo-tracking-transparency',
     [
       'react-native-google-mobile-ads',
       {

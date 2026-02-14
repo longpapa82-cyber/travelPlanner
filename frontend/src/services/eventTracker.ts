@@ -26,6 +26,7 @@ export type EventName =
   | 'cover_changed'
   | '2fa_enabled'
   | '2fa_disabled'
+  | '2fa_backup_regenerated'
   | 'search'
   | 'filter_applied';
 
