@@ -21,7 +21,7 @@ export function IsAfterDate(
       options: validationOptions,
       validator: {
         validate(value: unknown, args: ValidationArguments) {
-          const [relatedPropertyName] = args.constraints;
+          const [relatedPropertyName] = args.constraints as [string];
           const relatedValue = (args.object as Record<string, unknown>)[
             relatedPropertyName
           ];
@@ -29,7 +29,7 @@ export function IsAfterDate(
           return new Date(value as string) >= new Date(relatedValue as string);
         },
         defaultMessage(args: ValidationArguments) {
-          const [relatedPropertyName] = args.constraints;
+          const [relatedPropertyName] = args.constraints as [string];
           return `${args.property} must be on or after ${relatedPropertyName}`;
         },
       },

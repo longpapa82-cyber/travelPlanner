@@ -11,7 +11,8 @@ import {
   Headers,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { AuthService } from './auth.service';
+import { Request, Response } from 'express';
+import { AuthService, OAuthUserData } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
@@ -184,7 +185,10 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleAuthCallback(@Req() req: any, @Res() res: any) {
+  async googleAuthCallback(
+    @Req() req: Request & { user: OAuthUserData },
+    @Res() res: Response,
+  ) {
     const code = await this.authService.createOAuthTempCode(req.user);
     const frontendUrl = process.env.FRONTEND_URL || 'exp://localhost:8081';
     res.redirect(`${frontendUrl}/auth/callback?code=${code}`);
@@ -199,7 +203,10 @@ export class AuthController {
 
   @Get('apple/callback')
   @UseGuards(AppleAuthGuard)
-  async appleAuthCallback(@Req() req: any, @Res() res: any) {
+  async appleAuthCallback(
+    @Req() req: Request & { user: OAuthUserData },
+    @Res() res: Response,
+  ) {
     const code = await this.authService.createOAuthTempCode(req.user);
     const frontendUrl = process.env.FRONTEND_URL || 'exp://localhost:8081';
     res.redirect(`${frontendUrl}/auth/callback?code=${code}`);
@@ -214,7 +221,10 @@ export class AuthController {
 
   @Get('kakao/callback')
   @UseGuards(KakaoAuthGuard)
-  async kakaoAuthCallback(@Req() req: any, @Res() res: any) {
+  async kakaoAuthCallback(
+    @Req() req: Request & { user: OAuthUserData },
+    @Res() res: Response,
+  ) {
     const code = await this.authService.createOAuthTempCode(req.user);
     const frontendUrl = process.env.FRONTEND_URL || 'exp://localhost:8081';
     res.redirect(`${frontendUrl}/auth/callback?code=${code}`);

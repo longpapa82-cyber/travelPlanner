@@ -5,6 +5,24 @@ import OpenAI from 'openai';
 import { ActivityDto } from '../dto/update-itinerary.dto';
 import { AnalyticsService } from './analytics.service';
 import { TimezoneService } from './timezone.service';
+import { getErrorMessage } from '../../common/types/request.types';
+
+interface RawAiActivity {
+  time?: string;
+  title?: string;
+  name?: string;
+  description?: string;
+  location?: string;
+  place?: string;
+  latitude?: number;
+  longitude?: number;
+  estimatedDuration?: number;
+  duration?: number;
+  estimatedCost?: number;
+  cost?: number;
+  type?: string;
+  category?: string;
+}
 
 interface TripContext {
   destination: string;
@@ -105,10 +123,14 @@ export class AIService {
         this.logger.warn('OpenAI returned empty content');
         return [];
       }
-      const parsed = JSON.parse(content);
+      const parsed = JSON.parse(content) as {
+        activities?: RawAiActivity[];
+        itinerary?: RawAiActivity[];
+      };
 
       // Extract activities array from the response
-      const activities = parsed.activities || parsed.itinerary || [];
+      const activities: RawAiActivity[] =
+        parsed.activities || parsed.itinerary || [];
 
       // Validate and format activities
       const result = this.formatActivities(activities);
@@ -126,7 +148,9 @@ export class AIService {
           }
         }
       } catch (error) {
-        this.logger.warn(`Geocoding failed for activities: ${error.message}`);
+        this.logger.warn(
+          `Geocoding failed for activities: ${getErrorMessage(error)}`,
+        );
       }
 
       // Cache AI response for 24 hours
@@ -134,7 +158,7 @@ export class AIService {
       return result;
     } catch (error) {
       this.logger.error(
-        `Failed to generate itinerary for day ${dayNumber}: ${error.message}`,
+        `Failed to generate itinerary for day ${dayNumber}: ${getErrorMessage(error)}`,
       );
       return [];
     }
@@ -271,7 +295,7 @@ Guidelines:
     return prompt;
   }
 
-  private formatActivities(rawActivities: any[]): ActivityDto[] {
+  private formatActivities(rawActivities: RawAiActivity[]): ActivityDto[] {
     return rawActivities
       .filter((activity) => activity && typeof activity === 'object')
       .map((activity) => ({

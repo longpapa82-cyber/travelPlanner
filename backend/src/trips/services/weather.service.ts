@@ -74,14 +74,17 @@ export class WeatherService {
 
     try {
       // OpenWeatherMap 5 day forecast API
-      const response = await axios.get(`${this.baseUrl}/forecast`, {
-        params: {
-          lat: latitude,
-          lon: longitude,
-          appid: this.apiKey,
-          units: 'metric', // Celsius
+      const response = await axios.get<{ list: WeatherForecast[] }>(
+        `${this.baseUrl}/forecast`,
+        {
+          params: {
+            lat: latitude,
+            lon: longitude,
+            appid: this.apiKey,
+            units: 'metric', // Celsius
+          },
         },
-      });
+      );
 
       const forecasts: WeatherForecast[] = response.data.list;
 
@@ -119,7 +122,7 @@ export class WeatherService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         this.logger.error(
-          `Failed to get weather forecast: ${error.response?.status} - ${error.response?.data?.message || error.message}`,
+          `Failed to get weather forecast: ${error.response?.status} - ${(error.response?.data as { message?: string })?.message || error.message}`,
         );
       } else {
         this.logger.error(
@@ -143,7 +146,11 @@ export class WeatherService {
     }
 
     try {
-      const response = await axios.get(`${this.baseUrl}/weather`, {
+      const response = await axios.get<{
+        main: { temp: number; humidity: number };
+        weather: Array<{ main: string; icon: string }>;
+        wind: { speed: number };
+      }>(`${this.baseUrl}/weather`, {
         params: {
           lat: latitude,
           lon: longitude,
@@ -162,7 +169,7 @@ export class WeatherService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         this.logger.error(
-          `Failed to get current weather: ${error.response?.status} - ${error.response?.data?.message || error.message}`,
+          `Failed to get current weather: ${error.response?.status} - ${(error.response?.data as { message?: string })?.message || error.message}`,
         );
       } else {
         this.logger.error(

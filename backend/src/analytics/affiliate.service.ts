@@ -4,6 +4,7 @@ import { Repository, Between, MoreThan } from 'typeorm';
 import { AffiliateClick } from './entities/affiliate-click.entity';
 import { TrackAffiliateClickDto } from './dto/track-affiliate-click.dto';
 import { Request } from 'express';
+import { getErrorMessage } from '../common/types/request.types';
 
 export interface AffiliateStats {
   provider: string;
@@ -67,7 +68,9 @@ export class AffiliateService {
 
       return saved;
     } catch (error) {
-      this.logger.error(`Failed to track affiliate click: ${error.message}`);
+      this.logger.error(
+        `Failed to track affiliate click: ${getErrorMessage(error)}`,
+      );
       throw error;
     }
   }
@@ -103,7 +106,7 @@ export class AffiliateService {
     startDate?: Date,
     endDate?: Date,
   ): Promise<AffiliateStats[]> {
-    const whereClause: any = {};
+    const whereClause: Record<string, unknown> = {};
 
     if (startDate && endDate) {
       whereClause.createdAt = Between(startDate, endDate);
@@ -166,7 +169,7 @@ export class AffiliateService {
     endDate: Date,
     provider?: string,
   ): Promise<AffiliateDailyStats[]> {
-    const whereClause: any = {
+    const whereClause: Record<string, unknown> = {
       createdAt: Between(startDate, endDate),
     };
 

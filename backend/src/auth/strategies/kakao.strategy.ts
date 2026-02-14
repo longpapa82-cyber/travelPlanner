@@ -22,13 +22,19 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
 
   async validate(
     accessToken: string,
-    refreshToken: string,
-    profile: any,
-    done: any,
-  ): Promise<any> {
+    _refreshToken: string,
+    _profile: Record<string, unknown>,
+    done: (error: Error | null, user?: Record<string, unknown>) => void,
+  ): Promise<void> {
     try {
       // Kakao API로 사용자 정보 조회
-      const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
+      const response = await axios.get<{
+        id: number;
+        kakao_account?: {
+          email?: string;
+          profile?: { nickname?: string; profile_image_url?: string };
+        };
+      }>('https://kapi.kakao.com/v2/user/me', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -46,7 +52,10 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
 
       done(null, user);
     } catch (error) {
-      done(error, null);
+      done(
+        error instanceof Error ? error : new Error(String(error)),
+        undefined,
+      );
     }
   }
 }

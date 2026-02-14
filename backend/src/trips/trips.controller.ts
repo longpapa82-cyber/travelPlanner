@@ -7,11 +7,11 @@ import {
   Param,
   Delete,
   UseGuards,
-  Request,
   Res,
   HttpCode,
   HttpStatus,
   Query,
+  Headers,
   UseInterceptors,
   UploadedFile,
   BadRequestException,
@@ -34,6 +34,7 @@ import { CollaboratorRole } from './entities/collaborator.entity';
 import { QueryTripsDto } from './dto/query-trips.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { EmailVerifiedGuard } from '../auth/guards/email-verified.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ImageService } from '../common/image.service';
 
 @Controller('trips')
@@ -47,65 +48,72 @@ export class TripsController {
   @Post()
   @UseGuards(EmailVerifiedGuard)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
-  create(@Request() req, @Body() createTripDto: CreateTripDto) {
-    const language = req.headers['accept-language'] || 'ko';
-    return this.tripsService.create(req.user.userId, createTripDto, language);
+  create(
+    @CurrentUser('userId') userId: string,
+    @Headers('accept-language') acceptLanguage: string | undefined,
+    @Body() createTripDto: CreateTripDto,
+  ) {
+    const language = acceptLanguage || 'ko';
+    return this.tripsService.create(userId, createTripDto, language);
   }
 
   @Get()
-  findAll(@Request() req, @Query() queryDto: QueryTripsDto) {
-    return this.tripsService.findAll(req.user.userId, queryDto);
+  findAll(
+    @CurrentUser('userId') userId: string,
+    @Query() queryDto: QueryTripsDto,
+  ) {
+    return this.tripsService.findAll(userId, queryDto);
   }
 
   @Get('upcoming')
-  getUpcomingTrips(@Request() req) {
-    return this.tripsService.getUpcomingTrips(req.user.userId);
+  getUpcomingTrips(@CurrentUser('userId') userId: string) {
+    return this.tripsService.getUpcomingTrips(userId);
   }
 
   @Get('ongoing')
-  getOngoingTrips(@Request() req) {
-    return this.tripsService.getOngoingTrips(req.user.userId);
+  getOngoingTrips(@CurrentUser('userId') userId: string) {
+    return this.tripsService.getOngoingTrips(userId);
   }
 
   @Get('completed')
-  getCompletedTrips(@Request() req) {
-    return this.tripsService.getCompletedTrips(req.user.userId);
+  getCompletedTrips(@CurrentUser('userId') userId: string) {
+    return this.tripsService.getCompletedTrips(userId);
   }
 
   @Get('my-stats')
-  getUserStats(@Request() req) {
-    return this.tripsService.getUserStats(req.user.userId);
+  getUserStats(@CurrentUser('userId') userId: string) {
+    return this.tripsService.getUserStats(userId);
   }
 
   @Get(':id')
-  findOne(@Request() req, @Param('id') id: string) {
-    return this.tripsService.findOne(req.user.userId, id);
+  findOne(@CurrentUser('userId') userId: string, @Param('id') id: string) {
+    return this.tripsService.findOne(userId, id);
   }
 
   @Patch(':id')
   update(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('id') id: string,
     @Body() updateTripDto: UpdateTripDto,
   ) {
-    return this.tripsService.update(req.user.userId, id, updateTripDto);
+    return this.tripsService.update(userId, id, updateTripDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Request() req, @Param('id') id: string) {
-    return this.tripsService.remove(req.user.userId, id);
+  remove(@CurrentUser('userId') userId: string, @Param('id') id: string) {
+    return this.tripsService.remove(userId, id);
   }
 
   @Patch(':tripId/itineraries/:itineraryId')
   updateItinerary(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('tripId') tripId: string,
     @Param('itineraryId') itineraryId: string,
     @Body() updateItineraryDto: UpdateItineraryDto,
   ) {
     return this.tripsService.updateItinerary(
-      req.user.userId,
+      userId,
       tripId,
       itineraryId,
       updateItineraryDto,
@@ -113,17 +121,17 @@ export class TripsController {
   }
 
   @Post(':id/duplicate')
-  duplicate(@Request() req, @Param('id') id: string) {
-    return this.tripsService.duplicate(req.user.userId, id);
+  duplicate(@CurrentUser('userId') userId: string, @Param('id') id: string) {
+    return this.tripsService.duplicate(userId, id);
   }
 
   @Get(':id/export/ical')
   async exportIcal(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('id') id: string,
     @Res() res: Response,
   ) {
-    const trip = await this.tripsService.findOne(req.user.userId, id);
+    const trip = await this.tripsService.findOne(userId, id);
     const lines: string[] = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
@@ -175,13 +183,13 @@ export class TripsController {
 
   @Post(':tripId/itineraries/:itineraryId/activities')
   addActivity(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('tripId') tripId: string,
     @Param('itineraryId') itineraryId: string,
     @Body() addActivityDto: AddActivityDto,
   ) {
     return this.tripsService.addActivity(
-      req.user.userId,
+      userId,
       tripId,
       itineraryId,
       addActivityDto,
@@ -191,13 +199,13 @@ export class TripsController {
   // Static route must come BEFORE dynamic :index route
   @Patch(':tripId/itineraries/:itineraryId/activities/reorder')
   reorderActivities(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('tripId') tripId: string,
     @Param('itineraryId') itineraryId: string,
     @Body() reorderDto: ReorderActivitiesDto,
   ) {
     return this.tripsService.reorderActivities(
-      req.user.userId,
+      userId,
       tripId,
       itineraryId,
       reorderDto,
@@ -206,14 +214,14 @@ export class TripsController {
 
   @Patch(':tripId/itineraries/:itineraryId/activities/:index')
   updateActivity(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('tripId') tripId: string,
     @Param('itineraryId') itineraryId: string,
     @Param('index') index: string,
     @Body() updateActivityDto: UpdateActivityDto,
   ) {
     return this.tripsService.updateActivity(
-      req.user.userId,
+      userId,
       tripId,
       itineraryId,
       parseInt(index, 10),
@@ -224,13 +232,13 @@ export class TripsController {
   @Delete(':tripId/itineraries/:itineraryId/activities/:index')
   @HttpCode(HttpStatus.OK)
   deleteActivity(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('tripId') tripId: string,
     @Param('itineraryId') itineraryId: string,
     @Param('index') index: string,
   ) {
     return this.tripsService.deleteActivity(
-      req.user.userId,
+      userId,
       tripId,
       itineraryId,
       parseInt(index, 10),
@@ -245,67 +253,63 @@ export class TripsController {
   @UseGuards(EmailVerifiedGuard)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
   generateShareLink(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('id') id: string,
     @Body() body?: { expiresInDays?: number },
   ) {
     return this.tripsService.generateShareToken(
       id,
-      req.user.userId,
+      userId,
       body?.expiresInDays,
     );
   }
 
   @Delete(':id/share')
   @HttpCode(HttpStatus.NO_CONTENT)
-  disableSharing(@Request() req, @Param('id') id: string) {
-    return this.tripsService.disableSharing(id, req.user.userId);
+  disableSharing(
+    @CurrentUser('userId') userId: string,
+    @Param('id') id: string,
+  ) {
+    return this.tripsService.disableSharing(id, userId);
   }
 
   // Collaboration endpoints
   @Post(':id/collaborators')
   @UseGuards(EmailVerifiedGuard)
   addCollaborator(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('id') id: string,
     @Body() dto: AddCollaboratorDto,
   ) {
-    return this.tripsService.addCollaborator(
-      id,
-      req.user.userId,
-      dto.email,
-      dto.role,
-    );
+    return this.tripsService.addCollaborator(id, userId, dto.email, dto.role);
   }
 
   @Get(':id/collaborators')
-  getCollaborators(@Request() req, @Param('id') id: string) {
-    return this.tripsService.getCollaborators(id, req.user.userId);
+  getCollaborators(
+    @CurrentUser('userId') userId: string,
+    @Param('id') id: string,
+  ) {
+    return this.tripsService.getCollaborators(id, userId);
   }
 
   @Patch(':id/collaborators/:collabId')
   updateCollaboratorRole(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('id') id: string,
     @Param('collabId') collabId: string,
     @Body('role') role: CollaboratorRole,
   ) {
-    return this.tripsService.updateCollaboratorRole(
-      id,
-      req.user.userId,
-      collabId,
-      role,
-    );
+    return this.tripsService.updateCollaboratorRole(id, userId, collabId, role);
   }
 
   @Delete(':id/collaborators/:collabId')
   @HttpCode(HttpStatus.NO_CONTENT)
   removeCollaborator(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Param('id') id: string,
     @Param('collabId') collabId: string,
   ) {
-    return this.tripsService.removeCollaborator(id, req.user.userId, collabId);
+    return this.tripsService.removeCollaborator(id, userId, collabId);
   }
 
   @Post('upload/photo')

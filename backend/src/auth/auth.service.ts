@@ -22,6 +22,7 @@ import {
   TokenPayload,
 } from './interfaces/auth-response.interface';
 import { t } from '../common/i18n';
+import { getErrorMessage } from '../common/types/request.types';
 
 type SupportedLang = 'ko' | 'en' | 'ja';
 
@@ -75,7 +76,9 @@ export class AuthService {
         lang,
       );
     } catch (error) {
-      this.logger.error(`Failed to send verification email: ${error.message}`);
+      this.logger.error(
+        `Failed to send verification email: ${getErrorMessage(error)}`,
+      );
     }
 
     // Generate JWT tokens
@@ -206,7 +209,7 @@ export class AuthService {
     // One-time use: delete immediately
     await this.cacheManager.del(`oauth:code:${code}`);
 
-    const oauthUser: OAuthUserData = JSON.parse(data);
+    const oauthUser: OAuthUserData = JSON.parse(data) as OAuthUserData;
     return this.oauthLogin(oauthUser);
   }
 
@@ -313,7 +316,9 @@ export class AuthService {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      this.logger.error(`Failed to process forgot password: ${error.message}`);
+      this.logger.error(
+        `Failed to process forgot password: ${getErrorMessage(error)}`,
+      );
     }
 
     // Always return success to prevent email enumeration
@@ -403,7 +408,7 @@ export class AuthService {
     tempToken: string,
     code: string,
   ): Promise<AuthResponse> {
-    let payload: any;
+    let payload: { sub: string; type: string; email?: string };
     try {
       payload = await this.jwtService.verifyAsync(tempToken, {
         secret: this.configService.get<string>('jwt.secret'),
@@ -500,13 +505,13 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('jwt.secret'),
-        expiresIn: this.configService.get<string>('jwt.expiresIn') as any,
+        expiresIn: this.configService.get<string>('jwt.expiresIn') as string,
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('jwt.refreshSecret'),
         expiresIn: this.configService.get<string>(
           'jwt.refreshExpiresIn',
-        ) as any,
+        ) as string,
       }),
     ]);
 

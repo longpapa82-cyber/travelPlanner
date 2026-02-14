@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
+import { getErrorMessage } from '../common/types/request.types';
 
 type SupportedLang = 'ko' | 'en' | 'ja';
 
@@ -35,12 +36,12 @@ export class EmailService {
     };
 
     try {
-      const result = await this.mailerService.sendMail({
+      const result = (await this.mailerService.sendMail({
         to: email,
         subject: subjects[lang],
         template: `verify-email-${lang}`,
         context: { name, verificationUrl },
-      });
+      })) as { message?: string } | undefined;
 
       if (this.isDev && result?.message) {
         this.logger.debug(
@@ -52,7 +53,7 @@ export class EmailService {
       this.logger.log(`Verification email sent to ${email}`);
     } catch (error) {
       this.logger.error(
-        `Failed to send verification email to ${email}: ${error.message}`,
+        `Failed to send verification email to ${email}: ${getErrorMessage(error)}`,
       );
       if (!this.isDev) throw error;
       // In dev, log the URL so the developer can still verify
@@ -76,12 +77,12 @@ export class EmailService {
     };
 
     try {
-      const result = await this.mailerService.sendMail({
+      const result = (await this.mailerService.sendMail({
         to: email,
         subject: subjects[lang],
         template: `reset-password-${lang}`,
         context: { name, resetUrl },
-      });
+      })) as { message?: string } | undefined;
 
       if (this.isDev && result?.message) {
         this.logger.debug(
@@ -92,7 +93,7 @@ export class EmailService {
       this.logger.log(`Password reset email sent to ${email}`);
     } catch (error) {
       this.logger.error(
-        `Failed to send password reset email to ${email}: ${error.message}`,
+        `Failed to send password reset email to ${email}: ${getErrorMessage(error)}`,
       );
       if (!this.isDev) throw error;
       this.logger.warn(`[DEV] Email send failed but reset URL: ${resetUrl}`);

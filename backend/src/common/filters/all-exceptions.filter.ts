@@ -34,7 +34,8 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       message =
         typeof exceptionResponse === 'string'
           ? exceptionResponse
-          : (exceptionResponse as any).message || exception.message;
+          : (exceptionResponse as { message?: string | string[] }).message ||
+            exception.message;
       error = exception.name;
 
       // Only report 5xx to Sentry

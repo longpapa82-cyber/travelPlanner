@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client } from '@googlemaps/google-maps-services-js';
+import { getErrorMessage } from '../../common/types/request.types';
 import { DateTime } from 'luxon';
 import { t } from '../../common/i18n';
 
@@ -65,7 +66,7 @@ export class TimezoneService {
       };
     } catch (error) {
       this.logger.error(
-        `Failed to geocode destination ${destination}: ${error.message}`,
+        `Failed to geocode destination ${destination}: ${getErrorMessage(error)}`,
       );
       return null;
     }
@@ -111,7 +112,7 @@ export class TimezoneService {
       };
     } catch (error) {
       this.logger.error(
-        `Failed to get timezone for coordinates (${latitude}, ${longitude}): ${error.message}`,
+        `Failed to get timezone for coordinates (${latitude}, ${longitude}): ${getErrorMessage(error)}`,
       );
       return null;
     }

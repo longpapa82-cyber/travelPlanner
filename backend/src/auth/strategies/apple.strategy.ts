@@ -4,12 +4,19 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-apple';
 import { AuthService } from '../auth.service';
 
+interface AppleProfile {
+  id: string;
+  email?: string;
+  name?: { firstName?: string; lastName?: string };
+}
+
 @Injectable()
 export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
   constructor(
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- passport-apple Strategy constructor is untyped
     super({
       clientID: configService.get<string>('oauth.apple.clientId')!,
       teamID: configService.get<string>('oauth.apple.teamId')!,
@@ -22,11 +29,11 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
   }
 
   validate(
-    accessToken: string,
-    refreshToken: string,
-    profile: any,
+    _accessToken: string,
+    _refreshToken: string,
+    profile: AppleProfile,
     done: VerifyCallback,
-  ): Promise<any> {
+  ): void {
     const { id, email, name } = profile;
 
     const user = {
@@ -37,6 +44,7 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
       provider: 'APPLE' as const,
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- passport VerifyCallback typing mismatch
     done(null, user);
   }
 }

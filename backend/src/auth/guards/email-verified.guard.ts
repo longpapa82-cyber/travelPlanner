@@ -14,15 +14,19 @@ import { t, parseLang } from '../../common/i18n';
 @Injectable()
 export class EmailVerifiedGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    const request = context.switchToHttp().getRequest<{
+      user?: { isEmailVerified?: boolean };
+      headers: Record<string, string | string[] | undefined>;
+    }>();
 
-    if (!user) {
+    if (!request.user) {
       throw new ForbiddenException('Authentication required');
     }
 
-    if (!user.isEmailVerified) {
-      const lang = parseLang(request.headers['accept-language']);
+    if (!request.user.isEmailVerified) {
+      const lang = parseLang(
+        request.headers['accept-language'] as string | undefined,
+      );
       throw new ForbiddenException(t('email.verification.required', lang));
     }
 

@@ -24,6 +24,8 @@ import { TripStatusScheduler } from './trip-status.scheduler';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/entities/notification.entity';
 import { updateItinerariesCompletionStatus } from './helpers/trip-progress.helper';
+import { QueryTripsDto, SortBy, SortOrder } from './dto/query-trips.dto';
+import { getErrorMessage } from '../common/types/request.types';
 
 @Injectable()
 export class TripsService {
@@ -103,7 +105,7 @@ export class TripsService {
       }
     } catch (error) {
       this.logger.warn(
-        `Failed to get location/timezone information: ${error.message}`,
+        `Failed to get location/timezone information: ${getErrorMessage(error)}`,
       );
     }
 
@@ -124,7 +126,14 @@ export class TripsService {
       const itineraries: Itinerary[] = [];
       for (const aiItinerary of aiItineraries) {
         // Get weather forecast for this specific date
-        let weather: any = null;
+        let weather: {
+          temperature: number;
+          condition: string;
+          humidity: number;
+          windSpeed: number;
+          precipitation?: number;
+          icon?: string;
+        } | null = null;
         if (locationInfo) {
           try {
             weather = await this.weatherService.getWeatherForecast(
@@ -139,7 +148,7 @@ export class TripsService {
             }
           } catch (error) {
             this.logger.warn(
-              `Failed to get weather for day ${aiItinerary.dayNumber}: ${error.message}`,
+              `Failed to get weather for day ${aiItinerary.dayNumber}: ${getErrorMessage(error)}`,
             );
           }
         }
@@ -161,7 +170,9 @@ export class TripsService {
         `Successfully generated ${itineraries.length} AI itineraries with weather data for trip ${savedTrip.id}`,
       );
     } catch (error) {
-      this.logger.error(`Failed to generate AI itineraries: ${error.message}`);
+      this.logger.error(
+        `Failed to generate AI itineraries: ${getErrorMessage(error)}`,
+      );
       this.logger.log(
         `Falling back to empty itineraries for trip ${savedTrip.id}`,
       );
@@ -173,7 +184,14 @@ export class TripsService {
         date.setDate(date.getDate() + i);
 
         // Get weather forecast for this date
-        let weather: any = null;
+        let weather: {
+          temperature: number;
+          condition: string;
+          humidity: number;
+          windSpeed: number;
+          precipitation?: number;
+          icon?: string;
+        } | null = null;
         if (locationInfo) {
           try {
             weather = await this.weatherService.getWeatherForecast(
@@ -183,7 +201,7 @@ export class TripsService {
             );
           } catch (error) {
             this.logger.warn(
-              `Failed to get weather for day ${i + 1}: ${error.message}`,
+              `Failed to get weather for day ${i + 1}: ${getErrorMessage(error)}`,
             );
           }
         }
@@ -209,7 +227,7 @@ export class TripsService {
 
   async findAll(
     userId: string,
-    queryDto?: any,
+    queryDto?: QueryTripsDto,
   ): Promise<{ trips: Trip[]; total: number; page: number; limit: number }> {
     const {
       search,
@@ -273,10 +291,10 @@ export class TripsService {
     const total = await queryBuilder.getCount();
 
     // Sorting
-    const orderDirection = order === 'ASC' ? 'ASC' : 'DESC';
-    if (sortBy === 'destination') {
+    const orderDirection = order === SortOrder.ASC ? 'ASC' : 'DESC';
+    if (sortBy === SortBy.DESTINATION) {
       queryBuilder.orderBy('trip.destination', orderDirection);
-    } else if (sortBy === 'createdAt') {
+    } else if (sortBy === SortBy.CREATED_AT) {
       queryBuilder.orderBy('trip.createdAt', orderDirection);
     } else {
       queryBuilder.orderBy('trip.startDate', orderDirection);
@@ -383,7 +401,7 @@ export class TripsService {
       description: original.description
         ? `${original.description} (복제)`
         : `${original.destination} 여행 (복제)`,
-      status: 'upcoming' as any,
+      status: TripStatus.UPCOMING,
     });
 
     const savedTrip = await this.tripRepository.save(newTrip);
@@ -842,11 +860,10 @@ export class TripsService {
 
     // Remove sensitive user information
     if (trip.user) {
-      trip.user = {
-        ...trip.user,
+      trip.user = Object.assign(trip.user, {
         email: undefined,
         password: undefined,
-      } as any;
+      });
     }
 
     this.logger.log(`Shared trip ${trip.id} accessed via token`);
@@ -915,10 +932,16 @@ export class TripsService {
     trips.forEach((t) => {
       if (t.totalBudget) totalBudget += Number(t.totalBudget);
       (t.itineraries || []).forEach((it) => {
-        (it.activities || []).forEach((a: any) => {
-          if (a.actualCost) totalSpent += Number(a.actualCost);
-          else if (a.estimatedCost) totalSpent += Number(a.estimatedCost);
-        });
+        (it.activities || []).forEach(
+          (a: {
+            actualCost?: number;
+            estimatedCost?: number;
+            completed?: boolean;
+          }) => {
+            if (a.actualCost) totalSpent += Number(a.actualCost);
+            else if (a.estimatedCost) totalSpent += Number(a.estimatedCost);
+          },
+        );
       });
     });
 
@@ -937,10 +960,16 @@ export class TripsService {
     let completedActivities = 0;
     trips.forEach((t) => {
       (t.itineraries || []).forEach((it) => {
-        (it.activities || []).forEach((a: any) => {
-          totalActivities++;
-          if (a.completed) completedActivities++;
-        });
+        (it.activities || []).forEach(
+          (a: {
+            actualCost?: number;
+            estimatedCost?: number;
+            completed?: boolean;
+          }) => {
+            totalActivities++;
+            if (a.completed) completedActivities++;
+          },
+        );
       });
     });
 
@@ -976,19 +1005,19 @@ export class TripsService {
     }
 
     // Find the target user by email
-    const targetUser = await this.tripRepository.manager
+    const targetUser = (await this.tripRepository.manager
       .getRepository('User')
-      .findOne({ where: { email: targetEmail } });
+      .findOne({ where: { email: targetEmail } })) as { id: string } | null;
     if (!targetUser) {
       throw new NotFoundException('User not found with this email');
     }
 
-    if ((targetUser as any).id === userId) {
+    if (targetUser.id === userId) {
       throw new BadRequestException('Cannot add yourself as a collaborator');
     }
 
     const existing = await this.collaboratorRepository.findOne({
-      where: { tripId, userId: (targetUser as any).id },
+      where: { tripId, userId: targetUser.id },
     });
     if (existing) {
       existing.role = role;
@@ -997,7 +1026,7 @@ export class TripsService {
 
     const collaborator = this.collaboratorRepository.create({
       tripId,
-      userId: (targetUser as any).id,
+      userId: targetUser.id,
       role,
       invitedBy: userId,
     });
@@ -1006,7 +1035,7 @@ export class TripsService {
     // Send notification to the invited user
     this.notificationsService
       .create(
-        (targetUser as any).id,
+        targetUser.id,
         NotificationType.COLLABORATOR_INVITE,
         '🤝 여행 초대',
         `${trip.destination} 여행에 초대되었습니다`,

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan } from 'typeorm';
 import { Trip, TripStatus } from '../entities/trip.entity';
+import { getErrorMessage } from '../../common/types/request.types';
 
 export interface DestinationStats {
   destination: string;
@@ -105,7 +106,7 @@ export class AnalyticsService {
         const averageTravelers = Math.round(totalTravelers / tripCount);
 
         // 인기 월 (여행 시작 월)
-        const monthCounts = new Array(12).fill(0);
+        const monthCounts: number[] = new Array(12).fill(0) as number[];
         data.trips.forEach((trip) => {
           const month = new Date(trip.startDate).getMonth();
           monthCounts[month]++;
@@ -131,7 +132,9 @@ export class AnalyticsService {
       // 인기도 순으로 정렬
       return stats.sort((a, b) => b.tripCount - a.tripCount).slice(0, limit);
     } catch (error) {
-      this.logger.error(`Failed to get popular destinations: ${error.message}`);
+      this.logger.error(
+        `Failed to get popular destinations: ${getErrorMessage(error)}`,
+      );
       return [];
     }
   }
@@ -206,7 +209,9 @@ export class AnalyticsService {
 
       return trends.sort((a, b) => b.popularity - a.popularity).slice(0, limit);
     } catch (error) {
-      this.logger.error(`Failed to get travel trends: ${error.message}`);
+      this.logger.error(
+        `Failed to get travel trends: ${getErrorMessage(error)}`,
+      );
       return [];
     }
   }
@@ -276,7 +281,7 @@ export class AnalyticsService {
       };
     } catch (error) {
       this.logger.error(
-        `Failed to get user preference stats: ${error.message}`,
+        `Failed to get user preference stats: ${getErrorMessage(error)}`,
       );
       return {
         budgetDistribution: {},
@@ -350,7 +355,7 @@ export class AnalyticsService {
       );
 
       // 인기 월
-      const monthCounts = new Array(12).fill(0);
+      const monthCounts: number[] = new Array(12).fill(0) as number[];
       relevantTrips.forEach((trip) => {
         const month = new Date(trip.startDate).getMonth();
         monthCounts[month]++;
@@ -403,7 +408,7 @@ export class AnalyticsService {
       };
     } catch (error) {
       this.logger.error(
-        `Failed to get destination recommendations: ${error.message}`,
+        `Failed to get destination recommendations: ${getErrorMessage(error)}`,
       );
       return {
         recommendedDuration: 5,

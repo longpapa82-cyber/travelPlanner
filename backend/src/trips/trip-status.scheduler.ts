@@ -109,7 +109,10 @@ export class TripStatusScheduler {
         `Trip status update completed: ${upcomingToOngoing} upcoming→ongoing, ${ongoingToCompleted} ongoing→completed`,
       );
     } catch (error) {
-      this.logger.error('Failed to update trip statuses', error.stack);
+      this.logger.error(
+        'Failed to update trip statuses',
+        error instanceof Error ? error.stack : undefined,
+      );
     }
   }
 

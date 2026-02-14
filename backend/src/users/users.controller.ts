@@ -8,11 +8,11 @@ import {
   Body,
   Headers,
   UseGuards,
-  Request,
   BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { t, parseLang } from '../common/i18n';
 
 @Controller('users')
@@ -21,28 +21,28 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getProfile(@Request() req) {
-    return this.usersService.findById(req.user.userId);
+  async getProfile(@CurrentUser('userId') userId: string) {
+    return this.usersService.findById(userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('me')
   async updateProfile(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Body() body: { name?: string; profileImage?: string },
   ) {
-    const updateData: Record<string, any> = {};
+    const updateData: Record<string, string> = {};
     if (body.name !== undefined) updateData.name = body.name;
     if (body.profileImage !== undefined)
       updateData.profileImage = body.profileImage;
 
-    return this.usersService.update(req.user.userId, updateData);
+    return this.usersService.update(userId, updateData);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('me/password')
   async changePassword(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Body() body: { currentPassword: string; newPassword: string },
     @Headers('accept-language') acceptLanguage?: string,
   ) {
@@ -54,7 +54,7 @@ export class UsersController {
       throw new BadRequestException(t('password.minLength', lang));
     }
     return this.usersService.changePassword(
-      req.user.userId,
+      userId,
       body.currentPassword,
       body.newPassword,
       lang,
@@ -64,10 +64,10 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Delete('me')
   async deleteAccount(
-    @Request() req,
+    @CurrentUser('userId') userId: string,
     @Headers('accept-language') acceptLanguage?: string,
   ) {
-    await this.usersService.remove(req.user.userId);
+    await this.usersService.remove(userId);
     return { message: t('account.deleted', parseLang(acceptLanguage)) };
   }
 

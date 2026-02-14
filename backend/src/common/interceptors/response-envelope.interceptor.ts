@@ -30,11 +30,13 @@ export class ResponseEnvelopeInterceptor<T> implements NestInterceptor<
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<EnvelopeResponse<T>> {
-    const request = context.switchToHttp().getRequest();
+    const request = context
+      .switchToHttp()
+      .getRequest<{ headers: Record<string, string | string[] | undefined> }>();
     const requestId = request.headers['x-request-id'] as string | undefined;
 
     return next.handle().pipe(
-      map((data) => ({
+      map((data: T) => ({
         data,
         meta: {
           timestamp: new Date().toISOString(),
