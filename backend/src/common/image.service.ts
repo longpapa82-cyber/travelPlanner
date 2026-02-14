@@ -64,10 +64,9 @@ export class ImageService {
     const outputName = `${name}.webp`;
     const outputPath = join(dir, outputName);
 
-    // Validate magic bytes before processing
-    await this.validateImage(filePath);
-
     try {
+      // Validate magic bytes before processing
+      await this.validateImage(filePath);
       await sharp(filePath)
         .resize(options.maxWidth, options.maxHeight, {
           fit: 'inside',

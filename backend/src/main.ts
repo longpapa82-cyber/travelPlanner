@@ -38,9 +38,11 @@ async function bootstrap() {
     }),
   );
 
-  // Serve uploaded files
+  // Serve uploaded files with long-term cache (filenames contain unique timestamps)
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads/',
+    maxAge: 31536000000, // 1 year in ms
+    immutable: true,
   });
 
   // Global prefix for all routes
