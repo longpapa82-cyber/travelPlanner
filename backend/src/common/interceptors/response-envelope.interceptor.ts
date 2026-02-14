@@ -22,9 +22,10 @@ interface EnvelopeResponse<T> {
  * Error responses are already enveloped by AllExceptionsFilter.
  */
 @Injectable()
-export class ResponseEnvelopeInterceptor<T>
-  implements NestInterceptor<T, EnvelopeResponse<T>>
-{
+export class ResponseEnvelopeInterceptor<T> implements NestInterceptor<
+  T,
+  EnvelopeResponse<T>
+> {
   intercept(
     context: ExecutionContext,
     next: CallHandler,

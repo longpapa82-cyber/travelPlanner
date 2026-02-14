@@ -108,10 +108,7 @@ ${tripEntries}
    * endpoint via the nginx location rule for /trips/shared/:token.
    */
   @Get('trips/og/:token')
-  async getSharedTripOg(
-    @Param('token') token: string,
-    @Res() res: Response,
-  ) {
+  async getSharedTripOg(@Param('token') token: string, @Res() res: Response) {
     const baseUrl = process.env.FRONTEND_URL || 'https://travelplanner.app';
 
     const trip = await this.tripRepo.findOne({

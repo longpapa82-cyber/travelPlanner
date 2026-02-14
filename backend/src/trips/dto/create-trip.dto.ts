@@ -7,7 +7,6 @@ import {
   Min,
   Max,
   IsObject,
-  IsArray,
   MaxLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
@@ -39,7 +38,9 @@ export class CreateTripDto {
   startDate: string;
 
   @IsDateString()
-  @IsAfterDate('startDate', { message: 'endDate must be on or after startDate' })
+  @IsAfterDate('startDate', {
+    message: 'endDate must be on or after startDate',
+  })
   endDate: string;
 
   @IsString()

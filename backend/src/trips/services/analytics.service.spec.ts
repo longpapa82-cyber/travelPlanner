@@ -1,12 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { AnalyticsService } from './analytics.service';
 import { Trip, TripStatus } from '../entities/trip.entity';
 
 describe('AnalyticsService', () => {
   let service: AnalyticsService;
-  let tripRepository: jest.Mocked<Repository<Trip>>;
 
   const mockRepository = {
     find: jest.fn(),
@@ -51,7 +49,12 @@ describe('AnalyticsService', () => {
       mockRepository.find.mockResolvedValue([
         createMockTrip({ destination: 'Tokyo' }),
         createMockTrip({ destination: 'tokyo', id: 'trip-2' }),
-        createMockTrip({ destination: 'Paris', country: 'France', city: 'Paris', id: 'trip-3' }),
+        createMockTrip({
+          destination: 'Paris',
+          country: 'France',
+          city: 'Paris',
+          id: 'trip-3',
+        }),
       ]);
 
       const result = await service.getPopularDestinations(10);
@@ -172,7 +175,10 @@ describe('AnalyticsService', () => {
     it('should extract top interests', async () => {
       mockRepository.find.mockResolvedValue([
         createMockTrip({ preferences: { interests: ['food', 'culture'] } }),
-        createMockTrip({ id: 'trip-2', preferences: { interests: ['food', 'shopping'] } }),
+        createMockTrip({
+          id: 'trip-2',
+          preferences: { interests: ['food', 'shopping'] },
+        }),
       ]);
 
       const result = await service.getTravelTrends();
@@ -263,7 +269,9 @@ describe('AnalyticsService', () => {
           numberOfTravelers: 3,
           preferences: { budget: 'moderate', travelStyle: 'adventure' },
           itineraries: [
-            { activities: [{ title: 'Temple Visit' }, { title: 'Sushi Tour' }] },
+            {
+              activities: [{ title: 'Temple Visit' }, { title: 'Sushi Tour' }],
+            },
           ] as any,
         }),
       ]);
@@ -284,7 +292,8 @@ describe('AnalyticsService', () => {
       ]);
 
       // "Tokyo, Japan" includes "Tokyo" → match
-      const result = await service.getDestinationRecommendations('Tokyo, Japan');
+      const result =
+        await service.getDestinationRecommendations('Tokyo, Japan');
       expect(result.recommendedDuration).toBeGreaterThan(0);
     });
 
@@ -303,9 +312,20 @@ describe('AnalyticsService', () => {
 
     it('should compute best months', async () => {
       mockRepository.find.mockResolvedValue([
-        createMockTrip({ destination: 'Tokyo', startDate: new Date('2026-03-15') }),
-        createMockTrip({ id: 'trip-2', destination: 'Tokyo', startDate: new Date('2026-03-20') }),
-        createMockTrip({ id: 'trip-3', destination: 'Tokyo', startDate: new Date('2026-07-10') }),
+        createMockTrip({
+          destination: 'Tokyo',
+          startDate: new Date('2026-03-15'),
+        }),
+        createMockTrip({
+          id: 'trip-2',
+          destination: 'Tokyo',
+          startDate: new Date('2026-03-20'),
+        }),
+        createMockTrip({
+          id: 'trip-3',
+          destination: 'Tokyo',
+          startDate: new Date('2026-07-10'),
+        }),
       ]);
 
       const result = await service.getDestinationRecommendations('Tokyo');

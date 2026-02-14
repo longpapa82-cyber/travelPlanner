@@ -42,7 +42,9 @@ export class UpdateTripDto {
 
   @IsDateString()
   @IsOptional()
-  @IsAfterDate('startDate', { message: 'endDate must be on or after startDate' })
+  @IsAfterDate('startDate', {
+    message: 'endDate must be on or after startDate',
+  })
   endDate?: string;
 
   @IsString()

@@ -82,7 +82,7 @@ export class AnalyticsService {
 
       // 통계 계산
       const stats: DestinationStats[] = [];
-      for (const [destination, data] of destinationMap.entries()) {
+      for (const [_destination, data] of destinationMap.entries()) {
         const tripCount = data.trips.length;
 
         // 평균 여행 기간 (일 수)
@@ -162,7 +162,7 @@ export class AnalyticsService {
 
       // 트렌드 계산
       const trends: TravelTrend[] = [];
-      for (const [destination, tripList] of trendMap.entries()) {
+      for (const [_destination, tripList] of trendMap.entries()) {
         // 예산 분포
         const budgets = tripList
           .filter((t) => t.preferences?.budget)

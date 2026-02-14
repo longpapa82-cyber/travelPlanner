@@ -1,5 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
+import {
+  ValidationPipe,
+  VersioningType,
+  VERSION_NEUTRAL,
+} from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { join } from 'path';
@@ -27,7 +31,11 @@ async function bootstrap() {
             'https://pagead2.googlesyndication.com',
             'https://www.googletagmanager.com',
           ],
-          styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            'https://fonts.googleapis.com',
+          ],
           imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
           fontSrc: ["'self'", 'https://fonts.gstatic.com'],
           connectSrc: ["'self'", 'https://exp.host', 'https://api.openai.com'],
@@ -109,9 +117,7 @@ async function bootstrap() {
     `Application is running on: http://localhost:${port}/${apiPrefix}`,
   );
   if (process.env.NODE_ENV !== 'production') {
-    console.log(
-      `Swagger docs: http://localhost:${port}/${apiPrefix}/docs`,
-    );
+    console.log(`Swagger docs: http://localhost:${port}/${apiPrefix}/docs`);
   }
 }
 bootstrap();

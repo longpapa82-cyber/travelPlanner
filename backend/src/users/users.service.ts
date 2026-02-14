@@ -239,10 +239,7 @@ export class UsersService {
     await this.userRepository.update(userId, { twoFactorSecret: secret });
   }
 
-  async enableTwoFactor(
-    userId: string,
-    backupCodes: string[],
-  ): Promise<void> {
+  async enableTwoFactor(userId: string, backupCodes: string[]): Promise<void> {
     await this.userRepository.update(userId, {
       isTwoFactorEnabled: true,
       twoFactorBackupCodes: backupCodes,
@@ -257,10 +254,7 @@ export class UsersService {
     });
   }
 
-  async updateBackupCodes(
-    userId: string,
-    codes: string[],
-  ): Promise<void> {
+  async updateBackupCodes(userId: string, codes: string[]): Promise<void> {
     await this.userRepository.update(userId, {
       twoFactorBackupCodes: codes,
     });

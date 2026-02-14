@@ -22,7 +22,8 @@ export class TripStatusScheduler {
   constructor(
     @InjectRepository(Trip)
     private tripRepository: Repository<Trip>,
-    @Optional() @Inject(NotificationsService)
+    @Optional()
+    @Inject(NotificationsService)
     private notificationsService?: NotificationsService,
   ) {}
 
@@ -65,7 +66,9 @@ export class TripStatusScheduler {
               `${trip.destination} 여행이 시작되었습니다. 즐거운 여행 되세요!`,
               { tripId: trip.id },
             )
-            .catch((err) => this.logger.warn('Failed to send trip start notification', err));
+            .catch((err) =>
+              this.logger.warn('Failed to send trip start notification', err),
+            );
         }
       }
 
@@ -93,7 +96,12 @@ export class TripStatusScheduler {
               `${trip.destination} 여행이 완료되었습니다. 추억을 확인해보세요!`,
               { tripId: trip.id },
             )
-            .catch((err) => this.logger.warn('Failed to send trip complete notification', err));
+            .catch((err) =>
+              this.logger.warn(
+                'Failed to send trip complete notification',
+                err,
+              ),
+            );
         }
       }
 

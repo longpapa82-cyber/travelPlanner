@@ -37,7 +37,7 @@ export function calculateTripStatus(
  */
 export function isItineraryCompleted(
   itinerary: Itinerary,
-  tripTimezoneOffset?: number,
+  _tripTimezoneOffset?: number,
 ): boolean {
   // 이미 완료 표시된 경우
   if (itinerary.isCompleted) {

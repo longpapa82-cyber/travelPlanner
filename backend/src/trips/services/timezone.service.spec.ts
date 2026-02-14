@@ -188,7 +188,10 @@ describe('TimezoneService', () => {
   describe('geocodeActivities', () => {
     it('should return zero coordinates when API key is missing', async () => {
       (service as any).apiKey = null;
-      const activities = [{ location: 'Senso-ji Temple' }, { location: 'Tokyo Tower' }];
+      const activities = [
+        { location: 'Senso-ji Temple' },
+        { location: 'Tokyo Tower' },
+      ];
 
       const result = await service.geocodeActivities(activities, 'Tokyo');
 
@@ -201,13 +204,20 @@ describe('TimezoneService', () => {
     it('should geocode activity locations', async () => {
       mockGeocode
         .mockResolvedValueOnce({
-          data: { results: [{ geometry: { location: { lat: 35.71, lng: 139.79 } } }] },
+          data: {
+            results: [{ geometry: { location: { lat: 35.71, lng: 139.79 } } }],
+          },
         })
         .mockResolvedValueOnce({
-          data: { results: [{ geometry: { location: { lat: 35.66, lng: 139.75 } } }] },
+          data: {
+            results: [{ geometry: { location: { lat: 35.66, lng: 139.75 } } }],
+          },
         });
 
-      const activities = [{ location: 'Senso-ji' }, { location: 'Tokyo Tower' }];
+      const activities = [
+        { location: 'Senso-ji' },
+        { location: 'Tokyo Tower' },
+      ];
       const result = await service.geocodeActivities(activities, 'Tokyo');
 
       expect(result[0]).toEqual({ latitude: 35.71, longitude: 139.79 });

@@ -42,7 +42,9 @@ describe('AuthService', () => {
       validatePassword: jest.fn(),
       findById: jest.fn(),
       findByProviderAndId: jest.fn(),
-      generateEmailVerificationToken: jest.fn().mockResolvedValue('mock-verification-token'),
+      generateEmailVerificationToken: jest
+        .fn()
+        .mockResolvedValue('mock-verification-token'),
     };
 
     const mockJwtService = {
@@ -619,9 +621,9 @@ describe('AuthService', () => {
 
       // Second attempt with same code fails (cache returns null)
       cacheManager.get.mockResolvedValueOnce(null);
-      await expect(
-        service.exchangeOAuthCode('one-time-code'),
-      ).rejects.toThrow(UnauthorizedException);
+      await expect(service.exchangeOAuthCode('one-time-code')).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 

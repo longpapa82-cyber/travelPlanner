@@ -84,25 +84,15 @@ export class AddP2P3Features1739400000000 implements MigrationInterface {
       `ALTER TABLE "collaborators" DROP CONSTRAINT "FK_collaborator_trip"`,
     );
     await queryRunner.query(`DROP TABLE "collaborators"`);
-    await queryRunner.query(
-      `DROP TYPE "public"."collaborators_role_enum"`,
-    );
+    await queryRunner.query(`DROP TYPE "public"."collaborators_role_enum"`);
 
     // --- Trips ---
-    await queryRunner.query(
-      `ALTER TABLE "trips" DROP COLUMN "coverImage"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "trips" DROP COLUMN "budgetCurrency"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "trips" DROP COLUMN "totalBudget"`,
-    );
+    await queryRunner.query(`ALTER TABLE "trips" DROP COLUMN "coverImage"`);
+    await queryRunner.query(`ALTER TABLE "trips" DROP COLUMN "budgetCurrency"`);
+    await queryRunner.query(`ALTER TABLE "trips" DROP COLUMN "totalBudget"`);
 
     // --- Users ---
-    await queryRunner.query(
-      `ALTER TABLE "users" DROP COLUMN "pushToken"`,
-    );
+    await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "pushToken"`);
     await queryRunner.query(
       `ALTER TABLE "users" DROP COLUMN "twoFactorBackupCodes"`,
     );

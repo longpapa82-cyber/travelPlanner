@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { randomBytes } from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Trip, TripStatus } from './entities/trip.entity';
 import { Itinerary } from './entities/itinerary.entity';
 import { Collaborator, CollaboratorRole } from './entities/collaborator.entity';
@@ -23,10 +23,7 @@ import { WeatherService } from './services/weather.service';
 import { TripStatusScheduler } from './trip-status.scheduler';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/entities/notification.entity';
-import {
-  calculateTripStatus,
-  updateItinerariesCompletionStatus,
-} from './helpers/trip-progress.helper';
+import { updateItinerariesCompletionStatus } from './helpers/trip-progress.helper';
 
 @Injectable()
 export class TripsService {
@@ -46,7 +43,11 @@ export class TripsService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  async create(userId: string, createTripDto: CreateTripDto, language: string = 'ko'): Promise<Trip> {
+  async create(
+    userId: string,
+    createTripDto: CreateTripDto,
+    language: string = 'ko',
+  ): Promise<Trip> {
     // Calculate number of days
     const startDate = new Date(createTripDto.startDate);
     const endDate = new Date(createTripDto.endDate);
@@ -514,7 +515,7 @@ export class TripsService {
   /**
    * Check if specific activity can be modified
    */
-  private canModifyActivity(trip: Trip, activityTime: string): void {
+  private canModifyActivity(trip: Trip, _activityTime: string): void {
     this.canModifyTrip(trip);
 
     // Note: For ongoing trips with past activities, the check is done in updateActivity
@@ -644,7 +645,7 @@ export class TripsService {
 
     // Update activity fields (filter out undefined to prevent overwriting existing values)
     const definedUpdates = Object.fromEntries(
-      Object.entries(updateActivityDto).filter(([_, v]) => v !== undefined),
+      Object.entries(updateActivityDto).filter(([_k, v]) => v !== undefined),
     );
     const updatedActivity = {
       ...existingActivity,
@@ -1011,12 +1012,18 @@ export class TripsService {
         `${trip.destination} 여행에 초대되었습니다`,
         { tripId },
       )
-      .catch((err) => this.logger.warn('Failed to send collaborator notification', err));
+      .catch((err) =>
+        this.logger.warn('Failed to send collaborator notification', err),
+      );
 
     return saved;
   }
 
-  async removeCollaborator(tripId: string, userId: string, collaboratorId: string) {
+  async removeCollaborator(
+    tripId: string,
+    userId: string,
+    collaboratorId: string,
+  ) {
     const trip = await this.tripRepository.findOne({ where: { id: tripId } });
     if (!trip) throw new NotFoundException('Trip not found');
     if (trip.userId !== userId) {

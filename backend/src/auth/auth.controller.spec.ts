@@ -46,7 +46,10 @@ describe('AuthController (Integration)', () => {
         },
         {
           provide: NotificationsService,
-          useValue: { registerPushToken: jest.fn(), removePushToken: jest.fn() },
+          useValue: {
+            registerPushToken: jest.fn(),
+            removePushToken: jest.fn(),
+          },
         },
       ],
     })
@@ -146,7 +149,9 @@ describe('AuthController (Integration)', () => {
         .send(invalidDto)
         .expect(400);
 
-      expect(response.body.message.some((m: string) => m.includes('email'))).toBe(true);
+      expect(
+        response.body.message.some((m: string) => m.includes('email')),
+      ).toBe(true);
       expect(authService.register).not.toHaveBeenCalled();
     });
 
@@ -161,7 +166,9 @@ describe('AuthController (Integration)', () => {
         .send(invalidDto)
         .expect(400);
 
-      expect(response.body.message.some((m: string) => m.includes('name'))).toBe(true);
+      expect(
+        response.body.message.some((m: string) => m.includes('name')),
+      ).toBe(true);
       expect(authService.register).not.toHaveBeenCalled();
     });
 
@@ -230,7 +237,9 @@ describe('AuthController (Integration)', () => {
         .send(invalidDto)
         .expect(400);
 
-      expect(response.body.message.some((m: string) => m.includes('password'))).toBe(true);
+      expect(
+        response.body.message.some((m: string) => m.includes('password')),
+      ).toBe(true);
       expect(authService.login).not.toHaveBeenCalled();
     });
 
@@ -389,7 +398,10 @@ describe('AuthController (Integration)', () => {
           },
           {
             provide: NotificationsService,
-            useValue: { registerPushToken: jest.fn(), removePushToken: jest.fn() },
+            useValue: {
+              registerPushToken: jest.fn(),
+              removePushToken: jest.fn(),
+            },
           },
         ],
       })
@@ -555,7 +567,9 @@ describe('AuthController (Integration)', () => {
         .expect(200);
 
       expect(response.body).toEqual(mockAuthResponse);
-      expect(authService.exchangeOAuthCode).toHaveBeenCalledWith('valid-oauth-code');
+      expect(authService.exchangeOAuthCode).toHaveBeenCalledWith(
+        'valid-oauth-code',
+      );
     });
 
     it('should return 400 when code is missing', async () => {

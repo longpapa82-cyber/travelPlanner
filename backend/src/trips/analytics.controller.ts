@@ -1,10 +1,5 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import {
-  AnalyticsService,
-  DestinationStats,
-  TravelTrend,
-  UserPreferenceStats,
-} from './services/analytics.service';
+import { AnalyticsService } from './services/analytics.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('analytics')

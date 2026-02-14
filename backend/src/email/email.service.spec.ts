@@ -13,13 +13,15 @@ describe('EmailService', () => {
       sendMail: jest.fn().mockResolvedValue({ message: 'sent' }),
     };
     configService = {
-      get: jest.fn().mockImplementation((key: string, defaultValue?: string) => {
-        const values: Record<string, string> = {
-          'email.frontendUrl': 'http://localhost:8081',
-          NODE_ENV: 'development',
-        };
-        return values[key] ?? defaultValue;
-      }),
+      get: jest
+        .fn()
+        .mockImplementation((key: string, defaultValue?: string) => {
+          const values: Record<string, string> = {
+            'email.frontendUrl': 'http://localhost:8081',
+            NODE_ENV: 'development',
+          };
+          return values[key] ?? defaultValue;
+        }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -43,11 +45,13 @@ describe('EmailService', () => {
     });
 
     it('should detect production mode', async () => {
-      configService.get.mockImplementation((key: string, defaultValue?: string) => {
-        if (key === 'NODE_ENV') return 'production';
-        if (key === 'email.frontendUrl') return 'https://travelplanner.com';
-        return defaultValue;
-      });
+      configService.get.mockImplementation(
+        (key: string, defaultValue?: string) => {
+          if (key === 'NODE_ENV') return 'production';
+          if (key === 'email.frontendUrl') return 'https://travelplanner.com';
+          return defaultValue;
+        },
+      );
 
       const module = await Test.createTestingModule({
         providers: [
@@ -64,7 +68,12 @@ describe('EmailService', () => {
 
   describe('sendVerificationEmail', () => {
     it('should send email with correct Korean subject', async () => {
-      await service.sendVerificationEmail('user@example.com', 'User', 'token123', 'ko');
+      await service.sendVerificationEmail(
+        'user@example.com',
+        'User',
+        'token123',
+        'ko',
+      );
 
       expect(mailerService.sendMail).toHaveBeenCalledWith({
         to: 'user@example.com',
@@ -78,7 +87,12 @@ describe('EmailService', () => {
     });
 
     it('should send email with correct English subject', async () => {
-      await service.sendVerificationEmail('user@example.com', 'User', 'token123', 'en');
+      await service.sendVerificationEmail(
+        'user@example.com',
+        'User',
+        'token123',
+        'en',
+      );
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -89,7 +103,12 @@ describe('EmailService', () => {
     });
 
     it('should send email with correct Japanese subject', async () => {
-      await service.sendVerificationEmail('user@example.com', 'User', 'token123', 'ja');
+      await service.sendVerificationEmail(
+        'user@example.com',
+        'User',
+        'token123',
+        'ja',
+      );
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -100,7 +119,11 @@ describe('EmailService', () => {
     });
 
     it('should default to Korean when no language specified', async () => {
-      await service.sendVerificationEmail('user@example.com', 'User', 'token123');
+      await service.sendVerificationEmail(
+        'user@example.com',
+        'User',
+        'token123',
+      );
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -111,19 +134,26 @@ describe('EmailService', () => {
     });
 
     it('should construct verification URL correctly', async () => {
-      await service.sendVerificationEmail('user@example.com', 'User', 'abc-token');
+      await service.sendVerificationEmail(
+        'user@example.com',
+        'User',
+        'abc-token',
+      );
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           context: expect.objectContaining({
-            verificationUrl: 'http://localhost:8081/verify-email?token=abc-token',
+            verificationUrl:
+              'http://localhost:8081/verify-email?token=abc-token',
           }),
         }),
       );
     });
 
     it('should not throw in dev mode when mailer fails', async () => {
-      mailerService.sendMail!.mockRejectedValue(new Error('SMTP connection refused'));
+      mailerService.sendMail!.mockRejectedValue(
+        new Error('SMTP connection refused'),
+      );
 
       // In dev mode, should not throw
       await expect(
@@ -133,11 +163,13 @@ describe('EmailService', () => {
 
     it('should throw in production mode when mailer fails', async () => {
       // Create production service
-      configService.get.mockImplementation((key: string, defaultValue?: string) => {
-        if (key === 'NODE_ENV') return 'production';
-        if (key === 'email.frontendUrl') return 'https://app.example.com';
-        return defaultValue;
-      });
+      configService.get.mockImplementation(
+        (key: string, defaultValue?: string) => {
+          if (key === 'NODE_ENV') return 'production';
+          if (key === 'email.frontendUrl') return 'https://app.example.com';
+          return defaultValue;
+        },
+      );
 
       const module = await Test.createTestingModule({
         providers: [
@@ -151,14 +183,23 @@ describe('EmailService', () => {
       mailerService.sendMail!.mockRejectedValue(new Error('SMTP Error'));
 
       await expect(
-        prodService.sendVerificationEmail('user@example.com', 'User', 'token123'),
+        prodService.sendVerificationEmail(
+          'user@example.com',
+          'User',
+          'token123',
+        ),
       ).rejects.toThrow('SMTP Error');
     });
   });
 
   describe('sendPasswordResetEmail', () => {
     it('should send reset email with correct Korean subject', async () => {
-      await service.sendPasswordResetEmail('user@example.com', 'User', 'reset-token', 'ko');
+      await service.sendPasswordResetEmail(
+        'user@example.com',
+        'User',
+        'reset-token',
+        'ko',
+      );
 
       expect(mailerService.sendMail).toHaveBeenCalledWith({
         to: 'user@example.com',
@@ -172,7 +213,12 @@ describe('EmailService', () => {
     });
 
     it('should send reset email with English subject', async () => {
-      await service.sendPasswordResetEmail('user@example.com', 'User', 'token', 'en');
+      await service.sendPasswordResetEmail(
+        'user@example.com',
+        'User',
+        'token',
+        'en',
+      );
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -183,7 +229,12 @@ describe('EmailService', () => {
     });
 
     it('should send reset email with Japanese subject', async () => {
-      await service.sendPasswordResetEmail('user@example.com', 'User', 'token', 'ja');
+      await service.sendPasswordResetEmail(
+        'user@example.com',
+        'User',
+        'token',
+        'ja',
+      );
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -194,7 +245,11 @@ describe('EmailService', () => {
     });
 
     it('should construct reset URL correctly', async () => {
-      await service.sendPasswordResetEmail('user@example.com', 'User', 'xyz-token');
+      await service.sendPasswordResetEmail(
+        'user@example.com',
+        'User',
+        'xyz-token',
+      );
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -214,11 +269,13 @@ describe('EmailService', () => {
     });
 
     it('should throw in production mode when mailer fails', async () => {
-      configService.get.mockImplementation((key: string, defaultValue?: string) => {
-        if (key === 'NODE_ENV') return 'production';
-        if (key === 'email.frontendUrl') return 'https://app.example.com';
-        return defaultValue;
-      });
+      configService.get.mockImplementation(
+        (key: string, defaultValue?: string) => {
+          if (key === 'NODE_ENV') return 'production';
+          if (key === 'email.frontendUrl') return 'https://app.example.com';
+          return defaultValue;
+        },
+      );
 
       const module = await Test.createTestingModule({
         providers: [
@@ -229,7 +286,9 @@ describe('EmailService', () => {
       }).compile();
 
       const prodService = module.get<EmailService>(EmailService);
-      mailerService.sendMail!.mockRejectedValue(new Error('Connection timeout'));
+      mailerService.sendMail!.mockRejectedValue(
+        new Error('Connection timeout'),
+      );
 
       await expect(
         prodService.sendPasswordResetEmail('user@example.com', 'User', 'token'),

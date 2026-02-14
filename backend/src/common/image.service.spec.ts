@@ -36,7 +36,12 @@ describe('ImageService', () => {
   ): Promise<string> {
     const filePath = join(photosDir, filename);
     await sharp({
-      create: { width, height, channels: 3, background: { r: 255, g: 0, b: 0 } },
+      create: {
+        width,
+        height,
+        channels: 3,
+        background: { r: 255, g: 0, b: 0 },
+      },
     })
       .png()
       .toFile(filePath);

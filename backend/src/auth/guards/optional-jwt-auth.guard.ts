@@ -22,7 +22,7 @@ export class OptionalJwtAuthGuard extends AuthGuard('jwt') {
    * @param context - 실행 컨텍스트
    * @returns user 또는 null (에러를 throw하지 않음)
    */
-  handleRequest(err: any, user: any, info: any, context: ExecutionContext) {
+  handleRequest(err: any, user: any, _info: any, _context: ExecutionContext) {
     // 에러가 있어도 무시하고 null 반환 (요청 계속 진행)
     // 사용자가 있으면 사용자 반환, 없으면 null
     return user || null;

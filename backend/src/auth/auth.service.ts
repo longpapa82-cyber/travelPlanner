@@ -21,7 +21,7 @@ import {
   AuthResponse,
   TokenPayload,
 } from './interfaces/auth-response.interface';
-import { t, parseLang } from '../common/i18n';
+import { t } from '../common/i18n';
 
 type SupportedLang = 'ko' | 'en' | 'ja';
 
@@ -65,8 +65,9 @@ export class AuthService {
 
     // Send verification email (non-blocking)
     try {
-      const token =
-        await this.usersService.generateEmailVerificationToken(user.id);
+      const token = await this.usersService.generateEmailVerificationToken(
+        user.id,
+      );
       await this.emailService.sendVerificationEmail(
         user.email!,
         user.name,
@@ -74,9 +75,7 @@ export class AuthService {
         lang,
       );
     } catch (error) {
-      this.logger.error(
-        `Failed to send verification email: ${error.message}`,
-      );
+      this.logger.error(`Failed to send verification email: ${error.message}`);
     }
 
     // Generate JWT tokens
@@ -95,7 +94,9 @@ export class AuthService {
     };
   }
 
-  async login(loginDto: LoginDto): Promise<AuthResponse | { requiresTwoFactor: true; tempToken: string }> {
+  async login(
+    loginDto: LoginDto,
+  ): Promise<AuthResponse | { requiresTwoFactor: true; tempToken: string }> {
     // Find user by email
     const user = await this.usersService.findByEmail(loginDto.email);
     if (!user) {
@@ -166,7 +167,7 @@ export class AuthService {
         },
         ...tokens,
       };
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
@@ -216,7 +217,9 @@ export class AuthService {
       APPLE: AuthProvider.APPLE,
       KAKAO: AuthProvider.KAKAO,
     };
-    const provider = providerMap[oauthUser.provider] || (oauthUser.provider.toLowerCase() as AuthProvider);
+    const provider =
+      providerMap[oauthUser.provider] ||
+      (oauthUser.provider.toLowerCase() as AuthProvider);
 
     // Check if user exists with this provider ID
     let user = await this.usersService.findByProviderAndId(
@@ -275,8 +278,9 @@ export class AuthService {
       throw new BadRequestException(t('email.already.verified', lang));
     }
 
-    const token =
-      await this.usersService.generateEmailVerificationToken(user.id);
+    const token = await this.usersService.generateEmailVerificationToken(
+      user.id,
+    );
     await this.emailService.sendVerificationEmail(
       email,
       user.name,
@@ -335,7 +339,11 @@ export class AuthService {
 
     const secret = generateSecret();
     const appName = 'TravelPlanner';
-    const otpauthUrl = generateURI({ issuer: appName, label: user.email || user.id, secret });
+    const otpauthUrl = generateURI({
+      issuer: appName,
+      label: user.email || user.id,
+      secret,
+    });
     const qrCodeDataUrl = await QRCode.toDataURL(otpauthUrl);
 
     // Store secret temporarily (not yet enabled)

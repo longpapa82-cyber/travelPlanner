@@ -18,8 +18,7 @@ export class EmailService {
       'email.frontendUrl',
       'http://localhost:8081',
     );
-    this.isDev =
-      this.configService.get<string>('NODE_ENV') !== 'production';
+    this.isDev = this.configService.get<string>('NODE_ENV') !== 'production';
   }
 
   async sendVerificationEmail(
@@ -86,8 +85,7 @@ export class EmailService {
 
       if (this.isDev && result?.message) {
         this.logger.debug(
-          `[DEV] Password reset email for ${email}:\n` +
-            `  URL: ${resetUrl}`,
+          `[DEV] Password reset email for ${email}:\n` + `  URL: ${resetUrl}`,
         );
       }
 
@@ -97,9 +95,7 @@ export class EmailService {
         `Failed to send password reset email to ${email}: ${error.message}`,
       );
       if (!this.isDev) throw error;
-      this.logger.warn(
-        `[DEV] Email send failed but reset URL: ${resetUrl}`,
-      );
+      this.logger.warn(`[DEV] Email send failed but reset URL: ${resetUrl}`);
     }
   }
 }

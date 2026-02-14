@@ -1,10 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  Notification,
-  NotificationType,
-} from './entities/notification.entity';
+import { Notification, NotificationType } from './entities/notification.entity';
 import { User } from '../users/entities/user.entity';
 
 interface ExpoPushMessage {
@@ -70,12 +67,13 @@ export class NotificationsService {
     page = 1,
     limit = 20,
   ): Promise<{ notifications: Notification[]; total: number }> {
-    const [notifications, total] = await this.notificationRepository.findAndCount({
-      where: { userId },
-      order: { createdAt: 'DESC' },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+    const [notifications, total] =
+      await this.notificationRepository.findAndCount({
+        where: { userId },
+        order: { createdAt: 'DESC' },
+        skip: (page - 1) * limit,
+        take: limit,
+      });
 
     return { notifications, total };
   }

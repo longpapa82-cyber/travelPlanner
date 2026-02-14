@@ -1,10 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotificationsService } from './notifications.service';
-import {
-  Notification,
-  NotificationType,
-} from './entities/notification.entity';
+import { Notification, NotificationType } from './entities/notification.entity';
 import { User } from '../users/entities/user.entity';
 
 // Mock global fetch for Expo push API
@@ -65,7 +62,10 @@ describe('NotificationsService', () => {
     it('should create a notification and send push', async () => {
       mockNotificationRepo.create.mockReturnValue(mockNotification);
       mockNotificationRepo.save.mockResolvedValue(mockNotification);
-      mockUserRepo.findOne.mockResolvedValue({ id: 'user-1', pushToken: 'ExponentPushToken[xxx]' });
+      mockUserRepo.findOne.mockResolvedValue({
+        id: 'user-1',
+        pushToken: 'ExponentPushToken[xxx]',
+      });
 
       const result = await service.create(
         'user-1',
@@ -94,7 +94,12 @@ describe('NotificationsService', () => {
       mockNotificationRepo.save.mockResolvedValue(mockNotification);
       mockUserRepo.findOne.mockResolvedValue({ id: 'user-1', pushToken: null });
 
-      await service.create('user-1', NotificationType.TRIP_STARTED, 'Title', 'Body');
+      await service.create(
+        'user-1',
+        NotificationType.TRIP_STARTED,
+        'Title',
+        'Body',
+      );
 
       expect(mockNotificationRepo.save).toHaveBeenCalled();
       expect(mockFetch).not.toHaveBeenCalled();
@@ -300,12 +305,20 @@ describe('NotificationsService', () => {
     it('should not throw when Expo API fails', async () => {
       mockNotificationRepo.create.mockReturnValue(mockNotification);
       mockNotificationRepo.save.mockResolvedValue(mockNotification);
-      mockUserRepo.findOne.mockResolvedValue({ id: 'user-1', pushToken: 'token' });
+      mockUserRepo.findOne.mockResolvedValue({
+        id: 'user-1',
+        pushToken: 'token',
+      });
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       // Should not throw — errors are caught internally
       await expect(
-        service.create('user-1', NotificationType.TRIP_STARTED, 'Title', 'Body'),
+        service.create(
+          'user-1',
+          NotificationType.TRIP_STARTED,
+          'Title',
+          'Body',
+        ),
       ).resolves.toBeDefined();
     });
 
@@ -314,7 +327,12 @@ describe('NotificationsService', () => {
       mockNotificationRepo.save.mockResolvedValue(mockNotification);
       mockUserRepo.findOne.mockResolvedValue(null);
 
-      await service.create('user-1', NotificationType.TRIP_STARTED, 'Title', 'Body');
+      await service.create(
+        'user-1',
+        NotificationType.TRIP_STARTED,
+        'Title',
+        'Body',
+      );
 
       expect(mockFetch).not.toHaveBeenCalled();
     });

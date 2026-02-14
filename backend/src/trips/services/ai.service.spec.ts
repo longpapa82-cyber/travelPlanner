@@ -67,12 +67,10 @@ describe('AIService', () => {
       getDestinationRecommendations: jest.fn().mockResolvedValue(null),
     };
     timezoneService = {
-      geocodeActivities: jest
-        .fn()
-        .mockResolvedValue([
-          { latitude: 35.7148, longitude: 139.7967 },
-          { latitude: 35.6654, longitude: 139.7707 },
-        ]),
+      geocodeActivities: jest.fn().mockResolvedValue([
+        { latitude: 35.7148, longitude: 139.7967 },
+        { latitude: 35.6654, longitude: 139.7707 },
+      ]),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -149,7 +147,15 @@ describe('AIService', () => {
 
     it('should return cached result when available', async () => {
       const cachedActivities = [
-        { time: '09:00', title: 'Cached Activity', description: '', location: 'Tokyo', estimatedDuration: 60, estimatedCost: 0, type: 'sightseeing' },
+        {
+          time: '09:00',
+          title: 'Cached Activity',
+          description: '',
+          location: 'Tokyo',
+          estimatedDuration: 60,
+          estimatedCost: 0,
+          type: 'sightseeing',
+        },
       ];
       cacheManager.get.mockResolvedValue(cachedActivities);
 
@@ -301,7 +307,9 @@ describe('AIService', () => {
         new Date('2025-07-01'),
       );
 
-      expect(analyticsService.getDestinationRecommendations).toHaveBeenCalledWith('Tokyo');
+      expect(
+        analyticsService.getDestinationRecommendations,
+      ).toHaveBeenCalledWith('Tokyo');
       // OpenAI should have been called (prompt includes recommendations)
       expect(openaiCreate).toHaveBeenCalled();
     });
@@ -310,7 +318,15 @@ describe('AIService', () => {
       cacheManager.get.mockResolvedValue(null);
       const altResponse = JSON.stringify({
         itinerary: [
-          { time: '10:00', title: 'Alt Activity', description: 'desc', location: 'Tokyo Tower', estimatedDuration: 60, estimatedCost: 15, type: 'sightseeing' },
+          {
+            time: '10:00',
+            title: 'Alt Activity',
+            description: 'desc',
+            location: 'Tokyo Tower',
+            estimatedDuration: 60,
+            estimatedCost: 15,
+            type: 'sightseeing',
+          },
         ],
       });
       openaiCreate.mockResolvedValue({
@@ -331,9 +347,33 @@ describe('AIService', () => {
       cacheManager.get.mockResolvedValue(null);
       const badResponse = JSON.stringify({
         activities: [
-          { time: '09:00', title: 'Good Activity', description: 'ok', location: 'Tokyo', estimatedDuration: 60, estimatedCost: 0, type: 'sightseeing' },
-          { time: '10:00', title: '', description: 'no title', location: 'Somewhere', estimatedDuration: 60, estimatedCost: 0, type: 'food' },
-          { time: '11:00', title: 'No Location', description: 'no loc', location: '', estimatedDuration: 60, estimatedCost: 0, type: 'food' },
+          {
+            time: '09:00',
+            title: 'Good Activity',
+            description: 'ok',
+            location: 'Tokyo',
+            estimatedDuration: 60,
+            estimatedCost: 0,
+            type: 'sightseeing',
+          },
+          {
+            time: '10:00',
+            title: '',
+            description: 'no title',
+            location: 'Somewhere',
+            estimatedDuration: 60,
+            estimatedCost: 0,
+            type: 'food',
+          },
+          {
+            time: '11:00',
+            title: 'No Location',
+            description: 'no loc',
+            location: '',
+            estimatedDuration: 60,
+            estimatedCost: 0,
+            type: 'food',
+          },
           null,
         ],
       });

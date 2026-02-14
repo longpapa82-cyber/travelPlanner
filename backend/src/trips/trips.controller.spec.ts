@@ -243,7 +243,11 @@ describe('TripsController (Integration)', () => {
         .send(minimalDto)
         .expect(201);
 
-      expect(tripsService.create).toHaveBeenCalledWith(mockUserId, minimalDto, expect.any(String));
+      expect(tripsService.create).toHaveBeenCalledWith(
+        mockUserId,
+        minimalDto,
+        expect.any(String),
+      );
     });
 
     it('should return 401/403 when not authenticated', async () => {
@@ -341,7 +345,12 @@ describe('TripsController (Integration)', () => {
     });
 
     it('should return empty array when user has no trips', async () => {
-      tripsService.findAll.mockResolvedValue({ trips: [], total: 0, page: 1, limit: 20 });
+      tripsService.findAll.mockResolvedValue({
+        trips: [],
+        total: 0,
+        page: 1,
+        limit: 20,
+      });
 
       const response = await request(app.getHttpServer())
         .get('/trips')

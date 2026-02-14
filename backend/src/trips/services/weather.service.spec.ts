@@ -99,15 +99,29 @@ describe('WeatherService', () => {
   describe('getWeatherForecast', () => {
     it('should return null when API key is not configured', async () => {
       (service as any).apiKey = null;
-      const result = await service.getWeatherForecast(35.68, 139.76, new Date());
+      const result = await service.getWeatherForecast(
+        35.68,
+        139.76,
+        new Date(),
+      );
       expect(result).toBeNull();
     });
 
     it('should return cached result when available', async () => {
-      const cached = { temperature: 25, condition: 'Sunny', humidity: 50, windSpeed: 2, icon: '01d' };
+      const cached = {
+        temperature: 25,
+        condition: 'Sunny',
+        humidity: 50,
+        windSpeed: 2,
+        icon: '01d',
+      };
       cacheManager.get.mockResolvedValue(cached);
 
-      const result = await service.getWeatherForecast(35.68, 139.76, new Date('2025-07-01'));
+      const result = await service.getWeatherForecast(
+        35.68,
+        139.76,
+        new Date('2025-07-01'),
+      );
       expect(result).toEqual(cached);
       expect(mockedAxios.get).not.toHaveBeenCalled();
     });
@@ -116,7 +130,11 @@ describe('WeatherService', () => {
       cacheManager.get.mockResolvedValue(null);
       mockedAxios.get.mockResolvedValue(mockForecastResponse);
 
-      const result = await service.getWeatherForecast(35.68, 139.76, new Date('2025-07-01'));
+      const result = await service.getWeatherForecast(
+        35.68,
+        139.76,
+        new Date('2025-07-01'),
+      );
 
       expect(result).toBeDefined();
       expect(result!.temperature).toBeGreaterThanOrEqual(28);
@@ -138,15 +156,34 @@ describe('WeatherService', () => {
       const response = {
         data: {
           list: [
-            { dt: noonTs - 7200, main: { temp: 20, humidity: 50 }, weather: [{ main: 'Morning', description: '', icon: '' }], wind: { speed: 1 } },
-            { dt: noonTs, main: { temp: 25, humidity: 60 }, weather: [{ main: 'Noon', description: '', icon: '' }], wind: { speed: 2 } },
-            { dt: noonTs + 7200, main: { temp: 28, humidity: 55 }, weather: [{ main: 'Afternoon', description: '', icon: '' }], wind: { speed: 3 } },
+            {
+              dt: noonTs - 7200,
+              main: { temp: 20, humidity: 50 },
+              weather: [{ main: 'Morning', description: '', icon: '' }],
+              wind: { speed: 1 },
+            },
+            {
+              dt: noonTs,
+              main: { temp: 25, humidity: 60 },
+              weather: [{ main: 'Noon', description: '', icon: '' }],
+              wind: { speed: 2 },
+            },
+            {
+              dt: noonTs + 7200,
+              main: { temp: 28, humidity: 55 },
+              weather: [{ main: 'Afternoon', description: '', icon: '' }],
+              wind: { speed: 3 },
+            },
           ],
         },
       };
       mockedAxios.get.mockResolvedValue(response);
 
-      const result = await service.getWeatherForecast(35.68, 139.76, new Date('2025-07-01'));
+      const result = await service.getWeatherForecast(
+        35.68,
+        139.76,
+        new Date('2025-07-01'),
+      );
       // The algorithm finds the forecast whose dt is closest to noon on the target date
       expect(result).toBeDefined();
       expect(['Morning', 'Noon', 'Afternoon']).toContain(result!.condition);
@@ -157,7 +194,11 @@ describe('WeatherService', () => {
       mockedAxios.get.mockRejectedValue(new Error('Network Error'));
       mockedAxios.isAxiosError = jest.fn().mockReturnValue(false);
 
-      const result = await service.getWeatherForecast(35.68, 139.76, new Date());
+      const result = await service.getWeatherForecast(
+        35.68,
+        139.76,
+        new Date(),
+      );
       expect(result).toBeNull();
     });
 
@@ -171,7 +212,11 @@ describe('WeatherService', () => {
       mockedAxios.get.mockRejectedValue(axiosError);
       mockedAxios.isAxiosError = jest.fn().mockReturnValue(true);
 
-      const result = await service.getWeatherForecast(35.68, 139.76, new Date());
+      const result = await service.getWeatherForecast(
+        35.68,
+        139.76,
+        new Date(),
+      );
       expect(result).toBeNull();
     });
 
@@ -179,7 +224,11 @@ describe('WeatherService', () => {
       cacheManager.get.mockResolvedValue(null);
       mockedAxios.get.mockResolvedValue(mockForecastResponse);
 
-      await service.getWeatherForecast(35.6895, 139.7610, new Date('2025-07-01'));
+      await service.getWeatherForecast(
+        35.6895,
+        139.761,
+        new Date('2025-07-01'),
+      );
 
       expect(cacheManager.get).toHaveBeenCalledWith(
         'weather:35.69:139.76:2025-07-01',
@@ -191,7 +240,12 @@ describe('WeatherService', () => {
       const noPrecip = {
         data: {
           list: [
-            { dt: 0, main: { temp: 22, humidity: 40 }, weather: [{ main: 'Clear', description: '', icon: '' }], wind: { speed: 1 } },
+            {
+              dt: 0,
+              main: { temp: 22, humidity: 40 },
+              weather: [{ main: 'Clear', description: '', icon: '' }],
+              wind: { speed: 1 },
+            },
           ],
         },
       };

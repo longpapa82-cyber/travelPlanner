@@ -21,7 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
-import { Throttle, SkipThrottle } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
 import { TripsService } from './trips.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
@@ -141,7 +141,8 @@ export class TripsController {
         const [hours, minutes] = (activity.time || '09:00').split(':');
         const startTime = `${dateStr}T${hours.padStart(2, '0')}${minutes.padStart(2, '0')}00`;
         const dur = activity.estimatedDuration || 60;
-        const endHour = parseInt(hours) + Math.floor((parseInt(minutes) + dur) / 60);
+        const endHour =
+          parseInt(hours) + Math.floor((parseInt(minutes) + dur) / 60);
         const endMin = (parseInt(minutes) + dur) % 60;
         const endTime = `${dateStr}T${String(endHour).padStart(2, '0')}${String(endMin).padStart(2, '0')}00`;
 

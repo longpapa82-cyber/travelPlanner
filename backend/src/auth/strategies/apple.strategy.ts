@@ -21,7 +21,7 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
     });
   }
 
-  async validate(
+  validate(
     accessToken: string,
     refreshToken: string,
     profile: any,

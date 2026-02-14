@@ -16,7 +16,9 @@ const stripHtml = ({ value }: { value: unknown }) =>
 export class UpdateActivityDto {
   @IsOptional()
   @IsString()
-  @Matches(/^([01]?\d|2[0-3]):[0-5]\d$/, { message: 'time must be in HH:MM format (00:00-23:59)' })
+  @Matches(/^([01]?\d|2[0-3]):[0-5]\d$/, {
+    message: 'time must be in HH:MM format (00:00-23:59)',
+  })
   time?: string;
 
   @IsOptional()
