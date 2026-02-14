@@ -519,6 +519,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               <View style={styles.affiliateButtons}>
                 <AffiliateLink provider="booking" destination={trip.destination} checkIn={trip.startDate} checkOut={trip.endDate} travelers={trip.numberOfTravelers} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
                 <AffiliateLink provider="expedia" destination={trip.destination} checkIn={trip.startDate} checkOut={trip.endDate} travelers={trip.numberOfTravelers} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
+                <AffiliateLink provider="airbnb" destination={trip.destination} checkIn={trip.startDate} checkOut={trip.endDate} travelers={trip.numberOfTravelers} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
+                <AffiliateLink provider="hotels" destination={trip.destination} checkIn={trip.startDate} checkOut={trip.endDate} travelers={trip.numberOfTravelers} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
                 <AffiliateLink provider="viator" destination={trip.destination} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
                 <AffiliateLink provider="klook" destination={trip.destination} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
               </View>

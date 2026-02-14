@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ProfileStackParamList } from '../types';
 import ProfileScreen from '../screens/main/ProfileScreen';
 import TwoFactorSettingsScreen from '../screens/main/TwoFactorSettingsScreen';
+import RevenueDashboardScreen from '../screens/main/RevenueDashboardScreen';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 
@@ -34,6 +35,11 @@ const ProfileNavigator = () => {
         name="TwoFactorSettings"
         component={TwoFactorSettingsScreen}
         options={{ title: t('menu.twoFactor') }}
+      />
+      <Stack.Screen
+        name="RevenueDashboard"
+        component={RevenueDashboardScreen}
+        options={{ title: t('menu.revenue') }}
       />
     </Stack.Navigator>
   );

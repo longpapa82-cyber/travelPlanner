@@ -365,6 +365,17 @@ const ProfileScreen = ({ navigation }: any) => {
           </Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('RevenueDashboard')}
+          accessibilityRole="button"
+          accessibilityLabel={t('menu.revenue')}
+        >
+          <Icon name="chart-line" size={24} color={theme.colors.textSecondary} />
+          <Text style={styles.menuText}>{t('menu.revenue')}</Text>
+          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.section}>

@@ -41,6 +41,7 @@ import { useNotifications } from '../../contexts/NotificationContext';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import DestinationInsights from '../../components/DestinationInsights';
+import { useInterstitialAd } from '../../components/ads';
 import { getHeroImageUrl } from '../../utils/images';
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
@@ -92,6 +93,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   const { showToast } = useToast();
   const { scheduleTripReminders } = useNotifications();
   const { t } = useTranslation('trips');
+  const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
 
   const POPULAR_DESTINATIONS = getPopularDestinations(t);
   const DURATION_OPTIONS = getDurationOptions(t);
@@ -231,8 +233,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
         duration: 2000,
       });
 
-      // Navigate after a short delay to allow toast to be seen
-      setTimeout(() => {
+      // Show interstitial ad after trip creation, then navigate
+      setTimeout(async () => {
+        if (isAdLoaded) {
+          await showInterstitial();
+        }
         navigation.navigate('TripDetail', { tripId: trip.id });
       }, 500);
     } catch (error: any) {

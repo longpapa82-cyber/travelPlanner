@@ -19,7 +19,8 @@
     "darkMode": "Dark Mode",
     "help": "Help",
     "terms": "Terms of Service",
-    "privacy": "Privacy Policy"
+    "privacy": "Privacy Policy",
+    "revenue": "Revenue Dashboard"
   },
   "editProfile": {
     "title": "Edit Profile",
@@ -91,5 +92,22 @@
     "completedOf": "{{completed}} / {{total}} done",
     "noData": "No travel data yet",
     "loading": "Loading stats..."
+  },
+  "revenue": {
+    "last30Days": "Last 30 days",
+    "totalClicks": "Total Clicks",
+    "conversions": "Conversions",
+    "conversionRate": "Conv. Rate",
+    "commission": "Commission",
+    "highlights": "Highlights",
+    "topProvider": "Top Provider",
+    "topDestination": "Top Destination",
+    "totalRevenue": "Total Revenue",
+    "byProvider": "By Provider",
+    "clicks": "clicks",
+    "conv": "conv",
+    "noData": "No data available yet",
+    "adminOnly": "Admin access required",
+    "loadError": "Failed to load data"
   }
 }

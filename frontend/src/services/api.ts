@@ -422,6 +422,26 @@ class ApiService {
   async deleteAllNotifications() {
     await this.api.delete('/notifications');
   }
+
+  // Admin Analytics
+  async getAffiliateSummary(days = 30) {
+    const response = await this.api.get('/analytics/affiliate/summary', { params: { days } });
+    return response.data;
+  }
+
+  async getAffiliateProviderStats(startDate?: string, endDate?: string) {
+    const response = await this.api.get('/analytics/affiliate/stats', {
+      params: { startDate, endDate },
+    });
+    return response.data;
+  }
+
+  async getAffiliateDailyStats(startDate: string, endDate: string, provider?: string) {
+    const response = await this.api.get('/analytics/affiliate/daily', {
+      params: { startDate, endDate, provider },
+    });
+    return response.data;
+  }
 }
 
 export default new ApiService();

@@ -19,7 +19,8 @@
     "darkMode": "ダークモード",
     "help": "ヘルプ",
     "terms": "利用規約",
-    "privacy": "プライバシーポリシー"
+    "privacy": "プライバシーポリシー",
+    "revenue": "収益ダッシュボード"
   },
   "editProfile": {
     "title": "プロフィール編集",
@@ -91,5 +92,22 @@
     "completedOf": "{{completed}} / {{total}} 完了",
     "noData": "旅行データがありません",
     "loading": "統計を読み込み中..."
+  },
+  "revenue": {
+    "last30Days": "過去30日間",
+    "totalClicks": "総クリック",
+    "conversions": "コンバージョン",
+    "conversionRate": "転換率",
+    "commission": "手数料",
+    "highlights": "ハイライト",
+    "topProvider": "人気提携先",
+    "topDestination": "人気旅行先",
+    "totalRevenue": "総売上",
+    "byProvider": "提携先別",
+    "clicks": "クリック",
+    "conv": "転換",
+    "noData": "まだデータがありません",
+    "adminOnly": "管理者のみアクセスできます",
+    "loadError": "データの読み込みに失敗しました"
   }
 }

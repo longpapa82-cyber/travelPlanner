@@ -139,6 +139,7 @@ export interface AppNotification {
 export type ProfileStackParamList = {
   ProfileMain: undefined;
   TwoFactorSettings: undefined;
+  RevenueDashboard: undefined;
 };
 
 export type TripsStackParamList = {

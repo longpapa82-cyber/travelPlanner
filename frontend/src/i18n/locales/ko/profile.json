@@ -19,7 +19,8 @@
     "darkMode": "다크 모드",
     "help": "도움말",
     "terms": "이용약관",
-    "privacy": "개인정보 처리방침"
+    "privacy": "개인정보 처리방침",
+    "revenue": "수익 대시보드"
   },
   "editProfile": {
     "title": "프로필 수정",
@@ -91,5 +92,22 @@
     "completedOf": "{{completed}} / {{total}} 완료",
     "noData": "여행 데이터가 없습니다",
     "loading": "통계 로딩 중..."
+  },
+  "revenue": {
+    "last30Days": "최근 30일",
+    "totalClicks": "총 클릭",
+    "conversions": "전환",
+    "conversionRate": "전환율",
+    "commission": "수수료",
+    "highlights": "하이라이트",
+    "topProvider": "인기 제휴사",
+    "topDestination": "인기 여행지",
+    "totalRevenue": "총 매출",
+    "byProvider": "제휴사별 현황",
+    "clicks": "클릭",
+    "conv": "전환",
+    "noData": "아직 데이터가 없습니다",
+    "adminOnly": "관리자 전용 기능입니다",
+    "loadError": "데이터를 불러오지 못했습니다"
   }
 }
