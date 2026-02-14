@@ -1,7 +1,8 @@
-import { Controller, Get, Header, Param, Res } from '@nestjs/common';
+import { Controller, Get, Header, Inject, Param, Res } from '@nestjs/common';
 import type { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull, MoreThan, Not } from 'typeorm';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Trip } from './trips/entities/trip.entity';
 import { AppService } from './app.service';
 
@@ -10,6 +11,7 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     @InjectRepository(Trip) private readonly tripRepo: Repository<Trip>,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   @Get()
@@ -18,8 +20,34 @@ export class AppController {
   }
 
   @Get('health')
-  getHealth() {
-    return { status: 'ok', timestamp: new Date().toISOString() };
+  async getHealth() {
+    const checks: Record<string, 'up' | 'down'> = {};
+
+    // Database check
+    try {
+      await this.tripRepo.query('SELECT 1');
+      checks.database = 'up';
+    } catch {
+      checks.database = 'down';
+    }
+
+    // Cache check
+    try {
+      await this.cacheManager.set('health:ping', '1', 5000);
+      await this.cacheManager.get('health:ping');
+      checks.cache = 'up';
+    } catch {
+      checks.cache = 'down';
+    }
+
+    const allUp = Object.values(checks).every((v) => v === 'up');
+
+    return {
+      status: allUp ? 'ok' : 'degraded',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      checks,
+    };
   }
 
   @Get('sitemap.xml')

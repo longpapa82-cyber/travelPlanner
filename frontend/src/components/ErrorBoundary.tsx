@@ -14,6 +14,7 @@ import i18next from 'i18next';
 import { colors } from '../constants/theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const MAX_RETRIES = 3;
 
 interface Props {
   children: ReactNode;
@@ -29,6 +30,7 @@ interface State {
 class ErrorBoundary extends Component<Props, State> {
   private fadeAnim = new Animated.Value(0);
   private slideAnim = new Animated.Value(30);
+  private retryCount = 0;
 
   constructor(props: Props) {
     super(props);
@@ -65,18 +67,37 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   handleRetry = () => {
+    this.retryCount++;
     this.fadeAnim.setValue(0);
     this.slideAnim.setValue(30);
     this.setState({ hasError: false, error: null, eventId: null, showDetails: false });
   };
 
   handleGoHome = () => {
-    this.handleRetry();
-    // Navigation reset via URL on web, or let the retry re-mount from root
+    this.retryCount = 0;
+    this.fadeAnim.setValue(0);
+    this.slideAnim.setValue(30);
+    this.setState({ hasError: false, error: null, eventId: null, showDetails: false });
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       window.location.href = '/';
     }
   };
+
+  handleReload = () => {
+    this.retryCount = 0;
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      window.location.reload();
+    } else {
+      // On native, reset state fully — RN will re-mount the tree
+      this.fadeAnim.setValue(0);
+      this.slideAnim.setValue(30);
+      this.setState({ hasError: false, error: null, eventId: null, showDetails: false });
+    }
+  };
+
+  private get isPersistentError(): boolean {
+    return this.retryCount >= MAX_RETRIES;
+  }
 
   toggleDetails = () => {
     this.setState((prev) => ({ showDetails: !prev.showDetails }));
@@ -112,10 +133,20 @@ class ErrorBoundary extends Component<Props, State> {
 
             {/* Title & Message */}
             <Text style={styles.title}>
-              {i18next.t('errorBoundary.title', { ns: 'common' })}
+              {this.isPersistentError
+                ? i18next.t('errorBoundary.persistentTitle', {
+                    ns: 'common',
+                    defaultValue: 'Repeated errors detected',
+                  })
+                : i18next.t('errorBoundary.title', { ns: 'common' })}
             </Text>
             <Text style={styles.message}>
-              {i18next.t('errorBoundary.message', { ns: 'common' })}
+              {this.isPersistentError
+                ? i18next.t('errorBoundary.persistentMessage', {
+                    ns: 'common',
+                    defaultValue: 'This error keeps occurring. Please try reloading the app.',
+                  })
+                : i18next.t('errorBoundary.message', { ns: 'common' })}
             </Text>
 
             {/* Error ID (for support) */}
@@ -127,18 +158,39 @@ class ErrorBoundary extends Component<Props, State> {
 
             {/* Action buttons */}
             <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={styles.primaryButton}
-                onPress={this.handleRetry}
-                activeOpacity={0.7}
-                accessibilityRole="button"
-                accessibilityLabel={i18next.t('errorBoundary.retry', { ns: 'common' })}
-              >
-                <Icon name="refresh" size={18} color={colors.neutral[0]} />
-                <Text style={styles.primaryButtonText}>
-                  {i18next.t('errorBoundary.retry', { ns: 'common' })}
-                </Text>
-              </TouchableOpacity>
+              {this.isPersistentError ? (
+                <TouchableOpacity
+                  style={styles.primaryButton}
+                  onPress={this.handleReload}
+                  activeOpacity={0.7}
+                  accessibilityRole="button"
+                  accessibilityLabel={i18next.t('errorBoundary.reload', {
+                    ns: 'common',
+                    defaultValue: 'Reload app',
+                  })}
+                >
+                  <Icon name="restart" size={18} color={colors.neutral[0]} />
+                  <Text style={styles.primaryButtonText}>
+                    {i18next.t('errorBoundary.reload', {
+                      ns: 'common',
+                      defaultValue: 'Reload app',
+                    })}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.primaryButton}
+                  onPress={this.handleRetry}
+                  activeOpacity={0.7}
+                  accessibilityRole="button"
+                  accessibilityLabel={i18next.t('errorBoundary.retry', { ns: 'common' })}
+                >
+                  <Icon name="refresh" size={18} color={colors.neutral[0]} />
+                  <Text style={styles.primaryButtonText}>
+                    {i18next.t('errorBoundary.retry', { ns: 'common' })}
+                  </Text>
+                </TouchableOpacity>
+              )}
 
               <TouchableOpacity
                 style={styles.secondaryButton}

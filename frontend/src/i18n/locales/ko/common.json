@@ -23,7 +23,10 @@
   "errorBoundary": {
     "title": "길을 잃었어요",
     "message": "예기치 않은 오류가 발생했습니다.\n걱정 마세요, 금방 해결될 거예요!",
+    "persistentTitle": "반복적인 오류가 발생했어요",
+    "persistentMessage": "동일한 오류가 계속 발생하고 있습니다.\n앱을 다시 로드해주세요.",
     "retry": "다시 시도",
+    "reload": "앱 다시 로드",
     "goHome": "홈으로 돌아가기",
     "errorId": "오류 ID: {{id}}"
   },

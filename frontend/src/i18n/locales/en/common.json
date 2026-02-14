@@ -23,7 +23,10 @@
   "errorBoundary": {
     "title": "We got a bit lost",
     "message": "An unexpected error occurred.\nDon't worry, we'll get you back on track!",
+    "persistentTitle": "Repeated errors detected",
+    "persistentMessage": "This error keeps occurring.\nPlease try reloading the app.",
     "retry": "Try Again",
+    "reload": "Reload App",
     "goHome": "Go Home",
     "errorId": "Error ID: {{id}}"
   },
