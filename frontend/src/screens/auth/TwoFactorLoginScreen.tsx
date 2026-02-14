@@ -38,9 +38,10 @@ const TwoFactorLoginScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       await completeTwoFactorLogin(tempToken, code.trim());
       // Auth context will update user state → navigation auto-switches to Main
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
       setError(
-        err.response?.data?.message || t('twoFactor.alerts.invalidCode'),
+        axiosErr.response?.data?.message || t('twoFactor.alerts.invalidCode'),
       );
       setCode('');
       inputRef.current?.focus();

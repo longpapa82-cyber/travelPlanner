@@ -17,6 +17,8 @@ export const WORKERS = {
   W11: { email: 'test-w11@test.com', name: 'Worker11 A11y', password: TEST_PASSWORD },
   W12: { email: 'test-w12@test.com', name: 'Worker12 Visual', password: TEST_PASSWORD },
   W13: { email: 'test-w13@test.com', name: 'Worker13 Network', password: TEST_PASSWORD },
+  W14: { email: 'test-w14@test.com', name: 'Worker14 2FA', password: TEST_PASSWORD },
+  W15: { email: 'test-w15@test.com', name: 'Worker15 Notify', password: TEST_PASSWORD },
   DESTROY: { email: 'test-destroy@test.com', name: 'Destroy User', password: TEST_PASSWORD },
 };
 

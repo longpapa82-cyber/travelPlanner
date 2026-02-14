@@ -11,6 +11,13 @@ interface AuthTokens {
   refreshToken: string;
 }
 
+interface RawResponse {
+  status: number;
+  headers: Record<string, string>;
+  body: any;
+  text: string;
+}
+
 export class ApiHelper {
   private baseUrl: string;
 
@@ -18,6 +25,11 @@ export class ApiHelper {
     this.baseUrl = baseUrl;
   }
 
+  /**
+   * Core JSON request with auto-unwrap of response envelope.
+   * The backend wraps all successful responses as { data, meta }.
+   * This method returns the inner `data` payload directly.
+   */
   private async request(
     method: string,
     path: string,
@@ -53,11 +65,101 @@ export class ApiHelper {
       }
 
       if (res.status === 204) return null;
-      return res.json().catch(() => null);
+
+      const json = await res.json().catch(() => null);
+
+      // Auto-unwrap response envelope { data, meta }
+      if (json && typeof json === 'object' && 'data' in json && 'meta' in json) {
+        return json.data;
+      }
+      return json;
     }
 
     throw new Error(`API ${method} ${path} failed: max retries exceeded (429)`);
   }
+
+  /**
+   * Raw request returning full response details (status, headers, body text).
+   * Does NOT auto-unwrap the envelope — used for response format verification.
+   */
+  async rawRequest(
+    method: string,
+    path: string,
+    options?: {
+      body?: any;
+      token?: string;
+      headers?: Record<string, string>;
+    },
+  ): Promise<RawResponse> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Accept-Language': 'ko',
+      ...(options?.headers || {}),
+    };
+    if (options?.token) {
+      headers['Authorization'] = `Bearer ${options.token}`;
+    }
+
+    const res = await fetch(`${this.baseUrl}${path}`, {
+      method,
+      headers,
+      body: options?.body ? JSON.stringify(options.body) : undefined,
+    });
+
+    const text = await res.text();
+    let body: any;
+    try {
+      body = JSON.parse(text);
+    } catch {
+      body = text;
+    }
+
+    const responseHeaders: Record<string, string> = {};
+    res.headers.forEach((value, key) => {
+      responseHeaders[key] = value;
+    });
+
+    return { status: res.status, headers: responseHeaders, body, text };
+  }
+
+  /**
+   * Multipart form-data request for file uploads.
+   * Returns the unwrapped response data.
+   */
+  private async uploadRequest(
+    path: string,
+    formData: FormData,
+    token?: string,
+  ): Promise<any> {
+    const headers: Record<string, string> = {
+      'Accept-Language': 'ko',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    // Do NOT set Content-Type — fetch sets multipart boundary automatically
+
+    const res = await fetch(`${this.baseUrl}${path}`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`API POST ${path} failed: ${res.status} ${text}`);
+    }
+
+    const json = await res.json().catch(() => null);
+    if (json && typeof json === 'object' && 'data' in json && 'meta' in json) {
+      return json.data;
+    }
+    return json;
+  }
+
+  // ============================================
+  // Auth
+  // ============================================
 
   async register(user: UserCredentials): Promise<any> {
     try {
@@ -81,9 +183,151 @@ export class ApiHelper {
     };
   }
 
+  /**
+   * Login that returns raw response data, preserving 2FA fields like
+   * requiresTwoFactor and tempToken.
+   */
+  async loginRaw(email: string, password: string = TEST_PASSWORD): Promise<any> {
+    return this.request('POST', '/auth/login', { email, password });
+  }
+
   async getMe(token: string): Promise<any> {
     return this.request('GET', '/auth/me', undefined, token);
   }
+
+  // ============================================
+  // Two-Factor Authentication
+  // ============================================
+
+  async setup2FA(token: string): Promise<{ secret: string; qrCodeDataUrl: string }> {
+    return this.request('POST', '/auth/2fa/setup', undefined, token);
+  }
+
+  async enable2FA(token: string, code: string): Promise<{ backupCodes: string[] }> {
+    return this.request('POST', '/auth/2fa/enable', { code }, token);
+  }
+
+  async verify2FA(tempToken: string, code: string): Promise<any> {
+    return this.request('POST', '/auth/2fa/verify', { code }, tempToken);
+  }
+
+  async disable2FA(token: string, code: string): Promise<any> {
+    return this.request('POST', '/auth/2fa/disable', { code }, token);
+  }
+
+  async regenerateBackupCodes(
+    token: string,
+    code: string,
+  ): Promise<{ backupCodes: string[] }> {
+    return this.request('POST', '/auth/2fa/regenerate-backup-codes', { code }, token);
+  }
+
+  // ============================================
+  // Notifications
+  // ============================================
+
+  async getNotifications(
+    token: string,
+    params?: { page?: number; limit?: number },
+  ): Promise<any> {
+    const qs = new URLSearchParams();
+    if (params?.page) qs.set('page', String(params.page));
+    if (params?.limit) qs.set('limit', String(params.limit));
+    const query = qs.toString();
+    return this.request('GET', `/notifications${query ? '?' + query : ''}`, undefined, token);
+  }
+
+  async getUnreadCount(token: string): Promise<{ count: number }> {
+    return this.request('GET', '/notifications/unread-count', undefined, token);
+  }
+
+  async markNotificationRead(token: string, id: string): Promise<void> {
+    await this.request('PATCH', `/notifications/${id}/read`, undefined, token);
+  }
+
+  async markAllNotificationsRead(token: string): Promise<void> {
+    await this.request('PATCH', '/notifications/read-all', undefined, token);
+  }
+
+  async deleteNotification(token: string, id: string): Promise<void> {
+    await this.request('DELETE', `/notifications/${id}`, undefined, token);
+  }
+
+  async deleteAllNotifications(token: string): Promise<void> {
+    await this.request('DELETE', '/notifications', undefined, token);
+  }
+
+  // ============================================
+  // Image Upload
+  // ============================================
+
+  async uploadPhoto(
+    token: string,
+    imageBuffer: Buffer,
+    filename: string,
+  ): Promise<{ url: string; thumbnailUrl?: string }> {
+    // Must set MIME type on Blob — multer's fileFilter checks file.mimetype
+    const mimeType = filename.endsWith('.png') ? 'image/png'
+      : filename.endsWith('.webp') ? 'image/webp'
+      : filename.endsWith('.gif') ? 'image/gif'
+      : 'image/jpeg';
+    const blob = new Blob([imageBuffer], { type: mimeType });
+    const formData = new FormData();
+    formData.append('photo', blob, filename);
+    return this.uploadRequest('/trips/upload/photo', formData, token);
+  }
+
+  /**
+   * Raw upload returning full response (status, headers, body) for
+   * validation tests (cache headers, error shapes, etc.)
+   */
+  async uploadPhotoRaw(
+    imageBuffer: Buffer | null,
+    filename: string,
+    token?: string,
+  ): Promise<RawResponse> {
+    const headers: Record<string, string> = {
+      'Accept-Language': 'ko',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const formData = new FormData();
+    if (imageBuffer) {
+      const mimeType = filename.endsWith('.png') ? 'image/png'
+        : filename.endsWith('.webp') ? 'image/webp'
+        : filename.endsWith('.gif') ? 'image/gif'
+        : 'image/jpeg';
+      const blob = new Blob([imageBuffer], { type: mimeType });
+      formData.append('photo', blob, filename);
+    }
+
+    const res = await fetch(`${this.baseUrl}/trips/upload/photo`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    const text = await res.text();
+    let body: any;
+    try {
+      body = JSON.parse(text);
+    } catch {
+      body = text;
+    }
+
+    const responseHeaders: Record<string, string> = {};
+    res.headers.forEach((value, key) => {
+      responseHeaders[key] = value;
+    });
+
+    return { status: res.status, headers: responseHeaders, body, text };
+  }
+
+  // ============================================
+  // Trips
+  // ============================================
 
   async createTrip(
     token: string,
@@ -124,6 +368,34 @@ export class ApiHelper {
   async duplicateTrip(token: string, tripId: string): Promise<any> {
     return this.request('POST', `/trips/${tripId}/duplicate`, undefined, token);
   }
+
+  // ============================================
+  // iCal Export
+  // ============================================
+
+  async exportIcal(token: string, tripId: string): Promise<RawResponse> {
+    const headers: Record<string, string> = {
+      'Accept-Language': 'ko',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const res = await fetch(`${this.baseUrl}/trips/${tripId}/export/ical`, {
+      method: 'GET',
+      headers,
+    });
+
+    const text = await res.text();
+    const responseHeaders: Record<string, string> = {};
+    res.headers.forEach((value, key) => {
+      responseHeaders[key] = value;
+    });
+
+    return { status: res.status, headers: responseHeaders, body: text, text };
+  }
+
+  // ============================================
+  // Activities
+  // ============================================
 
   async addActivity(
     token: string,
@@ -168,6 +440,10 @@ export class ApiHelper {
     );
   }
 
+  // ============================================
+  // Sharing & Collaboration
+  // ============================================
+
   async generateShareLink(
     token: string,
     tripId: string,
@@ -181,7 +457,6 @@ export class ApiHelper {
     );
   }
 
-  // Collaborator methods
   async addCollaborator(
     token: string,
     tripId: string,
@@ -204,6 +479,10 @@ export class ApiHelper {
   async removeCollaborator(token: string, tripId: string, collabId: string): Promise<void> {
     await this.request('DELETE', `/trips/${tripId}/collaborators/${collabId}`, undefined, token);
   }
+
+  // ============================================
+  // Users
+  // ============================================
 
   async deleteUser(token: string): Promise<void> {
     await this.request('DELETE', '/users/me', undefined, token);

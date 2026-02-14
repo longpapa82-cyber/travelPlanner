@@ -423,12 +423,17 @@ export class AuthService {
 
     const user = await this.usersService.findByIdWithTwoFactor(payload.sub);
 
-    // Try TOTP code first
-    const totpResult = verifySync({
-      token: code,
-      secret: user.twoFactorSecret!,
-    });
-    let isValid = totpResult.valid;
+    // Try TOTP code first (wrap in try-catch: verifySync throws on non-numeric tokens)
+    let isValid = false;
+    try {
+      const totpResult = verifySync({
+        token: code,
+        secret: user.twoFactorSecret!,
+      });
+      isValid = totpResult.valid;
+    } catch {
+      // Non-numeric code (e.g. backup code) — TOTP check fails, try backup below
+    }
 
     // Try backup code if TOTP fails
     let usedBackupCode = false;

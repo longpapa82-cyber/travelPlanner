@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   Image,
   Platform,
-  Clipboard,
 } from 'react-native';
+import * as ExpoClipboard from 'expo-clipboard';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -19,10 +19,13 @@ import { useToast } from '../../components/feedback/Toast/ToastContext';
 import Button from '../../components/core/Button';
 import apiService from '../../services/api';
 import { trackEvent } from '../../services/eventTracker';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { ProfileStackParamList } from '../../types';
 
 type Step = 'status' | 'setup' | 'verify' | 'backup' | 'disable' | 'regenerate';
+type Props = NativeStackScreenProps<ProfileStackParamList, 'TwoFactorSettings'>;
 
-const TwoFactorSettingsScreen = ({ navigation }: any) => {
+const TwoFactorSettingsScreen: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation('auth');
   const { t: tCommon } = useTranslation('common');
   const { user, refreshUser } = useAuth();
@@ -101,13 +104,9 @@ const TwoFactorSettingsScreen = ({ navigation }: any) => {
     }
   };
 
-  const copyBackupCodes = () => {
+  const copyBackupCodes = async () => {
     const text = backupCodes.join('\n');
-    if (Platform.OS === 'web') {
-      navigator.clipboard?.writeText(text);
-    } else {
-      Clipboard?.setString?.(text);
-    }
+    await ExpoClipboard.setStringAsync(text);
     showToast({ type: 'success', message: t('twoFactor.setup.backupCodesCopied'), position: 'top' });
   };
 

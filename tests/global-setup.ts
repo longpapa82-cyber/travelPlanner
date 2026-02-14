@@ -3,6 +3,81 @@ import { ApiHelper } from './fixtures/api-helper';
 import { SEED_TRIPS, SAMPLE_ACTIVITY } from './fixtures/test-data';
 import * as fs from 'fs';
 import * as path from 'path';
+import { execFileSync } from 'child_process';
+
+/**
+ * Verify all test users' emails via direct DB update.
+ * This is necessary because the EmailVerifiedGuard (P15) blocks
+ * unverified users from creating trips and other protected operations.
+ * Uses execFileSync (no shell) to avoid command injection.
+ */
+/**
+ * Reset W14 user (2FA test user) to a clean state.
+ * Previous test runs may have enabled 2FA, making the user
+ * unable to login normally (returns requiresTwoFactor).
+ * Deleting the user allows re-registration from scratch.
+ */
+function resetTwoFactorTestUser() {
+  const dbHost = process.env.DB_HOST || 'localhost';
+  const dbPort = process.env.DB_PORT || '5432';
+  const dbUser = process.env.DB_USERNAME || process.env.USER || 'postgres';
+  const dbName = process.env.DB_DATABASE || 'travelplanner';
+
+  // Delete W14 user entirely for a clean 2FA test slate
+  const sql = `DELETE FROM users WHERE email = 'test-w14@test.com'`;
+  try {
+    execFileSync('psql', [
+      '-h', dbHost, '-p', dbPort, '-U', dbUser, '-d', dbName, '-c', sql,
+    ], { stdio: 'pipe', timeout: 10000 });
+    console.log('  🔄 Reset W14 (2FA test user)');
+  } catch {
+    // Table might be "user" instead of "users"
+    try {
+      const sqlAlt = `DELETE FROM "user" WHERE email = 'test-w14@test.com'`;
+      execFileSync('psql', [
+        '-h', dbHost, '-p', dbPort, '-U', dbUser, '-d', dbName, '-c', sqlAlt,
+      ], { stdio: 'pipe', timeout: 10000 });
+      console.log('  🔄 Reset W14 (2FA test user)');
+    } catch {
+      console.log('  ⚠️  Could not reset W14 user (may not exist yet)');
+    }
+  }
+}
+
+function verifyTestUserEmails() {
+  const dbHost = process.env.DB_HOST || 'localhost';
+  const dbPort = process.env.DB_PORT || '5432';
+  const dbUser = process.env.DB_USERNAME || process.env.USER || 'postgres';
+  const dbName = process.env.DB_DATABASE || 'travelplanner';
+
+  const sql = `UPDATE "user" SET "isEmailVerified" = true WHERE email LIKE 'test-%@test.com'`;
+
+  try {
+    execFileSync('psql', [
+      '-h', dbHost,
+      '-p', dbPort,
+      '-U', dbUser,
+      '-d', dbName,
+      '-c', sql,
+    ], { stdio: 'pipe', timeout: 10000 });
+    console.log('  ✅ All test user emails verified');
+  } catch {
+    // Try alternate table name (some TypeORM configs use "users")
+    const sqlAlt = `UPDATE users SET "isEmailVerified" = true WHERE email LIKE 'test-%@test.com'`;
+    try {
+      execFileSync('psql', [
+        '-h', dbHost,
+        '-p', dbPort,
+        '-U', dbUser,
+        '-d', dbName,
+        '-c', sqlAlt,
+      ], { stdio: 'pipe', timeout: 10000 });
+      console.log('  ✅ All test user emails verified (users table)');
+    } catch (e2: any) {
+      console.log(`  ⚠️  Could not verify emails via SQL: ${e2.message?.slice(0, 100)}`);
+    }
+  }
+}
 
 async function globalSetup() {
   const api = new ApiHelper(API_URL);
@@ -14,6 +89,9 @@ async function globalSetup() {
   }
 
   console.log('🔧 Global Setup: Creating test users and seed data...\n');
+
+  // 0. Reset 2FA test user to clean state (avoids stale 2FA lock-out)
+  resetTwoFactorTestUser();
 
   // 1. Register all test users
   for (const [key, user] of Object.entries(WORKERS)) {
@@ -28,7 +106,10 @@ async function globalSetup() {
     await new Promise((r) => setTimeout(r, 3000));
   }
 
-  // 2. Login all users and save auth state
+  // 2. Mark all test users as email-verified (bypasses EmailVerifiedGuard)
+  verifyTestUserEmails();
+
+  // 3. Login all users and save auth state
   const tokens: Record<string, { accessToken: string; refreshToken: string }> = {};
   for (const [key, user] of Object.entries(WORKERS)) {
     try {
@@ -46,7 +127,7 @@ async function globalSetup() {
     await new Promise((r) => setTimeout(r, 2000));
   }
 
-  // 3. Create seed trips for workers that need them
+  // 4. Create seed trips for workers that need them
   const seedWorkers: Array<{ key: string; trips: typeof SEED_TRIPS.W4 }> = [
     { key: 'W4', trips: SEED_TRIPS.W4 },
     { key: 'W5', trips: SEED_TRIPS.W5 },
@@ -58,6 +139,8 @@ async function globalSetup() {
     { key: 'W11', trips: SEED_TRIPS.W11 },
     { key: 'W12', trips: SEED_TRIPS.W12 },
     { key: 'W13', trips: SEED_TRIPS.W13 },
+    { key: 'W14', trips: [] },
+    { key: 'W15', trips: [] },
     { key: 'DESTROY', trips: SEED_TRIPS.DESTROY },
   ];
 

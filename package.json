@@ -25,6 +25,7 @@
   "type": "commonjs",
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
-    "@playwright/test": "^1.58.2"
+    "@playwright/test": "^1.58.2",
+    "otplib": "^13.3.0"
   }
 }

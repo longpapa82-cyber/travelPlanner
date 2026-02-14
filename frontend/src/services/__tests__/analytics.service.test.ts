@@ -16,7 +16,7 @@ import api from '../api';
 import { offlineCache } from '../offlineCache';
 import analyticsService from '../analytics.service';
 
-const mockApi = api as jest.Mocked<typeof api>;
+const mockApi = api as unknown as { get: jest.Mock };
 const mockCache = offlineCache as jest.Mocked<typeof offlineCache>;
 
 describe('AnalyticsService', () => {

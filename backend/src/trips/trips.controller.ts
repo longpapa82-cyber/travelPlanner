@@ -139,13 +139,15 @@ export class TripsController {
       `X-WR-CALNAME:${trip.destination}`,
     ];
 
-    for (const itinerary of trip.itineraries) {
-      const dateStr = new Date(itinerary.date)
+    for (const itinerary of trip.itineraries || []) {
+      const parsedDate = new Date(itinerary.date);
+      if (isNaN(parsedDate.getTime())) continue; // skip invalid dates
+      const dateStr = parsedDate
         .toISOString()
         .replace(/[-:]/g, '')
         .split('T')[0];
 
-      for (const activity of itinerary.activities) {
+      for (const activity of itinerary.activities || []) {
         const [hours, minutes] = (activity.time || '09:00').split(':');
         const startTime = `${dateStr}T${hours.padStart(2, '0')}${minutes.padStart(2, '0')}00`;
         const dur = activity.estimatedDuration || 60;
@@ -170,9 +172,12 @@ export class TripsController {
     const ical = lines.join('\r\n');
 
     res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
+    // Use RFC 5987 encoding for non-ASCII filenames (Korean, Japanese, etc.)
+    const safeFilename = trip.destination.replace(/[^a-zA-Z0-9]/g, '_');
+    const encodedFilename = encodeURIComponent(`${trip.destination}_trip.ics`);
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename="${trip.destination.replace(/[^a-zA-Z0-9가-힣]/g, '_')}_trip.ics"`,
+      `attachment; filename="${safeFilename}_trip.ics"; filename*=UTF-8''${encodedFilename}`,
     );
     res.send(ical);
   }
