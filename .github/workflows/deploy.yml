@@ -4,9 +4,19 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment target'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
 
 env:
   REGISTRY: ghcr.io
+  DEPLOY_ENV: ${{ github.event.inputs.environment || 'production' }}
 
 jobs:
   build-and-push:
@@ -59,11 +69,52 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  deploy-to-vps:
-    name: Deploy to VPS
+  deploy-staging:
+    name: Deploy to Staging
     runs-on: ubuntu-latest
     needs: build-and-push
-    if: github.ref == 'refs/heads/main'
+    if: env.DEPLOY_ENV == 'staging'
+    environment: staging
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        env:
+          DEPLOY_SHA: ${{ github.sha }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: DEPLOY_SHA
+          script: |
+            set -e
+            cd /app/travelplanner-staging
+
+            echo "=== [STAGING] Pulling latest images ==="
+            docker compose pull
+
+            echo "=== [STAGING] Starting services ==="
+            docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d --remove-orphans
+
+            echo "=== [STAGING] Waiting for health checks ==="
+            sleep 10
+            for i in $(seq 1 12); do
+              if docker compose exec -T backend wget --spider -q http://localhost:3000/api/health 2>/dev/null; then
+                echo "Staging healthy after ${i}0 seconds"
+                break
+              fi
+              if [ "$i" -eq 12 ]; then echo "Staging health check failed"; exit 1; fi
+              sleep 10
+            done
+
+            docker image prune -f --filter "until=48h"
+            echo "=== [STAGING] Deployment complete: ${DEPLOY_SHA} ==="
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main' && env.DEPLOY_ENV == 'production'
     environment: production
 
     steps:
@@ -80,29 +131,22 @@ jobs:
             set -e
             cd /app/travelplanner
 
-            echo "=== Pulling latest images ==="
+            echo "=== [PRODUCTION] Pulling latest images ==="
             docker compose pull
 
-            echo "=== Starting services with zero-downtime ==="
+            echo "=== [PRODUCTION] Starting services with zero-downtime ==="
             docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --remove-orphans
 
-            echo "=== Waiting for health checks ==="
+            echo "=== [PRODUCTION] Waiting for health checks ==="
             sleep 10
-
-            # Verify backend health
             for i in $(seq 1 12); do
               if docker compose exec -T backend wget --spider -q http://localhost:3000/api/health 2>/dev/null; then
-                echo "Backend healthy after ${i}0 seconds"
+                echo "Production healthy after ${i}0 seconds"
                 break
               fi
-              if [ "$i" -eq 12 ]; then
-                echo "Backend health check failed after 120s"
-                exit 1
-              fi
+              if [ "$i" -eq 12 ]; then echo "Production health check failed"; exit 1; fi
               sleep 10
             done
 
-            # Clean up old images
             docker image prune -f --filter "until=48h"
-
-            echo "=== Deployment complete: ${DEPLOY_SHA} ==="
+            echo "=== [PRODUCTION] Deployment complete: ${DEPLOY_SHA} ==="

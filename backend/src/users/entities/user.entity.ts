@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  Index,
 } from 'typeorm';
 
 export enum AuthProvider {
@@ -20,6 +21,7 @@ export enum UserRole {
 }
 
 @Entity('users')
+@Index(['provider', 'providerId'])
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;

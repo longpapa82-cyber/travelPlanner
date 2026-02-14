@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { Trip } from './trip.entity';
 
@@ -34,6 +35,7 @@ export interface WeatherInfo {
 }
 
 @Entity('itineraries')
+@Index(['tripId', 'date'])
 export class Itinerary {
   @PrimaryGeneratedColumn('uuid')
   id: string;

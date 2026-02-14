@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Itinerary } from './itinerary.entity';
@@ -18,6 +19,8 @@ export enum TripStatus {
 }
 
 @Entity('trips')
+@Index(['userId', 'status'])
+@Index(['userId', 'startDate'])
 export class Trip {
   @PrimaryGeneratedColumn('uuid')
   id: string;
