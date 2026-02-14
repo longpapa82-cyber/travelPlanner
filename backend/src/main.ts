@@ -1,10 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { join } from 'path';
 import helmet from 'helmet';
 import { initSentry } from './common/sentry';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { ResponseEnvelopeInterceptor } from './common/interceptors/response-envelope.interceptor';
 import { AppModule } from './app.module';
 
 // Initialize Sentry before app creation
@@ -46,7 +48,16 @@ async function bootstrap() {
   });
 
   // Global prefix for all routes
-  app.setGlobalPrefix(process.env.API_PREFIX || 'api');
+  const apiPrefix = process.env.API_PREFIX || 'api';
+  app.setGlobalPrefix(apiPrefix);
+
+  // API versioning (URI-based, opt-in per controller)
+  // Existing routes remain at /api/... (VERSION_NEUTRAL)
+  // New versioned routes can use @Version('2') → /api/v2/...
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: VERSION_NEUTRAL,
+  });
 
   // Enable CORS
   app.enableCors({
@@ -54,8 +65,14 @@ async function bootstrap() {
     credentials: true,
   });
 
+  // Graceful shutdown — drain connections on SIGTERM/SIGINT
+  app.enableShutdownHooks();
+
   // Global exception filter (consistent error responses + Sentry reporting)
   app.useGlobalFilters(new AllExceptionsFilter(app.getHttpAdapter()));
+
+  // Global response envelope interceptor
+  app.useGlobalInterceptors(new ResponseEnvelopeInterceptor());
 
   // Global validation pipe
   app.useGlobalPipes(
@@ -69,11 +86,32 @@ async function bootstrap() {
     }),
   );
 
+  // Swagger API documentation (only in non-production)
+  if (process.env.NODE_ENV !== 'production') {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('TravelPlanner API')
+      .setDescription('Travel planning service API documentation')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addTag('auth', 'Authentication & user management')
+      .addTag('trips', 'Trip CRUD & itinerary management')
+      .addTag('users', 'User profile management')
+      .build();
+
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup(`${apiPrefix}/docs`, app, document);
+  }
+
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
   console.log(
-    `Application is running on: http://localhost:${port}/${process.env.API_PREFIX || 'api'}`,
+    `Application is running on: http://localhost:${port}/${apiPrefix}`,
   );
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(
+      `Swagger docs: http://localhost:${port}/${apiPrefix}/docs`,
+    );
+  }
 }
 bootstrap();

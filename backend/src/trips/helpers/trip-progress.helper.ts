@@ -94,7 +94,7 @@ export function isActivityCompleted(
 
   // 현재 시간 (여행지 시간대 적용)
   const now = new Date();
-  if (tripTimezoneOffset !== undefined) {
+  if (tripTimezoneOffset != null) {
     // 현지 시간으로 변환
     const localOffset = now.getTimezoneOffset(); // 현재 로컬 오프셋 (분)
     now.setMinutes(now.getMinutes() + localOffset + tripTimezoneOffset);

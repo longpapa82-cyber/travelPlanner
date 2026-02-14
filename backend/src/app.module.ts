@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TripsModule } from './trips/trips.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
 
 import { AppCacheModule } from './common/cache.module';
 import databaseConfig from './config/database.config';
@@ -76,4 +77,8 @@ import emailConfig from './config/email.config';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorrelationIdMiddleware).forRoutes('*');
+  }
+}

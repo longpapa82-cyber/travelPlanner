@@ -5,7 +5,9 @@ import {
   IsNumber,
   IsInt,
   Min,
+  Max,
   MaxLength,
+  Matches,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
@@ -15,6 +17,7 @@ const stripHtml = ({ value }: { value: unknown }) =>
 export class AddActivityDto {
   @IsString()
   @IsNotEmpty()
+  @Matches(/^([01]?\d|2[0-3]):[0-5]\d$/, { message: 'time must be in HH:MM format (00:00-23:59)' })
   time: string;
 
   @IsString()
@@ -51,11 +54,13 @@ export class AddActivityDto {
   @IsOptional()
   @IsNumber()
   @Min(0)
+  @Max(10000000)
   estimatedCost?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
+  @Max(10000000)
   actualCost?: number;
 
   @IsOptional()

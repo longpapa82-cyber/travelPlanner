@@ -5,12 +5,14 @@ import {
   IsInt,
   IsNumber,
   Min,
+  Max,
   IsObject,
   IsEnum,
   MaxLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { TripStatus } from '../entities/trip.entity';
+import { IsAfterDate } from '../../common/validators/is-after-date.validator';
 
 const stripHtml = ({ value }: { value: unknown }) =>
   typeof value === 'string' ? value.replace(/<[^>]*>/g, '') : value;
@@ -40,6 +42,7 @@ export class UpdateTripDto {
 
   @IsDateString()
   @IsOptional()
+  @IsAfterDate('startDate', { message: 'endDate must be on or after startDate' })
   endDate?: string;
 
   @IsString()
@@ -71,6 +74,7 @@ export class UpdateTripDto {
 
   @IsNumber()
   @Min(0)
+  @Max(100000000)
   @IsOptional()
   totalBudget?: number;
 

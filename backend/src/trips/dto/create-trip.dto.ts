@@ -5,11 +5,13 @@ import {
   IsInt,
   IsNumber,
   Min,
+  Max,
   IsObject,
   IsArray,
   MaxLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { IsAfterDate } from '../../common/validators/is-after-date.validator';
 
 /** Strip HTML tags to prevent stored XSS */
 const stripHtml = ({ value }: { value: unknown }) =>
@@ -37,6 +39,7 @@ export class CreateTripDto {
   startDate: string;
 
   @IsDateString()
+  @IsAfterDate('startDate', { message: 'endDate must be on or after startDate' })
   endDate: string;
 
   @IsString()
@@ -60,6 +63,7 @@ export class CreateTripDto {
 
   @IsNumber()
   @Min(0)
+  @Max(100000000)
   @IsOptional()
   totalBudget?: number;
 

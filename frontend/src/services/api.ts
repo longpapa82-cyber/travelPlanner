@@ -44,9 +44,15 @@ class ApiService {
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor - Handle errors
+    // Response interceptor - Unwrap envelope + handle errors
     this.api.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        // Unwrap { data, meta } envelope from backend
+        if (response.data && typeof response.data === 'object' && 'data' in response.data && 'meta' in response.data) {
+          response.data = response.data.data;
+        }
+        return response;
+      },
       async (error: AxiosError) => {
         if (error.response?.status === 401) {
           // Token expired or invalid - clear storage and trigger logout

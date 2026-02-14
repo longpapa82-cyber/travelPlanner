@@ -239,6 +239,7 @@ export class TripsController {
   // ============================================================================
 
   @Post(':id/share')
+  @Throttle({ short: { ttl: 60000, limit: 5 } })
   generateShareLink(
     @Request() req,
     @Param('id') id: string,

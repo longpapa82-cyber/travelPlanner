@@ -6,6 +6,9 @@ import {
   IsNumber,
   ValidateNested,
   MaxLength,
+  Min,
+  Max,
+  Matches,
 } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 
@@ -14,6 +17,7 @@ const stripHtml = ({ value }: { value: unknown }) =>
 
 export class ActivityDto {
   @IsString()
+  @Matches(/^([01]?\d|2[0-3]):[0-5]\d$/, { message: 'time must be in HH:MM format (00:00-23:59)' })
   time: string;
 
   @IsString()
@@ -41,10 +45,13 @@ export class ActivityDto {
 
   @IsNumber()
   @IsOptional()
+  @Min(0)
   estimatedDuration?: number;
 
   @IsNumber()
   @IsOptional()
+  @Min(0)
+  @Max(10000000)
   estimatedCost?: number;
 
   @IsString()
