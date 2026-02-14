@@ -32,6 +32,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
 import { trackEvent } from '../../services/eventTracker';
+import { useToast } from '../../components/feedback/Toast/ToastContext';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import { getDateLocale } from '../../utils/dateLocale';
@@ -69,6 +70,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const { theme, isDark } = useTheme();
+  const { showToast } = useToast();
   const { t } = useTranslation('trips');
 
   // Derive translated arrays from META constants
@@ -228,29 +230,25 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       await apiService.updateTrip(tripId, tripData);
       trackEvent('trip_edited', { tripId });
 
-      if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert(t('edit.alerts.saveSuccessMessage'));
+      showToast({
+        type: 'success',
+        message: t('edit.alerts.saveSuccessMessage'),
+        position: 'top',
+        duration: 2000,
+      });
+
+      setTimeout(() => {
         navigation.navigate('TripDetail', { tripId });
-      } else {
-        Alert.alert(
-          t('edit.alerts.saveSuccess'),
-          t('edit.alerts.saveSuccessMessage'),
-          [
-            {
-              text: t('common:confirm'),
-              onPress: () => navigation.navigate('TripDetail', { tripId }),
-            },
-          ]
-        );
-      }
+      }, 500);
     } catch (error: any) {
       const message = error.response?.data?.message || t('edit.alerts.saveError');
 
-      if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert(message);
-      } else {
-        Alert.alert(t('edit.alerts.saveFailed'), message);
-      }
+      showToast({
+        type: 'error',
+        message,
+        position: 'top',
+        duration: 4000,
+      });
     } finally {
       setIsSaving(false);
     }

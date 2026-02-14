@@ -15,6 +15,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  RefreshControl,
   TouchableOpacity,
   Image,
   Animated,
@@ -128,6 +129,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   // Fetch trip stats
   const fetchStats = useCallback(async () => {
     setIsStatsLoading(true);
@@ -151,6 +154,12 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       fetchStats();
     }, [fetchStats])
   );
+
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await fetchStats();
+    setIsRefreshing(false);
+  }, [fetchStats]);
 
   useEffect(() => {
     // Start animations on mount
@@ -186,6 +195,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     <ScrollView
       style={styles.container}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+      }
     >
       <EmailVerificationBanner />
       {/* Hero Section */}

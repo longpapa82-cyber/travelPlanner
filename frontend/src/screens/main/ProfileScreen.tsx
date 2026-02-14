@@ -5,6 +5,7 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
+  RefreshControl,
   TouchableOpacity,
   Alert,
   Switch,
@@ -62,6 +63,7 @@ const ProfileScreen = () => {
   // Analytics states
   const [stats, setStats] = useState<any>(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -78,6 +80,12 @@ const ProfileScreen = () => {
   useEffect(() => {
     fetchStats();
   }, [fetchStats]);
+
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await Promise.all([fetchStats(), refreshUser()]);
+    setIsRefreshing(false);
+  }, [fetchStats, refreshUser]);
 
   const confirm = (title: string, message: string, onConfirm: () => void) => {
     if (Platform.OS === 'web' && typeof window !== 'undefined' && window.confirm) {
@@ -196,7 +204,12 @@ const ProfileScreen = () => {
   const styles = createStyles(theme, isDark);
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+      }
+    >
       <EmailVerificationBanner />
       <View style={styles.profileHeader}>
         <TouchableOpacity
