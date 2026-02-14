@@ -15,14 +15,12 @@
       "distribution": "internal",
       "env": {
         "API_URL": "https://api.staging.travelplanner.app/api"
-      },
-      "channel": "preview"
+      }
     },
     "production": {
       "env": {
         "API_URL": "https://api.travelplanner.app/api"
       },
-      "channel": "production",
       "autoIncrement": true
     }
   },
