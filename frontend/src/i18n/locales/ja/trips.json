@@ -89,7 +89,7 @@
     "sections": {
       "ongoing": "進行中の旅行",
       "upcoming": "今後の旅行",
-      "completed": "完了した旅行"
+      "completed": "過去の旅行 (閲覧専用)"
     },
     "status": {
       "upcoming": "予定",

@@ -106,6 +106,11 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     en: 'Social login accounts cannot reset password.',
     ja: 'ソーシャルログインアカウントではパスワードをリセットできません。',
   },
+  'email.verification.required': {
+    ko: '이 기능을 사용하려면 이메일 인증이 필요합니다.',
+    en: 'Email verification required to use this feature.',
+    ja: 'この機能を利用するにはメール認証が必要です。',
+  },
 };
 
 export function parseLang(acceptLanguage?: string): SupportedLang {

@@ -119,6 +119,7 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
           )}
           keyExtractor={(item, index) => `activity-${itinerary.id}-${index}`}
           onDragEnd={({ data }) => {
+            if (tripStatus === 'completed') return;
             const newOrder = data.map((activity) => itinerary.activities.indexOf(activity));
             onReorderActivities(itinerary.id, newOrder);
           }}

@@ -16,7 +16,7 @@ describe('TripsController (Integration)', () => {
 
   // Mock user data
   const mockUserId = 'user-123';
-  const mockUser = { userId: mockUserId };
+  const mockUser = { userId: mockUserId, isEmailVerified: true };
 
   // Mock trip data
   const mockTrip = {

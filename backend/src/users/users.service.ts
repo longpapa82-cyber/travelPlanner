@@ -24,6 +24,7 @@ export class UsersService {
     provider: AuthProvider;
     providerId?: string;
     profileImage?: string;
+    isEmailVerified?: boolean;
   }): Promise<User> {
     const user = this.userRepository.create({
       email: data.email,
@@ -34,6 +35,7 @@ export class UsersService {
       provider: data.provider,
       providerId: data.providerId,
       profileImage: data.profileImage,
+      isEmailVerified: data.isEmailVerified ?? false,
     });
 
     return await this.userRepository.save(user);

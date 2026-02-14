@@ -33,7 +33,26 @@
   "tabs": {
     "home": "Home",
     "trips": "My Trips",
+    "notifications": "Alerts",
     "profile": "Profile"
+  },
+  "notifications": {
+    "emptyTitle": "No notifications",
+    "emptyMessage": "New notifications will appear here",
+    "markAllRead": "Mark all read",
+    "deleteAll": "Delete all",
+    "deleteAllTitle": "Delete notifications",
+    "deleteAllConfirm": "Delete all notifications?",
+    "allMarkedRead": "All notifications marked as read",
+    "allDeleted": "All notifications deleted",
+    "error": "An error occurred",
+    "fetchError": "Failed to load notifications",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
   },
   "pwa": {
     "installTitle": "Install as app",

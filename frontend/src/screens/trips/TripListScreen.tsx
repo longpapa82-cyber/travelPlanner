@@ -395,16 +395,21 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                   </Text>
                 </View>
                 {trip.status === 'completed' && (
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => handleDeleteTrip(trip)}
-                    activeOpacity={0.7}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    accessibilityLabel={`${trip.destination} ${t('list.accessibility.deleteTrip')}`}
-                    accessibilityRole="button"
-                  >
-                    <Icon name="delete-outline" size={20} color={colors.neutral[0]} />
-                  </TouchableOpacity>
+                  <View style={styles.completedCardActions}>
+                    <View style={styles.readOnlyBadge}>
+                      <Icon name="lock" size={12} color={colors.neutral[0]} />
+                    </View>
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => handleDeleteTrip(trip)}
+                      activeOpacity={0.7}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                      accessibilityLabel={`${trip.destination} ${t('list.accessibility.deleteTrip')}`}
+                      accessibilityRole="button"
+                    >
+                      <Icon name="delete-outline" size={20} color={colors.neutral[0]} />
+                    </TouchableOpacity>
+                  </View>
                 )}
               </View>
 
@@ -870,7 +875,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               <>
                 {renderSection(t('list.sections.ongoing'), groupedTrips.ongoing, 'airplane')}
                 {renderSection(t('list.sections.upcoming'), groupedTrips.upcoming, 'calendar-clock')}
-                {renderSection(t('list.sections.completed'), groupedTrips.completed, 'check-circle')}
+                {renderSection(t('list.sections.completed'), groupedTrips.completed, 'archive')}
               </>
             )}
           </Animated.View>
@@ -1120,6 +1125,19 @@ const createStyles = (theme: any, isDark: boolean) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
+    },
+    completedCardActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    readOnlyBadge: {
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     deleteButton: {
       width: 36,

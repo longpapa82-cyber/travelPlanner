@@ -364,6 +364,7 @@ describe('AuthService', () => {
         provider: AuthProvider.GOOGLE,
         providerId: oauthUser.providerId,
         profileImage: oauthUser.profileImage,
+        isEmailVerified: true,
       });
       expect(result.user.provider).toBe(AuthProvider.GOOGLE);
     });
@@ -455,6 +456,7 @@ describe('AuthService', () => {
         provider: AuthProvider.APPLE,
         providerId: appleUser.providerId,
         profileImage: undefined,
+        isEmailVerified: true,
       });
       expect(result.user.email).toBeNull();
     });
@@ -489,6 +491,7 @@ describe('AuthService', () => {
         provider: AuthProvider.KAKAO,
         providerId: kakaoUser.providerId,
         profileImage: kakaoUser.profileImage,
+        isEmailVerified: true,
       });
       expect(result.user.email).toBeNull();
     });

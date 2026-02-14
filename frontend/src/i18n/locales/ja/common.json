@@ -33,7 +33,26 @@
   "tabs": {
     "home": "ホーム",
     "trips": "旅行",
+    "notifications": "通知",
     "profile": "プロフィール"
+  },
+  "notifications": {
+    "emptyTitle": "通知はありません",
+    "emptyMessage": "新しい通知はここに表示されます",
+    "markAllRead": "すべて既読",
+    "deleteAll": "すべて削除",
+    "deleteAllTitle": "通知を削除",
+    "deleteAllConfirm": "すべての通知を削除しますか？",
+    "allMarkedRead": "すべての通知を既読にしました",
+    "allDeleted": "すべての通知を削除しました",
+    "error": "エラーが発生しました",
+    "fetchError": "通知の読み込みに失敗しました",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "justNow": "たった今",
+    "minutesAgo": "{{count}}分前",
+    "hoursAgo": "{{count}}時間前",
+    "daysAgo": "{{count}}日前"
   },
   "pwa": {
     "installTitle": "アプリとしてインストール",

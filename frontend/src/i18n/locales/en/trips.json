@@ -89,7 +89,7 @@
     "sections": {
       "ongoing": "Ongoing Trips",
       "upcoming": "Upcoming Trips",
-      "completed": "Completed Trips"
+      "completed": "Past Trips (View Only)"
     },
     "status": {
       "upcoming": "Upcoming",

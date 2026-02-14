@@ -13,13 +13,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
 import { EmailModule } from '../email/email.module';
-import { NotificationService } from '../common/notification.service';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     UsersModule,
     EmailModule,
+    NotificationsModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -40,8 +41,7 @@ import { NotificationService } from '../common/notification.service';
     GoogleStrategy,
     AppleStrategy,
     KakaoStrategy,
-    NotificationService,
   ],
-  exports: [AuthService, NotificationService],
+  exports: [AuthService],
 })
 export class AuthModule {}

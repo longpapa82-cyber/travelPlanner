@@ -89,7 +89,7 @@
     "sections": {
       "ongoing": "진행중인 여행",
       "upcoming": "다가오는 여행",
-      "completed": "완료된 여행"
+      "completed": "지난 여행 (조회 전용)"
     },
     "status": {
       "upcoming": "예정",

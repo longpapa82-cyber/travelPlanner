@@ -14,7 +14,6 @@ import {
   Linking,
   ActivityIndicator,
   Image,
-  Clipboard,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
@@ -27,16 +26,13 @@ import { useToast } from '../../components/feedback/Toast/ToastContext';
 import Button from '../../components/core/Button';
 import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import apiService from '../../services/api';
-import { trackEvent } from '../../services/eventTracker';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }: any) => {
   const { t } = useTranslation('profile');
   const { t: tCommon } = useTranslation('common');
   const { user, logout, refreshUser } = useAuth();
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
-
-  const { t: tAuth } = useTranslation('auth');
 
   // Modal states
   const [showEditProfile, setShowEditProfile] = useState(false);
@@ -47,15 +43,6 @@ const ProfileScreen = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-
-  // 2FA states
-  const [show2FAModal, setShow2FAModal] = useState(false);
-  const [twoFAStep, setTwoFAStep] = useState<'setup' | 'verify' | 'backup' | 'disable'>('setup');
-  const [twoFAQrCode, setTwoFAQrCode] = useState('');
-  const [twoFASecret, setTwoFASecret] = useState('');
-  const [twoFACode, setTwoFACode] = useState('');
-  const [twoFABackupCodes, setTwoFABackupCodes] = useState<string[]>([]);
-  const [is2FASaving, setIs2FASaving] = useState(false);
 
   // Photo upload state
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
@@ -367,27 +354,9 @@ const ProfileScreen = () => {
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={async () => {
-            if (user?.isTwoFactorEnabled) {
-              setTwoFAStep('disable');
-              setTwoFACode('');
-              setShow2FAModal(true);
-            } else {
-              try {
-                setIs2FASaving(true);
-                const data = await apiService.setupTwoFactor();
-                setTwoFAQrCode(data.qrCodeDataUrl);
-                setTwoFASecret(data.secret);
-                setTwoFAStep('setup');
-                setTwoFACode('');
-                setShow2FAModal(true);
-              } catch {
-                showToast({ type: 'error', message: tAuth('twoFactor.alerts.setupFailed'), position: 'top' });
-              } finally {
-                setIs2FASaving(false);
-              }
-            }
-          }}
+          onPress={() => navigation.navigate('TwoFactorSettings')}
+          accessibilityRole="button"
+          accessibilityLabel={t('menu.twoFactor')}
         >
           <Icon name="shield-lock-outline" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.twoFactor')}</Text>
@@ -576,161 +545,6 @@ const ProfileScreen = () => {
         </View>
       </Modal>
 
-      {/* 2FA Modal */}
-      <Modal visible={show2FAModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
-                {twoFAStep === 'disable' ? tAuth('twoFactor.disable.title') : tAuth('twoFactor.setup.title')}
-              </Text>
-              <TouchableOpacity onPress={() => setShow2FAModal(false)}>
-                <Icon name="close" size={24} color={theme.colors.textSecondary} />
-              </TouchableOpacity>
-            </View>
-
-            {/* Setup step - show QR */}
-            {twoFAStep === 'setup' && (
-              <View style={{ gap: 16, alignItems: 'center' }}>
-                <Text style={{ color: theme.colors.textSecondary, fontSize: 14, textAlign: 'center' }}>
-                  {tAuth('twoFactor.setup.description')}
-                </Text>
-                {twoFAQrCode ? (
-                  <Image source={{ uri: twoFAQrCode }} style={{ width: 200, height: 200, borderRadius: 8 }} />
-                ) : null}
-                <View style={{ backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100], borderRadius: 8, padding: 12, width: '100%' }}>
-                  <Text style={{ color: theme.colors.textSecondary, fontSize: 12 }}>
-                    {tAuth('twoFactor.setup.manualEntry')}
-                  </Text>
-                  <Text style={{ color: theme.colors.text, fontSize: 16, fontWeight: '700', fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', marginTop: 4 }}>
-                    {twoFASecret}
-                  </Text>
-                </View>
-                <Button variant="primary" fullWidth onPress={() => setTwoFAStep('verify')}>
-                  {tCommon('next')}
-                </Button>
-              </View>
-            )}
-
-            {/* Verify step - enter code */}
-            {twoFAStep === 'verify' && (
-              <View style={{ gap: 16 }}>
-                <Text style={{ color: theme.colors.textSecondary, fontSize: 14 }}>
-                  {tAuth('twoFactor.setup.enterCode')}
-                </Text>
-                <TextInput
-                  style={[styles.modalInput, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
-                  placeholder={tAuth('twoFactor.codePlaceholder')}
-                  placeholderTextColor={theme.colors.textSecondary}
-                  value={twoFACode}
-                  onChangeText={setTwoFACode}
-                  keyboardType="number-pad"
-                  maxLength={6}
-                  autoFocus
-                />
-                <Button
-                  variant="primary"
-                  fullWidth
-                  loading={is2FASaving}
-                  onPress={async () => {
-                    try {
-                      setIs2FASaving(true);
-                      const data = await apiService.enableTwoFactor(twoFACode);
-                      setTwoFABackupCodes(data.backupCodes);
-                      setTwoFAStep('backup');
-                      trackEvent('2fa_enabled');
-                      showToast({ type: 'success', message: tAuth('twoFactor.alerts.enableSuccess'), position: 'top' });
-                    } catch {
-                      showToast({ type: 'error', message: tAuth('twoFactor.alerts.invalidCode'), position: 'top' });
-                    } finally {
-                      setIs2FASaving(false);
-                    }
-                  }}
-                >
-                  {tAuth('twoFactor.setup.enable')}
-                </Button>
-              </View>
-            )}
-
-            {/* Backup codes step */}
-            {twoFAStep === 'backup' && (
-              <View style={{ gap: 16 }}>
-                <Text style={{ color: theme.colors.text, fontSize: 16, fontWeight: '700' }}>
-                  {tAuth('twoFactor.setup.backupCodesTitle')}
-                </Text>
-                <Text style={{ color: theme.colors.textSecondary, fontSize: 14 }}>
-                  {tAuth('twoFactor.setup.backupCodesDescription')}
-                </Text>
-                <View style={{ backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100], borderRadius: 8, padding: 16 }}>
-                  {twoFABackupCodes.map((code, i) => (
-                    <Text key={i} style={{ color: theme.colors.text, fontSize: 16, fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', paddingVertical: 2 }}>
-                      {code}
-                    </Text>
-                  ))}
-                </View>
-                <TouchableOpacity
-                  style={{ alignItems: 'center', padding: 8 }}
-                  onPress={() => {
-                    const text = twoFABackupCodes.join('\n');
-                    if (Platform.OS === 'web') {
-                      navigator.clipboard?.writeText(text);
-                    } else {
-                      Clipboard?.setString?.(text);
-                    }
-                    showToast({ type: 'success', message: tAuth('twoFactor.setup.backupCodesCopied'), position: 'top' });
-                  }}
-                >
-                  <Text style={{ color: theme.colors.primary, fontWeight: '600' }}>
-                    {tCommon('copy')}
-                  </Text>
-                </TouchableOpacity>
-                <Button variant="primary" fullWidth onPress={() => setShow2FAModal(false)}>
-                  {tAuth('twoFactor.setup.done')}
-                </Button>
-              </View>
-            )}
-
-            {/* Disable step */}
-            {twoFAStep === 'disable' && (
-              <View style={{ gap: 16 }}>
-                <Text style={{ color: theme.colors.textSecondary, fontSize: 14 }}>
-                  {tAuth('twoFactor.disable.description')}
-                </Text>
-                <TextInput
-                  style={[styles.modalInput, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
-                  placeholder={tAuth('twoFactor.codePlaceholder')}
-                  placeholderTextColor={theme.colors.textSecondary}
-                  value={twoFACode}
-                  onChangeText={setTwoFACode}
-                  keyboardType="number-pad"
-                  maxLength={6}
-                  autoFocus
-                />
-                <Button
-                  variant="danger"
-                  fullWidth
-                  loading={is2FASaving}
-                  onPress={async () => {
-                    try {
-                      setIs2FASaving(true);
-                      await apiService.disableTwoFactor(twoFACode);
-                      setShow2FAModal(false);
-                      trackEvent('2fa_disabled');
-                      showToast({ type: 'success', message: tAuth('twoFactor.alerts.disableSuccess'), position: 'top' });
-                    } catch {
-                      showToast({ type: 'error', message: tAuth('twoFactor.alerts.invalidCode'), position: 'top' });
-                    } finally {
-                      setIs2FASaving(false);
-                    }
-                  }}
-                >
-                  {tAuth('twoFactor.disable.confirm')}
-                </Button>
-              </View>
-            )}
-          </View>
-        </View>
-      </Modal>
     </ScrollView>
   );
 };

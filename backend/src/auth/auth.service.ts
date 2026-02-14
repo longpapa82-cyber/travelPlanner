@@ -225,13 +225,14 @@ export class AuthService {
     );
 
     if (!user) {
-      // Create new user
+      // Create new user — OAuth users are auto-verified (email proven via provider)
       user = await this.usersService.create({
         email: oauthUser.email,
         name: oauthUser.name,
         provider,
         providerId: oauthUser.providerId,
         profileImage: oauthUser.profileImage,
+        isEmailVerified: true,
       });
     }
 
@@ -417,15 +418,22 @@ export class AuthService {
     let isValid = totpResult.valid;
 
     // Try backup code if TOTP fails
+    let usedBackupCode = false;
+    let remainingBackupCodes = user.twoFactorBackupCodes?.length ?? 0;
     if (!isValid && user.twoFactorBackupCodes) {
       const codeUpper = code.toUpperCase();
       const idx = user.twoFactorBackupCodes.indexOf(codeUpper);
       if (idx !== -1) {
         isValid = true;
-        // Remove used backup code
+        usedBackupCode = true;
+        // Remove used backup code (single-use)
         const remaining = [...user.twoFactorBackupCodes];
         remaining.splice(idx, 1);
+        remainingBackupCodes = remaining.length;
         await this.usersService.updateBackupCodes(user.id, remaining);
+        this.logger.warn(
+          `2FA backup code used for user ${user.id}. Remaining: ${remainingBackupCodes}`,
+        );
       }
     }
 
@@ -445,7 +453,37 @@ export class AuthService {
         isEmailVerified: user.isEmailVerified,
       },
       ...tokens,
+      ...(usedBackupCode && { remainingBackupCodes }),
     };
+  }
+
+  async regenerateBackupCodes(userId: string, code: string) {
+    const user = await this.usersService.findByIdWithTwoFactor(userId);
+    if (!user.isTwoFactorEnabled) {
+      throw new BadRequestException('2FA is not enabled');
+    }
+
+    // Verify TOTP code to authorize regeneration
+    const result = verifySync({
+      token: code,
+      secret: user.twoFactorSecret!,
+    });
+
+    if (!result.valid) {
+      throw new UnauthorizedException('Invalid 2FA code');
+    }
+
+    const backupCodes: string[] = [];
+    for (let i = 0; i < 8; i++) {
+      backupCodes.push(
+        Math.random().toString(36).substring(2, 10).toUpperCase(),
+      );
+    }
+
+    await this.usersService.updateBackupCodes(userId, backupCodes);
+    this.logger.log(`Backup codes regenerated for user ${userId}`);
+
+    return { backupCodes };
   }
 
   private async generateTokens(userId: string, email: string) {

@@ -33,7 +33,26 @@
   "tabs": {
     "home": "홈",
     "trips": "내 여행",
+    "notifications": "알림",
     "profile": "프로필"
+  },
+  "notifications": {
+    "emptyTitle": "알림이 없습니다",
+    "emptyMessage": "새로운 알림이 오면 여기에 표시됩니다",
+    "markAllRead": "모두 읽음",
+    "deleteAll": "모두 삭제",
+    "deleteAllTitle": "알림 삭제",
+    "deleteAllConfirm": "모든 알림을 삭제하시겠습니까?",
+    "allMarkedRead": "모든 알림을 읽음 처리했습니다",
+    "allDeleted": "모든 알림이 삭제되었습니다",
+    "error": "오류가 발생했습니다",
+    "fetchError": "알림을 불러오지 못했습니다",
+    "cancel": "취소",
+    "delete": "삭제",
+    "justNow": "방금 전",
+    "minutesAgo": "{{count}}분 전",
+    "hoursAgo": "{{count}}시간 전",
+    "daysAgo": "{{count}}일 전"
   },
   "pwa": {
     "installTitle": "앱으로 설치하기",

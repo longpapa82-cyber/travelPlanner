@@ -1,9 +1,10 @@
 import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan, MoreThanOrEqual, Between } from 'typeorm';
+import { Repository, LessThan, Between } from 'typeorm';
 import { Trip, TripStatus } from './entities/trip.entity';
-import { NotificationService } from '../common/notification.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/entities/notification.entity';
 
 /**
  * TripStatusScheduler
@@ -21,8 +22,8 @@ export class TripStatusScheduler {
   constructor(
     @InjectRepository(Trip)
     private tripRepository: Repository<Trip>,
-    @Optional() @Inject(NotificationService)
-    private notificationService?: NotificationService,
+    @Optional() @Inject(NotificationsService)
+    private notificationsService?: NotificationsService,
   ) {}
 
   /**
@@ -55,13 +56,14 @@ export class TripStatusScheduler {
         upcomingToOngoing++;
 
         // Notify user that their trip has started
-        if (this.notificationService) {
-          this.notificationService
-            .sendToUser(
+        if (this.notificationsService) {
+          this.notificationsService
+            .create(
               trip.userId,
+              NotificationType.TRIP_STARTED,
               '🌍 여행 시작!',
               `${trip.destination} 여행이 시작되었습니다. 즐거운 여행 되세요!`,
-              { type: 'trip_started', tripId: trip.id },
+              { tripId: trip.id },
             )
             .catch((err) => this.logger.warn('Failed to send trip start notification', err));
         }
@@ -82,13 +84,14 @@ export class TripStatusScheduler {
         ongoingToCompleted++;
 
         // Notify user that their trip is complete
-        if (this.notificationService) {
-          this.notificationService
-            .sendToUser(
+        if (this.notificationsService) {
+          this.notificationsService
+            .create(
               trip.userId,
+              NotificationType.TRIP_COMPLETED,
               '✅ 여행 완료!',
               `${trip.destination} 여행이 완료되었습니다. 추억을 확인해보세요!`,
-              { type: 'trip_completed', tripId: trip.id },
+              { tripId: trip.id },
             )
             .catch((err) => this.logger.warn('Failed to send trip complete notification', err));
         }
@@ -144,7 +147,7 @@ export class TripStatusScheduler {
    */
   @Cron('0 9 * * *')
   async handleDepartureReminders() {
-    if (!this.notificationService) return;
+    if (!this.notificationsService) return;
 
     try {
       const tomorrow = new Date();
@@ -162,11 +165,12 @@ export class TripStatusScheduler {
       });
 
       for (const trip of departingTrips) {
-        await this.notificationService.sendToUser(
+        await this.notificationsService.create(
           trip.userId,
+          NotificationType.TRIP_DEPARTURE,
           '✈️ 내일 출발!',
           `${trip.destination} 여행이 내일 시작됩니다. 준비되셨나요?`,
-          { type: 'trip_departure', tripId: trip.id },
+          { tripId: trip.id },
         );
       }
 

@@ -178,6 +178,11 @@ class ApiService {
     return response.data;
   }
 
+  async regenerateBackupCodes(code: string) {
+    const response = await this.api.post('/auth/2fa/regenerate-backup-codes', { code });
+    return response.data;
+  }
+
   // Trips Methods
   async createTrip(data: any) {
     const response = await this.api.post('/trips', data, { timeout: 120000 });
@@ -389,6 +394,33 @@ class ApiService {
   async getTripAffiliateClicks(tripId: string) {
     const response = await this.api.get(`/analytics/affiliate/trip/${tripId}`);
     return response.data;
+  }
+
+  // Notifications
+  async getNotifications(page = 1, limit = 20) {
+    const response = await this.api.get('/notifications', { params: { page, limit } });
+    return response.data;
+  }
+
+  async getUnreadNotificationCount() {
+    const response = await this.api.get('/notifications/unread-count');
+    return response.data;
+  }
+
+  async markNotificationRead(id: string) {
+    await this.api.patch(`/notifications/${id}/read`);
+  }
+
+  async markAllNotificationsRead() {
+    await this.api.patch('/notifications/read-all');
+  }
+
+  async deleteNotification(id: string) {
+    await this.api.delete(`/notifications/${id}`);
+  }
+
+  async deleteAllNotifications() {
+    await this.api.delete('/notifications');
   }
 }
 

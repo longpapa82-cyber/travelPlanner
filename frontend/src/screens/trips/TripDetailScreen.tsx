@@ -402,7 +402,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         {/* Completed Trip Banner */}
         {trip.status === 'completed' && (
           <View style={[styles.completedBanner, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100] }]}>
-            <Icon name="check-circle" size={20} color={colors.success.main} />
+            <Icon name="lock" size={20} color={colors.neutral[500]} />
             <View style={styles.completedBannerTextContainer}>
               <Text style={[styles.completedBannerTitle, { color: theme.colors.text }]}>
                 {t('detail.completedBanner.title')}

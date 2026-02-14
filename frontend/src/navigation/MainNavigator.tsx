@@ -1,19 +1,39 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MainTabParamList } from '../types';
 import HomeScreen from '../screens/main/HomeScreen';
 import TripsNavigator from './TripsNavigator';
-import ProfileScreen from '../screens/main/ProfileScreen';
+import NotificationsScreen from '../screens/main/NotificationsScreen';
+import ProfileNavigator from './ProfileNavigator';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors, darkColors } from '../constants/theme';
+import apiService from '../services/api';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const MainNavigator = () => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('common');
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchUnread = async () => {
+        try {
+          const data = await apiService.getUnreadNotificationCount();
+          setUnreadCount(data.count);
+        } catch {
+          // silent
+        }
+      };
+      fetchUnread();
+      const interval = setInterval(fetchUnread, 60000);
+      return () => clearInterval(interval);
+    }, []),
+  );
 
   return (
     <Tab.Navigator
@@ -58,10 +78,30 @@ const MainNavigator = () => {
         }}
       />
       <Tab.Screen
+        name="Notifications"
+        component={NotificationsScreen}
+        options={{
+          title: t('tabs.notifications'),
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="bell-outline" size={size} color={color} />
+          ),
+          tabBarBadge: unreadCount > 0 ? (unreadCount > 99 ? '99+' : unreadCount) : undefined,
+        }}
+        listeners={{
+          focus: () => {
+            // Refresh badge when navigating to notifications
+            apiService.getUnreadNotificationCount()
+              .then(data => setUnreadCount(data.count))
+              .catch(() => {});
+          },
+        }}
+      />
+      <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={ProfileNavigator}
         options={{
           title: t('tabs.profile'),
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name="account" size={size} color={color} />
           ),

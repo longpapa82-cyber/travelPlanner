@@ -26,13 +26,13 @@ import { AppleAuthGuard } from './guards/apple-auth.guard';
 import { KakaoAuthGuard } from './guards/kakao-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { parseLang } from '../common/i18n';
-import { NotificationService } from '../common/notification.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly notificationService: NotificationService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   @Post('register')
@@ -145,6 +145,17 @@ export class AuthController {
     return this.authService.disableTwoFactor(userId, dto.code);
   }
 
+  @Post('2fa/regenerate-backup-codes')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 3 } })
+  async regenerateBackupCodes(
+    @CurrentUser('userId') userId: string,
+    @Body() dto: VerifyTwoFactorDto,
+  ) {
+    return this.authService.regenerateBackupCodes(userId, dto.code);
+  }
+
   @Post('2fa/verify')
   @HttpCode(HttpStatus.OK)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
@@ -216,7 +227,7 @@ export class AuthController {
     @CurrentUser('userId') userId: string,
     @Body('token') token: string,
   ) {
-    await this.notificationService.registerPushToken(userId, token);
+    await this.notificationsService.registerPushToken(userId, token);
     return { message: 'Push token registered' };
   }
 
@@ -224,6 +235,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async removePushToken(@CurrentUser('userId') userId: string) {
-    await this.notificationService.removePushToken(userId);
+    await this.notificationsService.removePushToken(userId);
   }
 }

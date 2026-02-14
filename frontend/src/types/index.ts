@@ -122,7 +122,23 @@ export type AuthStackParamList = {
 export type MainTabParamList = {
   Home: undefined;
   Trips: { screen?: string } | undefined;
-  Profile: undefined;
+  Notifications: undefined;
+  Profile: { screen?: string } | undefined;
+};
+
+export interface AppNotification {
+  id: string;
+  type: string;
+  title: string;
+  body: string;
+  data?: Record<string, any>;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export type ProfileStackParamList = {
+  ProfileMain: undefined;
+  TwoFactorSettings: undefined;
 };
 
 export type TripsStackParamList = {

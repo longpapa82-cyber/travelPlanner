@@ -5,7 +5,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthProvider } from '../users/entities/user.entity';
-import { NotificationService } from '../common/notification.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 describe('AuthController (Integration)', () => {
   let app: INestApplication;
@@ -45,7 +45,7 @@ describe('AuthController (Integration)', () => {
           useValue: mockAuthService,
         },
         {
-          provide: NotificationService,
+          provide: NotificationsService,
           useValue: { registerPushToken: jest.fn(), removePushToken: jest.fn() },
         },
       ],
@@ -388,7 +388,7 @@ describe('AuthController (Integration)', () => {
             useValue: mockAuthService,
           },
           {
-            provide: NotificationService,
+            provide: NotificationsService,
             useValue: { registerPushToken: jest.fn(), removePushToken: jest.fn() },
           },
         ],

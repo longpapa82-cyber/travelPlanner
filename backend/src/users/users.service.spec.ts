@@ -97,6 +97,7 @@ describe('UsersService', () => {
         provider: AuthProvider.EMAIL,
         providerId: undefined,
         profileImage: undefined,
+        isEmailVerified: false,
       });
       expect(repository.save).toHaveBeenCalledWith(createdUser);
       expect(result).toEqual(createdUser);
@@ -133,6 +134,7 @@ describe('UsersService', () => {
         provider: AuthProvider.GOOGLE,
         providerId: oauthData.providerId,
         profileImage: oauthData.profileImage,
+        isEmailVerified: false,
       });
       expect(result.passwordHash).toBeNull();
     });

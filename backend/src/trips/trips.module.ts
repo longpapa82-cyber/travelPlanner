@@ -14,11 +14,15 @@ import { WeatherService } from './services/weather.service';
 import { AnalyticsService } from './services/analytics.service';
 import { TripStatusScheduler } from './trip-status.scheduler';
 import { User } from '../users/entities/user.entity';
-import { NotificationService } from '../common/notification.service';
+import { NotificationsModule } from '../notifications/notifications.module';
 import { ImageService } from '../common/image.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Trip, Itinerary, Collaborator, User]), ConfigModule],
+  imports: [
+    TypeOrmModule.forFeature([Trip, Itinerary, Collaborator, User]),
+    ConfigModule,
+    NotificationsModule,
+  ],
   providers: [
     TripsService,
     AIService,
@@ -26,7 +30,6 @@ import { ImageService } from '../common/image.service';
     WeatherService,
     AnalyticsService,
     TripStatusScheduler,
-    NotificationService,
     ImageService,
   ],
   controllers: [TripsController, ShareController, AnalyticsController],
