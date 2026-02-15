@@ -1,0 +1,411 @@
+{
+  "create": {
+    "title": "创建新旅行",
+    "hero": {
+      "title": "准备好新冒险了吗？",
+      "subtitle": "只需选择目的地，AI就会为您量身定制完美的旅行计划"
+    },
+    "destination": {
+      "title": "您要去哪里？",
+      "placeholder": "输入城市或国家",
+      "popular": "热门目的地"
+    },
+    "destinations": {
+      "tokyo": "东京",
+      "osaka": "大阪",
+      "bangkok": "曼谷",
+      "danang": "岘港",
+      "paris": "巴黎",
+      "singapore": "新加坡",
+      "london": "伦敦",
+      "newyork": "纽约",
+      "barcelona": "巴塞罗那"
+    },
+    "duration": {
+      "title": "旅行多长时间？",
+      "options": {
+        "3days": "3天",
+        "1week": "1周",
+        "2weeks": "2周",
+        "1month": "1个月"
+      },
+      "custom": "自定义",
+      "totalDays": "{{days}}天旅行"
+    },
+    "travelers": {
+      "title": "谁一起去？",
+      "options": {
+        "solo": "独自旅行",
+        "two": "2人",
+        "group": "3-4人",
+        "large": "5人以上"
+      }
+    },
+    "dates": {
+      "title": "什么时候出发？",
+      "start": "出发日期",
+      "end": "返回日期",
+      "selectStart": "选择出发日期",
+      "selectEnd": "选择返回日期"
+    },
+    "notes": {
+      "title": "有什么特别计划？",
+      "placeholder": "例如：美食之旅、观光、自由行...",
+      "optional": "（选填）"
+    },
+    "budget": {
+      "title": "旅行预算（选填）",
+      "placeholder": "输入总预算",
+      "currency": "货币"
+    },
+    "aiInfo": {
+      "title": "AI自动生成",
+      "description": "AI将根据您的目的地和行程为您制定最优旅行计划"
+    },
+    "submit": "创建旅行计划",
+    "generating": "AI正在为您制定旅行计划...",
+    "progress": {
+      "analyzing": "分析目的地",
+      "planning": "制定行程",
+      "weather": "查询天气信息",
+      "finalizing": "完善您的计划"
+    },
+    "preferences": {
+      "title": "旅行风格",
+      "budget": {
+        "title": "预算水平",
+        "budget": "经济型",
+        "midRange": "中等",
+        "luxury": "豪华"
+      },
+      "style": {
+        "title": "旅行节奏",
+        "relaxed": "悠闲",
+        "balanced": "均衡",
+        "active": "活跃",
+        "adventure": "冒险"
+      },
+      "interests": {
+        "title": "兴趣爱好",
+        "food": "美食",
+        "culture": "文化",
+        "nature": "自然",
+        "shopping": "购物",
+        "nightlife": "夜生活",
+        "history": "历史",
+        "art": "艺术",
+        "sports": "运动",
+        "photography": "摄影"
+      }
+    },
+    "alerts": {
+      "destinationRequired": "请输入目的地",
+      "datesRequired": "请选择旅行日期",
+      "createFailed": "旅行创建失败",
+      "startDateRequired": "请选择出发日期"
+    }
+  },
+  "list": {
+    "title": "我的旅行",
+    "searchPlaceholder": "搜索旅行...",
+    "filters": {
+      "all": "全部",
+      "upcoming": "即将出发",
+      "ongoing": "进行中",
+      "completed": "已完成"
+    },
+    "sections": {
+      "ongoing": "进行中的旅行",
+      "upcoming": "即将出发的旅行",
+      "completed": "过去的旅行（仅供查看）"
+    },
+    "status": {
+      "upcoming": "即将出发",
+      "ongoing": "进行中",
+      "completed": "已完成"
+    },
+    "empty": {
+      "title": "还没有旅行计划",
+      "description": "开始计划一次新旅行吧！",
+      "cta": "AI旅行规划",
+      "noResults": "未找到结果",
+      "noResultsDescription": "尝试其他搜索词或筛选条件",
+      "clearFilters": "清除筛选"
+    },
+    "error": {
+      "title": "无法加载旅行",
+      "description": "请检查网络连接后重试",
+      "retry": "重试",
+      "refreshFailed": "刷新失败"
+    },
+    "card": {
+      "days": "{{days}}天",
+      "travelers": "{{count}}位旅伴",
+      "dDay": "D-{{days}}",
+      "dDayToday": "出发日",
+      "dDayPassed": "D+{{days}}"
+    },
+    "alerts": {
+      "deleteTitle": "删除旅行",
+      "deleteMessage": "确定删除「{{name}}」？此操作无法撤销。",
+      "deleteFailed": "删除失败",
+      "error": "错误",
+      "cancel": "取消",
+      "delete": "删除"
+    },
+    "sort": {
+      "startDate": "按出发日期",
+      "createdAt": "按创建时间",
+      "destination": "按目的地"
+    },
+    "advancedFilters": {
+      "toggle": "筛选",
+      "country": "国家",
+      "countryPlaceholder": "输入国家",
+      "dateRange": "出发日期范围",
+      "dateFrom": "从",
+      "dateTo": "到",
+      "budget": "预算范围",
+      "budgetMin": "最低",
+      "budgetMax": "最高",
+      "reset": "重置筛选",
+      "apply": "应用",
+      "activeCount": "{{count}}个筛选条件"
+    },
+    "resultCount": "{{count}}个旅行",
+    "createButton": "创建新旅行",
+    "info": {
+      "days": "{{count}}天",
+      "itineraries": "{{count}}个行程",
+      "travelers": "{{count}}位旅伴"
+    },
+    "accessibility": {
+      "trip": "旅行",
+      "viewDetail": "查看旅行详情",
+      "deleteTrip": "删除",
+      "search": "搜索旅行",
+      "searchHint": "按目的地搜索旅行"
+    },
+    "pagination": {
+      "showMore": "显示更多",
+      "showing": "{{shown}} / {{total}}"
+    }
+  },
+  "detail": {
+    "loading": "正在加载旅行信息...",
+    "notFound": {
+      "title": "未找到旅行",
+      "description": "此旅行不存在或已被删除",
+      "back": "返回"
+    },
+    "status": {
+      "ongoing": "进行中",
+      "completed": "已完成"
+    },
+    "completedBanner": {
+      "title": "旅行已完成",
+      "description": "此旅行已结束，无法编辑。回顾您的美好回忆吧！"
+    },
+    "readOnlyMessage": "已完成的活动无法编辑",
+    "progress": "总体进度 {{percentage}}%",
+    "durationDays": "{{count}}天",
+    "travelers": "{{count}}位旅伴",
+    "durationMinutes": "{{minutes}}分钟",
+    "estimatedCost": "¥{{cost}}",
+    "dayLabel": "第{{day}}天",
+    "emptyItinerary": "暂无行程",
+    "emptyItineraryMessage": "为您的旅行添加活动",
+    "addActivity": "添加活动",
+    "affiliateSection": "预订酒店和活动",
+    "affiliateSubtitle": "在{{destination}}预订最佳住宿和体验",
+    "tabs": {
+      "itinerary": "行程",
+      "map": "地图",
+      "info": "信息",
+      "share": "分享"
+    },
+    "map": {
+      "noLocations": "没有可显示的地点",
+      "noLocationsMessage": "创建新旅行以查看带有位置信息的活动",
+      "activitiesCount": "{{count}}个活动",
+      "allDays": "全部",
+      "dayLabel": "第{{day}}天",
+      "openInMaps": "在Google地图中查看",
+      "tapToOpen": "点击打开地图",
+      "durationMin": "{{min}}分钟"
+    },
+    "budget": {
+      "title": "预算概览",
+      "total": "总预算",
+      "estimated": "预估",
+      "spent": "已花费",
+      "remaining": "剩余",
+      "byCategory": "按类别",
+      "byDay": "按天",
+      "perDay": "每日",
+      "dayLabel": "第{{day}}天"
+    },
+    "activityTypes": {
+      "meal": "餐饮",
+      "sightseeing": "观光",
+      "shopping": "购物",
+      "experience": "体验",
+      "rest": "休息",
+      "transport": "交通",
+      "accommodation": "住宿",
+      "other": "其他"
+    },
+    "accessibility": {
+      "completed": "已完成",
+      "incomplete": "未完成",
+      "reorder": "重新排序",
+      "reorderHint": "长按拖动排序",
+      "edit": "编辑",
+      "delete": "删除",
+      "goBack": "返回",
+      "editTrip": "编辑旅行",
+      "duplicate": "复制旅行",
+      "duplicating": "复制中...",
+      "share": "分享",
+      "exportIcal": "导出到日历",
+      "addActivityToDay": "为第{{day}}天添加活动"
+    },
+    "alerts": {
+      "deleteTitle": "删除活动",
+      "deleteMessage": "确定删除此活动？",
+      "deleteFailed": "删除失败",
+      "error": "错误",
+      "fetchError": "加载旅行信息失败",
+      "duplicateSuccess": "旅行已复制",
+      "duplicateCompleteTitle": "复制完成",
+      "duplicateError": "复制旅行失败",
+      "confirm": "确认",
+      "cancel": "取消",
+      "delete": "删除",
+      "success": "成功",
+      "deleteSuccess": "旅行已删除",
+      "deleteError": "删除旅行失败",
+      "toggleError": "状态更新失败",
+      "reorderError": "排序失败"
+    },
+    "photos": {
+      "addCover": "添加封面照片",
+      "changeCover": "更换封面照片",
+      "addPhoto": "添加照片",
+      "photoCount": "{{count}}张照片",
+      "uploadSuccess": "照片已上传",
+      "uploadFailed": "上传照片失败",
+      "viewAll": "查看所有照片"
+    },
+    "collaboration": {
+      "title": "协作者",
+      "invite": "邀请",
+      "emailPlaceholder": "输入邮箱地址",
+      "roleViewer": "查看者",
+      "roleEditor": "编辑者",
+      "owner": "所有者",
+      "remove": "移除",
+      "inviteSuccess": "邀请已发送",
+      "inviteFailed": "邀请失败",
+      "removeFailed": "移除失败",
+      "noCollaborators": "暂无协作者"
+    },
+    "expenses": {
+      "title": "费用",
+      "addExpense": "添加费用",
+      "total": "总花费",
+      "myShare": "我的份额",
+      "iOwe": "我欠的",
+      "owedToMe": "欠我的",
+      "settled": "已结清",
+      "paidBy": "付款人",
+      "splitWith": "分摊给",
+      "splitEqual": "平均分摊",
+      "splitExact": "自定义金额",
+      "balances": "余额",
+      "settlements": "结算",
+      "settleUp": "结算",
+      "settledMark": "已结清",
+      "noExpenses": "暂无费用",
+      "noExpensesMessage": "添加费用以跟踪团队支出",
+      "description": "描述",
+      "amount": "金额",
+      "category": "类别",
+      "date": "日期",
+      "owes": "欠",
+      "categories": {
+        "food": "餐饮",
+        "transport": "交通",
+        "accommodation": "住宿",
+        "activity": "活动",
+        "shopping": "购物",
+        "other": "其他"
+      },
+      "tabs": {
+        "expenses": "费用",
+        "balances": "余额"
+      },
+      "alerts": {
+        "createFailed": "添加费用失败",
+        "deleteFailed": "删除费用失败",
+        "settleFailed": "结算失败",
+        "deleteTitle": "删除费用",
+        "deleteMessage": "确定删除此费用？"
+      }
+    }
+  },
+  "edit": {
+    "title": "编辑旅行",
+    "loading": "正在加载旅行信息...",
+    "notFound": "未找到旅行",
+    "goBack": "返回",
+    "heroTitle": "编辑旅行信息",
+    "ongoingWarning": "此旅行正在进行中，请谨慎修改日期。",
+    "destination": {
+      "title": "目的地",
+      "placeholder": "或手动输入"
+    },
+    "dates": {
+      "title": "旅行日期",
+      "changeWarning": "注意",
+      "totalDays": "{{days}}天旅行"
+    },
+    "travelers": {
+      "title": "旅伴",
+      "placeholder": "或手动输入"
+    },
+    "notes": {
+      "title": "旅行备注（选填）",
+      "placeholder": "自由添加旅行目标或特殊需求"
+    },
+    "budget": {
+      "title": "旅行预算（选填）",
+      "placeholder": "输入总预算",
+      "currency": "货币"
+    },
+    "submit": "保存旅行信息",
+    "saving": "保存中...",
+    "status": {
+      "upcoming": "即将出发",
+      "ongoing": "进行中",
+      "completed": "已完成"
+    },
+    "alerts": {
+      "cannotEditCompleted": "已完成的旅行无法编辑。",
+      "cannotEditTitle": "无法编辑",
+      "loadError": "加载旅行信息失败。",
+      "destinationRequired": "请输入目的地。",
+      "requiredInput": "必填项",
+      "datesRequired": "请选择旅行日期。",
+      "endDateError": "返回日期必须晚于出发日期。",
+      "dateError": "日期错误",
+      "dateChangeWarningTitle": "日期更改提醒",
+      "dateChangeWarning": "修改进行中旅行的日期可能影响行程安排。是否继续？",
+      "continue": "继续",
+      "saveSuccess": "修改已保存",
+      "saveSuccessMessage": "旅行信息已更新。",
+      "saveFailed": "保存失败",
+      "saveError": "旅行信息保存失败，请重试。"
+    }
+  }
+}

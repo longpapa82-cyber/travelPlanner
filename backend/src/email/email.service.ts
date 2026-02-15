@@ -3,7 +3,16 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { getErrorMessage } from '../common/types/request.types';
 
-type SupportedLang = 'ko' | 'en' | 'ja';
+type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es';
+type EmailTemplateLang = 'ko' | 'en' | 'ja';
+
+const EMAIL_TEMPLATE_FALLBACK: Record<SupportedLang, EmailTemplateLang> = {
+  ko: 'ko',
+  en: 'en',
+  ja: 'ja',
+  zh: 'en',
+  es: 'en',
+};
 
 function maskEmail(email: string): string {
   const [local, domain] = email.split('@');
@@ -40,13 +49,16 @@ export class EmailService {
       ko: '[TravelPlanner] 이메일 인증을 완료해주세요',
       en: '[TravelPlanner] Please verify your email',
       ja: '[TravelPlanner] メールアドレスを認証してください',
+      zh: '[TravelPlanner] 请验证您的邮箱',
+      es: '[TravelPlanner] Por favor verifica tu correo',
     };
+    const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
 
     try {
       const result = (await this.mailerService.sendMail({
         to: email,
         subject: subjects[lang],
-        template: `verify-email-${lang}`,
+        template: `verify-email-${templateLang}`,
         context: { name, verificationUrl },
       })) as { message?: string } | undefined;
 
@@ -81,13 +93,16 @@ export class EmailService {
       ko: '[TravelPlanner] 비밀번호 재설정',
       en: '[TravelPlanner] Reset your password',
       ja: '[TravelPlanner] パスワードのリセット',
+      zh: '[TravelPlanner] 重置密码',
+      es: '[TravelPlanner] Restablece tu contraseña',
     };
+    const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
 
     try {
       const result = (await this.mailerService.sendMail({
         to: email,
         subject: subjects[lang],
-        template: `reset-password-${lang}`,
+        template: `reset-password-${templateLang}`,
         context: { name, resetUrl },
       })) as { message?: string } | undefined;
 

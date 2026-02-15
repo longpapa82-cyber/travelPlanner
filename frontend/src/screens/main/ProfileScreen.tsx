@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
-import { changeLanguage, getCurrentLanguage, LANGUAGE_LABELS, SUPPORTED_LANGUAGES, SupportedLanguage } from '../../i18n';
+import { changeLanguage, getCurrentLanguage, LANGUAGE_FLAGS, LANGUAGE_LABELS, SUPPORTED_LANGUAGES, SupportedLanguage } from '../../i18n';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -379,7 +379,7 @@ const ProfileScreen = ({ navigation }: any) => {
         <TouchableOpacity style={styles.menuItem} onPress={() => setShowLanguageSelector(true)} accessibilityRole="button" accessibilityLabel={t('menu.language')}>
           <Icon name="translate" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.language')}</Text>
-          <Text style={styles.menuValue}>{LANGUAGE_LABELS[getCurrentLanguage()]}</Text>
+          <Text style={styles.menuValue}>{LANGUAGE_FLAGS[getCurrentLanguage()]} {LANGUAGE_LABELS[getCurrentLanguage()]}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
@@ -549,7 +549,7 @@ const ProfileScreen = ({ navigation }: any) => {
                     onPress={() => handleLanguageChange(lang)}
                   >
                     <Text style={[styles.languageLabel, { color: theme.colors.text }]}>
-                      {LANGUAGE_LABELS[lang]}
+                      {LANGUAGE_FLAGS[lang]}  {LANGUAGE_LABELS[lang]}
                     </Text>
                     {isSelected && (
                       <Icon name="check-circle" size={22} color={theme.colors.primary} />

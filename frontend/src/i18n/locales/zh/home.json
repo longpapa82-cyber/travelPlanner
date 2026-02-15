@@ -1,0 +1,58 @@
+{
+  "greeting": "你好 👋",
+  "heroTitle": "{{name}}的旅行",
+  "subtitle": "准备好计划下一次冒险了吗？",
+  "createTrip": "AI旅行规划",
+  "stats": {
+    "completed": "已完成",
+    "ongoing": "进行中",
+    "upcoming": "即将出发"
+  },
+  "featured": {
+    "title": "现在值得去的好地方",
+    "subtitle": "探索热门目的地",
+    "seeAll": "查看全部 →"
+  },
+  "destinations": {
+    "tokyo": {
+      "name": "东京",
+      "country": "日本",
+      "description": "传统与现代交融之都"
+    },
+    "osaka": {
+      "name": "大阪",
+      "country": "日本",
+      "description": "美食与活力街区之城"
+    },
+    "bangkok": {
+      "name": "曼谷",
+      "country": "泰国",
+      "description": "金色寺庙与夜市"
+    },
+    "danang": {
+      "name": "岘港",
+      "country": "越南",
+      "description": "美丽海滩与地道美食"
+    },
+    "paris": {
+      "name": "巴黎",
+      "country": "法国",
+      "description": "艺术与浪漫之都"
+    },
+    "singapore": {
+      "name": "新加坡",
+      "country": "新加坡",
+      "description": "未来都市中的美食之旅"
+    }
+  },
+  "quickActions": {
+    "myTrips": "我的旅行",
+    "myTripsDesc": "查看进行中的旅行",
+    "inspiration": "灵感",
+    "inspirationDesc": "探索新想法"
+  },
+  "tip": {
+    "title": "💡 提前规划",
+    "description": "AI会综合考虑当地天气、热门景点和出行路线，为您制定最优行程。"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "activityModal": {
+    "addTitle": "Añadir actividad",
+    "editTitle": "Editar actividad",
+    "time": "Hora",
+    "title": "Título",
+    "titlePlaceholder": "Ingresa el título de la actividad",
+    "location": "Ubicación",
+    "locationPlaceholder": "Ingresa la ubicación",
+    "description": "Descripción",
+    "descriptionPlaceholder": "Ingresa la descripción",
+    "type": "Tipo de actividad",
+    "duration": "Duración estimada (min)",
+    "durationPlaceholder": "60",
+    "cost": "Costo estimado",
+    "actualCost": "Gasto real",
+    "costPlaceholder": "0",
+    "cancel": "Cancelar",
+    "add": "Añadir",
+    "save": "Guardar",
+    "validationError": "Error de entrada",
+    "validationErrorMessage": "Por favor ingresa hora, título y ubicación",
+    "errorTitle": "Error",
+    "saveError": "Error al guardar actividad",
+    "types": {
+      "meal": "Comida",
+      "sightseeing": "Turismo",
+      "shopping": "Compras",
+      "experience": "Experiencia",
+      "rest": "Descanso",
+      "transport": "Transporte",
+      "other": "Otro"
+    }
+  },
+  "shareModal": {
+    "title": "Compartir viaje",
+    "generate": "Generar enlace para compartir",
+    "generateButton": "Generar enlace",
+    "generateDescription": "Crea un enlace para compartir tu plan de viaje con otros",
+    "generateError": "Error al generar enlace",
+    "linkTitle": "Enlace para compartir",
+    "copy": "Copiar enlace",
+    "copied": "¡Copiado!",
+    "copiedToClipboard": "Copiado al portapapeles",
+    "copyError": "Error al copiar enlace",
+    "disable": "Desactivar compartir",
+    "disableConfirm": "¿Desactivar compartir? Los enlaces existentes dejarán de funcionar.",
+    "disableAction": "Desactivar",
+    "disableSuccess": "Compartir desactivado",
+    "disableError": "Error al desactivar compartir",
+    "cancel": "Cancelar",
+    "error": "Error",
+    "success": "Éxito",
+    "info": "Cualquiera con este enlace puede ver este plan de viaje. Desactivar el enlace revocará el acceso.",
+    "expiry": {
+      "title": "Período de expiración",
+      "none": "Sin expiración",
+      "7days": "7 días",
+      "30days": "30 días",
+      "90days": "90 días"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "Humedad",
+    "windSpeed": "Viento",
+    "feelsLike": "Sensación",
+    "timezone": "Hora local",
+    "timeDiff": "Diferencia horaria",
+    "noData": "Datos meteorológicos no disponibles"
+  },
+  "popularDestinations": {
+    "title": "Destinos populares",
+    "subtitle": "Tendencias de los últimos 3 meses",
+    "description": "Descubre los destinos más elegidos por viajeros reales",
+    "visitors": "{{count}} visitantes",
+    "avgDuration": "Prom. {{days}} días",
+    "withTravelers": "Con {{count}} viajeros",
+    "popularSeason": "Temporada popular:"
+  },
+  "progressIndicator": {
+    "title": "Progreso",
+    "status": "{{completed}} completados / {{total}} actividades totales"
+  },
+  "destinationInsights": {
+    "header": "Basado en datos de viajeros reales",
+    "avgDuration": "Duración promedio del viaje",
+    "avgTravelers": "Tamaño promedio del grupo",
+    "popularBudget": "Presupuesto popular",
+    "popularStyle": "Estilo popular",
+    "popularSeason": "Temporada popular de viaje",
+    "bestNow": "¡El mejor momento es ahora!",
+    "topActivities": "Actividades más populares de viajeros recientes (Top {{count}})",
+    "footer": "Basado en datos de viajeros reales de los últimos 3 meses",
+    "loading": "Cargando información del destino...",
+    "days": "{{days}} días",
+    "people": "{{count}} personas"
+  }
+}

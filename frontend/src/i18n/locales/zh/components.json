@@ -1,0 +1,98 @@
+{
+  "activityModal": {
+    "addTitle": "添加活动",
+    "editTitle": "编辑活动",
+    "time": "时间",
+    "title": "标题",
+    "titlePlaceholder": "请输入活动标题",
+    "location": "地点",
+    "locationPlaceholder": "请输入地点",
+    "description": "描述",
+    "descriptionPlaceholder": "请输入描述",
+    "type": "活动类型",
+    "duration": "预计时长（分钟）",
+    "durationPlaceholder": "60",
+    "cost": "预计费用",
+    "actualCost": "实际花费",
+    "costPlaceholder": "0",
+    "cancel": "取消",
+    "add": "添加",
+    "save": "保存",
+    "validationError": "输入错误",
+    "validationErrorMessage": "请输入时间、标题和地点",
+    "errorTitle": "错误",
+    "saveError": "活动保存失败",
+    "types": {
+      "meal": "餐饮",
+      "sightseeing": "观光",
+      "shopping": "购物",
+      "experience": "体验",
+      "rest": "休息",
+      "transport": "交通",
+      "other": "其他"
+    }
+  },
+  "shareModal": {
+    "title": "分享旅行",
+    "generate": "生成分享链接",
+    "generateButton": "生成链接",
+    "generateDescription": "创建分享链接，与他人分享您的旅行计划",
+    "generateError": "分享链接生成失败",
+    "linkTitle": "分享链接",
+    "copy": "复制链接",
+    "copied": "已复制！",
+    "copiedToClipboard": "已复制到剪贴板",
+    "copyError": "链接复制失败",
+    "disable": "关闭分享",
+    "disableConfirm": "确定关闭分享？现有链接将无法使用。",
+    "disableAction": "关闭",
+    "disableSuccess": "分享已关闭",
+    "disableError": "关闭分享失败",
+    "cancel": "取消",
+    "error": "错误",
+    "success": "成功",
+    "info": "任何拥有此链接的人都可以查看此旅行计划。关闭链接将撤销访问权限。",
+    "expiry": {
+      "title": "有效期",
+      "none": "无限期",
+      "7days": "7天",
+      "30days": "30天",
+      "90days": "90天"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "湿度",
+    "windSpeed": "风速",
+    "feelsLike": "体感温度",
+    "timezone": "当地时间",
+    "timeDiff": "时差",
+    "noData": "无法获取天气信息"
+  },
+  "popularDestinations": {
+    "title": "热门目的地",
+    "subtitle": "近3个月热门目的地",
+    "description": "查看真实旅行者最常选择的目的地",
+    "visitors": "{{count}}人到访",
+    "avgDuration": "平均{{days}}天",
+    "withTravelers": "与{{count}}人同行",
+    "popularSeason": "热门季节："
+  },
+  "progressIndicator": {
+    "title": "进度",
+    "status": "已完成{{completed}}个 / 共{{total}}个活动"
+  },
+  "destinationInsights": {
+    "header": "基于真实旅行者数据",
+    "avgDuration": "平均旅行天数",
+    "avgTravelers": "平均同行人数",
+    "popularBudget": "热门预算",
+    "popularStyle": "热门风格",
+    "popularSeason": "热门旅行季节",
+    "bestNow": "现在正当时！",
+    "topActivities": "近期旅行者热门活动（Top {{count}}）",
+    "footer": "基于近3个月真实旅行者数据",
+    "loading": "正在加载目的地信息...",
+    "days": "{{days}}天",
+    "people": "{{count}}人"
+  }
+}

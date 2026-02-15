@@ -1,0 +1,115 @@
+{
+  "title": "Perfil",
+  "guest": "Invitado",
+  "sections": {
+    "account": "Cuenta",
+    "settings": "Configuración",
+    "support": "Soporte",
+    "admin": "Administración"
+  },
+  "menu": {
+    "editProfile": "Editar perfil",
+    "changePassword": "Cambiar contraseña",
+    "twoFactor": "Autenticación 2FA",
+    "twoFactorEnabled": "Activado",
+    "twoFactorDisabled": "Desactivado",
+    "language": "Idioma",
+    "notifications": "Notificaciones",
+    "notificationsEnabled": "Activadas",
+    "notificationsDisabled": "Desactivadas",
+    "darkMode": "Modo oscuro",
+    "help": "Ayuda",
+    "terms": "Términos de servicio",
+    "privacy": "Política de privacidad",
+    "revenue": "Panel de ingresos",
+    "admin": "Panel de admin"
+  },
+  "editProfile": {
+    "title": "Editar perfil",
+    "name": "Nombre",
+    "namePlaceholder": "Ingresa tu nombre",
+    "changePhoto": "Cambiar foto de perfil",
+    "save": "Guardar",
+    "alerts": {
+      "nameRequired": "Por favor ingresa tu nombre",
+      "success": "Perfil actualizado",
+      "failed": "Error al actualizar perfil",
+      "photoSuccess": "Foto de perfil actualizada",
+      "photoFailed": "Error al actualizar foto de perfil",
+      "permissionDenied": "Se requiere permiso de acceso a fotos"
+    }
+  },
+  "changePassword": {
+    "title": "Cambiar contraseña",
+    "current": "Contraseña actual",
+    "currentPlaceholder": "Ingresa contraseña actual",
+    "new": "Nueva contraseña",
+    "newPlaceholder": "Ingresa nueva contraseña (6+ caracteres)",
+    "confirm": "Confirmar nueva contraseña",
+    "confirmPlaceholder": "Vuelve a ingresar la nueva contraseña",
+    "submit": "Cambiar contraseña",
+    "alerts": {
+      "allFieldsRequired": "Por favor completa todos los campos",
+      "minLength": "La nueva contraseña debe tener al menos 6 caracteres",
+      "mismatch": "Las contraseñas no coinciden",
+      "success": "Contraseña cambiada exitosamente",
+      "failed": "Error al cambiar contraseña"
+    }
+  },
+  "languageSelector": {
+    "title": "Seleccionar idioma",
+    "description": "Elige tu idioma preferido"
+  },
+  "logout": {
+    "title": "Cerrar sesión",
+    "message": "¿Seguro que quieres cerrar sesión?",
+    "button": "Cerrar sesión"
+  },
+  "deleteAccount": {
+    "title": "Eliminar cuenta",
+    "message": "Eliminar tu cuenta eliminará permanentemente todos los datos. ¿Estás seguro?",
+    "button": "Eliminar cuenta",
+    "alerts": {
+      "success": "Cuenta eliminada exitosamente",
+      "failed": "Error al eliminar cuenta"
+    }
+  },
+  "version": "Versión",
+  "analytics": {
+    "title": "Estadísticas de viaje",
+    "totalTrips": "Total de viajes",
+    "completedTrips": "Completados",
+    "ongoingTrips": "En curso",
+    "upcomingTrips": "Próximos",
+    "totalDays": "Días totales",
+    "avgDuration": "Duración promedio",
+    "days": "días",
+    "countriesVisited": "Países",
+    "countries": "países",
+    "totalSpent": "Total gastado",
+    "totalBudget": "Presupuesto total",
+    "topDestinations": "Destinos principales",
+    "times": "veces",
+    "activities": "Actividades",
+    "completedOf": "{{completed}} / {{total}} completados",
+    "noData": "Aún no hay datos de viaje",
+    "loading": "Cargando estadísticas..."
+  },
+  "revenue": {
+    "last30Days": "Últimos 30 días",
+    "totalClicks": "Total de clics",
+    "conversions": "Conversiones",
+    "conversionRate": "Tasa de conv.",
+    "commission": "Comisión",
+    "highlights": "Destacados",
+    "topProvider": "Proveedor principal",
+    "topDestination": "Destino principal",
+    "totalRevenue": "Ingresos totales",
+    "byProvider": "Por proveedor",
+    "clicks": "clics",
+    "conv": "conv",
+    "noData": "Aún no hay datos disponibles",
+    "adminOnly": "Acceso de administrador requerido",
+    "loadError": "Error al cargar datos"
+  }
+}

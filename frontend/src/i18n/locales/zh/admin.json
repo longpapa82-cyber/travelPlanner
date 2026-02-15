@@ -1,0 +1,55 @@
+{
+  "title": "管理面板",
+  "menu": {
+    "users": "用户管理",
+    "errorLogs": "错误日志",
+    "revenue": "收益仪表盘"
+  },
+  "dashboard": {
+    "subtitle": "服务管理工具"
+  },
+  "users": {
+    "title": "用户管理",
+    "totalUsers": "总用户数",
+    "todaySignups": "今日注册",
+    "todayActive": "今日活跃",
+    "weeklyActive": "周活跃",
+    "people": "人",
+    "signupTrend": "近30天注册趋势",
+    "providerBreakdown": "注册方式",
+    "memberList": "用户列表",
+    "searchPlaceholder": "搜索姓名或邮箱",
+    "allProviders": "全部",
+    "lastLogin": "最近登录",
+    "signupDate": "注册日期",
+    "trips": "旅行",
+    "never": "未登录",
+    "noUsers": "未找到用户",
+    "loadMore": "加载更多"
+  },
+  "errors": {
+    "title": "错误日志",
+    "todayErrors": "今日",
+    "weeklyErrors": "本周",
+    "unresolved": "未解决",
+    "affectedUsers": "受影响用户",
+    "count": "个",
+    "people": "人",
+    "hourlyTrend": "近24小时错误趋势",
+    "topErrors": "Top 10错误",
+    "errorList": "错误列表",
+    "allSeverity": "全部",
+    "error": "错误",
+    "warning": "警告",
+    "fatal": "严重",
+    "unresolvedOnly": "仅未解决",
+    "resolve": "解决",
+    "resolved": "已解决",
+    "screen": "页面",
+    "device": "设备",
+    "version": "版本",
+    "noErrors": "无错误",
+    "loadMore": "加载更多",
+    "occurrences": "次"
+  }
+}

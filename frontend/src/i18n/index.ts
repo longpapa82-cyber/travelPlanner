@@ -31,13 +31,41 @@ import ja_components from './locales/ja/components.json';
 import ja_legal from './locales/ja/legal.json';
 import ja_admin from './locales/ja/admin.json';
 
-export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja'] as const;
+import zh_common from './locales/zh/common.json';
+import zh_auth from './locales/zh/auth.json';
+import zh_home from './locales/zh/home.json';
+import zh_trips from './locales/zh/trips.json';
+import zh_profile from './locales/zh/profile.json';
+import zh_components from './locales/zh/components.json';
+import zh_legal from './locales/zh/legal.json';
+import zh_admin from './locales/zh/admin.json';
+
+import es_common from './locales/es/common.json';
+import es_auth from './locales/es/auth.json';
+import es_home from './locales/es/home.json';
+import es_trips from './locales/es/trips.json';
+import es_profile from './locales/es/profile.json';
+import es_components from './locales/es/components.json';
+import es_legal from './locales/es/legal.json';
+import es_admin from './locales/es/admin.json';
+
+export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja', 'zh', 'es'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
   ko: '한국어',
   en: 'English',
   ja: '日本語',
+  zh: '中文',
+  es: 'Español',
+};
+
+export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
+  ko: '🇰🇷',
+  en: '🇺🇸',
+  ja: '🇯🇵',
+  zh: '🇨🇳',
+  es: '🇪🇸',
 };
 
 const resources = {
@@ -70,6 +98,26 @@ const resources = {
     components: ja_components,
     legal: ja_legal,
     admin: ja_admin,
+  },
+  zh: {
+    common: zh_common,
+    auth: zh_auth,
+    home: zh_home,
+    trips: zh_trips,
+    profile: zh_profile,
+    components: zh_components,
+    legal: zh_legal,
+    admin: zh_admin,
+  },
+  es: {
+    common: es_common,
+    auth: es_auth,
+    home: es_home,
+    trips: es_trips,
+    profile: es_profile,
+    components: es_components,
+    legal: es_legal,
+    admin: es_admin,
   },
 };
 

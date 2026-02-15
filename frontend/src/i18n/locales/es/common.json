@@ -1,0 +1,75 @@
+{
+  "confirm": "Aceptar",
+  "cancel": "Cancelar",
+  "save": "Guardar",
+  "delete": "Eliminar",
+  "edit": "Editar",
+  "close": "Cerrar",
+  "loading": "Cargando...",
+  "error": "Error",
+  "success": "Éxito",
+  "retry": "Reintentar",
+  "back": "Atrás",
+  "next": "Siguiente",
+  "done": "Listo",
+  "copy": "Copiar",
+  "search": "Buscar",
+  "noResults": "No se encontraron resultados",
+  "like": "Me gusta",
+  "share": "Compartir",
+  "clear": "Limpiar",
+  "seeAll": "Ver todo →",
+  "findOnProvider": "Buscar en {{name}}",
+  "offlineMode": "Modo sin conexión — mostrando datos en caché",
+  "offlinePending": "Sin conexión — {{count}} cambio(s) pendiente(s)",
+  "offlineSyncing": "Sincronizando cambios...",
+  "offlineSynced": "Todos los cambios sincronizados",
+  "errorBoundary": {
+    "title": "Algo salió mal",
+    "message": "Ocurrió un error inesperado.\n¡No te preocupes, te ayudaremos a volver!",
+    "persistentTitle": "Errores repetidos detectados",
+    "persistentMessage": "Este error sigue ocurriendo.\nPor favor, intenta recargar la aplicación.",
+    "retry": "Reintentar",
+    "reload": "Recargar",
+    "goHome": "Ir al inicio",
+    "errorId": "ID de error: {{id}}"
+  },
+  "tabs": {
+    "home": "Inicio",
+    "trips": "Mis viajes",
+    "notifications": "Alertas",
+    "profile": "Perfil"
+  },
+  "notifications": {
+    "emptyTitle": "Sin notificaciones",
+    "emptyMessage": "Las nuevas notificaciones aparecerán aquí",
+    "markAllRead": "Marcar todo como leído",
+    "deleteAll": "Eliminar todo",
+    "deleteAllTitle": "Eliminar notificaciones",
+    "deleteAllConfirm": "¿Eliminar todas las notificaciones?",
+    "allMarkedRead": "Todas las notificaciones marcadas como leídas",
+    "allDeleted": "Todas las notificaciones eliminadas",
+    "error": "Ocurrió un error",
+    "fetchError": "Error al cargar notificaciones",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "justNow": "Ahora",
+    "minutesAgo": "hace {{count}}min",
+    "hoursAgo": "hace {{count}}h",
+    "daysAgo": "hace {{count}}d"
+  },
+  "pwa": {
+    "installTitle": "Instalar como app",
+    "installMessage": "Añadir a la pantalla de inicio para una experiencia más rápida",
+    "install": "Instalar"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "Verificación de correo necesaria",
+      "message": "Por favor revisa tu bandeja de entrada para verificar tu correo",
+      "resend": "Reenviar",
+      "sent": "Correo de verificación reenviado",
+      "error": "Error al enviar"
+    }
+  }
+}

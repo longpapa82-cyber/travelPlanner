@@ -4,6 +4,8 @@ const LOCALE_MAP: Record<SupportedLanguage, string> = {
   ko: 'ko-KR',
   en: 'en-US',
   ja: 'ja-JP',
+  zh: 'zh-CN',
+  es: 'es-ES',
 };
 
 export function getDateLocale(): string {

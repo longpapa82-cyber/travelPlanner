@@ -175,7 +175,7 @@ export class TimezoneService {
   calculateTimeDifference(
     destinationOffset: number,
     userTimezone: string = 'UTC',
-    lang: 'ko' | 'en' | 'ja' = 'ko',
+    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' = 'ko',
   ): string {
     const userDateTime = DateTime.now().setZone(userTimezone);
     const userOffset = userDateTime.offset / 60; // Convert minutes to hours

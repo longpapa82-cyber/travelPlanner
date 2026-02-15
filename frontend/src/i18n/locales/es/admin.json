@@ -1,0 +1,55 @@
+{
+  "title": "Panel de administración",
+  "menu": {
+    "users": "Gestión de usuarios",
+    "errorLogs": "Registros de errores",
+    "revenue": "Panel de ingresos"
+  },
+  "dashboard": {
+    "subtitle": "Herramientas de gestión del servicio"
+  },
+  "users": {
+    "title": "Gestión de usuarios",
+    "totalUsers": "Total de usuarios",
+    "todaySignups": "Registros hoy",
+    "todayActive": "Activos hoy",
+    "weeklyActive": "Activos semanales",
+    "people": "",
+    "signupTrend": "Registros (últimos 30 días)",
+    "providerBreakdown": "Método de registro",
+    "memberList": "Lista de miembros",
+    "searchPlaceholder": "Buscar nombre o correo",
+    "allProviders": "Todos",
+    "lastLogin": "Último acceso",
+    "signupDate": "Fecha de registro",
+    "trips": "Viajes",
+    "never": "Nunca",
+    "noUsers": "No se encontraron usuarios",
+    "loadMore": "Cargar más"
+  },
+  "errors": {
+    "title": "Registros de errores",
+    "todayErrors": "Hoy",
+    "weeklyErrors": "Esta semana",
+    "unresolved": "Sin resolver",
+    "affectedUsers": "Usuarios afectados",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "Errores (últimas 24h)",
+    "topErrors": "Top 10 errores",
+    "errorList": "Lista de errores",
+    "allSeverity": "Todos",
+    "error": "Error",
+    "warning": "Advertencia",
+    "fatal": "Fatal",
+    "unresolvedOnly": "Solo sin resolver",
+    "resolve": "Resolver",
+    "resolved": "Resuelto",
+    "screen": "Pantalla",
+    "device": "Dispositivo",
+    "version": "Versión",
+    "noErrors": "No se encontraron errores",
+    "loadMore": "Cargar más",
+    "occurrences": "veces"
+  }
+}

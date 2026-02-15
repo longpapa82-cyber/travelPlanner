@@ -1,0 +1,115 @@
+{
+  "title": "个人中心",
+  "guest": "游客",
+  "sections": {
+    "account": "账号信息",
+    "settings": "应用设置",
+    "support": "支持",
+    "admin": "服务管理"
+  },
+  "menu": {
+    "editProfile": "编辑资料",
+    "changePassword": "修改密码",
+    "twoFactor": "两步验证",
+    "twoFactorEnabled": "已启用",
+    "twoFactorDisabled": "未启用",
+    "language": "语言",
+    "notifications": "通知设置",
+    "notificationsEnabled": "已启用",
+    "notificationsDisabled": "未启用",
+    "darkMode": "深色模式",
+    "help": "帮助",
+    "terms": "服务条款",
+    "privacy": "隐私政策",
+    "revenue": "收益仪表盘",
+    "admin": "管理面板"
+  },
+  "editProfile": {
+    "title": "编辑资料",
+    "name": "姓名",
+    "namePlaceholder": "请输入姓名",
+    "changePhoto": "更换头像",
+    "save": "保存",
+    "alerts": {
+      "nameRequired": "请输入姓名",
+      "success": "资料已更新",
+      "failed": "资料更新失败",
+      "photoSuccess": "头像已更换",
+      "photoFailed": "头像更换失败",
+      "permissionDenied": "需要相册访问权限"
+    }
+  },
+  "changePassword": {
+    "title": "修改密码",
+    "current": "当前密码",
+    "currentPlaceholder": "请输入当前密码",
+    "new": "新密码",
+    "newPlaceholder": "请输入新密码（6位以上）",
+    "confirm": "确认新密码",
+    "confirmPlaceholder": "请再次输入新密码",
+    "submit": "修改密码",
+    "alerts": {
+      "allFieldsRequired": "请填写所有项目",
+      "minLength": "新密码至少需要6个字符",
+      "mismatch": "两次输入的密码不一致",
+      "success": "密码已修改",
+      "failed": "密码修改失败"
+    }
+  },
+  "languageSelector": {
+    "title": "选择语言",
+    "description": "选择您偏好的语言"
+  },
+  "logout": {
+    "title": "退出登录",
+    "message": "确定要退出登录吗？",
+    "button": "退出登录"
+  },
+  "deleteAccount": {
+    "title": "删除账号",
+    "message": "删除账号将永久删除所有数据。确定要删除吗？",
+    "button": "删除账号",
+    "alerts": {
+      "success": "账号已删除",
+      "failed": "账号删除失败"
+    }
+  },
+  "version": "版本",
+  "analytics": {
+    "title": "旅行统计",
+    "totalTrips": "全部旅行",
+    "completedTrips": "已完成",
+    "ongoingTrips": "进行中",
+    "upcomingTrips": "即将出发",
+    "totalDays": "总天数",
+    "avgDuration": "平均时长",
+    "days": "天",
+    "countriesVisited": "到访国家",
+    "countries": "个国家",
+    "totalSpent": "总花费",
+    "totalBudget": "总预算",
+    "topDestinations": "热门目的地",
+    "times": "次",
+    "activities": "活动情况",
+    "completedOf": "{{completed}} / {{total}} 已完成",
+    "noData": "暂无旅行数据",
+    "loading": "统计加载中..."
+  },
+  "revenue": {
+    "last30Days": "近30天",
+    "totalClicks": "总点击",
+    "conversions": "转化",
+    "conversionRate": "转化率",
+    "commission": "佣金",
+    "highlights": "亮点",
+    "topProvider": "热门合作商",
+    "topDestination": "热门目的地",
+    "totalRevenue": "总收入",
+    "byProvider": "按合作商",
+    "clicks": "点击",
+    "conv": "转化",
+    "noData": "暂无数据",
+    "adminOnly": "仅管理员可用",
+    "loadError": "数据加载失败"
+  }
+}
