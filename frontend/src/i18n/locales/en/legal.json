@@ -1,0 +1,226 @@
+{
+  "help": {
+    "title": "Help",
+    "searchPlaceholder": "Search for help...",
+    "categories": {
+      "gettingStarted": "Getting Started",
+      "tripManagement": "Trip Management",
+      "accountSettings": "Account & Settings",
+      "offlineSync": "Offline & Sync",
+      "adsPartners": "Pricing & Ads",
+      "contact": "Contact Us"
+    },
+    "gettingStarted": {
+      "signup": {
+        "q": "How do I sign up?",
+        "a": "You can sign up with your email or quickly register using Google, Apple, or Kakao accounts. Social login doesn't require a separate password."
+      },
+      "createTrip": {
+        "q": "How do I create a trip plan?",
+        "a": "Tap 'Create New Trip' on the home screen, enter your destination and travel dates, and AI will automatically generate a personalized itinerary. Select your budget, travel style, and interests for more accurate recommendations."
+      },
+      "aiPlan": {
+        "q": "How does the AI itinerary work?",
+        "a": "We use advanced AI technology to analyze popular attractions, restaurants, and cultural experiences at your destination, then create an optimized schedule considering travel routes and timing. Generated itineraries can be freely modified."
+      },
+      "appTour": {
+        "q": "How is the app organized?",
+        "a": "The app has four main tabs: Home (trip list), Trip Detail (itinerary, map, weather), Notifications, and Profile. Navigate easily using the bottom tab bar."
+      }
+    },
+    "tripManagement": {
+      "editPlan": {
+        "q": "How do I edit my itinerary?",
+        "a": "Tap any activity in the trip detail screen to edit its time, location, and notes. Drag and drop to reorder activities, or use the + button to add new ones."
+      },
+      "tripStatus": {
+        "q": "Do editing rules differ by trip status?",
+        "a": "• Before trip: Freely modify and add to all plans.\n• During trip: Past activities can't be changed; only upcoming ones can be edited.\n• After trip: View and delete only; no modifications allowed."
+      },
+      "mapView": {
+        "q": "How do I view places on the map?",
+        "a": "In the trip detail screen, switch to the map tab to see all planned locations at a glance. Tap markers for activity details."
+      },
+      "weather": {
+        "q": "Where can I see weather and time zone info?",
+        "a": "Local weather and time zone information appears automatically at the top of the trip detail screen for each day. Weather data comes from external services and updates in real-time."
+      }
+    },
+    "accountSettings": {
+      "editProfile": {
+        "q": "How do I edit my profile?",
+        "a": "Go to Profile tab → 'Edit Profile' to change your name and photo."
+      },
+      "changePassword": {
+        "q": "How do I change my password?",
+        "a": "Go to Profile tab → 'Change Password', enter your current password, and set a new one. Social login users don't need to change passwords."
+      },
+      "twoFactor": {
+        "q": "How do I set up two-factor authentication?",
+        "a": "Go to Profile tab → 'Two-Factor Authentication' to enable it. Scan the QR code with a TOTP app like Google Authenticator and enter the verification code. Backup codes will also be provided."
+      },
+      "notifications": {
+        "q": "How do I manage notifications?",
+        "a": "Go to Profile tab → 'Notification Settings' to configure push notifications. You can receive departure reminders, trip start/completion alerts."
+      },
+      "deleteAccount": {
+        "q": "How do I delete my account?",
+        "a": "Tap 'Delete Account' at the bottom of the Profile tab. All data will be permanently deleted within 30 days of the request. This action cannot be undone."
+      }
+    },
+    "offlineSync": {
+      "offlineUse": {
+        "q": "Can I use the app offline?",
+        "a": "Yes, previously loaded trip plans can be viewed without internet. Changes made offline will automatically sync when you reconnect."
+      },
+      "syncStatus": {
+        "q": "How do I check sync status?",
+        "a": "A sync banner appears at the top of the screen: 'Pending (N items)' → 'Syncing...' → 'Synced'. Auto-retry occurs on unstable connections."
+      },
+      "syncError": {
+        "q": "What if sync fails?",
+        "a": "Check your network connection and restart the app. If the issue persists, contact us through 'Contact Us'."
+      }
+    },
+    "adsPartners": {
+      "freeService": {
+        "q": "Is there a fee to use the service?",
+        "a": "All TravelPlanner features are free. Ads may be displayed within the app to support service operations."
+      },
+      "adInfo": {
+        "q": "How are ads displayed?",
+        "a": "Interstitial ads may appear after trip creation, and banner ads may be shown on some screens. Personalized ads are controlled through iOS App Tracking Transparency (ATT)."
+      },
+      "affiliates": {
+        "q": "What are affiliate partners?",
+        "a": "We provide booking links for flights, hotels, and activities in the trip detail screen. We partner with trusted services including Booking.com, Agoda, Klook, and GetYourGuide."
+      }
+    },
+    "contact": {
+      "email": "Email Support",
+      "emailAddress": "support@travelplanner.app",
+      "emailDescription": "If the FAQ above doesn't resolve your issue, please contact us via email. Device info and app version will be included automatically.",
+      "sendEmail": "Send Email"
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "effectiveDate": "Effective: March 1, 2025",
+    "articles": {
+      "art1": {
+        "title": "Article 1 (Purpose)",
+        "content": "These Terms of Service govern the use of TravelPlanner (\"Service\"), including the rights, obligations, and responsibilities of both the company and users."
+      },
+      "art2": {
+        "title": "Article 2 (Definitions)",
+        "content": "① \"Service\" refers to the automatic travel planning and management service provided by TravelPlanner.\n② \"Member\" refers to a person who has agreed to these Terms and registered for the Service.\n③ \"AI-Generated Content\" refers to travel itineraries and recommendations automatically generated using artificial intelligence.\n④ \"Travel Data\" refers to destinations, schedules, and activity plans entered by members."
+      },
+      "art3": {
+        "title": "Article 3 (Service Description)",
+        "content": "The Service provides:\n• AI-powered automatic travel plan generation\n• Travel plan editing, adding, and deletion management\n• Local weather and time zone information\n• Travel progress tracking\n• Past travel history viewing\n• Offline itinerary access and sync\n• Expense splitting features\n• Notification services"
+      },
+      "art4": {
+        "title": "Article 4 (Account Registration)",
+        "content": "① You may register via email or social accounts (Google, Apple, Kakao).\n② Users under 14 years of age cannot use the Service.\n③ You must provide accurate information. You are responsible for any issues from inaccurate information.\n④ You are responsible for maintaining the security of your account."
+      },
+      "art5": {
+        "title": "Article 5 (Service Usage Rules)",
+        "content": "① Before trip: Plans can be freely modified and extended.\n② During trip: Completed activities cannot be changed; only upcoming activities can be modified.\n③ After trip: History can only be viewed or deleted, not modified.\n④ AI-generated results are for reference only. Users should verify local conditions when traveling."
+      },
+      "art6": {
+        "title": "Article 6 (AI Service Terms)",
+        "content": "① The accuracy, safety, and suitability of AI-generated travel plans are not guaranteed.\n② Data is processed through the OpenAI API for itinerary generation, as described in our Privacy Policy.\n③ User-entered travel data is not used for AI model training.\n④ AI services may be temporarily limited due to technical circumstances."
+      },
+      "art7": {
+        "title": "Article 7 (Prohibited Activities)",
+        "content": "Users must not:\n• Interfere with the normal operation of the Service\n• Violate other users' privacy\n• Access the Service through automated means at scale\n• Fraudulently click or manipulate advertisements\n• Reverse-engineer, copy, or imitate the Service\n• Violate any applicable laws or regulations"
+      },
+      "art8": {
+        "title": "Article 8 (Advertising and Affiliates)",
+        "content": "① The Service may display ads through Google AdSense, AdMob, and affiliate programs.\n② Responsibility for ad content lies with the respective advertisers.\n③ Separate terms may apply when booking through affiliate links."
+      },
+      "art9": {
+        "title": "Article 9 (Intellectual Property)",
+        "content": "① IP rights for the Service's content, design, and software belong to the Service provider.\n② Rights to travel plans created by users belong to the users."
+      },
+      "art10": {
+        "title": "Article 10 (Disclaimers)",
+        "content": "① AI-generated travel plans are for reference only. Verify local conditions when traveling.\n② Weather and time zone info is based on external APIs; accuracy is not guaranteed.\n③ The Service is not liable for interruptions due to force majeure or system failures.\n④ The Service acts only as an intermediary for affiliate bookings and bears no direct liability."
+      },
+      "art11": {
+        "title": "Article 11 (Account Termination)",
+        "content": "① You may terminate your account anytime through the 'Delete Account' feature.\n② All personal data will be permanently deleted within 30 days.\n③ Information required by law will be retained for the specified period then destroyed."
+      },
+      "art12": {
+        "title": "Article 12 (Liability)",
+        "content": "If a member suffers damages due to the company's intentional or gross negligence, the company shall compensate in accordance with applicable laws."
+      },
+      "art13": {
+        "title": "Article 13 (Changes to Terms)",
+        "content": "① Changes will be notified at least 7 days before taking effect via in-app notices.\n② If you disagree with changes, you may discontinue use and delete your account."
+      },
+      "art14": {
+        "title": "Article 14 (Dispute Resolution)",
+        "content": "① These Terms shall be governed by the laws of the Republic of Korea.\n② Any disputes shall be subject to the jurisdiction of the Seoul Central District Court."
+      },
+      "art15": {
+        "title": "Article 15 (Addendum)",
+        "content": "These Terms are effective from March 1, 2025."
+      }
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "effectiveDate": "Effective: March 1, 2025",
+    "articles": {
+      "art1": {
+        "title": "1. Information We Collect",
+        "content": "[Required]\n• Account info: Name, email address, profile photo\n• Social login: Public profile from Google, Apple, or Kakao\n\n[Optional]\n• Travel preferences: Budget level, travel style, interests\n\n[Automatic]\n• Device info: Device type, OS, app version\n• Usage data: App usage patterns, ad interactions\n• Travel data: Destinations, schedules, activity plans\n\n[Methods] Registration, social login, automatic collection during use"
+      },
+      "art2": {
+        "title": "2. How We Use Your Information",
+        "content": "• Service delivery: Account management, AI travel plan generation, local info\n• AI processing: Itinerary generation via OpenAI API (destination, dates, preferences sent)\n• Personalization: Optimizing recommendations based on travel preferences\n• Advertising: Personalized ads (with separate consent)\n• Improvement: Usage analysis, bug fixing"
+      },
+      "art3": {
+        "title": "3. Third-Party Sharing",
+        "content": "We do not share personal info except:\n\n| Recipient | Data | Purpose |\n| OpenAI | Destination, dates, preferences | AI itinerary generation |\n| Google (AdSense/AdMob) | Ad ID, usage patterns | Ad delivery |\n| Affiliate partners | Click events (anonymized) | Affiliate services |\n\n※ With explicit user consent\n※ When required by law"
+      },
+      "art4": {
+        "title": "4. Data Processing Delegation",
+        "content": "| Provider | Service |\n| Cloud services (AWS etc.) | Data storage and processing |\n| Email service | Authentication and notification emails |"
+      },
+      "art5": {
+        "title": "5. Data Retention",
+        "content": "• Account deletion: Destroyed within 30 days\n• E-commerce law: Transaction records retained for 5 years\n• Telecom law: Access logs retained for 3 months\n• Information required by law is stored separately for the required period then destroyed."
+      },
+      "art6": {
+        "title": "6. Your Rights",
+        "content": "You may exercise the following rights:\n• Access, correct, delete, or suspend processing of your personal info\n• Request data portability (Article 35-2 of the Privacy Act)\n• Request explanation of or refuse automated decisions (AI itinerary generation)\n• Permanently delete all data by deleting your account\n• Withdraw ad tracking consent (changeable in device settings)\n\n[How to exercise]\nApp: Profile → Delete Account\nEmail: support@travelplanner.app"
+      },
+      "art7": {
+        "title": "7. Protection of Children Under 14",
+        "content": "This Service restricts registration for children under 14. If we become aware that a child's data has been collected, we will delete it without delay."
+      },
+      "art8": {
+        "title": "8. Data Destruction",
+        "content": "• Electronic files: Permanently deleted using irrecoverable methods\n• Printouts: Shredded or incinerated\n• Destroyed promptly when retention period expires or purpose is fulfilled."
+      },
+      "art9": {
+        "title": "9. Advertising and Behavioral Data",
+        "content": "• iOS: Control personalized ads via App Tracking Transparency (ATT).\n• Android: Reset ad ID or opt out via Settings → Google → Ads.\n• Web: Disable cookies in browser settings (some features may be limited).\n• Cookies are used for authentication and user experience improvement."
+      },
+      "art10": {
+        "title": "10. Security Measures",
+        "content": "• Password encryption (bcrypt)\n• SSL/TLS communication encryption\n• Access control and two-factor authentication\n• Regular security audits and monitoring"
+      },
+      "art11": {
+        "title": "11. Privacy Officer",
+        "content": "Privacy Officer: TravelPlanner Operations Team\nEmail: support@travelplanner.app"
+      },
+      "art12": {
+        "title": "12. Policy Changes",
+        "content": "Changes will be notified at least 7 days before taking effect via in-app notices.\n\nThis policy is effective from March 1, 2025."
+      }
+    }
+  }
+}

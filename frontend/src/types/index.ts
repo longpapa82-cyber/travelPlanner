@@ -180,6 +180,9 @@ export type ProfileStackParamList = {
   ProfileMain: undefined;
   TwoFactorSettings: undefined;
   RevenueDashboard: undefined;
+  Help: undefined;
+  Terms: undefined;
+  PrivacyPolicy: undefined;
 };
 
 export type TripsStackParamList = {

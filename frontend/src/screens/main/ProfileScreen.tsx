@@ -405,19 +405,19 @@ const ProfileScreen = ({ navigation }: any) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('sections.support')}</Text>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('mailto:support@travelplanner.app')} accessibilityRole="link" accessibilityLabel={t('menu.help')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Help')} accessibilityRole="button" accessibilityLabel={t('menu.help')}>
           <Icon name="help-circle-outline" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.help')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://travelplanner.app/terms')} accessibilityRole="link" accessibilityLabel={t('menu.terms')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Terms')} accessibilityRole="button" accessibilityLabel={t('menu.terms')}>
           <Icon name="file-document-outline" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.terms')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://travelplanner.app/privacy')} accessibilityRole="link" accessibilityLabel={t('menu.privacy')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('PrivacyPolicy')} accessibilityRole="button" accessibilityLabel={t('menu.privacy')}>
           <Icon name="shield-check-outline" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.privacy')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />

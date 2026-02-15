@@ -5,6 +5,9 @@ import { ProfileStackParamList } from '../types';
 import ProfileScreen from '../screens/main/ProfileScreen';
 import TwoFactorSettingsScreen from '../screens/main/TwoFactorSettingsScreen';
 import RevenueDashboardScreen from '../screens/main/RevenueDashboardScreen';
+import HelpScreen from '../screens/main/HelpScreen';
+import TermsScreen from '../screens/main/TermsScreen';
+import PrivacyPolicyScreen from '../screens/main/PrivacyPolicyScreen';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 
@@ -13,6 +16,7 @@ const Stack = createNativeStackNavigator<ProfileStackParamList>();
 const ProfileNavigator = () => {
   const { theme } = useTheme();
   const { t } = useTranslation('profile');
+  const { t: tLegal } = useTranslation('legal');
 
   return (
     <Stack.Navigator
@@ -40,6 +44,21 @@ const ProfileNavigator = () => {
         name="RevenueDashboard"
         component={RevenueDashboardScreen}
         options={{ title: t('menu.revenue') }}
+      />
+      <Stack.Screen
+        name="Help"
+        component={HelpScreen}
+        options={{ title: tLegal('help.title') }}
+      />
+      <Stack.Screen
+        name="Terms"
+        component={TermsScreen}
+        options={{ title: tLegal('terms.title') }}
+      />
+      <Stack.Screen
+        name="PrivacyPolicy"
+        component={PrivacyPolicyScreen}
+        options={{ title: tLegal('privacy.title') }}
       />
     </Stack.Navigator>
   );
