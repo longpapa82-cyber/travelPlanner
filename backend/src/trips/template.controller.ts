@@ -10,6 +10,7 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { TemplateService } from './services/template.service';
+import { TemplateWarmupService } from './services/template-warmup.service';
 import { SeedTemplatesCommand } from './commands/seed-templates.command';
 
 @Controller('templates')
@@ -17,6 +18,7 @@ import { SeedTemplatesCommand } from './commands/seed-templates.command';
 export class TemplateController {
   constructor(
     private readonly templateService: TemplateService,
+    private readonly warmupService: TemplateWarmupService,
     private readonly seedCommand: SeedTemplatesCommand,
   ) {}
 
@@ -100,6 +102,33 @@ export class TemplateController {
   @Get('health')
   async getHealthDashboard() {
     return this.templateService.getHealthDashboard();
+  }
+
+  /**
+   * GET /api/templates/coverage
+   * Cache coverage report across priority tiers.
+   */
+  @Get('coverage')
+  async getCoverage() {
+    const coverage = await this.warmupService.getCoverage();
+    const status = this.warmupService.getStatus();
+    return { ...coverage, ...status };
+  }
+
+  /**
+   * POST /api/templates/warmup
+   * Manually trigger warmup seeding (admin only).
+   */
+  @Post('warmup')
+  @HttpCode(HttpStatus.OK)
+  async triggerWarmup() {
+    const status = this.warmupService.getStatus();
+    if (status.seedInProgress) {
+      return { message: 'Seed already in progress', ...status };
+    }
+    // Fire-and-forget warmup
+    this.warmupService.warmup().catch(() => {});
+    return { message: 'Warmup started in background' };
   }
 
   /**

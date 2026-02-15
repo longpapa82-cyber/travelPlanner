@@ -17,6 +17,7 @@ import { EmbeddingService } from './services/embedding.service';
 import { TimezoneService } from './services/timezone.service';
 import { WeatherService } from './services/weather.service';
 import { AnalyticsService } from './services/analytics.service';
+import { TemplateWarmupService } from './services/template-warmup.service';
 import { TripStatusScheduler } from './trip-status.scheduler';
 import { User } from '../users/entities/user.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
@@ -34,6 +35,7 @@ import { ImageService } from '../common/image.service';
     TemplateService,
     EmbeddingService,
     SeedTemplatesCommand,
+    TemplateWarmupService,
     TimezoneService,
     WeatherService,
     AnalyticsService,

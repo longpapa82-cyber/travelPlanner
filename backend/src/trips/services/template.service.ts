@@ -554,6 +554,34 @@ export class TemplateService {
   }
 
   /**
+   * Count templates matching specific destination/duration/language filter sets.
+   * Used by warmup service to measure cache coverage per tier.
+   */
+  async countByFilters(
+    normalizedDestinations: string[],
+    durations: number[],
+    languages: string[],
+  ): Promise<number> {
+    if (
+      normalizedDestinations.length === 0 ||
+      durations.length === 0 ||
+      languages.length === 0
+    ) {
+      return 0;
+    }
+
+    const result = await this.templateRepo.query(
+      `SELECT COUNT(*)::int AS count
+       FROM itinerary_templates
+       WHERE "destinationNormalized" = ANY($1)
+         AND "durationDays" = ANY($2)
+         AND language = ANY($3)`,
+      [normalizedDestinations, durations, languages],
+    );
+    return result[0]?.count ?? 0;
+  }
+
+  /**
    * Generate and store embedding for a specific template.
    * Uses raw SQL since TypeORM doesn't natively support vector type.
    */
