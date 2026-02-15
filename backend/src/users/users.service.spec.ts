@@ -89,7 +89,7 @@ describe('UsersService', () => {
       const result = await service.create(userData);
 
       // Assert
-      expect(bcrypt.hash).toHaveBeenCalledWith(userData.password, 10);
+      expect(bcrypt.hash).toHaveBeenCalledWith(userData.password, 12);
       expect(repository.create).toHaveBeenCalledWith({
         email: userData.email,
         passwordHash: hashedPassword,
@@ -139,7 +139,7 @@ describe('UsersService', () => {
       expect(result.passwordHash).toBeNull();
     });
 
-    it('should hash password with bcrypt salt rounds of 10', async () => {
+    it('should hash password with bcrypt salt rounds of 12', async () => {
       // Arrange
       const userData = {
         email: 'test@example.com',
@@ -156,7 +156,7 @@ describe('UsersService', () => {
       await service.create(userData);
 
       // Assert
-      expect(bcrypt.hash).toHaveBeenCalledWith('TestPassword', 10);
+      expect(bcrypt.hash).toHaveBeenCalledWith('TestPassword', 12);
     });
   });
 

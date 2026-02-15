@@ -45,6 +45,12 @@ async function bootstrap() {
       crossOriginEmbedderPolicy: false, // Allow cross-origin images
       crossOriginResourcePolicy: { policy: 'cross-origin' }, // Allow CDN assets
       crossOriginOpenerPolicy: false, // Allow OAuth redirect flow
+      strictTransportSecurity: {
+        maxAge: 31536000, // 1 year
+        includeSubDomains: true,
+        preload: true,
+      },
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     }),
   );
 
@@ -67,10 +73,17 @@ async function bootstrap() {
     defaultVersion: VERSION_NEUTRAL,
   });
 
-  // Enable CORS
+  // Enable CORS — no wildcard fallback in production
+  const corsOrigin = process.env.CORS_ORIGIN?.split(',');
   app.enableCors({
-    origin: process.env.CORS_ORIGIN?.split(',') || '*',
+    origin: corsOrigin || [
+      'http://localhost:8081',
+      'http://localhost:19006',
+      'http://localhost:3000',
+    ],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language', 'X-Request-ID'],
   });
 
   // Graceful shutdown — drain connections on SIGTERM/SIGINT

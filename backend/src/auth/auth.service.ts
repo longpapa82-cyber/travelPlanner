@@ -194,6 +194,23 @@ export class AuthService {
     }
   }
 
+  async logout(refreshToken: string): Promise<{ message: string }> {
+    try {
+      const payload = await this.jwtService.verifyAsync<
+        TokenPayload & { jti?: string }
+      >(refreshToken, {
+        secret: this.configService.get<string>('jwt.refreshSecret'),
+      });
+
+      if (payload.jti) {
+        await this.cacheManager.del(`refresh:${payload.jti}`);
+      }
+    } catch {
+      // Token already expired or invalid — still succeed logout
+    }
+    return { message: 'Logged out' };
+  }
+
   async getProfile(userId: string) {
     const user = await this.usersService.findById(userId);
     return {

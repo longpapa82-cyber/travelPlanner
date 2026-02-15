@@ -209,12 +209,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       trackEvent('logout');
       flushEvents();
 
-      // Remove push token from backend before clearing auth
-      try {
-        await apiService.removePushToken();
-      } catch (_) {
-        // best-effort — don't block logout
-      }
+      // Invalidate refresh token on server + remove push token (best-effort)
+      const storedRefresh = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+      await Promise.allSettled([
+        storedRefresh ? apiService.logout(storedRefresh) : Promise.resolve(),
+        apiService.removePushToken(),
+      ]);
 
       // Clear tokens and cached data
       await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);

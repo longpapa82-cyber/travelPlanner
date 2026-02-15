@@ -29,7 +29,7 @@ export class UsersService {
     const user = this.userRepository.create({
       email: data.email,
       passwordHash: data.password
-        ? await bcrypt.hash(data.password, 10)
+        ? await bcrypt.hash(data.password, 12)
         : undefined,
       name: data.name,
       provider: data.provider,
@@ -103,7 +103,7 @@ export class UsersService {
       throw new BadRequestException(t('password.currentInvalid', lang));
     }
 
-    const newHash = await bcrypt.hash(newPassword, 10);
+    const newHash = await bcrypt.hash(newPassword, 12);
     await this.userRepository.update(id, { passwordHash: newHash });
 
     return { message: t('password.changed', lang) };
@@ -209,7 +209,7 @@ export class UsersService {
       throw new BadRequestException(t('password.reset.expired', lang));
     }
 
-    const newHash = await bcrypt.hash(newPassword, 10);
+    const newHash = await bcrypt.hash(newPassword, 12);
     await this.userRepository.update(user.id, {
       passwordHash: newHash,
       passwordResetToken: undefined,

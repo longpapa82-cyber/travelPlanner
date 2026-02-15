@@ -54,8 +54,15 @@ export class AuthController {
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ short: { ttl: 60000, limit: 10 } })
   async refresh(@Body() refreshTokenDto: RefreshTokenDto) {
     return this.authService.refreshToken(refreshTokenDto.refreshToken);
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.logout(refreshTokenDto.refreshToken);
   }
 
   @Get('me')
@@ -122,6 +129,7 @@ export class AuthController {
   // Two-Factor Authentication
   @Post('2fa/setup')
   @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 3 } })
   async setupTwoFactor(@CurrentUser('userId') userId: string) {
     return this.authService.setupTwoFactor(userId);
   }
@@ -129,6 +137,7 @@ export class AuthController {
   @Post('2fa/enable')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 3 } })
   async enableTwoFactor(
     @CurrentUser('userId') userId: string,
     @Body() dto: VerifyTwoFactorDto,
@@ -139,6 +148,7 @@ export class AuthController {
   @Post('2fa/disable')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 3 } })
   async disableTwoFactor(
     @CurrentUser('userId') userId: string,
     @Body() dto: VerifyTwoFactorDto,

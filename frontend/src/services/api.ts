@@ -145,6 +145,10 @@ class ApiService {
     return response.data;
   }
 
+  async logout(refreshToken: string) {
+    return this.api.post('/auth/logout', { refreshToken });
+  }
+
   async updateProfile(data: { name?: string; profileImage?: string }) {
     const response = await this.api.patch('/users/me', data);
     return response.data;
