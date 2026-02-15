@@ -13,6 +13,7 @@ import { ItineraryTemplate } from './entities/itinerary-template.entity';
 import { Collaborator } from './entities/collaborator.entity';
 import { AIService } from './services/ai.service';
 import { TemplateService } from './services/template.service';
+import { EmbeddingService } from './services/embedding.service';
 import { TimezoneService } from './services/timezone.service';
 import { WeatherService } from './services/weather.service';
 import { AnalyticsService } from './services/analytics.service';
@@ -31,6 +32,7 @@ import { ImageService } from '../common/image.service';
     TripsService,
     AIService,
     TemplateService,
+    EmbeddingService,
     SeedTemplatesCommand,
     TimezoneService,
     WeatherService,

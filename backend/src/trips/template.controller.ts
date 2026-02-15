@@ -91,4 +91,16 @@ export class TemplateController {
       })),
     };
   }
+
+  /**
+   * POST /api/templates/backfill-embeddings
+   * Generate vector embeddings for templates that don't have them yet.
+   */
+  @Post('backfill-embeddings')
+  @HttpCode(HttpStatus.OK)
+  async backfillEmbeddings(@Query('batch') batch?: string) {
+    const batchSize = batch ? parseInt(batch, 10) : 50;
+    const count = await this.templateService.backfillEmbeddings(batchSize);
+    return { backfilled: count };
+  }
 }
