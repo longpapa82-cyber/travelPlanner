@@ -68,7 +68,7 @@ const getSlides = (t: TFunction): OnboardingSlide[] => [
 export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }) => {
   const { isDark } = useTheme();
   const { t } = useTranslation('auth');
-  const { width: SCREEN_WIDTH } = useWindowDimensions();
+  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -93,7 +93,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
   }, [navigation]);
 
   const renderSlide = ({ item }: { item: OnboardingSlide }) => (
-    <View style={[styles.slide, { width: SCREEN_WIDTH }]}>
+    <View style={[styles.slide, { width: SCREEN_WIDTH, height: SCREEN_HEIGHT }]}>
       <LinearGradient colors={item.gradient} style={styles.slideGradient}>
         <View style={styles.slideContent}>
           <View style={styles.iconContainer}>
@@ -272,11 +272,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom: 160,
   },
   slideContent: {
     alignItems: 'center',
     paddingHorizontal: 40,
-    paddingBottom: 40,
   },
   iconContainer: {
     width: 140,

@@ -9,7 +9,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { randomUUID } from 'crypto';
+import { randomUUID, randomBytes } from 'crypto';
 import { generateSecret, generateURI, verifySync } from 'otplib';
 import * as QRCode from 'qrcode';
 import { UsersService } from '../users/users.service';
@@ -149,17 +149,32 @@ export class AuthService {
   async refreshToken(refreshToken: string): Promise<AuthResponse> {
     try {
       // Verify refresh token with refresh secret
-      const payload = await this.jwtService.verifyAsync<TokenPayload>(
-        refreshToken,
-        {
-          secret: this.configService.get<string>('jwt.refreshSecret'),
-        },
-      );
+      const payload = await this.jwtService.verifyAsync<
+        TokenPayload & { jti?: string }
+      >(refreshToken, {
+        secret: this.configService.get<string>('jwt.refreshSecret'),
+      });
+
+      // Check if refresh token has been revoked (rotation check)
+      if (payload.jti) {
+        const stored = await this.cacheManager.get(
+          `refresh:${payload.jti}`,
+        );
+        if (!stored) {
+          // Token was already used or revoked — possible token theft
+          this.logger.warn(
+            `Revoked refresh token reuse detected for user ${payload.sub}`,
+          );
+          throw new UnauthorizedException('Refresh token revoked');
+        }
+        // Invalidate old refresh token (one-time use)
+        await this.cacheManager.del(`refresh:${payload.jti}`);
+      }
 
       // Get user to include in response
       const user = await this.usersService.findById(payload.sub);
 
-      // Generate new tokens
+      // Generate new tokens (with new jti)
       const tokens = await this.generateTokens(payload.sub, payload.email);
 
       return {
@@ -173,7 +188,8 @@ export class AuthService {
         },
         ...tokens,
       };
-    } catch {
+    } catch (error) {
+      if (error instanceof UnauthorizedException) throw error;
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
@@ -378,12 +394,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid 2FA code');
     }
 
-    // Generate backup codes
+    // Generate backup codes using CSPRNG
     const backupCodes: string[] = [];
     for (let i = 0; i < 8; i++) {
-      backupCodes.push(
-        Math.random().toString(36).substring(2, 10).toUpperCase(),
-      );
+      backupCodes.push(randomBytes(5).toString('hex').toUpperCase());
     }
 
     await this.usersService.enableTwoFactor(userId, backupCodes);
@@ -499,9 +513,7 @@ export class AuthService {
 
     const backupCodes: string[] = [];
     for (let i = 0; i < 8; i++) {
-      backupCodes.push(
-        Math.random().toString(36).substring(2, 10).toUpperCase(),
-      );
+      backupCodes.push(randomBytes(5).toString('hex').toUpperCase());
     }
 
     await this.usersService.updateBackupCodes(userId, backupCodes);
@@ -512,23 +524,43 @@ export class AuthService {
 
   private async generateTokens(userId: string, email: string) {
     const payload: TokenPayload = { sub: userId, email };
+    const jti = randomUUID();
+
+    const refreshExpiresIn =
+      this.configService.get<string>('jwt.refreshExpiresIn') || '30d';
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload as any, {
         secret: this.configService.get<string>('jwt.secret'),
         expiresIn: this.configService.get<string>('jwt.expiresIn') as any,
       }),
-      this.jwtService.signAsync(payload as any, {
+      this.jwtService.signAsync({ ...payload, jti } as any, {
         secret: this.configService.get<string>('jwt.refreshSecret'),
-        expiresIn: this.configService.get<string>(
-          'jwt.refreshExpiresIn',
-        ) as any,
+        expiresIn: refreshExpiresIn as any,
       }),
     ]);
+
+    // Store refresh token jti in Redis for rotation tracking
+    const ttlMs = this.parseDurationToMs(refreshExpiresIn);
+    await this.cacheManager.set(`refresh:${jti}`, userId, ttlMs);
 
     return {
       accessToken,
       refreshToken,
     };
+  }
+
+  private parseDurationToMs(duration: string): number {
+    const match = duration.match(/^(\d+)([smhd])$/);
+    if (!match) return 30 * 24 * 60 * 60 * 1000; // default 30d
+    const value = parseInt(match[1], 10);
+    const unit = match[2];
+    const multipliers: Record<string, number> = {
+      s: 1000,
+      m: 60 * 1000,
+      h: 60 * 60 * 1000,
+      d: 24 * 60 * 60 * 1000,
+    };
+    return value * (multipliers[unit] || multipliers.d);
   }
 }

@@ -175,7 +175,7 @@ describe('AuthService', () => {
       );
       expect(jwtService.signAsync).toHaveBeenNthCalledWith(
         2,
-        { sub: mockUser.id, email: mockUser.email },
+        expect.objectContaining({ sub: mockUser.id, email: mockUser.email }),
         { secret: 'test-refresh-secret', expiresIn: '7d' },
       );
     });
@@ -678,7 +678,7 @@ describe('AuthService', () => {
         expect.objectContaining({ secret: 'test-secret' }),
       );
       expect(jwtService.signAsync).toHaveBeenCalledWith(
-        expectedPayload,
+        expect.objectContaining(expectedPayload),
         expect.objectContaining({ secret: 'test-refresh-secret' }),
       );
     });
