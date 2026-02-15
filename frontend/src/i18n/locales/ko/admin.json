@@ -1,0 +1,55 @@
+{
+  "title": "서비스 관리자",
+  "menu": {
+    "users": "이용자 현황",
+    "errorLogs": "오류 로그",
+    "revenue": "수익 대시보드"
+  },
+  "dashboard": {
+    "subtitle": "서비스 운영 관리 도구"
+  },
+  "users": {
+    "title": "이용자 현황",
+    "totalUsers": "전체 회원",
+    "todaySignups": "오늘 가입",
+    "todayActive": "오늘 접속",
+    "weeklyActive": "주간 활성",
+    "people": "명",
+    "signupTrend": "최근 30일 가입 추이",
+    "providerBreakdown": "가입 방식",
+    "memberList": "회원 목록",
+    "searchPlaceholder": "이름 또는 이메일 검색",
+    "allProviders": "전체",
+    "lastLogin": "최근 접속",
+    "signupDate": "가입일",
+    "trips": "여행",
+    "never": "미접속",
+    "noUsers": "검색 결과가 없습니다",
+    "loadMore": "더 보기"
+  },
+  "errors": {
+    "title": "오류 로그",
+    "todayErrors": "오늘 오류",
+    "weeklyErrors": "주간 오류",
+    "unresolved": "미해결",
+    "affectedUsers": "영향 사용자",
+    "count": "건",
+    "people": "명",
+    "hourlyTrend": "최근 24시간 오류 추이",
+    "topErrors": "주요 오류 TOP 10",
+    "errorList": "오류 목록",
+    "allSeverity": "전체",
+    "error": "에러",
+    "warning": "경고",
+    "fatal": "치명적",
+    "unresolvedOnly": "미해결만",
+    "resolve": "해결",
+    "resolved": "해결됨",
+    "screen": "화면",
+    "device": "기기",
+    "version": "버전",
+    "noErrors": "오류가 없습니다",
+    "loadMore": "더 보기",
+    "occurrences": "회"
+  }
+}

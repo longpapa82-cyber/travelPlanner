@@ -216,7 +216,7 @@ const HelpScreen: React.FC<Props> = () => {
               accessibilityRole="button"
               accessibilityLabel={t('help.contact.sendEmail')}
             >
-              <Icon name="email-send-outline" size={20} color="#fff" />
+              <Icon name="send-outline" size={20} color="#fff" />
               <Text style={styles.contactButtonText}>{t('help.contact.sendEmail')}</Text>
             </TouchableOpacity>
           </View>

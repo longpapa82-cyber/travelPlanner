@@ -4,7 +4,8 @@
   "sections": {
     "account": "계정 정보",
     "settings": "앱 설정",
-    "support": "지원"
+    "support": "지원",
+    "admin": "서비스 관리"
   },
   "menu": {
     "editProfile": "프로필 수정",
@@ -20,7 +21,8 @@
     "help": "도움말",
     "terms": "이용약관",
     "privacy": "개인정보 처리방침",
-    "revenue": "수익 대시보드"
+    "revenue": "수익 대시보드",
+    "admin": "서비스 관리자"
   },
   "editProfile": {
     "title": "프로필 수정",

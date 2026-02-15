@@ -4,7 +4,8 @@
   "sections": {
     "account": "Account",
     "settings": "Settings",
-    "support": "Support"
+    "support": "Support",
+    "admin": "Admin"
   },
   "menu": {
     "editProfile": "Edit Profile",
@@ -20,7 +21,8 @@
     "help": "Help",
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
-    "revenue": "Revenue Dashboard"
+    "revenue": "Revenue Dashboard",
+    "admin": "Admin Panel"
   },
   "editProfile": {
     "title": "Edit Profile",

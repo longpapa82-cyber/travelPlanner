@@ -187,6 +187,8 @@ const ProfileScreen = ({ navigation }: any) => {
   };
 
   const isSocialAccount = user?.provider && user.provider !== 'email';
+  const ADMIN_EMAILS = ['a090723@naver.com', 'longpapa82@gmail.com'];
+  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email);
 
   const styles = createStyles(theme, isDark);
 
@@ -352,6 +354,7 @@ const ProfileScreen = ({ navigation }: any) => {
           </TouchableOpacity>
         )}
 
+        {/* 2단계 인증 — 추후 제공 예정
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => navigation.navigate('TwoFactorSettings')}
@@ -365,17 +368,7 @@ const ProfileScreen = ({ navigation }: any) => {
           </Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('RevenueDashboard')}
-          accessibilityRole="button"
-          accessibilityLabel={t('menu.revenue')}
-        >
-          <Icon name="chart-line" size={24} color={theme.colors.textSecondary} />
-          <Text style={styles.menuText}>{t('menu.revenue')}</Text>
-          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
-        </TouchableOpacity>
+        */}
       </View>
 
       <View style={styles.section}>
@@ -401,6 +394,17 @@ const ProfileScreen = ({ navigation }: any) => {
           />
         </View>
       </View>
+
+      {isAdmin && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('sections.admin')}</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdminDashboard')} accessibilityRole="button" accessibilityLabel={t('menu.admin')}>
+            <Icon name="shield-crown-outline" size={24} color={theme.colors.primary} />
+            <Text style={styles.menuText}>{t('menu.admin')}</Text>
+            <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+          </TouchableOpacity>
+        </View>
+      )}
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('sections.support')}</Text>

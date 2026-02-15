@@ -127,6 +127,9 @@ export class AuthService {
       return { requiresTwoFactor: true, tempToken };
     }
 
+    // Update last login timestamp
+    this.usersService.update(user.id, { lastLoginAt: new Date() }).catch(() => {});
+
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email!);
 
@@ -241,6 +244,9 @@ export class AuthService {
         isEmailVerified: true,
       });
     }
+
+    // Update last login timestamp
+    this.usersService.update(user.id, { lastLoginAt: new Date() }).catch(() => {});
 
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email || '');

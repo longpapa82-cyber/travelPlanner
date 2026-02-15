@@ -1,0 +1,55 @@
+{
+  "title": "管理パネル",
+  "menu": {
+    "users": "ユーザー管理",
+    "errorLogs": "エラーログ",
+    "revenue": "収益ダッシュボード"
+  },
+  "dashboard": {
+    "subtitle": "サービス運用管理ツール"
+  },
+  "users": {
+    "title": "ユーザー管理",
+    "totalUsers": "全会員",
+    "todaySignups": "本日登録",
+    "todayActive": "本日アクティブ",
+    "weeklyActive": "週間アクティブ",
+    "people": "人",
+    "signupTrend": "過去30日間の登録推移",
+    "providerBreakdown": "登録方法",
+    "memberList": "会員リスト",
+    "searchPlaceholder": "名前またはメールで検索",
+    "allProviders": "すべて",
+    "lastLogin": "最終ログイン",
+    "signupDate": "登録日",
+    "trips": "旅行",
+    "never": "未ログイン",
+    "noUsers": "ユーザーが見つかりません",
+    "loadMore": "もっと見る"
+  },
+  "errors": {
+    "title": "エラーログ",
+    "todayErrors": "本日",
+    "weeklyErrors": "今週",
+    "unresolved": "未解決",
+    "affectedUsers": "影響ユーザー",
+    "count": "件",
+    "people": "人",
+    "hourlyTrend": "過去24時間のエラー推移",
+    "topErrors": "主要エラーTOP 10",
+    "errorList": "エラーリスト",
+    "allSeverity": "すべて",
+    "error": "エラー",
+    "warning": "警告",
+    "fatal": "致命的",
+    "unresolvedOnly": "未解決のみ",
+    "resolve": "解決",
+    "resolved": "解決済み",
+    "screen": "画面",
+    "device": "デバイス",
+    "version": "バージョン",
+    "noErrors": "エラーはありません",
+    "loadMore": "もっと見る",
+    "occurrences": "回"
+  }
+}

@@ -88,6 +88,9 @@ export class User {
     interests?: string[];
   };
 
+  @Column({ type: 'timestamp', nullable: true })
+  lastLoginAt?: Date;
+
   @Column({ default: true })
   isActive: boolean;
 

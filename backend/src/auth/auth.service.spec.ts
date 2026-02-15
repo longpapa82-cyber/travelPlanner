@@ -42,6 +42,7 @@ describe('AuthService', () => {
       validatePassword: jest.fn(),
       findById: jest.fn(),
       findByProviderAndId: jest.fn(),
+      update: jest.fn().mockResolvedValue(undefined),
       generateEmailVerificationToken: jest
         .fn()
         .mockResolvedValue('mock-verification-token'),

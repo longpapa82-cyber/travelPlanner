@@ -11,6 +11,7 @@ import ko_trips from './locales/ko/trips.json';
 import ko_profile from './locales/ko/profile.json';
 import ko_components from './locales/ko/components.json';
 import ko_legal from './locales/ko/legal.json';
+import ko_admin from './locales/ko/admin.json';
 
 import en_common from './locales/en/common.json';
 import en_auth from './locales/en/auth.json';
@@ -19,6 +20,7 @@ import en_trips from './locales/en/trips.json';
 import en_profile from './locales/en/profile.json';
 import en_components from './locales/en/components.json';
 import en_legal from './locales/en/legal.json';
+import en_admin from './locales/en/admin.json';
 
 import ja_common from './locales/ja/common.json';
 import ja_auth from './locales/ja/auth.json';
@@ -27,6 +29,7 @@ import ja_trips from './locales/ja/trips.json';
 import ja_profile from './locales/ja/profile.json';
 import ja_components from './locales/ja/components.json';
 import ja_legal from './locales/ja/legal.json';
+import ja_admin from './locales/ja/admin.json';
 
 export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
@@ -46,6 +49,7 @@ const resources = {
     profile: ko_profile,
     components: ko_components,
     legal: ko_legal,
+    admin: ko_admin,
   },
   en: {
     common: en_common,
@@ -55,6 +59,7 @@ const resources = {
     profile: en_profile,
     components: en_components,
     legal: en_legal,
+    admin: en_admin,
   },
   ja: {
     common: ja_common,
@@ -64,6 +69,7 @@ const resources = {
     profile: ja_profile,
     components: ja_components,
     legal: ja_legal,
+    admin: ja_admin,
   },
 };
 
@@ -92,7 +98,7 @@ export async function initI18n(): Promise<void> {
     resources,
     lng: language,
     fallbackLng: 'ko',
-    ns: ['common', 'auth', 'home', 'trips', 'profile', 'components', 'legal'],
+    ns: ['common', 'auth', 'home', 'trips', 'profile', 'components', 'legal', 'admin'],
     defaultNS: 'common',
     interpolation: {
       escapeValue: false,

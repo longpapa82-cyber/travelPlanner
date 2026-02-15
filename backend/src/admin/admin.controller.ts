@@ -1,0 +1,93 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Body,
+  Query,
+  Param,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AdminGuard } from './admin.guard';
+import { AdminService } from './admin.service';
+
+// Admin-only endpoints
+@Controller('api/admin')
+@UseGuards(JwtAuthGuard, AdminGuard)
+export class AdminController {
+  constructor(private readonly adminService: AdminService) {}
+
+  @Get('users/stats')
+  getUserStats() {
+    return this.adminService.getUserStats();
+  }
+
+  @Get('users')
+  getUsers(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('provider') provider?: string,
+  ) {
+    return this.adminService.getUsers(
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 20,
+      search,
+      provider,
+    );
+  }
+
+  @Get('error-logs/stats')
+  getErrorLogStats() {
+    return this.adminService.getErrorLogStats();
+  }
+
+  @Get('error-logs')
+  getErrorLogs(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('severity') severity?: string,
+    @Query('resolved') resolved?: string,
+  ) {
+    return this.adminService.getErrorLogs(
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 20,
+      severity,
+      resolved !== undefined ? resolved === 'true' : undefined,
+    );
+  }
+
+  @Patch('error-logs/:id/resolve')
+  resolveErrorLog(@Param('id') id: string) {
+    return this.adminService.resolveErrorLog(id);
+  }
+}
+
+// Public error reporting endpoint (JWT only, no admin check)
+@Controller('api/error-logs')
+@UseGuards(JwtAuthGuard)
+export class ErrorLogController {
+  constructor(private readonly adminService: AdminService) {}
+
+  @Post()
+  createErrorLog(
+    @Req() req: any,
+    @Body()
+    body: {
+      errorMessage: string;
+      stackTrace?: string;
+      screen?: string;
+      severity?: 'error' | 'warning' | 'fatal';
+      deviceOS?: string;
+      appVersion?: string;
+    },
+  ) {
+    return this.adminService.createErrorLog({
+      ...body,
+      userId: req.user?.id,
+      userEmail: req.user?.email,
+    });
+  }
+}

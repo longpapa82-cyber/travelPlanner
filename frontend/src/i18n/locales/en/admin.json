@@ -1,0 +1,55 @@
+{
+  "title": "Admin Panel",
+  "menu": {
+    "users": "User Management",
+    "errorLogs": "Error Logs",
+    "revenue": "Revenue Dashboard"
+  },
+  "dashboard": {
+    "subtitle": "Service management tools"
+  },
+  "users": {
+    "title": "User Management",
+    "totalUsers": "Total Users",
+    "todaySignups": "Today's Signups",
+    "todayActive": "Active Today",
+    "weeklyActive": "Weekly Active",
+    "people": "",
+    "signupTrend": "Signups (Last 30 Days)",
+    "providerBreakdown": "Sign-up Method",
+    "memberList": "Member List",
+    "searchPlaceholder": "Search name or email",
+    "allProviders": "All",
+    "lastLogin": "Last Login",
+    "signupDate": "Joined",
+    "trips": "Trips",
+    "never": "Never",
+    "noUsers": "No users found",
+    "loadMore": "Load More"
+  },
+  "errors": {
+    "title": "Error Logs",
+    "todayErrors": "Today",
+    "weeklyErrors": "This Week",
+    "unresolved": "Unresolved",
+    "affectedUsers": "Affected Users",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "Errors (Last 24h)",
+    "topErrors": "Top 10 Errors",
+    "errorList": "Error List",
+    "allSeverity": "All",
+    "error": "Error",
+    "warning": "Warning",
+    "fatal": "Fatal",
+    "unresolvedOnly": "Unresolved Only",
+    "resolve": "Resolve",
+    "resolved": "Resolved",
+    "screen": "Screen",
+    "device": "Device",
+    "version": "Version",
+    "noErrors": "No errors found",
+    "loadMore": "Load More",
+    "occurrences": "times"
+  }
+}

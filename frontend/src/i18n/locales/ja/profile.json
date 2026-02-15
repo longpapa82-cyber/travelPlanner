@@ -4,7 +4,8 @@
   "sections": {
     "account": "アカウント情報",
     "settings": "アプリ設定",
-    "support": "サポート"
+    "support": "サポート",
+    "admin": "管理"
   },
   "menu": {
     "editProfile": "プロフィール編集",
@@ -20,7 +21,8 @@
     "help": "ヘルプ",
     "terms": "利用規約",
     "privacy": "プライバシーポリシー",
-    "revenue": "収益ダッシュボード"
+    "revenue": "収益ダッシュボード",
+    "admin": "サービス管理"
   },
   "editProfile": {
     "title": "プロフィール編集",

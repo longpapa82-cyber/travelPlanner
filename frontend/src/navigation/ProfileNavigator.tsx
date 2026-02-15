@@ -5,6 +5,9 @@ import { ProfileStackParamList } from '../types';
 import ProfileScreen from '../screens/main/ProfileScreen';
 import TwoFactorSettingsScreen from '../screens/main/TwoFactorSettingsScreen';
 import RevenueDashboardScreen from '../screens/main/RevenueDashboardScreen';
+import AdminDashboardScreen from '../screens/main/AdminDashboardScreen';
+import UserManagementScreen from '../screens/main/UserManagementScreen';
+import ErrorLogScreen from '../screens/main/ErrorLogScreen';
 import HelpScreen from '../screens/main/HelpScreen';
 import TermsScreen from '../screens/main/TermsScreen';
 import PrivacyPolicyScreen from '../screens/main/PrivacyPolicyScreen';
@@ -16,6 +19,7 @@ const Stack = createNativeStackNavigator<ProfileStackParamList>();
 const ProfileNavigator = () => {
   const { theme } = useTheme();
   const { t } = useTranslation('profile');
+  const { t: tAdmin } = useTranslation('admin');
   const { t: tLegal } = useTranslation('legal');
 
   return (
@@ -44,6 +48,21 @@ const ProfileNavigator = () => {
         name="RevenueDashboard"
         component={RevenueDashboardScreen}
         options={{ title: t('menu.revenue') }}
+      />
+      <Stack.Screen
+        name="AdminDashboard"
+        component={AdminDashboardScreen}
+        options={{ title: tAdmin('title') }}
+      />
+      <Stack.Screen
+        name="UserManagement"
+        component={UserManagementScreen}
+        options={{ title: tAdmin('menu.users') }}
+      />
+      <Stack.Screen
+        name="ErrorLog"
+        component={ErrorLogScreen}
+        options={{ title: tAdmin('menu.errorLogs') }}
       />
       <Stack.Screen
         name="Help"

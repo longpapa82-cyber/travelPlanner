@@ -537,6 +537,37 @@ class ApiService {
     });
     return response.data;
   }
+  // ─── Admin API ─────────────────────────────────
+
+  async getAdminUserStats() {
+    const response = await this.api.get('/admin/users/stats');
+    return response.data;
+  }
+
+  async getAdminUsers(params: { page?: number; limit?: number; search?: string; provider?: string }) {
+    const response = await this.api.get('/admin/users', { params });
+    return response.data;
+  }
+
+  async getAdminErrorLogStats() {
+    const response = await this.api.get('/admin/error-logs/stats');
+    return response.data;
+  }
+
+  async getAdminErrorLogs(params: { page?: number; limit?: number; severity?: string; resolved?: boolean }) {
+    const response = await this.api.get('/admin/error-logs', { params });
+    return response.data;
+  }
+
+  async resolveErrorLog(id: string) {
+    const response = await this.api.patch(`/admin/error-logs/${id}/resolve`);
+    return response.data;
+  }
+
+  async reportError(data: { errorMessage: string; stackTrace?: string; screen?: string; severity?: string; deviceOS?: string; appVersion?: string }) {
+    const response = await this.api.post('/error-logs', data);
+    return response.data;
+  }
 }
 
 export default new ApiService();

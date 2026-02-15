@@ -180,6 +180,9 @@ export type ProfileStackParamList = {
   ProfileMain: undefined;
   TwoFactorSettings: undefined;
   RevenueDashboard: undefined;
+  AdminDashboard: undefined;
+  UserManagement: undefined;
+  ErrorLog: undefined;
   Help: undefined;
   Terms: undefined;
   PrivacyPolicy: undefined;
