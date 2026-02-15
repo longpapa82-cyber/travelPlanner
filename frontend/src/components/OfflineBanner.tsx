@@ -1,64 +1,52 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AppState, View, Text, StyleSheet, Platform } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../constants/theme';
-
-const PING_URL = (process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api') + '/health';
+import { useOfflineSync } from '../hooks/useOfflineSync';
 
 export const OfflineBanner: React.FC = () => {
   const { t } = useTranslation('common');
-  const [isOffline, setIsOffline] = useState(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { isOnline, pendingCount, isSyncing, syncNow } = useOfflineSync();
 
-  useEffect(() => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      // Web: use native online/offline events
-      const handleOnline = () => setIsOffline(false);
-      const handleOffline = () => setIsOffline(true);
-      setIsOffline(!navigator.onLine);
-      window.addEventListener('online', handleOnline);
-      window.addEventListener('offline', handleOffline);
-      return () => {
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
-      };
-    }
+  // Online with no pending — show nothing
+  if (isOnline && pendingCount === 0 && !isSyncing) return null;
 
-    // Native: periodic lightweight ping
-    const checkNetwork = async () => {
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
-        await fetch(PING_URL, { method: 'HEAD', signal: controller.signal });
-        clearTimeout(timeout);
-        setIsOffline(false);
-      } catch {
-        setIsOffline(true);
-      }
-    };
+  // Online + syncing
+  if (isOnline && isSyncing) {
+    return (
+      <View style={[styles.container, styles.syncingContainer]}>
+        <ActivityIndicator size="small" color="#fff" />
+        <Text style={styles.text}>{t('offlineSyncing')}</Text>
+      </View>
+    );
+  }
 
-    checkNetwork();
-    intervalRef.current = setInterval(checkNetwork, 15000);
+  // Online + just synced (pending went to 0)
+  if (isOnline && pendingCount === 0) {
+    return null;
+  }
 
-    // Re-check when app comes to foreground
-    const sub = AppState.addEventListener('change', (state) => {
-      if (state === 'active') checkNetwork();
-    });
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      sub.remove();
-    };
-  }, []);
-
-  if (!isOffline) return null;
-
+  // Offline
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={syncNow}
+      activeOpacity={0.8}
+      disabled={isSyncing}
+    >
       <Icon name="wifi-off" size={16} color="#fff" />
-      <Text style={styles.text}>{t('offlineMode')}</Text>
-    </View>
+      <Text style={styles.text}>
+        {pendingCount > 0
+          ? t('offlinePending', { count: pendingCount })
+          : t('offlineMode')}
+      </Text>
+      {pendingCount > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{pendingCount}</Text>
+        </View>
+      )}
+    </TouchableOpacity>
   );
 };
 
@@ -72,9 +60,26 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
   },
+  syncingContainer: {
+    backgroundColor: colors.primary[600],
+  },
   text: {
     color: '#fff',
     fontSize: 13,
     fontWeight: '500',
+  },
+  badge: {
+    backgroundColor: colors.error.main,
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: '700',
   },
 });

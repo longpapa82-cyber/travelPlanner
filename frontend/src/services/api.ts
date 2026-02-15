@@ -3,6 +3,15 @@ import { API_URL, STORAGE_KEYS } from '../constants/config';
 import { secureStorage } from '../utils/storage';
 import { getCurrentLanguage } from '../i18n';
 import { offlineCache } from './offlineCache';
+import { offlineMutationQueue } from './offlineMutationQueue';
+
+function isNetworkError(error: any): boolean {
+  if (!error) return false;
+  if (error.code === 'ERR_NETWORK' || error.code === 'ECONNABORTED') return true;
+  if (error.message?.includes('Network Error')) return true;
+  if (!error.response && error.request) return true;
+  return false;
+}
 
 class ApiService {
   private api: AxiosInstance;
@@ -141,6 +150,11 @@ class ApiService {
     return response.data;
   }
 
+  async updateTravelPreferences(preferences: { budget?: string; travelStyle?: string; interests?: string[] }) {
+    const response = await this.api.patch('/users/me/travel-preferences', preferences);
+    return response.data;
+  }
+
   async changePassword(currentPassword: string, newPassword: string) {
     const response = await this.api.post('/users/me/password', {
       currentPassword,
@@ -234,8 +248,28 @@ class ApiService {
   }
 
   async updateTrip(id: string, data: any) {
-    const response = await this.api.patch(`/trips/${id}`, data);
-    return response.data;
+    try {
+      const response = await this.api.patch(`/trips/${id}`, data);
+      return response.data;
+    } catch (error) {
+      if (isNetworkError(error)) {
+        await offlineMutationQueue.enqueue({
+          method: 'PATCH',
+          url: `/trips/${id}`,
+          data,
+          maxRetries: 3,
+        });
+        // Update local cache optimistically
+        const cached = await offlineCache.get(`trip:${id}`);
+        if (cached) {
+          const updated = { ...(cached as any), ...data, _offline: true };
+          await offlineCache.set(`trip:${id}`, updated);
+          return updated;
+        }
+        return { ...data, id, _offline: true };
+      }
+      throw error;
+    }
   }
 
   async deleteTrip(id: string) {
@@ -253,11 +287,24 @@ class ApiService {
 
   // Activity Methods
   async addActivity(tripId: string, itineraryId: string, activityData: any) {
-    const response = await this.api.post(
-      `/trips/${tripId}/itineraries/${itineraryId}/activities`,
-      activityData
-    );
-    return response.data;
+    try {
+      const response = await this.api.post(
+        `/trips/${tripId}/itineraries/${itineraryId}/activities`,
+        activityData
+      );
+      return response.data;
+    } catch (error) {
+      if (isNetworkError(error)) {
+        await offlineMutationQueue.enqueue({
+          method: 'POST',
+          url: `/trips/${tripId}/itineraries/${itineraryId}/activities`,
+          data: activityData,
+          maxRetries: 3,
+        });
+        return { ...activityData, _offline: true };
+      }
+      throw error;
+    }
   }
 
   async updateActivity(
@@ -266,11 +313,24 @@ class ApiService {
     activityIndex: number,
     activityData: any
   ) {
-    const response = await this.api.patch(
-      `/trips/${tripId}/itineraries/${itineraryId}/activities/${activityIndex}`,
-      activityData
-    );
-    return response.data;
+    try {
+      const response = await this.api.patch(
+        `/trips/${tripId}/itineraries/${itineraryId}/activities/${activityIndex}`,
+        activityData
+      );
+      return response.data;
+    } catch (error) {
+      if (isNetworkError(error)) {
+        await offlineMutationQueue.enqueue({
+          method: 'PATCH',
+          url: `/trips/${tripId}/itineraries/${itineraryId}/activities/${activityIndex}`,
+          data: activityData,
+          maxRetries: 3,
+        });
+        return { ...activityData, _offline: true };
+      }
+      throw error;
+    }
   }
 
   async deleteActivity(tripId: string, itineraryId: string, activityIndex: number) {
@@ -421,6 +481,41 @@ class ApiService {
 
   async deleteAllNotifications() {
     await this.api.delete('/notifications');
+  }
+
+  // Expenses
+  async getExpenses(tripId: string) {
+    const response = await this.api.get(`/trips/${tripId}/expenses`);
+    return response.data;
+  }
+
+  async createExpense(tripId: string, data: any) {
+    const response = await this.api.post(`/trips/${tripId}/expenses`, data);
+    return response.data;
+  }
+
+  async updateExpense(tripId: string, expenseId: string, data: any) {
+    const response = await this.api.patch(`/trips/${tripId}/expenses/${expenseId}`, data);
+    return response.data;
+  }
+
+  async deleteExpense(tripId: string, expenseId: string) {
+    await this.api.delete(`/trips/${tripId}/expenses/${expenseId}`);
+  }
+
+  async getExpenseBalances(tripId: string) {
+    const response = await this.api.get(`/trips/${tripId}/expenses/balances`);
+    return response.data;
+  }
+
+  async getExpenseSettlements(tripId: string) {
+    const response = await this.api.get(`/trips/${tripId}/expenses/settlements`);
+    return response.data;
+  }
+
+  async settleExpense(tripId: string, expenseId: string) {
+    const response = await this.api.post(`/trips/${tripId}/expenses/${expenseId}/settle`);
+    return response.data;
   }
 
   // Admin Analytics

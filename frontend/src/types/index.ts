@@ -7,6 +7,7 @@ export interface User {
   profileImage?: string;
   isEmailVerified?: boolean;
   isTwoFactorEnabled?: boolean;
+  travelPreferences?: TripPreferences;
   createdAt: string;
   updatedAt: string;
 }
@@ -103,6 +104,45 @@ export interface CreateTripDto {
   budgetCurrency?: string;
 }
 
+// Expense types
+export interface ExpenseSplit {
+  id: string;
+  expenseId: string;
+  userId: string;
+  user?: { id: string; name: string; profileImage?: string };
+  amount: number;
+  isSettled: boolean;
+}
+
+export interface Expense {
+  id: string;
+  tripId: string;
+  paidByUserId: string;
+  paidBy?: { id: string; name: string; profileImage?: string };
+  description: string;
+  amount: number;
+  currency: string;
+  category: 'food' | 'transport' | 'accommodation' | 'activity' | 'shopping' | 'other';
+  splitMethod: 'equal' | 'exact';
+  date: string;
+  splits: ExpenseSplit[];
+  createdAt: string;
+}
+
+export interface Balance {
+  userId: string;
+  userName: string;
+  balance: number;
+}
+
+export interface Settlement {
+  fromUserId: string;
+  fromUserName: string;
+  toUserId: string;
+  toUserName: string;
+  amount: number;
+}
+
 // Navigation types
 export type RootStackParamList = {
   Auth: undefined;
@@ -147,4 +187,6 @@ export type TripsStackParamList = {
   TripDetail: { tripId: string };
   CreateTrip: undefined;
   EditTrip: { tripId: string };
+  Expenses: { tripId: string };
+  AddExpense: { tripId: string; expenseId?: string };
 };

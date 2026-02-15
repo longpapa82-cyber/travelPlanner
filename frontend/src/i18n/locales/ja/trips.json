@@ -70,6 +70,34 @@
       "weather": "天気情報を確認中",
       "finalizing": "旅行プランを完成中"
     },
+    "preferences": {
+      "title": "旅行スタイル",
+      "budget": {
+        "title": "予算レベル",
+        "budget": "お手頃",
+        "midRange": "中程度",
+        "luxury": "ラグジュアリー"
+      },
+      "style": {
+        "title": "旅行ペース",
+        "relaxed": "のんびり",
+        "balanced": "バランス",
+        "active": "アクティブ",
+        "adventure": "冒険"
+      },
+      "interests": {
+        "title": "興味・関心",
+        "food": "グルメ",
+        "culture": "文化",
+        "nature": "自然",
+        "shopping": "ショッピング",
+        "nightlife": "ナイトライフ",
+        "history": "歴史",
+        "art": "アート",
+        "sports": "スポーツ",
+        "photography": "写真"
+      }
+    },
     "alerts": {
       "destinationRequired": "旅行先を入力してください",
       "datesRequired": "旅行日程を選択してください",
@@ -287,6 +315,49 @@
       "inviteFailed": "招待に失敗しました",
       "removeFailed": "削除に失敗しました",
       "noCollaborators": "共同旅行者がいません"
+    },
+    "expenses": {
+      "title": "経費",
+      "addExpense": "経費を追加",
+      "total": "合計支出",
+      "myShare": "自分の分",
+      "iOwe": "支払う金額",
+      "owedToMe": "受け取る金額",
+      "settled": "すべて精算済み",
+      "paidBy": "支払者",
+      "splitWith": "割り勘相手",
+      "splitEqual": "均等割り",
+      "splitExact": "金額を指定",
+      "balances": "残高",
+      "settlements": "精算",
+      "settleUp": "精算する",
+      "settledMark": "精算済み",
+      "noExpenses": "まだ経費がありません",
+      "noExpensesMessage": "経費を追加してグループ支出を管理しましょう",
+      "description": "説明",
+      "amount": "金額",
+      "category": "カテゴリ",
+      "date": "日付",
+      "owes": "に支払う必要あり",
+      "categories": {
+        "food": "食費",
+        "transport": "交通費",
+        "accommodation": "宿泊費",
+        "activity": "アクティビティ",
+        "shopping": "ショッピング",
+        "other": "その他"
+      },
+      "tabs": {
+        "expenses": "経費",
+        "balances": "残高"
+      },
+      "alerts": {
+        "createFailed": "経費の追加に失敗しました",
+        "deleteFailed": "経費の削除に失敗しました",
+        "settleFailed": "精算に失敗しました",
+        "deleteTitle": "経費を削除",
+        "deleteMessage": "この経費を削除しますか？"
+      }
     }
   },
   "edit": {

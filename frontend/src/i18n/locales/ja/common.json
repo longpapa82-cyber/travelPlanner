@@ -20,6 +20,9 @@
   "seeAll": "すべて見る →",
   "findOnProvider": "{{name}}で探す",
   "offlineMode": "オフラインモード — キャッシュデータを表示中",
+  "offlinePending": "オフライン — {{count}}件の変更が保留中",
+  "offlineSyncing": "変更を同期中...",
+  "offlineSynced": "すべての変更が同期されました",
   "errorBoundary": {
     "title": "道に迷ってしまいました",
     "message": "予期しないエラーが発生しました。\nご心配なく、すぐに解決します！",

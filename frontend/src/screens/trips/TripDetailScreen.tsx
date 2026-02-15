@@ -77,7 +77,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const [collaborators, setCollaborators] = useState<any[]>([]);
 
   // Tab state
-  const [activeTab, setActiveTab] = useState<'itinerary' | 'map'>('itinerary');
+  const [activeTab, setActiveTab] = useState<'itinerary' | 'map' | 'expenses'>('itinerary');
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -462,6 +462,17 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                 {t('detail.tabs.map')}
               </Text>
             </TouchableOpacity>
+            {collaborators.length > 0 && (
+              <TouchableOpacity
+                style={[styles.tab, activeTab === 'expenses' && styles.tabActive]}
+                onPress={() => navigation.navigate('Expenses', { tripId })}
+              >
+                <Icon name="wallet-outline" size={18} color={activeTab === 'expenses' ? colors.primary[500] : colors.neutral[400]} />
+                <Text style={[styles.tabText, activeTab === 'expenses' && styles.tabTextActive]}>
+                  {t('detail.expenses.title')}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           {/* Map View */}

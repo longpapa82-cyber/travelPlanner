@@ -20,6 +20,9 @@
   "seeAll": "See all →",
   "findOnProvider": "Find on {{name}}",
   "offlineMode": "Offline mode — showing cached data",
+  "offlinePending": "Offline — {{count}} change(s) pending",
+  "offlineSyncing": "Syncing changes...",
+  "offlineSynced": "All changes synced",
   "errorBoundary": {
     "title": "We got a bit lost",
     "message": "An unexpected error occurred.\nDon't worry, we'll get you back on track!",

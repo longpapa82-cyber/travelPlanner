@@ -70,6 +70,34 @@
       "weather": "Checking weather info",
       "finalizing": "Finalizing your plan"
     },
+    "preferences": {
+      "title": "Travel Style",
+      "budget": {
+        "title": "Budget Level",
+        "budget": "Budget",
+        "midRange": "Mid-range",
+        "luxury": "Luxury"
+      },
+      "style": {
+        "title": "Travel Pace",
+        "relaxed": "Relaxed",
+        "balanced": "Balanced",
+        "active": "Active",
+        "adventure": "Adventure"
+      },
+      "interests": {
+        "title": "Interests",
+        "food": "Food",
+        "culture": "Culture",
+        "nature": "Nature",
+        "shopping": "Shopping",
+        "nightlife": "Nightlife",
+        "history": "History",
+        "art": "Art",
+        "sports": "Sports",
+        "photography": "Photography"
+      }
+    },
     "alerts": {
       "destinationRequired": "Please enter a destination",
       "datesRequired": "Please select travel dates",
@@ -287,6 +315,49 @@
       "inviteFailed": "Failed to invite",
       "removeFailed": "Failed to remove",
       "noCollaborators": "No collaborators yet"
+    },
+    "expenses": {
+      "title": "Expenses",
+      "addExpense": "Add Expense",
+      "total": "Total Spent",
+      "myShare": "My Share",
+      "iOwe": "I Owe",
+      "owedToMe": "Owed to Me",
+      "settled": "All Settled",
+      "paidBy": "Paid by",
+      "splitWith": "Split with",
+      "splitEqual": "Split equally",
+      "splitExact": "Custom amounts",
+      "balances": "Balances",
+      "settlements": "Settlements",
+      "settleUp": "Settle Up",
+      "settledMark": "Settled",
+      "noExpenses": "No expenses yet",
+      "noExpensesMessage": "Add expenses to track group spending",
+      "description": "Description",
+      "amount": "Amount",
+      "category": "Category",
+      "date": "Date",
+      "owes": "owes",
+      "categories": {
+        "food": "Food",
+        "transport": "Transport",
+        "accommodation": "Accommodation",
+        "activity": "Activity",
+        "shopping": "Shopping",
+        "other": "Other"
+      },
+      "tabs": {
+        "expenses": "Expenses",
+        "balances": "Balances"
+      },
+      "alerts": {
+        "createFailed": "Failed to add expense",
+        "deleteFailed": "Failed to delete expense",
+        "settleFailed": "Failed to settle",
+        "deleteTitle": "Delete Expense",
+        "deleteMessage": "Delete this expense?"
+      }
     }
   },
   "edit": {

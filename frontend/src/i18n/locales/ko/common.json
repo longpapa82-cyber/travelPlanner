@@ -20,6 +20,9 @@
   "seeAll": "전체보기 →",
   "findOnProvider": "{{name}}에서 찾기",
   "offlineMode": "오프라인 모드 — 캐시된 데이터를 표시 중",
+  "offlinePending": "오프라인 — {{count}}개 변경 대기 중",
+  "offlineSyncing": "변경사항 동기화 중...",
+  "offlineSynced": "모든 변경사항이 동기화되었습니다",
   "errorBoundary": {
     "title": "길을 잃었어요",
     "message": "예기치 않은 오류가 발생했습니다.\n걱정 마세요, 금방 해결될 거예요!",

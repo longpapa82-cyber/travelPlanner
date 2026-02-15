@@ -62,6 +62,15 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Patch('me/travel-preferences')
+  async updateTravelPreferences(
+    @CurrentUser('userId') userId: string,
+    @Body() body: { budget?: string; travelStyle?: string; interests?: string[] },
+  ) {
+    return this.usersService.updateTravelPreferences(userId, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete('me')
   async deleteAccount(
     @CurrentUser('userId') userId: string,

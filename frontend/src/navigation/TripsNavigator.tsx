@@ -6,6 +6,8 @@ import TripListScreen from '../screens/trips/TripListScreen';
 import TripDetailScreen from '../screens/trips/TripDetailScreen';
 import CreateTripScreen from '../screens/trips/CreateTripScreen';
 import EditTripScreen from '../screens/trips/EditTripScreen';
+import ExpensesScreen from '../screens/trips/ExpensesScreen';
+import AddExpenseScreen from '../screens/trips/AddExpenseScreen';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 
@@ -46,6 +48,16 @@ const TripsNavigator = () => {
         name="EditTrip"
         component={EditTripScreen}
         options={{ title: t('edit.title') }}
+      />
+      <Stack.Screen
+        name="Expenses"
+        component={ExpensesScreen}
+        options={{ title: t('detail.expenses.title') }}
+      />
+      <Stack.Screen
+        name="AddExpense"
+        component={AddExpenseScreen}
+        options={{ title: t('detail.expenses.addExpense') }}
       />
     </Stack.Navigator>
   );

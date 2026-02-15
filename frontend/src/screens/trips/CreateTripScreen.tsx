@@ -84,6 +84,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   const [description, setDescription] = useState('');
   const [totalBudget, setTotalBudget] = useState('');
   const [budgetCurrency, setBudgetCurrency] = useState('USD');
+  const [prefBudget, setPrefBudget] = useState<string>('');
+  const [prefStyle, setPrefStyle] = useState<string>('');
+  const [prefInterests, setPrefInterests] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [generationStep, setGenerationStep] = useState(0);
   const [fieldErrors, setFieldErrors] = useState<{ destination?: string; dates?: string }>({});
@@ -107,6 +110,18 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   }, []);
   const TRAVELER_OPTIONS = getTravelerOptions(t);
 
+  // Auto-fill preferences from user profile
+  useEffect(() => {
+    apiService.getProfile().then((profile: any) => {
+      if (profile?.travelPreferences) {
+        const prefs = profile.travelPreferences;
+        if (prefs.budget) setPrefBudget(prefs.budget);
+        if (prefs.travelStyle) setPrefStyle(prefs.travelStyle);
+        if (prefs.interests?.length) setPrefInterests(prefs.interests);
+      }
+    }).catch(() => {});
+  }, []);
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
 
@@ -124,6 +139,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
       }),
     ]).start();
   }, []);
+
+  const toggleInterest = (interest: string) => {
+    setPrefInterests((prev) =>
+      prev.includes(interest)
+        ? prev.filter((i) => i !== interest)
+        : [...prev, interest],
+    );
+  };
 
   const handleSelectDestination = (dest: string) => {
     setDestination(dest);
@@ -202,6 +225,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
 
     try {
       const budgetNum = totalBudget ? parseFloat(totalBudget) : undefined;
+      const preferences: any = {};
+      if (prefBudget) preferences.budget = prefBudget;
+      if (prefStyle) preferences.travelStyle = prefStyle;
+      if (prefInterests.length > 0) preferences.interests = prefInterests;
+
       const tripData = {
         destination: destination.trim(),
         startDate,
@@ -210,6 +238,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
         description: description.trim() || undefined,
         totalBudget: budgetNum && budgetNum > 0 ? budgetNum : undefined,
         budgetCurrency: budgetNum && budgetNum > 0 ? budgetCurrency : undefined,
+        preferences: Object.keys(preferences).length > 0 ? preferences : undefined,
       };
 
       const trip = await apiService.createTrip(tripData);
@@ -225,6 +254,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
       // Schedule trip reminder notifications
       scheduleTripReminders(trip).catch(() => {});
       trackEvent('trip_created', { destination: destination.trim() });
+
+      // Auto-save preferences to user profile (non-blocking)
+      if (Object.keys(preferences).length > 0) {
+        apiService.updateTravelPreferences(preferences).catch(() => {});
+      }
 
       showToast({
         type: 'success',
@@ -599,6 +633,152 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             </View>
           </View>
 
+          {/* Travel Preferences */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Icon name="tune-variant" size={24} color={theme.colors.primary} />
+              <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                {t('create.preferences.title')} {t('create.notes.optional')}
+              </Text>
+            </View>
+
+            {/* Budget Level */}
+            <Text style={[styles.prefLabel, { color: theme.colors.textSecondary }]}>
+              {t('create.preferences.budget.title')}
+            </Text>
+            <View style={styles.quickPicks}>
+              {(['budget', 'midRange', 'luxury'] as const).map((level) => (
+                <TouchableOpacity
+                  key={level}
+                  style={[
+                    styles.quickPickChip,
+                    {
+                      backgroundColor:
+                        prefBudget === level
+                          ? theme.colors.primary
+                          : isDark ? colors.neutral[800] : colors.neutral[100],
+                      borderColor:
+                        prefBudget === level
+                          ? theme.colors.primary
+                          : theme.colors.border,
+                    },
+                  ]}
+                  onPress={() => setPrefBudget(prefBudget === level ? '' : level)}
+                  disabled={isLoading}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(`create.preferences.budget.${level}`)}
+                  accessibilityState={{ selected: prefBudget === level }}
+                >
+                  <Icon
+                    name={level === 'budget' ? 'cash' : level === 'midRange' ? 'cash-multiple' : 'diamond-stone'}
+                    size={16}
+                    color={prefBudget === level ? colors.neutral[0] : theme.colors.textSecondary}
+                  />
+                  <Text
+                    style={[
+                      styles.quickPickText,
+                      { color: prefBudget === level ? colors.neutral[0] : theme.colors.text },
+                    ]}
+                  >
+                    {t(`create.preferences.budget.${level}`)}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            {/* Travel Style */}
+            <Text style={[styles.prefLabel, { color: theme.colors.textSecondary }]}>
+              {t('create.preferences.style.title')}
+            </Text>
+            <View style={styles.quickPicks}>
+              {(['relaxed', 'balanced', 'active', 'adventure'] as const).map((style) => (
+                <TouchableOpacity
+                  key={style}
+                  style={[
+                    styles.quickPickChip,
+                    {
+                      backgroundColor:
+                        prefStyle === style
+                          ? theme.colors.primary
+                          : isDark ? colors.neutral[800] : colors.neutral[100],
+                      borderColor:
+                        prefStyle === style
+                          ? theme.colors.primary
+                          : theme.colors.border,
+                    },
+                  ]}
+                  onPress={() => setPrefStyle(prefStyle === style ? '' : style)}
+                  disabled={isLoading}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(`create.preferences.style.${style}`)}
+                  accessibilityState={{ selected: prefStyle === style }}
+                >
+                  <Icon
+                    name={style === 'relaxed' ? 'beach' : style === 'balanced' ? 'scale-balance' : style === 'active' ? 'run-fast' : 'hiking'}
+                    size={16}
+                    color={prefStyle === style ? colors.neutral[0] : theme.colors.textSecondary}
+                  />
+                  <Text
+                    style={[
+                      styles.quickPickText,
+                      { color: prefStyle === style ? colors.neutral[0] : theme.colors.text },
+                    ]}
+                  >
+                    {t(`create.preferences.style.${style}`)}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            {/* Interests (multi-select) */}
+            <Text style={[styles.prefLabel, { color: theme.colors.textSecondary }]}>
+              {t('create.preferences.interests.title')}
+            </Text>
+            <View style={styles.quickPicks}>
+              {(['food', 'culture', 'nature', 'shopping', 'nightlife', 'history', 'art', 'sports', 'photography'] as const).map((interest) => {
+                const selected = prefInterests.includes(interest);
+                const iconMap: Record<string, string> = {
+                  food: 'silverware-fork-knife', culture: 'drama-masks', nature: 'tree',
+                  shopping: 'shopping', nightlife: 'glass-cocktail', history: 'pillar',
+                  art: 'palette', sports: 'basketball', photography: 'camera',
+                };
+                return (
+                  <TouchableOpacity
+                    key={interest}
+                    style={[
+                      styles.quickPickChip,
+                      {
+                        backgroundColor: selected
+                          ? theme.colors.primary
+                          : isDark ? colors.neutral[800] : colors.neutral[100],
+                        borderColor: selected ? theme.colors.primary : theme.colors.border,
+                      },
+                    ]}
+                    onPress={() => toggleInterest(interest)}
+                    disabled={isLoading}
+                    accessibilityRole="button"
+                    accessibilityLabel={t(`create.preferences.interests.${interest}`)}
+                    accessibilityState={{ selected }}
+                  >
+                    <Icon
+                      name={iconMap[interest] || 'tag'}
+                      size={16}
+                      color={selected ? colors.neutral[0] : theme.colors.textSecondary}
+                    />
+                    <Text
+                      style={[
+                        styles.quickPickText,
+                        { color: selected ? colors.neutral[0] : theme.colors.text },
+                      ]}
+                    >
+                      {t(`create.preferences.interests.${interest}`)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+
           {/* Description */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
@@ -861,6 +1041,12 @@ const createStyles = (theme: any, isDark: boolean) =>
     sectionTitle: {
       fontSize: 18,
       fontWeight: '700',
+    },
+    prefLabel: {
+      fontSize: 13,
+      fontWeight: '600',
+      marginBottom: 8,
+      marginTop: 4,
     },
     quickPicks: {
       flexDirection: 'row',

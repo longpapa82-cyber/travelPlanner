@@ -219,6 +219,16 @@ export class UsersService {
     return this.findById(user.id);
   }
 
+  // ============ Travel Preferences ============
+
+  async updateTravelPreferences(
+    userId: string,
+    preferences: { budget?: string; travelStyle?: string; interests?: string[] },
+  ): Promise<User> {
+    await this.userRepository.update(userId, { travelPreferences: preferences });
+    return this.findById(userId);
+  }
+
   // ============ 2FA Methods ============
 
   async findByIdWithTwoFactor(id: string): Promise<User> {

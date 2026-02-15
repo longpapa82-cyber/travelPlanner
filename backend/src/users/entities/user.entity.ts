@@ -81,6 +81,13 @@ export class User {
   @Column({ type: 'varchar', nullable: true })
   pushToken?: string;
 
+  @Column({ type: 'jsonb', nullable: true })
+  travelPreferences?: {
+    budget?: string;
+    travelStyle?: string;
+    interests?: string[];
+  };
+
   @Column({ default: true })
   isActive: boolean;
 

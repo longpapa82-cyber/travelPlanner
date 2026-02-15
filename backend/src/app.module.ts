@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { TripsModule } from './trips/trips.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { ExpensesModule } from './expenses/expenses.module';
 import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
 
 import { AppCacheModule } from './common/cache.module';
@@ -69,6 +70,7 @@ import emailConfig from './config/email.config';
     TripsModule,
     AnalyticsModule,
     NotificationsModule,
+    ExpensesModule,
   ],
   controllers: [AppController],
   providers: [
