@@ -5,10 +5,14 @@ import { TripsService } from './trips.service';
 import { TripsController } from './trips.controller';
 import { ShareController } from './share.controller';
 import { AnalyticsController } from './analytics.controller';
+import { TemplateController } from './template.controller';
+import { SeedTemplatesCommand } from './commands/seed-templates.command';
 import { Trip } from './entities/trip.entity';
 import { Itinerary } from './entities/itinerary.entity';
+import { ItineraryTemplate } from './entities/itinerary-template.entity';
 import { Collaborator } from './entities/collaborator.entity';
 import { AIService } from './services/ai.service';
+import { TemplateService } from './services/template.service';
 import { TimezoneService } from './services/timezone.service';
 import { WeatherService } from './services/weather.service';
 import { AnalyticsService } from './services/analytics.service';
@@ -19,20 +23,22 @@ import { ImageService } from '../common/image.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Trip, Itinerary, Collaborator, User]),
+    TypeOrmModule.forFeature([Trip, Itinerary, ItineraryTemplate, Collaborator, User]),
     ConfigModule,
     NotificationsModule,
   ],
   providers: [
     TripsService,
     AIService,
+    TemplateService,
+    SeedTemplatesCommand,
     TimezoneService,
     WeatherService,
     AnalyticsService,
     TripStatusScheduler,
     ImageService,
   ],
-  controllers: [TripsController, ShareController, AnalyticsController],
-  exports: [TripsService, AnalyticsService],
+  controllers: [TripsController, ShareController, AnalyticsController, TemplateController],
+  exports: [TripsService, AnalyticsService, TemplateService],
 })
 export class TripsModule {}

@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan, Between } from 'typeorm';
 import { Trip, TripStatus } from './entities/trip.entity';
+import { AIService } from './services/ai.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/entities/notification.entity';
 
@@ -22,6 +23,7 @@ export class TripStatusScheduler {
   constructor(
     @InjectRepository(Trip)
     private tripRepository: Repository<Trip>,
+    private aiService: AIService,
     @Optional()
     @Inject(NotificationsService)
     private notificationsService?: NotificationsService,
@@ -213,5 +215,24 @@ export class TripStatusScheduler {
     }
 
     return false;
+  }
+
+  /**
+   * Cron: Refresh stale itinerary templates daily at 3 AM.
+   * Re-generates popular templates older than 30 days via AI.
+   */
+  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  async handleTemplateRefresh() {
+    try {
+      const refreshed = await this.aiService.refreshStaleTemplates();
+      if (refreshed > 0) {
+        this.logger.log(`Template refresh completed: ${refreshed} templates updated`);
+      }
+    } catch (error) {
+      this.logger.error(
+        'Template refresh failed',
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
   }
 }
