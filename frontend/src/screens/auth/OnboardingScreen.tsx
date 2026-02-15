@@ -154,7 +154,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
 
   return (
     <View style={styles.container}>
-      <View style={[styles.slideArea, isWeb && { pointerEvents: 'auto' as const }]}>
+      <View style={[StyleSheet.absoluteFill, isWeb && { pointerEvents: 'auto' as const }]}>
         <Animated.FlatList
           ref={flatListRef}
           data={SLIDES}
@@ -187,6 +187,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
         />
       </View>
 
+      <View style={styles.controlsSpacer} />
       <ControlsWrapper style={styles.controls} {...controlsProps}>
         {renderPagination()}
 
@@ -261,10 +262,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.primary[700],
   },
-  slideArea: {
+  controlsSpacer: {
     flex: 1,
-    overflow: 'hidden',
-    zIndex: 0,
   },
   slide: {
     flex: 1,
@@ -305,9 +304,7 @@ const styles = StyleSheet.create({
   controls: {
     paddingHorizontal: 24,
     paddingBottom: Platform.OS === 'web' ? 24 : 0,
-    backgroundColor: colors.primary[700],
     zIndex: 10,
-    position: 'relative',
   },
   pagination: {
     flexDirection: 'row',
