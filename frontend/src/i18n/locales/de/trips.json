@@ -1,0 +1,411 @@
+{
+  "create": {
+    "title": "Neue Reise erstellen",
+    "hero": {
+      "title": "Bereit für ein neues Abenteuer?",
+      "subtitle": "Wählen Sie einfach ein Reiseziel und die KI erstellt den perfekten Reiseplan"
+    },
+    "destination": {
+      "title": "Wohin geht es?",
+      "placeholder": "Stadt oder Land eingeben",
+      "popular": "Beliebte Reiseziele"
+    },
+    "destinations": {
+      "tokyo": "Tokio",
+      "osaka": "Osaka",
+      "bangkok": "Bangkok",
+      "danang": "Da Nang",
+      "paris": "Paris",
+      "singapore": "Singapur",
+      "london": "London",
+      "newyork": "New York",
+      "barcelona": "Barcelona"
+    },
+    "duration": {
+      "title": "Wie lange bleiben Sie?",
+      "options": {
+        "3days": "3 Tage",
+        "1week": "1 Woche",
+        "2weeks": "2 Wochen",
+        "1month": "1 Monat"
+      },
+      "custom": "Individuell",
+      "totalDays": "{{days}}-Tage-Reise"
+    },
+    "travelers": {
+      "title": "Wer kommt mit?",
+      "options": {
+        "solo": "Nur ich",
+        "two": "2 Personen",
+        "group": "3-4 Personen",
+        "large": "5+ Personen"
+      }
+    },
+    "dates": {
+      "title": "Wann reisen Sie ab?",
+      "start": "Abreise",
+      "end": "Rückkehr",
+      "selectStart": "Abreisedatum wählen",
+      "selectEnd": "Rückkehrdatum wählen"
+    },
+    "notes": {
+      "title": "Besondere Pläne?",
+      "placeholder": "z.B. kulinarisch, Sightseeing, Freizeit...",
+      "optional": "(Optional)"
+    },
+    "budget": {
+      "title": "Reisebudget (Optional)",
+      "placeholder": "Gesamtbudget eingeben",
+      "currency": "Währung"
+    },
+    "aiInfo": {
+      "title": "KI-Automatische Erstellung",
+      "description": "KI erstellt den optimalen Reiseplan basierend auf Ihrem Ziel und Zeitplan"
+    },
+    "submit": "Reiseplan erstellen",
+    "generating": "KI erstellt Ihren Reiseplan...",
+    "progress": {
+      "analyzing": "Reiseziel wird analysiert",
+      "planning": "Reiseplan wird erstellt",
+      "weather": "Wetter wird geprüft",
+      "finalizing": "Plan wird finalisiert"
+    },
+    "preferences": {
+      "title": "Reisestil",
+      "budget": {
+        "title": "Budgetniveau",
+        "budget": "Günstig",
+        "midRange": "Mittelklasse",
+        "luxury": "Luxus"
+      },
+      "style": {
+        "title": "Reisetempo",
+        "relaxed": "Entspannt",
+        "balanced": "Ausgewogen",
+        "active": "Aktiv",
+        "adventure": "Abenteuer"
+      },
+      "interests": {
+        "title": "Interessen",
+        "food": "Essen",
+        "culture": "Kultur",
+        "nature": "Natur",
+        "shopping": "Einkaufen",
+        "nightlife": "Nachtleben",
+        "history": "Geschichte",
+        "art": "Kunst",
+        "sports": "Sport",
+        "photography": "Fotografie"
+      }
+    },
+    "alerts": {
+      "destinationRequired": "Bitte geben Sie ein Reiseziel ein",
+      "datesRequired": "Bitte wählen Sie Reisedaten",
+      "createFailed": "Reise konnte nicht erstellt werden",
+      "startDateRequired": "Bitte wählen Sie ein Abreisedatum"
+    }
+  },
+  "list": {
+    "title": "Meine Reisen",
+    "searchPlaceholder": "Reisen suchen...",
+    "filters": {
+      "all": "Alle",
+      "upcoming": "Geplant",
+      "ongoing": "Laufend",
+      "completed": "Abgeschlossen"
+    },
+    "sections": {
+      "ongoing": "Laufende Reisen",
+      "upcoming": "Geplante Reisen",
+      "completed": "Vergangene Reisen (Nur Ansicht)"
+    },
+    "status": {
+      "upcoming": "Geplant",
+      "ongoing": "Laufend",
+      "completed": "Abgeschlossen"
+    },
+    "empty": {
+      "title": "Noch keine Reisen geplant",
+      "description": "Planen Sie eine neue Reise!",
+      "cta": "KI-Reiseplanung starten",
+      "noResults": "Keine Ergebnisse",
+      "noResultsDescription": "Versuchen Sie einen anderen Suchbegriff oder Filter",
+      "clearFilters": "Filter zurücksetzen"
+    },
+    "error": {
+      "title": "Reisen konnten nicht geladen werden",
+      "description": "Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut",
+      "retry": "Erneut versuchen",
+      "refreshFailed": "Aktualisierung fehlgeschlagen"
+    },
+    "card": {
+      "days": "{{days}} Tage",
+      "travelers": "{{count}} Reisende",
+      "dDay": "D-{{days}}",
+      "dDayToday": "D-Day",
+      "dDayPassed": "D+{{days}}"
+    },
+    "alerts": {
+      "deleteTitle": "Reise löschen",
+      "deleteMessage": "'{{name}}' löschen? Dies kann nicht rückgängig gemacht werden.",
+      "deleteFailed": "Löschen fehlgeschlagen",
+      "error": "Fehler",
+      "cancel": "Abbrechen",
+      "delete": "Löschen"
+    },
+    "sort": {
+      "startDate": "Nach Abreise",
+      "createdAt": "Nach Erstellung",
+      "destination": "Nach Reiseziel"
+    },
+    "advancedFilters": {
+      "toggle": "Filter",
+      "country": "Land",
+      "countryPlaceholder": "Land eingeben",
+      "dateRange": "Abreisezeitraum",
+      "dateFrom": "Von",
+      "dateTo": "Bis",
+      "budget": "Budgetbereich",
+      "budgetMin": "Min",
+      "budgetMax": "Max",
+      "reset": "Filter zurücksetzen",
+      "apply": "Anwenden",
+      "activeCount": "{{count}} Filter aktiv"
+    },
+    "resultCount": "{{count}} Reise(n)",
+    "createButton": "Neue Reise erstellen",
+    "info": {
+      "days": "{{count}} Tage",
+      "itineraries": "{{count}} Reisepläne",
+      "travelers": "{{count}} Reisende"
+    },
+    "accessibility": {
+      "trip": "Reise",
+      "viewDetail": "Reisedetails anzeigen",
+      "deleteTrip": "Löschen",
+      "search": "Reisen suchen",
+      "searchHint": "Reisen nach Reiseziel suchen"
+    },
+    "pagination": {
+      "showMore": "Mehr anzeigen",
+      "showing": "{{shown}} / {{total}}"
+    }
+  },
+  "detail": {
+    "loading": "Reiseinfos werden geladen...",
+    "notFound": {
+      "title": "Reise nicht gefunden",
+      "description": "Diese Reise existiert nicht oder wurde gelöscht",
+      "back": "Zurück"
+    },
+    "status": {
+      "ongoing": "Laufend",
+      "completed": "Abgeschlossen"
+    },
+    "completedBanner": {
+      "title": "Reise abgeschlossen",
+      "description": "Diese Reise ist abgeschlossen und kann nicht bearbeitet werden. Schauen Sie sich Ihre wertvollen Erinnerungen an!"
+    },
+    "readOnlyMessage": "Abgeschlossene Aktivitäten können nicht bearbeitet werden",
+    "progress": "Gesamtfortschritt {{percentage}}%",
+    "durationDays": "{{count}} Tage",
+    "travelers": "{{count}} Reisende",
+    "durationMinutes": "{{minutes}} Min.",
+    "estimatedCost": "{{cost}} $",
+    "dayLabel": "Tag {{day}}",
+    "emptyItinerary": "Noch kein Reiseplan erstellt",
+    "emptyItineraryMessage": "Fügen Sie Aktivitäten zu Ihrer Reise hinzu",
+    "addActivity": "Aktivität hinzufügen",
+    "affiliateSection": "Hotels & Aktivitäten buchen",
+    "affiliateSubtitle": "Die besten Unterkünfte und Erlebnisse in {{destination}} buchen",
+    "tabs": {
+      "itinerary": "Reiseplan",
+      "map": "Karte",
+      "info": "Info",
+      "share": "Teilen"
+    },
+    "map": {
+      "noLocations": "Keine Orte zum Anzeigen",
+      "noLocationsMessage": "Erstellen Sie eine neue Reise, um Aktivitäten mit Standortdaten zu sehen",
+      "activitiesCount": "{{count}} Aktivitäten",
+      "allDays": "Alle",
+      "dayLabel": "Tag {{day}}",
+      "openInMaps": "In Google Maps öffnen",
+      "tapToOpen": "Tippen zum Öffnen",
+      "durationMin": "{{min}} Min."
+    },
+    "budget": {
+      "title": "Budgetübersicht",
+      "total": "Gesamtbudget",
+      "estimated": "Geschätzt",
+      "spent": "Ausgegeben",
+      "remaining": "Verbleibend",
+      "byCategory": "Nach Kategorie",
+      "byDay": "Nach Tag",
+      "perDay": "Pro Tag",
+      "dayLabel": "Tag {{day}}"
+    },
+    "activityTypes": {
+      "meal": "Essen",
+      "sightseeing": "Besichtigung",
+      "shopping": "Einkaufen",
+      "experience": "Erlebnis",
+      "rest": "Pause",
+      "transport": "Transport",
+      "accommodation": "Unterkunft",
+      "other": "Sonstiges"
+    },
+    "accessibility": {
+      "completed": "Abgeschlossen",
+      "incomplete": "Unvollständig",
+      "reorder": "Neu ordnen",
+      "reorderHint": "Lange drücken zum Neu ordnen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "goBack": "Zurück",
+      "editTrip": "Reise bearbeiten",
+      "duplicate": "Reise duplizieren",
+      "duplicating": "Wird dupliziert...",
+      "share": "Teilen",
+      "exportIcal": "In Kalender exportieren",
+      "addActivityToDay": "Aktivität zu Tag {{day}} hinzufügen"
+    },
+    "alerts": {
+      "deleteTitle": "Aktivität löschen",
+      "deleteMessage": "Diese Aktivität löschen?",
+      "deleteFailed": "Löschen fehlgeschlagen",
+      "error": "Fehler",
+      "fetchError": "Reiseinfos konnten nicht geladen werden",
+      "duplicateSuccess": "Reise wurde dupliziert",
+      "duplicateCompleteTitle": "Duplizierung abgeschlossen",
+      "duplicateError": "Reise konnte nicht dupliziert werden",
+      "confirm": "OK",
+      "cancel": "Abbrechen",
+      "delete": "Löschen",
+      "success": "Erfolg",
+      "deleteSuccess": "Reise wurde gelöscht",
+      "deleteError": "Reise konnte nicht gelöscht werden",
+      "toggleError": "Status konnte nicht aktualisiert werden",
+      "reorderError": "Neuordnung fehlgeschlagen"
+    },
+    "photos": {
+      "addCover": "Titelbild hinzufügen",
+      "changeCover": "Titelbild ändern",
+      "addPhoto": "Foto hinzufügen",
+      "photoCount": "{{count}} Fotos",
+      "uploadSuccess": "Foto hochgeladen",
+      "uploadFailed": "Foto konnte nicht hochgeladen werden",
+      "viewAll": "Alle Fotos anzeigen"
+    },
+    "collaboration": {
+      "title": "Mitreisende",
+      "invite": "Einladen",
+      "emailPlaceholder": "E-Mail-Adresse eingeben",
+      "roleViewer": "Betrachter",
+      "roleEditor": "Bearbeiter",
+      "owner": "Inhaber",
+      "remove": "Entfernen",
+      "inviteSuccess": "Einladung gesendet",
+      "inviteFailed": "Einladung fehlgeschlagen",
+      "removeFailed": "Entfernen fehlgeschlagen",
+      "noCollaborators": "Noch keine Mitreisenden"
+    },
+    "expenses": {
+      "title": "Ausgaben",
+      "addExpense": "Ausgabe hinzufügen",
+      "total": "Gesamtausgaben",
+      "myShare": "Mein Anteil",
+      "iOwe": "Ich schulde",
+      "owedToMe": "Mir geschuldet",
+      "settled": "Alles ausgeglichen",
+      "paidBy": "Bezahlt von",
+      "splitWith": "Geteilt mit",
+      "splitEqual": "Gleichmäßig teilen",
+      "splitExact": "Benutzerdefinierte Beträge",
+      "balances": "Salden",
+      "settlements": "Ausgleiche",
+      "settleUp": "Ausgleichen",
+      "settledMark": "Ausgeglichen",
+      "noExpenses": "Noch keine Ausgaben",
+      "noExpensesMessage": "Ausgaben hinzufügen um Gruppenausgaben zu verfolgen",
+      "description": "Beschreibung",
+      "amount": "Betrag",
+      "category": "Kategorie",
+      "date": "Datum",
+      "owes": "schuldet",
+      "categories": {
+        "food": "Essen",
+        "transport": "Transport",
+        "accommodation": "Unterkunft",
+        "activity": "Aktivität",
+        "shopping": "Einkaufen",
+        "other": "Sonstiges"
+      },
+      "tabs": {
+        "expenses": "Ausgaben",
+        "balances": "Salden"
+      },
+      "alerts": {
+        "createFailed": "Ausgabe konnte nicht hinzugefügt werden",
+        "deleteFailed": "Ausgabe konnte nicht gelöscht werden",
+        "settleFailed": "Ausgleich fehlgeschlagen",
+        "deleteTitle": "Ausgabe löschen",
+        "deleteMessage": "Diese Ausgabe löschen?"
+      }
+    }
+  },
+  "edit": {
+    "title": "Reise bearbeiten",
+    "loading": "Reiseinfos werden geladen...",
+    "notFound": "Reise nicht gefunden",
+    "goBack": "Zurück",
+    "heroTitle": "Reiseinfos bearbeiten",
+    "ongoingWarning": "Diese Reise ist laufend. Seien Sie vorsichtig beim Ändern der Daten.",
+    "destination": {
+      "title": "Reiseziel",
+      "placeholder": "Oder manuell eingeben"
+    },
+    "dates": {
+      "title": "Reisedaten",
+      "changeWarning": "Achtung",
+      "totalDays": "{{days}}-Tage-Reise"
+    },
+    "travelers": {
+      "title": "Reisende",
+      "placeholder": "Oder manuell eingeben"
+    },
+    "notes": {
+      "title": "Reisenotizen (Optional)",
+      "placeholder": "Ziele oder besondere Anforderungen hinzufügen"
+    },
+    "budget": {
+      "title": "Reisebudget (Optional)",
+      "placeholder": "Gesamtbudget eingeben",
+      "currency": "Währung"
+    },
+    "submit": "Reiseinfos speichern",
+    "saving": "Wird gespeichert...",
+    "status": {
+      "upcoming": "Geplant",
+      "ongoing": "Laufend",
+      "completed": "Abgeschlossen"
+    },
+    "alerts": {
+      "cannotEditCompleted": "Abgeschlossene Reisen können nicht bearbeitet werden.",
+      "cannotEditTitle": "Bearbeitung nicht möglich",
+      "loadError": "Reiseinfos konnten nicht geladen werden.",
+      "destinationRequired": "Bitte geben Sie ein Reiseziel ein.",
+      "requiredInput": "Pflichtfeld",
+      "datesRequired": "Bitte wählen Sie Reisedaten.",
+      "endDateError": "Enddatum muss nach dem Startdatum liegen.",
+      "dateError": "Datumsfehler",
+      "dateChangeWarningTitle": "Warnung bei Datumsänderung",
+      "dateChangeWarning": "Das Ändern von Daten einer laufenden Reise kann den Zeitplan beeinflussen. Fortfahren?",
+      "continue": "Fortfahren",
+      "saveSuccess": "Änderungen gespeichert",
+      "saveSuccessMessage": "Reiseinfos wurden aktualisiert.",
+      "saveFailed": "Speichern fehlgeschlagen",
+      "saveError": "Reiseinfos konnten nicht gespeichert werden. Bitte erneut versuchen."
+    }
+  }
+}

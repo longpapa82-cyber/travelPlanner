@@ -1,4 +1,4 @@
-type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es';
+type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi';
 
 const translations: Record<string, Record<SupportedLang, string>> = {
   'password.enterBoth': {
@@ -7,6 +7,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '現在のパスワードと新しいパスワードを入力してください。',
     zh: '请输入当前密码和新密码。',
     es: 'Por favor ingresa la contraseña actual y la nueva.',
+    de: 'Bitte geben Sie das aktuelle und das neue Passwort ein.',
+    fr: 'Veuillez saisir le mot de passe actuel et le nouveau.',
+    th: 'กรุณากรอกรหัสผ่านปัจจุบันและรหัสผ่านใหม่',
+    vi: 'Vui lòng nhập mật khẩu hiện tại và mật khẩu mới.',
   },
   'password.minLength': {
     ko: '새 비밀번호는 8자 이상이어야 합니다.',
@@ -14,6 +18,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '新しいパスワードは8文字以上である必要があります。',
     zh: '新密码至少需要8个字符。',
     es: 'La nueva contraseña debe tener al menos 8 caracteres.',
+    de: 'Das neue Passwort muss mindestens 8 Zeichen lang sein.',
+    fr: 'Le nouveau mot de passe doit contenir au moins 8 caractères.',
+    th: 'รหัสผ่านใหม่ต้องมีอย่างน้อย 8 ตัวอักษร',
+    vi: 'Mật khẩu mới phải có ít nhất 8 ký tự.',
   },
   'account.deleted': {
     ko: '계정이 삭제되었습니다.',
@@ -21,6 +29,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: 'アカウントが削除されました。',
     zh: '账号已删除。',
     es: 'La cuenta ha sido eliminada.',
+    de: 'Das Konto wurde gelöscht.',
+    fr: 'Le compte a été supprimé.',
+    th: 'บัญชีถูกลบแล้ว',
+    vi: 'Tài khoản đã được xóa.',
   },
   'password.socialNotAllowed': {
     ko: '소셜 로그인 계정은 비밀번호를 변경할 수 없습니다.',
@@ -28,6 +40,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: 'ソーシャルログインアカウントではパスワードを変更できません。',
     zh: '社交登录账号无法修改密码。',
     es: 'Las cuentas de inicio de sesión social no pueden cambiar la contraseña.',
+    de: 'Social-Login-Konten können das Passwort nicht ändern.',
+    fr: 'Les comptes de connexion sociale ne peuvent pas changer le mot de passe.',
+    th: 'บัญชีที่เข้าสู่ระบบผ่านโซเชียลไม่สามารถเปลี่ยนรหัสผ่านได้',
+    vi: 'Tài khoản đăng nhập mạng xã hội không thể đổi mật khẩu.',
   },
   'password.currentInvalid': {
     ko: '현재 비밀번호가 일치하지 않습니다.',
@@ -35,6 +51,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '現在のパスワードが正しくありません。',
     zh: '当前密码不正确。',
     es: 'La contraseña actual es incorrecta.',
+    de: 'Das aktuelle Passwort ist falsch.',
+    fr: 'Le mot de passe actuel est incorrect.',
+    th: 'รหัสผ่านปัจจุบันไม่ถูกต้อง',
+    vi: 'Mật khẩu hiện tại không đúng.',
   },
   'password.changed': {
     ko: '비밀번호가 변경되었습니다.',
@@ -42,6 +62,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: 'パスワードが変更されました。',
     zh: '密码已修改。',
     es: 'La contraseña ha sido cambiada.',
+    de: 'Das Passwort wurde geändert.',
+    fr: 'Le mot de passe a été modifié.',
+    th: 'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว',
+    vi: 'Mật khẩu đã được thay đổi.',
   },
   'timezone.noDifference': {
     ko: '시차 없음',
@@ -49,6 +73,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '時差なし',
     zh: '无时差',
     es: 'Sin diferencia horaria',
+    de: 'Kein Zeitunterschied',
+    fr: 'Pas de décalage horaire',
+    th: 'ไม่มีความต่างของเวลา',
+    vi: 'Không có chênh lệch múi giờ',
   },
   'timezone.hours': {
     ko: '시간',
@@ -56,6 +84,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '時間',
     zh: '小时',
     es: 'h',
+    de: ' Std.',
+    fr: 'h',
+    th: 'ชม.',
+    vi: 'giờ',
   },
   'timezone.minutes': {
     ko: '분',
@@ -63,6 +95,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '分',
     zh: '分钟',
     es: 'min',
+    de: ' Min.',
+    fr: 'min',
+    th: 'นาที',
+    vi: 'phút',
   },
   'timezone.ahead': {
     ko: '빠름',
@@ -70,6 +106,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '進み',
     zh: '快',
     es: 'adelante',
+    de: 'voraus',
+    fr: "d'avance",
+    th: 'เร็วกว่า',
+    vi: 'sớm hơn',
   },
   'timezone.behind': {
     ko: '느림',
@@ -77,6 +117,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '遅れ',
     zh: '慢',
     es: 'atrás',
+    de: 'zurück',
+    fr: 'de retard',
+    th: 'ช้ากว่า',
+    vi: 'chậm hơn',
   },
   'email.verification.sent': {
     ko: '인증 이메일이 발송되었습니다.',
@@ -84,6 +128,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '認証メールを送信しました。',
     zh: '验证邮件已发送。',
     es: 'El correo de verificación ha sido enviado.',
+    de: 'Verifizierungs-E-Mail wurde gesendet.',
+    fr: "L'e-mail de vérification a été envoyé.",
+    th: 'อีเมลยืนยันได้ถูกส่งแล้ว',
+    vi: 'Email xác minh đã được gửi.',
   },
   'email.verification.invalid': {
     ko: '유효하지 않은 인증 토큰입니다.',
@@ -91,6 +139,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '無効な認証トークンです。',
     zh: '无效的验证令牌。',
     es: 'Token de verificación inválido.',
+    de: 'Ungültiger Verifizierungstoken.',
+    fr: 'Jeton de vérification invalide.',
+    th: 'โทเค็นยืนยันไม่ถูกต้อง',
+    vi: 'Mã xác minh không hợp lệ.',
   },
   'email.verification.expired': {
     ko: '인증 토큰이 만료되었습니다.',
@@ -98,6 +150,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '認証トークンの有効期限が切れています。',
     zh: '验证令牌已过期。',
     es: 'El token de verificación ha expirado.',
+    de: 'Verifizierungstoken ist abgelaufen.',
+    fr: 'Le jeton de vérification a expiré.',
+    th: 'โทเค็นยืนยันหมดอายุแล้ว',
+    vi: 'Mã xác minh đã hết hạn.',
   },
   'email.verification.success': {
     ko: '이메일이 성공적으로 인증되었습니다.',
@@ -105,6 +161,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: 'メールアドレスが正常に認証されました。',
     zh: '邮箱验证成功。',
     es: 'El correo ha sido verificado exitosamente.',
+    de: 'E-Mail wurde erfolgreich verifiziert.',
+    fr: "L'e-mail a été vérifié avec succès.",
+    th: 'ยืนยันอีเมลสำเร็จแล้ว',
+    vi: 'Email đã được xác minh thành công.',
   },
   'email.already.verified': {
     ko: '이미 인증된 이메일입니다.',
@@ -112,6 +172,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: 'メールアドレスはすでに認証済みです。',
     zh: '邮箱已验证。',
     es: 'El correo ya está verificado.',
+    de: 'E-Mail ist bereits verifiziert.',
+    fr: "L'e-mail est déjà vérifié.",
+    th: 'อีเมลนี้ได้รับการยืนยันแล้ว',
+    vi: 'Email đã được xác minh rồi.',
   },
   'password.reset.sent': {
     ko: '비밀번호 재설정 이메일이 발송되었습니다.',
@@ -119,6 +183,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: 'パスワードリセットメールを送信しました。',
     zh: '密码重置邮件已发送。',
     es: 'El correo de restablecimiento de contraseña ha sido enviado.',
+    de: 'Passwort-Zurücksetzungs-E-Mail wurde gesendet.',
+    fr: "L'e-mail de réinitialisation du mot de passe a été envoyé.",
+    th: 'อีเมลรีเซ็ตรหัสผ่านได้ถูกส่งแล้ว',
+    vi: 'Email đặt lại mật khẩu đã được gửi.',
   },
   'password.reset.invalid': {
     ko: '유효하지 않은 재설정 토큰입니다.',
@@ -126,6 +194,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: '無効なリセットトークンです。',
     zh: '无效的重置令牌。',
     es: 'Token de restablecimiento inválido.',
+    de: 'Ungültiger Zurücksetzungstoken.',
+    fr: 'Jeton de réinitialisation invalide.',
+    th: 'โทเค็นรีเซ็ตไม่ถูกต้อง',
+    vi: 'Mã đặt lại không hợp lệ.',
   },
   'password.reset.expired': {
     ko: '재설정 토큰이 만료되었습니다.',
@@ -133,6 +205,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: 'リセットトークンの有効期限が切れています。',
     zh: '重置令牌已过期。',
     es: 'El token de restablecimiento ha expirado.',
+    de: 'Zurücksetzungstoken ist abgelaufen.',
+    fr: 'Le jeton de réinitialisation a expiré.',
+    th: 'โทเค็นรีเซ็ตหมดอายุแล้ว',
+    vi: 'Mã đặt lại đã hết hạn.',
   },
   'password.reset.success': {
     ko: '비밀번호가 성공적으로 재설정되었습니다.',
@@ -140,6 +216,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: 'パスワードが正常にリセットされました。',
     zh: '密码已成功重置。',
     es: 'La contraseña ha sido restablecida exitosamente.',
+    de: 'Das Passwort wurde erfolgreich zurückgesetzt.',
+    fr: 'Le mot de passe a été réinitialisé avec succès.',
+    th: 'รีเซ็ตรหัสผ่านสำเร็จแล้ว',
+    vi: 'Mật khẩu đã được đặt lại thành công.',
   },
   'password.reset.socialNotAllowed': {
     ko: '소셜 로그인 계정은 비밀번호를 재설정할 수 없습니다.',
@@ -147,6 +227,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: 'ソーシャルログインアカウントではパスワードをリセットできません。',
     zh: '社交登录账号无法重置密码。',
     es: 'Las cuentas de inicio de sesión social no pueden restablecer la contraseña.',
+    de: 'Social-Login-Konten können das Passwort nicht zurücksetzen.',
+    fr: 'Les comptes de connexion sociale ne peuvent pas réinitialiser le mot de passe.',
+    th: 'บัญชีที่เข้าสู่ระบบผ่านโซเชียลไม่สามารถรีเซ็ตรหัสผ่านได้',
+    vi: 'Tài khoản đăng nhập mạng xã hội không thể đặt lại mật khẩu.',
   },
   'email.verification.required': {
     ko: '이 기능을 사용하려면 이메일 인증이 필요합니다.',
@@ -154,17 +238,18 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ja: 'この機能を利用するにはメール認証が必要です。',
     zh: '使用此功能需要验证邮箱。',
     es: 'Se requiere verificación de correo para usar esta función.',
+    de: 'E-Mail-Verifizierung erforderlich, um diese Funktion zu nutzen.',
+    fr: "Vérification de l'e-mail requise pour utiliser cette fonctionnalité.",
+    th: 'ต้องยืนยันอีเมลก่อนใช้ฟีเจอร์นี้',
+    vi: 'Cần xác minh email để sử dụng tính năng này.',
   },
 };
 
 export function parseLang(acceptLanguage?: string): SupportedLang {
   if (!acceptLanguage) return 'ko';
   const lang = acceptLanguage.split(',')[0].split('-')[0].toLowerCase();
-  if (lang === 'en') return 'en';
-  if (lang === 'ja') return 'ja';
-  if (lang === 'zh') return 'zh';
-  if (lang === 'es') return 'es';
-  return 'ko';
+  const supported: SupportedLang[] = ['en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi'];
+  return (supported.find((l) => l === lang) as SupportedLang) ?? 'ko';
 }
 
 export function t(key: string, lang: SupportedLang = 'ko'): string {

@@ -1,0 +1,226 @@
+{
+  "help": {
+    "title": "Aide",
+    "searchPlaceholder": "Rechercher de l'aide...",
+    "categories": {
+      "gettingStarted": "Premiers pas",
+      "tripManagement": "Gestion des voyages",
+      "accountSettings": "Compte et paramètres",
+      "offlineSync": "Hors ligne et synchronisation",
+      "adsPartners": "Tarifs et publicités",
+      "contact": "Nous contacter"
+    },
+    "gettingStarted": {
+      "signup": {
+        "q": "Comment m'inscrire ?",
+        "a": "Vous pouvez vous inscrire avec votre e-mail ou vous enregistrer rapidement via votre compte Google, Apple ou Kakao. La connexion via un réseau social ne nécessite pas de mot de passe séparé."
+      },
+      "createTrip": {
+        "q": "Comment créer un plan de voyage ?",
+        "a": "Appuyez sur « Créer un nouveau voyage » sur l'écran d'accueil, entrez votre destination et vos dates de voyage, et l'IA générera automatiquement un itinéraire personnalisé. Sélectionnez votre budget, votre style de voyage et vos centres d'intérêt pour des recommandations plus précises."
+      },
+      "aiPlan": {
+        "q": "Comment fonctionne l'itinéraire IA ?",
+        "a": "Nous utilisons une technologie d'IA avancée pour analyser les attractions populaires, les restaurants et les expériences culturelles de votre destination, puis créons un planning optimisé tenant compte des trajets et des horaires. Les itinéraires générés peuvent être librement modifiés."
+      },
+      "appTour": {
+        "q": "Comment l'application est-elle organisée ?",
+        "a": "L'application comporte quatre onglets principaux : Accueil (liste des voyages), Détail du voyage (itinéraire, carte, météo), Notifications et Profil. Naviguez facilement grâce à la barre d'onglets en bas de l'écran."
+      }
+    },
+    "tripManagement": {
+      "editPlan": {
+        "q": "Comment modifier mon itinéraire ?",
+        "a": "Appuyez sur n'importe quelle activité dans l'écran de détail du voyage pour modifier l'heure, le lieu et les notes. Glissez-déposez pour réorganiser les activités, ou utilisez le bouton + pour en ajouter de nouvelles."
+      },
+      "tripStatus": {
+        "q": "Les règles de modification varient-elles selon le statut du voyage ?",
+        "a": "• Avant le voyage : modifiez et ajoutez librement tous les plans.\n• Pendant le voyage : les activités passées ne peuvent pas être modifiées ; seules les activités à venir peuvent être éditées.\n• Après le voyage : consultation et suppression uniquement ; aucune modification possible."
+      },
+      "mapView": {
+        "q": "Comment voir les lieux sur la carte ?",
+        "a": "Dans l'écran de détail du voyage, passez à l'onglet carte pour voir tous les lieux prévus en un coup d'œil. Appuyez sur les marqueurs pour les détails de l'activité."
+      },
+      "weather": {
+        "q": "Où puis-je voir la météo et le fuseau horaire ?",
+        "a": "Les informations de météo locale et de fuseau horaire apparaissent automatiquement en haut de l'écran de détail du voyage pour chaque jour. Les données météo proviennent de services externes et sont mises à jour en temps réel."
+      }
+    },
+    "accountSettings": {
+      "editProfile": {
+        "q": "Comment modifier mon profil ?",
+        "a": "Allez dans l'onglet Profil → « Modifier le profil » pour changer votre nom et votre photo."
+      },
+      "changePassword": {
+        "q": "Comment changer mon mot de passe ?",
+        "a": "Allez dans l'onglet Profil → « Changer le mot de passe », entrez votre mot de passe actuel et définissez-en un nouveau. Les utilisateurs connectés via un réseau social n'ont pas besoin de changer de mot de passe."
+      },
+      "twoFactor": {
+        "q": "Comment configurer l'authentification à deux facteurs ?",
+        "a": "Allez dans l'onglet Profil → « Authentification à deux facteurs » pour l'activer. Scannez le QR code avec une application TOTP comme Google Authenticator et entrez le code de vérification. Des codes de secours vous seront également fournis."
+      },
+      "notifications": {
+        "q": "Comment gérer mes notifications ?",
+        "a": "Allez dans l'onglet Profil → « Paramètres de notification » pour configurer les notifications push. Vous pouvez recevoir des rappels de départ et des alertes de début/fin de voyage."
+      },
+      "deleteAccount": {
+        "q": "Comment supprimer mon compte ?",
+        "a": "Appuyez sur « Supprimer le compte » en bas de l'onglet Profil. Toutes les données seront définitivement supprimées dans les 30 jours suivant la demande. Cette action est irréversible."
+      }
+    },
+    "offlineSync": {
+      "offlineUse": {
+        "q": "Puis-je utiliser l'application hors ligne ?",
+        "a": "Oui, les plans de voyage précédemment chargés peuvent être consultés sans connexion internet. Les modifications effectuées hors ligne seront automatiquement synchronisées lors de la reconnexion."
+      },
+      "syncStatus": {
+        "q": "Comment vérifier l'état de la synchronisation ?",
+        "a": "Une bannière de synchronisation apparaît en haut de l'écran : « En attente (N éléments) » → « Synchronisation... » → « Synchronisé ». Une nouvelle tentative automatique a lieu en cas de connexion instable."
+      },
+      "syncError": {
+        "q": "Que faire si la synchronisation échoue ?",
+        "a": "Vérifiez votre connexion réseau et redémarrez l'application. Si le problème persiste, contactez-nous via « Nous contacter »."
+      }
+    },
+    "adsPartners": {
+      "freeService": {
+        "q": "L'utilisation du service est-elle payante ?",
+        "a": "Toutes les fonctionnalités de TravelPlanner sont gratuites. Des publicités peuvent être affichées dans l'application pour soutenir le fonctionnement du service."
+      },
+      "adInfo": {
+        "q": "Comment les publicités sont-elles affichées ?",
+        "a": "Des publicités interstitielles peuvent apparaître après la création d'un voyage, et des bannières publicitaires peuvent être affichées sur certains écrans. Les publicités personnalisées sont contrôlées via la Transparence du suivi des applications (ATT) d'iOS."
+      },
+      "affiliates": {
+        "q": "Que sont les partenaires affiliés ?",
+        "a": "Nous proposons des liens de réservation pour les vols, les hôtels et les activités dans l'écran de détail du voyage. Nous collaborons avec des services de confiance tels que Booking.com, Agoda, Klook et GetYourGuide."
+      }
+    },
+    "contact": {
+      "email": "Assistance par e-mail",
+      "emailAddress": "longpapa82@gmail.com",
+      "emailDescription": "Si la FAQ ci-dessus ne résout pas votre problème, veuillez nous contacter par e-mail. Les informations sur l'appareil et la version de l'application seront incluses automatiquement.",
+      "sendEmail": "Envoyer un e-mail"
+    }
+  },
+  "terms": {
+    "title": "Conditions d'utilisation",
+    "effectiveDate": "En vigueur à compter du : 1er mars 2025",
+    "articles": {
+      "art1": {
+        "title": "Article 1 (Objet)",
+        "content": "Les présentes Conditions d'utilisation régissent l'utilisation de TravelPlanner (le « Service »), y compris les droits, obligations et responsabilités de la société et des utilisateurs."
+      },
+      "art2": {
+        "title": "Article 2 (Définitions)",
+        "content": "① « Service » désigne le service de planification et de gestion automatique de voyages fourni par TravelPlanner.\n② « Membre » désigne toute personne ayant accepté les présentes Conditions et s'étant inscrite au Service.\n③ « Contenu généré par l'IA » désigne les itinéraires de voyage et les recommandations générés automatiquement à l'aide de l'intelligence artificielle.\n④ « Données de voyage » désigne les destinations, les plannings et les plans d'activités saisis par les membres."
+      },
+      "art3": {
+        "title": "Article 3 (Description du Service)",
+        "content": "Le Service fournit :\n• Génération automatique de plans de voyage par IA\n• Gestion de la modification, de l'ajout et de la suppression de plans de voyage\n• Informations sur la météo locale et les fuseaux horaires\n• Suivi de la progression du voyage\n• Consultation de l'historique des voyages passés\n• Accès hors ligne aux itinéraires et synchronisation\n• Fonctionnalités de partage des dépenses\n• Services de notification"
+      },
+      "art4": {
+        "title": "Article 4 (Inscription au compte)",
+        "content": "① Vous pouvez vous inscrire par e-mail ou via des comptes de réseaux sociaux (Google, Apple, Kakao).\n② Les utilisateurs de moins de 14 ans ne peuvent pas utiliser le Service.\n③ Vous devez fournir des informations exactes. Vous êtes responsable de tout problème lié à des informations inexactes.\n④ Vous êtes responsable de la sécurité de votre compte."
+      },
+      "art5": {
+        "title": "Article 5 (Règles d'utilisation du Service)",
+        "content": "① Avant le voyage : les plans peuvent être librement modifiés et complétés.\n② Pendant le voyage : les activités terminées ne peuvent pas être modifiées ; seules les activités à venir peuvent l'être.\n③ Après le voyage : l'historique peut uniquement être consulté ou supprimé, mais pas modifié.\n④ Les résultats générés par l'IA sont fournis à titre indicatif. Les utilisateurs doivent vérifier les conditions locales lors de leurs déplacements."
+      },
+      "art6": {
+        "title": "Article 6 (Conditions du service IA)",
+        "content": "① L'exactitude, la sécurité et la pertinence des plans de voyage générés par l'IA ne sont pas garanties.\n② Les données sont traitées via l'API OpenAI pour la génération d'itinéraires, comme décrit dans notre Politique de confidentialité.\n③ Les données de voyage saisies par les utilisateurs ne sont pas utilisées pour l'entraînement des modèles d'IA.\n④ Les services d'IA peuvent être temporairement limités en raison de circonstances techniques."
+      },
+      "art7": {
+        "title": "Article 7 (Activités interdites)",
+        "content": "Les utilisateurs ne doivent pas :\n• Interférer avec le fonctionnement normal du Service\n• Violer la vie privée d'autres utilisateurs\n• Accéder au Service par des moyens automatisés à grande échelle\n• Cliquer frauduleusement sur les publicités ou les manipuler\n• Effectuer de l'ingénierie inverse, copier ou imiter le Service\n• Enfreindre les lois ou réglementations applicables"
+      },
+      "art8": {
+        "title": "Article 8 (Publicité et affiliations)",
+        "content": "① Le Service peut afficher des publicités via Google AdSense, AdMob et des programmes d'affiliation.\n② La responsabilité du contenu publicitaire incombe aux annonceurs respectifs.\n③ Des conditions distinctes peuvent s'appliquer lors de réservations via des liens affiliés."
+      },
+      "art9": {
+        "title": "Article 9 (Propriété intellectuelle)",
+        "content": "① Les droits de propriété intellectuelle sur le contenu, le design et le logiciel du Service appartiennent au fournisseur du Service.\n② Les droits sur les plans de voyage créés par les utilisateurs appartiennent aux utilisateurs."
+      },
+      "art10": {
+        "title": "Article 10 (Exclusions de responsabilité)",
+        "content": "① Les plans de voyage générés par l'IA sont fournis à titre indicatif. Vérifiez les conditions locales lors de vos déplacements.\n② Les informations météorologiques et de fuseaux horaires sont basées sur des API externes ; leur exactitude n'est pas garantie.\n③ Le Service n'est pas responsable des interruptions dues à un cas de force majeure ou à des pannes système.\n④ Le Service agit uniquement en tant qu'intermédiaire pour les réservations affiliées et n'assume aucune responsabilité directe."
+      },
+      "art11": {
+        "title": "Article 11 (Résiliation du compte)",
+        "content": "① Vous pouvez résilier votre compte à tout moment via la fonctionnalité « Supprimer le compte ».\n② Toutes les données personnelles seront définitivement supprimées dans un délai de 30 jours.\n③ Les informations requises par la loi seront conservées pendant la période spécifiée, puis détruites."
+      },
+      "art12": {
+        "title": "Article 12 (Responsabilité)",
+        "content": "Si un membre subit des dommages dus à une faute intentionnelle ou une négligence grave de la société, celle-ci indemnisera conformément aux lois applicables."
+      },
+      "art13": {
+        "title": "Article 13 (Modification des Conditions)",
+        "content": "① Les modifications seront notifiées au moins 7 jours avant leur entrée en vigueur via des avis dans l'application.\n② Si vous n'acceptez pas les modifications, vous pouvez cesser d'utiliser le Service et supprimer votre compte."
+      },
+      "art14": {
+        "title": "Article 14 (Résolution des litiges)",
+        "content": "① Les présentes Conditions sont régies par les lois de la République de Corée.\n② Tout litige sera soumis à la compétence du Tribunal central de district de Séoul."
+      },
+      "art15": {
+        "title": "Article 15 (Annexe)",
+        "content": "Les présentes Conditions entrent en vigueur le 1er mars 2025."
+      }
+    }
+  },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "effectiveDate": "En vigueur à compter du : 1er mars 2025",
+    "articles": {
+      "art1": {
+        "title": "1. Informations que nous collectons",
+        "content": "[Obligatoires]\n• Informations du compte : nom, adresse e-mail, photo de profil\n• Connexion via réseau social : profil public de Google, Apple ou Kakao\n\n[Facultatives]\n• Préférences de voyage : niveau de budget, style de voyage, centres d'intérêt\n\n[Automatiques]\n• Informations sur l'appareil : type d'appareil, système d'exploitation, version de l'application\n• Données d'utilisation : habitudes d'utilisation de l'application, interactions publicitaires\n• Données de voyage : destinations, plannings, plans d'activités\n\n[Méthodes] Inscription, connexion via réseau social, collecte automatique lors de l'utilisation"
+      },
+      "art2": {
+        "title": "2. Comment nous utilisons vos informations",
+        "content": "• Fourniture du service : gestion du compte, génération de plans de voyage par IA, informations locales\n• Traitement IA : génération d'itinéraires via l'API OpenAI (destination, dates, préférences envoyées)\n• Personnalisation : optimisation des recommandations selon les préférences de voyage\n• Publicité : publicités personnalisées (avec consentement séparé)\n• Amélioration : analyse de l'utilisation, correction des bugs"
+      },
+      "art3": {
+        "title": "3. Partage avec des tiers",
+        "content": "Nous ne partageons pas les informations personnelles, sauf :\n\n| Destinataire | Données | Finalité |\n| OpenAI | Destination, dates, préférences | Génération d'itinéraires par IA |\n| Google (AdSense/AdMob) | Identifiant publicitaire, habitudes d'utilisation | Diffusion de publicités |\n| Partenaires affiliés | Événements de clic (anonymisés) | Services d'affiliation |\n\n※ Avec le consentement explicite de l'utilisateur\n※ Lorsque la loi l'exige"
+      },
+      "art4": {
+        "title": "4. Délégation du traitement des données",
+        "content": "| Fournisseur | Service |\n| Services cloud (AWS, etc.) | Stockage et traitement des données |\n| Service de messagerie | E-mails d'authentification et de notification |"
+      },
+      "art5": {
+        "title": "5. Conservation des données",
+        "content": "• Suppression du compte : destruction dans un délai de 30 jours\n• Loi sur le commerce électronique : registres de transactions conservés pendant 5 ans\n• Loi sur les télécommunications : journaux d'accès conservés pendant 3 mois\n• Les informations requises par la loi sont stockées séparément pendant la période requise, puis détruites."
+      },
+      "art6": {
+        "title": "6. Vos droits",
+        "content": "Vous pouvez exercer les droits suivants :\n• Accéder, rectifier, supprimer ou suspendre le traitement de vos informations personnelles\n• Demander la portabilité des données (article 35-2 de la loi sur la protection des données)\n• Demander une explication ou refuser les décisions automatisées (génération d'itinéraires par IA)\n• Supprimer définitivement toutes les données en supprimant votre compte\n• Retirer le consentement au suivi publicitaire (modifiable dans les paramètres de l'appareil)\n\n[Comment exercer vos droits]\nApplication : Profil → Supprimer le compte\nE-mail : longpapa82@gmail.com"
+      },
+      "art7": {
+        "title": "7. Protection des enfants de moins de 14 ans",
+        "content": "Ce Service restreint l'inscription des enfants de moins de 14 ans. Si nous apprenons que les données d'un enfant ont été collectées, nous les supprimerons sans délai."
+      },
+      "art8": {
+        "title": "8. Destruction des données",
+        "content": "• Fichiers électroniques : supprimés définitivement par des méthodes irrécupérables\n• Documents imprimés : déchiquetés ou incinérés\n• Détruits rapidement à l'expiration de la période de conservation ou lorsque la finalité est atteinte."
+      },
+      "art9": {
+        "title": "9. Publicité et données comportementales",
+        "content": "• iOS : contrôlez les publicités personnalisées via la Transparence du suivi des applications (ATT).\n• Android : réinitialisez l'identifiant publicitaire ou désactivez-le via Paramètres → Google → Publicités.\n• Web : désactivez les cookies dans les paramètres du navigateur (certaines fonctionnalités peuvent être limitées).\n• Les cookies sont utilisés pour l'authentification et l'amélioration de l'expérience utilisateur."
+      },
+      "art10": {
+        "title": "10. Mesures de sécurité",
+        "content": "• Chiffrement des mots de passe (bcrypt)\n• Chiffrement des communications SSL/TLS\n• Contrôle d'accès et authentification à deux facteurs\n• Audits de sécurité et surveillance réguliers"
+      },
+      "art11": {
+        "title": "11. Responsable de la protection des données",
+        "content": "Responsable de la protection des données : Équipe opérationnelle TravelPlanner\nE-mail : longpapa82@gmail.com"
+      },
+      "art12": {
+        "title": "12. Modifications de la politique",
+        "content": "Les modifications seront notifiées au moins 7 jours avant leur entrée en vigueur via des avis dans l'application.\n\nCette politique entre en vigueur le 1er mars 2025."
+      }
+    }
+  }
+}

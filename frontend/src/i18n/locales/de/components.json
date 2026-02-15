@@ -1,0 +1,98 @@
+{
+  "activityModal": {
+    "addTitle": "Aktivität hinzufügen",
+    "editTitle": "Aktivität bearbeiten",
+    "time": "Uhrzeit",
+    "title": "Titel",
+    "titlePlaceholder": "Titel der Aktivität eingeben",
+    "location": "Ort",
+    "locationPlaceholder": "Ort eingeben",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Beschreibung eingeben",
+    "type": "Aktivitätstyp",
+    "duration": "Geschätzte Dauer (Min.)",
+    "durationPlaceholder": "60",
+    "cost": "Geschätzte Kosten",
+    "actualCost": "Tatsächliche Ausgaben",
+    "costPlaceholder": "0",
+    "cancel": "Abbrechen",
+    "add": "Hinzufügen",
+    "save": "Speichern",
+    "validationError": "Eingabefehler",
+    "validationErrorMessage": "Bitte Uhrzeit, Titel und Ort eingeben",
+    "errorTitle": "Fehler",
+    "saveError": "Aktivität konnte nicht gespeichert werden",
+    "types": {
+      "meal": "Essen",
+      "sightseeing": "Besichtigung",
+      "shopping": "Einkaufen",
+      "experience": "Erlebnis",
+      "rest": "Pause",
+      "transport": "Transport",
+      "other": "Sonstiges"
+    }
+  },
+  "shareModal": {
+    "title": "Reise teilen",
+    "generate": "Teilen-Link erstellen",
+    "generateButton": "Link erstellen",
+    "generateDescription": "Erstellen Sie einen Link, um Ihren Reiseplan mit anderen zu teilen",
+    "generateError": "Teilen-Link konnte nicht erstellt werden",
+    "linkTitle": "Teilen-Link",
+    "copy": "Link kopieren",
+    "copied": "Kopiert!",
+    "copiedToClipboard": "In Zwischenablage kopiert",
+    "copyError": "Link konnte nicht kopiert werden",
+    "disable": "Teilen deaktivieren",
+    "disableConfirm": "Teilen deaktivieren? Bestehende Links funktionieren nicht mehr.",
+    "disableAction": "Deaktivieren",
+    "disableSuccess": "Teilen wurde deaktiviert",
+    "disableError": "Teilen konnte nicht deaktiviert werden",
+    "cancel": "Abbrechen",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "info": "Jeder mit diesem Link kann diesen Reiseplan ansehen. Das Deaktivieren widerruft den Zugriff.",
+    "expiry": {
+      "title": "Gültigkeitsdauer",
+      "none": "Kein Ablauf",
+      "7days": "7 Tage",
+      "30days": "30 Tage",
+      "90days": "90 Tage"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "Luftfeuchtigkeit",
+    "windSpeed": "Wind",
+    "feelsLike": "Gefühlt wie",
+    "timezone": "Ortszeit",
+    "timeDiff": "Zeitunterschied",
+    "noData": "Wetterdaten nicht verfügbar"
+  },
+  "popularDestinations": {
+    "title": "Beliebte Reiseziele",
+    "subtitle": "Trend der letzten 3 Monate",
+    "description": "Die beliebtesten Reiseziele echter Reisender",
+    "visitors": "{{count}} Besucher",
+    "avgDuration": "Ø {{days}} Tage",
+    "withTravelers": "Mit {{count}} Reisenden",
+    "popularSeason": "Beliebte Saison:"
+  },
+  "progressIndicator": {
+    "title": "Fortschritt",
+    "status": "{{completed}} erledigt / {{total}} Aktivitäten gesamt"
+  },
+  "destinationInsights": {
+    "header": "Basierend auf echten Reisedaten",
+    "avgDuration": "Ø Reisedauer",
+    "avgTravelers": "Ø Gruppengröße",
+    "popularBudget": "Beliebtes Budget",
+    "popularStyle": "Beliebter Stil",
+    "popularSeason": "Beliebte Reisezeit",
+    "bestNow": "Jetzt ist die beste Zeit!",
+    "topActivities": "Top-Aktivitäten aktueller Reisender (Top {{count}})",
+    "footer": "Basierend auf echten Reisedaten der letzten 3 Monate",
+    "loading": "Reiseziel-Infos laden...",
+    "days": "{{days}} Tage",
+    "people": "{{count}} Personen"
+  }
+}

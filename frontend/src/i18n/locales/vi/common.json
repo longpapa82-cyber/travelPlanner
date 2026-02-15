@@ -1,0 +1,75 @@
+{
+  "confirm": "OK",
+  "cancel": "Hu\u1ef7",
+  "save": "L\u01b0u",
+  "delete": "X\u00f3a",
+  "edit": "Ch\u1ec9nh s\u1eeda",
+  "close": "\u0110\u00f3ng",
+  "loading": "\u0110ang t\u1ea3i...",
+  "error": "L\u1ed7i",
+  "success": "Th\u00e0nh c\u00f4ng",
+  "retry": "Th\u1eed l\u1ea1i",
+  "back": "Quay l\u1ea1i",
+  "next": "Ti\u1ebfp",
+  "done": "Xong",
+  "copy": "Sao ch\u00e9p",
+  "search": "T\u00ecm ki\u1ebfm",
+  "noResults": "Kh\u00f4ng t\u00ecm th\u1ea5y k\u1ebft qu\u1ea3",
+  "like": "Th\u00edch",
+  "share": "Chia s\u1ebb",
+  "clear": "X\u00f3a",
+  "seeAll": "Xem t\u1ea5t c\u1ea3 \u2192",
+  "findOnProvider": "T\u00ecm tr\u00ean {{name}}",
+  "offlineMode": "Ngo\u1ea1i tuy\u1ebfn \u2014 hi\u1ec3n th\u1ecb d\u1eef li\u1ec7u \u0111\u00e3 l\u01b0u",
+  "offlinePending": "Ngo\u1ea1i tuy\u1ebfn \u2014 {{count}} thay \u0111\u1ed5i \u0111ang ch\u1edd",
+  "offlineSyncing": "\u0110ang \u0111\u1ed3ng b\u1ed9...",
+  "offlineSynced": "T\u1ea5t c\u1ea3 thay \u0111\u1ed5i \u0111\u00e3 \u0111\u01b0\u1ee3c \u0111\u1ed3ng b\u1ed9",
+  "errorBoundary": {
+    "title": "C\u00f3 g\u00ec \u0111\u00f3 kh\u00f4ng \u1ed5n",
+    "message": "\u0110\u00e3 x\u1ea3y ra l\u1ed7i kh\u00f4ng mong mu\u1ed1n.\n\u0110\u1eebng lo, ch\u00fang t\u00f4i s\u1ebd \u0111\u01b0a b\u1ea1n tr\u1edf l\u1ea1i ngay!",
+    "persistentTitle": "Ph\u00e1t hi\u1ec7n l\u1ed7i l\u1eb7p l\u1ea1i",
+    "persistentMessage": "L\u1ed7i n\u00e0y c\u1ee9 x\u1ea3y ra li\u00ean t\u1ee5c.\nVui l\u00f2ng th\u1eed t\u1ea3i l\u1ea1i \u1ee9ng d\u1ee5ng.",
+    "retry": "Th\u1eed l\u1ea1i",
+    "reload": "T\u1ea3i l\u1ea1i \u1ee9ng d\u1ee5ng",
+    "goHome": "V\u1ec1 trang ch\u1ee7",
+    "errorId": "M\u00e3 l\u1ed7i: {{id}}"
+  },
+  "tabs": {
+    "home": "Trang ch\u1ee7",
+    "trips": "Chuy\u1ebfn \u0111i",
+    "notifications": "Th\u00f4ng b\u00e1o",
+    "profile": "C\u00e1 nh\u00e2n"
+  },
+  "notifications": {
+    "emptyTitle": "Kh\u00f4ng c\u00f3 th\u00f4ng b\u00e1o",
+    "emptyMessage": "Th\u00f4ng b\u00e1o m\u1edbi s\u1ebd xu\u1ea5t hi\u1ec7n t\u1ea1i \u0111\u00e2y",
+    "markAllRead": "\u0110\u00e1nh d\u1ea5u t\u1ea5t c\u1ea3 \u0111\u00e3 \u0111\u1ecdc",
+    "deleteAll": "X\u00f3a t\u1ea5t c\u1ea3",
+    "deleteAllTitle": "X\u00f3a th\u00f4ng b\u00e1o",
+    "deleteAllConfirm": "X\u00f3a t\u1ea5t c\u1ea3 th\u00f4ng b\u00e1o?",
+    "allMarkedRead": "T\u1ea5t c\u1ea3 th\u00f4ng b\u00e1o \u0111\u00e3 \u0111\u01b0\u1ee3c \u0111\u00e1nh d\u1ea5u \u0111\u00e3 \u0111\u1ecdc",
+    "allDeleted": "T\u1ea5t c\u1ea3 th\u00f4ng b\u00e1o \u0111\u00e3 b\u1ecb x\u00f3a",
+    "error": "\u0110\u00e3 x\u1ea3y ra l\u1ed7i",
+    "fetchError": "Kh\u00f4ng th\u1ec3 t\u1ea3i th\u00f4ng b\u00e1o",
+    "cancel": "Hu\u1ef7",
+    "delete": "X\u00f3a",
+    "justNow": "V\u1eeba xong",
+    "minutesAgo": "{{count}} ph\u00fat tr\u01b0\u1edbc",
+    "hoursAgo": "{{count}} gi\u1edd tr\u01b0\u1edbc",
+    "daysAgo": "{{count}} ng\u00e0y tr\u01b0\u1edbc"
+  },
+  "pwa": {
+    "installTitle": "C\u00e0i \u0111\u1eb7t \u1ee9ng d\u1ee5ng",
+    "installMessage": "Th\u00eam v\u00e0o m\u00e0n h\u00ecnh ch\u00ednh \u0111\u1ec3 tr\u1ea3i nghi\u1ec7m nhanh h\u01a1n",
+    "install": "C\u00e0i \u0111\u1eb7t"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "C\u1ea7n x\u00e1c minh email",
+      "message": "Vui l\u00f2ng ki\u1ec3m tra h\u1ed9p th\u01b0 \u0111\u1ebfn \u0111\u1ec3 x\u00e1c minh email c\u1ee7a b\u1ea1n",
+      "resend": "G\u1eedi l\u1ea1i",
+      "sent": "\u0110\u00e3 g\u1eedi l\u1ea1i email x\u00e1c minh",
+      "error": "G\u1eedi l\u1ea1i th\u1ea5t b\u1ea1i"
+    }
+  }
+}

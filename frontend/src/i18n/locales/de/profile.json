@@ -1,0 +1,115 @@
+{
+  "title": "Profil",
+  "guest": "Gast",
+  "sections": {
+    "account": "Konto",
+    "settings": "Einstellungen",
+    "support": "Support",
+    "admin": "Admin"
+  },
+  "menu": {
+    "editProfile": "Profil bearbeiten",
+    "changePassword": "Passwort ändern",
+    "twoFactor": "Zwei-Faktor-Auth.",
+    "twoFactorEnabled": "Aktiviert",
+    "twoFactorDisabled": "Deaktiviert",
+    "language": "Sprache",
+    "notifications": "Benachrichtigungen",
+    "notificationsEnabled": "Aktiviert",
+    "notificationsDisabled": "Deaktiviert",
+    "darkMode": "Dunkelmodus",
+    "help": "Hilfe",
+    "terms": "Nutzungsbedingungen",
+    "privacy": "Datenschutzrichtlinie",
+    "revenue": "Umsatz-Dashboard",
+    "admin": "Admin-Panel"
+  },
+  "editProfile": {
+    "title": "Profil bearbeiten",
+    "name": "Name",
+    "namePlaceholder": "Namen eingeben",
+    "changePhoto": "Profilbild ändern",
+    "save": "Speichern",
+    "alerts": {
+      "nameRequired": "Bitte geben Sie Ihren Namen ein",
+      "success": "Profil erfolgreich aktualisiert",
+      "failed": "Profil konnte nicht aktualisiert werden",
+      "photoSuccess": "Profilbild aktualisiert",
+      "photoFailed": "Profilbild konnte nicht aktualisiert werden",
+      "permissionDenied": "Fotoberechtigungen erforderlich"
+    }
+  },
+  "changePassword": {
+    "title": "Passwort ändern",
+    "current": "Aktuelles Passwort",
+    "currentPlaceholder": "Aktuelles Passwort eingeben",
+    "new": "Neues Passwort",
+    "newPlaceholder": "Neues Passwort eingeben (mind. 6 Zeichen)",
+    "confirm": "Neues Passwort bestätigen",
+    "confirmPlaceholder": "Neues Passwort erneut eingeben",
+    "submit": "Passwort ändern",
+    "alerts": {
+      "allFieldsRequired": "Bitte füllen Sie alle Felder aus",
+      "minLength": "Neues Passwort muss mindestens 6 Zeichen lang sein",
+      "mismatch": "Neue Passwörter stimmen nicht überein",
+      "success": "Passwort erfolgreich geändert",
+      "failed": "Passwort konnte nicht geändert werden"
+    }
+  },
+  "languageSelector": {
+    "title": "Sprache wählen",
+    "description": "Wählen Sie Ihre bevorzugte Sprache"
+  },
+  "logout": {
+    "title": "Abmelden",
+    "message": "Möchten Sie sich wirklich abmelden?",
+    "button": "Abmelden"
+  },
+  "deleteAccount": {
+    "title": "Konto löschen",
+    "message": "Das Löschen Ihres Kontos entfernt alle Daten dauerhaft. Sind Sie sicher?",
+    "button": "Konto löschen",
+    "alerts": {
+      "success": "Konto erfolgreich gelöscht",
+      "failed": "Konto konnte nicht gelöscht werden"
+    }
+  },
+  "version": "Version",
+  "analytics": {
+    "title": "Reisestatistiken",
+    "totalTrips": "Gesamt",
+    "completedTrips": "Abgeschlossen",
+    "ongoingTrips": "Laufend",
+    "upcomingTrips": "Geplant",
+    "totalDays": "Gesamttage",
+    "avgDuration": "Ø Dauer",
+    "days": " Tage",
+    "countriesVisited": "Länder",
+    "countries": " Länder",
+    "totalSpent": "Gesamtausgaben",
+    "totalBudget": "Gesamtbudget",
+    "topDestinations": "Top-Reiseziele",
+    "times": " mal",
+    "activities": "Aktivitäten",
+    "completedOf": "{{completed}} / {{total}} erledigt",
+    "noData": "Noch keine Reisedaten",
+    "loading": "Statistiken laden..."
+  },
+  "revenue": {
+    "last30Days": "Letzte 30 Tage",
+    "totalClicks": "Klicks gesamt",
+    "conversions": "Conversions",
+    "conversionRate": "Conv.-Rate",
+    "commission": "Provision",
+    "highlights": "Highlights",
+    "topProvider": "Top-Anbieter",
+    "topDestination": "Top-Reiseziel",
+    "totalRevenue": "Gesamtumsatz",
+    "byProvider": "Nach Anbieter",
+    "clicks": "Klicks",
+    "conv": "Conv.",
+    "noData": "Noch keine Daten verfügbar",
+    "adminOnly": "Admin-Zugriff erforderlich",
+    "loadError": "Daten konnten nicht geladen werden"
+  }
+}

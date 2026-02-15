@@ -1,0 +1,58 @@
+{
+  "greeting": "Hallo 👋",
+  "heroTitle": "{{name}}s Reisen",
+  "subtitle": "Bereit für Ihr nächstes Abenteuer?",
+  "createTrip": "KI-Reiseplan erstellen",
+  "stats": {
+    "completed": "Abgeschlossen",
+    "ongoing": "Laufend",
+    "upcoming": "Geplant"
+  },
+  "featured": {
+    "title": "Tolle Reiseziele für jetzt",
+    "subtitle": "Beliebte Reiseziele entdecken",
+    "seeAll": "Alle anzeigen →"
+  },
+  "destinations": {
+    "tokyo": {
+      "name": "Tokio",
+      "country": "Japan",
+      "description": "Wo Tradition auf Moderne trifft"
+    },
+    "osaka": {
+      "name": "Osaka",
+      "country": "Japan",
+      "description": "Stadt der Aromen und lebhaften Straßen"
+    },
+    "bangkok": {
+      "name": "Bangkok",
+      "country": "Thailand",
+      "description": "Goldene Tempel und Nachtmärkte"
+    },
+    "danang": {
+      "name": "Da Nang",
+      "country": "Vietnam",
+      "description": "Wunderschöne Strände und tolles Essen"
+    },
+    "paris": {
+      "name": "Paris",
+      "country": "Frankreich",
+      "description": "Stadt der Kunst und Romantik"
+    },
+    "singapore": {
+      "name": "Singapur",
+      "country": "Singapur",
+      "description": "Kulinarische Reise in einer futuristischen Stadt"
+    }
+  },
+  "quickActions": {
+    "myTrips": "Meine Reisen",
+    "myTripsDesc": "Laufende Reisen prüfen",
+    "inspiration": "Inspiration",
+    "inspirationDesc": "Neue Ideen entdecken"
+  },
+  "tip": {
+    "title": "💡 Vorausplanen",
+    "description": "KI erstellt den optimalen Reiseplan unter Berücksichtigung von Wetter, beliebten Orten und Reiserouten."
+  }
+}

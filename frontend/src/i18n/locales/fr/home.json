@@ -1,0 +1,26 @@
+{
+  "greeting": "Bonjour 👋",
+  "heroTitle": "Les voyages de {{name}}",
+  "subtitle": "Prêt(e) à planifier votre prochaine aventure ?",
+  "createTrip": "Créer un plan de voyage IA",
+  "stats": { "completed": "Terminés", "ongoing": "En cours", "upcoming": "À venir" },
+  "featured": { "title": "Belles destinations du moment", "subtitle": "Explorez les destinations populaires", "seeAll": "Tout voir →" },
+  "destinations": {
+    "tokyo": { "name": "Tokyo", "country": "Japon", "description": "Là où tradition et modernité se rencontrent" },
+    "osaka": { "name": "Osaka", "country": "Japon", "description": "Ville de saveurs et de rues animées" },
+    "bangkok": { "name": "Bangkok", "country": "Thaïlande", "description": "Temples dorés et marchés nocturnes" },
+    "danang": { "name": "Da Nang", "country": "Viêt Nam", "description": "Belles plages et cuisine savoureuse" },
+    "paris": { "name": "Paris", "country": "France", "description": "Ville de l'art et de la romance" },
+    "singapore": { "name": "Singapour", "country": "Singapour", "description": "Un voyage culinaire dans une ville futuriste" }
+  },
+  "quickActions": {
+    "myTrips": "Mes voyages",
+    "myTripsDesc": "Voir les voyages en cours",
+    "inspiration": "Inspiration",
+    "inspirationDesc": "Explorer de nouvelles idées"
+  },
+  "tip": {
+    "title": "💡 Planifiez à l'avance",
+    "description": "L'IA crée l'itinéraire optimal en tenant compte de la météo locale, des lieux populaires et des trajets."
+  }
+}

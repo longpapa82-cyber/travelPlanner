@@ -1,0 +1,55 @@
+{
+  "title": "Admin-Panel",
+  "menu": {
+    "users": "Benutzerverwaltung",
+    "errorLogs": "Fehlerprotokolle",
+    "revenue": "Umsatz-Dashboard"
+  },
+  "dashboard": {
+    "subtitle": "Service-Verwaltungstools"
+  },
+  "users": {
+    "title": "Benutzerverwaltung",
+    "totalUsers": "Gesamtnutzer",
+    "todaySignups": "Registrierungen heute",
+    "todayActive": "Heute aktiv",
+    "weeklyActive": "Wöchentlich aktiv",
+    "people": "",
+    "signupTrend": "Registrierungen (letzte 30 Tage)",
+    "providerBreakdown": "Registrierungsmethode",
+    "memberList": "Mitgliederliste",
+    "searchPlaceholder": "Name oder E-Mail suchen",
+    "allProviders": "Alle",
+    "lastLogin": "Letzter Login",
+    "signupDate": "Beigetreten",
+    "trips": "Reisen",
+    "never": "Nie",
+    "noUsers": "Keine Benutzer gefunden",
+    "loadMore": "Mehr laden"
+  },
+  "errors": {
+    "title": "Fehlerprotokolle",
+    "todayErrors": "Heute",
+    "weeklyErrors": "Diese Woche",
+    "unresolved": "Ungelöst",
+    "affectedUsers": "Betroffene Nutzer",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "Fehler (letzte 24 Std.)",
+    "topErrors": "Top 10 Fehler",
+    "errorList": "Fehlerliste",
+    "allSeverity": "Alle",
+    "error": "Fehler",
+    "warning": "Warnung",
+    "fatal": "Kritisch",
+    "unresolvedOnly": "Nur ungelöste",
+    "resolve": "Lösen",
+    "resolved": "Gelöst",
+    "screen": "Bildschirm",
+    "device": "Gerät",
+    "version": "Version",
+    "noErrors": "Keine Fehler gefunden",
+    "loadMore": "Mehr laden",
+    "occurrences": "mal"
+  }
+}

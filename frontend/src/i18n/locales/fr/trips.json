@@ -1,0 +1,411 @@
+{
+  "create": {
+    "title": "Créer un nouveau voyage",
+    "hero": {
+      "title": "Prêt(e) pour une nouvelle aventure ?",
+      "subtitle": "Choisissez simplement une destination et l'IA créera le plan de voyage parfait pour vous"
+    },
+    "destination": {
+      "title": "Où allez-vous ?",
+      "placeholder": "Entrez une ville ou un pays",
+      "popular": "Destinations populaires"
+    },
+    "destinations": {
+      "tokyo": "Tokyo",
+      "osaka": "Osaka",
+      "bangkok": "Bangkok",
+      "danang": "Da Nang",
+      "paris": "Paris",
+      "singapore": "Singapour",
+      "london": "Londres",
+      "newyork": "New York",
+      "barcelona": "Barcelone"
+    },
+    "duration": {
+      "title": "Combien de temps restez-vous ?",
+      "options": {
+        "3days": "3 jours",
+        "1week": "1 semaine",
+        "2weeks": "2 semaines",
+        "1month": "1 mois"
+      },
+      "custom": "Personnalisé",
+      "totalDays": "Voyage de {{days}} jours"
+    },
+    "travelers": {
+      "title": "Qui vous accompagne ?",
+      "options": {
+        "solo": "Moi seul(e)",
+        "two": "2 personnes",
+        "group": "3-4 personnes",
+        "large": "5+ personnes"
+      }
+    },
+    "dates": {
+      "title": "Quand partez-vous ?",
+      "start": "Départ",
+      "end": "Retour",
+      "selectStart": "Sélectionner la date de départ",
+      "selectEnd": "Sélectionner la date de retour"
+    },
+    "notes": {
+      "title": "Des projets particuliers ?",
+      "placeholder": "ex. : gastronomie, visites, voyage libre...",
+      "optional": "(Facultatif)"
+    },
+    "budget": {
+      "title": "Budget du voyage (Facultatif)",
+      "placeholder": "Entrez le budget total",
+      "currency": "Devise"
+    },
+    "aiInfo": {
+      "title": "Génération automatique par IA",
+      "description": "L'IA créera le plan de voyage optimal en fonction de votre destination et de votre calendrier"
+    },
+    "submit": "Créer le plan de voyage",
+    "generating": "L'IA crée votre plan de voyage...",
+    "progress": {
+      "analyzing": "Analyse de la destination",
+      "planning": "Création de l'itinéraire",
+      "weather": "Vérification de la météo",
+      "finalizing": "Finalisation de votre plan"
+    },
+    "preferences": {
+      "title": "Style de voyage",
+      "budget": {
+        "title": "Niveau de budget",
+        "budget": "Économique",
+        "midRange": "Moyen",
+        "luxury": "Luxe"
+      },
+      "style": {
+        "title": "Rythme de voyage",
+        "relaxed": "Détendu",
+        "balanced": "Équilibré",
+        "active": "Actif",
+        "adventure": "Aventure"
+      },
+      "interests": {
+        "title": "Centres d'intérêt",
+        "food": "Gastronomie",
+        "culture": "Culture",
+        "nature": "Nature",
+        "shopping": "Shopping",
+        "nightlife": "Vie nocturne",
+        "history": "Histoire",
+        "art": "Art",
+        "sports": "Sports",
+        "photography": "Photographie"
+      }
+    },
+    "alerts": {
+      "destinationRequired": "Veuillez entrer une destination",
+      "datesRequired": "Veuillez sélectionner les dates de voyage",
+      "createFailed": "Échec de la création du voyage",
+      "startDateRequired": "Veuillez sélectionner une date de départ"
+    }
+  },
+  "list": {
+    "title": "Mes voyages",
+    "searchPlaceholder": "Rechercher des voyages...",
+    "filters": {
+      "all": "Tous",
+      "upcoming": "À venir",
+      "ongoing": "En cours",
+      "completed": "Terminés"
+    },
+    "sections": {
+      "ongoing": "Voyages en cours",
+      "upcoming": "Voyages à venir",
+      "completed": "Voyages passés (consultation uniquement)"
+    },
+    "status": {
+      "upcoming": "À venir",
+      "ongoing": "En cours",
+      "completed": "Terminé"
+    },
+    "empty": {
+      "title": "Aucun voyage planifié",
+      "description": "Commencez à planifier un nouveau voyage !",
+      "cta": "Lancer la planification IA",
+      "noResults": "Aucun résultat trouvé",
+      "noResultsDescription": "Essayez un autre terme de recherche ou filtre",
+      "clearFilters": "Réinitialiser les filtres"
+    },
+    "error": {
+      "title": "Impossible de charger les voyages",
+      "description": "Vérifiez votre connexion réseau et réessayez",
+      "retry": "Réessayer",
+      "refreshFailed": "Échec de l'actualisation"
+    },
+    "card": {
+      "days": "{{days}} jours",
+      "travelers": "{{count}} voyageurs",
+      "dDay": "J-{{days}}",
+      "dDayToday": "Jour J",
+      "dDayPassed": "J+{{days}}"
+    },
+    "alerts": {
+      "deleteTitle": "Supprimer le voyage",
+      "deleteMessage": "Supprimer « {{name}} » ? Cette action est irréversible.",
+      "deleteFailed": "Échec de la suppression",
+      "error": "Erreur",
+      "cancel": "Annuler",
+      "delete": "Supprimer"
+    },
+    "sort": {
+      "startDate": "Par date de départ",
+      "createdAt": "Par date de création",
+      "destination": "Par destination"
+    },
+    "advancedFilters": {
+      "toggle": "Filtres",
+      "country": "Pays",
+      "countryPlaceholder": "Entrez un pays",
+      "dateRange": "Période de départ",
+      "dateFrom": "Du",
+      "dateTo": "Au",
+      "budget": "Fourchette de budget",
+      "budgetMin": "Min",
+      "budgetMax": "Max",
+      "reset": "Réinitialiser les filtres",
+      "apply": "Appliquer",
+      "activeCount": "{{count}} filtre(s) actif(s)"
+    },
+    "resultCount": "{{count}} voyage(s)",
+    "createButton": "Créer un nouveau voyage",
+    "info": {
+      "days": "{{count}} jours",
+      "itineraries": "{{count}} itinéraires",
+      "travelers": "{{count}} voyageurs"
+    },
+    "accessibility": {
+      "trip": "voyage",
+      "viewDetail": "Voir les détails du voyage",
+      "deleteTrip": "Supprimer",
+      "search": "Rechercher des voyages",
+      "searchHint": "Rechercher des voyages par destination"
+    },
+    "pagination": {
+      "showMore": "Afficher plus",
+      "showing": "{{shown}} / {{total}}"
+    }
+  },
+  "detail": {
+    "loading": "Chargement des infos du voyage...",
+    "notFound": {
+      "title": "Voyage introuvable",
+      "description": "Ce voyage n'existe pas ou a été supprimé",
+      "back": "Retour"
+    },
+    "status": {
+      "ongoing": "En cours",
+      "completed": "Terminé"
+    },
+    "completedBanner": {
+      "title": "Voyage terminé",
+      "description": "Ce voyage est terminé et ne peut plus être modifié. Revivez vos précieux souvenirs !"
+    },
+    "readOnlyMessage": "Les activités terminées ne peuvent pas être modifiées",
+    "progress": "Progression globale {{percentage}} %",
+    "durationDays": "{{count}} jours",
+    "travelers": "{{count}} voyageurs",
+    "durationMinutes": "{{minutes}} min",
+    "estimatedCost": "{{cost}} $",
+    "dayLabel": "Jour {{day}}",
+    "emptyItinerary": "Aucun itinéraire créé",
+    "emptyItineraryMessage": "Ajoutez des activités à votre voyage",
+    "addActivity": "Ajouter une activité",
+    "affiliateSection": "Réserver hôtels et activités",
+    "affiliateSubtitle": "Réservez les meilleurs hébergements et expériences à {{destination}}",
+    "tabs": {
+      "itinerary": "Itinéraire",
+      "map": "Carte",
+      "info": "Infos",
+      "share": "Partager"
+    },
+    "map": {
+      "noLocations": "Aucun lieu à afficher",
+      "noLocationsMessage": "Créez un nouveau voyage pour voir les activités avec des données de localisation",
+      "activitiesCount": "{{count}} activités",
+      "allDays": "Tous",
+      "dayLabel": "Jour {{day}}",
+      "openInMaps": "Voir sur Google Maps",
+      "tapToOpen": "Appuyer pour ouvrir la carte",
+      "durationMin": "{{min}} min"
+    },
+    "budget": {
+      "title": "Résumé du budget",
+      "total": "Budget total",
+      "estimated": "Estimé",
+      "spent": "Dépensé",
+      "remaining": "Restant",
+      "byCategory": "Par catégorie",
+      "byDay": "Par jour",
+      "perDay": "Par jour",
+      "dayLabel": "Jour {{day}}"
+    },
+    "activityTypes": {
+      "meal": "Repas",
+      "sightseeing": "Visite",
+      "shopping": "Shopping",
+      "experience": "Expérience",
+      "rest": "Repos",
+      "transport": "Transport",
+      "accommodation": "Hébergement",
+      "other": "Autre"
+    },
+    "accessibility": {
+      "completed": "Terminé",
+      "incomplete": "Non terminé",
+      "reorder": "Réorganiser",
+      "reorderHint": "Appui long pour réorganiser",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "goBack": "Retour",
+      "editTrip": "Modifier le voyage",
+      "duplicate": "Dupliquer le voyage",
+      "duplicating": "Duplication...",
+      "share": "Partager",
+      "exportIcal": "Exporter vers le calendrier",
+      "addActivityToDay": "Ajouter une activité au jour {{day}}"
+    },
+    "alerts": {
+      "deleteTitle": "Supprimer l'activité",
+      "deleteMessage": "Supprimer cette activité ?",
+      "deleteFailed": "Échec de la suppression",
+      "error": "Erreur",
+      "fetchError": "Impossible de charger les infos du voyage",
+      "duplicateSuccess": "Le voyage a été dupliqué",
+      "duplicateCompleteTitle": "Duplication terminée",
+      "duplicateError": "Échec de la duplication du voyage",
+      "confirm": "OK",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "success": "Succès",
+      "deleteSuccess": "Le voyage a été supprimé",
+      "deleteError": "Échec de la suppression du voyage",
+      "toggleError": "Échec de la mise à jour du statut",
+      "reorderError": "Échec de la réorganisation"
+    },
+    "photos": {
+      "addCover": "Ajouter une photo de couverture",
+      "changeCover": "Changer la photo de couverture",
+      "addPhoto": "Ajouter une photo",
+      "photoCount": "{{count}} photos",
+      "uploadSuccess": "Photo téléchargée",
+      "uploadFailed": "Échec du téléchargement de la photo",
+      "viewAll": "Voir toutes les photos"
+    },
+    "collaboration": {
+      "title": "Collaborateurs",
+      "invite": "Inviter",
+      "emailPlaceholder": "Entrez une adresse e-mail",
+      "roleViewer": "Lecteur",
+      "roleEditor": "Éditeur",
+      "owner": "Propriétaire",
+      "remove": "Retirer",
+      "inviteSuccess": "Invitation envoyée",
+      "inviteFailed": "Échec de l'invitation",
+      "removeFailed": "Échec du retrait",
+      "noCollaborators": "Aucun collaborateur pour le moment"
+    },
+    "expenses": {
+      "title": "Dépenses",
+      "addExpense": "Ajouter une dépense",
+      "total": "Total dépensé",
+      "myShare": "Ma part",
+      "iOwe": "Je dois",
+      "owedToMe": "On me doit",
+      "settled": "Tout réglé",
+      "paidBy": "Payé par",
+      "splitWith": "Partagé avec",
+      "splitEqual": "Partager équitablement",
+      "splitExact": "Montants personnalisés",
+      "balances": "Soldes",
+      "settlements": "Règlements",
+      "settleUp": "Régler",
+      "settledMark": "Réglé",
+      "noExpenses": "Aucune dépense",
+      "noExpensesMessage": "Ajoutez des dépenses pour suivre les frais du groupe",
+      "description": "Description",
+      "amount": "Montant",
+      "category": "Catégorie",
+      "date": "Date",
+      "owes": "doit",
+      "categories": {
+        "food": "Nourriture",
+        "transport": "Transport",
+        "accommodation": "Hébergement",
+        "activity": "Activité",
+        "shopping": "Shopping",
+        "other": "Autre"
+      },
+      "tabs": {
+        "expenses": "Dépenses",
+        "balances": "Soldes"
+      },
+      "alerts": {
+        "createFailed": "Échec de l'ajout de la dépense",
+        "deleteFailed": "Échec de la suppression de la dépense",
+        "settleFailed": "Échec du règlement",
+        "deleteTitle": "Supprimer la dépense",
+        "deleteMessage": "Supprimer cette dépense ?"
+      }
+    }
+  },
+  "edit": {
+    "title": "Modifier le voyage",
+    "loading": "Chargement des infos du voyage...",
+    "notFound": "Voyage introuvable",
+    "goBack": "Retour",
+    "heroTitle": "Modifier les infos du voyage",
+    "ongoingWarning": "Ce voyage est en cours. Soyez prudent en modifiant les dates.",
+    "destination": {
+      "title": "Destination",
+      "placeholder": "Ou entrer manuellement"
+    },
+    "dates": {
+      "title": "Dates du voyage",
+      "changeWarning": "Attention",
+      "totalDays": "Voyage de {{days}} jours"
+    },
+    "travelers": {
+      "title": "Voyageurs",
+      "placeholder": "Ou entrer manuellement"
+    },
+    "notes": {
+      "title": "Notes du voyage (Facultatif)",
+      "placeholder": "N'hésitez pas à ajouter des objectifs ou des exigences particulières"
+    },
+    "budget": {
+      "title": "Budget du voyage (Facultatif)",
+      "placeholder": "Entrez le budget total",
+      "currency": "Devise"
+    },
+    "submit": "Enregistrer les infos du voyage",
+    "saving": "Enregistrement...",
+    "status": {
+      "upcoming": "À venir",
+      "ongoing": "En cours",
+      "completed": "Terminé"
+    },
+    "alerts": {
+      "cannotEditCompleted": "Les voyages terminés ne peuvent pas être modifiés.",
+      "cannotEditTitle": "Modification impossible",
+      "loadError": "Impossible de charger les infos du voyage.",
+      "destinationRequired": "Veuillez entrer une destination.",
+      "requiredInput": "Requis",
+      "datesRequired": "Veuillez sélectionner les dates de voyage.",
+      "endDateError": "La date de fin doit être postérieure à la date de début.",
+      "dateError": "Erreur de date",
+      "dateChangeWarningTitle": "Avertissement de changement de date",
+      "dateChangeWarning": "Modifier les dates d'un voyage en cours peut affecter le programme. Continuer ?",
+      "continue": "Continuer",
+      "saveSuccess": "Modifications enregistrées",
+      "saveSuccessMessage": "Les infos du voyage ont été mises à jour.",
+      "saveFailed": "Échec de l'enregistrement",
+      "saveError": "Impossible d'enregistrer les infos du voyage. Veuillez réessayer."
+    }
+  }
+}

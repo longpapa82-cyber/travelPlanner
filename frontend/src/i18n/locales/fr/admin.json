@@ -1,0 +1,55 @@
+{
+  "title": "Panneau d'administration",
+  "menu": {
+    "users": "Gestion des utilisateurs",
+    "errorLogs": "Journaux d'erreurs",
+    "revenue": "Tableau de bord des revenus"
+  },
+  "dashboard": {
+    "subtitle": "Outils de gestion du service"
+  },
+  "users": {
+    "title": "Gestion des utilisateurs",
+    "totalUsers": "Total des utilisateurs",
+    "todaySignups": "Inscriptions du jour",
+    "todayActive": "Actifs aujourd'hui",
+    "weeklyActive": "Actifs cette semaine",
+    "people": "",
+    "signupTrend": "Inscriptions (30 derniers jours)",
+    "providerBreakdown": "Méthode d'inscription",
+    "memberList": "Liste des membres",
+    "searchPlaceholder": "Rechercher un nom ou un e-mail",
+    "allProviders": "Tous",
+    "lastLogin": "Dernière connexion",
+    "signupDate": "Inscrit le",
+    "trips": "Voyages",
+    "never": "Jamais",
+    "noUsers": "Aucun utilisateur trouvé",
+    "loadMore": "Charger plus"
+  },
+  "errors": {
+    "title": "Journaux d'erreurs",
+    "todayErrors": "Aujourd'hui",
+    "weeklyErrors": "Cette semaine",
+    "unresolved": "Non résolues",
+    "affectedUsers": "Utilisateurs affectés",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "Erreurs (dernières 24 h)",
+    "topErrors": "Top 10 des erreurs",
+    "errorList": "Liste des erreurs",
+    "allSeverity": "Toutes",
+    "error": "Erreur",
+    "warning": "Avertissement",
+    "fatal": "Fatale",
+    "unresolvedOnly": "Non résolues uniquement",
+    "resolve": "Résoudre",
+    "resolved": "Résolue",
+    "screen": "Écran",
+    "device": "Appareil",
+    "version": "Version",
+    "noErrors": "Aucune erreur trouvée",
+    "loadMore": "Charger plus",
+    "occurrences": "fois"
+  }
+}

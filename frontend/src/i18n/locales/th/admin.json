@@ -1,0 +1,55 @@
+{
+  "title": "แผงควบคุมผู้ดูแล",
+  "menu": {
+    "users": "จัดการผู้ใช้",
+    "errorLogs": "บันทึกข้อผิดพลาด",
+    "revenue": "แดชบอร์ดรายได้"
+  },
+  "dashboard": {
+    "subtitle": "เครื่องมือจัดการบริการ"
+  },
+  "users": {
+    "title": "จัดการผู้ใช้",
+    "totalUsers": "ผู้ใช้ทั้งหมด",
+    "todaySignups": "สมัครวันนี้",
+    "todayActive": "ใช้งานวันนี้",
+    "weeklyActive": "ใช้งานรายสัปดาห์",
+    "people": "",
+    "signupTrend": "การสมัครสมาชิก (30 วันล่าสุด)",
+    "providerBreakdown": "วิธีการสมัคร",
+    "memberList": "รายชื่อสมาชิก",
+    "searchPlaceholder": "ค้นหาชื่อหรืออีเมล",
+    "allProviders": "ทั้งหมด",
+    "lastLogin": "เข้าสู่ระบบล่าสุด",
+    "signupDate": "วันที่สมัคร",
+    "trips": "ทริป",
+    "never": "ไม่เคย",
+    "noUsers": "ไม่พบผู้ใช้",
+    "loadMore": "โหลดเพิ่มเติม"
+  },
+  "errors": {
+    "title": "บันทึกข้อผิดพลาด",
+    "todayErrors": "วันนี้",
+    "weeklyErrors": "สัปดาห์นี้",
+    "unresolved": "ยังไม่แก้ไข",
+    "affectedUsers": "ผู้ใช้ที่ได้รับผลกระทบ",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "ข้อผิดพลาด (24 ชั่วโมงล่าสุด)",
+    "topErrors": "ข้อผิดพลาด 10 อันดับแรก",
+    "errorList": "รายการข้อผิดพลาด",
+    "allSeverity": "ทั้งหมด",
+    "error": "ข้อผิดพลาด",
+    "warning": "คำเตือน",
+    "fatal": "ร้ายแรง",
+    "unresolvedOnly": "ยังไม่แก้ไขเท่านั้น",
+    "resolve": "แก้ไข",
+    "resolved": "แก้ไขแล้ว",
+    "screen": "หน้าจอ",
+    "device": "อุปกรณ์",
+    "version": "เวอร์ชัน",
+    "noErrors": "ไม่พบข้อผิดพลาด",
+    "loadMore": "โหลดเพิ่มเติม",
+    "occurrences": "ครั้ง"
+  }
+}

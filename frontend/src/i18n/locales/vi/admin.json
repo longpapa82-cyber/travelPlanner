@@ -1,0 +1,55 @@
+{
+  "title": "Qu\u1ea3n tr\u1ecb",
+  "menu": {
+    "users": "Qu\u1ea3n l\u00fd ng\u01b0\u1eddi d\u00f9ng",
+    "errorLogs": "Nh\u1eadt k\u00fd l\u1ed7i",
+    "revenue": "B\u1ea3ng doanh thu"
+  },
+  "dashboard": {
+    "subtitle": "C\u00f4ng c\u1ee5 qu\u1ea3n l\u00fd d\u1ecbch v\u1ee5"
+  },
+  "users": {
+    "title": "Qu\u1ea3n l\u00fd ng\u01b0\u1eddi d\u00f9ng",
+    "totalUsers": "T\u1ed5ng ng\u01b0\u1eddi d\u00f9ng",
+    "todaySignups": "\u0110\u0103ng k\u00fd h\u00f4m nay",
+    "todayActive": "Ho\u1ea1t \u0111\u1ed9ng h\u00f4m nay",
+    "weeklyActive": "Ho\u1ea1t \u0111\u1ed9ng trong tu\u1ea7n",
+    "people": "",
+    "signupTrend": "\u0110\u0103ng k\u00fd (30 ng\u00e0y qua)",
+    "providerBreakdown": "Ph\u01b0\u01a1ng th\u1ee9c \u0111\u0103ng k\u00fd",
+    "memberList": "Danh s\u00e1ch th\u00e0nh vi\u00ean",
+    "searchPlaceholder": "T\u00ecm t\u00ean ho\u1eb7c email",
+    "allProviders": "T\u1ea5t c\u1ea3",
+    "lastLogin": "L\u1ea7n \u0111\u0103ng nh\u1eadp cu\u1ed1i",
+    "signupDate": "Ng\u00e0y tham gia",
+    "trips": "Chuy\u1ebfn \u0111i",
+    "never": "Ch\u01b0a bao gi\u1edd",
+    "noUsers": "Kh\u00f4ng t\u00ecm th\u1ea5y ng\u01b0\u1eddi d\u00f9ng",
+    "loadMore": "Xem th\u00eam"
+  },
+  "errors": {
+    "title": "Nh\u1eadt k\u00fd l\u1ed7i",
+    "todayErrors": "H\u00f4m nay",
+    "weeklyErrors": "Tu\u1ea7n n\u00e0y",
+    "unresolved": "Ch\u01b0a gi\u1ea3i quy\u1ebft",
+    "affectedUsers": "Ng\u01b0\u1eddi d\u00f9ng b\u1ecb \u1ea3nh h\u01b0\u1edfng",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "L\u1ed7i (24 gi\u1edd qua)",
+    "topErrors": "Top 10 l\u1ed7i",
+    "errorList": "Danh s\u00e1ch l\u1ed7i",
+    "allSeverity": "T\u1ea5t c\u1ea3",
+    "error": "L\u1ed7i",
+    "warning": "C\u1ea3nh b\u00e1o",
+    "fatal": "Nghi\u00eam tr\u1ecdng",
+    "unresolvedOnly": "Ch\u1ec9 ch\u01b0a gi\u1ea3i quy\u1ebft",
+    "resolve": "Gi\u1ea3i quy\u1ebft",
+    "resolved": "\u0110\u00e3 gi\u1ea3i quy\u1ebft",
+    "screen": "M\u00e0n h\u00ecnh",
+    "device": "Thi\u1ebft b\u1ecb",
+    "version": "Phi\u00ean b\u1ea3n",
+    "noErrors": "Kh\u00f4ng t\u00ecm th\u1ea5y l\u1ed7i",
+    "loadMore": "Xem th\u00eam",
+    "occurrences": "l\u1ea7n"
+  }
+}

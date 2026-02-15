@@ -1,0 +1,115 @@
+{
+  "title": "โปรไฟล์",
+  "guest": "ผู้เยี่ยมชม",
+  "sections": {
+    "account": "บัญชี",
+    "settings": "การตั้งค่า",
+    "support": "ช่วยเหลือ",
+    "admin": "ผู้ดูแลระบบ"
+  },
+  "menu": {
+    "editProfile": "แก้ไขโปรไฟล์",
+    "changePassword": "เปลี่ยนรหัสผ่าน",
+    "twoFactor": "การยืนยันตัวตนสองขั้นตอน",
+    "twoFactorEnabled": "เปิดใช้งาน",
+    "twoFactorDisabled": "ปิดใช้งาน",
+    "language": "ภาษา",
+    "notifications": "การแจ้งเตือน",
+    "notificationsEnabled": "เปิดใช้งาน",
+    "notificationsDisabled": "ปิดใช้งาน",
+    "darkMode": "โหมดมืด",
+    "help": "ช่วยเหลือ",
+    "terms": "ข้อกำหนดการใช้บริการ",
+    "privacy": "นโยบายความเป็นส่วนตัว",
+    "revenue": "แดชบอร์ดรายได้",
+    "admin": "แผงควบคุมผู้ดูแล"
+  },
+  "editProfile": {
+    "title": "แก้ไขโปรไฟล์",
+    "name": "ชื่อ",
+    "namePlaceholder": "กรอกชื่อของคุณ",
+    "changePhoto": "เปลี่ยนรูปโปรไฟล์",
+    "save": "บันทึก",
+    "alerts": {
+      "nameRequired": "กรุณากรอกชื่อ",
+      "success": "อัปเดตโปรไฟล์เรียบร้อยแล้ว",
+      "failed": "อัปเดตโปรไฟล์ไม่สำเร็จ",
+      "photoSuccess": "อัปเดตรูปโปรไฟล์แล้ว",
+      "photoFailed": "อัปเดตรูปโปรไฟล์ไม่สำเร็จ",
+      "permissionDenied": "ต้องอนุญาตการเข้าถึงรูปภาพ"
+    }
+  },
+  "changePassword": {
+    "title": "เปลี่ยนรหัสผ่าน",
+    "current": "รหัสผ่านปัจจุบัน",
+    "currentPlaceholder": "กรอกรหัสผ่านปัจจุบัน",
+    "new": "รหัสผ่านใหม่",
+    "newPlaceholder": "กรอกรหัสผ่านใหม่ (6 ตัวอักษรขึ้นไป)",
+    "confirm": "ยืนยันรหัสผ่านใหม่",
+    "confirmPlaceholder": "กรอกรหัสผ่านใหม่อีกครั้ง",
+    "submit": "เปลี่ยนรหัสผ่าน",
+    "alerts": {
+      "allFieldsRequired": "กรุณากรอกข้อมูลทุกช่อง",
+      "minLength": "รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร",
+      "mismatch": "รหัสผ่านใหม่ไม่ตรงกัน",
+      "success": "เปลี่ยนรหัสผ่านเรียบร้อยแล้ว",
+      "failed": "เปลี่ยนรหัสผ่านไม่สำเร็จ"
+    }
+  },
+  "languageSelector": {
+    "title": "เลือกภาษา",
+    "description": "เลือกภาษาที่คุณต้องการ"
+  },
+  "logout": {
+    "title": "ออกจากระบบ",
+    "message": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?",
+    "button": "ออกจากระบบ"
+  },
+  "deleteAccount": {
+    "title": "ลบบัญชี",
+    "message": "การลบบัญชีจะลบข้อมูลทั้งหมดอย่างถาวร คุณแน่ใจหรือไม่?",
+    "button": "ลบบัญชี",
+    "alerts": {
+      "success": "ลบบัญชีเรียบร้อยแล้ว",
+      "failed": "ลบบัญชีไม่สำเร็จ"
+    }
+  },
+  "version": "เวอร์ชัน",
+  "analytics": {
+    "title": "สถิติการเดินทาง",
+    "totalTrips": "ทริปทั้งหมด",
+    "completedTrips": "เสร็จสิ้น",
+    "ongoingTrips": "กำลังดำเนินการ",
+    "upcomingTrips": "กำลังจะมาถึง",
+    "totalDays": "จำนวนวันทั้งหมด",
+    "avgDuration": "ระยะเวลาเฉลี่ย",
+    "days": "วัน",
+    "countriesVisited": "ประเทศ",
+    "countries": "ประเทศ",
+    "totalSpent": "ใช้จ่ายทั้งหมด",
+    "totalBudget": "งบประมาณทั้งหมด",
+    "topDestinations": "จุดหมายยอดนิยม",
+    "times": "ครั้ง",
+    "activities": "กิจกรรม",
+    "completedOf": "{{completed}} / {{total}} เสร็จสิ้น",
+    "noData": "ยังไม่มีข้อมูลการเดินทาง",
+    "loading": "กำลังโหลดสถิติ..."
+  },
+  "revenue": {
+    "last30Days": "30 วันที่ผ่านมา",
+    "totalClicks": "คลิกทั้งหมด",
+    "conversions": "การแปลง",
+    "conversionRate": "อัตราการแปลง",
+    "commission": "ค่าคอมมิชชัน",
+    "highlights": "ไฮไลท์",
+    "topProvider": "ผู้ให้บริการอันดับสูงสุด",
+    "topDestination": "จุดหมายอันดับสูงสุด",
+    "totalRevenue": "รายได้ทั้งหมด",
+    "byProvider": "ตามผู้ให้บริการ",
+    "clicks": "คลิก",
+    "conv": "แปลง",
+    "noData": "ยังไม่มีข้อมูล",
+    "adminOnly": "ต้องมีสิทธิ์ผู้ดูแลระบบ",
+    "loadError": "โหลดข้อมูลไม่สำเร็จ"
+  }
+}

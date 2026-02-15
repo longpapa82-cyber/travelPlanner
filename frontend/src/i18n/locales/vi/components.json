@@ -1,0 +1,98 @@
+{
+  "activityModal": {
+    "addTitle": "Th\u00eam ho\u1ea1t \u0111\u1ed9ng",
+    "editTitle": "Ch\u1ec9nh s\u1eeda ho\u1ea1t \u0111\u1ed9ng",
+    "time": "Th\u1eddi gian",
+    "title": "Ti\u00eau \u0111\u1ec1",
+    "titlePlaceholder": "Nh\u1eadp ti\u00eau \u0111\u1ec1 ho\u1ea1t \u0111\u1ed9ng",
+    "location": "\u0110\u1ecba \u0111i\u1ec3m",
+    "locationPlaceholder": "Nh\u1eadp \u0111\u1ecba \u0111i\u1ec3m",
+    "description": "M\u00f4 t\u1ea3",
+    "descriptionPlaceholder": "Nh\u1eadp m\u00f4 t\u1ea3",
+    "type": "Lo\u1ea1i ho\u1ea1t \u0111\u1ed9ng",
+    "duration": "Th\u1eddi gian d\u1ef1 ki\u1ebfn (ph\u00fat)",
+    "durationPlaceholder": "60",
+    "cost": "Chi ph\u00ed d\u1ef1 ki\u1ebfn",
+    "actualCost": "Chi ph\u00ed th\u1ef1c t\u1ebf",
+    "costPlaceholder": "0",
+    "cancel": "Hu\u1ef7",
+    "add": "Th\u00eam",
+    "save": "L\u01b0u",
+    "validationError": "L\u1ed7i nh\u1eadp li\u1ec7u",
+    "validationErrorMessage": "Vui l\u00f2ng nh\u1eadp th\u1eddi gian, ti\u00eau \u0111\u1ec1 v\u00e0 \u0111\u1ecba \u0111i\u1ec3m",
+    "errorTitle": "L\u1ed7i",
+    "saveError": "L\u01b0u ho\u1ea1t \u0111\u1ed9ng th\u1ea5t b\u1ea1i",
+    "types": {
+      "meal": "B\u1eefa \u0103n",
+      "sightseeing": "Tham quan",
+      "shopping": "Mua s\u1eafm",
+      "experience": "Tr\u1ea3i nghi\u1ec7m",
+      "rest": "Ngh\u1ec9 ng\u01a1i",
+      "transport": "Di chuy\u1ec3n",
+      "other": "Kh\u00e1c"
+    }
+  },
+  "shareModal": {
+    "title": "Chia s\u1ebb chuy\u1ebfn \u0111i",
+    "generate": "T\u1ea1o li\u00ean k\u1ebft chia s\u1ebb",
+    "generateButton": "T\u1ea1o li\u00ean k\u1ebft",
+    "generateDescription": "T\u1ea1o li\u00ean k\u1ebft chia s\u1ebb \u0111\u1ec3 chia s\u1ebb k\u1ebf ho\u1ea1ch du l\u1ecbch v\u1edbi ng\u01b0\u1eddi kh\u00e1c",
+    "generateError": "T\u1ea1o li\u00ean k\u1ebft chia s\u1ebb th\u1ea5t b\u1ea1i",
+    "linkTitle": "Li\u00ean k\u1ebft chia s\u1ebb",
+    "copy": "Sao ch\u00e9p li\u00ean k\u1ebft",
+    "copied": "\u0110\u00e3 sao ch\u00e9p!",
+    "copiedToClipboard": "\u0110\u00e3 sao ch\u00e9p v\u00e0o b\u1ed9 nh\u1edb t\u1ea1m",
+    "copyError": "Sao ch\u00e9p li\u00ean k\u1ebft th\u1ea5t b\u1ea1i",
+    "disable": "T\u1eaft chia s\u1ebb",
+    "disableConfirm": "T\u1eaft chia s\u1ebb? C\u00e1c li\u00ean k\u1ebft hi\u1ec7n c\u00f3 s\u1ebd kh\u00f4ng c\u00f2n ho\u1ea1t \u0111\u1ed9ng.",
+    "disableAction": "T\u1eaft",
+    "disableSuccess": "\u0110\u00e3 t\u1eaft chia s\u1ebb",
+    "disableError": "T\u1eaft chia s\u1ebb th\u1ea5t b\u1ea1i",
+    "cancel": "Hu\u1ef7",
+    "error": "L\u1ed7i",
+    "success": "Th\u00e0nh c\u00f4ng",
+    "info": "B\u1ea5t k\u1ef3 ai c\u00f3 li\u00ean k\u1ebft n\u00e0y \u0111\u1ec1u c\u00f3 th\u1ec3 xem k\u1ebf ho\u1ea1ch du l\u1ecbch. T\u1eaft li\u00ean k\u1ebft s\u1ebd thu h\u1ed3i quy\u1ec1n truy c\u1eadp.",
+    "expiry": {
+      "title": "Th\u1eddi h\u1ea1n",
+      "none": "Kh\u00f4ng gi\u1edbi h\u1ea1n",
+      "7days": "7 ng\u00e0y",
+      "30days": "30 ng\u00e0y",
+      "90days": "90 ng\u00e0y"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "\u0110\u1ed9 \u1ea9m",
+    "windSpeed": "Gi\u00f3",
+    "feelsLike": "C\u1ea3m gi\u00e1c nh\u01b0",
+    "timezone": "Gi\u1edd \u0111\u1ecba ph\u01b0\u01a1ng",
+    "timeDiff": "Ch\u00eanh l\u1ec7ch gi\u1edd",
+    "noData": "Kh\u00f4ng c\u00f3 d\u1eef li\u1ec7u th\u1eddi ti\u1ebft"
+  },
+  "popularDestinations": {
+    "title": "\u0110i\u1ec3m \u0111\u1ebfn ph\u1ed5 bi\u1ebfn",
+    "subtitle": "Xu h\u01b0\u1edbng trong 3 th\u00e1ng qua",
+    "description": "Xem c\u00e1c \u0111i\u1ec3m \u0111\u1ebfn ph\u1ed5 bi\u1ebfn nh\u1ea5t \u0111\u01b0\u1ee3c du kh\u00e1ch th\u1ef1c t\u1ebf l\u1ef1a ch\u1ecdn",
+    "visitors": "{{count}} du kh\u00e1ch",
+    "avgDuration": "TB {{days}} ng\u00e0y",
+    "withTravelers": "V\u1edbi {{count}} ng\u01b0\u1eddi",
+    "popularSeason": "M\u00f9a ph\u1ed5 bi\u1ebfn:"
+  },
+  "progressIndicator": {
+    "title": "Ti\u1ebfn \u0111\u1ed9",
+    "status": "{{completed}} xong / t\u1ed5ng {{total}} ho\u1ea1t \u0111\u1ed9ng"
+  },
+  "destinationInsights": {
+    "header": "D\u1ef1a tr\u00ean d\u1eef li\u1ec7u du kh\u00e1ch th\u1ef1c t\u1ebf",
+    "avgDuration": "Th\u1eddi gian \u0111i TB",
+    "avgTravelers": "Quy m\u00f4 nh\u00f3m TB",
+    "popularBudget": "Ng\u00e2n s\u00e1ch ph\u1ed5 bi\u1ebfn",
+    "popularStyle": "Phong c\u00e1ch ph\u1ed5 bi\u1ebfn",
+    "popularSeason": "M\u00f9a du l\u1ecbch ph\u1ed5 bi\u1ebfn",
+    "bestNow": "Th\u1eddi \u0111i\u1ec3m t\u1ed1t nh\u1ea5t l\u00e0 b\u00e2y gi\u1edd!",
+    "topActivities": "Ho\u1ea1t \u0111\u1ed9ng h\u00e0ng \u0111\u1ea7u c\u1ee7a du kh\u00e1ch g\u1ea7n \u0111\u00e2y (Top {{count}})",
+    "footer": "D\u1ef1a tr\u00ean d\u1eef li\u1ec7u du kh\u00e1ch th\u1ef1c t\u1ebf trong 3 th\u00e1ng qua",
+    "loading": "\u0110ang t\u1ea3i th\u00f4ng tin \u0111i\u1ec3m \u0111\u1ebfn...",
+    "days": "{{days}} ng\u00e0y",
+    "people": "{{count}} ng\u01b0\u1eddi"
+  }
+}

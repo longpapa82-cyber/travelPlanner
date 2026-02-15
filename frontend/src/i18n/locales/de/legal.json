@@ -1,0 +1,226 @@
+{
+  "help": {
+    "title": "Hilfe",
+    "searchPlaceholder": "Hilfe suchen...",
+    "categories": {
+      "gettingStarted": "Erste Schritte",
+      "tripManagement": "Reiseverwaltung",
+      "accountSettings": "Konto & Einstellungen",
+      "offlineSync": "Offline & Sync",
+      "adsPartners": "Preise & Werbung",
+      "contact": "Kontakt"
+    },
+    "gettingStarted": {
+      "signup": {
+        "q": "Wie registriere ich mich?",
+        "a": "Sie können sich per E-Mail oder schnell über Google, Apple oder Kakao registrieren. Bei Social Login ist kein separates Passwort erforderlich."
+      },
+      "createTrip": {
+        "q": "Wie erstelle ich einen Reiseplan?",
+        "a": "Tippen Sie auf der Startseite auf 'Neue Reise erstellen', geben Sie Ihr Reiseziel und Reisedaten ein, und die KI erstellt automatisch einen personalisierten Reiseplan. Wählen Sie Budget, Reisestil und Interessen für genauere Empfehlungen."
+      },
+      "aiPlan": {
+        "q": "Wie funktioniert der KI-Reiseplan?",
+        "a": "Wir nutzen fortschrittliche KI-Technologie zur Analyse beliebter Sehenswürdigkeiten, Restaurants und kultureller Erlebnisse am Reiseziel und erstellen einen optimierten Zeitplan unter Berücksichtigung von Reiserouten und Timing. Generierte Reisepläne können frei angepasst werden."
+      },
+      "appTour": {
+        "q": "Wie ist die App aufgebaut?",
+        "a": "Die App hat vier Haupttabs: Startseite (Reiseliste), Reisedetails (Reiseplan, Karte, Wetter), Benachrichtigungen und Profil. Navigieren Sie einfach über die untere Tab-Leiste."
+      }
+    },
+    "tripManagement": {
+      "editPlan": {
+        "q": "Wie bearbeite ich meinen Reiseplan?",
+        "a": "Tippen Sie auf eine Aktivität im Reisedetail-Bildschirm, um Zeit, Ort und Notizen zu bearbeiten. Ziehen Sie Aktivitäten zum Neuordnen oder nutzen Sie die + Schaltfläche zum Hinzufügen."
+      },
+      "tripStatus": {
+        "q": "Unterscheiden sich die Bearbeitungsregeln je nach Reisestatus?",
+        "a": "• Vor der Reise: Alle Pläne frei bearbeiten und ergänzen.\n• Während der Reise: Vergangene Aktivitäten nicht änderbar; nur kommende bearbeitbar.\n• Nach der Reise: Nur Ansicht und Löschen; keine Änderungen möglich."
+      },
+      "mapView": {
+        "q": "Wie sehe ich Orte auf der Karte?",
+        "a": "Wechseln Sie im Reisedetail-Bildschirm zum Karte-Tab, um alle geplanten Orte auf einen Blick zu sehen. Tippen Sie auf Markierungen für Aktivitätsdetails."
+      },
+      "weather": {
+        "q": "Wo sehe ich Wetter- und Zeitzonen-Infos?",
+        "a": "Lokale Wetter- und Zeitzonen-Informationen erscheinen automatisch oben im Reisedetail-Bildschirm für jeden Tag. Wetterdaten werden in Echtzeit aktualisiert."
+      }
+    },
+    "accountSettings": {
+      "editProfile": {
+        "q": "Wie bearbeite ich mein Profil?",
+        "a": "Gehen Sie zu Profil → 'Profil bearbeiten', um Name und Foto zu ändern."
+      },
+      "changePassword": {
+        "q": "Wie ändere ich mein Passwort?",
+        "a": "Gehen Sie zu Profil → 'Passwort ändern', geben Sie Ihr aktuelles Passwort ein und legen Sie ein neues fest. Social-Login-Nutzer müssen kein Passwort ändern."
+      },
+      "twoFactor": {
+        "q": "Wie richte ich die Zwei-Faktor-Authentifizierung ein?",
+        "a": "Gehen Sie zu Profil → 'Zwei-Faktor-Authentifizierung'. Scannen Sie den QR-Code mit einer TOTP-App wie Google Authenticator und geben Sie den Verifizierungscode ein. Backup-Codes werden ebenfalls bereitgestellt."
+      },
+      "notifications": {
+        "q": "Wie verwalte ich Benachrichtigungen?",
+        "a": "Gehen Sie zu Profil → 'Benachrichtigungseinstellungen'. Sie können Abreiseerinnerungen und Reisestart-/-abschluss-Benachrichtigungen erhalten."
+      },
+      "deleteAccount": {
+        "q": "Wie lösche ich mein Konto?",
+        "a": "Tippen Sie unten im Profil-Tab auf 'Konto löschen'. Alle Daten werden innerhalb von 30 Tagen dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden."
+      }
+    },
+    "offlineSync": {
+      "offlineUse": {
+        "q": "Kann ich die App offline nutzen?",
+        "a": "Ja, zuvor geladene Reisepläne können ohne Internet angesehen werden. Offline vorgenommene Änderungen werden bei erneuter Verbindung automatisch synchronisiert."
+      },
+      "syncStatus": {
+        "q": "Wie prüfe ich den Sync-Status?",
+        "a": "Ein Sync-Banner erscheint oben: 'Ausstehend (N Elemente)' → 'Wird synchronisiert...' → 'Synchronisiert'. Bei instabilen Verbindungen wird automatisch erneut versucht."
+      },
+      "syncError": {
+        "q": "Was wenn die Synchronisation fehlschlägt?",
+        "a": "Prüfen Sie Ihre Internetverbindung und starten Sie die App neu. Wenn das Problem weiterhin besteht, kontaktieren Sie uns über 'Kontakt'."
+      }
+    },
+    "adsPartners": {
+      "freeService": {
+        "q": "Ist der Service kostenpflichtig?",
+        "a": "Alle TravelPlanner-Funktionen sind kostenlos. Zur Unterstützung des Service können Werbeanzeigen in der App erscheinen."
+      },
+      "adInfo": {
+        "q": "Wie werden Anzeigen dargestellt?",
+        "a": "Interstitial-Anzeigen können nach der Reiseerstellung erscheinen und Banner-Anzeigen auf einigen Bildschirmen. Personalisierte Werbung wird über iOS App Tracking Transparency (ATT) gesteuert."
+      },
+      "affiliates": {
+        "q": "Was sind Affiliate-Partner?",
+        "a": "Wir bieten Buchungslinks für Flüge, Hotels und Aktivitäten im Reisedetail-Bildschirm. Wir arbeiten mit vertrauenswürdigen Services wie Booking.com, Agoda, Klook und GetYourGuide zusammen."
+      }
+    },
+    "contact": {
+      "email": "E-Mail-Support",
+      "emailAddress": "longpapa82@gmail.com",
+      "emailDescription": "Wenn die FAQ Ihr Problem nicht lösen, kontaktieren Sie uns per E-Mail. Geräteinformationen und App-Version werden automatisch beigefügt.",
+      "sendEmail": "E-Mail senden"
+    }
+  },
+  "terms": {
+    "title": "Nutzungsbedingungen",
+    "effectiveDate": "Gültig ab: 1. März 2025",
+    "articles": {
+      "art1": {
+        "title": "Artikel 1 (Zweck)",
+        "content": "Diese Nutzungsbedingungen regeln die Nutzung von TravelPlanner (\"Service\"), einschließlich der Rechte, Pflichten und Verantwortlichkeiten beider Parteien."
+      },
+      "art2": {
+        "title": "Artikel 2 (Definitionen)",
+        "content": "① \"Service\" bezieht sich auf den automatischen Reiseplanungs- und Verwaltungsservice von TravelPlanner.\n② \"Mitglied\" bezieht sich auf eine Person, die diesen Bedingungen zugestimmt und sich für den Service registriert hat.\n③ \"KI-generierte Inhalte\" bezieht sich auf Reisepläne und Empfehlungen, die automatisch mittels künstlicher Intelligenz erstellt werden.\n④ \"Reisedaten\" bezieht sich auf Reiseziele, Zeitpläne und Aktivitätspläne, die von Mitgliedern eingegeben werden."
+      },
+      "art3": {
+        "title": "Artikel 3 (Servicebeschreibung)",
+        "content": "Der Service bietet:\n• KI-gestützte automatische Reiseplanerstellung\n• Reiseplan-Bearbeitung, Hinzufügen und Löschverwaltung\n• Lokale Wetter- und Zeitzoneninformationen\n• Reisefortschrittsverfolgung\n• Anzeige vergangener Reisehistorie\n• Offline-Zugriff auf Reisepläne und Synchronisation\n• Ausgabenteilungsfunktionen\n• Benachrichtigungsdienste"
+      },
+      "art4": {
+        "title": "Artikel 4 (Kontoregistrierung)",
+        "content": "① Die Registrierung ist per E-Mail oder über Social Accounts (Google, Apple, Kakao) möglich.\n② Nutzer unter 14 Jahren können den Service nicht nutzen.\n③ Sie müssen korrekte Informationen angeben. Sie sind für Probleme durch ungenaue Angaben verantwortlich.\n④ Sie sind für die Sicherheit Ihres Kontos verantwortlich."
+      },
+      "art5": {
+        "title": "Artikel 5 (Service-Nutzungsregeln)",
+        "content": "① Vor der Reise: Pläne können frei geändert und erweitert werden.\n② Während der Reise: Abgeschlossene Aktivitäten können nicht geändert werden; nur kommende Aktivitäten sind bearbeitbar.\n③ Nach der Reise: Historie kann nur angesehen oder gelöscht, nicht geändert werden.\n④ KI-generierte Ergebnisse dienen nur als Referenz. Nutzer sollten lokale Bedingungen vor Ort überprüfen."
+      },
+      "art6": {
+        "title": "Artikel 6 (KI-Service-Bedingungen)",
+        "content": "① Die Genauigkeit, Sicherheit und Eignung von KI-generierten Reiseplänen wird nicht garantiert.\n② Daten werden über die OpenAI-API für die Reiseplanerstellung verarbeitet, wie in unserer Datenschutzrichtlinie beschrieben.\n③ Von Nutzern eingegebene Reisedaten werden nicht für das Training von KI-Modellen verwendet.\n④ KI-Services können aus technischen Gründen vorübergehend eingeschränkt sein."
+      },
+      "art7": {
+        "title": "Artikel 7 (Verbotene Aktivitäten)",
+        "content": "Nutzer dürfen nicht:\n• Den normalen Betrieb des Service stören\n• Die Privatsphäre anderer Nutzer verletzen\n• In großem Umfang automatisiert auf den Service zugreifen\n• Anzeigen betrügerisch klicken oder manipulieren\n• Den Service reverse-engineeren, kopieren oder nachahmen\n• Gegen geltende Gesetze oder Vorschriften verstoßen"
+      },
+      "art8": {
+        "title": "Artikel 8 (Werbung und Affiliates)",
+        "content": "① Der Service kann Anzeigen über Google AdSense, AdMob und Affiliate-Programme anzeigen.\n② Die Verantwortung für Anzeigeninhalte liegt bei den jeweiligen Werbetreibenden.\n③ Bei Buchungen über Affiliate-Links können separate Bedingungen gelten."
+      },
+      "art9": {
+        "title": "Artikel 9 (Geistiges Eigentum)",
+        "content": "① Die geistigen Eigentumsrechte an Inhalten, Design und Software des Service gehören dem Serviceanbieter.\n② Die Rechte an von Nutzern erstellten Reiseplänen gehören den Nutzern."
+      },
+      "art10": {
+        "title": "Artikel 10 (Haftungsausschlüsse)",
+        "content": "① KI-generierte Reisepläne dienen nur als Referenz. Überprüfen Sie lokale Bedingungen beim Reisen.\n② Wetter- und Zeitzoneninformationen basieren auf externen APIs; die Genauigkeit wird nicht garantiert.\n③ Der Service haftet nicht für Unterbrechungen aufgrund höherer Gewalt oder Systemausfällen.\n④ Der Service fungiert nur als Vermittler für Affiliate-Buchungen und übernimmt keine direkte Haftung."
+      },
+      "art11": {
+        "title": "Artikel 11 (Kontokündigung)",
+        "content": "① Sie können Ihr Konto jederzeit über die 'Konto löschen'-Funktion kündigen.\n② Alle persönlichen Daten werden innerhalb von 30 Tagen dauerhaft gelöscht.\n③ Gesetzlich erforderliche Informationen werden für den vorgeschriebenen Zeitraum aufbewahrt und dann vernichtet."
+      },
+      "art12": {
+        "title": "Artikel 12 (Haftung)",
+        "content": "Wenn ein Mitglied durch vorsätzliche oder grob fahrlässige Handlungen des Unternehmens Schaden erleidet, wird das Unternehmen gemäß geltendem Recht entschädigen."
+      },
+      "art13": {
+        "title": "Artikel 13 (Änderungen der Bedingungen)",
+        "content": "① Änderungen werden mindestens 7 Tage vor Inkrafttreten über In-App-Benachrichtigungen mitgeteilt.\n② Bei Nichteinverstanden können Sie die Nutzung einstellen und Ihr Konto löschen."
+      },
+      "art14": {
+        "title": "Artikel 14 (Streitbeilegung)",
+        "content": "① Diese Bedingungen unterliegen dem Recht der Republik Korea.\n② Streitigkeiten unterliegen der Zuständigkeit des Seoul Central District Court."
+      },
+      "art15": {
+        "title": "Artikel 15 (Zusatz)",
+        "content": "Diese Bedingungen gelten ab dem 1. März 2025."
+      }
+    }
+  },
+  "privacy": {
+    "title": "Datenschutzrichtlinie",
+    "effectiveDate": "Gültig ab: 1. März 2025",
+    "articles": {
+      "art1": {
+        "title": "1. Erhobene Informationen",
+        "content": "[Erforderlich]\n• Kontoinformationen: Name, E-Mail-Adresse, Profilbild\n• Social Login: Öffentliches Profil von Google, Apple oder Kakao\n\n[Optional]\n• Reisepräferenzen: Budgetniveau, Reisestil, Interessen\n\n[Automatisch]\n• Geräteinformationen: Gerätetyp, Betriebssystem, App-Version\n• Nutzungsdaten: App-Nutzungsmuster, Werbeinteraktionen\n• Reisedaten: Reiseziele, Zeitpläne, Aktivitätspläne\n\n[Methoden] Registrierung, Social Login, automatische Erfassung während der Nutzung"
+      },
+      "art2": {
+        "title": "2. Verwendung Ihrer Informationen",
+        "content": "• Servicebereitstellung: Kontoverwaltung, KI-Reiseplanerstellung, lokale Infos\n• KI-Verarbeitung: Reiseplanerstellung über OpenAI-API (Reiseziel, Daten, Präferenzen)\n• Personalisierung: Optimierung von Empfehlungen basierend auf Reisepräferenzen\n• Werbung: Personalisierte Anzeigen (mit separater Einwilligung)\n• Verbesserung: Nutzungsanalyse, Fehlerbehebung"
+      },
+      "art3": {
+        "title": "3. Weitergabe an Dritte",
+        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Affiliate-Partner | Klick-Events (anonymisiert) | Affiliate-Services |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
+      },
+      "art4": {
+        "title": "4. Datenverarbeitungsdelegation",
+        "content": "| Anbieter | Service |\n| Cloud-Services (AWS etc.) | Datenspeicherung und -verarbeitung |\n| E-Mail-Service | Authentifizierungs- und Benachrichtigungs-E-Mails |"
+      },
+      "art5": {
+        "title": "5. Datenspeicherung",
+        "content": "• Kontolöschung: Vernichtung innerhalb von 30 Tagen\n• E-Commerce-Gesetz: Transaktionsdaten werden 5 Jahre aufbewahrt\n• Telekommunikationsgesetz: Zugriffsprotokolle werden 3 Monate aufbewahrt\n• Gesetzlich erforderliche Informationen werden separat für den erforderlichen Zeitraum gespeichert und dann vernichtet."
+      },
+      "art6": {
+        "title": "6. Ihre Rechte",
+        "content": "Sie können folgende Rechte ausüben:\n• Zugriff auf, Korrektur, Löschung oder Einstellung der Verarbeitung Ihrer persönlichen Daten\n• Datenportabilität beantragen (Artikel 35-2 des Datenschutzgesetzes)\n• Erklärung automatisierter Entscheidungen anfordern oder ablehnen (KI-Reiseplanerstellung)\n• Alle Daten dauerhaft löschen durch Kontolöschung\n• Werbetracking-Einwilligung widerrufen (in Geräteeinstellungen änderbar)\n\n[Ausübung]\nApp: Profil → Konto löschen\nE-Mail: longpapa82@gmail.com"
+      },
+      "art7": {
+        "title": "7. Schutz von Kindern unter 14",
+        "content": "Dieser Service beschränkt die Registrierung für Kinder unter 14 Jahren. Wenn wir erfahren, dass Daten eines Kindes erfasst wurden, werden wir diese unverzüglich löschen."
+      },
+      "art8": {
+        "title": "8. Datenvernichtung",
+        "content": "• Elektronische Dateien: Dauerhaft gelöscht mit unwiederbringlichen Methoden\n• Ausdrucke: Geschreddert oder verbrannt\n• Unverzüglich vernichtet wenn Aufbewahrungsfrist abläuft oder Zweck erfüllt ist."
+      },
+      "art9": {
+        "title": "9. Werbung und Verhaltensdaten",
+        "content": "• iOS: Personalisierte Werbung über App Tracking Transparency (ATT) steuern.\n• Android: Werbe-ID zurücksetzen oder deaktivieren über Einstellungen → Google → Anzeigen.\n• Web: Cookies in Browsereinstellungen deaktivieren (einige Funktionen können eingeschränkt sein).\n• Cookies werden für Authentifizierung und Verbesserung der Nutzererfahrung verwendet."
+      },
+      "art10": {
+        "title": "10. Sicherheitsmaßnahmen",
+        "content": "• Passwortverschlüsselung (bcrypt)\n• SSL/TLS-Kommunikationsverschlüsselung\n• Zugriffskontrolle und Zwei-Faktor-Authentifizierung\n• Regelmäßige Sicherheitsaudits und Überwachung"
+      },
+      "art11": {
+        "title": "11. Datenschutzbeauftragter",
+        "content": "Datenschutzbeauftragter: TravelPlanner Operations Team\nE-Mail: longpapa82@gmail.com"
+      },
+      "art12": {
+        "title": "12. Richtlinienänderungen",
+        "content": "Änderungen werden mindestens 7 Tage vor Inkrafttreten über In-App-Benachrichtigungen mitgeteilt.\n\nDiese Richtlinie gilt ab dem 1. März 2025."
+      }
+    }
+  }
+}

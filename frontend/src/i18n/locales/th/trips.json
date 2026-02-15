@@ -1,0 +1,411 @@
+{
+  "create": {
+    "title": "สร้างทริปใหม่",
+    "hero": {
+      "title": "พร้อมสำหรับการผจญภัยครั้งใหม่หรือยัง?",
+      "subtitle": "เพียงเลือกจุดหมายปลายทาง แล้ว AI จะสร้างแผนการเดินทางที่สมบูรณ์แบบให้คุณ"
+    },
+    "destination": {
+      "title": "คุณจะไปที่ไหน?",
+      "placeholder": "กรอกชื่อเมืองหรือประเทศ",
+      "popular": "จุดหมายยอดนิยม"
+    },
+    "destinations": {
+      "tokyo": "โตเกียว",
+      "osaka": "โอซาก้า",
+      "bangkok": "กรุงเทพฯ",
+      "danang": "ดานัง",
+      "paris": "ปารีส",
+      "singapore": "สิงคโปร์",
+      "london": "ลอนดอน",
+      "newyork": "นิวยอร์ก",
+      "barcelona": "บาร์เซโลนา"
+    },
+    "duration": {
+      "title": "จะอยู่นานแค่ไหน?",
+      "options": {
+        "3days": "3 วัน",
+        "1week": "1 สัปดาห์",
+        "2weeks": "2 สัปดาห์",
+        "1month": "1 เดือน"
+      },
+      "custom": "กำหนดเอง",
+      "totalDays": "ทริป {{days}} วัน"
+    },
+    "travelers": {
+      "title": "ใครจะไปด้วย?",
+      "options": {
+        "solo": "ไปคนเดียว",
+        "two": "2 คน",
+        "group": "3-4 คน",
+        "large": "5 คนขึ้นไป"
+      }
+    },
+    "dates": {
+      "title": "จะออกเดินทางเมื่อไร?",
+      "start": "วันออกเดินทาง",
+      "end": "วันกลับ",
+      "selectStart": "เลือกวันออกเดินทาง",
+      "selectEnd": "เลือกวันกลับ"
+    },
+    "notes": {
+      "title": "มีแผนพิเศษไหม?",
+      "placeholder": "เช่น เน้นอาหาร ท่องเที่ยว เดินทางอิสระ...",
+      "optional": "(ไม่บังคับ)"
+    },
+    "budget": {
+      "title": "งบประมาณการเดินทาง (ไม่บังคับ)",
+      "placeholder": "กรอกงบประมาณทั้งหมด",
+      "currency": "สกุลเงิน"
+    },
+    "aiInfo": {
+      "title": "AI สร้างแผนอัตโนมัติ",
+      "description": "AI จะสร้างแผนการเดินทางที่เหมาะสมที่สุดตามจุดหมายและตารางเวลาของคุณ"
+    },
+    "submit": "สร้างแผนการเดินทาง",
+    "generating": "AI กำลังสร้างแผนการเดินทางให้คุณ...",
+    "progress": {
+      "analyzing": "กำลังวิเคราะห์จุดหมายปลายทาง",
+      "planning": "กำลังสร้างแผนการเดินทาง",
+      "weather": "กำลังตรวจสอบข้อมูลสภาพอากาศ",
+      "finalizing": "กำลังสรุปแผนของคุณ"
+    },
+    "preferences": {
+      "title": "สไตล์การเดินทาง",
+      "budget": {
+        "title": "ระดับงบประมาณ",
+        "budget": "ประหยัด",
+        "midRange": "ปานกลาง",
+        "luxury": "หรูหรา"
+      },
+      "style": {
+        "title": "จังหวะการเดินทาง",
+        "relaxed": "สบายๆ",
+        "balanced": "สมดุล",
+        "active": "กระตือรือร้น",
+        "adventure": "ผจญภัย"
+      },
+      "interests": {
+        "title": "ความสนใจ",
+        "food": "อาหาร",
+        "culture": "วัฒนธรรม",
+        "nature": "ธรรมชาติ",
+        "shopping": "ช้อปปิ้ง",
+        "nightlife": "ไนท์ไลฟ์",
+        "history": "ประวัติศาสตร์",
+        "art": "ศิลปะ",
+        "sports": "กีฬา",
+        "photography": "ถ่ายภาพ"
+      }
+    },
+    "alerts": {
+      "destinationRequired": "กรุณากรอกจุดหมายปลายทาง",
+      "datesRequired": "กรุณาเลือกวันที่เดินทาง",
+      "createFailed": "สร้างทริปไม่สำเร็จ",
+      "startDateRequired": "กรุณาเลือกวันออกเดินทาง"
+    }
+  },
+  "list": {
+    "title": "ทริปของฉัน",
+    "searchPlaceholder": "ค้นหาทริป...",
+    "filters": {
+      "all": "ทั้งหมด",
+      "upcoming": "กำลังจะมาถึง",
+      "ongoing": "กำลังดำเนินการ",
+      "completed": "เสร็จสิ้น"
+    },
+    "sections": {
+      "ongoing": "ทริปที่กำลังดำเนินการ",
+      "upcoming": "ทริปที่กำลังจะมาถึง",
+      "completed": "ทริปที่ผ่านมา (ดูอย่างเดียว)"
+    },
+    "status": {
+      "upcoming": "กำลังจะมาถึง",
+      "ongoing": "กำลังดำเนินการ",
+      "completed": "เสร็จสิ้น"
+    },
+    "empty": {
+      "title": "ยังไม่มีทริปที่วางแผนไว้",
+      "description": "เริ่มวางแผนทริปใหม่กันเถอะ!",
+      "cta": "เริ่มวางแผนด้วย AI",
+      "noResults": "ไม่พบผลลัพธ์",
+      "noResultsDescription": "ลองค้นหาด้วยคำอื่นหรือเปลี่ยนตัวกรอง",
+      "clearFilters": "ล้างตัวกรอง"
+    },
+    "error": {
+      "title": "ไม่สามารถโหลดทริปได้",
+      "description": "ตรวจสอบการเชื่อมต่อเครือข่ายแล้วลองอีกครั้ง",
+      "retry": "ลองอีกครั้ง",
+      "refreshFailed": "รีเฟรชไม่สำเร็จ"
+    },
+    "card": {
+      "days": "{{days}} วัน",
+      "travelers": "{{count}} คน",
+      "dDay": "อีก {{days}} วัน",
+      "dDayToday": "วันนี้!",
+      "dDayPassed": "ผ่านมา {{days}} วัน"
+    },
+    "alerts": {
+      "deleteTitle": "ลบทริป",
+      "deleteMessage": "ลบ '{{name}}'? การดำเนินการนี้ไม่สามารถยกเลิกได้",
+      "deleteFailed": "ลบไม่สำเร็จ",
+      "error": "ข้อผิดพลาด",
+      "cancel": "ยกเลิก",
+      "delete": "ลบ"
+    },
+    "sort": {
+      "startDate": "เรียงตามวันออกเดินทาง",
+      "createdAt": "เรียงตามวันที่สร้าง",
+      "destination": "เรียงตามจุดหมาย"
+    },
+    "advancedFilters": {
+      "toggle": "ตัวกรอง",
+      "country": "ประเทศ",
+      "countryPlaceholder": "กรอกชื่อประเทศ",
+      "dateRange": "ช่วงวันออกเดินทาง",
+      "dateFrom": "ตั้งแต่",
+      "dateTo": "ถึง",
+      "budget": "ช่วงงบประมาณ",
+      "budgetMin": "ต่ำสุด",
+      "budgetMax": "สูงสุด",
+      "reset": "รีเซ็ตตัวกรอง",
+      "apply": "ใช้งาน",
+      "activeCount": "ตัวกรองที่ใช้งาน {{count}} รายการ"
+    },
+    "resultCount": "{{count}} ทริป",
+    "createButton": "สร้างทริปใหม่",
+    "info": {
+      "days": "{{count}} วัน",
+      "itineraries": "{{count}} แผนการเดินทาง",
+      "travelers": "{{count}} คน"
+    },
+    "accessibility": {
+      "trip": "ทริป",
+      "viewDetail": "ดูรายละเอียดทริป",
+      "deleteTrip": "ลบ",
+      "search": "ค้นหาทริป",
+      "searchHint": "ค้นหาทริปตามจุดหมายปลายทาง"
+    },
+    "pagination": {
+      "showMore": "แสดงเพิ่มเติม",
+      "showing": "{{shown}} / {{total}}"
+    }
+  },
+  "detail": {
+    "loading": "กำลังโหลดข้อมูลทริป...",
+    "notFound": {
+      "title": "ไม่พบทริป",
+      "description": "ทริปนี้ไม่มีอยู่หรือถูกลบไปแล้ว",
+      "back": "ย้อนกลับ"
+    },
+    "status": {
+      "ongoing": "กำลังดำเนินการ",
+      "completed": "เสร็จสิ้น"
+    },
+    "completedBanner": {
+      "title": "ทริปเสร็จสิ้นแล้ว",
+      "description": "ทริปนี้เสร็จสิ้นแล้วและไม่สามารถแก้ไขได้ มาดูความทรงจำอันล้ำค่าของคุณกันเถอะ!"
+    },
+    "readOnlyMessage": "กิจกรรมที่เสร็จสิ้นแล้วไม่สามารถแก้ไขได้",
+    "progress": "ความคืบหน้าโดยรวม {{percentage}}%",
+    "durationDays": "{{count}} วัน",
+    "travelers": "{{count}} คน",
+    "durationMinutes": "{{minutes}} นาที",
+    "estimatedCost": "${{cost}}",
+    "dayLabel": "วันที่ {{day}}",
+    "emptyItinerary": "ยังไม่มีแผนการเดินทาง",
+    "emptyItineraryMessage": "เพิ่มกิจกรรมในทริปของคุณ",
+    "addActivity": "เพิ่มกิจกรรม",
+    "affiliateSection": "จองโรงแรมและกิจกรรม",
+    "affiliateSubtitle": "จองที่พักและประสบการณ์ที่ดีที่สุดใน {{destination}}",
+    "tabs": {
+      "itinerary": "แผนการเดินทาง",
+      "map": "แผนที่",
+      "info": "ข้อมูล",
+      "share": "แชร์"
+    },
+    "map": {
+      "noLocations": "ไม่มีสถานที่ให้แสดง",
+      "noLocationsMessage": "สร้างทริปใหม่เพื่อดูกิจกรรมพร้อมข้อมูลตำแหน่ง",
+      "activitiesCount": "{{count}} กิจกรรม",
+      "allDays": "ทั้งหมด",
+      "dayLabel": "วันที่ {{day}}",
+      "openInMaps": "ดูใน Google Maps",
+      "tapToOpen": "แตะเพื่อเปิดแผนที่",
+      "durationMin": "{{min}} นาที"
+    },
+    "budget": {
+      "title": "สรุปงบประมาณ",
+      "total": "งบประมาณทั้งหมด",
+      "estimated": "ประมาณการ",
+      "spent": "ใช้ไปแล้ว",
+      "remaining": "เหลือ",
+      "byCategory": "ตามหมวดหมู่",
+      "byDay": "ตามวัน",
+      "perDay": "ต่อวัน",
+      "dayLabel": "วันที่ {{day}}"
+    },
+    "activityTypes": {
+      "meal": "มื้ออาหาร",
+      "sightseeing": "ท่องเที่ยว",
+      "shopping": "ช้อปปิ้ง",
+      "experience": "ประสบการณ์",
+      "rest": "พักผ่อน",
+      "transport": "การเดินทาง",
+      "accommodation": "ที่พัก",
+      "other": "อื่นๆ"
+    },
+    "accessibility": {
+      "completed": "เสร็จสิ้น",
+      "incomplete": "ยังไม่เสร็จ",
+      "reorder": "เรียงลำดับใหม่",
+      "reorderHint": "กดค้างเพื่อเรียงลำดับใหม่",
+      "edit": "แก้ไข",
+      "delete": "ลบ",
+      "goBack": "ย้อนกลับ",
+      "editTrip": "แก้ไขทริป",
+      "duplicate": "ทำสำเนาทริป",
+      "duplicating": "กำลังทำสำเนา...",
+      "share": "แชร์",
+      "exportIcal": "ส่งออกไปปฏิทิน",
+      "addActivityToDay": "เพิ่มกิจกรรมในวันที่ {{day}}"
+    },
+    "alerts": {
+      "deleteTitle": "ลบกิจกรรม",
+      "deleteMessage": "ลบกิจกรรมนี้หรือไม่?",
+      "deleteFailed": "ลบไม่สำเร็จ",
+      "error": "ข้อผิดพลาด",
+      "fetchError": "โหลดข้อมูลทริปไม่สำเร็จ",
+      "duplicateSuccess": "ทำสำเนาทริปแล้ว",
+      "duplicateCompleteTitle": "ทำสำเนาเสร็จสิ้น",
+      "duplicateError": "ทำสำเนาทริปไม่สำเร็จ",
+      "confirm": "ตกลง",
+      "cancel": "ยกเลิก",
+      "delete": "ลบ",
+      "success": "สำเร็จ",
+      "deleteSuccess": "ลบทริปแล้ว",
+      "deleteError": "ลบทริปไม่สำเร็จ",
+      "toggleError": "อัปเดตสถานะไม่สำเร็จ",
+      "reorderError": "เรียงลำดับใหม่ไม่สำเร็จ"
+    },
+    "photos": {
+      "addCover": "เพิ่มรูปปก",
+      "changeCover": "เปลี่ยนรูปปก",
+      "addPhoto": "เพิ่มรูปภาพ",
+      "photoCount": "{{count}} รูปภาพ",
+      "uploadSuccess": "อัปโหลดรูปภาพแล้ว",
+      "uploadFailed": "อัปโหลดรูปภาพไม่สำเร็จ",
+      "viewAll": "ดูรูปภาพทั้งหมด"
+    },
+    "collaboration": {
+      "title": "ผู้ร่วมเดินทาง",
+      "invite": "เชิญ",
+      "emailPlaceholder": "กรอกที่อยู่อีเมล",
+      "roleViewer": "ผู้ชม",
+      "roleEditor": "ผู้แก้ไข",
+      "owner": "เจ้าของ",
+      "remove": "ลบออก",
+      "inviteSuccess": "ส่งคำเชิญแล้ว",
+      "inviteFailed": "ส่งคำเชิญไม่สำเร็จ",
+      "removeFailed": "ลบออกไม่สำเร็จ",
+      "noCollaborators": "ยังไม่มีผู้ร่วมเดินทาง"
+    },
+    "expenses": {
+      "title": "ค่าใช้จ่าย",
+      "addExpense": "เพิ่มค่าใช้จ่าย",
+      "total": "ยอดรวมที่ใช้ไป",
+      "myShare": "ส่วนของฉัน",
+      "iOwe": "ฉันเป็นหนี้",
+      "owedToMe": "เขาเป็นหนี้ฉัน",
+      "settled": "เคลียร์ทั้งหมดแล้ว",
+      "paidBy": "จ่ายโดย",
+      "splitWith": "หารกับ",
+      "splitEqual": "หารเท่ากัน",
+      "splitExact": "กำหนดจำนวนเอง",
+      "balances": "ยอดคงเหลือ",
+      "settlements": "การชำระเงิน",
+      "settleUp": "ชำระเงิน",
+      "settledMark": "ชำระแล้ว",
+      "noExpenses": "ยังไม่มีค่าใช้จ่าย",
+      "noExpensesMessage": "เพิ่มค่าใช้จ่ายเพื่อติดตามการใช้จ่ายของกลุ่ม",
+      "description": "รายละเอียด",
+      "amount": "จำนวนเงิน",
+      "category": "หมวดหมู่",
+      "date": "วันที่",
+      "owes": "เป็นหนี้",
+      "categories": {
+        "food": "อาหาร",
+        "transport": "การเดินทาง",
+        "accommodation": "ที่พัก",
+        "activity": "กิจกรรม",
+        "shopping": "ช้อปปิ้ง",
+        "other": "อื่นๆ"
+      },
+      "tabs": {
+        "expenses": "ค่าใช้จ่าย",
+        "balances": "ยอดคงเหลือ"
+      },
+      "alerts": {
+        "createFailed": "เพิ่มค่าใช้จ่ายไม่สำเร็จ",
+        "deleteFailed": "ลบค่าใช้จ่ายไม่สำเร็จ",
+        "settleFailed": "ชำระเงินไม่สำเร็จ",
+        "deleteTitle": "ลบค่าใช้จ่าย",
+        "deleteMessage": "ลบค่าใช้จ่ายนี้หรือไม่?"
+      }
+    }
+  },
+  "edit": {
+    "title": "แก้ไขทริป",
+    "loading": "กำลังโหลดข้อมูลทริป...",
+    "notFound": "ไม่พบทริป",
+    "goBack": "ย้อนกลับ",
+    "heroTitle": "แก้ไขข้อมูลทริป",
+    "ongoingWarning": "ทริปนี้กำลังดำเนินการอยู่ โปรดระวังในการเปลี่ยนวันที่",
+    "destination": {
+      "title": "จุดหมายปลายทาง",
+      "placeholder": "หรือกรอกด้วยตนเอง"
+    },
+    "dates": {
+      "title": "วันที่เดินทาง",
+      "changeWarning": "ข้อควรระวัง",
+      "totalDays": "ทริป {{days}} วัน"
+    },
+    "travelers": {
+      "title": "จำนวนผู้เดินทาง",
+      "placeholder": "หรือกรอกด้วยตนเอง"
+    },
+    "notes": {
+      "title": "บันทึกทริป (ไม่บังคับ)",
+      "placeholder": "เพิ่มเป้าหมายหรือความต้องการพิเศษได้เลย"
+    },
+    "budget": {
+      "title": "งบประมาณทริป (ไม่บังคับ)",
+      "placeholder": "กรอกงบประมาณทั้งหมด",
+      "currency": "สกุลเงิน"
+    },
+    "submit": "บันทึกข้อมูลทริป",
+    "saving": "กำลังบันทึก...",
+    "status": {
+      "upcoming": "กำลังจะมาถึง",
+      "ongoing": "กำลังดำเนินการ",
+      "completed": "เสร็จสิ้น"
+    },
+    "alerts": {
+      "cannotEditCompleted": "ไม่สามารถแก้ไขทริปที่เสร็จสิ้นแล้วได้",
+      "cannotEditTitle": "ไม่สามารถแก้ไขได้",
+      "loadError": "โหลดข้อมูลทริปไม่สำเร็จ",
+      "destinationRequired": "กรุณากรอกจุดหมายปลายทาง",
+      "requiredInput": "จำเป็น",
+      "datesRequired": "กรุณาเลือกวันที่เดินทาง",
+      "endDateError": "วันกลับต้องอยู่หลังวันออกเดินทาง",
+      "dateError": "ข้อผิดพลาดวันที่",
+      "dateChangeWarningTitle": "คำเตือนการเปลี่ยนวันที่",
+      "dateChangeWarning": "การเปลี่ยนวันที่ของทริปที่กำลังดำเนินการอาจส่งผลกระทบต่อตารางเวลา ต้องการดำเนินการต่อหรือไม่?",
+      "continue": "ดำเนินการต่อ",
+      "saveSuccess": "บันทึกเรียบร้อย",
+      "saveSuccessMessage": "อัปเดตข้อมูลทริปแล้ว",
+      "saveFailed": "บันทึกไม่สำเร็จ",
+      "saveError": "ไม่สามารถบันทึกข้อมูลทริปได้ กรุณาลองอีกครั้ง"
+    }
+  }
+}

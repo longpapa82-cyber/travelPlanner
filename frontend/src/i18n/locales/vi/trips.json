@@ -1,0 +1,411 @@
+{
+  "create": {
+    "title": "T\u1ea1o chuy\u1ebfn \u0111i m\u1edbi",
+    "hero": {
+      "title": "S\u1eb5n s\u00e0ng cho cu\u1ed9c phi\u00eau l\u01b0u m\u1edbi?",
+      "subtitle": "Ch\u1ec9 c\u1ea7n ch\u1ecdn \u0111i\u1ec3m \u0111\u1ebfn v\u00e0 AI s\u1ebd t\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch ho\u00e0n h\u1ea3o cho b\u1ea1n"
+    },
+    "destination": {
+      "title": "B\u1ea1n mu\u1ed1n \u0111i \u0111\u00e2u?",
+      "placeholder": "Nh\u1eadp th\u00e0nh ph\u1ed1 ho\u1eb7c qu\u1ed1c gia",
+      "popular": "\u0110i\u1ec3m \u0111\u1ebfn ph\u1ed5 bi\u1ebfn"
+    },
+    "destinations": {
+      "tokyo": "Tokyo",
+      "osaka": "Osaka",
+      "bangkok": "Bangkok",
+      "danang": "\u0110\u00e0 N\u1eb5ng",
+      "paris": "Paris",
+      "singapore": "Singapore",
+      "london": "London",
+      "newyork": "New York",
+      "barcelona": "Barcelona"
+    },
+    "duration": {
+      "title": "B\u1ea1n s\u1ebd \u1edf bao l\u00e2u?",
+      "options": {
+        "3days": "3 ng\u00e0y",
+        "1week": "1 tu\u1ea7n",
+        "2weeks": "2 tu\u1ea7n",
+        "1month": "1 th\u00e1ng"
+      },
+      "custom": "T\u00f9y ch\u1ec9nh",
+      "totalDays": "Chuy\u1ebfn \u0111i {{days}} ng\u00e0y"
+    },
+    "travelers": {
+      "title": "Ai s\u1ebd \u0111i c\u00f9ng?",
+      "options": {
+        "solo": "Ch\u1ec9 m\u00ecnh t\u00f4i",
+        "two": "2 ng\u01b0\u1eddi",
+        "group": "3-4 ng\u01b0\u1eddi",
+        "large": "5+ ng\u01b0\u1eddi"
+      }
+    },
+    "dates": {
+      "title": "Khi n\u00e0o b\u1ea1n kh\u1edfi h\u00e0nh?",
+      "start": "Ng\u00e0y \u0111i",
+      "end": "Ng\u00e0y v\u1ec1",
+      "selectStart": "Ch\u1ecdn ng\u00e0y kh\u1edfi h\u00e0nh",
+      "selectEnd": "Ch\u1ecdn ng\u00e0y v\u1ec1"
+    },
+    "notes": {
+      "title": "C\u00f3 k\u1ebf ho\u1ea1ch \u0111\u1eb7c bi\u1ec7t n\u00e0o kh\u00f4ng?",
+      "placeholder": "V\u00ed d\u1ee5: \u0103n u\u1ed1ng, tham quan, du l\u1ecbch t\u1ef1 do...",
+      "optional": "(T\u00f9y ch\u1ecdn)"
+    },
+    "budget": {
+      "title": "Ng\u00e2n s\u00e1ch chuy\u1ebfn \u0111i (T\u00f9y ch\u1ecdn)",
+      "placeholder": "Nh\u1eadp t\u1ed5ng ng\u00e2n s\u00e1ch",
+      "currency": "Lo\u1ea1i ti\u1ec1n"
+    },
+    "aiInfo": {
+      "title": "AI t\u1ef1 \u0111\u1ed9ng l\u1eadp k\u1ebf ho\u1ea1ch",
+      "description": "AI s\u1ebd t\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch t\u1ed1i \u01b0u d\u1ef1a tr\u00ean \u0111i\u1ec3m \u0111\u1ebfn v\u00e0 l\u1ecbch tr\u00ecnh c\u1ee7a b\u1ea1n"
+    },
+    "submit": "T\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch",
+    "generating": "AI \u0111ang t\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch...",
+    "progress": {
+      "analyzing": "\u0110ang ph\u00e2n t\u00edch \u0111i\u1ec3m \u0111\u1ebfn",
+      "planning": "\u0110ang t\u1ea1o l\u1ecbch tr\u00ecnh",
+      "weather": "\u0110ang ki\u1ec3m tra th\u00f4ng tin th\u1eddi ti\u1ebft",
+      "finalizing": "\u0110ang ho\u00e0n thi\u1ec7n k\u1ebf ho\u1ea1ch"
+    },
+    "preferences": {
+      "title": "Phong c\u00e1ch du l\u1ecbch",
+      "budget": {
+        "title": "M\u1ee9c ng\u00e2n s\u00e1ch",
+        "budget": "Ti\u1ebft ki\u1ec7m",
+        "midRange": "Trung b\u00ecnh",
+        "luxury": "Sang tr\u1ecdng"
+      },
+      "style": {
+        "title": "Nh\u1ecbp \u0111\u1ed9 du l\u1ecbch",
+        "relaxed": "Th\u01b0 gi\u00e3n",
+        "balanced": "C\u00e2n b\u1eb1ng",
+        "active": "N\u0103ng \u0111\u1ed9ng",
+        "adventure": "Phi\u00eau l\u01b0u"
+      },
+      "interests": {
+        "title": "S\u1edf th\u00edch",
+        "food": "\u1ea8m th\u1ef1c",
+        "culture": "V\u0103n h\u00f3a",
+        "nature": "Thi\u00ean nhi\u00ean",
+        "shopping": "Mua s\u1eafm",
+        "nightlife": "\u0110\u1eddi s\u1ed1ng v\u1ec1 \u0111\u00eam",
+        "history": "L\u1ecbch s\u1eed",
+        "art": "Ngh\u1ec7 thu\u1eadt",
+        "sports": "Th\u1ec3 thao",
+        "photography": "Nhi\u1ebfp \u1ea3nh"
+      }
+    },
+    "alerts": {
+      "destinationRequired": "Vui l\u00f2ng nh\u1eadp \u0111i\u1ec3m \u0111\u1ebfn",
+      "datesRequired": "Vui l\u00f2ng ch\u1ecdn ng\u00e0y du l\u1ecbch",
+      "createFailed": "T\u1ea1o chuy\u1ebfn \u0111i th\u1ea5t b\u1ea1i",
+      "startDateRequired": "Vui l\u00f2ng ch\u1ecdn ng\u00e0y kh\u1edfi h\u00e0nh"
+    }
+  },
+  "list": {
+    "title": "Chuy\u1ebfn \u0111i c\u1ee7a t\u00f4i",
+    "searchPlaceholder": "T\u00ecm ki\u1ebfm chuy\u1ebfn \u0111i...",
+    "filters": {
+      "all": "T\u1ea5t c\u1ea3",
+      "upcoming": "S\u1eafp t\u1edbi",
+      "ongoing": "\u0110ang di\u1ec5n ra",
+      "completed": "\u0110\u00e3 ho\u00e0n th\u00e0nh"
+    },
+    "sections": {
+      "ongoing": "Chuy\u1ebfn \u0111i \u0111ang di\u1ec5n ra",
+      "upcoming": "Chuy\u1ebfn \u0111i s\u1eafp t\u1edbi",
+      "completed": "Chuy\u1ebfn \u0111i \u0111\u00e3 qua (Ch\u1ec9 xem)"
+    },
+    "status": {
+      "upcoming": "S\u1eafp t\u1edbi",
+      "ongoing": "\u0110ang di\u1ec5n ra",
+      "completed": "\u0110\u00e3 ho\u00e0n th\u00e0nh"
+    },
+    "empty": {
+      "title": "Ch\u01b0a c\u00f3 chuy\u1ebfn \u0111i n\u00e0o",
+      "description": "H\u00e3y b\u1eaft \u0111\u1ea7u l\u00ean k\u1ebf ho\u1ea1ch chuy\u1ebfn \u0111i m\u1edbi!",
+      "cta": "B\u1eaft \u0111\u1ea7u l\u1eadp k\u1ebf ho\u1ea1ch AI",
+      "noResults": "Kh\u00f4ng t\u00ecm th\u1ea5y k\u1ebft qu\u1ea3",
+      "noResultsDescription": "Th\u1eed t\u1eeb kh\u00f3a ho\u1eb7c b\u1ed9 l\u1ecdc kh\u00e1c",
+      "clearFilters": "X\u00f3a b\u1ed9 l\u1ecdc"
+    },
+    "error": {
+      "title": "Kh\u00f4ng th\u1ec3 t\u1ea3i chuy\u1ebfn \u0111i",
+      "description": "Ki\u1ec3m tra k\u1ebft n\u1ed1i m\u1ea1ng v\u00e0 th\u1eed l\u1ea1i",
+      "retry": "Th\u1eed l\u1ea1i",
+      "refreshFailed": "L\u00e0m m\u1edbi th\u1ea5t b\u1ea1i"
+    },
+    "card": {
+      "days": "{{days}} ng\u00e0y",
+      "travelers": "{{count}} ng\u01b0\u1eddi",
+      "dDay": "D-{{days}}",
+      "dDayToday": "Ng\u00e0y D",
+      "dDayPassed": "D+{{days}}"
+    },
+    "alerts": {
+      "deleteTitle": "X\u00f3a chuy\u1ebfn \u0111i",
+      "deleteMessage": "X\u00f3a '{{name}}'? Thao t\u00e1c n\u00e0y kh\u00f4ng th\u1ec3 ho\u00e0n t\u00e1c.",
+      "deleteFailed": "X\u00f3a th\u1ea5t b\u1ea1i",
+      "error": "L\u1ed7i",
+      "cancel": "Hu\u1ef7",
+      "delete": "X\u00f3a"
+    },
+    "sort": {
+      "startDate": "Theo ng\u00e0y kh\u1edfi h\u00e0nh",
+      "createdAt": "Theo ng\u00e0y t\u1ea1o",
+      "destination": "Theo \u0111i\u1ec3m \u0111\u1ebfn"
+    },
+    "advancedFilters": {
+      "toggle": "B\u1ed9 l\u1ecdc",
+      "country": "Qu\u1ed1c gia",
+      "countryPlaceholder": "Nh\u1eadp qu\u1ed1c gia",
+      "dateRange": "Kho\u1ea3ng ng\u00e0y kh\u1edfi h\u00e0nh",
+      "dateFrom": "T\u1eeb",
+      "dateTo": "\u0110\u1ebfn",
+      "budget": "Kho\u1ea3ng ng\u00e2n s\u00e1ch",
+      "budgetMin": "T\u1ed1i thi\u1ec3u",
+      "budgetMax": "T\u1ed1i \u0111a",
+      "reset": "\u0110\u1eb7t l\u1ea1i b\u1ed9 l\u1ecdc",
+      "apply": "\u00c1p d\u1ee5ng",
+      "activeCount": "{{count}} b\u1ed9 l\u1ecdc \u0111ang ho\u1ea1t \u0111\u1ed9ng"
+    },
+    "resultCount": "{{count}} chuy\u1ebfn \u0111i",
+    "createButton": "T\u1ea1o chuy\u1ebfn \u0111i m\u1edbi",
+    "info": {
+      "days": "{{count}} ng\u00e0y",
+      "itineraries": "{{count}} l\u1ecbch tr\u00ecnh",
+      "travelers": "{{count}} ng\u01b0\u1eddi"
+    },
+    "accessibility": {
+      "trip": "chuy\u1ebfn \u0111i",
+      "viewDetail": "Xem chi ti\u1ebft chuy\u1ebfn \u0111i",
+      "deleteTrip": "X\u00f3a",
+      "search": "T\u00ecm ki\u1ebfm chuy\u1ebfn \u0111i",
+      "searchHint": "T\u00ecm chuy\u1ebfn \u0111i theo \u0111i\u1ec3m \u0111\u1ebfn"
+    },
+    "pagination": {
+      "showMore": "Xem th\u00eam",
+      "showing": "{{shown}} / {{total}}"
+    }
+  },
+  "detail": {
+    "loading": "\u0110ang t\u1ea3i th\u00f4ng tin chuy\u1ebfn \u0111i...",
+    "notFound": {
+      "title": "Kh\u00f4ng t\u00ecm th\u1ea5y chuy\u1ebfn \u0111i",
+      "description": "Chuy\u1ebfn \u0111i n\u00e0y kh\u00f4ng t\u1ed3n t\u1ea1i ho\u1eb7c \u0111\u00e3 b\u1ecb x\u00f3a",
+      "back": "Quay l\u1ea1i"
+    },
+    "status": {
+      "ongoing": "\u0110ang di\u1ec5n ra",
+      "completed": "\u0110\u00e3 ho\u00e0n th\u00e0nh"
+    },
+    "completedBanner": {
+      "title": "Chuy\u1ebfn \u0111i \u0111\u00e3 ho\u00e0n th\u00e0nh",
+      "description": "Chuy\u1ebfn \u0111i n\u00e0y \u0111\u00e3 k\u1ebft th\u00fac v\u00e0 kh\u00f4ng th\u1ec3 ch\u1ec9nh s\u1eeda. H\u00e3y xem l\u1ea1i nh\u1eefng k\u1ef7 ni\u1ec7m qu\u00fd gi\u00e1 c\u1ee7a b\u1ea1n!"
+    },
+    "readOnlyMessage": "Kh\u00f4ng th\u1ec3 ch\u1ec9nh s\u1eeda c\u00e1c ho\u1ea1t \u0111\u1ed9ng \u0111\u00e3 ho\u00e0n th\u00e0nh",
+    "progress": "Ti\u1ebfn \u0111\u1ed9 t\u1ed5ng th\u1ec3 {{percentage}}%",
+    "durationDays": "{{count}} ng\u00e0y",
+    "travelers": "{{count}} ng\u01b0\u1eddi",
+    "durationMinutes": "{{minutes}} ph\u00fat",
+    "estimatedCost": "${{cost}}",
+    "dayLabel": "Ng\u00e0y {{day}}",
+    "emptyItinerary": "Ch\u01b0a c\u00f3 l\u1ecbch tr\u00ecnh",
+    "emptyItineraryMessage": "Th\u00eam ho\u1ea1t \u0111\u1ed9ng v\u00e0o chuy\u1ebfn \u0111i c\u1ee7a b\u1ea1n",
+    "addActivity": "Th\u00eam ho\u1ea1t \u0111\u1ed9ng",
+    "affiliateSection": "\u0110\u1eb7t kh\u00e1ch s\u1ea1n & ho\u1ea1t \u0111\u1ed9ng",
+    "affiliateSubtitle": "\u0110\u1eb7t ch\u1ed7 \u1edf v\u00e0 tr\u1ea3i nghi\u1ec7m t\u1ed1t nh\u1ea5t t\u1ea1i {{destination}}",
+    "tabs": {
+      "itinerary": "L\u1ecbch tr\u00ecnh",
+      "map": "B\u1ea3n \u0111\u1ed3",
+      "info": "Th\u00f4ng tin",
+      "share": "Chia s\u1ebb"
+    },
+    "map": {
+      "noLocations": "Kh\u00f4ng c\u00f3 \u0111\u1ecba \u0111i\u1ec3m \u0111\u1ec3 hi\u1ec3n th\u1ecb",
+      "noLocationsMessage": "T\u1ea1o chuy\u1ebfn \u0111i m\u1edbi \u0111\u1ec3 xem c\u00e1c ho\u1ea1t \u0111\u1ed9ng c\u00f3 d\u1eef li\u1ec7u v\u1ecb tr\u00ed",
+      "activitiesCount": "{{count}} ho\u1ea1t \u0111\u1ed9ng",
+      "allDays": "T\u1ea5t c\u1ea3",
+      "dayLabel": "Ng\u00e0y {{day}}",
+      "openInMaps": "Xem tr\u00ean Google Maps",
+      "tapToOpen": "Ch\u1ea1m \u0111\u1ec3 m\u1edf b\u1ea3n \u0111\u1ed3",
+      "durationMin": "{{min}} ph\u00fat"
+    },
+    "budget": {
+      "title": "T\u00f3m t\u1eaft ng\u00e2n s\u00e1ch",
+      "total": "T\u1ed5ng ng\u00e2n s\u00e1ch",
+      "estimated": "D\u1ef1 ki\u1ebfn",
+      "spent": "\u0110\u00e3 chi",
+      "remaining": "C\u00f2n l\u1ea1i",
+      "byCategory": "Theo danh m\u1ee5c",
+      "byDay": "Theo ng\u00e0y",
+      "perDay": "M\u1ed7i ng\u00e0y",
+      "dayLabel": "Ng\u00e0y {{day}}"
+    },
+    "activityTypes": {
+      "meal": "B\u1eefa \u0103n",
+      "sightseeing": "Tham quan",
+      "shopping": "Mua s\u1eafm",
+      "experience": "Tr\u1ea3i nghi\u1ec7m",
+      "rest": "Ngh\u1ec9 ng\u01a1i",
+      "transport": "Di chuy\u1ec3n",
+      "accommodation": "L\u01b0u tr\u00fa",
+      "other": "Kh\u00e1c"
+    },
+    "accessibility": {
+      "completed": "\u0110\u00e3 ho\u00e0n th\u00e0nh",
+      "incomplete": "Ch\u01b0a ho\u00e0n th\u00e0nh",
+      "reorder": "S\u1eafp x\u1ebfp l\u1ea1i",
+      "reorderHint": "Nh\u1ea5n gi\u1eef \u0111\u1ec3 s\u1eafp x\u1ebfp l\u1ea1i",
+      "edit": "Ch\u1ec9nh s\u1eeda",
+      "delete": "X\u00f3a",
+      "goBack": "Quay l\u1ea1i",
+      "editTrip": "Ch\u1ec9nh s\u1eeda chuy\u1ebfn \u0111i",
+      "duplicate": "Nh\u00e2n b\u1ea3n chuy\u1ebfn \u0111i",
+      "duplicating": "\u0110ang nh\u00e2n b\u1ea3n...",
+      "share": "Chia s\u1ebb",
+      "exportIcal": "Xu\u1ea5t ra l\u1ecbch",
+      "addActivityToDay": "Th\u00eam ho\u1ea1t \u0111\u1ed9ng v\u00e0o Ng\u00e0y {{day}}"
+    },
+    "alerts": {
+      "deleteTitle": "X\u00f3a ho\u1ea1t \u0111\u1ed9ng",
+      "deleteMessage": "X\u00f3a ho\u1ea1t \u0111\u1ed9ng n\u00e0y?",
+      "deleteFailed": "X\u00f3a th\u1ea5t b\u1ea1i",
+      "error": "L\u1ed7i",
+      "fetchError": "Kh\u00f4ng th\u1ec3 t\u1ea3i th\u00f4ng tin chuy\u1ebfn \u0111i",
+      "duplicateSuccess": "Chuy\u1ebfn \u0111i \u0111\u00e3 \u0111\u01b0\u1ee3c nh\u00e2n b\u1ea3n",
+      "duplicateCompleteTitle": "Nh\u00e2n b\u1ea3n ho\u00e0n t\u1ea5t",
+      "duplicateError": "Nh\u00e2n b\u1ea3n chuy\u1ebfn \u0111i th\u1ea5t b\u1ea1i",
+      "confirm": "OK",
+      "cancel": "Hu\u1ef7",
+      "delete": "X\u00f3a",
+      "success": "Th\u00e0nh c\u00f4ng",
+      "deleteSuccess": "Chuy\u1ebfn \u0111i \u0111\u00e3 \u0111\u01b0\u1ee3c x\u00f3a",
+      "deleteError": "X\u00f3a chuy\u1ebfn \u0111i th\u1ea5t b\u1ea1i",
+      "toggleError": "C\u1eadp nh\u1eadt tr\u1ea1ng th\u00e1i th\u1ea5t b\u1ea1i",
+      "reorderError": "S\u1eafp x\u1ebfp l\u1ea1i th\u1ea5t b\u1ea1i"
+    },
+    "photos": {
+      "addCover": "Th\u00eam \u1ea3nh b\u00eca",
+      "changeCover": "\u0110\u1ed5i \u1ea3nh b\u00eca",
+      "addPhoto": "Th\u00eam \u1ea3nh",
+      "photoCount": "{{count}} \u1ea3nh",
+      "uploadSuccess": "\u0110\u00e3 t\u1ea3i \u1ea3nh l\u00ean",
+      "uploadFailed": "T\u1ea3i \u1ea3nh l\u00ean th\u1ea5t b\u1ea1i",
+      "viewAll": "Xem t\u1ea5t c\u1ea3 \u1ea3nh"
+    },
+    "collaboration": {
+      "title": "C\u1ed9ng t\u00e1c vi\u00ean",
+      "invite": "M\u1eddi",
+      "emailPlaceholder": "Nh\u1eadp \u0111\u1ecba ch\u1ec9 email",
+      "roleViewer": "Ng\u01b0\u1eddi xem",
+      "roleEditor": "Ng\u01b0\u1eddi ch\u1ec9nh s\u1eeda",
+      "owner": "Ch\u1ee7 s\u1edf h\u1eefu",
+      "remove": "X\u00f3a",
+      "inviteSuccess": "\u0110\u00e3 g\u1eedi l\u1eddi m\u1eddi",
+      "inviteFailed": "G\u1eedi l\u1eddi m\u1eddi th\u1ea5t b\u1ea1i",
+      "removeFailed": "X\u00f3a th\u1ea5t b\u1ea1i",
+      "noCollaborators": "Ch\u01b0a c\u00f3 c\u1ed9ng t\u00e1c vi\u00ean"
+    },
+    "expenses": {
+      "title": "Chi ph\u00ed",
+      "addExpense": "Th\u00eam chi ph\u00ed",
+      "total": "T\u1ed5ng chi",
+      "myShare": "Ph\u1ea7n c\u1ee7a t\u00f4i",
+      "iOwe": "T\u00f4i n\u1ee3",
+      "owedToMe": "N\u1ee3 t\u00f4i",
+      "settled": "\u0110\u00e3 thanh to\u00e1n h\u1ebft",
+      "paidBy": "Ng\u01b0\u1eddi tr\u1ea3",
+      "splitWith": "Chia v\u1edbi",
+      "splitEqual": "Chia \u0111\u1ec1u",
+      "splitExact": "S\u1ed1 ti\u1ec1n t\u00f9y ch\u1ec9nh",
+      "balances": "S\u1ed1 d\u01b0",
+      "settlements": "Thanh to\u00e1n",
+      "settleUp": "Thanh to\u00e1n",
+      "settledMark": "\u0110\u00e3 thanh to\u00e1n",
+      "noExpenses": "Ch\u01b0a c\u00f3 chi ph\u00ed",
+      "noExpensesMessage": "Th\u00eam chi ph\u00ed \u0111\u1ec3 theo d\u00f5i chi ti\u00eau nh\u00f3m",
+      "description": "M\u00f4 t\u1ea3",
+      "amount": "S\u1ed1 ti\u1ec1n",
+      "category": "Danh m\u1ee5c",
+      "date": "Ng\u00e0y",
+      "owes": "n\u1ee3",
+      "categories": {
+        "food": "\u0102n u\u1ed1ng",
+        "transport": "Di chuy\u1ec3n",
+        "accommodation": "L\u01b0u tr\u00fa",
+        "activity": "Ho\u1ea1t \u0111\u1ed9ng",
+        "shopping": "Mua s\u1eafm",
+        "other": "Kh\u00e1c"
+      },
+      "tabs": {
+        "expenses": "Chi ph\u00ed",
+        "balances": "S\u1ed1 d\u01b0"
+      },
+      "alerts": {
+        "createFailed": "Th\u00eam chi ph\u00ed th\u1ea5t b\u1ea1i",
+        "deleteFailed": "X\u00f3a chi ph\u00ed th\u1ea5t b\u1ea1i",
+        "settleFailed": "Thanh to\u00e1n th\u1ea5t b\u1ea1i",
+        "deleteTitle": "X\u00f3a chi ph\u00ed",
+        "deleteMessage": "X\u00f3a chi ph\u00ed n\u00e0y?"
+      }
+    }
+  },
+  "edit": {
+    "title": "Ch\u1ec9nh s\u1eeda chuy\u1ebfn \u0111i",
+    "loading": "\u0110ang t\u1ea3i th\u00f4ng tin chuy\u1ebfn \u0111i...",
+    "notFound": "Kh\u00f4ng t\u00ecm th\u1ea5y chuy\u1ebfn \u0111i",
+    "goBack": "Quay l\u1ea1i",
+    "heroTitle": "Ch\u1ec9nh s\u1eeda th\u00f4ng tin chuy\u1ebfn \u0111i",
+    "ongoingWarning": "Chuy\u1ebfn \u0111i n\u00e0y \u0111ang di\u1ec5n ra. H\u00e3y c\u1ea9n th\u1eadn khi thay \u0111\u1ed5i ng\u00e0y.",
+    "destination": {
+      "title": "\u0110i\u1ec3m \u0111\u1ebfn",
+      "placeholder": "Ho\u1eb7c nh\u1eadp th\u1ee7 c\u00f4ng"
+    },
+    "dates": {
+      "title": "Ng\u00e0y du l\u1ecbch",
+      "changeWarning": "L\u01b0u \u00fd",
+      "totalDays": "Chuy\u1ebfn \u0111i {{days}} ng\u00e0y"
+    },
+    "travelers": {
+      "title": "S\u1ed1 ng\u01b0\u1eddi",
+      "placeholder": "Ho\u1eb7c nh\u1eadp th\u1ee7 c\u00f4ng"
+    },
+    "notes": {
+      "title": "Ghi ch\u00fa chuy\u1ebfn \u0111i (T\u00f9y ch\u1ecdn)",
+      "placeholder": "Th\u00eam b\u1ea5t k\u1ef3 m\u1ee5c ti\u00eau ho\u1eb7c y\u00eau c\u1ea7u \u0111\u1eb7c bi\u1ec7t"
+    },
+    "budget": {
+      "title": "Ng\u00e2n s\u00e1ch chuy\u1ebfn \u0111i (T\u00f9y ch\u1ecdn)",
+      "placeholder": "Nh\u1eadp t\u1ed5ng ng\u00e2n s\u00e1ch",
+      "currency": "Lo\u1ea1i ti\u1ec1n"
+    },
+    "submit": "L\u01b0u th\u00f4ng tin chuy\u1ebfn \u0111i",
+    "saving": "\u0110ang l\u01b0u...",
+    "status": {
+      "upcoming": "S\u1eafp t\u1edbi",
+      "ongoing": "\u0110ang di\u1ec5n ra",
+      "completed": "\u0110\u00e3 ho\u00e0n th\u00e0nh"
+    },
+    "alerts": {
+      "cannotEditCompleted": "Kh\u00f4ng th\u1ec3 ch\u1ec9nh s\u1eeda chuy\u1ebfn \u0111i \u0111\u00e3 ho\u00e0n th\u00e0nh.",
+      "cannotEditTitle": "Kh\u00f4ng th\u1ec3 ch\u1ec9nh s\u1eeda",
+      "loadError": "Kh\u00f4ng th\u1ec3 t\u1ea3i th\u00f4ng tin chuy\u1ebfn \u0111i.",
+      "destinationRequired": "Vui l\u00f2ng nh\u1eadp \u0111i\u1ec3m \u0111\u1ebfn.",
+      "requiredInput": "B\u1eaft bu\u1ed9c",
+      "datesRequired": "Vui l\u00f2ng ch\u1ecdn ng\u00e0y du l\u1ecbch.",
+      "endDateError": "Ng\u00e0y k\u1ebft th\u00fac ph\u1ea3i sau ng\u00e0y b\u1eaft \u0111\u1ea7u.",
+      "dateError": "L\u1ed7i ng\u00e0y",
+      "dateChangeWarningTitle": "C\u1ea3nh b\u00e1o thay \u0111\u1ed5i ng\u00e0y",
+      "dateChangeWarning": "Thay \u0111\u1ed5i ng\u00e0y cho chuy\u1ebfn \u0111i \u0111ang di\u1ec5n ra c\u00f3 th\u1ec3 \u1ea3nh h\u01b0\u1edfng \u0111\u1ebfn l\u1ecbch tr\u00ecnh. Ti\u1ebfp t\u1ee5c?",
+      "continue": "Ti\u1ebfp t\u1ee5c",
+      "saveSuccess": "\u0110\u00e3 l\u01b0u thay \u0111\u1ed5i",
+      "saveSuccessMessage": "Th\u00f4ng tin chuy\u1ebfn \u0111i \u0111\u00e3 \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt.",
+      "saveFailed": "L\u01b0u th\u1ea5t b\u1ea1i",
+      "saveError": "Kh\u00f4ng th\u1ec3 l\u01b0u th\u00f4ng tin chuy\u1ebfn \u0111i. Vui l\u00f2ng th\u1eed l\u1ea1i."
+    }
+  }
+}

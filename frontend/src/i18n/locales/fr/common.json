@@ -1,0 +1,75 @@
+{
+  "confirm": "OK",
+  "cancel": "Annuler",
+  "save": "Enregistrer",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "close": "Fermer",
+  "loading": "Chargement...",
+  "error": "Erreur",
+  "success": "Succès",
+  "retry": "Réessayer",
+  "back": "Retour",
+  "next": "Suivant",
+  "done": "Terminé",
+  "copy": "Copier",
+  "search": "Rechercher",
+  "noResults": "Aucun résultat trouvé",
+  "like": "J'aime",
+  "share": "Partager",
+  "clear": "Effacer",
+  "seeAll": "Tout voir →",
+  "findOnProvider": "Trouver sur {{name}}",
+  "offlineMode": "Mode hors ligne — affichage des données en cache",
+  "offlinePending": "Hors ligne — {{count}} modification(s) en attente",
+  "offlineSyncing": "Synchronisation en cours...",
+  "offlineSynced": "Toutes les modifications sont synchronisées",
+  "errorBoundary": {
+    "title": "Nous nous sommes un peu perdus",
+    "message": "Une erreur inattendue s'est produite.\nNe vous inquiétez pas, nous allons vous remettre sur la bonne voie !",
+    "persistentTitle": "Erreurs répétées détectées",
+    "persistentMessage": "Cette erreur se reproduit.\nVeuillez essayer de recharger l'application.",
+    "retry": "Réessayer",
+    "reload": "Recharger l'application",
+    "goHome": "Retour à l'accueil",
+    "errorId": "ID de l'erreur : {{id}}"
+  },
+  "tabs": {
+    "home": "Accueil",
+    "trips": "Mes voyages",
+    "notifications": "Alertes",
+    "profile": "Profil"
+  },
+  "notifications": {
+    "emptyTitle": "Aucune notification",
+    "emptyMessage": "Les nouvelles notifications apparaîtront ici",
+    "markAllRead": "Tout marquer comme lu",
+    "deleteAll": "Tout supprimer",
+    "deleteAllTitle": "Supprimer les notifications",
+    "deleteAllConfirm": "Supprimer toutes les notifications ?",
+    "allMarkedRead": "Toutes les notifications ont été marquées comme lues",
+    "allDeleted": "Toutes les notifications ont été supprimées",
+    "error": "Une erreur s'est produite",
+    "fetchError": "Impossible de charger les notifications",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "justNow": "À l'instant",
+    "minutesAgo": "Il y a {{count}} min",
+    "hoursAgo": "Il y a {{count}} h",
+    "daysAgo": "Il y a {{count}} j"
+  },
+  "pwa": {
+    "installTitle": "Installer comme application",
+    "installMessage": "Ajoutez à l'écran d'accueil pour une expérience plus rapide",
+    "install": "Installer"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "Vérification de l'e-mail requise",
+      "message": "Veuillez vérifier votre boîte de réception pour confirmer votre e-mail",
+      "resend": "Renvoyer",
+      "sent": "E-mail de vérification renvoyé",
+      "error": "Échec du renvoi"
+    }
+  }
+}

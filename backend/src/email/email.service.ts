@@ -3,7 +3,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { getErrorMessage } from '../common/types/request.types';
 
-type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es';
+type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi';
 type EmailTemplateLang = 'ko' | 'en' | 'ja';
 
 const EMAIL_TEMPLATE_FALLBACK: Record<SupportedLang, EmailTemplateLang> = {
@@ -12,6 +12,10 @@ const EMAIL_TEMPLATE_FALLBACK: Record<SupportedLang, EmailTemplateLang> = {
   ja: 'ja',
   zh: 'en',
   es: 'en',
+  de: 'en',
+  fr: 'en',
+  th: 'en',
+  vi: 'en',
 };
 
 function maskEmail(email: string): string {
@@ -51,6 +55,10 @@ export class EmailService {
       ja: '[TravelPlanner] メールアドレスを認証してください',
       zh: '[TravelPlanner] 请验证您的邮箱',
       es: '[TravelPlanner] Por favor verifica tu correo',
+      de: '[TravelPlanner] Bitte verifizieren Sie Ihre E-Mail',
+      fr: '[TravelPlanner] Veuillez vérifier votre e-mail',
+      th: '[TravelPlanner] กรุณายืนยันอีเมลของคุณ',
+      vi: '[TravelPlanner] Vui lòng xác minh email của bạn',
     };
     const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
 
@@ -95,6 +103,10 @@ export class EmailService {
       ja: '[TravelPlanner] パスワードのリセット',
       zh: '[TravelPlanner] 重置密码',
       es: '[TravelPlanner] Restablece tu contraseña',
+      de: '[TravelPlanner] Passwort zurücksetzen',
+      fr: '[TravelPlanner] Réinitialisez votre mot de passe',
+      th: '[TravelPlanner] รีเซ็ตรหัสผ่านของคุณ',
+      vi: '[TravelPlanner] Đặt lại mật khẩu của bạn',
     };
     const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
 

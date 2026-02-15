@@ -1,0 +1,98 @@
+{
+  "activityModal": {
+    "addTitle": "เพิ่มกิจกรรม",
+    "editTitle": "แก้ไขกิจกรรม",
+    "time": "เวลา",
+    "title": "ชื่อ",
+    "titlePlaceholder": "กรอกชื่อกิจกรรม",
+    "location": "สถานที่",
+    "locationPlaceholder": "กรอกสถานที่",
+    "description": "รายละเอียด",
+    "descriptionPlaceholder": "กรอกรายละเอียด",
+    "type": "ประเภทกิจกรรม",
+    "duration": "ระยะเวลาโดยประมาณ (นาที)",
+    "durationPlaceholder": "60",
+    "cost": "ค่าใช้จ่ายโดยประมาณ",
+    "actualCost": "ค่าใช้จ่ายจริง",
+    "costPlaceholder": "0",
+    "cancel": "ยกเลิก",
+    "add": "เพิ่ม",
+    "save": "บันทึก",
+    "validationError": "ข้อผิดพลาดในการกรอกข้อมูล",
+    "validationErrorMessage": "กรุณากรอกเวลา ชื่อ และสถานที่",
+    "errorTitle": "ข้อผิดพลาด",
+    "saveError": "บันทึกกิจกรรมไม่สำเร็จ",
+    "types": {
+      "meal": "มื้ออาหาร",
+      "sightseeing": "ท่องเที่ยว",
+      "shopping": "ช้อปปิ้ง",
+      "experience": "ประสบการณ์",
+      "rest": "พักผ่อน",
+      "transport": "การเดินทาง",
+      "other": "อื่นๆ"
+    }
+  },
+  "shareModal": {
+    "title": "แชร์ทริป",
+    "generate": "สร้างลิงก์แชร์",
+    "generateButton": "สร้างลิงก์",
+    "generateDescription": "สร้างลิงก์แชร์เพื่อแบ่งปันแผนการเดินทางของคุณกับผู้อื่น",
+    "generateError": "สร้างลิงก์แชร์ไม่สำเร็จ",
+    "linkTitle": "ลิงก์แชร์",
+    "copy": "คัดลอกลิงก์",
+    "copied": "คัดลอกแล้ว!",
+    "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว",
+    "copyError": "คัดลอกลิงก์ไม่สำเร็จ",
+    "disable": "ปิดการแชร์",
+    "disableConfirm": "ปิดการแชร์หรือไม่? ลิงก์ที่มีอยู่จะใช้งานไม่ได้",
+    "disableAction": "ปิดการใช้งาน",
+    "disableSuccess": "ปิดการแชร์แล้ว",
+    "disableError": "ปิดการแชร์ไม่สำเร็จ",
+    "cancel": "ยกเลิก",
+    "error": "ข้อผิดพลาด",
+    "success": "สำเร็จ",
+    "info": "ทุกคนที่มีลิงก์นี้สามารถดูแผนการเดินทางนี้ได้ การปิดใช้งานลิงก์จะเพิกถอนสิทธิ์การเข้าถึง",
+    "expiry": {
+      "title": "ระยะเวลาหมดอายุ",
+      "none": "ไม่มีวันหมดอายุ",
+      "7days": "7 วัน",
+      "30days": "30 วัน",
+      "90days": "90 วัน"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "ความชื้น",
+    "windSpeed": "ลม",
+    "feelsLike": "รู้สึกเหมือน",
+    "timezone": "เวลาท้องถิ่น",
+    "timeDiff": "ส่วนต่างเวลา",
+    "noData": "ไม่มีข้อมูลสภาพอากาศ"
+  },
+  "popularDestinations": {
+    "title": "จุดหมายยอดนิยม",
+    "subtitle": "เทรนด์ใน 3 เดือนที่ผ่านมา",
+    "description": "ดูจุดหมายปลายทางยอดนิยมที่นักเดินทางจริงเลือกไป",
+    "visitors": "{{count}} นักเดินทาง",
+    "avgDuration": "เฉลี่ย {{days}} วัน",
+    "withTravelers": "กับ {{count}} คน",
+    "popularSeason": "ช่วงเวลายอดนิยม:"
+  },
+  "progressIndicator": {
+    "title": "ความคืบหน้า",
+    "status": "{{completed}} เสร็จแล้ว / {{total}} กิจกรรมทั้งหมด"
+  },
+  "destinationInsights": {
+    "header": "อ้างอิงจากข้อมูลนักเดินทางจริง",
+    "avgDuration": "ระยะเวลาเฉลี่ยของทริป",
+    "avgTravelers": "ขนาดกลุ่มเฉลี่ย",
+    "popularBudget": "งบประมาณยอดนิยม",
+    "popularStyle": "สไตล์ยอดนิยม",
+    "popularSeason": "ฤดูกาลท่องเที่ยวยอดนิยม",
+    "bestNow": "ช่วงนี้เป็นเวลาที่ดีที่สุด!",
+    "topActivities": "กิจกรรมยอดนิยมจากนักเดินทางล่าสุด (อันดับ {{count}})",
+    "footer": "อ้างอิงจากข้อมูลนักเดินทางจริงใน 3 เดือนที่ผ่านมา",
+    "loading": "กำลังโหลดข้อมูลจุดหมาย...",
+    "days": "{{days}} วัน",
+    "people": "{{count}} คน"
+  }
+}

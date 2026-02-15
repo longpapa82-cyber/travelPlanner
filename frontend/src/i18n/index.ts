@@ -49,7 +49,43 @@ import es_components from './locales/es/components.json';
 import es_legal from './locales/es/legal.json';
 import es_admin from './locales/es/admin.json';
 
-export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja', 'zh', 'es'] as const;
+import de_common from './locales/de/common.json';
+import de_auth from './locales/de/auth.json';
+import de_home from './locales/de/home.json';
+import de_trips from './locales/de/trips.json';
+import de_profile from './locales/de/profile.json';
+import de_components from './locales/de/components.json';
+import de_legal from './locales/de/legal.json';
+import de_admin from './locales/de/admin.json';
+
+import fr_common from './locales/fr/common.json';
+import fr_auth from './locales/fr/auth.json';
+import fr_home from './locales/fr/home.json';
+import fr_trips from './locales/fr/trips.json';
+import fr_profile from './locales/fr/profile.json';
+import fr_components from './locales/fr/components.json';
+import fr_legal from './locales/fr/legal.json';
+import fr_admin from './locales/fr/admin.json';
+
+import th_common from './locales/th/common.json';
+import th_auth from './locales/th/auth.json';
+import th_home from './locales/th/home.json';
+import th_trips from './locales/th/trips.json';
+import th_profile from './locales/th/profile.json';
+import th_components from './locales/th/components.json';
+import th_legal from './locales/th/legal.json';
+import th_admin from './locales/th/admin.json';
+
+import vi_common from './locales/vi/common.json';
+import vi_auth from './locales/vi/auth.json';
+import vi_home from './locales/vi/home.json';
+import vi_trips from './locales/vi/trips.json';
+import vi_profile from './locales/vi/profile.json';
+import vi_components from './locales/vi/components.json';
+import vi_legal from './locales/vi/legal.json';
+import vi_admin from './locales/vi/admin.json';
+
+export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
@@ -58,6 +94,10 @@ export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
   ja: '日本語',
   zh: '中文',
   es: 'Español',
+  de: 'Deutsch',
+  fr: 'Français',
+  th: 'ไทย',
+  vi: 'Tiếng Việt',
 };
 
 export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
@@ -66,6 +106,10 @@ export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
   ja: '🇯🇵',
   zh: '🇨🇳',
   es: '🇪🇸',
+  de: '🇩🇪',
+  fr: '🇫🇷',
+  th: '🇹🇭',
+  vi: '🇻🇳',
 };
 
 const resources = {
@@ -118,6 +162,46 @@ const resources = {
     components: es_components,
     legal: es_legal,
     admin: es_admin,
+  },
+  de: {
+    common: de_common,
+    auth: de_auth,
+    home: de_home,
+    trips: de_trips,
+    profile: de_profile,
+    components: de_components,
+    legal: de_legal,
+    admin: de_admin,
+  },
+  fr: {
+    common: fr_common,
+    auth: fr_auth,
+    home: fr_home,
+    trips: fr_trips,
+    profile: fr_profile,
+    components: fr_components,
+    legal: fr_legal,
+    admin: fr_admin,
+  },
+  th: {
+    common: th_common,
+    auth: th_auth,
+    home: th_home,
+    trips: th_trips,
+    profile: th_profile,
+    components: th_components,
+    legal: th_legal,
+    admin: th_admin,
+  },
+  vi: {
+    common: vi_common,
+    auth: vi_auth,
+    home: vi_home,
+    trips: vi_trips,
+    profile: vi_profile,
+    components: vi_components,
+    legal: vi_legal,
+    admin: vi_admin,
   },
 };
 

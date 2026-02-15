@@ -1,0 +1,115 @@
+{
+  "title": "Profil",
+  "guest": "Invité",
+  "sections": {
+    "account": "Compte",
+    "settings": "Paramètres",
+    "support": "Assistance",
+    "admin": "Administration"
+  },
+  "menu": {
+    "editProfile": "Modifier le profil",
+    "changePassword": "Changer le mot de passe",
+    "twoFactor": "Authentification à deux facteurs",
+    "twoFactorEnabled": "Activée",
+    "twoFactorDisabled": "Désactivée",
+    "language": "Langue",
+    "notifications": "Notifications",
+    "notificationsEnabled": "Activées",
+    "notificationsDisabled": "Désactivées",
+    "darkMode": "Mode sombre",
+    "help": "Aide",
+    "terms": "Conditions d'utilisation",
+    "privacy": "Politique de confidentialité",
+    "revenue": "Tableau de bord des revenus",
+    "admin": "Panneau d'administration"
+  },
+  "editProfile": {
+    "title": "Modifier le profil",
+    "name": "Nom",
+    "namePlaceholder": "Entrez votre nom",
+    "changePhoto": "Changer la photo de profil",
+    "save": "Enregistrer",
+    "alerts": {
+      "nameRequired": "Veuillez entrer votre nom",
+      "success": "Profil mis à jour avec succès",
+      "failed": "Échec de la mise à jour du profil",
+      "photoSuccess": "Photo de profil mise à jour",
+      "photoFailed": "Échec de la mise à jour de la photo de profil",
+      "permissionDenied": "Autorisation d'accès aux photos requise"
+    }
+  },
+  "changePassword": {
+    "title": "Changer le mot de passe",
+    "current": "Mot de passe actuel",
+    "currentPlaceholder": "Entrez le mot de passe actuel",
+    "new": "Nouveau mot de passe",
+    "newPlaceholder": "Entrez un nouveau mot de passe (6 caractères min.)",
+    "confirm": "Confirmer le nouveau mot de passe",
+    "confirmPlaceholder": "Ressaisissez le nouveau mot de passe",
+    "submit": "Changer le mot de passe",
+    "alerts": {
+      "allFieldsRequired": "Veuillez remplir tous les champs",
+      "minLength": "Le nouveau mot de passe doit contenir au moins 6 caractères",
+      "mismatch": "Les nouveaux mots de passe ne correspondent pas",
+      "success": "Mot de passe modifié avec succès",
+      "failed": "Échec du changement de mot de passe"
+    }
+  },
+  "languageSelector": {
+    "title": "Sélectionner la langue",
+    "description": "Choisissez votre langue préférée"
+  },
+  "logout": {
+    "title": "Déconnexion",
+    "message": "Êtes-vous sûr(e) de vouloir vous déconnecter ?",
+    "button": "Se déconnecter"
+  },
+  "deleteAccount": {
+    "title": "Supprimer le compte",
+    "message": "La suppression de votre compte entraînera la suppression définitive de toutes vos données. Êtes-vous sûr(e) ?",
+    "button": "Supprimer le compte",
+    "alerts": {
+      "success": "Compte supprimé avec succès",
+      "failed": "Échec de la suppression du compte"
+    }
+  },
+  "version": "Version",
+  "analytics": {
+    "title": "Statistiques de voyage",
+    "totalTrips": "Total des voyages",
+    "completedTrips": "Terminés",
+    "ongoingTrips": "En cours",
+    "upcomingTrips": "À venir",
+    "totalDays": "Nombre total de jours",
+    "avgDuration": "Durée moyenne",
+    "days": "jours",
+    "countriesVisited": "Pays",
+    "countries": "pays",
+    "totalSpent": "Total dépensé",
+    "totalBudget": "Budget total",
+    "topDestinations": "Destinations favorites",
+    "times": "fois",
+    "activities": "Activités",
+    "completedOf": "{{completed}} / {{total}} terminées",
+    "noData": "Aucune donnée de voyage pour le moment",
+    "loading": "Chargement des statistiques..."
+  },
+  "revenue": {
+    "last30Days": "30 derniers jours",
+    "totalClicks": "Total des clics",
+    "conversions": "Conversions",
+    "conversionRate": "Taux de conv.",
+    "commission": "Commission",
+    "highlights": "Points clés",
+    "topProvider": "Meilleur fournisseur",
+    "topDestination": "Meilleure destination",
+    "totalRevenue": "Revenu total",
+    "byProvider": "Par fournisseur",
+    "clicks": "clics",
+    "conv": "conv.",
+    "noData": "Aucune donnée disponible pour le moment",
+    "adminOnly": "Accès administrateur requis",
+    "loadError": "Impossible de charger les données"
+  }
+}

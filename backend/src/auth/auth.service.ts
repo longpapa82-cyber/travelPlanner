@@ -24,7 +24,7 @@ import {
 import { t } from '../common/i18n';
 import { getErrorMessage } from '../common/types/request.types';
 
-type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es';
+type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi';
 
 export interface OAuthUserData {
   providerId: string;
