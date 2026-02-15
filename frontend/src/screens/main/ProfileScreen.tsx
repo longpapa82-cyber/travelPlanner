@@ -199,7 +199,9 @@ const ProfileScreen = ({ navigation }: any) => {
         <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
       }
     >
+      {/* 이메일 인증 배너 비활성화 — 추후 필요 시 복원
       <EmailVerificationBanner />
+      */}
       <View style={styles.profileHeader}>
         <TouchableOpacity
           style={styles.avatarContainer}

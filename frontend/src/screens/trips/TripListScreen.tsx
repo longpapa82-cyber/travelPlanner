@@ -537,7 +537,9 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
           />
         }
       >
+        {/* 이메일 인증 배너 비활성화 — 추후 필요 시 복원
         <EmailVerificationBanner />
+        */}
         {/* Create Button */}
         <Animated.View
           style={[
