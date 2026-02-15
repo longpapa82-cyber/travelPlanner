@@ -84,6 +84,22 @@ export class ItineraryTemplate {
   @Column({ type: 'float', nullable: true })
   rating?: number;
 
+  /** How many times this template was served as the primary result */
+  @Column({ type: 'int', default: 0 })
+  servedCount: number;
+
+  /** How many times users significantly modified the template-based itinerary */
+  @Column({ type: 'int', default: 0 })
+  userModifiedCount: number;
+
+  /**
+   * Quality score: 0.0 (worst) to 1.0 (best).
+   * Computed as 1 - (userModifiedCount / servedCount).
+   * Null until first served.
+   */
+  @Column({ type: 'float', nullable: true })
+  qualityScore?: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

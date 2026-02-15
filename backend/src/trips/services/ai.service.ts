@@ -718,7 +718,7 @@ Return JSON:
    * Called by the scheduled cron job (TemplateService.handleStaleRefresh).
    */
   async refreshStaleTemplates(): Promise<number> {
-    const staleTemplates = await this.templateService.getStaleTemplates(5);
+    const staleTemplates = await this.templateService.getSmartRefreshQueue(5);
     if (staleTemplates.length === 0) return 0;
 
     let refreshed = 0;

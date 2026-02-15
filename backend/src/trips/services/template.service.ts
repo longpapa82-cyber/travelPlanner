@@ -188,9 +188,12 @@ export class TemplateService {
     params: TemplateLookupParams,
     similarity?: number,
   ): TemplateResult {
-    // Bump popularity counter (fire-and-forget)
+    // Bump popularity + served counters (fire-and-forget)
     this.templateRepo
       .increment({ id: template.id }, 'popularity', 1)
+      .catch(() => {});
+    this.templateRepo
+      .increment({ id: template.id }, 'servedCount', 1)
       .catch(() => {});
 
     const isStale =
@@ -351,6 +354,203 @@ export class TemplateService {
       .getRawMany();
 
     return { totalTemplates, staleCount, topDestinations };
+  }
+
+  /**
+   * Record that a user significantly modified a template-based itinerary.
+   * This degrades the template's quality score, prioritizing it for refresh.
+   *
+   * "Significant modification" = user changed ≥50% of activities in any day.
+   */
+  async recordUserModification(templateId: string): Promise<void> {
+    try {
+      await this.templateRepo.increment({ id: templateId }, 'userModifiedCount', 1);
+      // Recompute quality score
+      const template = await this.templateRepo.findOne({ where: { id: templateId } });
+      if (template && template.servedCount > 0) {
+        const score = Math.max(
+          0,
+          1 - template.userModifiedCount / template.servedCount,
+        );
+        await this.templateRepo.update(templateId, {
+          qualityScore: Math.round(score * 100) / 100,
+        });
+      }
+    } catch (error) {
+      this.logger.warn(
+        `Failed to record modification for template ${templateId}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  }
+
+  /**
+   * Calculate the modification ratio between original template and user's version.
+   * Returns 0.0 (identical) to 1.0 (completely different).
+   */
+  calculateModificationRatio(
+    originalActivities: Activity[],
+    userActivities: Activity[],
+  ): number {
+    if (originalActivities.length === 0 && userActivities.length === 0) return 0;
+    if (originalActivities.length === 0 || userActivities.length === 0) return 1;
+
+    // Count how many original titles survive in the user version
+    const originalTitles = new Set(originalActivities.map((a) => a.title));
+    const surviving = userActivities.filter((a) => originalTitles.has(a.title)).length;
+    const maxLen = Math.max(originalActivities.length, userActivities.length);
+
+    return 1 - surviving / maxLen;
+  }
+
+  /**
+   * Validate template data quality. Returns issues found.
+   */
+  validateTemplate(template: ItineraryTemplate): string[] {
+    const issues: string[] = [];
+
+    if (!template.days || template.days.length === 0) {
+      issues.push('No days in template');
+      return issues;
+    }
+
+    for (const day of template.days) {
+      if (!day.activities || day.activities.length === 0) {
+        issues.push(`Day ${day.dayNumber}: no activities`);
+        continue;
+      }
+
+      for (const activity of day.activities) {
+        if (!activity.title) {
+          issues.push(`Day ${day.dayNumber}: activity missing title`);
+        }
+        if (!activity.location) {
+          issues.push(`Day ${day.dayNumber}: "${activity.title}" missing location`);
+        }
+        if (!activity.time || !/^\d{2}:\d{2}$/.test(activity.time)) {
+          issues.push(`Day ${day.dayNumber}: "${activity.title}" invalid time format`);
+        }
+        if (
+          activity.estimatedDuration !== undefined &&
+          (activity.estimatedDuration <= 0 || activity.estimatedDuration > 720)
+        ) {
+          issues.push(`Day ${day.dayNumber}: "${activity.title}" unreasonable duration`);
+        }
+        if (
+          activity.estimatedCost !== undefined &&
+          activity.estimatedCost < 0
+        ) {
+          issues.push(`Day ${day.dayNumber}: "${activity.title}" negative cost`);
+        }
+      }
+    }
+
+    return issues;
+  }
+
+  /**
+   * Get detailed health dashboard data.
+   */
+  async getHealthDashboard(): Promise<{
+    totalTemplates: number;
+    staleCount: number;
+    withEmbeddings: number;
+    withoutEmbeddings: number;
+    averageQuality: number | null;
+    lowQualityCount: number;
+    matchTypeDistribution: Record<string, number>;
+    topDestinations: Array<{ destination: string; count: number; avgQuality: number }>;
+    refreshQueue: Array<{
+      id: string;
+      destination: string;
+      durationDays: number;
+      qualityScore: number | null;
+      popularity: number;
+      refreshPriority: number;
+    }>;
+  }> {
+    const totalTemplates = await this.templateRepo.count();
+    const threshold = new Date(Date.now() - this.STALE_THRESHOLD_MS);
+    const staleCount = await this.templateRepo.count({
+      where: { lastVerifiedAt: LessThan(threshold) },
+    });
+
+    // Embedding coverage
+    const [embeddingStats] = await this.templateRepo.query(
+      `SELECT
+         COUNT(*) FILTER (WHERE embedding IS NOT NULL) AS "withEmbeddings",
+         COUNT(*) FILTER (WHERE embedding IS NULL) AS "withoutEmbeddings"
+       FROM itinerary_templates`,
+    );
+
+    // Quality distribution
+    const [qualityStats] = await this.templateRepo.query(
+      `SELECT
+         AVG("qualityScore") AS "averageQuality",
+         COUNT(*) FILTER (WHERE "qualityScore" IS NOT NULL AND "qualityScore" < 0.5) AS "lowQualityCount"
+       FROM itinerary_templates`,
+    );
+
+    // Top destinations with quality
+    const topDestinations = await this.templateRepo.query(
+      `SELECT
+         destination,
+         SUM(popularity)::int AS count,
+         ROUND(AVG("qualityScore")::numeric, 2) AS "avgQuality"
+       FROM itinerary_templates
+       GROUP BY destination
+       ORDER BY count DESC
+       LIMIT 10`,
+    );
+
+    // Smart refresh queue: priority = popularity × staleness_days × (2 - qualityScore)
+    const refreshQueue = await this.templateRepo.query(
+      `SELECT
+         id, destination, "durationDays", "qualityScore", popularity,
+         ROUND((
+           GREATEST(popularity, 1) *
+           EXTRACT(EPOCH FROM (NOW() - "lastVerifiedAt")) / 86400.0 *
+           (2 - COALESCE("qualityScore", 0.5))
+         )::numeric, 1) AS "refreshPriority"
+       FROM itinerary_templates
+       WHERE "lastVerifiedAt" < $1
+       ORDER BY "refreshPriority" DESC
+       LIMIT 10`,
+      [threshold],
+    );
+
+    return {
+      totalTemplates,
+      staleCount,
+      withEmbeddings: parseInt(embeddingStats?.withEmbeddings || '0', 10),
+      withoutEmbeddings: parseInt(embeddingStats?.withoutEmbeddings || '0', 10),
+      averageQuality: qualityStats?.averageQuality
+        ? parseFloat(qualityStats.averageQuality)
+        : null,
+      lowQualityCount: parseInt(qualityStats?.lowQualityCount || '0', 10),
+      matchTypeDistribution: {}, // Populated at runtime by tracking hits
+      topDestinations,
+      refreshQueue,
+    };
+  }
+
+  /**
+   * Get templates ordered by smart refresh priority.
+   * Priority = popularity × staleness_days × (2 - qualityScore)
+   */
+  async getSmartRefreshQueue(limit = 10): Promise<ItineraryTemplate[]> {
+    const threshold = new Date(Date.now() - this.STALE_THRESHOLD_MS);
+    return this.templateRepo.query(
+      `SELECT *
+       FROM itinerary_templates
+       WHERE "lastVerifiedAt" < $1
+       ORDER BY
+         GREATEST(popularity, 1) *
+         EXTRACT(EPOCH FROM (NOW() - "lastVerifiedAt")) / 86400.0 *
+         (2 - COALESCE("qualityScore", 0.5))
+       DESC
+       LIMIT $2`,
+      [threshold, limit],
+    );
   }
 
   /**

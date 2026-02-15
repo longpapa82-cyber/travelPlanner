@@ -77,7 +77,7 @@ export class TemplateController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refreshStale(@Query('limit') limit?: string) {
-    const stale = await this.templateService.getStaleTemplates(
+    const stale = await this.templateService.getSmartRefreshQueue(
       limit ? parseInt(limit, 10) : 5,
     );
     return {
@@ -88,8 +88,18 @@ export class TemplateController {
         durationDays: t.durationDays,
         lastVerifiedAt: t.lastVerifiedAt,
         popularity: t.popularity,
+        qualityScore: t.qualityScore,
       })),
     };
+  }
+
+  /**
+   * GET /api/templates/health
+   * Detailed health dashboard with quality metrics, embedding coverage, refresh queue.
+   */
+  @Get('health')
+  async getHealthDashboard() {
+    return this.templateService.getHealthDashboard();
   }
 
   /**
