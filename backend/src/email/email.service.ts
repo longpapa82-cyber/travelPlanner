@@ -5,6 +5,13 @@ import { getErrorMessage } from '../common/types/request.types';
 
 type SupportedLang = 'ko' | 'en' | 'ja';
 
+function maskEmail(email: string): string {
+  const [local, domain] = email.split('@');
+  if (!domain) return '***';
+  const masked = local.length <= 2 ? '*'.repeat(local.length) : local[0] + '*'.repeat(local.length - 2) + local[local.length - 1];
+  return `${masked}@${domain}`;
+}
+
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
@@ -50,10 +57,10 @@ export class EmailService {
         );
       }
 
-      this.logger.log(`Verification email sent to ${email}`);
+      this.logger.log(`Verification email sent to ${maskEmail(email)}`);
     } catch (error) {
       this.logger.error(
-        `Failed to send verification email to ${email}: ${getErrorMessage(error)}`,
+        `Failed to send verification email to ${maskEmail(email)}: ${getErrorMessage(error)}`,
       );
       if (!this.isDev) throw error;
       // In dev, log the URL so the developer can still verify
@@ -90,10 +97,10 @@ export class EmailService {
         );
       }
 
-      this.logger.log(`Password reset email sent to ${email}`);
+      this.logger.log(`Password reset email sent to ${maskEmail(email)}`);
     } catch (error) {
       this.logger.error(
-        `Failed to send password reset email to ${email}: ${getErrorMessage(error)}`,
+        `Failed to send password reset email to ${maskEmail(email)}: ${getErrorMessage(error)}`,
       );
       if (!this.isDev) throw error;
       this.logger.warn(`[DEV] Email send failed but reset URL: ${resetUrl}`);
