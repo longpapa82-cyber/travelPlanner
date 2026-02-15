@@ -21,6 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
+import { randomBytes } from 'crypto';
 import { Throttle } from '@nestjs/throttler';
 import { TripsService } from './trips.service';
 import { CreateTripDto } from './dto/create-trip.dto';
@@ -326,7 +327,7 @@ export class TripsController {
           cb(null, uploadDir);
         },
         filename: (_req, file, cb) => {
-          const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+          const uniqueSuffix = `${Date.now()}-${randomBytes(8).toString('hex')}`;
           cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
         },
       }),

@@ -19,6 +19,10 @@ initSentry();
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // Limit JSON/URL-encoded body size to prevent payload-based DoS
+  app.useBodyParser('json', { limit: '1mb' });
+  app.useBodyParser('urlencoded', { limit: '1mb', extended: true });
+
   // HTTP security headers
   app.use(
     helmet({
