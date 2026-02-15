@@ -25,7 +25,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let status: number;
-    let message: string;
+    let message: string | string[];
     let error: string;
 
     if (exception instanceof HttpException) {

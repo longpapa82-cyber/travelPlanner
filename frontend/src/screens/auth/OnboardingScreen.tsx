@@ -54,7 +54,7 @@ const getSlides = (t: TFunction): OnboardingSlide[] => [
     icon: 'weather-sunny',
     title: t('onboarding.slides.customize.title'),
     description: t('onboarding.slides.customize.description'),
-    gradient: [colors.secondary[400], colors.secondary[600]],
+    gradient: [colors.primary[400], colors.primary[600]],
   },
   {
     id: '3',

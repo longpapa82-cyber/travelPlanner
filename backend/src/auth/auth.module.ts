@@ -28,7 +28,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
       useFactory: (configService: ConfigService): JwtModuleOptions => ({
         secret: configService.get<string>('jwt.secret')!,
         signOptions: {
-          expiresIn: configService.get<string>('jwt.expiresIn')!,
+          expiresIn: configService.get<string>('jwt.expiresIn')! as any,
         },
       }),
     }),

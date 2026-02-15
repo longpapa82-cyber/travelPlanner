@@ -33,7 +33,6 @@ import { AddCollaboratorDto } from './dto/add-collaborator.dto';
 import { CollaboratorRole } from './entities/collaborator.entity';
 import { QueryTripsDto } from './dto/query-trips.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { EmailVerifiedGuard } from '../auth/guards/email-verified.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ImageService } from '../common/image.service';
 
@@ -46,7 +45,6 @@ export class TripsController {
   ) {}
 
   @Post()
-  @UseGuards(EmailVerifiedGuard)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
   create(
     @CurrentUser('userId') userId: string,
@@ -255,7 +253,6 @@ export class TripsController {
   // ============================================================================
 
   @Post(':id/share')
-  @UseGuards(EmailVerifiedGuard)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
   generateShareLink(
     @CurrentUser('userId') userId: string,
@@ -280,7 +277,6 @@ export class TripsController {
 
   // Collaboration endpoints
   @Post(':id/collaborators')
-  @UseGuards(EmailVerifiedGuard)
   addCollaborator(
     @CurrentUser('userId') userId: string,
     @Param('id') id: string,

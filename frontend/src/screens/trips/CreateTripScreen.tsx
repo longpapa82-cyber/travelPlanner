@@ -476,34 +476,53 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
 
             {/* Duration Quick Picks */}
             <View style={styles.quickPicks}>
-              {DURATION_OPTIONS.map((option, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.quickPickChip,
-                    {
-                      backgroundColor: isDark
-                        ? colors.neutral[800]
-                        : colors.neutral[100],
-                      borderColor: theme.colors.border,
-                    },
-                  ]}
-                  onPress={() => handleSelectDuration(option.days)}
-                  accessibilityRole="button"
-                  accessibilityLabel={option.label}
-                >
-                  <Icon
-                    name={option.icon}
-                    size={16}
-                    color={theme.colors.textSecondary}
-                  />
-                  <Text
-                    style={[styles.quickPickText, { color: theme.colors.text }]}
+              {DURATION_OPTIONS.map((option, index) => {
+                const isSelected = calculateDuration() === option.days;
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.quickPickChip,
+                      {
+                        backgroundColor: isSelected
+                          ? theme.colors.primary
+                          : isDark
+                          ? colors.neutral[800]
+                          : colors.neutral[100],
+                        borderColor: isSelected
+                          ? theme.colors.primary
+                          : theme.colors.border,
+                      },
+                    ]}
+                    onPress={() => handleSelectDuration(option.days)}
+                    accessibilityRole="button"
+                    accessibilityLabel={option.label}
+                    accessibilityState={{ selected: isSelected }}
                   >
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Icon
+                      name={option.icon}
+                      size={16}
+                      color={
+                        isSelected
+                          ? colors.neutral[0]
+                          : theme.colors.textSecondary
+                      }
+                    />
+                    <Text
+                      style={[
+                        styles.quickPickText,
+                        {
+                          color: isSelected
+                            ? colors.neutral[0]
+                            : theme.colors.text,
+                        },
+                      ]}
+                    >
+                      {option.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
 
             {/* Date Inputs */}

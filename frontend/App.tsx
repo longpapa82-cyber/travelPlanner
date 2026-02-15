@@ -96,7 +96,9 @@ const WebOAuthCallbackHandler: React.FC = () => {
           return;
         }
 
-        const data = await response.json();
+        const json = await response.json();
+        // Backend wraps responses in { data, meta } envelope — unwrap it
+        const data = json.data ?? json;
         await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, data.accessToken);
         await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken);
 
