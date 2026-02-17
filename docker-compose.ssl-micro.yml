@@ -1,0 +1,74 @@
+version: '3.8'
+
+# SSL overlay for 1GB RAM server (VM.Standard.E2.1.Micro)
+# Usage: docker compose -f docker-compose.yml -f docker-compose.micro.yml -f docker-compose.ssl-micro.yml up -d
+#
+# Prerequisites:
+#   1. Set DOMAIN in root .env (e.g., DOMAIN=travelplanner.duckdns.org)
+#   2. Run scripts/setup-ssl.sh to obtain initial certificate
+
+services:
+  # SSL-terminating reverse proxy (minimal memory for micro instance)
+  proxy:
+    image: nginx:alpine
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/templates/default.conf.template:ro
+      - certbot_conf:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    depends_on:
+      frontend:
+        condition: service_healthy
+    networks:
+      - travelplanner
+    restart: unless-stopped
+    mem_limit: 32m
+    cpus: 0.15
+    logging:
+      driver: json-file
+      options:
+        max-size: '5m'
+        max-file: '2'
+    command: >
+      /bin/sh -c "
+        envsubst '$$DOMAIN' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf &&
+        while :; do
+          nginx -s reload 2>/dev/null || true;
+          sleep 6h & wait $${!};
+        done &
+        nginx -g 'daemon off;'
+      "
+
+  # Certbot auto-renewal (runs every 12h, minimal resource usage)
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --quiet; sleep 12h & wait $${!}; done;'"
+    networks:
+      - travelplanner
+    mem_limit: 48m
+    cpus: 0.1
+    logging:
+      driver: json-file
+      options:
+        max-size: '2m'
+        max-file: '1'
+
+  # Override frontend to not expose port 80 (proxy handles external traffic)
+  frontend:
+    ports: !reset []
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1/health || exit 1']
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  certbot_conf:
+  certbot_www:
