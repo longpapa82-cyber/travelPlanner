@@ -13,6 +13,7 @@ import { TripStatusScheduler } from './trip-status.scheduler';
 import { NotificationsService } from '../notifications/notifications.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
+import { SortBy, SortOrder } from './dto/query-trips.dto';
 
 describe('TripsService', () => {
   let service: TripsService;
@@ -536,7 +537,7 @@ describe('TripsService', () => {
         .mockReturnValue(queryBuilder);
       tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(false);
 
-      await service.findAll(mockUserId, { sortBy: 'createdAt', order: 'DESC' });
+      await service.findAll(mockUserId, { sortBy: SortBy.CREATED_AT, order: SortOrder.DESC });
 
       expect(queryBuilder.orderBy).toHaveBeenCalledWith(
         'trip.createdAt',

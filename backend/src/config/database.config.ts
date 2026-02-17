@@ -12,12 +12,20 @@ export default registerAs(
     database: process.env.DB_DATABASE || 'travelplanner',
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-    synchronize: process.env.NODE_ENV === 'development', // Auto-create tables in dev
-    migrationsRun: process.env.NODE_ENV === 'production', // Auto-run migrations in production
+    synchronize:
+      process.env.DB_SYNCHRONIZE === 'true'
+        ? true
+        : process.env.NODE_ENV === 'development',
+    migrationsRun:
+      process.env.DB_SYNCHRONIZE === 'true'
+        ? false
+        : process.env.NODE_ENV === 'production',
     logging: process.env.NODE_ENV === 'development',
     ssl:
-      process.env.NODE_ENV === 'production'
-        ? { rejectUnauthorized: false }
-        : false,
+      process.env.DB_SSL === 'false'
+        ? false
+        : process.env.NODE_ENV === 'production'
+          ? { rejectUnauthorized: false }
+          : false,
   }),
 );

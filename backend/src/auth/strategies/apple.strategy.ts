@@ -16,13 +16,14 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
   ) {
+    const clientID = configService.get<string>('oauth.apple.clientId') || 'placeholder';
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- passport-apple Strategy constructor is untyped
     super({
-      clientID: configService.get<string>('oauth.apple.clientId')!,
-      teamID: configService.get<string>('oauth.apple.teamId')!,
-      keyID: configService.get<string>('oauth.apple.keyId')!,
-      key: configService.get<string>('oauth.apple.privateKey')!,
-      callbackURL: configService.get<string>('oauth.apple.callbackUrl')!,
+      clientID,
+      teamID: configService.get<string>('oauth.apple.teamId') || 'placeholder',
+      keyID: configService.get<string>('oauth.apple.keyId') || 'placeholder',
+      key: configService.get<string>('oauth.apple.privateKey') || 'placeholder-key',
+      callbackURL: configService.get<string>('oauth.apple.callbackUrl') || 'http://localhost:3000/api/auth/apple/callback',
       scope: ['email', 'name'],
       passReqToCallback: false,
     });

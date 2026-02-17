@@ -7,11 +7,10 @@ coverage
 .git
 .gitignore
 *.md
-*.spec.ts
-__tests__
+**/*.spec.ts
+**/__tests__
 test
 jest.config.*
 eslint.config.*
-tsconfig.build.json
 .vscode
 .idea
