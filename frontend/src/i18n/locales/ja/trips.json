@@ -98,6 +98,14 @@
         "photography": "写真"
       }
     },
+    "mode": {
+      "title": "旅行プランの作成方法",
+      "ai": "AI自動作成",
+      "aiDesc": "AIが最適な旅程を自動で作成します",
+      "manual": "自分で作成",
+      "manualDesc": "日ごとの空のカードを作成して自分でプランを立てましょう",
+      "manualCreating": "旅行を作成中..."
+    },
     "alerts": {
       "destinationRequired": "旅行先を入力してください",
       "datesRequired": "旅行日程を選択してください",

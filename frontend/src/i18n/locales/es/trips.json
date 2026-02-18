@@ -98,6 +98,14 @@
         "photography": "Fotografía"
       }
     },
+    "mode": {
+      "title": "Método de planificación",
+      "ai": "Generación con IA",
+      "aiDesc": "La IA crea el itinerario óptimo automáticamente",
+      "manual": "Crear manualmente",
+      "manualDesc": "Crea tarjetas de días vacías y llena tu propio plan",
+      "manualCreating": "Creando tu viaje..."
+    },
     "alerts": {
       "destinationRequired": "Por favor ingresa un destino",
       "datesRequired": "Por favor selecciona las fechas de viaje",

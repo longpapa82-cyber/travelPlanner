@@ -98,6 +98,14 @@
         "photography": "Photographie"
       }
     },
+    "mode": {
+      "title": "Méthode de planification",
+      "ai": "Génération par IA",
+      "aiDesc": "L'IA crée automatiquement l'itinéraire optimal",
+      "manual": "Créer manuellement",
+      "manualDesc": "Créez des fiches journalières vides et remplissez votre propre plan",
+      "manualCreating": "Création de votre voyage..."
+    },
     "alerts": {
       "destinationRequired": "Veuillez entrer une destination",
       "datesRequired": "Veuillez sélectionner les dates de voyage",

@@ -98,6 +98,14 @@
         "photography": "Photography"
       }
     },
+    "mode": {
+      "title": "Planning Method",
+      "ai": "AI Auto-Generate",
+      "aiDesc": "AI creates the optimal itinerary for you automatically",
+      "manual": "Build Manually",
+      "manualDesc": "Create empty day cards and fill in your own plan",
+      "manualCreating": "Creating your trip..."
+    },
     "alerts": {
       "destinationRequired": "Please enter a destination",
       "datesRequired": "Please select travel dates",

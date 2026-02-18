@@ -98,11 +98,19 @@
         "photography": "Nhi\u1ebfp \u1ea3nh"
       }
     },
+    "mode": {
+      "title": "Phương pháp lập kế hoạch",
+      "ai": "AI tự động tạo",
+      "aiDesc": "AI tự động tạo lịch trình tối ưu cho bạn",
+      "manual": "Tạo thủ công",
+      "manualDesc": "Tạo thẻ ngày trống và tự điền kế hoạch của bạn",
+      "manualCreating": "Đang tạo chuyến đi..."
+    },
     "alerts": {
-      "destinationRequired": "Vui l\u00f2ng nh\u1eadp \u0111i\u1ec3m \u0111\u1ebfn",
-      "datesRequired": "Vui l\u00f2ng ch\u1ecdn ng\u00e0y du l\u1ecbch",
-      "createFailed": "T\u1ea1o chuy\u1ebfn \u0111i th\u1ea5t b\u1ea1i",
-      "startDateRequired": "Vui l\u00f2ng ch\u1ecdn ng\u00e0y kh\u1edfi h\u00e0nh"
+      "destinationRequired": "Vui lòng nhập điểm đến",
+      "datesRequired": "Vui lòng chọn ngày du lịch",
+      "createFailed": "Tạo chuyến đi thất bại",
+      "startDateRequired": "Vui lòng chọn ngày khởi hành"
     }
   },
   "list": {

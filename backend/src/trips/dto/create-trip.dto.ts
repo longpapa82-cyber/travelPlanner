@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsInt,
   IsNumber,
+  IsIn,
   Min,
   Max,
   IsObject,
@@ -72,4 +73,9 @@ export class CreateTripDto {
   @MaxLength(3)
   @IsOptional()
   budgetCurrency?: string;
+
+  @IsString()
+  @IsIn(['ai', 'manual'])
+  @IsOptional()
+  planningMode?: 'ai' | 'manual';
 }

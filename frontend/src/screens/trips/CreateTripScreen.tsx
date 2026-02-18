@@ -77,6 +77,7 @@ const getTravelerOptions = (t: TFunction) => [
 ];
 
 const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
+  const [planningMode, setPlanningMode] = useState<'ai' | 'manual'>('ai');
   const [destination, setDestination] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -202,26 +203,28 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
     setGenerationStep(0);
     progressAnim.setValue(0);
 
-    // Animate progress steps to simulate multi-phase generation
-    const steps = [0, 1, 2, 3];
-    let stepIndex = 0;
-    Animated.timing(progressAnim, {
-      toValue: 0.2,
-      duration: 400,
-      useNativeDriver: false,
-    }).start();
+    // Only animate progress steps for AI mode
+    if (planningMode === 'ai') {
+      const steps = [0, 1, 2, 3];
+      let stepIndex = 0;
+      Animated.timing(progressAnim, {
+        toValue: 0.2,
+        duration: 400,
+        useNativeDriver: false,
+      }).start();
 
-    stepTimerRef.current = setInterval(() => {
-      stepIndex++;
-      if (stepIndex < steps.length) {
-        setGenerationStep(stepIndex);
-        Animated.timing(progressAnim, {
-          toValue: (stepIndex + 1) / (steps.length + 1),
-          duration: 600,
-          useNativeDriver: false,
-        }).start();
-      }
-    }, 2000);
+      stepTimerRef.current = setInterval(() => {
+        stepIndex++;
+        if (stepIndex < steps.length) {
+          setGenerationStep(stepIndex);
+          Animated.timing(progressAnim, {
+            toValue: (stepIndex + 1) / (steps.length + 1),
+            duration: 600,
+            useNativeDriver: false,
+          }).start();
+        }
+      }, 2000);
+    }
 
     try {
       const budgetNum = totalBudget ? parseFloat(totalBudget) : undefined;
@@ -239,6 +242,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
         totalBudget: budgetNum && budgetNum > 0 ? budgetNum : undefined,
         budgetCurrency: budgetNum && budgetNum > 0 ? budgetCurrency : undefined,
         preferences: Object.keys(preferences).length > 0 ? preferences : undefined,
+        planningMode,
       };
 
       const trip = await apiService.createTrip(tripData);
@@ -365,6 +369,107 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             },
           ]}
         >
+          {/* Planning Mode Selection */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Icon name="lightbulb-outline" size={24} color={theme.colors.primary} />
+              <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                {t('create.mode.title')}
+              </Text>
+            </View>
+            <View style={styles.modeCards}>
+              {/* AI Mode Card */}
+              <TouchableOpacity
+                style={[
+                  styles.modeCard,
+                  {
+                    backgroundColor: planningMode === 'ai'
+                      ? `${theme.colors.primary}15`
+                      : isDark ? colors.neutral[800] : colors.neutral[0],
+                    borderColor: planningMode === 'ai'
+                      ? theme.colors.primary
+                      : theme.colors.border,
+                    borderWidth: planningMode === 'ai' ? 2 : 1,
+                  },
+                ]}
+                onPress={() => setPlanningMode('ai')}
+                disabled={isLoading}
+                accessibilityRole="button"
+                accessibilityLabel={t('create.mode.ai')}
+                accessibilityState={{ selected: planningMode === 'ai' }}
+              >
+                <Icon
+                  name="robot"
+                  size={28}
+                  color={planningMode === 'ai' ? theme.colors.primary : theme.colors.textSecondary}
+                />
+                <Text
+                  style={[
+                    styles.modeCardTitle,
+                    {
+                      color: planningMode === 'ai' ? theme.colors.primary : theme.colors.text,
+                    },
+                  ]}
+                >
+                  {t('create.mode.ai')}
+                </Text>
+                <Text
+                  style={[
+                    styles.modeCardDesc,
+                    { color: theme.colors.textSecondary },
+                  ]}
+                >
+                  {t('create.mode.aiDesc')}
+                </Text>
+              </TouchableOpacity>
+
+              {/* Manual Mode Card */}
+              <TouchableOpacity
+                style={[
+                  styles.modeCard,
+                  {
+                    backgroundColor: planningMode === 'manual'
+                      ? `${theme.colors.primary}15`
+                      : isDark ? colors.neutral[800] : colors.neutral[0],
+                    borderColor: planningMode === 'manual'
+                      ? theme.colors.primary
+                      : theme.colors.border,
+                    borderWidth: planningMode === 'manual' ? 2 : 1,
+                  },
+                ]}
+                onPress={() => setPlanningMode('manual')}
+                disabled={isLoading}
+                accessibilityRole="button"
+                accessibilityLabel={t('create.mode.manual')}
+                accessibilityState={{ selected: planningMode === 'manual' }}
+              >
+                <Icon
+                  name="pencil-ruler"
+                  size={28}
+                  color={planningMode === 'manual' ? theme.colors.primary : theme.colors.textSecondary}
+                />
+                <Text
+                  style={[
+                    styles.modeCardTitle,
+                    {
+                      color: planningMode === 'manual' ? theme.colors.primary : theme.colors.text,
+                    },
+                  ]}
+                >
+                  {t('create.mode.manual')}
+                </Text>
+                <Text
+                  style={[
+                    styles.modeCardDesc,
+                    { color: theme.colors.textSecondary },
+                  ]}
+                >
+                  {t('create.mode.manualDesc')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
           {/* Destination */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
@@ -898,7 +1003,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
             </View>
           </View>
 
-          {/* Info Box */}
+          {/* Info Box (AI mode only) */}
+          {planningMode === 'ai' && (
           <View
             style={[
               styles.infoBox,
@@ -919,9 +1025,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
               </Text>
             </View>
           </View>
+          )}
 
-          {/* Generation Progress */}
-          {isLoading && (
+          {/* Generation Progress (AI mode only) */}
+          {isLoading && planningMode === 'ai' && (
             <View style={styles.progressContainer}>
               <View style={styles.progressBarBg}>
                 <Animated.View
@@ -988,7 +1095,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
               loading={isLoading}
               disabled={isLoading}
             >
-              {isLoading ? t('create.generating') : t('create.submit')}
+              {isLoading
+                ? (planningMode === 'ai' ? t('create.generating') : t('create.mode.manualCreating'))
+                : t('create.submit')}
             </Button>
           </View>
         </Animated.View>
@@ -1066,6 +1175,27 @@ const createStyles = (theme: any, isDark: boolean) =>
       fontWeight: '600',
       marginBottom: 8,
       marginTop: 4,
+    },
+    modeCards: {
+      flexDirection: 'row',
+      gap: 12,
+    },
+    modeCard: {
+      flex: 1,
+      alignItems: 'center',
+      padding: 16,
+      borderRadius: 16,
+      gap: 8,
+    },
+    modeCardTitle: {
+      fontSize: 15,
+      fontWeight: '700',
+      textAlign: 'center',
+    },
+    modeCardDesc: {
+      fontSize: 12,
+      lineHeight: 16,
+      textAlign: 'center',
     },
     quickPicks: {
       flexDirection: 'row',

@@ -98,6 +98,14 @@
         "photography": "사진"
       }
     },
+    "mode": {
+      "title": "여행 계획 방식",
+      "ai": "AI 자동 생성",
+      "aiDesc": "AI가 최적의 일정을 자동으로 만들어드려요",
+      "manual": "직접 만들기",
+      "manualDesc": "날짜별 빈 일정을 만들고 직접 채워보세요",
+      "manualCreating": "여행을 만들고 있어요..."
+    },
     "alerts": {
       "destinationRequired": "여행지를 입력해주세요",
       "datesRequired": "여행 날짜를 선택해주세요",

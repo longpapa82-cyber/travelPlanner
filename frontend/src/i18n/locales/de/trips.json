@@ -98,6 +98,14 @@
         "photography": "Fotografie"
       }
     },
+    "mode": {
+      "title": "Planungsmethode",
+      "ai": "KI-Automatisch",
+      "aiDesc": "KI erstellt automatisch den optimalen Reiseplan",
+      "manual": "Manuell erstellen",
+      "manualDesc": "Leere Tageskarten erstellen und eigenen Plan ausfüllen",
+      "manualCreating": "Ihre Reise wird erstellt..."
+    },
     "alerts": {
       "destinationRequired": "Bitte geben Sie ein Reiseziel ein",
       "datesRequired": "Bitte wählen Sie Reisedaten",

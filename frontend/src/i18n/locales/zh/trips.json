@@ -98,6 +98,14 @@
         "photography": "摄影"
       }
     },
+    "mode": {
+      "title": "行程规划方式",
+      "ai": "AI自动生成",
+      "aiDesc": "AI为您自动创建最优行程",
+      "manual": "手动创建",
+      "manualDesc": "创建空白日程卡片，自己填写行程",
+      "manualCreating": "正在创建您的旅行..."
+    },
     "alerts": {
       "destinationRequired": "请输入目的地",
       "datesRequired": "请选择旅行日期",
