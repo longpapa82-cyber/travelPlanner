@@ -35,3 +35,6 @@ jest.mock('expo-tracking-transparency', () => ({
 jest.mock('expo-localization', () => ({
   getLocales: jest.fn(() => [{ languageCode: 'ko' }]),
 }));
+
+// Mock react-native-vector-icons
+jest.mock('react-native-vector-icons/MaterialCommunityIcons', () => 'Icon');

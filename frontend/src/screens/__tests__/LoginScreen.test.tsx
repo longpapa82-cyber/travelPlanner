@@ -2,6 +2,7 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import LoginScreen from '../auth/LoginScreen';
 import { TwoFactorRequiredError } from '../../contexts/AuthContext';
+import { ToastProvider } from '../../components/feedback/Toast/ToastContext';
 
 // ── Mocks ──
 
@@ -136,7 +137,12 @@ const navigation = {
   goBack: mockGoBack,
 } as any;
 
-const renderScreen = () => render(<LoginScreen navigation={navigation} />);
+const renderScreen = () =>
+  render(
+    <ToastProvider>
+      <LoginScreen navigation={navigation} />
+    </ToastProvider>,
+  );
 
 // ── Tests ──
 
