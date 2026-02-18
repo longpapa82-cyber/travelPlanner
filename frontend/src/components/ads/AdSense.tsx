@@ -12,7 +12,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import Constants from 'expo-constants';
 
-const ADSENSE_CLIENT_ID = Constants.expoConfig?.extra?.adsenseClientId || 'ca-pub-XXXXXXXXXXXXXXXX';
+const ADSENSE_CLIENT_ID = Constants.expoConfig?.extra?.adsenseClientId || 'ca-pub-7330738950092177';
 
 interface AdSenseProps {
   /**
