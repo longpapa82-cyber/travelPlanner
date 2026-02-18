@@ -7,7 +7,6 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
-  Alert,
   Switch,
   Modal,
   Platform,
@@ -23,6 +22,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { colors } from '../../constants/theme';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { useConfirm } from '../../components/feedback/ConfirmDialog';
 import Button from '../../components/core/Button';
 import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import apiService from '../../services/api';
@@ -33,6 +33,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const { user, logout, refreshUser } = useAuth();
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
+  const { confirm } = useConfirm();
 
   // Modal states
   const [showEditProfile, setShowEditProfile] = useState(false);
@@ -74,19 +75,14 @@ const ProfileScreen = ({ navigation }: any) => {
     setIsRefreshing(false);
   }, [fetchStats, refreshUser]);
 
-  const confirm = (title: string, message: string, onConfirm: () => void) => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined' && window.confirm) {
-      if (window.confirm(message)) onConfirm();
-    } else {
-      Alert.alert(title, message, [
-        { text: tCommon('cancel'), style: 'cancel' },
-        { text: tCommon('confirm'), style: 'destructive', onPress: onConfirm },
-      ]);
-    }
-  };
-
-  const handleLogout = () => {
-    confirm(t('logout.title'), t('logout.message'), logout);
+  const handleLogout = async () => {
+    const ok = await confirm({
+      title: t('logout.title'),
+      message: t('logout.message'),
+      confirmText: tCommon('confirm'),
+      cancelText: tCommon('cancel'),
+    });
+    if (ok) logout();
   };
 
   const handleSaveProfile = async () => {
@@ -135,16 +131,22 @@ const ProfileScreen = ({ navigation }: any) => {
     }
   };
 
-  const handleDeleteAccount = () => {
-    confirm(t('deleteAccount.title'), t('deleteAccount.message'), async () => {
-      try {
-        await apiService.deleteAccount();
-        await logout();
-        showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
-      } catch (error: any) {
-        showToast({ type: 'error', message: t('deleteAccount.alerts.failed'), position: 'top' });
-      }
+  const handleDeleteAccount = async () => {
+    const ok = await confirm({
+      title: t('deleteAccount.title'),
+      message: t('deleteAccount.message'),
+      confirmText: tCommon('confirm'),
+      cancelText: tCommon('cancel'),
+      destructive: true,
     });
+    if (!ok) return;
+    try {
+      await apiService.deleteAccount();
+      await logout();
+      showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
+    } catch (error: any) {
+      showToast({ type: 'error', message: t('deleteAccount.alerts.failed'), position: 'top' });
+    }
   };
 
   const handlePickProfilePhoto = async () => {

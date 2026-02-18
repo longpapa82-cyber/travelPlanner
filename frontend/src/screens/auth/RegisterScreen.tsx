@@ -16,7 +16,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -35,6 +34,7 @@ import { SlideIn } from '../../components/animation/SlideIn';
 import Button from '../../components/core/Button';
 import { Card } from '../../components/core/Card';
 import { getHeroImageUrl } from '../../utils/images';
+import { useToast } from '../../components/feedback/Toast/ToastContext';
 
 type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
 
@@ -46,6 +46,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const { register } = useAuth();
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('auth');
+  const { showToast } = useToast();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -68,22 +69,22 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const handleRegister = async () => {
     // Validation
     if (!name || !email || !password || !confirmPassword) {
-      Alert.alert(t('register.alerts.inputError'), t('register.alerts.nameRequired'));
+      showToast({ type: 'warning', message: t('register.alerts.nameRequired'), position: 'top' });
       return;
     }
 
     if (!validateEmail(email)) {
-      Alert.alert(t('register.alerts.emailError'), t('register.alerts.emailInvalid'));
+      showToast({ type: 'warning', message: t('register.alerts.emailInvalid'), position: 'top' });
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert(t('register.alerts.passwordError'), t('register.alerts.passwordMismatch'));
+      showToast({ type: 'warning', message: t('register.alerts.passwordMismatch'), position: 'top' });
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert(t('register.alerts.passwordError'), t('register.alerts.passwordMinLength'));
+      showToast({ type: 'warning', message: t('register.alerts.passwordMinLength'), position: 'top' });
       return;
     }
 
@@ -91,10 +92,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await register(email, password, name);
     } catch (error: any) {
-      Alert.alert(
-        t('register.alerts.registerFailed'),
-        error.response?.data?.message || t('register.alerts.networkError')
-      );
+      showToast({ type: 'error', message: error.response?.data?.message || t('register.alerts.networkError'), position: 'top' });
     } finally {
       setIsLoading(false);
     }

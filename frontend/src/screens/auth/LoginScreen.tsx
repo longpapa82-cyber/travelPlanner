@@ -16,7 +16,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -36,6 +35,7 @@ import { SlideIn } from '../../components/animation/SlideIn';
 import Button from '../../components/core/Button';
 import { Card } from '../../components/core/Card';
 import { getHeroImageUrl } from '../../utils/images';
+import { useToast } from '../../components/feedback/Toast/ToastContext';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -47,6 +47,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { login, loginWithGoogle, loginWithApple, loginWithKakao } = useAuth();
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('auth');
+  const { showToast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -110,10 +111,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await loginWithGoogle();
     } catch (error: any) {
-      Alert.alert(
-        t('login.alerts.googleFailed'),
-        error.message || t('login.alerts.networkError')
-      );
+      showToast({ type: 'error', message: error.message || t('login.alerts.networkError'), position: 'top' });
     } finally {
       setIsLoading(false);
     }
@@ -124,10 +122,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await loginWithApple();
     } catch (error: any) {
-      Alert.alert(
-        t('login.alerts.appleFailed'),
-        error.message || t('login.alerts.networkError')
-      );
+      showToast({ type: 'error', message: error.message || t('login.alerts.networkError'), position: 'top' });
     } finally {
       setIsLoading(false);
     }
@@ -138,10 +133,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await loginWithKakao();
     } catch (error: any) {
-      Alert.alert(
-        t('login.alerts.kakaoFailed'),
-        error.message || t('login.alerts.networkError')
-      );
+      showToast({ type: 'error', message: error.message || t('login.alerts.networkError'), position: 'top' });
     } finally {
       setIsLoading(false);
     }

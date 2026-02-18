@@ -11,13 +11,14 @@ import {
   Modal,
   TextInput,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
+import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { useConfirm } from '../../components/feedback/ConfirmDialog';
 
 interface CollaboratorSectionProps {
   tripId: string;
@@ -32,6 +33,8 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
 }) => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('trips');
+  const { showToast } = useToast();
+  const { confirm } = useConfirm();
   const styles = createStyles(theme, isDark);
 
   const [showCollabModal, setShowCollabModal] = useState(false);
@@ -46,30 +49,29 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
       await apiService.addCollaborator(tripId, collabEmail.trim(), collabRole);
       setCollabEmail('');
       onRefreshCollaborators();
-      Alert.alert(t('detail.collaboration.inviteSuccess'));
+      showToast({ type: 'success', message: t('detail.collaboration.inviteSuccess'), position: 'top' });
     } catch {
-      Alert.alert(t('detail.alerts.error'), t('detail.collaboration.inviteFailed'));
+      showToast({ type: 'error', message: t('detail.collaboration.inviteFailed'), position: 'top' });
     } finally {
       setIsInviting(false);
     }
   };
 
-  const handleRemoveCollaborator = (collabId: string) => {
-    Alert.alert(t('detail.collaboration.remove'), '', [
-      { text: t('detail.alerts.cancel'), style: 'cancel' },
-      {
-        text: t('detail.alerts.delete'),
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await apiService.removeCollaborator(tripId, collabId);
-            onRefreshCollaborators();
-          } catch {
-            Alert.alert(t('detail.alerts.error'), t('detail.collaboration.removeFailed'));
-          }
-        },
-      },
-    ]);
+  const handleRemoveCollaborator = async (collabId: string) => {
+    const ok = await confirm({
+      title: t('detail.collaboration.remove'),
+      message: '',
+      confirmText: t('detail.alerts.delete'),
+      cancelText: t('detail.alerts.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      await apiService.removeCollaborator(tripId, collabId);
+      onRefreshCollaborators();
+    } catch {
+      showToast({ type: 'error', message: t('detail.collaboration.removeFailed'), position: 'top' });
+    }
   };
 
   return (

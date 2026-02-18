@@ -15,7 +15,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -31,6 +30,7 @@ import { SlideIn } from '../../components/animation/SlideIn';
 import Button from '../../components/core/Button';
 import { Card } from '../../components/core/Card';
 import apiService from '../../services/api';
+import { useToast } from '../../components/feedback/Toast/ToastContext';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'ResetPassword'>;
 
@@ -44,6 +44,7 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
   const { token } = route.params;
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('auth');
+  const { showToast } = useToast();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -67,47 +68,27 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleSubmit = async () => {
     if (!newPassword) {
-      Alert.alert(
-        t('resetPassword.alerts.inputError'),
-        t('resetPassword.alerts.passwordRequired'),
-      );
+      showToast({ type: 'warning', message: t('resetPassword.alerts.passwordRequired'), position: 'top' });
       return;
     }
 
     if (newPassword.length < 6) {
-      Alert.alert(
-        t('resetPassword.alerts.passwordError'),
-        t('resetPassword.alerts.passwordMinLength'),
-      );
+      showToast({ type: 'warning', message: t('resetPassword.alerts.passwordMinLength'), position: 'top' });
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert(
-        t('resetPassword.alerts.passwordError'),
-        t('resetPassword.alerts.passwordMismatch'),
-      );
+      showToast({ type: 'warning', message: t('resetPassword.alerts.passwordMismatch'), position: 'top' });
       return;
     }
 
     setIsLoading(true);
     try {
       await apiService.resetPassword(token, newPassword);
-      Alert.alert(
-        t('resetPassword.alerts.successTitle'),
-        t('resetPassword.alerts.successMessage'),
-        [
-          {
-            text: t('resetPassword.alerts.goToLogin'),
-            onPress: () => navigation.navigate('Login'),
-          },
-        ],
-      );
+      showToast({ type: 'success', message: t('resetPassword.alerts.successMessage'), position: 'top' });
+      navigation.navigate('Login');
     } catch (error: any) {
-      Alert.alert(
-        t('resetPassword.alerts.resetFailed'),
-        error.response?.data?.message || t('resetPassword.alerts.networkError'),
-      );
+      showToast({ type: 'error', message: error.response?.data?.message || t('resetPassword.alerts.networkError'), position: 'top' });
     } finally {
       setIsLoading(false);
     }

@@ -8,11 +8,11 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTranslation } from 'react-i18next';
 import { theme } from '../constants/theme';
+import { useToast } from './feedback/Toast/ToastContext';
 
 interface Activity {
   time: string;
@@ -51,6 +51,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
   mode,
 }) => {
   const { t } = useTranslation('components');
+  const { showToast } = useToast();
   const activityTypes = ACTIVITY_TYPES_META.map(item => ({
     ...item,
     label: t(item.key),
@@ -91,7 +92,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 
     // Validation
     if (!formData.time || !formData.title || !formData.location) {
-      Alert.alert(t('activityModal.validationError'), t('activityModal.validationErrorMessage'));
+      showToast({ type: 'warning', message: t('activityModal.validationErrorMessage'), position: 'top' });
       savingRef.current = false;
       return;
     }
@@ -101,10 +102,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
       await onSave(formData);
       onClose();
     } catch (error: any) {
-      Alert.alert(
-        t('activityModal.errorTitle'),
-        error.response?.data?.message || t('activityModal.saveError')
-      );
+      showToast({ type: 'error', message: error.response?.data?.message || t('activityModal.saveError'), position: 'top' });
     } finally {
       setLoading(false);
       savingRef.current = false;

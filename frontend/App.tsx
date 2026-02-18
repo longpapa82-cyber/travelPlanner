@@ -7,6 +7,7 @@ import { onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { ToastProvider } from './src/components/feedback/Toast/ToastContext';
+import { ConfirmDialogProvider } from './src/components/feedback/ConfirmDialog';
 import { NotificationProvider } from './src/contexts/NotificationContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import ErrorBoundary from './src/components/ErrorBoundary';
@@ -207,7 +208,9 @@ function App() {
           <AuthProvider>
             <NotificationProvider>
               <ToastProvider>
-                <AppContent />
+                <ConfirmDialogProvider>
+                  <AppContent />
+                </ConfirmDialogProvider>
               </ToastProvider>
             </NotificationProvider>
           </AuthProvider>

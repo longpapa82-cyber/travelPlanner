@@ -17,7 +17,6 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  Alert,
   Animated,
   Platform,
 } from 'react-native';
@@ -32,6 +31,8 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
 import { trackEvent } from '../../services/eventTracker';
+import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { useConfirm } from '../../components/feedback/ConfirmDialog';
 import { API_URL } from '../../constants/config';
 import Button from '../../components/core/Button';
 import { ActivityModal } from '../../components/ActivityModal';
@@ -61,6 +62,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('trips');
+  const { showToast } = useToast();
+  const { confirm } = useConfirm();
 
   // Activity modal state
   const [modalVisible, setModalVisible] = useState(false);
@@ -90,11 +93,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       setTrip(data);
       trackEvent('trip_viewed', { tripId });
     } catch (error) {
-      if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert(t('detail.alerts.fetchError'));
-      } else {
-        Alert.alert(t('detail.alerts.error'), t('detail.alerts.fetchError'));
-      }
+      showToast({ type: 'error', message: t('detail.alerts.fetchError'), position: 'top' });
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -158,22 +157,11 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       const newTrip = await apiService.duplicateTrip(tripId);
       trackEvent('trip_duplicated', { tripId });
-      if (Platform.OS === 'web' && typeof window !== 'undefined') {
-        window.alert(t('detail.alerts.duplicateSuccess'));
-      } else {
-        Alert.alert(t('detail.alerts.duplicateCompleteTitle'), t('detail.alerts.duplicateSuccess'), [
-          { text: t('detail.alerts.confirm'), onPress: () => navigation.navigate('TripDetail', { tripId: newTrip.id }) },
-        ]);
-        return;
-      }
+      showToast({ type: 'success', message: t('detail.alerts.duplicateSuccess'), position: 'top' });
       navigation.navigate('TripDetail', { tripId: newTrip.id });
     } catch (error: any) {
       const msg = error.response?.data?.message || t('detail.alerts.duplicateError');
-      if (Platform.OS === 'web' && typeof window !== 'undefined') {
-        window.alert(msg);
-      } else {
-        Alert.alert(t('detail.alerts.error'), msg);
-      }
+      showToast({ type: 'error', message: msg, position: 'top' });
     } finally {
       setIsDuplicating(false);
     }
@@ -204,9 +192,9 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       setTrip((prev) => prev ? { ...prev, coverImage: url } : prev);
       trackEvent('cover_changed', { tripId });
     } catch {
-      Alert.alert(t('detail.alerts.error'), t('detail.photos.uploadFailed'));
+      showToast({ type: 'error', message: t('detail.photos.uploadFailed'), position: 'top' });
     }
-  }, [tripId, t]);
+  }, [tripId, t, showToast]);
 
   // ── Activity handlers ─────────────────────────────────
 
@@ -227,47 +215,23 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   }, []);
 
   const handleDeleteActivity = useCallback(async (itineraryId: string, activityIndex: number) => {
-    if (Platform.OS === 'web') {
-      const confirmed = window.confirm(
-        `${t('detail.alerts.deleteTitle')}\n${t('detail.alerts.deleteMessage')}`
-      );
-      if (!confirmed) return;
-      try {
-        await apiService.deleteActivity(tripId, itineraryId, activityIndex);
-        trackEvent('activity_deleted', { tripId });
-        await fetchTripDetails();
-        window.alert(t('detail.alerts.deleteSuccess'));
-      } catch (error: any) {
-        window.alert(error.response?.data?.message || t('detail.alerts.deleteError'));
-      }
-      return;
+    const ok = await confirm({
+      title: t('detail.alerts.deleteTitle'),
+      message: t('detail.alerts.deleteMessage'),
+      confirmText: t('detail.alerts.delete'),
+      cancelText: t('detail.alerts.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      await apiService.deleteActivity(tripId, itineraryId, activityIndex);
+      trackEvent('activity_deleted', { tripId });
+      await fetchTripDetails();
+      showToast({ type: 'success', message: t('detail.alerts.deleteSuccess'), position: 'top' });
+    } catch (error: any) {
+      showToast({ type: 'error', message: error.response?.data?.message || t('detail.alerts.deleteError'), position: 'top' });
     }
-
-    Alert.alert(
-      t('detail.alerts.deleteTitle'),
-      t('detail.alerts.deleteMessage'),
-      [
-        { text: t('detail.alerts.cancel'), style: 'cancel' },
-        {
-          text: t('detail.alerts.delete'),
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await apiService.deleteActivity(tripId, itineraryId, activityIndex);
-              trackEvent('activity_deleted', { tripId });
-              await fetchTripDetails();
-              Alert.alert(t('detail.alerts.success'), t('detail.alerts.deleteSuccess'));
-            } catch (error: any) {
-              Alert.alert(
-                t('detail.alerts.error'),
-                error.response?.data?.message || t('detail.alerts.deleteError')
-              );
-            }
-          },
-        },
-      ]
-    );
-  }, [tripId, t, fetchTripDetails]);
+  }, [tripId, t, fetchTripDetails, confirm, showToast]);
 
   const handleToggleActivityCompletion = useCallback(async (
     itineraryId: string,
@@ -281,12 +245,9 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       });
       await fetchTripDetails();
     } catch (error: any) {
-      Alert.alert(
-        t('detail.alerts.error'),
-        error.response?.data?.message || t('detail.alerts.toggleError')
-      );
+      showToast({ type: 'error', message: error.response?.data?.message || t('detail.alerts.toggleError'), position: 'top' });
     }
-  }, [tripId, t, fetchTripDetails]);
+  }, [tripId, t, fetchTripDetails, showToast]);
 
   const handleSaveActivity = useCallback(async (activityData: Partial<Activity>) => {
     try {
@@ -313,12 +274,9 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
       await apiService.reorderActivities(tripId, itineraryId, newOrder);
       await fetchTripDetails();
     } catch (error: any) {
-      Alert.alert(
-        t('detail.alerts.error'),
-        error.response?.data?.message || t('detail.alerts.reorderError')
-      );
+      showToast({ type: 'error', message: error.response?.data?.message || t('detail.alerts.reorderError'), position: 'top' });
     }
-  }, [tripId, t, fetchTripDetails]);
+  }, [tripId, t, fetchTripDetails, showToast]);
 
   // ── Computed values ───────────────────────────────────
 

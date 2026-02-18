@@ -7,8 +7,6 @@ import {
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
-  Alert,
-  Platform,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +16,7 @@ import { colors } from '../../constants/theme';
 import { AppNotification } from '../../types';
 import apiService from '../../services/api';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { useConfirm } from '../../components/feedback/ConfirmDialog';
 
 const NOTIFICATION_ICONS: Record<string, string> = {
   trip_started: 'airplane-takeoff',
@@ -47,6 +46,7 @@ const NotificationsScreen = () => {
   const { t } = useTranslation('common');
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
+  const { confirm } = useConfirm();
 
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [total, setTotal] = useState(0);
@@ -126,29 +126,22 @@ const NotificationsScreen = () => {
     }
   };
 
-  const handleDeleteAll = () => {
-    const doDelete = async () => {
-      try {
-        await apiService.deleteAllNotifications();
-        setNotifications([]);
-        setTotal(0);
-        showToast({ type: 'success', message: t('notifications.allDeleted'), position: 'top' });
-      } catch {
-        showToast({ type: 'error', message: t('notifications.error'), position: 'top' });
-      }
-    };
-
-    if (Platform.OS === 'web') {
-      if (window.confirm(t('notifications.deleteAllConfirm'))) doDelete();
-    } else {
-      Alert.alert(
-        t('notifications.deleteAllTitle'),
-        t('notifications.deleteAllConfirm'),
-        [
-          { text: t('notifications.cancel'), style: 'cancel' },
-          { text: t('notifications.delete'), style: 'destructive', onPress: doDelete },
-        ],
-      );
+  const handleDeleteAll = async () => {
+    const ok = await confirm({
+      title: t('notifications.deleteAllTitle'),
+      message: t('notifications.deleteAllConfirm'),
+      confirmText: t('notifications.delete'),
+      cancelText: t('notifications.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      await apiService.deleteAllNotifications();
+      setNotifications([]);
+      setTotal(0);
+      showToast({ type: 'success', message: t('notifications.allDeleted'), position: 'top' });
+    } catch {
+      showToast({ type: 'error', message: t('notifications.error'), position: 'top' });
     }
   };
 

@@ -17,7 +17,6 @@ import {
   FlatList,
   TouchableOpacity,
   RefreshControl,
-  Alert,
   Platform,
   ActivityIndicator,
 } from 'react-native';
@@ -29,6 +28,7 @@ import { TripsStackParamList, Expense, Balance, Settlement } from '../../types';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { useConfirm } from '../../components/feedback/ConfirmDialog';
 import apiService from '../../services/api';
 import BalanceCard from '../../components/BalanceCard';
 import SettlementSummary from '../../components/SettlementSummary';
@@ -74,6 +74,7 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
   const { tripId } = route.params;
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
+  const { confirm } = useConfirm();
   const { t } = useTranslation('trips');
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -159,30 +160,24 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
   // Delete expense handler
   const handleDeleteExpense = useCallback(
     async (expenseId: string) => {
-      const doDelete = async () => {
-        try {
-          await apiService.deleteExpense(tripId, expenseId);
-          setExpenses((prev) => prev.filter((e) => e.id !== expenseId));
-          fetchBalances();
-          showToast({ type: 'success', message: t('detail.expenses.settledMark'), position: 'top', duration: 2000 });
-        } catch {
-          showToast({ type: 'error', message: t('detail.expenses.alerts.deleteFailed'), position: 'top' });
-        }
-      };
-
-      if (Platform.OS === 'web') {
-        const confirmed = window.confirm(
-          `${t('detail.expenses.alerts.deleteTitle')}\n${t('detail.expenses.alerts.deleteMessage')}`,
-        );
-        if (confirmed) await doDelete();
-      } else {
-        Alert.alert(t('detail.expenses.alerts.deleteTitle'), t('detail.expenses.alerts.deleteMessage'), [
-          { text: t('detail.alerts.cancel'), style: 'cancel' },
-          { text: t('detail.alerts.delete'), style: 'destructive', onPress: doDelete },
-        ]);
+      const ok = await confirm({
+        title: t('detail.expenses.alerts.deleteTitle'),
+        message: t('detail.expenses.alerts.deleteMessage'),
+        confirmText: t('detail.alerts.delete'),
+        cancelText: t('detail.alerts.cancel'),
+        destructive: true,
+      });
+      if (!ok) return;
+      try {
+        await apiService.deleteExpense(tripId, expenseId);
+        setExpenses((prev) => prev.filter((e) => e.id !== expenseId));
+        fetchBalances();
+        showToast({ type: 'success', message: t('detail.expenses.settledMark'), position: 'top', duration: 2000 });
+      } catch {
+        showToast({ type: 'error', message: t('detail.expenses.alerts.deleteFailed'), position: 'top' });
       }
     },
-    [tripId, showToast, t, fetchBalances],
+    [tripId, showToast, t, fetchBalances, confirm],
   );
 
   // Settle handler

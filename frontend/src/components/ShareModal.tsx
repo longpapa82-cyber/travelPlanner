@@ -16,7 +16,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  Alert,
   Platform,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
@@ -27,6 +26,8 @@ import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 import apiService from '../services/api';
 import { APP_URL } from '../constants/config';
+import { useToast } from './feedback/Toast/ToastContext';
+import { useConfirm } from './feedback/ConfirmDialog';
 
 const getExpiryOptions = (t: TFunction) => [
   { label: t('shareModal.expiry.none'), value: undefined },
@@ -52,6 +53,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 }) => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('components');
+  const { showToast } = useToast();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(false);
   const [shareToken, setShareToken] = useState<string | undefined>(currentShareToken);
   const [shareUrl, setShareUrl] = useState<string>('');
@@ -87,10 +90,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       setShareUrl(url);
       setCopied(false);
     } catch (error: any) {
-      Alert.alert(
-        t('shareModal.error'),
-        error.response?.data?.message || t('shareModal.generateError')
-      );
+      showToast({ type: 'error', message: error.response?.data?.message || t('shareModal.generateError'), position: 'top' });
     } finally {
       setLoading(false);
     }
@@ -102,45 +102,34 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     try {
       await Clipboard.setStringAsync(shareUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), 3000); // Reset after 3 seconds
-
-      if (Platform.OS === 'web') {
-        Alert.alert(t('shareModal.success'), t('shareModal.copiedToClipboard'));
-      }
+      setTimeout(() => setCopied(false), 3000);
+      showToast({ type: 'success', message: t('shareModal.copiedToClipboard'), position: 'top', duration: 2000 });
     } catch (error) {
-      Alert.alert(t('shareModal.error'), t('shareModal.copyError'));
+      showToast({ type: 'error', message: t('shareModal.copyError'), position: 'top' });
     }
   };
 
   const handleDisableSharing = async () => {
-    Alert.alert(
-      t('shareModal.disable'),
-      t('shareModal.disableConfirm'),
-      [
-        { text: t('shareModal.cancel'), style: 'cancel' },
-        {
-          text: t('shareModal.disableAction'),
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              setLoading(true);
-              await apiService.disableSharing(tripId);
-              setShareToken(undefined);
-              setShareUrl('');
-              Alert.alert(t('shareModal.success'), t('shareModal.disableSuccess'));
-              onClose();
-            } catch (error: any) {
-              Alert.alert(
-                t('shareModal.error'),
-                error.response?.data?.message || t('shareModal.disableError')
-              );
-            } finally {
-              setLoading(false);
-            }
-          },
-        },
-      ]
-    );
+    const ok = await confirm({
+      title: t('shareModal.disable'),
+      message: t('shareModal.disableConfirm'),
+      confirmText: t('shareModal.disableAction'),
+      cancelText: t('shareModal.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      setLoading(true);
+      await apiService.disableSharing(tripId);
+      setShareToken(undefined);
+      setShareUrl('');
+      showToast({ type: 'success', message: t('shareModal.disableSuccess'), position: 'top' });
+      onClose();
+    } catch (error: any) {
+      showToast({ type: 'error', message: error.response?.data?.message || t('shareModal.disableError'), position: 'top' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const styles = createStyles(theme, isDark);

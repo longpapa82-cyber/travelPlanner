@@ -15,7 +15,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
@@ -33,6 +32,7 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
 import { trackEvent } from '../../services/eventTracker';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { useConfirm } from '../../components/feedback/ConfirmDialog';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import { getDateLocale } from '../../utils/dateLocale';
@@ -71,6 +71,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isSaving, setIsSaving] = useState(false);
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
+  const { confirm } = useConfirm();
   const { t } = useTranslation('trips');
 
   // Derive translated arrays from META constants
@@ -117,11 +118,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Check if trip is completed - redirect to detail view
       if (data.status === 'completed') {
-        if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-          window.alert(t('edit.alerts.cannotEditCompleted'));
-        } else {
-          Alert.alert(t('edit.alerts.cannotEditTitle'), t('edit.alerts.cannotEditCompleted'));
-        }
+        showToast({ type: 'warning', message: t('edit.alerts.cannotEditCompleted'), position: 'top' });
         navigation.replace('TripDetail', { tripId });
         return;
       }
@@ -136,11 +133,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       setTotalBudget(data.totalBudget ? String(data.totalBudget) : '');
       setBudgetCurrency(data.budgetCurrency || 'USD');
     } catch (error) {
-      if (Platform.OS === 'web' && typeof window !== 'undefined' && window.alert) {
-        window.alert(t('edit.alerts.loadError'));
-      } else {
-        Alert.alert(t('common:error'), t('edit.alerts.loadError'));
-      }
+      showToast({ type: 'error', message: t('edit.alerts.loadError'), position: 'top' });
       navigation.goBack();
     } finally {
       setIsLoading(false);
@@ -193,20 +186,13 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       const originalEnd = trip.endDate.split('T')[0];
 
       if (startDate !== originalStart || endDate !== originalEnd) {
-        if (Platform.OS === 'web') {
-          const confirmed = window.confirm(t('edit.alerts.dateChangeWarning'));
-          if (!confirmed) return;
-        } else {
-          Alert.alert(
-            t('edit.alerts.dateChangeWarningTitle'),
-            t('edit.alerts.dateChangeWarning'),
-            [
-              { text: t('common:cancel'), style: 'cancel' },
-              { text: t('edit.alerts.continue'), onPress: () => saveTrip() },
-            ]
-          );
-          return;
-        }
+        const ok = await confirm({
+          title: t('edit.alerts.dateChangeWarningTitle'),
+          message: t('edit.alerts.dateChangeWarning'),
+          confirmText: t('edit.alerts.continue'),
+          cancelText: t('common:cancel'),
+        });
+        if (!ok) return;
       }
     }
 

@@ -15,7 +15,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -31,12 +30,14 @@ import { SlideIn } from '../../components/animation/SlideIn';
 import Button from '../../components/core/Button';
 import { Card } from '../../components/core/Card';
 import apiService from '../../services/api';
+import { useToast } from '../../components/feedback/Toast/ToastContext';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>;
 
 const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('auth');
+  const { showToast } = useToast();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);
@@ -48,18 +49,12 @@ const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleSubmit = async () => {
     if (!email) {
-      Alert.alert(
-        t('forgotPassword.alerts.inputError'),
-        t('forgotPassword.alerts.emailRequired'),
-      );
+      showToast({ type: 'warning', message: t('forgotPassword.alerts.emailRequired'), position: 'top' });
       return;
     }
 
     if (!validateEmail(email)) {
-      Alert.alert(
-        t('forgotPassword.alerts.emailError'),
-        t('forgotPassword.alerts.emailInvalid'),
-      );
+      showToast({ type: 'warning', message: t('forgotPassword.alerts.emailInvalid'), position: 'top' });
       return;
     }
 
@@ -68,10 +63,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
       await apiService.forgotPassword(email);
       setIsSent(true);
     } catch (error: any) {
-      Alert.alert(
-        t('forgotPassword.alerts.sendFailed'),
-        error.response?.data?.message || t('forgotPassword.alerts.networkError'),
-      );
+      showToast({ type: 'error', message: error.response?.data?.message || t('forgotPassword.alerts.networkError'), position: 'top' });
     } finally {
       setIsLoading(false);
     }

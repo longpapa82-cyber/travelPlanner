@@ -22,7 +22,6 @@ import {
   ImageBackground,
   Animated,
   TextInput,
-  Alert,
   Platform,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -40,6 +39,7 @@ import Button from '../../components/core/Button';
 import { WeatherWidget } from '../../components/WeatherWidget';
 import { AdBanner } from '../../components/ads';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { useConfirm } from '../../components/feedback/ConfirmDialog';
 import { getDestinationImageUrl } from '../../utils/images';
 
 type TripListScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'TripList'>;
@@ -79,6 +79,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('trips');
   const { showToast } = useToast();
+  const { confirm } = useConfirm();
   const [fetchError, setFetchError] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -242,36 +243,22 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     });
   };
 
-  const handleDeleteTrip = (trip: Trip) => {
-    const doDelete = async () => {
-      try {
-        await apiService.deleteTrip(trip.id);
-        setTrips(prev => prev.filter(t => t.id !== trip.id));
-        trackEvent('trip_deleted', { tripId: trip.id });
-        showToast({ type: 'success', message: t('detail.alerts.deleteSuccess'), position: 'top' });
-      } catch (error: any) {
-        const msg = error.response?.data?.message || t('list.alerts.deleteFailed');
-        if (Platform.OS === 'web' && typeof window !== 'undefined') {
-          window.alert(msg);
-        } else {
-          Alert.alert(t('list.alerts.error'), msg);
-        }
-      }
-    };
-
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      if (window.confirm(t('list.alerts.deleteMessage', { name: trip.destination }))) {
-        doDelete();
-      }
-    } else {
-      Alert.alert(
-        t('list.alerts.deleteTitle'),
-        t('list.alerts.deleteMessage', { name: trip.destination }),
-        [
-          { text: t('list.alerts.cancel'), style: 'cancel' },
-          { text: t('list.alerts.delete'), style: 'destructive', onPress: doDelete },
-        ]
-      );
+  const handleDeleteTrip = async (trip: Trip) => {
+    const ok = await confirm({
+      title: t('list.alerts.deleteTitle'),
+      message: t('list.alerts.deleteMessage', { name: trip.destination }),
+      confirmText: t('list.alerts.delete'),
+      cancelText: t('list.alerts.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      await apiService.deleteTrip(trip.id);
+      setTrips(prev => prev.filter(t => t.id !== trip.id));
+      trackEvent('trip_deleted', { tripId: trip.id });
+      showToast({ type: 'success', message: t('detail.alerts.deleteSuccess'), position: 'top' });
+    } catch (error: any) {
+      showToast({ type: 'error', message: error.response?.data?.message || t('list.alerts.deleteFailed'), position: 'top' });
     }
   };
 
