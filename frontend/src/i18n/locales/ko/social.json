@@ -1,0 +1,31 @@
+{
+  "title": "탐색",
+  "following": "팔로잉",
+  "trending": "인기",
+  "emptyFollowing": "팔로우한 여행자가 없습니다",
+  "emptyFollowingMessage": "다른 여행자를 팔로우하면 여기에 표시됩니다",
+  "emptyTrending": "아직 공개된 여행이 없습니다",
+  "emptyTrendingMessage": "곧 인기 여행이 표시됩니다",
+  "tripBy": "{{name}}의 여행",
+  "likesCount": "좋아요 {{count}}개",
+  "profile": {
+    "followers": "팔로워",
+    "following": "팔로잉",
+    "follow": "팔로우",
+    "unfollow": "팔로우 해제",
+    "publicTrips": "공개 여행",
+    "noPublicTrips": "공개된 여행이 없습니다"
+  },
+  "notifications": {
+    "newFollower": "{{name}}님이 팔로우했습니다",
+    "tripLiked": "{{name}}님이 {{destination}} 여행을 좋아합니다"
+  },
+  "errors": {
+    "followFailed": "팔로우에 실패했습니다",
+    "unfollowFailed": "팔로우 해제에 실패했습니다",
+    "likeFailed": "좋아요에 실패했습니다",
+    "unlikeFailed": "좋아요 취소에 실패했습니다",
+    "feedFailed": "피드를 불러오지 못했습니다",
+    "profileFailed": "프로필을 불러오지 못했습니다"
+  }
+}

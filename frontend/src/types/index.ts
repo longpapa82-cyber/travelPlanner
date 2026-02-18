@@ -161,6 +161,7 @@ export type AuthStackParamList = {
 
 export type MainTabParamList = {
   Home: undefined;
+  Discover: undefined;
   Trips: { screen?: string } | undefined;
   Notifications: undefined;
   Profile: { screen?: string } | undefined;
@@ -186,7 +187,36 @@ export type ProfileStackParamList = {
   Help: undefined;
   Terms: undefined;
   PrivacyPolicy: undefined;
+  UserProfile: { userId: string };
 };
+
+// Social types
+export interface FeedTrip {
+  id: string;
+  destination: string;
+  country?: string;
+  coverImage?: string;
+  startDate: string;
+  endDate: string;
+  likesCount: number;
+  isLiked: boolean;
+  user: {
+    id: string;
+    name: string;
+    profileImage?: string;
+  };
+}
+
+export interface PublicUserProfile {
+  id: string;
+  name: string;
+  profileImage?: string;
+  followersCount: number;
+  followingCount: number;
+  isFollowing: boolean;
+  publicTrips: FeedTrip[];
+  publicTripsTotal: number;
+}
 
 export type TripsStackParamList = {
   TripList: undefined;

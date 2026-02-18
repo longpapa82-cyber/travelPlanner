@@ -17,6 +17,8 @@ export enum NotificationType {
   COLLABORATOR_JOINED = 'collaborator_joined',
   TRIP_UPDATED = 'trip_updated',
   ACTIVITY_REMINDER = 'activity_reminder',
+  NEW_FOLLOWER = 'new_follower',
+  TRIP_LIKED = 'trip_liked',
 }
 
 @Entity('notifications')

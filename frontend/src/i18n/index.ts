@@ -12,6 +12,7 @@ import ko_profile from './locales/ko/profile.json';
 import ko_components from './locales/ko/components.json';
 import ko_legal from './locales/ko/legal.json';
 import ko_admin from './locales/ko/admin.json';
+import ko_social from './locales/ko/social.json';
 
 import en_common from './locales/en/common.json';
 import en_auth from './locales/en/auth.json';
@@ -21,6 +22,7 @@ import en_profile from './locales/en/profile.json';
 import en_components from './locales/en/components.json';
 import en_legal from './locales/en/legal.json';
 import en_admin from './locales/en/admin.json';
+import en_social from './locales/en/social.json';
 
 import ja_common from './locales/ja/common.json';
 import ja_auth from './locales/ja/auth.json';
@@ -30,6 +32,7 @@ import ja_profile from './locales/ja/profile.json';
 import ja_components from './locales/ja/components.json';
 import ja_legal from './locales/ja/legal.json';
 import ja_admin from './locales/ja/admin.json';
+import ja_social from './locales/ja/social.json';
 
 import zh_common from './locales/zh/common.json';
 import zh_auth from './locales/zh/auth.json';
@@ -39,6 +42,7 @@ import zh_profile from './locales/zh/profile.json';
 import zh_components from './locales/zh/components.json';
 import zh_legal from './locales/zh/legal.json';
 import zh_admin from './locales/zh/admin.json';
+import zh_social from './locales/zh/social.json';
 
 import es_common from './locales/es/common.json';
 import es_auth from './locales/es/auth.json';
@@ -48,6 +52,7 @@ import es_profile from './locales/es/profile.json';
 import es_components from './locales/es/components.json';
 import es_legal from './locales/es/legal.json';
 import es_admin from './locales/es/admin.json';
+import es_social from './locales/es/social.json';
 
 import de_common from './locales/de/common.json';
 import de_auth from './locales/de/auth.json';
@@ -57,6 +62,7 @@ import de_profile from './locales/de/profile.json';
 import de_components from './locales/de/components.json';
 import de_legal from './locales/de/legal.json';
 import de_admin from './locales/de/admin.json';
+import de_social from './locales/de/social.json';
 
 import fr_common from './locales/fr/common.json';
 import fr_auth from './locales/fr/auth.json';
@@ -66,6 +72,7 @@ import fr_profile from './locales/fr/profile.json';
 import fr_components from './locales/fr/components.json';
 import fr_legal from './locales/fr/legal.json';
 import fr_admin from './locales/fr/admin.json';
+import fr_social from './locales/fr/social.json';
 
 import th_common from './locales/th/common.json';
 import th_auth from './locales/th/auth.json';
@@ -75,6 +82,7 @@ import th_profile from './locales/th/profile.json';
 import th_components from './locales/th/components.json';
 import th_legal from './locales/th/legal.json';
 import th_admin from './locales/th/admin.json';
+import th_social from './locales/th/social.json';
 
 import vi_common from './locales/vi/common.json';
 import vi_auth from './locales/vi/auth.json';
@@ -84,6 +92,7 @@ import vi_profile from './locales/vi/profile.json';
 import vi_components from './locales/vi/components.json';
 import vi_legal from './locales/vi/legal.json';
 import vi_admin from './locales/vi/admin.json';
+import vi_social from './locales/vi/social.json';
 
 export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
@@ -122,6 +131,7 @@ const resources = {
     components: ko_components,
     legal: ko_legal,
     admin: ko_admin,
+    social: ko_social,
   },
   en: {
     common: en_common,
@@ -132,6 +142,7 @@ const resources = {
     components: en_components,
     legal: en_legal,
     admin: en_admin,
+    social: en_social,
   },
   ja: {
     common: ja_common,
@@ -142,6 +153,7 @@ const resources = {
     components: ja_components,
     legal: ja_legal,
     admin: ja_admin,
+    social: ja_social,
   },
   zh: {
     common: zh_common,
@@ -152,6 +164,7 @@ const resources = {
     components: zh_components,
     legal: zh_legal,
     admin: zh_admin,
+    social: zh_social,
   },
   es: {
     common: es_common,
@@ -162,6 +175,7 @@ const resources = {
     components: es_components,
     legal: es_legal,
     admin: es_admin,
+    social: es_social,
   },
   de: {
     common: de_common,
@@ -172,6 +186,7 @@ const resources = {
     components: de_components,
     legal: de_legal,
     admin: de_admin,
+    social: de_social,
   },
   fr: {
     common: fr_common,
@@ -182,6 +197,7 @@ const resources = {
     components: fr_components,
     legal: fr_legal,
     admin: fr_admin,
+    social: fr_social,
   },
   th: {
     common: th_common,
@@ -192,6 +208,7 @@ const resources = {
     components: th_components,
     legal: th_legal,
     admin: th_admin,
+    social: th_social,
   },
   vi: {
     common: vi_common,
@@ -202,6 +219,7 @@ const resources = {
     components: vi_components,
     legal: vi_legal,
     admin: vi_admin,
+    social: vi_social,
   },
 };
 
@@ -230,7 +248,7 @@ export async function initI18n(): Promise<void> {
     resources,
     lng: language,
     fallbackLng: 'ko',
-    ns: ['common', 'auth', 'home', 'trips', 'profile', 'components', 'legal', 'admin'],
+    ns: ['common', 'auth', 'home', 'trips', 'profile', 'components', 'legal', 'admin', 'social'],
     defaultNS: 'common',
     interpolation: {
       escapeValue: false,

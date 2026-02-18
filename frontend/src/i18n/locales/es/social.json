@@ -1,0 +1,31 @@
+{
+  "title": "Explorar",
+  "following": "Siguiendo",
+  "trending": "Tendencias",
+  "emptyFollowing": "No hay publicaciones de viajeros seguidos",
+  "emptyFollowingMessage": "Sigue a otros viajeros para ver sus viajes aquí",
+  "emptyTrending": "Aún no hay viajes públicos",
+  "emptyTrendingMessage": "Los viajes populares aparecerán aquí pronto",
+  "tripBy": "Viaje de {{name}}",
+  "likesCount": "{{count}} me gusta",
+  "profile": {
+    "followers": "Seguidores",
+    "following": "Siguiendo",
+    "follow": "Seguir",
+    "unfollow": "Dejar de seguir",
+    "publicTrips": "Viajes públicos",
+    "noPublicTrips": "No hay viajes públicos"
+  },
+  "notifications": {
+    "newFollower": "{{name}} te ha seguido",
+    "tripLiked": "A {{name}} le gustó tu viaje a {{destination}}"
+  },
+  "errors": {
+    "followFailed": "Error al seguir",
+    "unfollowFailed": "Error al dejar de seguir",
+    "likeFailed": "Error al dar me gusta",
+    "unlikeFailed": "Error al quitar me gusta",
+    "feedFailed": "Error al cargar el feed",
+    "profileFailed": "Error al cargar el perfil"
+  }
+}

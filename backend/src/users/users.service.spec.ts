@@ -25,6 +25,8 @@ describe('UsersService', () => {
     isActive: true,
     isEmailVerified: false,
     isTwoFactorEnabled: false,
+    followersCount: 0,
+    followingCount: 0,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };

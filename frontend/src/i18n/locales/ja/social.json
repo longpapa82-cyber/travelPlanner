@@ -1,0 +1,31 @@
+{
+  "title": "発見",
+  "following": "フォロー中",
+  "trending": "人気",
+  "emptyFollowing": "フォロー中の旅行者がいません",
+  "emptyFollowingMessage": "旅行者をフォローすると、ここに表示されます",
+  "emptyTrending": "公開された旅行がまだありません",
+  "emptyTrendingMessage": "人気の旅行がまもなく表示されます",
+  "tripBy": "{{name}}の旅行",
+  "likesCount": "{{count}}件のいいね",
+  "profile": {
+    "followers": "フォロワー",
+    "following": "フォロー中",
+    "follow": "フォロー",
+    "unfollow": "フォロー解除",
+    "publicTrips": "公開旅行",
+    "noPublicTrips": "公開された旅行がありません"
+  },
+  "notifications": {
+    "newFollower": "{{name}}さんがフォローしました",
+    "tripLiked": "{{name}}さんが{{destination}}の旅行にいいねしました"
+  },
+  "errors": {
+    "followFailed": "フォローに失敗しました",
+    "unfollowFailed": "フォロー解除に失敗しました",
+    "likeFailed": "いいねに失敗しました",
+    "unlikeFailed": "いいね取り消しに失敗しました",
+    "feedFailed": "フィードの読み込みに失敗しました",
+    "profileFailed": "プロフィールの読み込みに失敗しました"
+  }
+}

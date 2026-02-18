@@ -11,6 +11,7 @@ import ErrorLogScreen from '../screens/main/ErrorLogScreen';
 import HelpScreen from '../screens/main/HelpScreen';
 import TermsScreen from '../screens/main/TermsScreen';
 import PrivacyPolicyScreen from '../screens/main/PrivacyPolicyScreen';
+import UserProfileScreen from '../screens/main/UserProfileScreen';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 
@@ -21,6 +22,7 @@ const ProfileNavigator = () => {
   const { t } = useTranslation('profile');
   const { t: tAdmin } = useTranslation('admin');
   const { t: tLegal } = useTranslation('legal');
+  const { t: tSocial } = useTranslation('social');
 
   return (
     <Stack.Navigator
@@ -78,6 +80,11 @@ const ProfileNavigator = () => {
         name="PrivacyPolicy"
         component={PrivacyPolicyScreen}
         options={{ title: tLegal('privacy.title') }}
+      />
+      <Stack.Screen
+        name="UserProfile"
+        component={UserProfileScreen}
+        options={{ title: tSocial('profile.publicTrips') }}
       />
     </Stack.Navigator>
   );

@@ -38,7 +38,8 @@
     "home": "Home",
     "trips": "My Trips",
     "notifications": "Alerts",
-    "profile": "Profile"
+    "profile": "Profile",
+    "discover": "Discover"
   },
   "notifications": {
     "emptyTitle": "No notifications",

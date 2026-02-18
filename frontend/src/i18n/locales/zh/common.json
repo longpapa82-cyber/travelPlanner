@@ -38,7 +38,8 @@
     "home": "首页",
     "trips": "我的旅行",
     "notifications": "通知",
-    "profile": "我的"
+    "profile": "我的",
+    "discover": "发现"
   },
   "notifications": {
     "emptyTitle": "没有通知",

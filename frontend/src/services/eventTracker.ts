@@ -28,7 +28,13 @@ export type EventName =
   | '2fa_disabled'
   | '2fa_backup_regenerated'
   | 'search'
-  | 'filter_applied';
+  | 'filter_applied'
+  | 'user_followed'
+  | 'user_unfollowed'
+  | 'trip_liked'
+  | 'trip_unliked'
+  | 'feed_viewed'
+  | 'profile_viewed';
 
 interface AnalyticsEvent {
   name: EventName;

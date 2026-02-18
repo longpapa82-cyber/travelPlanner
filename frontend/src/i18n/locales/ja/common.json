@@ -38,7 +38,8 @@
     "home": "ホーム",
     "trips": "旅行",
     "notifications": "通知",
-    "profile": "プロフィール"
+    "profile": "プロフィール",
+    "discover": "発見"
   },
   "notifications": {
     "emptyTitle": "通知はありません",

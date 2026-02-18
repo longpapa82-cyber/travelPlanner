@@ -572,6 +572,44 @@ class ApiService {
     const response = await this.api.post('/error-logs', data);
     return response.data;
   }
+
+  // ─── Social ─────────────────────────────────
+
+  async followUser(userId: string) {
+    await this.api.post(`/social/follow/${userId}`);
+  }
+
+  async unfollowUser(userId: string) {
+    await this.api.delete(`/social/follow/${userId}`);
+  }
+
+  async getFollowers(userId: string, page = 1, limit = 20) {
+    const response = await this.api.get(`/social/followers/${userId}`, { params: { page, limit } });
+    return response.data;
+  }
+
+  async getFollowing(userId: string, page = 1, limit = 20) {
+    const response = await this.api.get(`/social/following/${userId}`, { params: { page, limit } });
+    return response.data;
+  }
+
+  async likeTrip(tripId: string) {
+    await this.api.post(`/social/trips/${tripId}/like`);
+  }
+
+  async unlikeTrip(tripId: string) {
+    await this.api.delete(`/social/trips/${tripId}/like`);
+  }
+
+  async getDiscoverFeed(tab: 'following' | 'trending' = 'trending', page = 1, limit = 20) {
+    const response = await this.api.get('/social/feed', { params: { tab, page, limit } });
+    return response.data;
+  }
+
+  async getUserPublicProfile(userId: string) {
+    const response = await this.api.get(`/social/users/${userId}/profile`);
+    return response.data;
+  }
 }
 
 export default new ApiService();

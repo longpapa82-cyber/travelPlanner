@@ -27,6 +27,8 @@ const NOTIFICATION_ICONS: Record<string, string> = {
   collaborator_joined: 'account-check',
   trip_updated: 'pencil',
   activity_reminder: 'bell-ring',
+  new_follower: 'account-plus',
+  trip_liked: 'heart',
 };
 
 const NOTIFICATION_COLORS: Record<string, string> = {
@@ -37,6 +39,8 @@ const NOTIFICATION_COLORS: Record<string, string> = {
   collaborator_joined: colors.success.main,
   trip_updated: colors.warning.main,
   activity_reminder: colors.primary[500],
+  new_follower: colors.primary[500],
+  trip_liked: colors.error.main,
 };
 
 const NotificationsScreen = () => {

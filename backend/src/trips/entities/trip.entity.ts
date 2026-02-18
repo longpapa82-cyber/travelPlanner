@@ -21,6 +21,7 @@ export enum TripStatus {
 @Entity('trips')
 @Index(['userId', 'status'])
 @Index(['userId', 'startDate'])
+@Index(['isPublic', 'createdAt'])
 export class Trip {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -81,6 +82,9 @@ export class Trip {
 
   @Column({ type: 'boolean', default: false })
   isPublic: boolean;
+
+  @Column({ type: 'int', default: 0 })
+  likesCount: number;
 
   @Column({ type: 'timestamp', nullable: true })
   shareExpiresAt?: Date;

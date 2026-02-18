@@ -1,0 +1,31 @@
+{
+  "title": "สำรวจ",
+  "following": "กำลังติดตาม",
+  "trending": "มาแรง",
+  "emptyFollowing": "ยังไม่มีโพสต์จากนักเดินทางที่ติดตาม",
+  "emptyFollowingMessage": "ติดตามนักเดินทางเพื่อดูทริปสาธารณะของพวกเขาที่นี่",
+  "emptyTrending": "ยังไม่มีทริปสาธารณะ",
+  "emptyTrendingMessage": "ทริปยอดนิยมจะปรากฏที่นี่เร็วๆ นี้",
+  "tripBy": "ทริปโดย {{name}}",
+  "likesCount": "{{count}} ถูกใจ",
+  "profile": {
+    "followers": "ผู้ติดตาม",
+    "following": "กำลังติดตาม",
+    "follow": "ติดตาม",
+    "unfollow": "เลิกติดตาม",
+    "publicTrips": "ทริปสาธารณะ",
+    "noPublicTrips": "ไม่มีทริปสาธารณะ"
+  },
+  "notifications": {
+    "newFollower": "{{name}} เริ่มติดตามคุณ",
+    "tripLiked": "{{name}} ถูกใจทริป {{destination}} ของคุณ"
+  },
+  "errors": {
+    "followFailed": "ติดตามไม่สำเร็จ",
+    "unfollowFailed": "เลิกติดตามไม่สำเร็จ",
+    "likeFailed": "กดถูกใจไม่สำเร็จ",
+    "unlikeFailed": "ยกเลิกถูกใจไม่สำเร็จ",
+    "feedFailed": "โหลดฟีดไม่สำเร็จ",
+    "profileFailed": "โหลดโปรไฟล์ไม่สำเร็จ"
+  }
+}

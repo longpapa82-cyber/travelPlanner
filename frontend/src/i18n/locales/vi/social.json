@@ -1,0 +1,31 @@
+{
+  "title": "Khám phá",
+  "following": "Đang theo dõi",
+  "trending": "Thịnh hành",
+  "emptyFollowing": "Chưa có bài viết từ người bạn theo dõi",
+  "emptyFollowingMessage": "Theo dõi du khách để xem chuyến đi công khai của họ tại đây",
+  "emptyTrending": "Chưa có chuyến đi công khai",
+  "emptyTrendingMessage": "Các chuyến đi phổ biến sẽ sớm xuất hiện tại đây",
+  "tripBy": "Chuyến đi của {{name}}",
+  "likesCount": "{{count}} lượt thích",
+  "profile": {
+    "followers": "Người theo dõi",
+    "following": "Đang theo dõi",
+    "follow": "Theo dõi",
+    "unfollow": "Bỏ theo dõi",
+    "publicTrips": "Chuyến đi công khai",
+    "noPublicTrips": "Không có chuyến đi công khai"
+  },
+  "notifications": {
+    "newFollower": "{{name}} đã theo dõi bạn",
+    "tripLiked": "{{name}} đã thích chuyến đi {{destination}} của bạn"
+  },
+  "errors": {
+    "followFailed": "Theo dõi thất bại",
+    "unfollowFailed": "Bỏ theo dõi thất bại",
+    "likeFailed": "Thích thất bại",
+    "unlikeFailed": "Bỏ thích thất bại",
+    "feedFailed": "Không thể tải bảng tin",
+    "profileFailed": "Không thể tải hồ sơ"
+  }
+}

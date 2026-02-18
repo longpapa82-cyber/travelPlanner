@@ -1,0 +1,31 @@
+{
+  "title": "发现",
+  "following": "关注",
+  "trending": "热门",
+  "emptyFollowing": "暂无关注的旅行者",
+  "emptyFollowingMessage": "关注其他旅行者后，他们的公开行程将显示在这里",
+  "emptyTrending": "暂无公开行程",
+  "emptyTrendingMessage": "热门行程即将显示",
+  "tripBy": "{{name}}的行程",
+  "likesCount": "{{count}}个赞",
+  "profile": {
+    "followers": "粉丝",
+    "following": "关注",
+    "follow": "关注",
+    "unfollow": "取消关注",
+    "publicTrips": "公开行程",
+    "noPublicTrips": "暂无公开行程"
+  },
+  "notifications": {
+    "newFollower": "{{name}}关注了你",
+    "tripLiked": "{{name}}赞了你的{{destination}}行程"
+  },
+  "errors": {
+    "followFailed": "关注失败",
+    "unfollowFailed": "取消关注失败",
+    "likeFailed": "点赞失败",
+    "unlikeFailed": "取消点赞失败",
+    "feedFailed": "加载动态失败",
+    "profileFailed": "加载资料失败"
+  }
+}

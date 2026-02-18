@@ -38,7 +38,8 @@
     "home": "홈",
     "trips": "내 여행",
     "notifications": "알림",
-    "profile": "프로필"
+    "profile": "프로필",
+    "discover": "탐색"
   },
   "notifications": {
     "emptyTitle": "알림이 없습니다",

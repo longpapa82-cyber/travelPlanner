@@ -4,6 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MainTabParamList } from '../types';
 import HomeScreen from '../screens/main/HomeScreen';
+import DiscoverScreen from '../screens/main/DiscoverScreen';
 import TripsNavigator from './TripsNavigator';
 import NotificationsScreen from '../screens/main/NotificationsScreen';
 import ProfileNavigator from './ProfileNavigator';
@@ -63,6 +64,16 @@ const MainNavigator = () => {
           title: t('tabs.home'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Discover"
+        component={DiscoverScreen}
+        options={{
+          title: t('tabs.discover'),
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="compass-outline" size={size} color={color} />
           ),
         }}
       />

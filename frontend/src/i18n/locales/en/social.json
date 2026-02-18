@@ -1,0 +1,31 @@
+{
+  "title": "Discover",
+  "following": "Following",
+  "trending": "Trending",
+  "emptyFollowing": "No posts from followed travelers",
+  "emptyFollowingMessage": "Follow travelers to see their public trips here",
+  "emptyTrending": "No public trips yet",
+  "emptyTrendingMessage": "Popular trips will appear here soon",
+  "tripBy": "Trip by {{name}}",
+  "likesCount": "{{count}} likes",
+  "profile": {
+    "followers": "Followers",
+    "following": "Following",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "publicTrips": "Public Trips",
+    "noPublicTrips": "No public trips"
+  },
+  "notifications": {
+    "newFollower": "{{name}} started following you",
+    "tripLiked": "{{name}} liked your trip to {{destination}}"
+  },
+  "errors": {
+    "followFailed": "Failed to follow",
+    "unfollowFailed": "Failed to unfollow",
+    "likeFailed": "Failed to like",
+    "unlikeFailed": "Failed to unlike",
+    "feedFailed": "Failed to load feed",
+    "profileFailed": "Failed to load profile"
+  }
+}

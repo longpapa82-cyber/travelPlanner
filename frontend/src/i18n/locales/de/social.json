@@ -1,0 +1,31 @@
+{
+  "title": "Entdecken",
+  "following": "Folge ich",
+  "trending": "Beliebt",
+  "emptyFollowing": "Keine Beiträge von gefolgten Reisenden",
+  "emptyFollowingMessage": "Folge Reisenden, um ihre öffentlichen Reisen hier zu sehen",
+  "emptyTrending": "Noch keine öffentlichen Reisen",
+  "emptyTrendingMessage": "Beliebte Reisen werden bald hier angezeigt",
+  "tripBy": "Reise von {{name}}",
+  "likesCount": "{{count}} Likes",
+  "profile": {
+    "followers": "Follower",
+    "following": "Folge ich",
+    "follow": "Folgen",
+    "unfollow": "Entfolgen",
+    "publicTrips": "Öffentliche Reisen",
+    "noPublicTrips": "Keine öffentlichen Reisen"
+  },
+  "notifications": {
+    "newFollower": "{{name}} folgt dir jetzt",
+    "tripLiked": "{{name}} gefällt deine Reise nach {{destination}}"
+  },
+  "errors": {
+    "followFailed": "Folgen fehlgeschlagen",
+    "unfollowFailed": "Entfolgen fehlgeschlagen",
+    "likeFailed": "Like fehlgeschlagen",
+    "unlikeFailed": "Like entfernen fehlgeschlagen",
+    "feedFailed": "Feed konnte nicht geladen werden",
+    "profileFailed": "Profil konnte nicht geladen werden"
+  }
+}

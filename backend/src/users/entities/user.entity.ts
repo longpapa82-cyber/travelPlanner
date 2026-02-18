@@ -91,6 +91,12 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   lastLoginAt?: Date;
 
+  @Column({ type: 'int', default: 0 })
+  followersCount: number;
+
+  @Column({ type: 'int', default: 0 })
+  followingCount: number;
+
   @Column({ default: true })
   isActive: boolean;
 

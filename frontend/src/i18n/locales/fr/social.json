@@ -1,0 +1,31 @@
+{
+  "title": "Explorer",
+  "following": "Abonnements",
+  "trending": "Tendances",
+  "emptyFollowing": "Aucune publication de voyageurs suivis",
+  "emptyFollowingMessage": "Suivez des voyageurs pour voir leurs voyages ici",
+  "emptyTrending": "Pas encore de voyages publics",
+  "emptyTrendingMessage": "Les voyages populaires apparaîtront bientôt ici",
+  "tripBy": "Voyage de {{name}}",
+  "likesCount": "{{count}} j'aime",
+  "profile": {
+    "followers": "Abonnés",
+    "following": "Abonnements",
+    "follow": "Suivre",
+    "unfollow": "Se désabonner",
+    "publicTrips": "Voyages publics",
+    "noPublicTrips": "Aucun voyage public"
+  },
+  "notifications": {
+    "newFollower": "{{name}} vous suit maintenant",
+    "tripLiked": "{{name}} a aimé votre voyage à {{destination}}"
+  },
+  "errors": {
+    "followFailed": "Échec du suivi",
+    "unfollowFailed": "Échec du désabonnement",
+    "likeFailed": "Échec du j'aime",
+    "unlikeFailed": "Échec de la suppression du j'aime",
+    "feedFailed": "Impossible de charger le fil",
+    "profileFailed": "Impossible de charger le profil"
+  }
+}

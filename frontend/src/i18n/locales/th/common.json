@@ -38,7 +38,8 @@
     "home": "หน้าหลัก",
     "trips": "ทริปของฉัน",
     "notifications": "การแจ้งเตือน",
-    "profile": "โปรไฟล์"
+    "profile": "โปรไฟล์",
+    "discover": "สำรวจ"
   },
   "notifications": {
     "emptyTitle": "ไม่มีการแจ้งเตือน",
