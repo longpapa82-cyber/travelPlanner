@@ -46,12 +46,14 @@
     }
   },
   "quickActions": {
+    "title": "クイックメニュー",
     "myTrips": "旅行一覧",
     "myTripsDesc": "進行中の旅行を確認",
     "inspiration": "旅のインスピレーション",
     "inspirationDesc": "新しいアイデアを探索"
   },
   "tip": {
+    "sectionTitle": "旅のヒント",
     "title": "💡 事前に計画しましょう",
     "description": "AIが現地の天気、人気スポット、移動ルートを考慮した最適な旅程を作成します。"
   }

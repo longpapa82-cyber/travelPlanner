@@ -67,8 +67,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
 
   const styles = createStyles(theme, isDark);
 
-  return (
-    <ScaleDecorator>
+  const cardContent = (
       <View style={styles.activityWrapper}>
         {/* Timeline Dot - Clickable Checkbox */}
         <View style={styles.timelineContainer}>
@@ -138,16 +137,11 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
             <View style={styles.activityTimeSection}>
               <Icon name="clock-outline" size={18} color={activityColor} />
               <Text style={[styles.activityTime, { color: activityColor }]}>{activity.time}</Text>
-              {timezone && (
-                <Text style={[styles.activityTimezone, { color: theme.colors.textSecondary }]}>
-                  {timezone}
-                </Text>
-              )}
             </View>
 
             <View style={styles.activityHeaderRight}>
               <View style={[styles.activityTypeBadge, { backgroundColor: `${activityColor}20` }]}>
-                <Text style={[styles.activityTypeText, { color: activityColor }]}>{activity.type}</Text>
+                <Text numberOfLines={1} style={[styles.activityTypeText, { color: activityColor }]}>{activity.type}</Text>
               </View>
               {canModify && (
                 <View style={styles.activityActions}>
@@ -256,8 +250,14 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
           </View>
         </View>
       </View>
-    </ScaleDecorator>
   );
+
+  // On web, ScaleDecorator requires DraggableFlatList context which is absent
+  if (Platform.OS === 'web') {
+    return cardContent;
+  }
+
+  return <ScaleDecorator>{cardContent}</ScaleDecorator>;
 };
 
 const createStyles = (theme: any, isDark: boolean) =>
@@ -305,20 +305,11 @@ const createStyles = (theme: any, isDark: boolean) =>
       alignItems: 'center',
       gap: 6,
       flex: 1,
+      minWidth: 0,
     },
     activityTime: {
       fontSize: 16,
       fontWeight: '700',
-    },
-    activityTimezone: {
-      fontSize: 11,
-      fontWeight: '500',
-      marginLeft: 4,
-      paddingHorizontal: 6,
-      paddingVertical: 2,
-      borderRadius: 4,
-      backgroundColor: isDark ? colors.neutral[700] : colors.neutral[100],
-      overflow: 'hidden',
     },
     activityHeaderRight: {
       flexDirection: 'row',

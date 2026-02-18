@@ -203,7 +203,7 @@ class ApiService {
 
   // Trips Methods
   async createTrip(data: any) {
-    const response = await this.api.post('/trips', data, { timeout: 120000 });
+    const response = await this.api.post('/trips', data, { timeout: 300000 });
     return response.data;
   }
 

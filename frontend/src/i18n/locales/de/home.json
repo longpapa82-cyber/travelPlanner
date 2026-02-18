@@ -46,12 +46,14 @@
     }
   },
   "quickActions": {
+    "title": "Schnellzugriff",
     "myTrips": "Meine Reisen",
     "myTripsDesc": "Laufende Reisen prüfen",
     "inspiration": "Inspiration",
     "inspirationDesc": "Neue Ideen entdecken"
   },
   "tip": {
+    "sectionTitle": "Reisetipps",
     "title": "💡 Vorausplanen",
     "description": "KI erstellt den optimalen Reiseplan unter Berücksichtigung von Wetter, beliebten Orten und Reiserouten."
   }

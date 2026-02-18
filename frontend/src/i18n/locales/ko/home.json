@@ -46,12 +46,14 @@
     }
   },
   "quickActions": {
+    "title": "빠른 메뉴",
     "myTrips": "내 여행",
     "myTripsDesc": "진행 중인 여행 확인",
     "inspiration": "여행 영감",
     "inspirationDesc": "새로운 아이디어 탐색"
   },
   "tip": {
+    "sectionTitle": "여행 팁",
     "title": "💡 미리 계획하세요",
     "description": "AI가 현지 날씨, 인기 장소, 이동 경로까지 고려한 최적의 일정을 만들어드립니다."
   }

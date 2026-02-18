@@ -46,12 +46,14 @@
     }
   },
   "quickActions": {
+    "title": "Quick Actions",
     "myTrips": "My Trips",
     "myTripsDesc": "Check ongoing trips",
     "inspiration": "Inspiration",
     "inspirationDesc": "Explore new ideas"
   },
   "tip": {
+    "sectionTitle": "Travel Tips",
     "title": "💡 Plan Ahead",
     "description": "AI creates the optimal itinerary considering local weather, popular spots, and travel routes."
   }

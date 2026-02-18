@@ -9,6 +9,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Platform,
 } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useTranslation } from 'react-i18next';
@@ -99,34 +100,52 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
         </View>
       )}
 
-      {/* Activities with Timeline - Draggable */}
+      {/* Activities with Timeline - Draggable on native, static on web */}
       <View style={styles.activitiesContainer}>
-        <DraggableFlatList
-          data={itinerary.activities}
-          renderItem={(params) => (
+        {Platform.OS === 'web' ? (
+          itinerary.activities.map((activity, index) => (
             <ActivityItem
-              params={params}
+              key={`activity-${itinerary.id}-${index}`}
+              params={{ item: activity, drag: () => {}, isActive: false, getIndex: () => index } as any}
               itineraryId={itinerary.id}
               itineraryDate={itinerary.date}
-              isLast={params.getIndex() === itinerary.activities.length - 1}
+              isLast={index === itinerary.activities.length - 1}
               tripStatus={tripStatus}
               timezone={itinerary.timezone}
-              activityIndex={itinerary.activities.indexOf(params.item)}
+              activityIndex={index}
               onToggleCompletion={onToggleCompletion}
               onEdit={onEditActivity}
               onDelete={onDeleteActivity}
             />
-          )}
-          keyExtractor={(item, index) => `activity-${itinerary.id}-${index}`}
-          onDragEnd={({ data }) => {
-            if (tripStatus === 'completed') return;
-            const newOrder = data.map((activity) => itinerary.activities.indexOf(activity));
-            onReorderActivities(itinerary.id, newOrder);
-          }}
-          scrollEnabled={false}
-          maxToRenderPerBatch={5}
-          initialNumToRender={5}
-        />
+          ))
+        ) : (
+          <DraggableFlatList
+            data={itinerary.activities}
+            renderItem={(params) => (
+              <ActivityItem
+                params={params}
+                itineraryId={itinerary.id}
+                itineraryDate={itinerary.date}
+                isLast={params.getIndex() === itinerary.activities.length - 1}
+                tripStatus={tripStatus}
+                timezone={itinerary.timezone}
+                activityIndex={itinerary.activities.indexOf(params.item)}
+                onToggleCompletion={onToggleCompletion}
+                onEdit={onEditActivity}
+                onDelete={onDeleteActivity}
+              />
+            )}
+            keyExtractor={(item, index) => `activity-${itinerary.id}-${index}`}
+            onDragEnd={({ data }) => {
+              if (tripStatus === 'completed') return;
+              const newOrder = data.map((activity) => itinerary.activities.indexOf(activity));
+              onReorderActivities(itinerary.id, newOrder);
+            }}
+            scrollEnabled={false}
+            maxToRenderPerBatch={5}
+            initialNumToRender={5}
+          />
+        )}
       </View>
 
       {/* Add Activity Button */}

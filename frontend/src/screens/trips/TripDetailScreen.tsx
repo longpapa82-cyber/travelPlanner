@@ -396,8 +396,11 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     : getDestinationImageUrl(trip.destination, { width: 800 });
   const duration = getDuration();
 
+  // On web, GestureHandlerRootView intercepts touch events and breaks native scroll
+  const RootWrapper = Platform.OS === 'web' ? View : GestureHandlerRootView;
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <RootWrapper style={{ flex: 1 }}>
       <View style={styles.container}>
         {/* Completed Trip Banner */}
         {trip.status === 'completed' && (
@@ -624,7 +627,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           currentShareToken={trip.shareToken}
         />
       </View>
-    </GestureHandlerRootView>
+    </RootWrapper>
   );
 };
 
@@ -633,6 +636,7 @@ const createStyles = (theme: any, isDark: boolean) =>
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
+      ...(Platform.OS === 'web' ? { overflow: 'hidden' as const } : {}),
     },
     loadingContainer: {
       flex: 1,

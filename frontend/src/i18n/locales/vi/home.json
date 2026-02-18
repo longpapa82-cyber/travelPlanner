@@ -46,12 +46,14 @@
     }
   },
   "quickActions": {
+    "title": "Thao t\u00e1c nhanh",
     "myTrips": "Chuy\u1ebfn \u0111i c\u1ee7a t\u00f4i",
     "myTripsDesc": "Xem c\u00e1c chuy\u1ebfn \u0111i \u0111ang di\u1ec5n ra",
     "inspiration": "C\u1ea3m h\u1ee9ng",
     "inspirationDesc": "Kh\u00e1m ph\u00e1 \u00fd t\u01b0\u1edfng m\u1edbi"
   },
   "tip": {
+    "sectionTitle": "M\u1eb9o du l\u1ecbch",
     "title": "\ud83d\udca1 L\u00ean k\u1ebf ho\u1ea1ch tr\u01b0\u1edbc",
     "description": "AI t\u1ea1o l\u1ecbch tr\u00ecnh t\u1ed1i \u01b0u d\u1ef1a tr\u00ean th\u1eddi ti\u1ebft \u0111\u1ecba ph\u01b0\u01a1ng, \u0111\u1ecba \u0111i\u1ec3m ph\u1ed5 bi\u1ebfn v\u00e0 tuy\u1ebfn \u0111\u01b0\u1eddng di chuy\u1ec3n."
   }

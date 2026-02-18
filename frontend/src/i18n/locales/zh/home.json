@@ -46,12 +46,14 @@
     }
   },
   "quickActions": {
+    "title": "快捷操作",
     "myTrips": "我的旅行",
     "myTripsDesc": "查看进行中的旅行",
     "inspiration": "灵感",
     "inspirationDesc": "探索新想法"
   },
   "tip": {
+    "sectionTitle": "旅行贴士",
     "title": "💡 提前规划",
     "description": "AI会综合考虑当地天气、热门景点和出行路线，为您制定最优行程。"
   }

@@ -14,12 +14,14 @@
     "singapore": { "name": "Singapour", "country": "Singapour", "description": "Un voyage culinaire dans une ville futuriste" }
   },
   "quickActions": {
+    "title": "Actions rapides",
     "myTrips": "Mes voyages",
     "myTripsDesc": "Voir les voyages en cours",
     "inspiration": "Inspiration",
     "inspirationDesc": "Explorer de nouvelles idées"
   },
   "tip": {
+    "sectionTitle": "Conseils de voyage",
     "title": "💡 Planifiez à l'avance",
     "description": "L'IA crée l'itinéraire optimal en tenant compte de la météo locale, des lieux populaires et des trajets."
   }

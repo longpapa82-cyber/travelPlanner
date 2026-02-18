@@ -46,12 +46,14 @@
     }
   },
   "quickActions": {
+    "title": "Acciones rápidas",
     "myTrips": "Mis viajes",
     "myTripsDesc": "Ver viajes en curso",
     "inspiration": "Inspiración",
     "inspirationDesc": "Explora nuevas ideas"
   },
   "tip": {
+    "sectionTitle": "Consejos de viaje",
     "title": "💡 Planifica con anticipación",
     "description": "La IA crea el itinerario óptimo considerando el clima local, lugares populares y rutas de viaje."
   }
