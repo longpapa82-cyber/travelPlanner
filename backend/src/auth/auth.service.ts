@@ -4,6 +4,8 @@ import {
   UnauthorizedException,
   ConflictException,
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -23,6 +25,8 @@ import {
 } from './interfaces/auth-response.interface';
 import { t } from '../common/i18n';
 import { getErrorMessage } from '../common/types/request.types';
+import { AuditService } from '../admin/audit.service';
+import { AuditAction } from '../admin/entities/audit-log.entity';
 
 type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi';
 
@@ -43,6 +47,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
+    private readonly auditService: AuditService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
@@ -81,6 +86,9 @@ export class AuthService {
       );
     }
 
+    // Audit log: registration
+    this.auditService.log({ userId: user.id, action: AuditAction.REGISTER }).catch(() => {});
+
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email!);
 
@@ -97,12 +105,26 @@ export class AuthService {
     };
   }
 
+  private readonly LOGIN_MAX_ATTEMPTS = 10;
+  private readonly LOGIN_LOCKOUT_TTL = 15 * 60 * 1000; // 15 minutes
+
   async login(
     loginDto: LoginDto,
   ): Promise<AuthResponse | { requiresTwoFactor: true; tempToken: string }> {
+    // Check account-level lockout (Redis-based, survives restarts)
+    const lockKey = `login_attempts:${loginDto.email}`;
+    const attempts = await this.cacheManager.get<number>(lockKey);
+    if (attempts !== null && attempts !== undefined && attempts >= this.LOGIN_MAX_ATTEMPTS) {
+      throw new HttpException(
+        'Account temporarily locked due to too many failed login attempts. Try again in 15 minutes.',
+        HttpStatus.LOCKED,
+      );
+    }
+
     // Find user by email
     const user = await this.usersService.findByEmail(loginDto.email);
     if (!user) {
+      await this.incrementLoginAttempts(lockKey);
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -112,8 +134,15 @@ export class AuthService {
       loginDto.password,
     );
     if (!isPasswordValid) {
+      await this.incrementLoginAttempts(lockKey);
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    // Login success — reset attempt counter
+    await this.cacheManager.del(lockKey);
+
+    // Audit log: successful login
+    this.auditService.log({ userId: user.id, action: AuditAction.LOGIN }).catch(() => {});
 
     // Check if 2FA is enabled
     if (user.isTwoFactorEnabled) {
@@ -144,6 +173,14 @@ export class AuthService {
       },
       ...tokens,
     };
+  }
+
+  private async incrementLoginAttempts(lockKey: string): Promise<void> {
+    const current = (await this.cacheManager.get<number>(lockKey)) || 0;
+    await this.cacheManager.set(lockKey, current + 1, this.LOGIN_LOCKOUT_TTL);
+    if (current + 1 >= this.LOGIN_MAX_ATTEMPTS) {
+      this.logger.warn(`Account locked: ${lockKey} — ${this.LOGIN_MAX_ATTEMPTS} failed attempts`);
+    }
   }
 
   async refreshToken(refreshToken: string): Promise<AuthResponse> {
@@ -205,6 +242,8 @@ export class AuthService {
       if (payload.jti) {
         await this.cacheManager.del(`refresh:${payload.jti}`);
       }
+      // Audit log: logout
+      this.auditService.log({ userId: payload.sub, action: AuditAction.LOGOUT }).catch(() => {});
     } catch {
       // Token already expired or invalid — still succeed logout
     }
@@ -418,6 +457,7 @@ export class AuthService {
     }
 
     await this.usersService.enableTwoFactor(userId, backupCodes);
+    this.auditService.log({ userId, action: AuditAction.TWO_FACTOR_ENABLE }).catch(() => {});
 
     return { backupCodes };
   }
@@ -438,8 +478,11 @@ export class AuthService {
     }
 
     await this.usersService.disableTwoFactor(userId);
+    this.auditService.log({ userId, action: AuditAction.TWO_FACTOR_DISABLE }).catch(() => {});
     return { message: '2FA disabled' };
   }
+
+  private readonly TFA_MAX_ATTEMPTS = 5;
 
   async verifyTwoFactorLogin(
     tempToken: string,
@@ -456,6 +499,16 @@ export class AuthService {
 
     if (payload.type !== '2fa-pending') {
       throw new UnauthorizedException('Invalid token type');
+    }
+
+    // Check 2FA attempt lockout
+    const tfaLockKey = `2fa_attempts:${payload.sub}`;
+    const tfaAttempts = await this.cacheManager.get<number>(tfaLockKey);
+    if (tfaAttempts !== null && tfaAttempts !== undefined && tfaAttempts >= this.TFA_MAX_ATTEMPTS) {
+      throw new HttpException(
+        '2FA verification temporarily locked. Try again in 15 minutes.',
+        HttpStatus.LOCKED,
+      );
     }
 
     const user = await this.usersService.findByIdWithTwoFactor(payload.sub);
@@ -481,7 +534,6 @@ export class AuthService {
       if (idx !== -1) {
         isValid = true;
         usedBackupCode = true;
-        // Remove used backup code (single-use)
         const remaining = [...user.twoFactorBackupCodes];
         remaining.splice(idx, 1);
         remainingBackupCodes = remaining.length;
@@ -493,8 +545,14 @@ export class AuthService {
     }
 
     if (!isValid) {
+      // Track failed 2FA attempts
+      const current = (await this.cacheManager.get<number>(tfaLockKey)) || 0;
+      await this.cacheManager.set(tfaLockKey, current + 1, this.LOGIN_LOCKOUT_TTL);
       throw new UnauthorizedException('Invalid 2FA code');
     }
+
+    // Success — reset 2FA attempt counter
+    await this.cacheManager.del(tfaLockKey);
 
     const tokens = await this.generateTokens(user.id, user.email || '');
 

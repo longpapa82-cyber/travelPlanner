@@ -12,12 +12,17 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from './admin.guard';
 import { AdminService } from './admin.service';
+import { AuditService } from './audit.service';
+import { AuditAction } from './entities/audit-log.entity';
 
 // Admin-only endpoints
 @Controller('api/admin')
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly auditService: AuditService,
+  ) {}
 
   @Get('users/stats')
   getUserStats() {
@@ -62,6 +67,21 @@ export class AdminController {
   @Patch('error-logs/:id/resolve')
   resolveErrorLog(@Param('id') id: string) {
     return this.adminService.resolveErrorLog(id);
+  }
+
+  @Get('audit-logs')
+  getAuditLogs(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('userId') userId?: string,
+    @Query('action') action?: string,
+  ) {
+    return this.auditService.getAuditLogs(
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 50,
+      userId,
+      action as AuditAction | undefined,
+    );
   }
 }
 

@@ -18,6 +18,7 @@ import { ExpensesModule } from './expenses/expenses.module';
 import { AdminModule } from './admin/admin.module';
 import { SocialModule } from './social/social.module';
 import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
+import { LifecycleService } from './common/lifecycle.service';
 
 import { AppCacheModule } from './common/cache.module';
 import databaseConfig from './config/database.config';
@@ -79,6 +80,7 @@ import emailConfig from './config/email.config';
   controllers: [AppController],
   providers: [
     AppService,
+    LifecycleService,
     {
       provide: APP_GUARD,
       useClass: DevThrottlerGuard,

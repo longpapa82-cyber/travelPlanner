@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { User, AuthProvider } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
@@ -15,6 +15,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(data: {
@@ -268,5 +269,55 @@ export class UsersService {
     await this.userRepository.update(userId, {
       twoFactorBackupCodes: codes,
     });
+  }
+
+  // ============ GDPR Data Export ============
+
+  async exportUserData(userId: string): Promise<Record<string, any>> {
+    const user = await this.findById(userId);
+
+    // Collect trips
+    const trips = await this.dataSource.query(
+      `SELECT id, destination, country, city, "startDate", "endDate",
+              "numberOfTravelers", status, preferences, "createdAt", "updatedAt"
+       FROM trips WHERE "userId" = $1 ORDER BY "createdAt" DESC`,
+      [userId],
+    );
+
+    // Collect expenses (via trips)
+    const expenses = await this.dataSource.query(
+      `SELECT es.id, es.title, es."totalAmount", es.currency, es."splitMethod",
+              es."createdAt", t.destination as "tripDestination"
+       FROM expense_splits es
+       JOIN trips t ON es."tripId" = t.id
+       WHERE t."userId" = $1
+       ORDER BY es."createdAt" DESC`,
+      [userId],
+    );
+
+    // Collect notifications
+    const notifications = await this.dataSource.query(
+      `SELECT id, type, title, body, "isRead", "createdAt"
+       FROM notifications WHERE "userId" = $1 ORDER BY "createdAt" DESC`,
+      [userId],
+    );
+
+    return {
+      exportedAt: new Date().toISOString(),
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        provider: user.provider,
+        isEmailVerified: user.isEmailVerified,
+        isTwoFactorEnabled: user.isTwoFactorEnabled,
+        travelPreferences: user.travelPreferences,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+      trips,
+      expenses,
+      notifications,
+    };
   }
 }

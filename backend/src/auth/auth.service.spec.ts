@@ -6,6 +6,7 @@ import { UnauthorizedException, ConflictException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
+import { AuditService } from '../admin/audit.service';
 import { AuthProvider } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -68,6 +69,10 @@ describe('AuthService', () => {
       sendPasswordResetEmail: jest.fn(),
     };
 
+    const mockAuditService = {
+      log: jest.fn().mockResolvedValue(undefined),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -75,6 +80,7 @@ describe('AuthService', () => {
         { provide: JwtService, useValue: mockJwtService },
         { provide: ConfigService, useValue: mockConfigService },
         { provide: EmailService, useValue: mockEmailService },
+        { provide: AuditService, useValue: mockAuditService },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
       ],
     }).compile();

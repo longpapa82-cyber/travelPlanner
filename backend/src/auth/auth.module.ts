@@ -14,6 +14,7 @@ import { User } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
 import { EmailModule } from '../email/email.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { AdminModule } from '../admin/admin.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     UsersModule,
     EmailModule,
     NotificationsModule,
+    AdminModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

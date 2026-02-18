@@ -7,6 +7,11 @@ import { AnalyticsService } from './analytics.service';
 import { TemplateService } from './template.service';
 import { TimezoneService } from './timezone.service';
 import { getErrorMessage } from '../../common/types/request.types';
+import {
+  withTimeout,
+  withRetry,
+  CircuitBreaker,
+} from '../../common/utils/resilience';
 
 interface RawAiActivity {
   time?: string;
@@ -50,6 +55,11 @@ const LANGUAGE_NAMES: Record<string, string> = {
 export class AIService {
   private readonly logger = new Logger(AIService.name);
   private openai: OpenAI;
+  private readonly openaiBreaker = new CircuitBreaker({
+    name: 'OpenAI',
+    failureThreshold: 5,
+    resetTimeoutMs: 60_000,
+  });
 
   constructor(
     private configService: ConfigService,
@@ -104,21 +114,30 @@ export class AIService {
       );
 
       const langName = LANGUAGE_NAMES[tripContext.language || 'ko'] || 'Korean';
-      const completion = await this.openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: `You are an expert travel planner. Generate detailed, realistic daily itineraries in JSON format. Consider travel time, opening hours, and local customs. Activities should be practical and well-timed. IMPORTANT: All text content (title, description, location) MUST be written in ${langName}. Do NOT use English for these fields.`,
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-        temperature: 0.7,
-        response_format: { type: 'json_object' },
-      });
+      const completion = await this.openaiBreaker.run(() =>
+        withRetry(
+          () =>
+            withTimeout(
+              this.openai.chat.completions.create({
+                model: 'gpt-4o-mini',
+                messages: [
+                  {
+                    role: 'system',
+                    content: `You are an expert travel planner. Generate detailed, realistic daily itineraries in JSON format. Consider travel time, opening hours, and local customs. Activities should be practical and well-timed. IMPORTANT: All text content (title, description, location) MUST be written in ${langName}. Do NOT use English for these fields.`,
+                  },
+                  { role: 'user', content: prompt },
+                ],
+                temperature: 0.7,
+                response_format: { type: 'json_object' },
+              }),
+              30_000,
+              'OpenAI daily itinerary',
+            ),
+          2,
+          1000,
+          'OpenAI daily itinerary',
+        ),
+      );
 
       const content = completion.choices[0].message.content;
       if (!content) {
@@ -434,22 +453,31 @@ Guidelines:
       );
 
       const langName = LANGUAGE_NAMES[lang] || 'Korean';
-      const completion = await this.openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: `You are an expert travel planner. Generate a complete multi-day trip itinerary in JSON format. Consider travel time, opening hours, local customs, and logical geographic flow between days. IMPORTANT: All text content (title, description, location) MUST be written in ${langName}. Do NOT use English for these fields.`,
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-        temperature: 0.7,
-        max_tokens: 4096,
-        response_format: { type: 'json_object' },
-      });
+      const completion = await this.openaiBreaker.run(() =>
+        withRetry(
+          () =>
+            withTimeout(
+              this.openai.chat.completions.create({
+                model: 'gpt-4o-mini',
+                messages: [
+                  {
+                    role: 'system',
+                    content: `You are an expert travel planner. Generate a complete multi-day trip itinerary in JSON format. Consider travel time, opening hours, local customs, and logical geographic flow between days. IMPORTANT: All text content (title, description, location) MUST be written in ${langName}. Do NOT use English for these fields.`,
+                  },
+                  { role: 'user', content: prompt },
+                ],
+                temperature: 0.7,
+                max_tokens: 4096,
+                response_format: { type: 'json_object' },
+              }),
+              30_000,
+              'OpenAI full trip',
+            ),
+          2,
+          1000,
+          'OpenAI full trip',
+        ),
+      );
 
       const content = completion.choices[0].message.content;
       if (!content) {

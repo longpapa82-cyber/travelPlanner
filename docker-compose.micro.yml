@@ -29,7 +29,7 @@ services:
       redis-server
         --requirepass ${REDIS_PASSWORD:-redis_secure_password_change_me}
         --maxmemory 32mb
-        --maxmemory-policy allkeys-lru
+        --maxmemory-policy volatile-lru
     logging:
       driver: json-file
       options:
@@ -50,7 +50,7 @@ services:
 
   frontend:
     ports:
-      - '80:80'
+      - '80:8080'
     mem_limit: 64m
     cpus: 0.25
     logging:
@@ -58,6 +58,41 @@ services:
       options:
         max-size: '5m'
         max-file: '2'
+
+  # Automated daily DB backup at 03:00 UTC, 14-day retention
+  db-backup:
+    image: postgres:16-alpine
+    environment:
+      PGPASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - ./backups:/backups
+    entrypoint: >
+      /bin/sh -c "
+        while true; do
+          sleep_until=$$(date -d 'tomorrow 03:00' +%s 2>/dev/null || date -v+1d -v3H -v0M -v0S +%s 2>/dev/null || echo 86400);
+          now=$$(date +%s);
+          sleep_secs=$$((sleep_until - now));
+          if [ $$sleep_secs -le 0 ] || [ $$sleep_secs -gt 86400 ]; then sleep_secs=86400; fi;
+          sleep $$sleep_secs;
+          FNAME=/backups/travelplanner_$$(date +%Y%m%d_%H%M%S).sql.gz;
+          pg_dump -h postgres -U $${DB_USERNAME:-postgres} travelplanner | gzip > $$FNAME;
+          if [ $$? -eq 0 ]; then echo \"Backup OK: $$FNAME\"; else echo \"Backup FAILED\"; fi;
+          find /backups -name '*.sql.gz' -mtime +14 -delete 2>/dev/null;
+        done
+      "
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - travelplanner
+    mem_limit: 64m
+    cpus: 0.1
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: '2m'
+        max-file: '1'
 
 networks:
   travelplanner:

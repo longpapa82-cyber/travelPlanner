@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
@@ -47,12 +47,20 @@ describe('UsersService', () => {
       createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
     };
 
+    const mockDataSource = {
+      query: jest.fn().mockResolvedValue([]),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
         {
           provide: getRepositoryToken(User),
           useValue: mockRepository,
+        },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
       ],
     }).compile();

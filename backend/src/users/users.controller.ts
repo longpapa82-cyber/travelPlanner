@@ -7,9 +7,11 @@ import {
   Param,
   Body,
   Headers,
+  Res,
   UseGuards,
   BadRequestException,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -68,6 +70,21 @@ export class UsersController {
     @Body() body: { budget?: string; travelStyle?: string; interests?: string[] },
   ) {
     return this.usersService.updateTravelPreferences(userId, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('me/export')
+  async exportData(
+    @CurrentUser('userId') userId: string,
+    @Res() res: Response,
+  ) {
+    const data = await this.usersService.exportUserData(userId);
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="travelplanner-data-${new Date().toISOString().split('T')[0]}.json"`,
+    );
+    res.send(JSON.stringify(data, null, 2));
   }
 
   @UseGuards(JwtAuthGuard)

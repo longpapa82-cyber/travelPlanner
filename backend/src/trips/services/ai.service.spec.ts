@@ -469,8 +469,10 @@ describe('AIService', () => {
 
     it('should fall back to parallel when single prompt fails', async () => {
       cacheManager.get.mockResolvedValue(null);
-      // First call (single prompt) fails, then per-day calls succeed
+      // First call (single prompt) fails with retries (3 attempts), then per-day calls succeed
       openaiCreate
+        .mockRejectedValueOnce(new Error('Token limit exceeded'))
+        .mockRejectedValueOnce(new Error('Token limit exceeded'))
         .mockRejectedValueOnce(new Error('Token limit exceeded'))
         .mockResolvedValue({
           choices: [{ message: { content: mockActivitiesResponse } }],

@@ -2,6 +2,11 @@ import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import axios from 'axios';
+import {
+  withTimeout,
+  withRetry,
+  CircuitBreaker,
+} from '../../common/utils/resilience';
 
 interface WeatherData {
   temperature: number;
@@ -34,6 +39,11 @@ export class WeatherService {
   private readonly logger = new Logger(WeatherService.name);
   private apiKey: string | null = null;
   private readonly baseUrl = 'https://api.openweathermap.org/data/2.5';
+  private readonly weatherBreaker = new CircuitBreaker({
+    name: 'OpenWeather',
+    failureThreshold: 5,
+    resetTimeoutMs: 60_000,
+  });
 
   constructor(
     private configService: ConfigService,
@@ -73,17 +83,30 @@ export class WeatherService {
     }
 
     try {
-      // OpenWeatherMap 5 day forecast API
-      const response = await axios.get<{ list: WeatherForecast[] }>(
-        `${this.baseUrl}/forecast`,
-        {
-          params: {
-            lat: latitude,
-            lon: longitude,
-            appid: this.apiKey,
-            units: 'metric', // Celsius
-          },
-        },
+      // OpenWeatherMap 5 day forecast API — with timeout, retry, circuit breaker
+      const response = await this.weatherBreaker.run(() =>
+        withRetry(
+          () =>
+            withTimeout(
+              axios.get<{ list: WeatherForecast[] }>(
+                `${this.baseUrl}/forecast`,
+                {
+                  params: {
+                    lat: latitude,
+                    lon: longitude,
+                    appid: this.apiKey,
+                    units: 'metric',
+                  },
+                  timeout: 5000,
+                },
+              ),
+              5000,
+              'Weather forecast',
+            ),
+          1,
+          1000,
+          'Weather forecast',
+        ),
       );
 
       const forecasts: WeatherForecast[] = response.data.list;
@@ -146,18 +169,25 @@ export class WeatherService {
     }
 
     try {
-      const response = await axios.get<{
-        main: { temp: number; humidity: number };
-        weather: Array<{ main: string; icon: string }>;
-        wind: { speed: number };
-      }>(`${this.baseUrl}/weather`, {
-        params: {
-          lat: latitude,
-          lon: longitude,
-          appid: this.apiKey,
-          units: 'metric',
-        },
-      });
+      const response = await this.weatherBreaker.run(() =>
+        withTimeout(
+          axios.get<{
+            main: { temp: number; humidity: number };
+            weather: Array<{ main: string; icon: string }>;
+            wind: { speed: number };
+          }>(`${this.baseUrl}/weather`, {
+            params: {
+              lat: latitude,
+              lon: longitude,
+              appid: this.apiKey,
+              units: 'metric',
+            },
+            timeout: 5000,
+          }),
+          5000,
+          'Current weather',
+        ),
+      );
 
       return {
         temperature: Math.round(response.data.main.temp),

@@ -58,11 +58,12 @@ async function bootstrap() {
     }),
   );
 
-  // Serve uploaded files with long-term cache (filenames contain unique timestamps)
+  // Serve uploaded files with long-term cache — images only (block sensitive files)
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads/',
     maxAge: 31536000000, // 1 year in ms
     immutable: true,
+    extensions: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
   });
 
   // Global prefix for all routes
