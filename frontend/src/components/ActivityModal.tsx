@@ -11,9 +11,11 @@ import {
   Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
 import { theme } from '../constants/theme';
 import { useToast } from './feedback/Toast/ToastContext';
+import { PlacesAutocomplete } from './PlacesAutocomplete';
 
 interface Activity {
   time: string;
@@ -67,6 +69,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
     type: 'other',
   });
   const [loading, setLoading] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const savingRef = useRef(false);
 
   useEffect(() => {
@@ -156,19 +159,41 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
                     } as any}
                   />
                 ) : (
-                  <TextInput
-                    style={styles.input}
-                    placeholder="09:00"
-                    value={formData.time}
-                    onChangeText={(text) => {
-                      // Auto-format: insert colon after 2 digits
-                      const digits = text.replace(/[^\d]/g, '').slice(0, 4);
-                      const formatted = digits.length > 2 ? `${digits.slice(0, 2)}:${digits.slice(2)}` : digits;
-                      setFormData({ ...formData, time: formatted });
-                    }}
-                    keyboardType="numeric"
-                    maxLength={5}
-                  />
+                  <>
+                    <TouchableOpacity
+                      style={styles.input}
+                      onPress={() => setShowTimePicker(true)}
+                    >
+                      <Text style={{ fontSize: 16, color: formData.time ? theme.colors.text : theme.colors.textSecondary }}>
+                        {formData.time || '09:00'}
+                      </Text>
+                    </TouchableOpacity>
+                    {showTimePicker && (
+                      <DateTimePicker
+                        value={(() => {
+                          const d = new Date();
+                          if (formData.time) {
+                            const [h, m] = formData.time.split(':').map(Number);
+                            d.setHours(h || 9, m || 0, 0, 0);
+                          } else {
+                            d.setHours(9, 0, 0, 0);
+                          }
+                          return d;
+                        })()}
+                        mode="time"
+                        is24Hour={true}
+                        display="default"
+                        onChange={(_: any, selectedDate?: Date) => {
+                          setShowTimePicker(Platform.OS === 'ios'); // iOS keeps picker open
+                          if (selectedDate) {
+                            const h = selectedDate.getHours().toString().padStart(2, '0');
+                            const m = selectedDate.getMinutes().toString().padStart(2, '0');
+                            setFormData({ ...formData, time: `${h}:${m}` });
+                          }
+                        }}
+                      />
+                    )}
+                  </>
                 )}
               </View>
             </View>
@@ -189,20 +214,16 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
               </View>
             </View>
 
-            {/* Location Input */}
-            <View style={styles.inputGroup}>
+            {/* Location Input with Places Autocomplete */}
+            <View style={[styles.inputGroup, { zIndex: 10 }]}>
               <Text style={styles.label}>
                 {t('activityModal.location')} <Text style={styles.required}>*</Text>
               </Text>
-              <View style={styles.inputContainer}>
-                <Icon name="map-marker" size={20} color={theme.colors.primary} />
-                <TextInput
-                  style={styles.input}
-                  placeholder={t('activityModal.locationPlaceholder')}
-                  value={formData.location}
-                  onChangeText={(text) => setFormData({ ...formData, location: text })}
-                />
-              </View>
+              <PlacesAutocomplete
+                value={formData.location || ''}
+                onChangeText={(text) => setFormData({ ...formData, location: text })}
+                placeholder={t('activityModal.locationPlaceholder')}
+              />
             </View>
 
             {/* Description Input */}

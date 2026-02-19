@@ -610,6 +610,23 @@ class ApiService {
     const response = await this.api.get(`/social/users/${userId}/profile`);
     return response.data;
   }
+
+  // Places Autocomplete
+  async placesAutocomplete(input: string, sessionToken?: string, language?: string) {
+    const params: Record<string, string> = { input };
+    if (sessionToken) params.sessionToken = sessionToken;
+    if (language) params.language = language;
+    const response = await this.api.get('/places/autocomplete', { params });
+    return response.data as {
+      predictions: Array<{
+        placeId: string;
+        description: string;
+        mainText: string;
+        secondaryText: string;
+      }>;
+      available: boolean;
+    };
+  }
 }
 
 export default new ApiService();

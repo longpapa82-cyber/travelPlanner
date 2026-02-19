@@ -17,6 +17,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { ExpensesModule } from './expenses/expenses.module';
 import { AdminModule } from './admin/admin.module';
 import { SocialModule } from './social/social.module';
+import { PlacesModule } from './places/places.module';
 import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
 import { LifecycleService } from './common/lifecycle.service';
 
@@ -76,6 +77,7 @@ import emailConfig from './config/email.config';
     ExpensesModule,
     AdminModule,
     SocialModule,
+    PlacesModule,
   ],
   controllers: [AppController],
   providers: [
