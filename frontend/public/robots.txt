@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /uploads/
 
-Sitemap: https://travelplanner.app/api/sitemap.xml
+Sitemap: https://mytravelplanner.duckdns.org/sitemap.xml

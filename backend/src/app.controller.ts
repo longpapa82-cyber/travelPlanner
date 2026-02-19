@@ -69,6 +69,8 @@ export class AppController {
 
     const staticUrls = [
       { loc: '/', changefreq: 'daily', priority: '1.0' },
+      { loc: '/about', changefreq: 'monthly', priority: '0.9' },
+      { loc: '/contact', changefreq: 'monthly', priority: '0.9' },
       { loc: '/login', changefreq: 'monthly', priority: '0.8' },
       { loc: '/register', changefreq: 'monthly', priority: '0.8' },
     ];

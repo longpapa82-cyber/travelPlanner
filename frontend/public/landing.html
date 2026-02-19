@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TravelPlanner - AI가 만들어주는 완벽한 여행 계획</title>
+  <meta name="description" content="목적지만 선택하면 AI가 최적의 여행 일정을 자동으로 만들어줍니다. 날씨, 시차, 현지 정보까지 한눈에 확인하세요. 9개 언어 지원, 전 세계 여행자를 위한 무료 서비스." />
+  <link rel="canonical" href="https://mytravelplanner.duckdns.org/" />
+  <meta property="og:title" content="TravelPlanner - AI가 만들어주는 완벽한 여행 계획" />
+  <meta property="og:description" content="목적지만 선택하면 AI가 최적의 여행 일정을 자동으로 만들어줍니다. 날씨, 시차, 현지 정보까지 한눈에 확인하세요." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mytravelplanner.duckdns.org/" />
+  <meta property="og:site_name" content="TravelPlanner" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:locale:alternate" content="ja_JP" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TravelPlanner - AI가 만들어주는 완벽한 여행 계획" />
+  <meta name="twitter:description" content="목적지만 선택하면 AI가 최적의 여행 일정을 자동으로 만들어줍니다." />
+  <meta name="theme-color" content="#2563EB" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "TravelPlanner",
+    "url": "https://mytravelplanner.duckdns.org",
+    "description": "AI 기반 여행 계획 서비스. 목적지만 선택하면 최적의 여행 일정을 자동으로 만들어줍니다.",
+    "applicationCategory": "TravelApplication",
+    "operatingSystem": "Web",
+    "inLanguage": ["ko", "en", "ja", "zh", "es", "de", "fr", "th", "vi"],
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Organization", "name": "TravelPlanner" }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Header */
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
+    .logo span { color: #f59e0b; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #2563EB; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #2563EB; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn-outline { border: 1.5px solid #2563EB; color: #2563EB; }
+    .btn-outline:hover { background: #eff6ff; }
+    .btn-lg { padding: 0.875rem 2rem; font-size: 1.05rem; border-radius: 0.75rem; }
+
+    /* Hero */
+    .hero { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%); padding: 4rem 1.5rem 3rem; text-align: center; }
+    .hero h1 { font-size: 2.25rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem; line-height: 1.3; }
+    .hero h1 em { font-style: normal; color: #2563EB; }
+    .hero p { font-size: 1.1rem; color: #475569; max-width: 600px; margin: 0 auto 2rem; }
+    .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .hero-stats { display: flex; gap: 2rem; justify-content: center; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(37,99,235,0.15); }
+    .hero-stat { text-align: center; }
+    .hero-stat strong { display: block; font-size: 1.5rem; color: #2563EB; }
+    .hero-stat span { font-size: 0.85rem; color: #64748b; }
+
+    /* Sections */
+    .section { padding: 4rem 1.5rem; max-width: 1200px; margin: 0 auto; }
+    .section-alt { background: #f8fafc; }
+    .section h2 { font-size: 1.75rem; font-weight: 700; text-align: center; margin-bottom: 0.75rem; }
+    .section .subtitle { text-align: center; color: #64748b; margin-bottom: 3rem; font-size: 1rem; }
+
+    /* Features */
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+    .feature { background: #fff; border-radius: 1rem; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; }
+    .feature:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .feature-icon { width: 3rem; height: 3rem; background: #eff6ff; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+    .feature h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .feature p { color: #64748b; font-size: 0.95rem; line-height: 1.7; }
+
+    /* How it works */
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; counter-reset: step; }
+    .step { text-align: center; position: relative; }
+    .step::before { counter-increment: step; content: counter(step); display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: #2563EB; color: #fff; border-radius: 50%; font-weight: 700; margin: 0 auto 1rem; }
+    .step h3 { font-weight: 600; margin-bottom: 0.5rem; }
+    .step p { color: #64748b; font-size: 0.95rem; }
+
+    /* Destinations */
+    .destinations { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; }
+    .dest { background: linear-gradient(135deg, #1e293b, #334155); border-radius: 1rem; padding: 1.5rem; color: #fff; text-align: center; transition: transform 0.2s; }
+    .dest:hover { transform: scale(1.03); }
+    .dest-emoji { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .dest h3 { font-size: 1.05rem; font-weight: 600; }
+    .dest p { font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem; }
+
+    /* Ad slot */
+    .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 100px; }
+
+    /* CTA */
+    .cta-section { background: linear-gradient(135deg, #2563EB, #1d4ed8); color: #fff; padding: 4rem 1.5rem; text-align: center; }
+    .cta-section h2 { color: #fff; margin-bottom: 1rem; }
+    .cta-section p { color: #bfdbfe; max-width: 500px; margin: 0 auto 2rem; }
+    .btn-white { background: #fff; color: #2563EB; }
+    .btn-white:hover { background: #f0f9ff; }
+
+    /* Footer */
+    .footer { background: #1e293b; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
+    .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .footer a:hover { color: #fff; }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #334155; text-align: center; font-size: 0.85rem; }
+    .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.75rem; }
+      .hero-stats { gap: 1rem; }
+      .nav { display: none; }
+      .section h2 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">Travel<span>Planner</span></a>
+    <nav class="nav">
+      <a href="/about">소개</a>
+      <a href="/contact">문의</a>
+      <a href="/login" class="btn btn-primary">로그인</a>
+    </nav>
+    <a href="/login" class="btn btn-primary" style="display:none" id="mobile-login">로그인</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>여행지만 선택하면<br/><em>AI가 완벽한 일정</em>을 만들어줍니다</h1>
+  <p>
+    도쿄, 파리, 방콕 어디든 — 목적지와 날짜만 입력하면 현지 날씨, 시차, 맛집, 관광지를 고려한
+    최적의 여행 계획이 몇 초 만에 완성됩니다. 전 세계 여행자들이 사용하는 무료 AI 여행 플래너.
+  </p>
+  <div class="hero-cta">
+    <a href="/login" class="btn btn-primary btn-lg">무료로 시작하기</a>
+    <a href="#features" class="btn btn-outline btn-lg">기능 살펴보기</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>9개</strong><span>지원 언어</span></div>
+    <div class="hero-stat"><strong>50+</strong><span>인기 여행지</span></div>
+    <div class="hero-stat"><strong>100%</strong><span>무료</span></div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section" id="features">
+  <h2>왜 TravelPlanner인가요?</h2>
+  <p class="subtitle">복잡한 여행 계획, AI에게 맡기고 여행만 즐기세요</p>
+  <div class="features">
+    <article class="feature">
+      <div class="feature-icon">🤖</div>
+      <h3>AI 자동 일정 생성</h3>
+      <p>목적지와 여행 기간만 입력하면 AI가 최근 여행 트렌드를 분석하여 최적의 일정을 자동으로 만들어줍니다.
+        관광지, 맛집, 이동 경로까지 세밀하게 구성된 여행 계획을 받아보세요. 수동 모드로 직접 만들 수도 있습니다.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon">🌤️</div>
+      <h3>실시간 날씨 & 시차 정보</h3>
+      <p>여행 일정에 맞춰 현지 날씨 예보와 시차 정보를 자동으로 표시합니다. 우산이 필요한 날, 두꺼운 옷이 필요한 날을
+        미리 확인하고 짐을 꾸리세요. 시차 적응 계획도 함께 세울 수 있습니다.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon">✏️</div>
+      <h3>자유로운 일정 수정</h3>
+      <p>AI가 만든 일정이 마음에 들지 않으면 자유롭게 수정하세요. 활동 추가, 삭제, 순서 변경이 모두 가능합니다.
+        여행 중에도 아직 진행하지 않은 일정은 실시간으로 변경할 수 있어 유연한 여행이 가능합니다.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon">📱</div>
+      <h3>모바일 최적화 디자인</h3>
+      <p>스마트폰, 태블릿, PC 어디서든 최적의 화면을 제공합니다. 특히 여행 중 스마트폰으로 일정을 확인하기 편리한
+        모바일 퍼스트 디자인으로 제작되었습니다. 오프라인 캐시 기능으로 인터넷 없이도 일정을 확인할 수 있습니다.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon">🌍</div>
+      <h3>9개 언어 지원</h3>
+      <p>한국어, English, 日本語, 中文, Español, Deutsch, Français, ไทย, Tiếng Việt 등 9개 언어를 완벽 지원합니다.
+        전 세계 어디서든 모국어로 편리하게 여행을 계획하세요. 여행지 현지 언어 정보도 함께 제공됩니다.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon">👥</div>
+      <h3>소셜 & 공유 기능</h3>
+      <p>친구, 가족과 여행 계획을 공유하고 함께 수정할 수 있습니다. 다른 여행자들의 인기 여행 일정을 탐색하고
+        좋아요, 팔로우 기능으로 영감을 얻으세요. 여행 후기를 공유하여 커뮤니티에 기여할 수도 있습니다.</p>
+    </article>
+  </div>
+</section>
+
+<!-- Ad slot (between content sections) -->
+<div class="ad-container">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<!-- How it works -->
+<section class="section-alt">
+  <div class="section">
+    <h2>3단계로 완성하는 여행 계획</h2>
+    <p class="subtitle">복잡한 검색과 비교 없이, 목적지만 선택하면 끝</p>
+    <div class="steps">
+      <div class="step">
+        <h3>목적지 선택</h3>
+        <p>가고 싶은 도시나 나라를 입력하세요. 도쿄, 파리, 방콕 등 인기 여행지를 빠르게 선택하거나 직접 검색할 수 있습니다.
+          여행 기간과 인원수도 함께 설정합니다.</p>
+      </div>
+      <div class="step">
+        <h3>AI 일정 생성</h3>
+        <p>AI가 최근 여행 데이터와 현지 정보를 분석하여 최적의 일정을 만들어줍니다.
+          관광지, 맛집, 카페, 쇼핑 등 다양한 활동이 시간대별로 배치된 상세 일정을 받아보세요.</p>
+      </div>
+      <div class="step">
+        <h3>수정 & 출발</h3>
+        <p>생성된 일정을 자유롭게 수정하고, 날씨 정보를 확인하세요. 일정을 친구와 공유하거나
+          iCal로 내보내기도 가능합니다. 이제 여행만 즐기면 됩니다!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Popular Destinations -->
+<section class="section">
+  <h2>인기 여행지</h2>
+  <p class="subtitle">전 세계 여행자들이 가장 많이 찾는 목적지</p>
+  <div class="destinations">
+    <div class="dest">
+      <div class="dest-emoji">🗼</div>
+      <h3>도쿄</h3>
+      <p>일본</p>
+    </div>
+    <div class="dest">
+      <div class="dest-emoji">🗼</div>
+      <h3>파리</h3>
+      <p>프랑스</p>
+    </div>
+    <div class="dest">
+      <div class="dest-emoji">🛕</div>
+      <h3>방콕</h3>
+      <p>태국</p>
+    </div>
+    <div class="dest">
+      <div class="dest-emoji">🗽</div>
+      <h3>뉴욕</h3>
+      <p>미국</p>
+    </div>
+    <div class="dest">
+      <div class="dest-emoji">⛩️</div>
+      <h3>오사카</h3>
+      <p>일본</p>
+    </div>
+    <div class="dest">
+      <div class="dest-emoji">🏰</div>
+      <h3>런던</h3>
+      <p>영국</p>
+    </div>
+    <div class="dest">
+      <div class="dest-emoji">🏖️</div>
+      <h3>다낭</h3>
+      <p>베트남</p>
+    </div>
+    <div class="dest">
+      <div class="dest-emoji">🌃</div>
+      <h3>싱가포르</h3>
+      <p>싱가포르</p>
+    </div>
+  </div>
+</section>
+
+<!-- Additional Content: Travel Planning Tips -->
+<section class="section-alt">
+  <div class="section">
+    <h2>스마트한 여행 계획의 시작</h2>
+    <p class="subtitle">TravelPlanner와 함께하면 여행 준비가 달라집니다</p>
+    <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+      <article class="feature">
+        <h3>🧳 여행 준비, 이것만 기억하세요</h3>
+        <p>좋은 여행의 시작은 꼼꼼한 준비입니다. 여행 일정을 미리 세우면 현지에서의 이동 시간을 줄이고
+          더 많은 경험을 할 수 있습니다. TravelPlanner는 이동 거리와 시간을 고려하여 효율적인 동선을 추천합니다.
+          또한, 여행 기간에 맞는 날씨 정보를 제공하여 적절한 옷차림과 준비물을 챙길 수 있도록 도와줍니다.
+          환율 정보, 비자 요건, 현지 교통 수단 등 필수 정보도 함께 확인하세요.</p>
+      </article>
+      <article class="feature">
+        <h3>💡 AI가 추천하는 숨은 명소</h3>
+        <p>TravelPlanner의 AI는 단순히 유명 관광지만 나열하지 않습니다. 최근 여행자들의 리뷰와 평점,
+          방문 패턴을 분석하여 현지인이 추천하는 숨은 맛집, 조용한 카페, 아름다운 산책로까지 제안합니다.
+          특히 시간대별로 가장 적합한 활동을 배치하여 아침에는 활동적인 관광을, 오후에는 편안한 카페 타임을,
+          저녁에는 현지 미식을 즐길 수 있는 완벽한 하루를 설계합니다.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>지금 바로 여행 계획을 시작하세요</h2>
+  <p>회원가입은 30초, 여행 계획 생성은 10초. 복잡한 설정 없이 바로 시작할 수 있습니다.</p>
+  <a href="/login" class="btn btn-white btn-lg">무료로 시작하기 →</a>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <h4>TravelPlanner</h4>
+      <p style="font-size:0.9rem;">AI 기반 여행 계획 서비스.<br/>목적지만 선택하면 완벽한 일정이 완성됩니다.</p>
+      <div class="langs" style="margin-top:1rem;">
+        <span class="lang-badge">🇰🇷 한국어</span>
+        <span class="lang-badge">🇺🇸 English</span>
+        <span class="lang-badge">🇯🇵 日本語</span>
+        <span class="lang-badge">🇨🇳 中文</span>
+        <span class="lang-badge">🇪🇸 Español</span>
+        <span class="lang-badge">🇩🇪 Deutsch</span>
+        <span class="lang-badge">🇫🇷 Français</span>
+        <span class="lang-badge">🇹🇭 ไทย</span>
+        <span class="lang-badge">🇻🇳 Tiếng Việt</span>
+      </div>
+    </div>
+    <div>
+      <h4>서비스</h4>
+      <a href="/login">여행 계획 만들기</a>
+      <a href="/login">내 여행 관리</a>
+      <a href="/about">서비스 소개</a>
+      <a href="/contact">문의하기</a>
+    </div>
+    <div>
+      <h4>정책</h4>
+      <a href="/terms">이용약관</a>
+      <a href="/privacy">개인정보처리방침</a>
+      <a href="/help">도움말 & FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2024-2026 TravelPlanner. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  if (window.innerWidth <= 768) {
+    document.getElementById('mobile-login').style.display = 'inline-flex';
+  }
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
