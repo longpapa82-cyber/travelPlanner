@@ -28,6 +28,7 @@ import { TFunction } from 'i18next';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { AuthStackParamList } from '../../types';
+import AuthLegalModal from '../../components/legal/AuthLegalModal';
 
 type OnboardingScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList>;
@@ -70,6 +71,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
   const { t } = useTranslation('auth');
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const scrollTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -252,7 +254,34 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
             </View>
           )}
         </View>
+
+        {/* Legal Footer */}
+        <View style={styles.legalFooter}>
+          <Pressable
+            onPress={() => setLegalModal('terms')}
+            accessibilityLabel={t('onboarding.termsOfService')}
+            accessibilityRole="link"
+            {...webClick(() => setLegalModal('terms'))}
+          >
+            <Text style={styles.legalFooterLink}>{t('onboarding.termsOfService')}</Text>
+          </Pressable>
+          <Text style={styles.legalFooterSeparator}>|</Text>
+          <Pressable
+            onPress={() => setLegalModal('privacy')}
+            accessibilityLabel={t('onboarding.privacyPolicy')}
+            accessibilityRole="link"
+            {...webClick(() => setLegalModal('privacy'))}
+          >
+            <Text style={styles.legalFooterLink}>{t('onboarding.privacyPolicy')}</Text>
+          </Pressable>
+        </View>
       </ControlsWrapper>
+
+      <AuthLegalModal
+        visible={legalModal !== null}
+        onClose={() => setLegalModal(null)}
+        type={legalModal ?? 'terms'}
+      />
     </View>
   );
 };
@@ -378,6 +407,22 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'rgba(255, 255, 255, 0.8)',
     fontWeight: '500',
+  },
+  legalFooter: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  legalFooterLink: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.6)',
+    fontWeight: '500',
+  },
+  legalFooterSeparator: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.4)',
   },
   buttonPressed: {
     opacity: 0.7,

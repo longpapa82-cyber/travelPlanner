@@ -19,16 +19,16 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  ActivityIndicator,
   ImageBackground,
 } from 'react-native';
+import AuthLegalModal from '../../components/legal/AuthLegalModal';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../types';
 import { useAuth, TwoFactorRequiredError } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import { colors, getColorWithOpacity } from '../../constants/theme';
+import { colors } from '../../constants/theme';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { FadeIn } from '../../components/animation/FadeIn';
 import { SlideIn } from '../../components/animation/SlideIn';
@@ -55,6 +55,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
 
   const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
@@ -321,26 +322,36 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
-            {/* About Link - for ad revenue pages */}
-            {Platform.OS === 'web' && (
+            {/* Legal Footer */}
+            <View style={styles.legalFooter}>
               <TouchableOpacity
-                onPress={() => { window.location.href = '/about'; }}
-                style={styles.aboutLinkContainer}
-                accessibilityLabel={t('login.learnMore', 'TravelPlanner 소개')}
+                onPress={() => setLegalModal('terms')}
+                accessibilityLabel={t('login.termsOfService')}
                 accessibilityRole="link"
               >
-                <Icon name="information-outline" size={16} color={colors.primary[400]} />
-                <Text style={styles.aboutLinkText}>
-                  {t('login.learnMore', 'TravelPlanner 소개')}
-                </Text>
+                <Text style={styles.legalFooterLink}>{t('login.termsOfService')}</Text>
               </TouchableOpacity>
-            )}
+              <Text style={styles.legalFooterSeparator}>|</Text>
+              <TouchableOpacity
+                onPress={() => setLegalModal('privacy')}
+                accessibilityLabel={t('login.privacyPolicy')}
+                accessibilityRole="link"
+              >
+                <Text style={styles.legalFooterLink}>{t('login.privacyPolicy')}</Text>
+              </TouchableOpacity>
+            </View>
           </Card>
         </SlideIn>
 
         {/* Bottom Spacing */}
         <View style={{ height: 40 }} />
       </ScrollView>
+
+      <AuthLegalModal
+        visible={legalModal !== null}
+        onClose={() => setLegalModal(null)}
+        type={legalModal ?? 'terms'}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -532,17 +543,21 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     color: colors.primary[500],
     fontWeight: '700',
   },
-  aboutLinkContainer: {
+  legalFooter: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: theme.spacing.lg,
-    gap: 4,
+    gap: 8,
   },
-  aboutLinkText: {
-    fontSize: 13,
-    color: colors.primary[400],
+  legalFooterLink: {
+    fontSize: 12,
+    color: theme.colors.textSecondary,
     fontWeight: '500',
+  },
+  legalFooterSeparator: {
+    fontSize: 12,
+    color: theme.colors.textSecondary,
   },
 });
 

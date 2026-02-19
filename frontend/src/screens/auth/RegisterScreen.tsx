@@ -21,6 +21,7 @@ import {
   ScrollView,
   ImageBackground,
 } from 'react-native';
+import AuthLegalModal from '../../components/legal/AuthLegalModal';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../types';
@@ -54,6 +55,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -278,6 +280,27 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
               {t('register.submit')}
             </Button>
 
+            {/* Legal Agreement Text */}
+            <Text style={styles.legalText}>
+              {t('register.agreeBySignup')}{' '}
+              <Text
+                style={styles.legalLink}
+                onPress={() => setLegalModal('terms')}
+                accessibilityRole="link"
+              >
+                {t('register.termsOfService')}
+              </Text>
+              {' '}{t('register.and')}{' '}
+              <Text
+                style={styles.legalLink}
+                onPress={() => setLegalModal('privacy')}
+                accessibilityRole="link"
+              >
+                {t('register.privacyPolicy')}
+              </Text>
+              {t('register.agreeToTerms')}
+            </Text>
+
             {/* Login Link */}
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>{t('register.haveAccount')} </Text>
@@ -296,6 +319,12 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         {/* Bottom Spacing */}
         <View style={{ height: 40 }} />
       </ScrollView>
+
+      <AuthLegalModal
+        visible={legalModal !== null}
+        onClose={() => setLegalModal(null)}
+        type={legalModal ?? 'terms'}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -415,6 +444,20 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   // Register Button
   registerButton: {
     marginTop: theme.spacing.sm,
+  },
+
+  // Legal Agreement
+  legalText: {
+    fontSize: 13,
+    color: theme.colors.textSecondary,
+    textAlign: 'center',
+    marginTop: theme.spacing.lg,
+    lineHeight: 20,
+  },
+  legalLink: {
+    color: colors.primary[500],
+    textDecorationLine: 'underline' as const,
+    fontWeight: '500' as const,
   },
 
   // Login Link
