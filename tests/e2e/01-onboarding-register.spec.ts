@@ -119,17 +119,17 @@ test.describe('TC-2: Registration', () => {
    * The flow is: Onboarding → skip → Login → "회원가입" link → Register
    */
   async function goToRegisterScreen(page: Page) {
-    // Navigate directly to /login path to bypass onboarding click issues.
-    // React Native Web's Pressable responder system doesn't reliably respond
-    // to Playwright clicks on the skip button.
+    // Navigate directly to /login path to bypass onboarding Pressable click issues.
     await page.goto(`${BASE_URL}/login`, { waitUntil: WAIT_UNTIL });
+    // Wait for React hydration to complete before clicking links
+    await page.waitForLoadState('load').catch(() => {});
 
     // We should now be on the login screen. Click "회원가입" link.
     const registerLink = page.getByText('회원가입', { exact: true });
     await registerLink.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
     await registerLink.click();
 
-    // Wait for the register form to appear (name input)
+    // Wait for the register form to appear (name input).
     await page.locator(
       'input:visible[placeholder*="이름"], input:visible[aria-label*="이름"]'
     ).first().waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
@@ -142,9 +142,8 @@ test.describe('TC-2: Registration', () => {
     page: Page,
     opts: { name?: string; email?: string; password?: string; confirmPassword?: string }
   ) {
-    // Use :visible pseudo-class to skip hidden inputs from previous screens.
-    // React Navigation Web keeps prior screen DOM nodes hidden (0×0 size)
-    // instead of removing them, so .first() without :visible hits hidden elements.
+    // React Navigation Web keeps previous screens in DOM during transitions.
+    // Use :visible to skip the Login screen's hidden inputs.
     const nameInput = page.locator('input:visible[placeholder*="이름"], input:visible[aria-label*="이름"]').first();
     const emailInput = page.locator('input:visible[placeholder*="이메일"], input:visible[aria-label*="이메일"]').first();
     // Password inputs use secureTextEntry which renders as type="password"

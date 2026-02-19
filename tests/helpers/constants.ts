@@ -48,9 +48,10 @@ export const TIMEOUTS = IS_PROD ? {
   NAVIGATION: 10_000,
 };
 
-// Production app has persistent network activity (analytics, polling) that prevents
-// 'networkidle' from resolving. Use 'load' which works reliably for SPAs.
-export const WAIT_UNTIL = (IS_PROD ? 'load' : 'networkidle') as 'load' | 'networkidle';
+// Production: 'domcontentloaded' fires early enough to avoid hangs from persistent
+// connections but late enough for the React app shell to render.
+// 'networkidle' may hang on analytics/polling; 'load' fires before React hydration.
+export const WAIT_UNTIL = (IS_PROD ? 'domcontentloaded' : 'networkidle') as 'domcontentloaded' | 'networkidle';
 
 export const VIEWPORTS = {
   MOBILE: { width: 375, height: 812 },
