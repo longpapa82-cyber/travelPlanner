@@ -20,6 +20,7 @@
     "save": "저장",
     "validationError": "입력 오류",
     "validationErrorMessage": "시간, 제목, 장소를 입력해주세요",
+    "invalidTimeFormat": "HH:MM 형식으로 입력해주세요 (예: 09:00)",
     "errorTitle": "오류",
     "saveError": "활동 저장에 실패했습니다",
     "types": {

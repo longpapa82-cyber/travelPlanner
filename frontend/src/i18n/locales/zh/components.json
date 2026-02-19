@@ -20,6 +20,7 @@
     "save": "保存",
     "validationError": "输入错误",
     "validationErrorMessage": "请输入时间、标题和地点",
+    "invalidTimeFormat": "请以HH:MM格式输入时间（例：09:00）",
     "errorTitle": "错误",
     "saveError": "活动保存失败",
     "types": {

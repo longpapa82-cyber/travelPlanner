@@ -20,6 +20,7 @@
     "save": "Enregistrer",
     "validationError": "Erreur de saisie",
     "validationErrorMessage": "Veuillez entrer l'heure, le titre et le lieu",
+    "invalidTimeFormat": "Veuillez entrer l'heure au format HH:MM (ex : 09:00)",
     "errorTitle": "Erreur",
     "saveError": "Échec de l'enregistrement de l'activité",
     "types": {

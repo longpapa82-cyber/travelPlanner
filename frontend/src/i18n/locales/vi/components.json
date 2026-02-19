@@ -20,6 +20,7 @@
     "save": "L\u01b0u",
     "validationError": "L\u1ed7i nh\u1eadp li\u1ec7u",
     "validationErrorMessage": "Vui l\u00f2ng nh\u1eadp th\u1eddi gian, ti\u00eau \u0111\u1ec1 v\u00e0 \u0111\u1ecba \u0111i\u1ec3m",
+    "invalidTimeFormat": "Vui l\u00f2ng nh\u1eadp th\u1eddi gian theo \u0111\u1ecbnh d\u1ea1ng HH:MM (v\u00ed d\u1ee5: 09:00)",
     "errorTitle": "L\u1ed7i",
     "saveError": "L\u01b0u ho\u1ea1t \u0111\u1ed9ng th\u1ea5t b\u1ea1i",
     "types": {

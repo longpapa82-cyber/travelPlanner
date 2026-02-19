@@ -52,6 +52,7 @@ export class CreateTripDto {
 
   @IsInt()
   @Min(1)
+  @Max(50)
   @IsOptional()
   numberOfTravelers?: number;
 
@@ -64,7 +65,7 @@ export class CreateTripDto {
   };
 
   @IsNumber()
-  @Min(0)
+  @Min(1)
   @Max(100000000)
   @IsOptional()
   totalBudget?: number;

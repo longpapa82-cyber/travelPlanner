@@ -259,7 +259,7 @@ export class SocialService {
       .leftJoinAndSelect('trip.user', 'user')
       .where('f."followerId" = :userId', { userId })
       .andWhere('trip."isPublic" = true')
-      .orderBy('trip."createdAt"', 'DESC')
+      .orderBy('trip.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit);
 
@@ -287,8 +287,8 @@ export class SocialService {
       .leftJoinAndSelect('trip.user', 'user')
       .where('trip."isPublic" = true')
       .andWhere('trip."createdAt" > :since', { since: thirtyDaysAgo })
-      .orderBy('trip."likesCount"', 'DESC')
-      .addOrderBy('trip."createdAt"', 'DESC')
+      .orderBy('trip.likesCount', 'DESC')
+      .addOrderBy('trip.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit);
 

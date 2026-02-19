@@ -20,6 +20,7 @@
     "save": "Speichern",
     "validationError": "Eingabefehler",
     "validationErrorMessage": "Bitte Uhrzeit, Titel und Ort eingeben",
+    "invalidTimeFormat": "Bitte Uhrzeit im Format HH:MM eingeben (z.B. 09:00)",
     "errorTitle": "Fehler",
     "saveError": "Aktivität konnte nicht gespeichert werden",
     "types": {

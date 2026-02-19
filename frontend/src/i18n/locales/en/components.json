@@ -20,6 +20,7 @@
     "save": "Save",
     "validationError": "Input Error",
     "validationErrorMessage": "Please enter time, title, and location",
+    "invalidTimeFormat": "Please enter time in HH:MM format (e.g., 09:00)",
     "errorTitle": "Error",
     "saveError": "Failed to save activity",
     "types": {

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTranslation } from 'react-i18next';
@@ -85,6 +86,8 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
     }
   }, [activity, visible]);
 
+  const isValidTime = (time: string) => /^([01]\d|2[0-3]):([0-5]\d)$/.test(time);
+
   const handleSave = async () => {
     // Ref-based guard prevents double-execution (onPress + onClick may both fire on web)
     if (savingRef.current) return;
@@ -93,6 +96,11 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
     // Validation
     if (!formData.time || !formData.title || !formData.location) {
       showToast({ type: 'warning', message: t('activityModal.validationErrorMessage'), position: 'top' });
+      savingRef.current = false;
+      return;
+    }
+    if (!isValidTime(formData.time)) {
+      showToast({ type: 'warning', message: t('activityModal.invalidTimeFormat'), position: 'top' });
       savingRef.current = false;
       return;
     }
@@ -131,12 +139,37 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
               </Text>
               <View style={styles.inputContainer}>
                 <Icon name="clock-outline" size={20} color={theme.colors.primary} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="09:00"
-                  value={formData.time}
-                  onChangeText={(text) => setFormData({ ...formData, time: text })}
-                />
+                {Platform.OS === 'web' ? (
+                  <input
+                    type="time"
+                    value={formData.time || ''}
+                    onChange={(e: any) => setFormData({ ...formData, time: e.target.value })}
+                    style={{
+                      flex: 1,
+                      marginLeft: 8,
+                      fontSize: 16,
+                      border: 'none',
+                      outline: 'none',
+                      backgroundColor: 'transparent',
+                      color: theme.colors.text,
+                      fontFamily: 'inherit',
+                    } as any}
+                  />
+                ) : (
+                  <TextInput
+                    style={styles.input}
+                    placeholder="09:00"
+                    value={formData.time}
+                    onChangeText={(text) => {
+                      // Auto-format: insert colon after 2 digits
+                      const digits = text.replace(/[^\d]/g, '').slice(0, 4);
+                      const formatted = digits.length > 2 ? `${digits.slice(0, 2)}:${digits.slice(2)}` : digits;
+                      setFormData({ ...formData, time: formatted });
+                    }}
+                    keyboardType="numeric"
+                    maxLength={5}
+                  />
+                )}
               </View>
             </View>
 

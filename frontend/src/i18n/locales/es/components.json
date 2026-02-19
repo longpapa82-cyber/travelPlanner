@@ -20,6 +20,7 @@
     "save": "Guardar",
     "validationError": "Error de entrada",
     "validationErrorMessage": "Por favor ingresa hora, título y ubicación",
+    "invalidTimeFormat": "Ingresa la hora en formato HH:MM (ej: 09:00)",
     "errorTitle": "Error",
     "saveError": "Error al guardar actividad",
     "types": {

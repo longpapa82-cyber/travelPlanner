@@ -320,6 +320,21 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 <Text style={styles.registerLink}>{t('login.register')}</Text>
               </TouchableOpacity>
             </View>
+
+            {/* About Link - for ad revenue pages */}
+            {Platform.OS === 'web' && (
+              <TouchableOpacity
+                onPress={() => { window.location.href = '/about'; }}
+                style={styles.aboutLinkContainer}
+                accessibilityLabel={t('login.learnMore', 'TravelPlanner 소개')}
+                accessibilityRole="link"
+              >
+                <Icon name="information-outline" size={16} color={colors.primary[400]} />
+                <Text style={styles.aboutLinkText}>
+                  {t('login.learnMore', 'TravelPlanner 소개')}
+                </Text>
+              </TouchableOpacity>
+            )}
           </Card>
         </SlideIn>
 
@@ -516,6 +531,18 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     fontSize: 15,
     color: colors.primary[500],
     fontWeight: '700',
+  },
+  aboutLinkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: theme.spacing.lg,
+    gap: 4,
+  },
+  aboutLinkText: {
+    fontSize: 13,
+    color: colors.primary[400],
+    fontWeight: '500',
   },
 });
 

@@ -8,14 +8,16 @@ import i18next from 'i18next';
 import apiService from '../services/api';
 import { setPushRegistrationCallback } from './AuthContext';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+if (Platform.OS !== 'web') {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
+}
 
 interface NotificationContextValue {
   scheduleTripReminders: (trip: Trip) => Promise<void>;

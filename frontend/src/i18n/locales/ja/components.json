@@ -20,6 +20,7 @@
     "save": "保存",
     "validationError": "入力エラー",
     "validationErrorMessage": "時間、タイトル、場所を入力してください",
+    "invalidTimeFormat": "HH:MM形式で入力してください（例：09:00）",
     "errorTitle": "エラー",
     "saveError": "アクティビティの保存に失敗しました",
     "types": {

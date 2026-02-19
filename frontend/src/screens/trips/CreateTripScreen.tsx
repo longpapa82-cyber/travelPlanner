@@ -167,7 +167,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleSelectTravelers = (count: number) => {
-    setNumberOfTravelers(count);
+    setNumberOfTravelers(Math.min(count, 50));
   };
 
   const calculateDuration = (): number | null => {
@@ -746,7 +746,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
                 value={numberOfTravelers.toString()}
                 onChangeText={(text) => {
                   const num = parseInt(text);
-                  if (!isNaN(num) && num > 0) {
+                  if (!isNaN(num) && num > 0 && num <= 50) {
                     setNumberOfTravelers(num);
                   }
                 }}

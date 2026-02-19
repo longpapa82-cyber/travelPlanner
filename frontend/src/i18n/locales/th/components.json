@@ -20,6 +20,7 @@
     "save": "บันทึก",
     "validationError": "ข้อผิดพลาดในการกรอกข้อมูล",
     "validationErrorMessage": "กรุณากรอกเวลา ชื่อ และสถานที่",
+    "invalidTimeFormat": "กรุณากรอกเวลาในรูปแบบ HH:MM (เช่น 09:00)",
     "errorTitle": "ข้อผิดพลาด",
     "saveError": "บันทึกกิจกรรมไม่สำเร็จ",
     "types": {

@@ -282,9 +282,26 @@ Trip Details:
     }
 
     if (dayNumber === 1) {
-      prompt += '\n\nThis is the first day - include arrival and settling in.';
+      const isInternational = !!context.country;
+      if (isInternational) {
+        prompt += `\n\nThis is the first day of an international trip to ${context.country}.
+- Travelers likely arrive by flight; start activities from early afternoon (13:00-14:00) to account for airport transfer and hotel check-in.
+- Plan only 2-3 light activities for the first day (nearby sightseeing, local dining).
+- Consider jet lag: keep the first day relaxed.
+- Include a suggested arrival/transfer activity (e.g., "Airport to hotel") as the first item around 10:00-12:00.`;
+      } else {
+        prompt += '\n\nThis is the first day - include arrival and settling in.';
+      }
     } else if (dayNumber === totalDays) {
-      prompt += '\n\nThis is the last day - include departure preparations.';
+      const isInternational = !!context.country;
+      if (isInternational) {
+        prompt += `\n\nThis is the last day of an international trip.
+- Travelers need to catch a flight home; plan only morning activities (before 12:00).
+- Include hotel checkout and airport transfer as the last activity.
+- Keep it to 1-2 activities maximum.`;
+      } else {
+        prompt += '\n\nThis is the last day - include departure preparations.';
+      }
     }
 
     prompt += `\n\nReturn JSON with this structure:
