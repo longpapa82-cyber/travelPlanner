@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
-interface PlacePrediction {
+export interface PlacePrediction {
   placeId: string;
   description: string;
   mainText: string;
