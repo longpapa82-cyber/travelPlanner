@@ -320,6 +320,8 @@ const createStyles = (theme: any, isDark: boolean) =>
       paddingHorizontal: 12,
       paddingVertical: 4,
       borderRadius: 12,
+      flexShrink: 1,
+      maxWidth: 120,
     },
     activityTypeText: {
       fontSize: 12,
@@ -366,9 +368,12 @@ const createStyles = (theme: any, isDark: boolean) =>
       alignItems: 'center',
       gap: 4,
       marginBottom: 8,
+      flex: 1,
     },
     activityLocationText: {
       fontSize: 14,
+      flex: 1,
+      flexShrink: 1,
     },
     activityDescription: {
       fontSize: 14,

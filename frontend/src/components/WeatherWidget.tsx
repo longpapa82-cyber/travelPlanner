@@ -149,7 +149,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = React.memo(({
           <View style={styles.timezoneRow}>
             <Icon name="clock-time-four-outline" size={20} color={colors.primary[500]} />
             <View style={styles.timezoneInfo}>
-              {timezone && <Text style={styles.timezone}>{timezone}</Text>}
+              {timezone && <Text style={styles.timezone} numberOfLines={1}>{timezone}</Text>}
               {timezoneOffset !== null && timezoneOffset !== undefined && (
                 <Text style={styles.timezoneOffset}>
                   {formatTimezoneOffset(timezoneOffset)}
