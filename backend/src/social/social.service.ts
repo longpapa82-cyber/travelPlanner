@@ -255,7 +255,7 @@ export class SocialService {
   ) {
     const qb = this.tripRepository
       .createQueryBuilder('trip')
-      .innerJoin('follows', 'f', 'f."followingId" = trip."userId"')
+      .innerJoin(Follow, 'f', 'f."followingId" = trip."userId"')
       .leftJoinAndSelect('trip.user', 'user')
       .where('f."followerId" = :userId', { userId })
       .andWhere('trip."isPublic" = true')

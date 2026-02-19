@@ -300,7 +300,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.sectionTitle}>{t('featured.title')}</Text>
             <Text style={styles.sectionSubtitle}>{t('featured.subtitle')}</Text>
           </View>
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel={t('featured.seeAll')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Discover')} accessibilityRole="button" accessibilityLabel={t('featured.seeAll')}>
             <Text style={styles.seeAllText}>{t('featured.seeAll')}</Text>
           </TouchableOpacity>
         </View>
@@ -418,6 +418,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
             <Card
               elevation="sm"
               padding="lg"
+              onPress={() => navigation.navigate('Discover')}
               style={styles.quickActionCard}
               accessibilityRole="button"
               accessibilityLabel={t('quickActions.inspiration')}
