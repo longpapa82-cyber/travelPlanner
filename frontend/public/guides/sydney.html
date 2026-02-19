@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>시드니 여행 가이드 - TravelPlanner | 시드니 관광지, 맛집, 교통 완벽 정리</title>
+  <meta name="description" content="시드니 여행 완벽 가이드. 오페라 하우스, 하버 브릿지, 본다이 비치, 달링 하버, 블루 마운틴스 등 추천 관광지와 맛집, 교통, 날씨 정보를 확인하세요." />
+  <link rel="canonical" href="https://mytravelplanner.duckdns.org/guides/sydney" />
+  <meta property="og:title" content="시드니 여행 가이드 - TravelPlanner" />
+  <meta property="og:description" content="시드니 추천 관광지, 맛집, 교통, 날씨 정보 완벽 정리. AI로 시드니 여행 일정을 자동 생성하세요." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://mytravelplanner.duckdns.org/guides/sydney" />
+  <meta property="og:site_name" content="TravelPlanner" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="theme-color" content="#2563EB" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
+    .logo span { color: #f59e0b; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #2563EB; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #2563EB; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .page-hero { background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 3rem 1.5rem; text-align: center; }
+    .page-hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .page-hero p { color: #475569; max-width: 600px; margin: 0 auto; }
+    .breadcrumb { max-width: 800px; margin: 0 auto; padding: 1rem 1.5rem; font-size: 0.85rem; color: #64748b; }
+    .breadcrumb a { color: #2563EB; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .content { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    .content h2 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1e293b; border-left: 4px solid #2563EB; padding-left: 0.75rem; }
+    .content h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: #334155; }
+    .content p { color: #334155; margin-bottom: 1rem; font-size: 1rem; line-height: 1.8; }
+    .content ul { margin: 1rem 0; padding-left: 1.5rem; }
+    .content li { margin-bottom: 0.5rem; color: #334155; }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .info-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
+    .info-card .label { font-size: 0.8rem; color: #64748b; margin-bottom: 0.25rem; }
+    .info-card .value { font-size: 1.1rem; font-weight: 700; color: #1e293b; }
+    .spot-card { background: #f8fafc; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin-bottom: 1rem; border-left: 3px solid #2563EB; }
+    .spot-card h3 { margin-top: 0; color: #1e293b; }
+    .spot-card p { margin-bottom: 0; color: #475569; font-size: 0.95rem; }
+    .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 0; overflow: hidden; }
+    .cta-section { background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 1rem; padding: 2rem; text-align: center; margin: 2.5rem 0; }
+    .cta-section h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: #1e293b; }
+    .cta-section p { color: #475569; margin-bottom: 1rem; }
+    .footer { background: #1e293b; color: #94a3b8; padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; }
+    .footer a { color: #94a3b8; margin: 0 0.75rem; }
+    .footer a:hover { color: #fff; }
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .page-hero h1 { font-size: 1.5rem; }
+      .info-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">Travel<span>Planner</span></a>
+    <nav class="nav">
+      <a href="/">홈</a>
+      <a href="/about">소개</a>
+      <a href="/guides/" style="color:#2563EB;font-weight:600;">가이드</a>
+      <a href="/blog">블로그</a>
+      <a href="/contact">문의</a>
+      <a href="/login" class="btn btn-primary">로그인</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <h1>🇦🇺 시드니 여행 가이드</h1>
+  <p>오페라 하우스와 하버 브릿지가 반기는 호주의 관문</p>
+</section>
+
+<div class="breadcrumb">
+  <a href="/">홈</a> &gt; <a href="/guides/">여행 가이드</a> &gt; 시드니
+</div>
+
+<main class="content">
+  <h2>시드니 기본 정보</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="label">통화</div>
+      <div class="value">호주 달러 (AUD, A$)</div>
+    </div>
+    <div class="info-card">
+      <div class="label">시차</div>
+      <div class="value">KST +1~+2시간</div>
+    </div>
+    <div class="info-card">
+      <div class="label">언어</div>
+      <div class="value">영어</div>
+    </div>
+    <div class="info-card">
+      <div class="label">전압</div>
+      <div class="value">230V / 50Hz</div>
+    </div>
+  </div>
+
+  <h2>시드니 소개</h2>
+  <p>
+    시드니는 호주에서 가장 크고 오래된 도시이자, 남반구를 대표하는 세계적인 관광
+    도시입니다. 인구 약 530만 명이 거주하는 이 도시는 세계 3대 미항 중 하나로 꼽히는
+    시드니 하버를 중심으로, 아이코닉한 오페라 하우스와 하버 브릿지가 만들어내는
+    스카이라인이 전 세계 여행자들의 마음을 사로잡습니다. 도시 곳곳에 펼쳐진 70개 이상의
+    해변, 광활한 국립공원, 다문화적인 미식 문화가 어우러져 어떤 취향의 여행자든
+    만족시킬 수 있는 무한한 매력을 지니고 있습니다.
+  </p>
+  <p>
+    시드니는 자연과 도시가 완벽하게 조화를 이룬 곳입니다. 도심에서 버스 한 번이면
+    세계적으로 유명한 본다이 비치에 도착하고, 페리를 타면 맨리 비치의 서퍼들을 만날 수
+    있습니다. 블루 마운틴스 국립공원에서는 유칼립투스 숲이 내뿜는 푸른 안개 속에서
+    장대한 협곡의 절경을 감상할 수 있으며, 로열 보타닉 가든에서는 시드니 하버를
+    배경으로 한가로운 피크닉을 즐길 수 있습니다. 200개 이상의 민족이 어우러져 사는
+    다문화 도시답게 전 세계의 요리를 한 도시에서 맛볼 수 있다는 점도 시드니의
+    큰 매력입니다.
+  </p>
+  <p>
+    남반구에 위치한 시드니는 한국과 계절이 정반대입니다. 한국의 겨울인 12~2월이
+    시드니의 한여름으로, 크리스마스를 해변에서 보내는 독특한 경험을 할 수 있습니다.
+    호주 특유의 여유로운 라이프스타일과 친근한 현지인들의 문화는 시드니를 방문하는
+    모든 여행자에게 편안함과 따뜻한 환대를 느끼게 해줍니다. 영어가 공용어이므로
+    의사소통에 전혀 어려움이 없으며, 높은 안전도와 잘 정비된 관광 인프라 덕분에
+    처음 해외여행을 떠나는 분에게도 추천할 만한 도시입니다.
+  </p>
+
+  <h2>추천 관광지</h2>
+
+  <div class="spot-card">
+    <h3>시드니 오페라 하우스</h3>
+    <p>
+      유네스코 세계문화유산에 등재된 시드니 오페라 하우스는 덴마크 건축가 요른 우츤이
+      설계한 20세기 최고의 건축물 중 하나입니다. 조개껍데기를 닮은 독특한 지붕
+      구조물은 시드니를 상징하는 아이콘으로, 어떤 각도에서 보아도 감탄을 자아냅니다.
+      1시간 남짓의 가이드 투어에 참여하면 건축의 비밀과 1,000개 이상의 공연장 내부를
+      둘러볼 수 있으며, 오페라, 발레, 콘서트 등 연중 다양한 공연이 열립니다. 오페라
+      바(Opera Bar)에서 시드니 하버를 바라보며 한 잔의 와인을 즐기는 것은 시드니
+      여행에서 빼놓을 수 없는 낭만적인 순간입니다. 특히 해 질 녘 오페라 하우스의
+      지붕에 석양빛이 물드는 장면은 사진으로는 다 담을 수 없는 감동을 선사합니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>시드니 하버 브릿지</h3>
+    <p>
+      '옷걸이(Coathanger)'라는 애칭을 가진 시드니 하버 브릿지는 1932년 개통된 세계에서
+      가장 큰 아치형 강철 다리입니다. 다리 위를 걸어서 건너거나 자전거로 횡단할 수
+      있으며, 가장 스릴 넘치는 경험은 브릿지클라임(BridgeClimb)에 참여하여 다리
+      정상(134m)까지 올라가는 것입니다. 약 3시간 30분 동안 진행되는 클라이밍 투어에서는
+      시드니 하버, 오페라 하우스, 도심 스카이라인을 360도로 조망하는 압도적인 파노라마를
+      경험할 수 있습니다. 특히 일출이나 일몰 시간대의 클라이밍은 시드니의 하늘이
+      황금빛으로 물드는 장관을 높은 곳에서 독점하는 특별한 경험입니다. 밀슨스 포인트
+      쪽에서 바라본 하버 브릿지와 오페라 하우스의 조합은 시드니 최고의 사진 명소로
+      알려져 있습니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>본다이 비치</h3>
+    <p>
+      시드니 도심에서 버스로 약 30분 거리에 위치한 본다이 비치는 호주에서 가장 유명한
+      해변이자 서핑 문화의 성지입니다. 약 1km에 달하는 황금빛 백사장과 에메랄드빛
+      파도가 만들어내는 풍경은 마치 엽서 속 한 장면 같습니다. 서핑 초보자를 위한
+      강습이 해변 곳곳에서 운영되며, 서핑을 하지 않더라도 해변을 따라 산책하거나
+      일광욕을 즐기기에 완벽한 환경입니다. 본다이에서 쿠지까지 이어지는 약 6km의
+      코스탈 워크(Coastal Walk)는 절벽 위의 해안 산책로로, 시드니에서 가장 아름다운
+      산책 코스 중 하나입니다. 해변 뒤편의 캠벨 퍼레이드에는 트렌디한 카페와
+      레스토랑이 즐비하여 브런치를 즐기기에도 좋습니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>달링 하버</h3>
+    <p>
+      시드니 도심 서쪽에 위치한 달링 하버는 가족 관광객에게 특히 인기 있는 워터프론트
+      엔터테인먼트 지구입니다. 시 라이프 시드니 아쿠아리움에서는 700종 이상의 해양
+      생물을 만나볼 수 있고, 와일드 라이프 시드니 동물원에서는 코알라, 캥거루 등
+      호주 고유의 동물들을 가까이에서 관찰할 수 있습니다. 호주 국립해양박물관과
+      파워하우스 뮤지엄도 달링 하버에 위치해 있어 문화적 체험이 풍부합니다. 토요일
+      밤에는 불꽃놀이가 열리며, 수변을 따라 늘어선 레스토랑과 바에서는 하버 야경을
+      감상하며 식사를 즐길 수 있습니다. 피어몬트 브릿지를 건너 피쉬 마켓까지
+      산책하면 세계에서 세 번째로 큰 수산시장에서 신선한 해산물을 즐기는 것도
+      가능합니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>블루 마운틴스</h3>
+    <p>
+      시드니 도심에서 서쪽으로 약 1시간 30분 거리에 위치한 블루 마운틴스 국립공원은
+      유네스코 세계자연유산에 등재된 장대한 자연의 걸작입니다. 유칼립투스 나무에서
+      증발하는 오일 성분이 만들어내는 푸른 안개가 산 전체를 감싸 '블루 마운틴스'라는
+      이름을 얻었습니다. 에코 포인트 전망대에서 바라보는 세 자매봉(Three Sisters)은
+      호주에서 가장 유명한 자연 경관 중 하나이며, 애보리진 원주민의 전설이 깃든
+      신비로운 바위 기둥입니다. 시닉 월드(Scenic World)에서는 세계에서 가장 가파른
+      열차인 시닉 레일웨이, 유리 바닥의 시닉 스카이웨이, 열대 우림을 가로지르는
+      시닉 케이블웨이를 체험할 수 있습니다. 당일치기 투어로도 충분하지만, 하루
+      묵으면서 잼슨 밸리 트레킹을 즐기면 블루 마운틴스의 진정한 매력을 더 깊이
+      느낄 수 있습니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>록스 지구</h3>
+    <p>
+      시드니 하버 브릿지 남쪽 기슭에 자리한 록스(The Rocks)는 호주 최초의 유럽인
+      정착지로, 1788년부터 시작된 호주 역사의 발상지입니다. 사암으로 지어진 19세기
+      건물들이 좁은 골목길을 따라 늘어서 있으며, 현재는 부티크 숍, 갤러리, 레스토랑,
+      펍으로 활용되어 역사적 분위기와 현대적 매력이 조화를 이루고 있습니다. 매주
+      토요일과 일요일에 열리는 록스 마켓은 수공예품, 보석, 예술 작품, 빈티지 아이템을
+      구경하는 재미가 있으며, 로드 넬슨 브루어리 호텔이나 히어로 오브 워터루 같은
+      역사적인 펍에서 호주 크래프트 맥주를 맛보는 것도 좋은 경험입니다. 록스에서
+      바라보는 하버 브릿지와 오페라 하우스의 야경은 시드니에서 가장 로맨틱한
+      풍경 중 하나입니다.
+    </p>
+  </div>
+
+  <!-- Ad slot -->
+  <div class="ad-container">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <h2>맛집 & 음식 추천</h2>
+  <p>
+    시드니는 200개 이상의 민족이 모여 사는 다문화 도시답게, 전 세계의 다양한 요리를
+    높은 수준으로 즐길 수 있는 미식의 도시입니다. 신선한 해산물과 현지 농산물을
+    활용한 모던 오스트레일리안 요리부터 아시안 퓨전까지, 풍요로운 식도락 여행이
+    기다립니다.
+  </p>
+
+  <div class="spot-card">
+    <h3>피시앤칩스</h3>
+    <p>
+      영국 식민지 역사의 영향으로 호주에서도 피시앤칩스는 대표적인 국민 음식입니다.
+      시드니에서는 신선한 바라문디(barramundi)나 도리(dory) 생선을 바삭한 튀김옷에
+      입혀 튀기고, 두꺼운 감자 칩과 함께 제공합니다. 본다이 비치의 '본다이 아이스버그스'
+      레스토랑이나 왓슨스 베이의 '도일스(Doyle's)'에서 해변을 바라보며 먹는 피시앤칩스는
+      시드니에서만 누릴 수 있는 특별한 미식 경험입니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>미트파이</h3>
+    <p>
+      호주의 소울 푸드인 미트파이는 부드러운 파이 크러스트 안에 맥주로 조린 소고기
+      스튜를 가득 채운 따뜻한 간식입니다. 서리힐스의 '브라운스 파이 숍(Bourke Street
+      Bakery)'이나 하이드 파크 근처의 '해리스 카페 드 휠(Harry's Cafe de Wheels)'은
+      시드니에서 가장 유명한 미트파이 맛집으로, 100년이 넘는 역사를 자랑합니다.
+      머시 피(mushy pea)와 그레이비 소스를 곁들여 먹는 것이 정석입니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>파블로바</h3>
+    <p>
+      호주와 뉴질랜드가 원조를 다투는 파블로바는 바삭한 머랭 겉면과 부드럽고 쫀득한
+      속이 특징인 디저트입니다. 위에 휘핑크림과 제철 과일(딸기, 키위, 패션프루트 등)을
+      듬뿍 올려 먹으며, 한 입 베어 물면 바삭함과 부드러움이 동시에 느껴지는 독특한
+      식감에 매료됩니다. 시드니의 카페와 베이커리 어디에서나 만나볼 수 있지만,
+      써리힐스의 디저트 전문점에서 맛보는 파블로바가 특히 유명합니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>호주식 바비큐 (BBQ)</h3>
+    <p>
+      호주인들에게 바비큐는 단순한 요리가 아니라 라이프스타일 그 자체입니다. 주말이면
+      공원과 해변의 무료 공공 바비큐 시설에서 두꺼운 스테이크, 소시지(스낵), 새우를
+      굽는 호주인들의 모습을 쉽게 볼 수 있습니다. 캥거루 고기와 이뮤 고기 같은 호주
+      고유의 식재료를 바비큐로 맛보는 것도 이색적인 경험이며, 센테니얼 파크나
+      달링 하버 인근의 BBQ 레스토랑에서 정통 호주식 바비큐를 즐길 수 있습니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>다문화 미식 (한식, 태국, 베트남)</h3>
+    <p>
+      시드니의 다문화 미식 씬은 세계 어느 도시와 비교해도 손색이 없습니다. 스트라스필드
+      (Strathfield)는 시드니의 한인 타운으로 삼겹살, 떡볶이, 치킨 등 정통 한식을
+      즐길 수 있고, 태국 타운인 뉴타운(Newtown)에서는 정통 팟타이와 그린커리를,
+      카브라마타(Cabramatta)의 베트남 타운에서는 본고장 맛의 쌀국수(포)를 맛볼 수
+      있습니다. 차이나타운의 딤섬, 서리힐스의 일식 라멘 등 아시아 음식의 수준이
+      매우 높아 한국인 여행자도 입맛에 맞는 음식을 쉽게 찾을 수 있습니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>시드니 피쉬 마켓</h3>
+    <p>
+      남반구 최대이자 세계에서 세 번째로 큰 수산시장인 시드니 피쉬 마켓은 해산물
+      애호가라면 반드시 방문해야 할 곳입니다. 매일 새벽 경매를 통해 거래되는 100종
+      이상의 신선한 해산물을 현장에서 바로 조리해 먹을 수 있으며, 굴, 랍스터, 킹
+      프론(대하), 연어 회 등을 시장가보다 저렴한 가격에 즐길 수 있습니다. 야외
+      테라스에 앉아 블랙워틀 베이를 바라보며 갓 까낸 시드니 록 오이스터에 레몬을
+      뿌려 먹는 경험은 시드니 미식 여행의 하이라이트입니다.
+    </p>
+  </div>
+
+  <h2>여행 팁</h2>
+
+  <h3>교통</h3>
+  <p>
+    시드니의 대중교통은 트레인(전철), 버스, 페리, 라이트레일(트램)로 구성되어 있으며,
+    오팔 카드(Opal Card)를 구입하면 모든 교통수단을 하나의 카드로 이용할 수 있습니다.
+    비접촉식 신용카드나 스마트폰(애플페이, 구글페이)으로도 탭 온/오프가 가능하여
+    별도의 교통카드 없이도 편리하게 이동할 수 있습니다. 시드니 공항에서 시내 중심부인
+    서큘러 키(Circular Quay)까지는 에어포트 링크 기차로 약 15분이면 도착합니다.
+    서큘러 키에서 맨리 비치까지 운행하는 페리는 30분 동안 시드니 하버의 절경을
+    감상할 수 있는 '세계에서 가장 아름다운 통근 경로'로 유명합니다. 일요일에는
+    오팔 카드 하루 최대 요금이 2.80달러로 제한되어 무제한에 가까운 교통 이용이
+    가능하므로, 주요 관광 일정을 일요일에 배치하면 교통비를 크게 절약할 수 있습니다.
+  </p>
+
+  <h3>날씨 & 옷차림</h3>
+  <p>
+    남반구에 위치한 시드니는 한국과 계절이 정반대입니다. 12~2월이 여름으로 평균
+    기온 25~30도, 6~8월이 겨울로 평균 기온 8~17도입니다. 여름에는 가볍고 통풍이
+    잘 되는 옷과 선크림, 선글라스, 모자가 필수이며, 호주의 자외선 지수는 한국보다
+    훨씬 높아 SPF 50+ 선크림을 수시로 덧바르는 것이 중요합니다. 호주에서는 'Slip,
+    Slop, Slap(긴옷 입고, 선크림 바르고, 모자 쓰고)'이라는 자외선 차단 캠페인이
+    국민적으로 실천되고 있을 정도입니다. 겨울에는 두꺼운 패딩까지는 필요 없지만
+    재킷이나 코트 정도의 겉옷은 준비하는 것이 좋으며, 일교차가 크므로 레이어드
+    코디를 추천합니다. 비는 연중 고르게 내리지만 집중호우는 드물어 접이식 우산
+    정도면 충분합니다.
+  </p>
+
+  <h3>환율 & 결제</h3>
+  <p>
+    호주 달러(AUD)는 대부분의 장소에서 카드 결제와 비접촉식 결제가 가능합니다.
+    실제로 시드니의 많은 카페와 레스토랑은 카드 결제만 받고 현금을 받지 않는 곳도
+    늘어나고 있어 신용카드 또는 모바일 결제 수단을 반드시 준비하는 것이 좋습니다.
+    환전은 시티 중심부의 환전소나 공항보다 비교 사이트를 통해 미리 환율을 확인하고
+    유리한 곳을 찾는 것이 경제적입니다. 호주에는 팁 문화가 의무적이지 않지만,
+    좋은 서비스에 대해 계산서의 10% 정도를 팁으로 남기는 것이 일반적입니다.
+    호주의 물가는 한국보다 높은 편이므로(카페 커피 한 잔 5~7달러, 레스토랑 식사
+    20~40달러), 호커 마켓이나 푸드코트를 활용하면 식비를 절약할 수 있습니다.
+  </p>
+
+  <h2>최적의 여행 시기</h2>
+  <p>
+    시드니를 방문하기 가장 좋은 시기는 <strong>봄(9~11월)</strong>과 <strong>가을(3~5월)</strong>입니다.
+    이 시기에는 20~25도의 쾌적한 기온과 맑은 하늘 아래 야외 활동을 즐기기에
+    최적의 조건을 갖추고 있습니다. 봄에는 자카란다 꽃이 시드니 곳곳을 보랏빛으로
+    물들이며, 특히 10~11월에 절정을 이루는 자카란다 시즌은 시드니만의 독특한
+    풍경입니다. 가을에는 단풍과 함께 선선한 날씨가 이어져 블루 마운틴스 트레킹에
+    안성맞춤입니다. 여름(12~2월)은 해변 관광과 수상 액티비티에 최적이지만 기온이
+    높고 관광 성수기라 숙박 요금이 올라갑니다. 특히 12월 31일 시드니 하버의 신년
+    카운트다운 불꽃놀이는 세계에서 가장 먼저 새해를 맞이하는 화려한 이벤트로,
+    매년 100만 명 이상의 관람객이 몰립니다.
+  </p>
+
+  <div class="cta-section">
+    <h3>시드니 여행 일정, AI가 자동으로 만들어 드려요</h3>
+    <p>날짜만 입력하면 현지 날씨, 교통, 인기 관광지를 고려한 최적의 시드니 일정이 완성됩니다.</p>
+    <a href="/login" class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem;">무료로 일정 만들기</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>
+    <a href="/">홈</a>
+    <a href="/about">소개</a>
+    <a href="/guides/">가이드</a>
+    <a href="/blog">블로그</a>
+    <a href="/contact">문의</a>
+    <a href="/terms">이용약관</a>
+    <a href="/privacy">개인정보처리방침</a>
+    <a href="/disclaimer">면책조항</a>
+    <a href="/faq">FAQ</a>
+  </p>
+  <p style="margin-top:1rem;">&copy; 2024-2026 TravelPlanner. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

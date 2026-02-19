@@ -56,34 +56,61 @@ export class AppController {
     const baseUrl = process.env.FRONTEND_URL || 'https://travelplanner.app';
     const now = new Date().toISOString().split('T')[0];
 
-    // Fetch public shared trips for dynamic sitemap entries
-    const publicTrips = await this.tripRepo.find({
-      where: {
-        isPublic: true,
-        shareToken: Not(IsNull()),
-        shareExpiresAt: MoreThan(new Date()),
-      },
-      select: ['shareToken', 'updatedAt', 'destination'],
-      take: 1000,
-    });
+    // Fetch public shared trips for dynamic sitemap entries (filter test data)
+    const publicTrips = await this.tripRepo
+      .createQueryBuilder('trip')
+      .where('trip.isPublic = :isPublic', { isPublic: true })
+      .andWhere('trip.shareToken IS NOT NULL')
+      .andWhere('trip.shareExpiresAt > :now', { now: new Date() })
+      .andWhere("trip.title NOT LIKE :testKo", { testKo: '%테스트%' })
+      .andWhere("trip.title NOT LIKE :testEn", { testEn: '%test%' })
+      .andWhere("trip.description NOT LIKE :descTest", { descTest: '%테스트%' })
+      .select(['trip.shareToken', 'trip.updatedAt', 'trip.destination'])
+      .take(1000)
+      .getMany();
 
     const staticUrls = [
+      // Main pages
       { loc: '/', changefreq: 'daily', priority: '1.0' },
       { loc: '/about', changefreq: 'monthly', priority: '0.9' },
       { loc: '/contact', changefreq: 'monthly', priority: '0.9' },
+      // Legal & info
+      { loc: '/privacy', changefreq: 'monthly', priority: '0.7' },
+      { loc: '/terms', changefreq: 'monthly', priority: '0.7' },
+      { loc: '/disclaimer', changefreq: 'monthly', priority: '0.7' },
+      { loc: '/faq', changefreq: 'monthly', priority: '0.8' },
+      // Guides index
       { loc: '/guides', changefreq: 'weekly', priority: '0.9' },
+      // Guides — Asia
       { loc: '/guides/tokyo', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/paris', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/bangkok', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/new-york', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/london', changefreq: 'monthly', priority: '0.85' },
       { loc: '/guides/osaka', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/hawaii', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/kyoto', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/seoul', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/bangkok', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/singapore', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/ho-chi-minh', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/kuala-lumpur', changefreq: 'monthly', priority: '0.85' },
       { loc: '/guides/bali', changefreq: 'monthly', priority: '0.85' },
+      // Guides — Europe
+      { loc: '/guides/paris', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/london', changefreq: 'monthly', priority: '0.85' },
       { loc: '/guides/barcelona', changefreq: 'monthly', priority: '0.85' },
       { loc: '/guides/rome', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/login', changefreq: 'monthly', priority: '0.8' },
-      { loc: '/register', changefreq: 'monthly', priority: '0.8' },
+      { loc: '/guides/prague', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/amsterdam', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/istanbul', changefreq: 'monthly', priority: '0.85' },
+      // Guides — Americas/Oceania/Middle East
+      { loc: '/guides/new-york', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/hawaii', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/sydney', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/dubai', changefreq: 'monthly', priority: '0.85' },
+      // Blog
+      { loc: '/blog', changefreq: 'weekly', priority: '0.8' },
+      { loc: '/blog/ai-travel-planning-tips', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/packing-checklist', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/budget-travel-guide', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/first-solo-travel', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/travel-insurance-guide', changefreq: 'monthly', priority: '0.75' },
     ];
 
     const staticEntries = staticUrls

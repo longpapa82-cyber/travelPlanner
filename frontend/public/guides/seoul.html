@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>서울 여행 가이드 - TravelPlanner | 서울 관광지, 맛집, 교통 완벽 정리</title>
+  <meta name="description" content="서울 여행 완벽 가이드. 경복궁, 북촌 한옥마을, 명동, 남산타워, 홍대, 강남 등 추천 관광지와 맛집, 교통, 날씨, 환율 정보를 확인하세요." />
+  <link rel="canonical" href="https://mytravelplanner.duckdns.org/guides/seoul" />
+  <meta property="og:title" content="서울 여행 가이드 - TravelPlanner" />
+  <meta property="og:description" content="서울 추천 관광지, 맛집, 교통, 날씨 정보 완벽 정리. AI로 서울 여행 일정을 자동 생성하세요." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://mytravelplanner.duckdns.org/guides/seoul" />
+  <meta property="og:site_name" content="TravelPlanner" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="theme-color" content="#2563EB" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
+    .logo span { color: #f59e0b; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #2563EB; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #2563EB; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .page-hero { background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 3rem 1.5rem; text-align: center; }
+    .page-hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .page-hero p { color: #475569; max-width: 600px; margin: 0 auto; }
+    .breadcrumb { max-width: 800px; margin: 0 auto; padding: 1rem 1.5rem; font-size: 0.85rem; color: #64748b; }
+    .breadcrumb a { color: #2563EB; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .content { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    .content h2 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1e293b; border-left: 4px solid #2563EB; padding-left: 0.75rem; }
+    .content h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: #334155; }
+    .content p { color: #334155; margin-bottom: 1rem; font-size: 1rem; line-height: 1.8; }
+    .content ul { margin: 1rem 0; padding-left: 1.5rem; }
+    .content li { margin-bottom: 0.5rem; color: #334155; }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .info-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
+    .info-card .label { font-size: 0.8rem; color: #64748b; margin-bottom: 0.25rem; }
+    .info-card .value { font-size: 1.1rem; font-weight: 700; color: #1e293b; }
+    .spot-card { background: #f8fafc; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin-bottom: 1rem; border-left: 3px solid #2563EB; }
+    .spot-card h3 { margin-top: 0; color: #1e293b; }
+    .spot-card p { margin-bottom: 0; color: #475569; font-size: 0.95rem; }
+    .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 0; overflow: hidden; }
+    .cta-section { background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 1rem; padding: 2rem; text-align: center; margin: 2.5rem 0; }
+    .cta-section h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: #1e293b; }
+    .cta-section p { color: #475569; margin-bottom: 1rem; }
+    .footer { background: #1e293b; color: #94a3b8; padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; }
+    .footer a { color: #94a3b8; margin: 0 0.75rem; }
+    .footer a:hover { color: #fff; }
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .page-hero h1 { font-size: 1.5rem; }
+      .info-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">Travel<span>Planner</span></a>
+    <nav class="nav">
+      <a href="/">홈</a>
+      <a href="/about">소개</a>
+      <a href="/guides/" style="color:#2563EB;font-weight:600;">가이드</a>
+      <a href="/blog">블로그</a>
+      <a href="/contact">문의</a>
+      <a href="/login" class="btn btn-primary">로그인</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <h1>🇰🇷 서울 여행 가이드</h1>
+  <p>K-컬처의 중심, 전통과 현대가 어우러진 대한민국의 수도</p>
+</section>
+
+<div class="breadcrumb">
+  <a href="/">홈</a> &gt; <a href="/guides/">여행 가이드</a> &gt; 서울
+</div>
+
+<main class="content">
+  <h2>서울 기본 정보</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="label">통화</div>
+      <div class="value">원 (KRW, &#8361;)</div>
+    </div>
+    <div class="info-card">
+      <div class="label">시차</div>
+      <div class="value">KST 기준</div>
+    </div>
+    <div class="info-card">
+      <div class="label">언어</div>
+      <div class="value">한국어</div>
+    </div>
+    <div class="info-card">
+      <div class="label">전압</div>
+      <div class="value">220V / 60Hz</div>
+    </div>
+  </div>
+
+  <h2>서울 소개</h2>
+  <p>
+    서울은 대한민국의 수도이자 약 1,000만 명이 거주하는 거대한 메트로폴리탄 도시입니다.
+    600년이 넘는 조선 왕조의 역사와 세계 최첨단 기술이 공존하는 이 도시에서는 경복궁의
+    고즈넉한 기와지붕 너머로 롯데월드타워와 같은 초고층 빌딩이 하늘을 찌르는 독특한
+    스카이라인을 만날 수 있습니다. 한강이 도시 중심을 가로질러 흐르며 남산, 북한산,
+    관악산 등 산으로 둘러싸인 서울은 도심 속에서도 자연을 가까이 느낄 수 있는 몇 안 되는
+    세계적 대도시 중 하나입니다. 봄이면 여의도 윤중로의 벚꽃이 흩날리고, 가을이면 북한산의
+    단풍이 도시 전체를 물들이는 사계절의 아름다움을 온몸으로 느낄 수 있습니다.
+  </p>
+  <p>
+    서울은 전 세계적으로 폭발적인 인기를 얻고 있는 K-pop, K-드라마, K-뷰티의 발상지이기도
+    합니다. BTS, 블랙핑크 등 글로벌 아이돌의 흔적을 따라 HYBE 인사이트를 방문하거나,
+    이태원과 성수동의 트렌디한 카페 거리를 산책하며 서울만의 감성을 체험할 수 있습니다.
+    또한 세계에서 가장 빠른 인터넷 인프라와 편리한 대중교통 시스템을 갖추고 있어 외국인
+    여행자도 언어 장벽 없이 쉽게 이동할 수 있습니다. 광장시장, 남대문시장 같은 전통
+    시장에서의 길거리 음식 탐방부터 미슐랭 스타 레스토랑까지, 서울의 미식 경험은 그
+    깊이와 폭이 세계 어떤 도시와 비교해도 손색이 없습니다.
+  </p>
+  <p>
+    서울의 각 동네는 저마다의 개성과 문화를 가지고 있습니다. 종로와 을지로의 레트로한
+    감성, 홍대의 자유롭고 젊은 에너지, 강남의 세련된 도시적 매력, 북촌과 서촌의 고즈넉한
+    한옥 풍경, 이태원의 다문화적 분위기 — 하나의 도시 안에서 마치 여러 도시를 여행하는
+    듯한 다채로운 경험을 선사합니다. 서울의 밤문화 역시 빼놓을 수 없는 매력으로,
+    한강 야경 크루즈, 남산타워의 야간 조명, 동대문 심야 쇼핑 등 밤이 되면 또 다른 모습의
+    서울이 여행자를 맞이합니다.
+  </p>
+
+  <h2>추천 관광지</h2>
+
+  <div class="spot-card">
+    <h3>경복궁</h3>
+    <p>
+      1395년 조선 왕조의 법궁으로 건립된 경복궁은 서울에서 가장 크고 웅장한 궁궐입니다.
+      근정전, 경회루, 향원정 등 아름다운 전각과 정원이 펼쳐지며, 매일 오전과 오후에
+      진행되는 수문장 교대식은 조선 시대의 웅장한 의식을 생생하게 재현합니다. 한복을
+      입고 방문하면 무료로 입장할 수 있어 많은 관광객들이 한복 체험과 궁궐 관람을 함께
+      즐깁니다. 궁궐 내에 위치한 국립민속박물관에서는 한국의 전통 생활문화를 한눈에
+      살펴볼 수 있으며, 야간 특별 관람 기간에는 조명에 비친 궁궐의 환상적인 야경을
+      감상할 수 있어 매년 예매 경쟁이 치열합니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>북촌 한옥마을</h3>
+    <p>
+      경복궁과 창덕궁 사이에 자리한 북촌 한옥마을은 약 600년의 역사를 간직한 전통
+      한옥 밀집 지역입니다. 좁은 골목길을 따라 늘어선 기와지붕의 한옥들은 조선 시대
+      양반들의 주거지였으며, 현재는 전통 찻집, 공방, 게스트하우스 등으로 활용되고
+      있습니다. 북촌 8경이라 불리는 포토 스팟을 따라 산책하면 서울의 현대적 도시 풍경과
+      전통 한옥이 어우러진 독특한 파노라마를 만끽할 수 있습니다. 특히 가회동 31번지
+      일대는 언덕길 위에서 한옥 지붕 너머로 남산타워가 보이는 서울 최고의 사진 명소
+      중 하나입니다. 인근 삼청동 거리에는 개성 있는 카페와 갤러리가 즐비하여 문화적인
+      산책을 이어가기에 좋습니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>명동</h3>
+    <p>
+      서울 최대의 쇼핑 & 관광 중심지인 명동은 국내외 브랜드 매장, K-뷰티 화장품 로드숍,
+      면세점이 밀집해 있어 쇼핑을 즐기기에 최적의 장소입니다. 명동 거리 곳곳에서는
+      떡볶이, 핫도그, 계란빵, 붕어빵 등 다양한 길거리 음식을 저렴한 가격에 맛볼 수
+      있으며, 저녁이 되면 거리 전체가 활기찬 야시장 분위기로 변합니다. 명동성당은
+      한국 천주교의 상징적인 고딕 양식 건축물로, 번화가 한가운데서 고요한 휴식의
+      공간을 제공합니다. 환전소가 많아 환율도 유리하며, 대부분의 매장에서 면세 쇼핑이
+      가능하여 외국인 관광객에게 특히 인기가 높습니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>남산타워 (N서울타워)</h3>
+    <p>
+      해발 479m 남산 정상에 우뚝 선 N서울타워는 서울의 대표적인 랜드마크입니다.
+      전망대에서는 서울 시내를 360도로 조망할 수 있으며, 맑은 날에는 멀리 인천 앞바다와
+      북한산 자락까지 한눈에 들어옵니다. 타워 전망대의 회전 레스토랑에서 식사를 하며
+      야경을 감상하는 것은 서울 여행의 로맨틱한 하이라이트입니다. 타워 입구의 사랑의
+      자물쇠 담장에는 전 세계에서 온 연인들의 소망이 가득 걸려 있어 로맨틱한 분위기를
+      더합니다. 남산 케이블카를 타고 올라가거나, 남산 둘레길을 따라 걸어 올라가는 것
+      모두 각각의 매력이 있으며, 특히 벚꽃 시즌의 남산 산책로는 서울에서 가장 아름다운
+      봄 풍경 중 하나입니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>홍대</h3>
+    <p>
+      홍익대학교 앞 일대를 가리키는 홍대는 서울의 젊음과 예술, 자유로운 문화의 상징입니다.
+      낮에는 독립 디자이너의 편집숍, 빈티지 의류 매장, 개성 넘치는 카페를 둘러보며
+      산책하기 좋고, 저녁이 되면 라이브 클럽, 버스킹 공연, 길거리 아티스트들의 퍼포먼스로
+      거리 전체가 하나의 거대한 무대가 됩니다. 매주 토요일 열리는 프리마켓에서는 신진
+      아티스트와 디자이너들의 핸드메이드 작품을 직접 만나볼 수 있습니다. 홍대 인근의
+      연남동과 연희동은 조용하고 감성적인 카페와 레스토랑이 모여 있어 홍대의 활기찬
+      분위기와는 또 다른 여유로운 시간을 보낼 수 있는 지역으로 최근 큰 인기를 얻고
+      있습니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>강남 / 코엑스</h3>
+    <p>
+      한강 이남의 중심지인 강남은 세련된 도시적 매력과 활기찬 비즈니스 에너지가 넘치는
+      지역입니다. 코엑스몰은 아시아 최대 규모의 지하 쇼핑몰로, 대형 수족관 코엑스
+      아쿠아리움, 인스타그램에서 화제가 된 별마당 도서관, 메가박스 영화관 등 하루 종일
+      즐길 거리가 가득합니다. 봉은사는 코엑스 바로 뒤편에 자리한 1,200년 역사의
+      사찰로, 현대적인 빌딩 숲 사이에서 고즈넉한 불교 문화를 체험할 수 있는 독특한
+      공간입니다. 압구정 로데오 거리와 청담동은 럭셔리 브랜드 매장과 고급 레스토랑이
+      밀집한 서울의 패션 1번지이며, K-pop 연예 기획사들이 모여 있어 한류 팬들의
+      성지순례 코스이기도 합니다.
+    </p>
+  </div>
+
+  <!-- Ad slot -->
+  <div class="ad-container">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <h2>맛집 & 음식 추천</h2>
+  <p>
+    서울은 전통 한식부터 세계 각국의 요리까지 모든 것을 맛볼 수 있는 미식의 도시입니다.
+    미슐랭 가이드 서울 에디션에서 별을 받은 파인 다이닝부터 서민적인 시장 음식까지,
+    가격대와 장르를 불문하고 최고 수준의 음식을 경험할 수 있습니다.
+  </p>
+
+  <div class="spot-card">
+    <h3>삼겹살</h3>
+    <p>
+      한국인의 소울 푸드라 불리는 삼겹살은 두꺼운 돼지고기를 숯불이나 철판에 직접
+      구워 먹는 한국 특유의 바비큐 문화입니다. 신선한 상추와 깻잎에 갓 구운 삼겹살,
+      마늘, 쌈장을 올려 한 입에 넣는 순간 한국 음식의 진수를 느낄 수 있습니다.
+      마포구 연남동과 종로구 을지로 일대에 유명한 삼겹살 맛집이 밀집해 있으며,
+      소주 한 잔과 함께 즐기는 것이 한국식 저녁 문화의 정석입니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>비빔밥</h3>
+    <p>
+      따끈한 밥 위에 다양한 나물, 고추장, 계란 프라이를 올려 비벼 먹는 비빔밥은 영양
+      균형이 뛰어난 대표적인 한식입니다. 특히 뜨거운 돌솥에 담겨 나오는 돌솥비빔밥은
+      바닥의 누룽지가 바삭하게 익어 식감의 즐거움을 더합니다. 전주식 비빔밥을 서울에서
+      맛보고 싶다면 종로와 명동 일대의 한정식 전문점을 추천하며, 육회비빔밥은 광장시장의
+      명물입니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>떡볶이</h3>
+    <p>
+      쫄깃한 가래떡을 매콤달콤한 고추장 양념에 볶아낸 떡볶이는 한국의 대표적인 길거리
+      음식이자 국민 간식입니다. 신당동 떡볶이 타운은 서울 떡볶이의 성지로, 각 가게마다
+      고유한 레시피의 양념과 다양한 토핑(어묵, 치즈, 라면 사리 등)으로 차별화된
+      떡볶이를 선보입니다. 최근에는 로제 떡볶이, 크림 떡볶이 등 퓨전 메뉴도 큰
+      인기를 얻고 있습니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>치맥 (치킨 + 맥주)</h3>
+    <p>
+      바삭한 한국식 프라이드치킨에 시원한 맥주를 곁들이는 '치맥'은 한국의 야식 문화를
+      대표하는 조합입니다. 한강 둔치 공원에서 치맥을 즐기는 것은 서울 여행에서 꼭 해봐야
+      할 경험으로 손꼽히며, 배달 앱을 통해 간편하게 주문할 수 있습니다. 양념치킨,
+      간장치킨, 마늘치킨, 허니버터치킨 등 한국만의 독특한 치킨 메뉴는 외국인 여행자들
+      사이에서도 열렬한 팬층을 형성하고 있습니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>한정식</h3>
+    <p>
+      한국 전통 코스 요리인 한정식은 전채부터 후식까지 10가지 이상의 반찬과 함께
+      정갈하게 차려지는 풀코스 식사입니다. 삼청동과 북촌 일대의 한옥 레스토랑에서는
+      전통 한옥의 분위기 속에서 제철 식재료로 만든 격식 있는 한정식을 맛볼 수 있습니다.
+      궁중 음식을 재현한 궁중한정식부터 사찰 음식 기반의 템플스테이 식사까지, 한국
+      음식 문화의 깊이와 정성을 한 상에서 느낄 수 있는 특별한 식사 경험입니다.
+    </p>
+  </div>
+
+  <div class="spot-card">
+    <h3>길거리 음식 (호떡, 붕어빵)</h3>
+    <p>
+      서울의 겨울 길거리를 따뜻하게 밝히는 호떡과 붕어빵은 한국인의 추억이 담긴
+      대표적인 간식입니다. 호떡은 쫄깃한 반죽 안에 흑설탕, 견과류, 씨앗이 가득 들어
+      있어 한 입 베어 물면 달콤한 시럽이 흘러나옵니다. 남대문시장의 갈치호떡,
+      광장시장의 녹두전과 마약김밥, 동대문의 닭한마리 골목 등 서울 곳곳의 전통
+      시장에서는 저렴하면서도 맛있는 길거리 음식의 천국을 경험할 수 있습니다.
+    </p>
+  </div>
+
+  <h2>여행 팁</h2>
+
+  <h3>교통</h3>
+  <p>
+    서울의 지하철은 총 23개 노선으로 도시 전역을 촘촘하게 연결하는 세계 최고 수준의
+    대중교통 시스템입니다. T-money 카드를 편의점이나 지하철역에서 구입하면 지하철,
+    버스, 택시까지 하나의 카드로 모든 대중교통을 이용할 수 있으며, 환승 할인도 자동으로
+    적용됩니다. 지하철 역마다 한국어, 영어, 중국어, 일본어 안내가 제공되며, 무료 Wi-Fi도
+    이용 가능합니다. 인천공항에서 서울 시내까지는 공항철도(AREX)를 이용하면 약 43분
+    만에 서울역에 도착할 수 있고, 리무진 버스는 주요 호텔까지 직행합니다. 카카오택시 앱을
+    설치하면 한국어를 못해도 목적지를 입력하여 편리하게 택시를 호출할 수 있습니다.
+  </p>
+
+  <h3>날씨 & 옷차림</h3>
+  <p>
+    서울은 사계절이 매우 뚜렷한 도시입니다. 봄(3~5월)은 벚꽃이 만개하는 아름다운 시기로,
+    낮에는 따뜻하지만 아침저녁으로 쌀쌀하므로 가벼운 겉옷을 준비하는 것이 좋습니다.
+    여름(6~8월)은 평균 기온 30도 이상의 무더위와 장마철의 집중 호우가 있어 우산과
+    가벼운 여름옷이 필수입니다. 가을(9~11월)은 맑고 선선한 날씨에 아름다운 단풍이
+    절정을 이루는 서울 여행의 황금기입니다. 겨울(12~2월)은 영하 10도까지 내려가는
+    매서운 추위가 있으므로 두꺼운 패딩, 장갑, 목도리 등 방한 장비를 철저히 준비해야
+    합니다. 다만 대부분의 실내 공간과 대중교통은 난방이 잘 되어 있어 실내외 온도 차에
+    대비한 레이어드 코디가 실용적입니다.
+  </p>
+
+  <h3>환율 & 결제</h3>
+  <p>
+    서울은 세계에서 가장 카드 결제가 보편화된 도시 중 하나입니다. 편의점, 길거리 노점상,
+    택시에 이르기까지 대부분의 장소에서 신용카드와 체크카드를 사용할 수 있으며, 삼성페이,
+    애플페이 등 모바일 결제도 광범위하게 지원됩니다. 환전은 명동의 사설 환전소가 은행보다
+    유리한 환율을 제공하는 것으로 유명하며, 인천공항의 환전보다 시내 환전이 더 좋은
+    환율을 받을 수 있습니다. 전통시장이나 일부 소규모 가게에서는 현금만 받는 경우가
+    있으므로 소액의 현금을 함께 소지하는 것을 권장합니다.
+  </p>
+
+  <h2>최적의 여행 시기</h2>
+  <p>
+    서울을 방문하기 가장 좋은 시기는 <strong>봄(4~5월)</strong>과 <strong>가을(9~10월)</strong>입니다.
+    4월 초중순에는 여의도 윤중로, 남산, 석촌호수 등에서 만개한 벚꽃을 감상할 수 있으며,
+    5월에는 쾌적한 날씨 속에서 서울의 다양한 축제(연등회, 종묘제례 등)를 즐길 수 있습니다.
+    가을에는 북한산, 남산, 창덕궁 후원의 화려한 단풍이 절정을 이루며, 선선한 기온과 맑은
+    하늘 아래 서울 곳곳을 산책하기에 최적의 조건을 갖추고 있습니다. 12월 크리스마스 시즌에는
+    청계천과 명동 일대의 화려한 일루미네이션도 볼 만합니다. 반면 6월 말~7월 중순의 장마
+    시기와 8월의 찜통 더위는 야외 관광에 다소 불편할 수 있으니 참고하시기 바랍니다.
+  </p>
+
+  <div class="cta-section">
+    <h3>서울 여행 일정, AI가 자동으로 만들어 드려요</h3>
+    <p>날짜만 입력하면 현지 날씨, 교통, 인기 관광지를 고려한 최적의 서울 일정이 완성됩니다.</p>
+    <a href="/login" class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem;">무료로 일정 만들기</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>
+    <a href="/">홈</a>
+    <a href="/about">소개</a>
+    <a href="/guides/">가이드</a>
+    <a href="/blog">블로그</a>
+    <a href="/contact">문의</a>
+    <a href="/terms">이용약관</a>
+    <a href="/privacy">개인정보처리방침</a>
+    <a href="/disclaimer">면책조항</a>
+    <a href="/faq">FAQ</a>
+  </p>
+  <p style="margin-top:1rem;">&copy; 2024-2026 TravelPlanner. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
