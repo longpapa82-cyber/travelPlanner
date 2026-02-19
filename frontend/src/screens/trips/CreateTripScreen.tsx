@@ -27,6 +27,7 @@ import {
   Animated,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RouteProp } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
@@ -46,8 +47,11 @@ import { getHeroImageUrl } from '../../utils/images';
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
 
+type CreateTripScreenRouteProp = RouteProp<TripsStackParamList, 'CreateTrip'>;
+
 interface Props {
   navigation: CreateTripScreenNavigationProp;
+  route: CreateTripScreenRouteProp;
 }
 
 // Popular destination suggestions
@@ -76,7 +80,7 @@ const getTravelerOptions = (t: TFunction) => [
   { count: 6, label: t('create.travelers.options.large'), icon: 'account-supervisor' },
 ];
 
-const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
+const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [planningMode, setPlanningMode] = useState<'ai' | 'manual'>('ai');
   const [destination, setDestination] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -122,6 +126,15 @@ const CreateTripScreen: React.FC<Props> = ({ navigation }) => {
       }
     }).catch(() => {});
   }, []);
+
+  // Pre-fill from navigation params (popular/featured destination clicks)
+  useEffect(() => {
+    const params = route.params;
+    if (!params) return;
+    if (params.destination) handleSelectDestination(params.destination);
+    if (params.duration) handleSelectDuration(params.duration);
+    if (params.travelers) handleSelectTravelers(params.travelers);
+  }, [route.params]);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;

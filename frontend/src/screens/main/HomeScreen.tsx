@@ -186,7 +186,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleDestinationPress = (destination: typeof FEATURED_DESTINATIONS[0]) => {
-    navigation.navigate('Trips', { screen: 'CreateTrip' });
+    navigation.navigate('Trips', {
+      screen: 'CreateTrip',
+      params: { destination: destination.name },
+    });
   };
 
   const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
@@ -287,8 +290,15 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       {/* Popular Destinations from Real Data */}
       <FadeIn duration={600} delay={300}>
         <PopularDestinations
-          onDestinationPress={() => {
-            navigation.navigate('Trips', { screen: 'CreateTrip' });
+          onDestinationPress={(dest) => {
+            navigation.navigate('Trips', {
+              screen: 'CreateTrip',
+              params: {
+                destination: dest.destination,
+                duration: dest.averageDuration,
+                travelers: dest.averageTravelers,
+              },
+            });
           }}
         />
       </FadeIn>

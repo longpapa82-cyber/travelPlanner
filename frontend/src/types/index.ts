@@ -162,7 +162,7 @@ export type AuthStackParamList = {
 export type MainTabParamList = {
   Home: undefined;
   Discover: undefined;
-  Trips: { screen?: string } | undefined;
+  Trips: { screen?: string; params?: Record<string, unknown> } | undefined;
   Notifications: undefined;
   Profile: { screen?: string } | undefined;
 };
@@ -221,7 +221,7 @@ export interface PublicUserProfile {
 export type TripsStackParamList = {
   TripList: undefined;
   TripDetail: { tripId: string };
-  CreateTrip: undefined;
+  CreateTrip: { destination?: string; duration?: number; travelers?: number } | undefined;
   EditTrip: { tripId: string };
   Expenses: { tripId: string };
   AddExpense: { tripId: string; expenseId?: string };
