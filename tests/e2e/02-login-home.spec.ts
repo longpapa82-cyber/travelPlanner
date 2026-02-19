@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { BASE_URL, WORKERS, TIMEOUTS } from '../helpers/constants';
+import { BASE_URL, WORKERS, TIMEOUTS, WAIT_UNTIL } from '../helpers/constants';
 import { SEL } from '../helpers/selectors';
 import { ApiHelper } from '../fixtures/api-helper';
 
@@ -18,29 +18,16 @@ const STORAGE_KEYS = {
 // Helper: Navigate past onboarding to login screen
 // ────────────────────────────────────────────────────────────────
 async function navigateToLogin(page: import('@playwright/test').Page) {
-  await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+  // Navigate directly to /login path — React Navigation linking handles the routing.
+  // This is more reliable than clicking the onboarding skip button, which can fail
+  // due to React Native Web's Pressable responder system not responding to Playwright clicks.
+  await page.goto(`${BASE_URL}/login`, { waitUntil: WAIT_UNTIL });
 
-  // The app starts at Onboarding if not authenticated.
-  // Either skip onboarding or we may already be on login.
-  // Try to detect if we're on onboarding by looking for skip/next buttons.
-  const skipButton = page.locator(SEL.auth.skipButton);
-  const loginButton = page.locator(SEL.auth.loginButton);
-
-  // If skip button is visible we're on onboarding — skip to login
-  if (await skipButton.isVisible({ timeout: TIMEOUTS.SHORT }).catch(() => false)) {
-    await skipButton.click();
-    // Wait for login screen elements to appear
-    await page.locator(SEL.auth.emailInput).waitFor({
-      state: 'visible',
-      timeout: TIMEOUTS.MEDIUM,
-    });
-  } else {
-    // Already on login screen or it appeared directly
-    await page.locator(SEL.auth.emailInput).waitFor({
-      state: 'visible',
-      timeout: TIMEOUTS.MEDIUM,
-    });
-  }
+  // Wait for login screen to render
+  await page.locator(SEL.auth.emailInput).waitFor({
+    state: 'visible',
+    timeout: TIMEOUTS.MEDIUM,
+  });
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -54,7 +41,14 @@ async function performLogin(
   await navigateToLogin(page);
   await page.locator(SEL.auth.emailInput).fill(email);
   await page.locator(SEL.auth.passwordInput).fill(password);
-  await page.locator(SEL.auth.loginButton).click();
+  // Try role-based selector first (Button component sets accessibilityRole="button"),
+  // fall back to last text match (submit button is after heading in DOM order)
+  const roleBtn = page.locator(SEL.auth.loginButton);
+  if (await roleBtn.count() > 0) {
+    await roleBtn.first().click();
+  } else {
+    await page.locator(SEL.auth.loginButtonText).last().click();
+  }
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -73,8 +67,8 @@ async function loginViaApi(page: import('@playwright/test').Page) {
   const api = new ApiHelper();
   const tokens = await api.login(USER.email, USER.password);
 
-  // Navigate to a page on the same origin so localStorage is accessible
-  await page.goto(BASE_URL, { waitUntil: 'commit' });
+  // Navigate to origin to set localStorage (domcontentloaded avoids redirect race)
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
 
   // Inject tokens into localStorage (web platform uses localStorage)
   await page.evaluate(
@@ -89,8 +83,8 @@ async function loginViaApi(page: import('@playwright/test').Page) {
     },
   );
 
-  // Reload to pick up the token
-  await page.reload({ waitUntil: 'networkidle' });
+  // Navigate to home with tokens already in place
+  await page.goto(`${BASE_URL}/home`, { waitUntil: 'domcontentloaded' });
   await waitForHomeScreen(page);
 }
 
@@ -113,40 +107,21 @@ test.describe('TC-3: Login', () => {
   test('3.2 Wrong password → error message shown', async ({ page }) => {
     await performLogin(page, USER.email, 'WrongPassword99!');
 
-    // Should see an error alert/message about invalid credentials
-    // React Native Alert.alert renders as a dialog on web
-    const errorVisible = await page
-      .locator('text=/로그인 실패|이메일 또는 비밀번호가 올바르지 않습니다|loginFailed|invalidCredentials|Login failed|Invalid/i')
-      .first()
-      .isVisible({ timeout: TIMEOUTS.MEDIUM })
-      .catch(() => false);
-
-    // Also check for native dialog (window.alert/confirm) which Playwright auto-dismisses
-    // Or check role="alert" elements
-    const alertElement = page.locator('[role="alert"], [role="dialog"]').first();
-    const alertVisible = await alertElement
-      .isVisible({ timeout: TIMEOUTS.SHORT })
-      .catch(() => false);
-
-    expect(errorVisible || alertVisible).toBeTruthy();
+    // LoginScreen renders loginError in a View banner — wait for it to appear
+    const errorBanner = page.locator(
+      'text=/로그인 실패|이메일 또는 비밀번호|Login failed|Invalid|Unauthorized|잘못된/i',
+    ).first();
+    await expect(errorBanner).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
   });
 
   // ── 3.3: Non-existent email shows error ─────────────────────
   test('3.3 Non-existent email → error message', async ({ page }) => {
     await performLogin(page, 'nonexistent-user@fake.com', 'SomePass123!');
 
-    const errorVisible = await page
-      .locator('text=/로그인 실패|이메일 또는 비밀번호가 올바르지 않습니다|Login failed|Invalid|not found/i')
-      .first()
-      .isVisible({ timeout: TIMEOUTS.MEDIUM })
-      .catch(() => false);
-
-    const alertElement = page.locator('[role="alert"], [role="dialog"]').first();
-    const alertVisible = await alertElement
-      .isVisible({ timeout: TIMEOUTS.SHORT })
-      .catch(() => false);
-
-    expect(errorVisible || alertVisible).toBeTruthy();
+    const errorBanner = page.locator(
+      'text=/로그인 실패|이메일 또는 비밀번호|Login failed|Invalid|Unauthorized|잘못된|not found/i',
+    ).first();
+    await expect(errorBanner).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
   });
 
   // ── 3.4: Empty form submit shows validation errors ──────────
@@ -154,7 +129,12 @@ test.describe('TC-3: Login', () => {
     await navigateToLogin(page);
 
     // Leave fields empty and click login
-    await page.locator(SEL.auth.loginButton).click();
+    const emptyLoginBtn = page.locator(SEL.auth.loginButton);
+    if (await emptyLoginBtn.count() > 0) {
+      await emptyLoginBtn.first().click();
+    } else {
+      await page.locator(SEL.auth.loginButtonText).last().click();
+    }
 
     // Should show Alert about missing email or password
     // "입력 오류" / "이메일을 입력해주세요"
@@ -183,22 +163,21 @@ test.describe('TC-3: Login', () => {
     // On web, React Native renders secureTextEntry as input[type="password"]
     await expect(passwordInput).toHaveAttribute('type', 'password');
 
-    // Click the eye icon to toggle visibility
-    // The toggle button has accessibilityLabel "비밀번호 표시" (showPassword) initially
+    // Click the eye icon to toggle visibility — force bypasses Pressable interception
     const toggleButton = page.locator(
       '[aria-label*="비밀번호 표시"], [aria-label*="Show password"]',
     ).first();
-    await toggleButton.click();
+    await toggleButton.click({ force: true });
 
     // After toggle, password should be visible (type changes to "text" or secureTextEntry removed)
     // On React Native Web, toggling secureTextEntry removes type="password"
     await expect(passwordInput).not.toHaveAttribute('type', 'password');
 
-    // Toggle back
+    // Toggle back — force bypasses Pressable interception
     const hideButton = page.locator(
       '[aria-label*="비밀번호 숨기기"], [aria-label*="Hide password"]',
     ).first();
-    await hideButton.click();
+    await hideButton.click({ force: true });
 
     await expect(passwordInput).toHaveAttribute('type', 'password');
   });
@@ -239,12 +218,12 @@ test.describe('TC-3: Login', () => {
     );
 
     // Reload — app should auto-detect token and go to home
-    await page.reload({ waitUntil: 'networkidle' });
+    await page.reload({ waitUntil: WAIT_UNTIL });
     await waitForHomeScreen(page);
 
     // Verify we did NOT land on the login/onboarding screen
-    const loginButton = page.locator(SEL.auth.loginButton);
-    const onLoginScreen = await loginButton.isVisible({ timeout: 3000 }).catch(() => false);
+    const loginButton = page.locator(SEL.auth.loginButtonText);
+    const onLoginScreen = await loginButton.first().isVisible({ timeout: 3000 }).catch(() => false);
 
     // If the login text is visible, it should be from a different context (e.g. quick action, not auth screen)
     // The key check is that home screen content is visible
@@ -273,7 +252,7 @@ test.describe('TC-3: Login', () => {
       },
     );
 
-    await page.reload({ waitUntil: 'networkidle' });
+    await page.reload({ waitUntil: WAIT_UNTIL });
 
     // The app should either:
     // a) Use refresh token to get a new access token and show home, OR
@@ -316,7 +295,12 @@ test.describe('TC-3: Login', () => {
     for (let i = 0; i < 15; i++) {
       await page.locator(SEL.auth.emailInput).fill(`ratelimit-${i}@test.com`);
       await page.locator(SEL.auth.passwordInput).fill('WrongPass123!');
-      await page.locator(SEL.auth.loginButton).click();
+      const rlBtn = page.locator(SEL.auth.loginButton);
+      if (await rlBtn.count() > 0) {
+        await rlBtn.first().click();
+      } else {
+        await page.locator(SEL.auth.loginButtonText).last().click();
+      }
 
       // Brief wait for response
       await page.waitForTimeout(300);
@@ -353,11 +337,10 @@ test.describe('TC-3: Login', () => {
   test('3.10 "계정 만들기" link → register screen', async ({ page }) => {
     await navigateToLogin(page);
 
-    // Click the register/sign-up link
-    // The login screen has: "계정이 없으신가요?" + "회원가입" link
+    // Click the register/sign-up link — force bypasses Pressable interception
     const registerLink = page.locator(SEL.auth.registerButton);
     await expect(registerLink).toBeVisible({ timeout: TIMEOUTS.SHORT });
-    await registerLink.click();
+    await registerLink.click({ force: true });
 
     // Should navigate to register screen
     // Register screen has a name input that login doesn't
@@ -393,7 +376,7 @@ test.describe('TC-4: Home Screen', () => {
 
     for (const labelPattern of statsLabels) {
       await expect(
-        page.locator(`text=${labelPattern.source}`).first(),
+        page.getByText(labelPattern).first(),
       ).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
     }
 
@@ -552,23 +535,27 @@ test.describe('TC-4: Home Screen', () => {
 
   // ── 4.7: Unauthenticated access → redirect to login ────────
   test('4.7 Unauthenticated access → redirect to login', async ({ page }) => {
+    // Wait for page to be stable before manipulating localStorage
+    await page.waitForLoadState('domcontentloaded');
+
     // Clear auth tokens to simulate unauthenticated state
     await page.evaluate((keys) => {
       localStorage.removeItem(keys.AUTH_TOKEN);
       localStorage.removeItem(keys.REFRESH_TOKEN);
     }, STORAGE_KEYS);
 
-    // Reload the app
-    await page.reload({ waitUntil: 'networkidle' });
+    // Reload the app without tokens — should redirect to auth flow
+    await page.reload({ waitUntil: 'domcontentloaded' });
 
     // Should be redirected to auth flow (onboarding or login)
-    const onAuthScreen = await page
-      .locator(
-        `${SEL.auth.emailInput}, ${SEL.auth.skipButton}, ${SEL.auth.startButton}`,
-      )
-      .first()
-      .isVisible({ timeout: TIMEOUTS.MEDIUM })
-      .catch(() => false);
+    // Check each selector separately (can't mix CSS and Playwright text selectors with commas)
+    const emailVisible = await page.locator(SEL.auth.emailInput).first()
+      .isVisible({ timeout: TIMEOUTS.MEDIUM }).catch(() => false);
+    const skipVisible = await page.locator(SEL.auth.skipButton).first()
+      .isVisible({ timeout: 3000 }).catch(() => false);
+    const startVisible = await page.locator(SEL.auth.startButton).first()
+      .isVisible({ timeout: 3000 }).catch(() => false);
+    const onAuthScreen = emailVisible || skipVisible || startVisible;
 
     expect(onAuthScreen).toBeTruthy();
 
@@ -584,10 +571,10 @@ test.describe('TC-4: Home Screen', () => {
 
   // ── 4.8: Dark mode rendering ────────────────────────────────
   test('4.8 Dark mode rendering (toggle and verify)', async ({ page }) => {
-    // Navigate to profile to find the dark mode toggle
+    // Navigate to profile to find the dark mode toggle — force bypasses Pressable
     const profileTab = page.locator(SEL.nav.profileTab).first();
     await expect(profileTab).toBeVisible({ timeout: TIMEOUTS.SHORT });
-    await profileTab.click();
+    await profileTab.click({ force: true });
 
     // Wait for profile screen
     await expect(
@@ -600,8 +587,8 @@ test.describe('TC-4: Home Screen', () => {
       return window.getComputedStyle(body).backgroundColor;
     });
 
-    // Toggle dark mode
-    await page.locator(SEL.profile.darkModeToggle).first().click();
+    // Toggle dark mode — force bypasses Pressable interception
+    await page.locator(SEL.profile.darkModeToggle).first().click({ force: true });
 
     // Wait for theme transition
     await page.waitForTimeout(500);
@@ -620,7 +607,7 @@ test.describe('TC-4: Home Screen', () => {
 
       // Navigate to home to verify dark mode applies there too
       const homeTab = page.locator(SEL.nav.homeTab).first();
-      await homeTab.click();
+      await homeTab.click({ force: true });
       await waitForHomeScreen(page);
 
       // In dark mode, text colors and backgrounds should be different
@@ -634,13 +621,13 @@ test.describe('TC-4: Home Screen', () => {
 
       // Navigate to home and verify it renders in dark mode
       const homeTab = page.locator(SEL.nav.homeTab).first();
-      await homeTab.click();
+      await homeTab.click({ force: true });
       await waitForHomeScreen(page);
     }
 
     // Navigate back to profile and toggle dark mode off to reset state
-    await page.locator(SEL.nav.profileTab).first().click();
-    await page.locator(SEL.profile.darkModeToggle).first().click();
+    await page.locator(SEL.nav.profileTab).first().click({ force: true });
+    await page.locator(SEL.profile.darkModeToggle).first().click({ force: true });
     await page.waitForTimeout(300);
   });
 });

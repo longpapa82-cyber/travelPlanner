@@ -11,7 +11,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { BASE_URL, WORKERS, TIMEOUTS } from '../helpers/constants';
+import { API_URL, BASE_URL, WORKERS, TIMEOUTS, WAIT_UNTIL } from '../helpers/constants';
 import { SEL } from '../helpers/selectors';
 import { ApiHelper } from '../fixtures/api-helper';
 
@@ -19,6 +19,7 @@ import { ApiHelper } from '../fixtures/api-helper';
 
 let api: ApiHelper;
 let token: string;
+let refreshToken: string;
 
 /** All trips for W5 fetched once */
 let trips: any[];
@@ -37,6 +38,7 @@ test.beforeAll(async () => {
   api = new ApiHelper();
   const auth = await api.login(WORKERS.W5.email, WORKERS.W5.password);
   token = auth.accessToken;
+  refreshToken = auth.refreshToken;
 
   trips = await api.getTrips(token);
 
@@ -58,53 +60,29 @@ test.beforeAll(async () => {
 // ─── Helper: authenticate page via localStorage ──────────────────────────────
 
 async function loginViaStorage(page: any) {
-  await page.goto(`${BASE_URL}`);
-  await page.evaluate((t: string) => {
-    localStorage.setItem('@travelplanner:auth_token', t);
-  }, token);
+  await page.goto(`${BASE_URL}`, { waitUntil: 'domcontentloaded' });
+  await page.evaluate(
+    ({ at, rt }: { at: string; rt: string }) => {
+      localStorage.setItem('@travelplanner:auth_token', at);
+      localStorage.setItem('@travelplanner:refresh_token', rt);
+    },
+    { at: token, rt: refreshToken },
+  );
 }
 
 async function navigateToTrip(page: any, tripId: string) {
-  // Navigate to trip detail by URL - React Navigation web uses path-based routing
-  // Try direct URL first, then fall back to navigating through the list
-  await page.goto(`${BASE_URL}`);
-  await page.evaluate((t: string) => {
-    localStorage.setItem('@travelplanner:auth_token', t);
-  }, token);
-
-  // Navigate to trips tab then click into the specific trip
-  await page.goto(`${BASE_URL}`);
-  await page.waitForLoadState('networkidle');
-
-  // Click the trips tab
-  const tripsTab = page.locator(SEL.nav.tripsTab).first();
-  if (await tripsTab.isVisible({ timeout: TIMEOUTS.SHORT }).catch(() => false)) {
-    await tripsTab.click();
-    await page.waitForTimeout(1000);
-  }
-
-  // Find and click the specific trip card
-  const tripCards = page.locator(SEL.list.tripCard);
-  const cardCount = await tripCards.count();
-
-  for (let i = 0; i < cardCount; i++) {
-    const card = tripCards.nth(i);
-    const text = await card.textContent();
-    // Match by tripId in data attribute or by destination text
-    if (text) {
-      const dest = tripId === osakaTripId ? '오사카' : '싱가포르';
-      if (text.includes(dest)) {
-        await card.click();
-        await page.waitForTimeout(1500);
-        return;
-      }
-    }
-  }
-
-  // Fallback: Try direct deep link navigation
-  // React Native Web with Expo Router or React Navigation linking
-  await page.goto(`${BASE_URL}/trips/${tripId}`);
-  await page.waitForLoadState('networkidle');
+  // Inject tokens then navigate directly via linking config (TripDetail: 'trips/:tripId')
+  await page.goto(`${BASE_URL}`, { waitUntil: 'domcontentloaded' });
+  await page.evaluate(
+    ({ at, rt }: { at: string; rt: string }) => {
+      localStorage.setItem('@travelplanner:auth_token', at);
+      localStorage.setItem('@travelplanner:refresh_token', rt);
+    },
+    { at: token, rt: refreshToken },
+  );
+  await page.goto(`${BASE_URL}/trips/${tripId}`, { waitUntil: 'domcontentloaded' });
+  // Allow page to render trip detail content
+  await page.waitForLoadState('load').catch(() => {});
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -151,14 +129,14 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
       // Wait for detail screen
       await expect(page.locator('text=오사카').first()).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
 
-      // Click back button
+      // Click back button — force bypasses Pressable interception
       const backButton = page.locator(SEL.nav.backButton).first();
       if (await backButton.isVisible({ timeout: TIMEOUTS.SHORT }).catch(() => false)) {
-        await backButton.click();
+        await backButton.click({ force: true });
       } else {
         // Fallback: look for arrow-left icon button in the hero
         const arrowBack = page.locator('[aria-label*="뒤로"], [aria-label*="back" i]').first();
-        await arrowBack.click();
+        await arrowBack.click({ force: true });
       }
 
       // Should be back on the trip list - wait for list indicators
@@ -316,8 +294,8 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
       const toggleCircle = page.locator(SEL.activity.toggleCircle).first();
 
       if (await toggleCircle.isVisible({ timeout: TIMEOUTS.MEDIUM }).catch(() => false)) {
-        // Click to toggle completion
-        await toggleCircle.click();
+        // Click to toggle completion — force bypasses Pressable interception
+        await toggleCircle.click({ force: true });
         await page.waitForTimeout(2000); // Wait for API call and re-render
 
         // After toggling, the activity title should have a completed state indicator
@@ -335,13 +313,13 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
         expect(hasCompletedState || textDecoration === 'line-through').toBeTruthy();
 
         // Toggle back to restore original state
-        await toggleCircle.click();
+        await toggleCircle.click({ force: true });
         await page.waitForTimeout(2000);
       } else {
         // Try the timeline dot which acts as the checkbox
         const timelineDot = page.locator('[accessibilityRole="checkbox"]').first();
         if (await timelineDot.isVisible({ timeout: TIMEOUTS.SHORT }).catch(() => false)) {
-          await timelineDot.click();
+          await timelineDot.click({ force: true });
           await page.waitForTimeout(2000);
 
           // Verify toggle happened
@@ -349,7 +327,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
           await expect(completedBadge.first()).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
 
           // Toggle back
-          await timelineDot.click();
+          await timelineDot.click({ force: true });
           await page.waitForTimeout(2000);
         }
       }
@@ -365,7 +343,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
 
       const addButton = page.locator(SEL.detail.addActivityButton).first();
       await expect(addButton).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
-      await addButton.click();
+      await addButton.click({ force: true });
 
       // Modal should appear
       const titleInput = page.locator(SEL.activity.modal.titleInput).first();
@@ -383,12 +361,12 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
       // Select an activity type (click on a type chip)
       const mealChip = page.locator('text=/식사|Meal/i').first();
       if (await mealChip.isVisible({ timeout: TIMEOUTS.SHORT }).catch(() => false)) {
-        await mealChip.click();
+        await mealChip.click({ force: true });
       }
 
       // Save
       const saveButton = page.locator(SEL.activity.modal.saveButton).first();
-      await saveButton.click();
+      await saveButton.click({ force: true });
 
       // Wait for modal to close and activity to appear
       await page.waitForTimeout(3000);
@@ -417,10 +395,10 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
       // Wait for activities to load
       await expect(page.locator('text=테스트 관광').first()).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
 
-      // Click the edit (pencil) icon on the first activity
+      // Click the edit (pencil) icon on the first activity — force bypasses Pressable
       const editIcon = page.locator(SEL.activity.editIcon).first();
       await expect(editIcon).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
-      await editIcon.click();
+      await editIcon.click({ force: true });
 
       // Modal should open in edit mode
       const titleInput = page.locator(SEL.activity.modal.titleInput).first();
@@ -434,9 +412,9 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
       await titleInput.clear();
       await titleInput.fill('테스트 관광 (수정됨)');
 
-      // Save
+      // Save — force bypasses Pressable interception
       const saveButton = page.locator(SEL.activity.modal.saveButton).first();
-      await saveButton.click();
+      await saveButton.click({ force: true });
 
       // Wait for update
       await page.waitForTimeout(3000);
@@ -490,7 +468,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
 
       // Click the last delete icon (the one for the newly added activity)
       const lastDeleteIcon = deleteIcons.nth(deleteCount - 1);
-      await lastDeleteIcon.click();
+      await lastDeleteIcon.click({ force: true });
 
       // Handle confirmation dialog (on web, uses window.confirm)
       page.once('dialog', async (dialog) => {
@@ -504,7 +482,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
       // Also handle the case where a custom confirm dialog is shown in the UI
       const confirmButton = page.locator(SEL.common.deleteConfirmButton).first();
       if (await confirmButton.isVisible({ timeout: 2000 }).catch(() => false)) {
-        await confirmButton.click();
+        await confirmButton.click({ force: true });
       }
 
       // Wait for deletion
@@ -542,7 +520,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
 
       // This tests that the API endpoint exists and works
       try {
-        await fetch(`http://localhost:3001/api/trips/${osakaTripId}/itineraries/${firstItinerary.id}/activities/reorder`, {
+        await fetch(`${API_URL}/trips/${osakaTripId}/itineraries/${firstItinerary.id}/activities/reorder`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -563,7 +541,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
 
         // Restore original order
         const restoreOrder = reverseOrder.reverse();
-        await fetch(`http://localhost:3001/api/trips/${osakaTripId}/itineraries/${firstItinerary.id}/activities/reorder`, {
+        await fetch(`${API_URL}/trips/${osakaTripId}/itineraries/${firstItinerary.id}/activities/reorder`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -720,7 +698,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
       const editButton = page.locator('[aria-label*="여행 수정"], [aria-label*="edit" i]').first();
 
       if (await editButton.isVisible({ timeout: TIMEOUTS.MEDIUM }).catch(() => false)) {
-        await editButton.click();
+        await editButton.click({ force: true });
         await page.waitForTimeout(2000);
 
         // Should be on the edit screen - look for edit screen indicators
@@ -734,7 +712,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
         // Fallback: use the text-based edit button selector
         const editButtonAlt = page.locator(SEL.detail.editButton).first();
         if (await editButtonAlt.isVisible({ timeout: TIMEOUTS.SHORT }).catch(() => false)) {
-          await editButtonAlt.click();
+          await editButtonAlt.click({ force: true });
           await page.waitForTimeout(2000);
 
           const editTitle = page.locator('text=/여행 수정|Edit Trip/i').first();
@@ -754,11 +732,11 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
       const duplicateButton = page.locator(SEL.detail.duplicateButton).first();
 
       if (await duplicateButton.isVisible({ timeout: TIMEOUTS.MEDIUM }).catch(() => false)) {
-        await duplicateButton.click();
+        await duplicateButton.click({ force: true });
       } else {
         // Fallback: look by aria-label
         const dupAlt = page.locator('[aria-label*="복제"], [aria-label*="duplicate" i]').first();
-        await dupAlt.click();
+        await dupAlt.click({ force: true });
       }
 
       // Handle the success alert dialog
@@ -830,7 +808,7 @@ test.describe('TC-7: Trip Detail + Activity Management', () => {
 
       // Try navigating via URL
       await page.goto(`${BASE_URL}/trips/${fakeId}`);
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState(WAIT_UNTIL);
       await page.waitForTimeout(3000);
 
       // Check for the not-found error message

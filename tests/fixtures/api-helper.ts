@@ -1,4 +1,4 @@
-import { API_URL, TEST_PASSWORD } from '../helpers/constants';
+import { API_URL, TEST_PASSWORD, IS_PROD } from '../helpers/constants';
 
 interface UserCredentials {
   email: string;
@@ -35,7 +35,7 @@ export class ApiHelper {
     path: string,
     body?: any,
     token?: string,
-    retries: number = 3,
+    retries: number = IS_PROD ? 6 : 3,
   ): Promise<any> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -44,6 +44,9 @@ export class ApiHelper {
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
+
+    // Production rate limits are stricter (5 login/60s, 3 register/60s)
+    const maxBackoffMs = IS_PROD ? 65_000 : 15_000;
 
     for (let attempt = 0; attempt <= retries; attempt++) {
       const res = await fetch(`${this.baseUrl}${path}`, {
@@ -54,7 +57,7 @@ export class ApiHelper {
 
       // Retry on 429 (Too Many Requests) with exponential backoff
       if (res.status === 429 && attempt < retries) {
-        const waitMs = Math.min(2000 * Math.pow(2, attempt), 15000);
+        const waitMs = Math.min(2000 * Math.pow(2, attempt), maxBackoffMs);
         await new Promise((r) => setTimeout(r, waitMs));
         continue;
       }

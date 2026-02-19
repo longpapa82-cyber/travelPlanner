@@ -9,7 +9,9 @@ export const SEL = {
     emailInput: 'input[placeholder*="이메일"], input[placeholder*="email" i]',
     passwordInput: 'input[type="password"]',
     nameInput: 'input[placeholder*="이름"], input[placeholder*="name" i]',
-    loginButton: 'text=/로그인|Log ?In|ログイン/i',
+    loginButton: '[role="button"] >> text=/로그인|Log ?In|ログイン/i',
+    // Fallback for cases where role="button" is missing (text-only match)
+    loginButtonText: 'text=/로그인|Log ?In|ログイン/i',
     registerButton: 'text=/회원가입|Sign Up|Register/i',
     skipButton: 'text=/건너뛰기|Skip|スキップ/i',
     nextButton: 'text=/다음|Next|次へ/i',
@@ -28,7 +30,7 @@ export const SEL = {
   home: {
     heroSection: '[data-testid="home-hero"]',
     statsCard: '[data-testid="trip-stats"]',
-    newTripButton: 'text=/AI 여행 계획 만들기|Create AI Travel Plan|AI旅行プランを作成/i',
+    newTripButton: 'text=/AI 여행 계획|새 여행 만들기|Create.*Travel|AI旅行プラン/i',
     popularDestinations: '[data-testid="popular-destinations"]',
   },
 

@@ -8,11 +8,11 @@ import { ApiHelper } from '../fixtures/api-helper';
 const W3 = WORKERS.W3;
 const api = new ApiHelper();
 
-/** Login via API, inject tokens into localStorage, then navigate to the create page. */
+/** Login via API, inject tokens into localStorage, then navigate directly to create page URL. */
 async function loginAndNavigateToCreate(page: import('@playwright/test').Page) {
   const tokens = await api.login(W3.email, W3.password);
 
-  // Navigate to a blank page first so we can set localStorage on the same origin
+  // Navigate to origin first so we can set localStorage
   await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
 
   await page.evaluate(
@@ -23,16 +23,8 @@ async function loginAndNavigateToCreate(page: import('@playwright/test').Page) {
     { accessToken: tokens.accessToken, refreshToken: tokens.refreshToken },
   );
 
-  // Reload so the app picks up the stored tokens
-  await page.reload({ waitUntil: 'domcontentloaded' });
-
-  // Wait for authenticated shell — bottom nav should be visible
-  await page.locator(SEL.nav.tripsTab).first().waitFor({ timeout: TIMEOUTS.MEDIUM });
-
-  // Navigate: Trips tab -> CreateTrip
-  await page.locator(SEL.nav.tripsTab).first().click();
-  await page.locator(SEL.home.newTripButton).first().waitFor({ timeout: TIMEOUTS.MEDIUM });
-  await page.locator(SEL.home.newTripButton).first().click();
+  // Navigate directly to create page (bypasses Pressable click interception issues)
+  await page.goto(`${BASE_URL}/trips/create`, { waitUntil: 'domcontentloaded' });
 
   // Wait for create screen destination input
   await page.locator(SEL.create.destinationInput).first().waitFor({ timeout: TIMEOUTS.MEDIUM });

@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { BASE_URL, API_URL, TIMEOUTS } from '../helpers/constants';
+import { BASE_URL, API_URL, TIMEOUTS, WAIT_UNTIL } from '../helpers/constants';
 import { SEL } from '../helpers/selectors';
 
 // ---------------------------------------------------------------------------
@@ -17,7 +17,7 @@ test.describe('TC-1: Onboarding', () => {
         /* no-op in RN Web when storage is unavailable */
       }
     });
-    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await page.goto(BASE_URL, { waitUntil: WAIT_UNTIL });
   });
 
   test('1.1 First visit shows onboarding with 3 slides', async ({ page }) => {
@@ -68,10 +68,10 @@ test.describe('TC-1: Onboarding', () => {
     await nextBtn.click();
     await page.waitForTimeout(400);
 
-    // Click "시작하기"
+    // Click "시작하기" — use force to bypass Pressable responder interception
     const startBtn = page.getByText('시작하기');
     await expect(startBtn).toBeVisible({ timeout: TIMEOUTS.SHORT });
-    await startBtn.click();
+    await startBtn.click({ force: true });
 
     // Should navigate to login screen — look for login-specific text
     await expect(page.getByText('로그인', { exact: false })).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
@@ -84,10 +84,10 @@ test.describe('TC-1: Onboarding', () => {
   test('1.4 Skip button navigates to login immediately', async ({ page }) => {
     await expect(page.getByText('AI 여행 플래너')).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
 
-    // Click "건너뛰기" (Skip)
-    const skipBtn = page.getByText('건너뛰기');
+    // Click "건너뛰기" (Skip) — use force to bypass Pressable responder interception
+    const skipBtn = page.getByRole('button', { name: /건너뛰기|Skip/i });
     await expect(skipBtn).toBeVisible();
-    await skipBtn.click();
+    await skipBtn.click({ force: true });
 
     // Should land on login screen
     await expect(page.getByText('로그인', { exact: false })).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
@@ -119,16 +119,10 @@ test.describe('TC-2: Registration', () => {
    * The flow is: Onboarding → skip → Login → "회원가입" link → Register
    */
   async function goToRegisterScreen(page: Page) {
-    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-
-    // If onboarding is visible, skip it
-    const skipBtn = page.getByText('건너뛰기');
-    try {
-      await skipBtn.waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });
-      await skipBtn.click();
-    } catch {
-      // Onboarding might have been seen before; we could be on login already
-    }
+    // Navigate directly to /login path to bypass onboarding click issues.
+    // React Native Web's Pressable responder system doesn't reliably respond
+    // to Playwright clicks on the skip button.
+    await page.goto(`${BASE_URL}/login`, { waitUntil: WAIT_UNTIL });
 
     // We should now be on the login screen. Click "회원가입" link.
     const registerLink = page.getByText('회원가입', { exact: true });
@@ -137,7 +131,7 @@ test.describe('TC-2: Registration', () => {
 
     // Wait for the register form to appear (name input)
     await page.locator(
-      'input[placeholder*="이름"], input[aria-label*="이름"]'
+      'input:visible[placeholder*="이름"], input:visible[aria-label*="이름"]'
     ).first().waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
   }
 
@@ -148,10 +142,13 @@ test.describe('TC-2: Registration', () => {
     page: Page,
     opts: { name?: string; email?: string; password?: string; confirmPassword?: string }
   ) {
-    const nameInput = page.locator('input[placeholder*="이름"], input[aria-label*="이름"]').first();
-    const emailInput = page.locator('input[placeholder*="이메일"], input[aria-label*="이메일"]').first();
+    // Use :visible pseudo-class to skip hidden inputs from previous screens.
+    // React Navigation Web keeps prior screen DOM nodes hidden (0×0 size)
+    // instead of removing them, so .first() without :visible hits hidden elements.
+    const nameInput = page.locator('input:visible[placeholder*="이름"], input:visible[aria-label*="이름"]').first();
+    const emailInput = page.locator('input:visible[placeholder*="이메일"], input:visible[aria-label*="이메일"]').first();
     // Password inputs use secureTextEntry which renders as type="password"
-    const passwordInputs = page.locator('input[type="password"]');
+    const passwordInputs = page.locator('input:visible[type="password"]');
     const passwordInput = passwordInputs.nth(0);
     const confirmPasswordInput = passwordInputs.nth(1);
 
@@ -168,7 +165,7 @@ test.describe('TC-2: Registration', () => {
       // If password was toggled visible, confirmPassword may also be text type
       // Try to find the confirm password input by placeholder fallback
       const confirmInput = page.locator(
-        'input[placeholder*="다시 입력"], input[aria-label*="비밀번호 확인"]'
+        'input:visible[placeholder*="다시 입력"], input:visible[aria-label*="비밀번호 확인"]'
       ).first();
       try {
         await confirmInput.waitFor({ state: 'visible', timeout: 2000 });
@@ -258,7 +255,7 @@ test.describe('TC-2: Registration', () => {
   test('2.4 Password strength indicator shows weak/medium/strong', async ({ page }) => {
     await goToRegisterScreen(page);
 
-    const passwordInput = page.locator('input[type="password"]').first();
+    const passwordInput = page.locator('input:visible[type="password"]').first();
 
     // Weak password (< 6 chars)
     await passwordInput.fill('abc');
@@ -301,16 +298,15 @@ test.describe('TC-2: Registration', () => {
     await goToRegisterScreen(page);
 
     // Initially password field should be of type="password"
-    const passwordInput = page.locator('input[type="password"]').first();
+    const passwordInput = page.locator('input:visible[type="password"]').first();
     await passwordInput.fill('Secret123');
     await expect(passwordInput).toHaveAttribute('type', 'password');
 
-    // Click the eye icon to toggle visibility
-    // The eye icon is the TouchableOpacity with accessibilityLabel containing "비밀번호 표시" or "Show password"
+    // Click the eye icon to toggle visibility — force bypasses Pressable interception
     const eyeToggle = page.locator(
       '[aria-label*="비밀번호 표시"], [aria-label*="Show password"]'
     ).first();
-    await eyeToggle.click();
+    await eyeToggle.click({ force: true });
 
     // After toggle, the input type should be "text" (secureTextEntry=false)
     // In RN Web, toggling secureTextEntry changes the input type
@@ -318,14 +314,14 @@ test.describe('TC-2: Registration', () => {
     // The password should now be visible (type=text or no longer type=password)
     await expect(visibleInput).not.toHaveAttribute('type', 'password', { timeout: TIMEOUTS.SHORT });
 
-    // Toggle back to hidden
+    // Toggle back to hidden — force bypasses Pressable interception
     const eyeHideToggle = page.locator(
       '[aria-label*="비밀번호 숨기기"], [aria-label*="Hide password"]'
     ).first();
-    await eyeHideToggle.click();
+    await eyeHideToggle.click({ force: true });
 
     // Should be password type again
-    const hiddenInput = page.locator('input[type="password"]').first();
+    const hiddenInput = page.locator('input:visible[type="password"]').first();
     await expect(hiddenInput).toBeVisible({ timeout: TIMEOUTS.SHORT });
   });
 
@@ -410,7 +406,7 @@ test.describe('TC-2: Registration', () => {
     const loginClickable = loginLink.or(
       page.getByText('로그인', { exact: true }).last()
     );
-    await loginClickable.first().click();
+    await loginClickable.first().click({ force: true });
 
     // Should navigate to login screen — verify login-specific elements
     await expect(page.getByText('TravelPlanner')).toBeVisible({ timeout: TIMEOUTS.MEDIUM });

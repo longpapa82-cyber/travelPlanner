@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { BASE_URL, WORKERS, TIMEOUTS } from '../helpers/constants';
+import { BASE_URL, WORKERS, TIMEOUTS, WAIT_UNTIL } from '../helpers/constants';
 import { SEL } from '../helpers/selectors';
 import { ApiHelper } from '../fixtures/api-helper';
 
@@ -28,10 +28,11 @@ test.describe('TC-6: Trip List', () => {
 
   /**
    * Helper: Navigate to the Trip List page with authenticated localStorage tokens.
+   * Uses domcontentloaded + direct /trips URL to avoid redirect-to-onboarding race.
    */
   async function goToTripList(page: import('@playwright/test').Page) {
-    // Set tokens before navigating to the app
-    await page.goto(`${BASE_URL}`);
+    // Navigate to origin to set localStorage (use domcontentloaded to avoid redirect race)
+    await page.goto(`${BASE_URL}`, { waitUntil: 'domcontentloaded' });
     await page.evaluate(
       ({ at, rt }) => {
         localStorage.setItem('@travelplanner:auth_token', at);
@@ -40,22 +41,17 @@ test.describe('TC-6: Trip List', () => {
       { at: accessToken, rt: refreshToken },
     );
 
-    // Navigate to the Trips tab
-    await page.goto(`${BASE_URL}`);
-    await page.waitForLoadState('networkidle');
-
-    // Click the Trips tab in bottom navigation
-    const tripsTab = page.locator(SEL.nav.tripsTab).first();
-    await tripsTab.click();
-    await page.waitForLoadState('networkidle');
+    // Navigate directly to trips page with tokens already in localStorage
+    await page.goto(`${BASE_URL}/trips`, { waitUntil: 'domcontentloaded' });
+    await page.waitForLoadState('load');
   }
 
   // ──────────────────────────────────────────────────────────────
   // 6.1: List loads with skeleton then data (5 trips visible)
   // ──────────────────────────────────────────────────────────────
   test('6.1 list loads with skeleton then data (5 trips visible)', async ({ page }) => {
-    // Set tokens and navigate
-    await page.goto(`${BASE_URL}`);
+    // Set tokens and navigate directly to trips page
+    await page.goto(`${BASE_URL}`, { waitUntil: 'domcontentloaded' });
     await page.evaluate(
       ({ at, rt }) => {
         localStorage.setItem('@travelplanner:auth_token', at);
@@ -63,12 +59,8 @@ test.describe('TC-6: Trip List', () => {
       },
       { at: accessToken, rt: refreshToken },
     );
-    await page.goto(`${BASE_URL}`);
-    await page.waitForLoadState('domcontentloaded');
-
-    // Click trips tab
-    const tripsTab = page.locator(SEL.nav.tripsTab).first();
-    await tripsTab.click();
+    await page.goto(`${BASE_URL}/trips`, { waitUntil: 'domcontentloaded' });
+    await page.waitForLoadState('load');
 
     // Wait for trip cards to appear (data loaded)
     await page.waitForSelector(SEL.list.tripCard, { timeout: TIMEOUTS.MEDIUM });
@@ -118,7 +110,7 @@ test.describe('TC-6: Trip List', () => {
     // Click the "전체" filter (should already be selected by default)
     const allFilter = page.locator(SEL.list.filterAll).first();
     await allFilter.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
 
     // Verify 5 trips are shown
     const cards = page.locator(SEL.list.tripCard);
@@ -135,7 +127,7 @@ test.describe('TC-6: Trip List', () => {
     // Click the "예정" filter
     const upcomingFilter = page.locator(SEL.list.filterUpcoming).first();
     await upcomingFilter.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
 
     // Wait for filtered results
     await page.waitForTimeout(1000);
@@ -159,7 +151,7 @@ test.describe('TC-6: Trip List', () => {
     // Click the "진행중" filter
     const ongoingFilter = page.locator(SEL.list.filterOngoing).first();
     await ongoingFilter.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
 
     await page.waitForTimeout(1000);
 
@@ -180,7 +172,7 @@ test.describe('TC-6: Trip List', () => {
     // Click the "완료" filter
     const completedFilter = page.locator(SEL.list.filterCompleted).first();
     await completedFilter.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
 
     await page.waitForTimeout(1000);
 
@@ -205,7 +197,7 @@ test.describe('TC-6: Trip List', () => {
 
     // Wait for 500ms debounce + network
     await page.waitForTimeout(800);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
 
     // Only 도쿄 trip should be visible
     const cards = page.locator(SEL.list.tripCard);
@@ -260,7 +252,7 @@ test.describe('TC-6: Trip List', () => {
     await firstCard.click();
 
     // Wait for navigation to trip detail
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
     await page.waitForTimeout(1000);
 
     // TripDetail screen should have detail-specific elements
@@ -295,7 +287,7 @@ test.describe('TC-6: Trip List', () => {
     // Filter to completed trips to find the delete button
     const completedFilter = page.locator(SEL.list.filterCompleted).first();
     await completedFilter.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
     await page.waitForTimeout(1000);
 
     const completedCards = page.locator(SEL.list.tripCard);
@@ -326,7 +318,7 @@ test.describe('TC-6: Trip List', () => {
     // Switch back to "전체" to see overall count decreased
     const allFilter = page.locator(SEL.list.filterAll).first();
     await allFilter.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
     await page.waitForTimeout(1000);
 
     const finalCards = page.locator(SEL.list.tripCard);
@@ -343,7 +335,7 @@ test.describe('TC-6: Trip List', () => {
     // Check ongoing trips -- filter to ongoing
     const ongoingFilter = page.locator(SEL.list.filterOngoing).first();
     await ongoingFilter.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
     await page.waitForTimeout(1000);
 
     // Verify ongoing trip cards exist
@@ -360,7 +352,7 @@ test.describe('TC-6: Trip List', () => {
     // Check upcoming trips -- filter to upcoming
     const upcomingFilter = page.locator(SEL.list.filterUpcoming).first();
     await upcomingFilter.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
     await page.waitForTimeout(1000);
 
     // Verify upcoming trip cards exist
@@ -388,7 +380,7 @@ test.describe('TC-6: Trip List', () => {
 
     // Wait for debounce (500ms) + network request
     await page.waitForTimeout(800);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
     await page.waitForTimeout(500);
 
     // Either no trip cards, or the empty state message should appear
@@ -410,7 +402,7 @@ test.describe('TC-6: Trip List', () => {
     // Clear search to restore state
     await searchInput.fill('');
     await page.waitForTimeout(800);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
   });
 
   // ──────────────────────────────────────────────────────────────
@@ -444,7 +436,7 @@ test.describe('TC-6: Trip List', () => {
 
     // Wait for potential refresh cycle
     await page.waitForTimeout(2000);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState(WAIT_UNTIL);
 
     // Verify that trip cards are still present after the refresh gesture
     const afterCount = await page.locator(SEL.list.tripCard).count();

@@ -1,5 +1,5 @@
 import { test as base, type BrowserContext, type Page } from '@playwright/test';
-import { WORKERS, API_URL, TEST_PASSWORD } from '../helpers/constants';
+import { WORKERS, API_URL, TEST_PASSWORD, IS_PROD } from '../helpers/constants';
 import { ApiHelper } from './api-helper';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -29,6 +29,16 @@ export const test = base.extend<AuthFixtures>({
   },
 
   authToken: async ({ apiHelper, workerUser }, use) => {
+    // In production, prefer stored auth state to avoid rate limiting
+    const stateDir = path.join(__dirname, '..', '.auth');
+    const stateFile = path.join(stateDir, `${workerUser.email}.json`);
+    if (IS_PROD && fs.existsSync(stateFile)) {
+      const state = JSON.parse(fs.readFileSync(stateFile, 'utf-8'));
+      if (state.accessToken) {
+        await use(state.accessToken);
+        return;
+      }
+    }
     const tokens = await apiHelper.login(workerUser.email, workerUser.password);
     await use(tokens.accessToken);
   },
