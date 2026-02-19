@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>하와이 여행 가이드 - TravelPlanner</title>
+  <meta name="description" content="하와이 여행 완벽 가이드. 와이키키 비치, 다이아몬드 헤드, 진주만 등 추천 관광지와 포케, 로코모코 등 현지 음식, 렌터카 팁까지 한눈에 확인하세요." />
+  <link rel="canonical" href="https://mytravelplanner.duckdns.org/guides/hawaii" />
+  <meta property="og:title" content="하와이 여행 가이드 - TravelPlanner" />
+  <meta property="og:description" content="하와이 추천 관광지, 현지 음식, 여행 팁을 한눈에. AI가 만드는 나만의 하와이 여행 계획." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://mytravelplanner.duckdns.org/guides/hawaii" />
+  <meta property="og:site_name" content="TravelPlanner" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="theme-color" content="#2563EB" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
+    .logo span { color: #f59e0b; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #2563EB; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #2563EB; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    .page-hero { background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 3rem 1.5rem; text-align: center; }
+    .page-hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .page-hero p { color: #475569; max-width: 600px; margin: 0 auto; }
+
+    .breadcrumb { max-width: 800px; margin: 0 auto; padding: 1rem 1.5rem 0; font-size: 0.85rem; color: #64748b; }
+    .breadcrumb a { color: #2563EB; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .content { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+    .content h2 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1e293b; border-left: 4px solid #2563EB; padding-left: 0.75rem; }
+    .content p { color: #334155; margin-bottom: 1rem; font-size: 1rem; line-height: 1.8; }
+    .content ul { margin: 1rem 0; padding-left: 1.5rem; }
+    .content li { margin-bottom: 0.5rem; color: #334155; }
+
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .info-card { background: #f8fafc; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
+    .info-card .icon { font-size: 1.75rem; margin-bottom: 0.4rem; }
+    .info-card h3 { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .info-card p { color: #64748b; font-size: 0.85rem; margin-bottom: 0; }
+
+    .spot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .spot-card { background: #f8fafc; border-radius: 0.75rem; padding: 1.25rem; }
+    .spot-card h3 { font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem; color: #1e293b; }
+    .spot-card p { color: #64748b; font-size: 0.9rem; margin-bottom: 0; }
+
+    .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 100px; }
+
+    .footer { background: #1e293b; color: #94a3b8; padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; }
+    .footer a { color: #94a3b8; margin: 0 0.75rem; }
+    .footer a:hover { color: #fff; }
+
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .page-hero h1 { font-size: 1.5rem; }
+      .info-grid { grid-template-columns: repeat(2, 1fr); }
+      .spot-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">Travel<span>Planner</span></a>
+    <nav class="nav">
+      <a href="/">홈</a>
+      <a href="/about">소개</a>
+      <a href="/guides" style="color:#2563EB;font-weight:600;">가이드</a>
+      <a href="/contact">문의</a>
+      <a href="/login" class="btn btn-primary">로그인</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <h1>하와이 여행 가이드</h1>
+  <p>태평양의 낙원, 하와이의 모든 것을 한눈에 확인하세요</p>
+</section>
+
+<div class="breadcrumb">
+  <a href="/">홈</a> &gt; <a href="/guides">가이드</a> &gt; 하와이
+</div>
+
+<main class="content">
+  <h2>하와이 소개</h2>
+  <p>
+    하와이는 태평양 한가운데 자리한 미국의 50번째 주로, 전 세계 여행자들이 꿈꾸는 최고의 휴양지입니다.
+    오아후, 마우이, 빅 아일랜드, 카우아이 등 주요 섬으로 구성되어 있으며, 각 섬마다 독특한 매력과
+    자연경관을 자랑합니다. 연중 따뜻한 기후와 맑은 바다, 울창한 열대우림, 화산 지형이 어우러져
+    해변 휴양부터 하이킹, 스노클링, 서핑까지 다양한 액티비티를 즐길 수 있습니다.
+    하와이 원주민의 전통 문화인 '알로하 스피릿'은 이 섬을 방문하는 모든 이에게 따뜻한 환영의 인사를 전합니다.
+    자연과 문화, 모험과 휴식이 완벽하게 조화를 이루는 하와이는 허니문, 가족 여행, 혼자 여행 모두에게 최적의 여행지입니다.
+  </p>
+
+  <h2>실용 정보</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="icon">💵</div>
+      <h3>통화</h3>
+      <p>미국 달러 (USD)</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🕐</div>
+      <h3>시차</h3>
+      <p>KST -19시간</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🗣️</div>
+      <h3>언어</h3>
+      <p>영어</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🔌</div>
+      <h3>전압</h3>
+      <p>120V / 60Hz (A, B타입)</p>
+    </div>
+  </div>
+
+  <h2>추천 관광지</h2>
+  <p>
+    하와이에는 세계적으로 유명한 관광 명소가 가득합니다. 처음 방문하는 여행자라면 아래 6곳은 반드시
+    일정에 포함시키는 것을 추천합니다. 각 관광지는 서로 다른 매력을 가지고 있어 하와이의 다양한 면모를 경험할 수 있습니다.
+  </p>
+  <div class="spot-grid">
+    <div class="spot-card">
+      <h3>🏖️ 와이키키 비치</h3>
+      <p>호놀룰루의 상징적인 해변으로, 부드러운 백사장과 잔잔한 파도가 특징입니다. 서핑 초보자에게 최적이며, 해변을 따라 쇼핑과 다이닝을 즐길 수 있습니다.</p>
+    </div>
+    <div class="spot-card">
+      <h3>⛰️ 다이아몬드 헤드</h3>
+      <p>와이키키 동쪽에 위치한 화산 분화구로, 약 30~40분의 트레킹 코스입니다. 정상에서 바라보는 호놀룰루 시내와 태평양의 파노라마 전경이 압권입니다.</p>
+    </div>
+    <div class="spot-card">
+      <h3>🎖️ 진주만 (Pearl Harbor)</h3>
+      <p>제2차 세계대전의 역사가 살아 숨 쉬는 곳입니다. USS 애리조나 기념관과 미주리 전함 등을 통해 전쟁의 역사를 생생하게 체험할 수 있습니다.</p>
+    </div>
+    <div class="spot-card">
+      <h3>🌊 노스쇼어</h3>
+      <p>겨울철 세계 최고의 서핑 파도가 몰려오는 오아후 북쪽 해안입니다. 할레이바 마을에서 새우 트럭과 쉐이브아이스를 맛보는 것도 필수 코스입니다.</p>
+    </div>
+    <div class="spot-card">
+      <h3>🐠 하나우마 베이</h3>
+      <p>자연보호구역으로 지정된 스노클링 명소입니다. 맑은 물 속에서 열대어와 바다거북을 가까이에서 관찰할 수 있습니다. 사전 예약이 필수입니다.</p>
+    </div>
+    <div class="spot-card">
+      <h3>🏔️ 쿠알로아 랜치</h3>
+      <p>영화 '쥬라기 공원'의 촬영지로 유명한 자연 공원입니다. ATV, 승마, 짚라인 등 다양한 액티비티를 즐길 수 있으며, 장엄한 산맥 풍경이 인상적입니다.</p>
+    </div>
+  </div>
+
+  <!-- Ad slot -->
+  <div class="ad-container">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <h2>현지 음식</h2>
+  <p>
+    하와이는 다양한 문화가 융합된 독특한 음식 문화를 자랑합니다. 일본, 중국, 한국, 포르투갈, 필리핀 등
+    이민자들의 요리 전통이 하와이 원주민 음식과 어우러져 다른 곳에서는 맛볼 수 없는 특별한 맛을 탄생시켰습니다.
+  </p>
+  <ul>
+    <li><strong>포케 (Poke)</strong> — 신선한 참치나 연어를 간장과 참기름에 버무린 하와이의 대표 음식입니다. 밥 위에 올려 포케 보울로 즐기는 것이 일반적이며, 와이키키 곳곳에서 다양한 포케 전문점을 찾을 수 있습니다.</li>
+    <li><strong>로코모코 (Loco Moco)</strong> — 밥 위에 햄버그 스테이크, 달걀 프라이, 그레이비 소스를 얹은 하와이식 덮밥입니다. 든든한 한 끼로 현지인과 관광객 모두에게 인기가 높습니다.</li>
+    <li><strong>말라사다 (Malasada)</strong> — 포르투갈에서 유래한 도넛으로, 설탕을 듬뿍 입힌 겉은 바삭하고 속은 폭신한 식감이 특징입니다. 레너드 베이커리가 가장 유명한 말라사다 맛집입니다.</li>
+    <li><strong>쉐이브아이스 (Shave Ice)</strong> — 곱게 간 얼음 위에 열대과일 시럽을 뿌린 하와이식 빙수입니다. 노스쇼어의 마쓰모토 쉐이브아이스가 특히 유명하며, 더운 날 더위를 식히기에 안성맞춤입니다.</li>
+  </ul>
+
+  <h2>여행 팁</h2>
+  <p>
+    하와이 여행을 200% 즐기기 위해 알아두면 좋은 실용적인 팁들을 소개합니다.
+    특히 렌터카와 자외선 차단은 하와이 여행의 필수 준비물입니다.
+  </p>
+  <ul>
+    <li><strong>렌터카 필수</strong> — 하와이는 대중교통이 매우 제한적입니다. 오아후 외의 섬에서는 렌터카가 사실상 필수이며, 성수기에는 조기 예약이 중요합니다. 국제운전면허증을 반드시 준비하세요.</li>
+    <li><strong>섬 이동</strong> — 섬 간 이동은 항공편(Hawaiian Airlines, Southwest Airlines)이 주요 수단입니다. 페리는 마우이-라나이 구간만 운행됩니다. 섬 이동 시간은 약 30~50분이 소요됩니다.</li>
+    <li><strong>자외선 차단</strong> — 하와이의 자외선은 한국보다 훨씬 강합니다. SPF 50 이상의 선크림을 수시로 발라야 하며, 산호초 보호를 위해 리프세이프(Reef-safe) 제품을 사용하는 것이 현지 법으로 권장됩니다.</li>
+    <li><strong>팁 문화</strong> — 미국 문화권이므로 레스토랑 15~20%, 택시 15%, 호텔 벨보이 $1~2 정도의 팁이 관례입니다.</li>
+  </ul>
+
+  <h2>최적의 여행 시기</h2>
+  <p>
+    하와이는 연중 여행이 가능하지만, 가장 인기 있는 시기는 4월에서 10월 사이의 건기 시즌입니다.
+    이 시기에는 맑은 날이 많고 평균 기온이 27~30도로 해변과 야외 활동에 최적입니다.
+    11월부터 3월은 우기이지만 열대성 소나기가 짧게 내리는 정도이며, 이 시기에 노스쇼어의 대형 파도를
+    구경할 수 있어 서핑 팬들에게는 오히려 최고의 시즌입니다. 12월~1월은 크리스마스와 새해 연휴로
+    가장 붐비는 성수기이므로 항공권과 숙소를 최소 3개월 전에 예약하는 것을 추천합니다.
+    가격 대비 최고의 시기는 4~5월과 9~10월로, 날씨가 좋으면서도 비교적 한적하게 여행을 즐길 수 있습니다.
+  </p>
+
+  <p style="margin-top:2rem;padding:1.25rem;background:#eff6ff;border-radius:0.75rem;text-align:center;">
+    TravelPlanner로 나만의 하와이 여행 계획을 세워보세요!<br/>
+    <a href="/login" style="color:#2563EB;font-weight:600;">지금 시작하기 &rarr;</a>
+  </p>
+</main>
+
+<footer class="footer">
+  <p>
+    <a href="/">홈</a>
+    <a href="/about">소개</a>
+    <a href="/guides">가이드</a>
+    <a href="/contact">문의</a>
+    <a href="/terms">이용약관</a>
+    <a href="/privacy">개인정보처리방침</a>
+  </p>
+  <p style="margin-top:1rem;">&copy; 2024-2026 TravelPlanner. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

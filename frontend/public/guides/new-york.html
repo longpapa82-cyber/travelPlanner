@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>뉴욕 여행 가이드 - TravelPlanner</title>
+  <meta name="description" content="뉴욕 여행 완벽 가이드. 자유의 여신상, 타임스퀘어, 센트럴파크 등 필수 관광지와 맛집, 교통, 여행 팁을 한눈에 확인하세요." />
+  <link rel="canonical" href="https://mytravelplanner.duckdns.org/guides/new-york" />
+  <meta property="og:title" content="뉴욕 여행 가이드 - TravelPlanner" />
+  <meta property="og:description" content="뉴욕 여행 완벽 가이드. 필수 관광지, 맛집, 교통, 여행 팁 총정리" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://mytravelplanner.duckdns.org/guides/new-york" />
+  <meta property="og:site_name" content="TravelPlanner" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="theme-color" content="#2563EB" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
+    .logo span { color: #f59e0b; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #2563EB; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #2563EB; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    .page-hero { background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 3rem 1.5rem; text-align: center; }
+    .page-hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .page-hero p { color: #475569; max-width: 600px; margin: 0 auto; }
+
+    .breadcrumb { max-width: 800px; margin: 0 auto; padding: 1rem 1.5rem 0; font-size: 0.85rem; color: #64748b; }
+    .breadcrumb a { color: #2563EB; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .content { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+    .content h2 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1e293b; border-left: 4px solid #2563EB; padding-left: 0.75rem; }
+    .content h3 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 0.75rem; color: #334155; }
+    .content p { color: #334155; margin-bottom: 1rem; font-size: 1rem; line-height: 1.8; }
+    .content ul { margin: 1rem 0; padding-left: 1.5rem; }
+    .content li { margin-bottom: 0.5rem; color: #334155; }
+
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .info-card { background: #f8fafc; border-radius: 0.75rem; padding: 1.25rem; text-align: center; border: 1px solid #e2e8f0; }
+    .info-card .icon { font-size: 1.75rem; margin-bottom: 0.5rem; }
+    .info-card .label { font-size: 0.8rem; color: #64748b; margin-bottom: 0.25rem; }
+    .info-card .value { font-weight: 600; color: #1e293b; font-size: 1rem; }
+
+    .spot-card { background: #f8fafc; border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1rem; border-left: 3px solid #2563EB; }
+    .spot-card h4 { font-weight: 600; color: #1e293b; margin-bottom: 0.5rem; }
+    .spot-card p { margin-bottom: 0; font-size: 0.95rem; }
+
+    .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 100px; }
+
+    .footer { background: #1e293b; color: #94a3b8; padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; }
+    .footer a { color: #94a3b8; margin: 0 0.75rem; }
+    .footer a:hover { color: #fff; }
+
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .page-hero h1 { font-size: 1.5rem; }
+      .info-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">Travel<span>Planner</span></a>
+    <nav class="nav">
+      <a href="/">홈</a>
+      <a href="/about">소개</a>
+      <a href="/guides" style="color:#2563EB;font-weight:600;">가이드</a>
+      <a href="/contact">문의</a>
+      <a href="/login" class="btn btn-primary">로그인</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <h1>뉴욕 여행 가이드</h1>
+  <p>세계의 수도 뉴욕! 자유의 여신상부터 브로드웨이까지, 꿈의 도시를 완벽하게 즐기는 방법</p>
+</section>
+
+<div class="breadcrumb">
+  <a href="/">홈</a> &gt; <a href="/guides">여행 가이드</a> &gt; 뉴욕
+</div>
+
+<main class="content">
+  <h2>뉴욕 소개</h2>
+  <p>
+    뉴욕은 미국 동부 해안에 위치한 세계 최대의 도시 중 하나로, 매년 약 6,000만 명 이상의 관광객이 방문하는 글로벌 여행 명소입니다.
+    맨해튼, 브루클린, 퀸스, 브롱스, 스태튼 아일랜드 등 5개의 자치구로 이루어져 있으며, 각 지역마다 고유한 문화와 매력을 지니고 있습니다.
+    세계 금융의 중심지 월스트리트, 공연 예술의 성지 브로드웨이, 다양한 민족이 공존하는 문화의 용광로로서 뉴욕은 어떤 여행자에게나
+    잊을 수 없는 경험을 선사합니다. 24시간 잠들지 않는 도시라는 별명처럼 낮에는 세계적인 미술관과 공원을, 밤에는 화려한 네온사인과
+    재즈 클럽을 즐길 수 있습니다.
+  </p>
+
+  <h2>실용 정보</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="icon">💵</div>
+      <div class="label">통화</div>
+      <div class="value">미국 달러 (USD)</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">🕐</div>
+      <div class="label">시차</div>
+      <div class="value">KST -14시간</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">🗣️</div>
+      <div class="label">언어</div>
+      <div class="value">영어</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">🔌</div>
+      <div class="label">전압</div>
+      <div class="value">120V / 60Hz</div>
+    </div>
+  </div>
+
+  <h2>추천 관광지</h2>
+
+  <div class="spot-card">
+    <h4>🗽 자유의 여신상 (Statue of Liberty)</h4>
+    <p>뉴욕을 상징하는 세계적인 랜드마크입니다. 배터리 파크에서 페리를 타고 리버티 섬으로 이동하며, 왕복 약 2~3시간이 소요됩니다. 왕관 전망대에 올라가려면 최소 3개월 전 예약이 필수입니다. 엘리스 섬의 이민 박물관도 함께 관람할 수 있어 미국 이민 역사를 생생하게 체험할 수 있습니다.</p>
+  </div>
+
+  <div class="spot-card">
+    <h4>🌃 타임스퀘어 (Times Square)</h4>
+    <p>세계에서 가장 유명한 교차로인 타임스퀘어는 거대한 LED 전광판과 브로드웨이 극장가로 유명합니다. 낮보다 밤에 방문하면 화려한 네온사인의 진가를 느낄 수 있습니다. TKTS 부스에서는 당일 브로드웨이 공연 할인 티켓을 구매할 수 있으니 공연 관람을 계획 중이라면 꼭 들러보세요.</p>
+  </div>
+
+  <div class="spot-card">
+    <h4>🌿 센트럴파크 (Central Park)</h4>
+    <p>맨해튼 한복판에 위치한 거대한 도시 공원으로, 남북 길이가 약 4km에 달합니다. 베데스다 분수, 보우 브릿지, 벨베데레 성 등 수많은 포토 스팟이 있으며, 자전거 대여나 보트 타기 등 다양한 액티비티를 즐길 수 있습니다. 봄과 가을에 특히 아름다우며, 뉴요커들의 일상을 가장 가까이에서 느낄 수 있는 장소입니다.</p>
+  </div>
+
+  <div class="spot-card">
+    <h4>🌉 브루클린 브릿지 (Brooklyn Bridge)</h4>
+    <p>1883년 완공된 역사적인 현수교로, 맨해튼과 브루클린을 연결합니다. 도보로 약 30~40분이면 전체를 걸을 수 있으며, 다리 위에서 바라보는 맨해튼 스카이라인은 뉴욕 여행의 하이라이트 중 하나입니다. 해질 무렵에 브루클린 쪽에서 맨해튼 방향으로 걸으면 황금빛 석양과 도시 야경을 동시에 감상할 수 있습니다.</p>
+  </div>
+
+  <div class="spot-card">
+    <h4>🏙️ 엠파이어 스테이트 빌딩 (Empire State Building)</h4>
+    <p>뉴욕의 대표적인 마천루로 86층과 102층에 전망대가 있습니다. 맑은 날에는 최대 130km까지 시야가 확보되어 뉴저지, 코네티컷, 펜실베이니아까지 조망할 수 있습니다. 야간 개장도 하므로 뉴욕의 환상적인 야경을 즐기기에 최적의 장소입니다. 대기 시간을 줄이려면 온라인 사전 예매를 추천합니다.</p>
+  </div>
+
+  <div class="spot-card">
+    <h4>🎨 메트로폴리탄 미술관 (The Met)</h4>
+    <p>세계 3대 미술관 중 하나로, 200만 점 이상의 소장품을 보유하고 있습니다. 이집트 신전부터 인상파 회화, 현대 미술까지 인류 문명 5,000년의 역사를 한곳에서 만날 수 있습니다. 전체를 다 보려면 며칠이 걸리므로 관심 분야를 정해서 관람하는 것이 효율적입니다. 입장료는 뉴욕 거주자는 자율 기부이며, 관광객은 정해진 요금을 지불해야 합니다.</p>
+  </div>
+
+  <!-- Ad slot -->
+  <div class="ad-container">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <h2>뉴욕 음식</h2>
+
+  <h3>🍕 뉴욕 스타일 피자</h3>
+  <p>
+    얇고 넓은 도우에 토마토 소스와 모짜렐라 치즈를 올린 뉴욕 스타일 피자는 이 도시를 대표하는 음식입니다.
+    조각 피자(slice) 한 장을 반으로 접어서 먹는 것이 뉴요커 스타일입니다. Joe's Pizza, Di Fara Pizza,
+    Prince Street Pizza 등이 현지인들에게도 사랑받는 유명 피자집입니다. 한 조각에 3~5달러 정도로 부담 없이 즐길 수 있어
+    여행 중 간편한 식사로 안성맞춤입니다.
+  </p>
+
+  <h3>🥯 뉴욕 베이글</h3>
+  <p>
+    뉴욕 베이글은 겉은 바삭하고 속은 쫄깃한 식감이 특징입니다. 크림치즈를 듬뿍 바른 베이글은 뉴요커들의 대표적인 아침 식사로,
+    Russ & Daughters, Ess-a-Bagel, Murray's Bagels 등에서 정통 뉴욕 베이글을 맛볼 수 있습니다.
+    훈제 연어(lox)를 곁들인 베이글은 꼭 한번 시도해보길 추천합니다.
+  </p>
+
+  <h3>🥩 스테이크하우스</h3>
+  <p>
+    뉴욕은 세계적인 스테이크하우스의 본고장이기도 합니다. Peter Luger, Keens Steakhouse, Smith & Wollensky 등
+    100년이 넘는 역사를 자랑하는 레스토랑에서 드라이에이징 스테이크를 맛볼 수 있습니다. 가격대는 1인당 80~150달러 정도이지만,
+    뉴욕 여행에서 한 번쯤은 특별한 식사를 경험해볼 만한 가치가 있습니다.
+  </p>
+
+  <h2>여행 팁</h2>
+
+  <h3>🚇 메트로카드 & 교통</h3>
+  <p>
+    뉴욕 지하철은 24시간 운행하며 맨해튼 내 이동에 가장 효율적인 교통수단입니다. OMNY 시스템으로 신용카드나 스마트폰 탭으로
+    바로 탑승할 수 있으며, 7일 무제한 메트로카드($34)를 구매하면 지하철과 버스를 횟수 제한 없이 이용할 수 있습니다.
+    택시보다 우버나 리프트가 가격이 투명하고 편리하며, 맨해튼 남쪽에서 미드타운까지는 걸어서 이동하는 것도 좋은 방법입니다.
+  </p>
+
+  <h3>💰 팁 문화</h3>
+  <p>
+    미국에서는 팁 문화가 매우 중요합니다. 레스토랑에서는 세전 금액의 18~20%를 팁으로 지불하는 것이 일반적이며,
+    카페에서는 1~2달러, 택시에서는 15~20% 정도가 적정합니다. 팁을 주지 않으면 매우 무례한 행동으로 여겨지므로
+    반드시 챙기시기 바랍니다. 신용카드 결제 시 영수증에 팁 금액을 직접 기입하게 됩니다.
+  </p>
+
+  <h3>🛡️ 안전 수칙</h3>
+  <p>
+    뉴욕은 대체로 안전한 도시이지만 관광지에서는 소매치기에 주의해야 합니다. 지갑과 핸드폰은 앞주머니에 넣고,
+    늦은 밤에 인적이 드문 골목은 피하는 것이 좋습니다. 비상 시 911로 전화하면 경찰, 소방, 구급 서비스를 이용할 수 있습니다.
+    타임스퀘어 주변의 코스튬 캐릭터들은 사진 촬영 후 팁을 요구하므로 미리 인지하고 있으면 좋습니다.
+  </p>
+
+  <h2>추천 여행 시기</h2>
+  <p>
+    뉴욕 여행의 최적 시기는 <strong>4~6월(봄)</strong>과 <strong>9~11월(가을)</strong>입니다. 봄에는 센트럴파크의
+    벚꽃이 만발하고 날씨가 온화하여 도보 관광에 적합합니다. 가을에는 단풍으로 물든 공원과 선선한 날씨가 매력적이며,
+    할로윈과 추수감사절 등 미국 특유의 축제도 경험할 수 있습니다. 여름(7~8월)은 기온이 35도 이상 올라가는 날이 많고
+    습도가 높아 체력 소모가 크지만 야외 공연과 페스티벌이 풍성합니다. 겨울(12~2월)은 매우 춥지만 록펠러 센터의
+    크리스마스 트리, 새해 전야 타임스퀘어 볼드롭 등 겨울에만 즐길 수 있는 특별한 이벤트가 있습니다.
+  </p>
+</main>
+
+<footer class="footer">
+  <p>
+    <a href="/">홈</a>
+    <a href="/about">소개</a>
+    <a href="/guides">가이드</a>
+    <a href="/contact">문의</a>
+    <a href="/terms">이용약관</a>
+    <a href="/privacy">개인정보처리방침</a>
+  </p>
+  <p style="margin-top:1rem;">&copy; 2024-2026 TravelPlanner. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
