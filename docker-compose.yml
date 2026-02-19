@@ -37,6 +37,7 @@ services:
     restart: unless-stopped
 
   backend:
+    image: travelplanner-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -68,10 +69,13 @@ services:
     restart: unless-stopped
 
   frontend:
+    image: travelplanner-frontend:latest
     build:
       context: ./frontend
     ports:
       - '${FRONTEND_PORT:-8080}:8080'
+    volumes:
+      - ./frontend/public:/static-content:ro
     depends_on:
       backend:
         condition: service_healthy

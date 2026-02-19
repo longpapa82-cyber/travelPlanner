@@ -28,10 +28,15 @@ RUN chown -R nginx:nginx /var/cache/nginx /var/log/nginx /etc/nginx/conf.d && \
     touch /var/run/nginx.pid && chown nginx:nginx /var/run/nginx.pid
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expo SPA build output
 COPY --from=builder --chown=nginx:nginx /app/dist /usr/share/nginx/html
 
-# Copy static public assets (robots.txt, manifest.json, sw.js)
-COPY --from=builder --chown=nginx:nginx /app/public /usr/share/nginx/html
+# Static content (HTML pages, robots.txt, ads.txt, etc.) in separate directory.
+# Volume-mountable: override via docker-compose volume for instant HTML updates
+# without requiring a full Docker rebuild.
+RUN mkdir -p /static-content/guides && chown -R nginx:nginx /static-content
+COPY --from=builder --chown=nginx:nginx /app/public /static-content
 
 # Run as non-root user
 USER nginx
