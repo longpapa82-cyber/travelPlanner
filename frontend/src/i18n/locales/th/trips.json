@@ -229,6 +229,8 @@
     "addActivity": "เพิ่มกิจกรรม",
     "affiliateSection": "จองโรงแรมและกิจกรรม",
     "affiliateSubtitle": "จองที่พักและประสบการณ์ที่ดีที่สุดใน {{destination}}",
+    "affiliateAccom": "ที่พัก",
+    "affiliateExperience": "ทัวร์และกิจกรรม",
     "tabs": {
       "itinerary": "แผนการเดินทาง",
       "map": "แผนที่",

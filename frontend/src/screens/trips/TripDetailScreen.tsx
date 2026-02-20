@@ -468,7 +468,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           {/* Budget Summary */}
           {activeTab === 'itinerary' && <BudgetSummary trip={trip} />}
 
-          {/* Affiliate Links */}
+          {/* Affiliate Links — Accommodations */}
           {activeTab === 'itinerary' && (
             <Animated.View
               style={[
@@ -480,19 +480,39 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
               ]}
             >
               <View style={styles.affiliateSectionHeader}>
-                <Icon name="bookmark-outline" size={20} color={theme.colors.primary} />
+                <Icon name="bed" size={20} color={theme.colors.primary} />
                 <Text style={[styles.affiliateSectionTitle, { color: theme.colors.text }]}>
-                  {t('detail.affiliateSection')}
+                  {t('detail.affiliateAccom', { defaultValue: t('detail.affiliateSection') })}
                 </Text>
               </View>
               <Text style={[styles.affiliateSectionSubtitle, { color: theme.colors.textSecondary }]}>
                 {t('detail.affiliateSubtitle', { destination: trip.destination })}
               </Text>
               <View style={styles.affiliateButtons}>
-                <AffiliateLink provider="booking" destination={trip.destination} checkIn={trip.startDate} checkOut={trip.endDate} travelers={trip.numberOfTravelers} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
+                <AffiliateLink provider="booking" destination={trip.destination} checkIn={trip.startDate} checkOut={trip.endDate} travelers={trip.numberOfTravelers} tripId={trip.id} variant="primary" size="medium" style={styles.affiliateButton} />
                 <AffiliateLink provider="expedia" destination={trip.destination} checkIn={trip.startDate} checkOut={trip.endDate} travelers={trip.numberOfTravelers} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
-                <AffiliateLink provider="airbnb" destination={trip.destination} checkIn={trip.startDate} checkOut={trip.endDate} travelers={trip.numberOfTravelers} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
-                <AffiliateLink provider="hotels" destination={trip.destination} checkIn={trip.startDate} checkOut={trip.endDate} travelers={trip.numberOfTravelers} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
+              </View>
+            </Animated.View>
+          )}
+
+          {/* Affiliate Links — Experiences & Tours */}
+          {activeTab === 'itinerary' && (
+            <Animated.View
+              style={[
+                styles.affiliateSection,
+                {
+                  backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50],
+                  opacity: fadeAnim,
+                },
+              ]}
+            >
+              <View style={styles.affiliateSectionHeader}>
+                <Icon name="ticket-outline" size={20} color={colors.secondary[500]} />
+                <Text style={[styles.affiliateSectionTitle, { color: theme.colors.text }]}>
+                  {t('detail.affiliateExperience', { defaultValue: 'Tours & Activities' })}
+                </Text>
+              </View>
+              <View style={styles.affiliateButtons}>
                 <AffiliateLink provider="viator" destination={trip.destination} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
                 <AffiliateLink provider="klook" destination={trip.destination} tripId={trip.id} variant="outline" size="medium" style={styles.affiliateButton} />
               </View>

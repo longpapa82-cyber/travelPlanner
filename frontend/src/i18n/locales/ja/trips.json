@@ -235,6 +235,8 @@
     "addActivity": "アクティビティを追加",
     "affiliateSection": "宿泊＆アクティビティ予約",
     "affiliateSubtitle": "{{destination}}の最高の宿泊施設と体験を予約",
+    "affiliateAccom": "宿泊予約",
+    "affiliateExperience": "ツアー & アクティビティ",
     "tabs": {
       "itinerary": "旅程",
       "map": "地図",

@@ -345,13 +345,14 @@ export class AnalyticsService {
         totalDuration / relevantTrips.length,
       );
 
-      // 평균 여행 인원
+      // 평균 여행 인원 (이상치 제외: 50명 초과 데이터 cap 적용)
       const totalTravelers = relevantTrips.reduce(
-        (sum, trip) => sum + trip.numberOfTravelers,
+        (sum, trip) => sum + Math.min(trip.numberOfTravelers, 50),
         0,
       );
-      const recommendedTravelers = Math.round(
-        totalTravelers / relevantTrips.length,
+      const recommendedTravelers = Math.min(
+        Math.round(totalTravelers / relevantTrips.length),
+        50,
       );
 
       // 인기 월

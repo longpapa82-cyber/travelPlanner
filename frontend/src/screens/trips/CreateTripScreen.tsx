@@ -575,10 +575,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 onRecommendationsLoaded={(recommendations) => {
                   // Auto-fill recommended values
                   if (recommendations.recommendedDuration && !startDate && !endDate) {
-                    handleSelectDuration(recommendations.recommendedDuration);
+                    handleSelectDuration(Math.min(recommendations.recommendedDuration, 90));
                   }
                   if (recommendations.recommendedTravelers && numberOfTravelers === 1) {
-                    setNumberOfTravelers(recommendations.recommendedTravelers);
+                    handleSelectTravelers(recommendations.recommendedTravelers);
                   }
                 }}
               />

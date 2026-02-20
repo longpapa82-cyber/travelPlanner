@@ -229,6 +229,8 @@
     "addActivity": "Th\u00eam ho\u1ea1t \u0111\u1ed9ng",
     "affiliateSection": "\u0110\u1eb7t kh\u00e1ch s\u1ea1n & ho\u1ea1t \u0111\u1ed9ng",
     "affiliateSubtitle": "\u0110\u1eb7t ch\u1ed7 \u1edf v\u00e0 tr\u1ea3i nghi\u1ec7m t\u1ed1t nh\u1ea5t t\u1ea1i {{destination}}",
+    "affiliateAccom": "\u0110\u1eb7t ch\u1ed7 \u1edf",
+    "affiliateExperience": "Tour v\u00e0 ho\u1ea1t \u0111\u1ed9ng",
     "tabs": {
       "itinerary": "L\u1ecbch tr\u00ecnh",
       "map": "B\u1ea3n \u0111\u1ed3",

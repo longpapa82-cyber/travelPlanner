@@ -229,6 +229,8 @@
     "addActivity": "Aktivität hinzufügen",
     "affiliateSection": "Hotels & Aktivitäten buchen",
     "affiliateSubtitle": "Die besten Unterkünfte und Erlebnisse in {{destination}} buchen",
+    "affiliateAccom": "Unterkünfte",
+    "affiliateExperience": "Touren & Aktivitäten",
     "tabs": {
       "itinerary": "Reiseplan",
       "map": "Karte",

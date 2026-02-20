@@ -12,7 +12,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import Constants from 'expo-constants';
 
-const ADSENSE_CLIENT_ID = Constants.expoConfig?.extra?.adsenseClientId || 'ca-pub-7330738950092177';
+const ADSENSE_CLIENT_ID = Constants.expoConfig?.extra?.adsenseClientId || '';
 
 interface AdSenseProps {
   /**
@@ -132,8 +132,8 @@ const AdSense: React.FC<AdSenseProps> = ({
     };
   }, [testMode]);
 
-  // Don't render on non-web platforms
-  if (Platform.OS !== 'web') {
+  // Don't render on non-web platforms or without client ID
+  if (Platform.OS !== 'web' || !ADSENSE_CLIENT_ID) {
     return null;
   }
 

@@ -235,6 +235,8 @@
     "addActivity": "Add Activity",
     "affiliateSection": "Book Hotels & Activities",
     "affiliateSubtitle": "Book the best stays and experiences in {{destination}}",
+    "affiliateAccom": "Accommodations",
+    "affiliateExperience": "Tours & Activities",
     "tabs": {
       "itinerary": "Itinerary",
       "map": "Map",

@@ -20,6 +20,7 @@ import { initWebVitals } from './src/common/web-vitals';
 import { API_URL, STORAGE_KEYS } from './src/constants/config';
 import { secureStorage } from './src/utils/storage';
 import { useAppOpenAd } from './src/components/ads/useAppOpenAd';
+import { initializeAds } from './src/utils/initAds';
 
 // Initialize Sentry before app renders
 initSentry();
@@ -177,6 +178,7 @@ function App() {
     async function prepare() {
       await Promise.all([
         initI18n(),
+        initializeAds(),
         offlineCache.clearExpired(),
         Font.loadAsync({
           'material-community': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),

@@ -235,6 +235,8 @@
     "addActivity": "활동 추가",
     "affiliateSection": "숙소 & 액티비티 예약",
     "affiliateSubtitle": "{{destination}} 최고의 숙소와 체험을 예약하세요",
+    "affiliateAccom": "숙소 예약",
+    "affiliateExperience": "투어 & 액티비티",
     "tabs": {
       "itinerary": "일정",
       "map": "지도",

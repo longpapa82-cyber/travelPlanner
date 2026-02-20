@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SectionProps, SectionPadding, SectionSpacing } from './Section.types';
-import { theme } from '../../../constants/theme';
 import { useTheme } from '../../../contexts/ThemeContext';
 
 export const Section: React.FC<SectionProps> = ({
@@ -17,7 +16,7 @@ export const Section: React.FC<SectionProps> = ({
   style,
   contentStyle,
 }) => {
-  const { isDark } = useTheme();
+  const { isDark, theme } = useTheme();
 
   const getPadding = (size: SectionPadding): number => {
     switch (size) {

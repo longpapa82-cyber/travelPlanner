@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import analyticsService, { DestinationStats } from '../services/analytics.service';
-import { theme } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { colors } from '../constants/theme';
 
 interface PopularDestinationsProps {
   onDestinationPress?: (destination: DestinationStats) => void;
@@ -20,8 +21,11 @@ export const PopularDestinations: React.FC<PopularDestinationsProps> = ({
   onDestinationPress,
 }) => {
   const { t } = useTranslation('components');
+  const { theme, isDark } = useTheme();
   const [destinations, setDestinations] = useState<DestinationStats[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
   useEffect(() => {
     loadPopularDestinations();
@@ -126,7 +130,7 @@ export const PopularDestinations: React.FC<PopularDestinationsProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   container: {
     marginBottom: 24,
   },
@@ -159,14 +163,18 @@ const styles = StyleSheet.create({
   },
   card: {
     width: 280,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: isDark ? colors.neutral[800] : colors.neutral[0],
     borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    ...(isDark
+      ? { borderWidth: 1, borderColor: colors.neutral[700] }
+      : {
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 3,
+        }),
   },
   rankBadge: {
     position: 'absolute',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,8 @@ import { useTranslation } from 'react-i18next';
 import analyticsService, {
   DestinationRecommendations,
 } from '../services/analytics.service';
-import { theme } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { colors } from '../constants/theme';
 
 interface DestinationInsightsProps {
   destination: string;
@@ -23,9 +24,12 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
   onRecommendationsLoaded,
 }) => {
   const { t } = useTranslation('components');
+  const { theme, isDark } = useTheme();
   const [recommendations, setRecommendations] =
     useState<DestinationRecommendations | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
   useEffect(() => {
     if (destination && destination.trim().length >= 2) {
@@ -222,14 +226,14 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   container: {
-    backgroundColor: theme.colors.surface,
+    backgroundColor: isDark ? colors.neutral[800] : colors.neutral[0],
     borderRadius: 12,
     padding: 16,
     marginTop: 12,
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: isDark ? colors.neutral[700] : colors.neutral[200],
   },
   loadingContainer: {
     flexDirection: 'row',
@@ -262,7 +266,7 @@ const styles = StyleSheet.create({
   insightCard: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: theme.colors.background,
+    backgroundColor: isDark ? colors.neutral[900] : colors.neutral[50],
     borderRadius: 8,
     padding: 12,
     alignItems: 'center',
@@ -301,9 +305,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: theme.colors.background,
+    backgroundColor: isDark ? colors.neutral[900] : colors.neutral[50],
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: isDark ? colors.neutral[700] : colors.neutral[200],
   },
   currentMonthBadge: {
     backgroundColor: theme.colors.primary,
@@ -351,9 +355,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: theme.colors.background,
+    backgroundColor: isDark ? colors.neutral[900] : colors.neutral[50],
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: isDark ? colors.neutral[700] : colors.neutral[200],
   },
   activityText: {
     fontSize: 12,
@@ -366,7 +370,7 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
+    borderTopColor: isDark ? colors.neutral[700] : colors.neutral[200],
   },
   footerText: {
     fontSize: 11,

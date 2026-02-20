@@ -229,6 +229,8 @@
     "addActivity": "添加活动",
     "affiliateSection": "预订酒店和活动",
     "affiliateSubtitle": "在{{destination}}预订最佳住宿和体验",
+    "affiliateAccom": "住宿预订",
+    "affiliateExperience": "旅游与活动",
     "tabs": {
       "itinerary": "行程",
       "map": "地图",

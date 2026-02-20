@@ -416,8 +416,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               accessibilityRole="button"
               accessibilityLabel={t('quickActions.myTrips')}
             >
-              <View style={[styles.quickActionIcon, { backgroundColor: colors.primary[100] }]}>
-                <Icon name="map-marker-multiple" size={28} color={colors.primary[600]} />
+              <View style={[styles.quickActionIcon, { backgroundColor: isDark ? `${colors.primary[500]}20` : colors.primary[100] }]}>
+                <Icon name="map-marker-multiple" size={28} color={isDark ? colors.primary[400] : colors.primary[600]} />
               </View>
               <Text style={styles.quickActionTitle}>{t('quickActions.myTrips')}</Text>
               <Text style={styles.quickActionDescription}>
@@ -433,8 +433,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               accessibilityRole="button"
               accessibilityLabel={t('quickActions.inspiration')}
             >
-              <View style={[styles.quickActionIcon, { backgroundColor: colors.secondary[100] }]}>
-                <Icon name="compass-outline" size={28} color={colors.secondary[600]} />
+              <View style={[styles.quickActionIcon, { backgroundColor: isDark ? `${colors.secondary[500]}20` : colors.secondary[100] }]}>
+                <Icon name="compass-outline" size={28} color={isDark ? colors.secondary[400] : colors.secondary[600]} />
               </View>
               <Text style={styles.quickActionTitle}>{t('quickActions.inspiration')}</Text>
               <Text style={styles.quickActionDescription}>
