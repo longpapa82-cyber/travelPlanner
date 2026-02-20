@@ -63,8 +63,11 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const getPasswordStrength = (password: string): 'weak' | 'medium' | 'strong' => {
-    if (password.length < 6) return 'weak';
-    if (password.length < 10) return 'medium';
+    if (password.length < 8) return 'weak';
+    const hasLetter = /[A-Za-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    if (!hasLetter || !hasNumber) return 'weak';
+    if (password.length < 12) return 'medium';
     return 'strong';
   };
 
@@ -85,7 +88,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    if (password.length < 6) {
+    if (password.length < 8 || !/(?=.*[A-Za-z])(?=.*\d)/.test(password)) {
       showToast({ type: 'warning', message: t('register.alerts.passwordMinLength'), position: 'top' });
       return;
     }

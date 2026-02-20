@@ -77,13 +77,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const token = await secureStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
 
       if (token) {
-        // Token exists, get user profile
         const profile = await apiService.getProfile();
         setUser(profile);
         registerPushAfterLogin();
+      } else {
+        // Access token lost (web page refresh) — try silent refresh
+        const refreshToken = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+        if (refreshToken) {
+          const response = await apiService.refreshToken(refreshToken);
+          await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
+          await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
+          const profile = await apiService.getProfile();
+          setUser(profile);
+          registerPushAfterLogin();
+        }
       }
     } catch (error) {
-      // Silent fail - user sees login screen
+      // Auth failed — clear stale tokens and show login screen
+      await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+      await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
     } finally {
       setIsLoading(false);
     }

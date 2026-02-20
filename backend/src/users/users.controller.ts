@@ -55,6 +55,9 @@ export class UsersController {
     if (body.newPassword.length < 8) {
       throw new BadRequestException(t('password.minLength', lang));
     }
+    if (!/(?=.*[A-Za-z])(?=.*\d)/.test(body.newPassword)) {
+      throw new BadRequestException('Password must contain at least one letter and one number');
+    }
     return this.usersService.changePassword(
       userId,
       body.currentPassword,

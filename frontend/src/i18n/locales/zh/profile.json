@@ -44,13 +44,13 @@
     "current": "当前密码",
     "currentPlaceholder": "请输入当前密码",
     "new": "新密码",
-    "newPlaceholder": "请输入新密码（6位以上）",
+    "newPlaceholder": "请输入新密码（8位以上，需包含字母和数字）",
     "confirm": "确认新密码",
     "confirmPlaceholder": "请再次输入新密码",
     "submit": "修改密码",
     "alerts": {
       "allFieldsRequired": "请填写所有项目",
-      "minLength": "新密码至少需要6个字符",
+      "minLength": "新密码至少需要8个字符，需包含字母和数字",
       "mismatch": "两次输入的密码不一致",
       "success": "密码已修改",
       "failed": "密码修改失败"

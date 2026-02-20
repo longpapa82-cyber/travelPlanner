@@ -38,8 +38,8 @@
     "@nestjs/swagger": "^11.2.6",
     "@nestjs/throttler": "^6.5.0",
     "@nestjs/typeorm": "^11.0.0",
-    "@sentry/nestjs": "^10.38.0",
-    "@sentry/profiling-node": "^10.38.0",
+    "@sentry/nestjs": "^10.39.0",
+    "@sentry/profiling-node": "^10.39.0",
     "@types/passport-google-oauth20": "^2.0.17",
     "@types/passport-local": "^1.0.38",
     "@types/passport-oauth2": "^1.8.0",
@@ -99,6 +99,10 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
+  },
+  "overrides": {
+    "minimatch": ">=9.0.5",
+    "glob": ">=10.4.0"
   },
   "jest": {
     "moduleFileExtensions": [

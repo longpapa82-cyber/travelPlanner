@@ -1,43 +1,36 @@
 import { Platform } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 
-/**
- * Cross-platform secure storage utility
- * - Web: Uses localStorage
- * - Native: Uses react-native-keychain
- */
-
 const isWeb = Platform.OS === 'web';
 
+// In-memory store for sensitive tokens on web (XSS protection)
+const memoryStore = new Map<string, string>();
+
+// Keys stored only in memory on web — never written to localStorage
+const MEMORY_ONLY_KEYS = ['@travelplanner:auth_token'];
+
 export const secureStorage = {
-  /**
-   * Store a value securely
-   */
   async setItem(key: string, value: string): Promise<void> {
     if (isWeb) {
-      // Web: Use localStorage
-      localStorage.setItem(key, value);
+      if (MEMORY_ONLY_KEYS.includes(key)) {
+        memoryStore.set(key, value);
+      } else {
+        localStorage.setItem(key, value);
+      }
     } else {
-      // Native: Use Keychain
-      await Keychain.setGenericPassword(key, value, {
-        service: key,
-      });
+      await Keychain.setGenericPassword(key, value, { service: key });
     }
   },
 
-  /**
-   * Retrieve a stored value
-   */
   async getItem(key: string): Promise<string | null> {
     if (isWeb) {
-      // Web: Use localStorage
+      if (MEMORY_ONLY_KEYS.includes(key)) {
+        return memoryStore.get(key) ?? null;
+      }
       return localStorage.getItem(key);
     } else {
-      // Native: Use Keychain
       try {
-        const credentials = await Keychain.getGenericPassword({
-          service: key,
-        });
+        const credentials = await Keychain.getGenericPassword({ service: key });
         return credentials ? credentials.password : null;
       } catch (error) {
         return null;
@@ -45,39 +38,32 @@ export const secureStorage = {
     }
   },
 
-  /**
-   * Remove a stored value
-   */
   async removeItem(key: string): Promise<void> {
     if (isWeb) {
-      // Web: Use localStorage
-      localStorage.removeItem(key);
+      if (MEMORY_ONLY_KEYS.includes(key)) {
+        memoryStore.delete(key);
+      } else {
+        localStorage.removeItem(key);
+      }
     } else {
-      // Native: Use Keychain
       try {
-        await Keychain.resetGenericPassword({
-          service: key,
-        });
+        await Keychain.resetGenericPassword({ service: key });
       } catch (error) {
         // Silent fail — best-effort removal
       }
     }
   },
 
-  /**
-   * Clear all stored values
-   */
   async clear(): Promise<void> {
     if (isWeb) {
-      // Web: Clear all items with our prefix
+      memoryStore.clear();
       const keys = Object.keys(localStorage);
       keys.forEach((key) => {
-        if (key.startsWith('auth_') || key.startsWith('refresh_')) {
+        if (key.startsWith('@travelplanner:')) {
           localStorage.removeItem(key);
         }
       });
     } else {
-      // Native: Reset all keychains we use
       try {
         await Keychain.resetGenericPassword({ service: 'auth_token' });
         await Keychain.resetGenericPassword({ service: 'refresh_token' });

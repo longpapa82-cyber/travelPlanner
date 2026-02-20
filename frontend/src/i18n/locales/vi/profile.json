@@ -44,13 +44,13 @@
     "current": "M\u1eadt kh\u1ea9u hi\u1ec7n t\u1ea1i",
     "currentPlaceholder": "Nh\u1eadp m\u1eadt kh\u1ea9u hi\u1ec7n t\u1ea1i",
     "new": "M\u1eadt kh\u1ea9u m\u1edbi",
-    "newPlaceholder": "Nh\u1eadp m\u1eadt kh\u1ea9u m\u1edbi (t\u1ed1i thi\u1ec3u 6 k\u00fd t\u1ef1)",
+    "newPlaceholder": "Nh\u1eadp m\u1eadt kh\u1ea9u m\u1edbi (t\u1ed1i thi\u1ec3u 8 k\u00fd t\u1ef1 bao g\u1ed3m ch\u1eef c\u00e1i v\u00e0 s\u1ed1)",
     "confirm": "X\u00e1c nh\u1eadn m\u1eadt kh\u1ea9u m\u1edbi",
     "confirmPlaceholder": "Nh\u1eadp l\u1ea1i m\u1eadt kh\u1ea9u m\u1edbi",
     "submit": "\u0110\u1ed5i m\u1eadt kh\u1ea9u",
     "alerts": {
       "allFieldsRequired": "Vui l\u00f2ng \u0111i\u1ec1n \u0111\u1ea7y \u0111\u1ee7 th\u00f4ng tin",
-      "minLength": "M\u1eadt kh\u1ea9u m\u1edbi ph\u1ea3i c\u00f3 \u00edt nh\u1ea5t 6 k\u00fd t\u1ef1",
+      "minLength": "M\u1eadt kh\u1ea9u m\u1edbi ph\u1ea3i c\u00f3 \u00edt nh\u1ea5t 8 k\u00fd t\u1ef1 bao g\u1ed3m ch\u1eef c\u00e1i v\u00e0 s\u1ed1",
       "mismatch": "M\u1eadt kh\u1ea9u m\u1edbi kh\u00f4ng kh\u1edbp",
       "success": "\u0110\u1ed5i m\u1eadt kh\u1ea9u th\u00e0nh c\u00f4ng",
       "failed": "\u0110\u1ed5i m\u1eadt kh\u1ea9u th\u1ea5t b\u1ea1i"

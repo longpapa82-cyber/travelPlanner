@@ -44,13 +44,13 @@
     "current": "Current Password",
     "currentPlaceholder": "Enter current password",
     "new": "New Password",
-    "newPlaceholder": "Enter new password (6+ characters)",
+    "newPlaceholder": "Enter new password (8+ characters, letters and numbers)",
     "confirm": "Confirm New Password",
     "confirmPlaceholder": "Re-enter new password",
     "submit": "Change Password",
     "alerts": {
       "allFieldsRequired": "Please fill in all fields",
-      "minLength": "New password must be at least 6 characters",
+      "minLength": "New password must be at least 8 characters with letters and numbers",
       "mismatch": "New passwords do not match",
       "success": "Password changed successfully",
       "failed": "Failed to change password"

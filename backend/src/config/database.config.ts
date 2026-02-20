@@ -1,5 +1,20 @@
 import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import * as fs from 'fs';
+
+function buildSslConfig(): false | { rejectUnauthorized: boolean; ca?: string } {
+  if (process.env.DB_SSL === 'false') return false;
+  if (process.env.DB_SSL !== 'true' && process.env.NODE_ENV !== 'production') return false;
+
+  const rejectUnauthorized = process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false';
+  const sslConfig: { rejectUnauthorized: boolean; ca?: string } = { rejectUnauthorized };
+
+  if (process.env.DB_SSL_CA) {
+    sslConfig.ca = fs.readFileSync(process.env.DB_SSL_CA, 'utf8');
+  }
+
+  return sslConfig;
+}
 
 export default registerAs(
   'database',
@@ -21,12 +36,7 @@ export default registerAs(
         ? false
         : process.env.NODE_ENV === 'production',
     logging: process.env.NODE_ENV === 'development',
-    ssl:
-      process.env.DB_SSL === 'false'
-        ? false
-        : process.env.NODE_ENV === 'production'
-          ? { rejectUnauthorized: false }
-          : false,
+    ssl: buildSslConfig(),
     extra: {
       max: parseInt(process.env.DB_POOL_MAX || '10', 10),
       idleTimeoutMillis: 30000,

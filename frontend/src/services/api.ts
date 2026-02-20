@@ -16,6 +16,8 @@ function isNetworkError(error: any): boolean {
 class ApiService {
   private api: AxiosInstance;
   private onAuthExpired: (() => void) | null = null;
+  private isRefreshing = false;
+  private refreshSubscribers: Array<(token: string) => void> = [];
 
   constructor() {
     this.api = axios.create({
@@ -31,6 +33,15 @@ class ApiService {
 
   setOnAuthExpired(callback: () => void) {
     this.onAuthExpired = callback;
+  }
+
+  private onRefreshed(token: string) {
+    this.refreshSubscribers.forEach((cb) => cb(token));
+    this.refreshSubscribers = [];
+  }
+
+  private addRefreshSubscriber(callback: (token: string) => void) {
+    this.refreshSubscribers.push(callback);
   }
 
   private setupInterceptors() {
@@ -53,7 +64,7 @@ class ApiService {
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor - Unwrap envelope + handle errors
+    // Response interceptor - Unwrap envelope + auto-refresh on 401
     this.api.interceptors.response.use(
       (response) => {
         // Unwrap { data, meta } envelope from backend
@@ -63,11 +74,53 @@ class ApiService {
         return response;
       },
       async (error: AxiosError) => {
-        if (error.response?.status === 401) {
-          // Token expired or invalid - clear storage and trigger logout
-          await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-          await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-          this.onAuthExpired?.();
+        const originalRequest = error.config as any;
+
+        // Skip refresh for auth endpoints themselves to avoid loops
+        const isAuthEndpoint = originalRequest?.url?.includes('/auth/refresh') ||
+          originalRequest?.url?.includes('/auth/login') ||
+          originalRequest?.url?.includes('/auth/register');
+
+        if (error.response?.status === 401 && !originalRequest?._retry && !isAuthEndpoint) {
+          originalRequest._retry = true;
+
+          if (!this.isRefreshing) {
+            this.isRefreshing = true;
+
+            try {
+              const storedRefresh = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+              if (!storedRefresh) throw new Error('No refresh token');
+
+              const response = await this.api.post('/auth/refresh', { refreshToken: storedRefresh });
+              const data = response.data?.accessToken ? response.data : response.data?.data;
+              const { accessToken, refreshToken: newRefreshToken } = data;
+
+              await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, accessToken);
+              await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
+
+              this.isRefreshing = false;
+              this.onRefreshed(accessToken);
+
+              // Retry original request with new token
+              originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+              return this.api(originalRequest);
+            } catch (refreshError) {
+              this.isRefreshing = false;
+              this.refreshSubscribers = [];
+              await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+              await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+              this.onAuthExpired?.();
+              return Promise.reject(error);
+            }
+          }
+
+          // Queue requests while refresh is in progress
+          return new Promise((resolve) => {
+            this.addRefreshSubscriber((newToken: string) => {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              resolve(this.api(originalRequest));
+            });
+          });
         }
 
         return Promise.reject(error);

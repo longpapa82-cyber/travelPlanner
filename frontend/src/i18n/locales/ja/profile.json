@@ -44,13 +44,13 @@
     "current": "現在のパスワード",
     "currentPlaceholder": "現在のパスワードを入力",
     "new": "新しいパスワード",
-    "newPlaceholder": "新しいパスワードを入力（6文字以上）",
+    "newPlaceholder": "新しいパスワードを入力（8文字以上、英数字を含む）",
     "confirm": "新しいパスワードの確認",
     "confirmPlaceholder": "新しいパスワードを再入力",
     "submit": "パスワードを変更",
     "alerts": {
       "allFieldsRequired": "すべての項目を入力してください",
-      "minLength": "新しいパスワードは6文字以上である必要があります",
+      "minLength": "新しいパスワードは8文字以上（英数字を含む）である必要があります",
       "mismatch": "新しいパスワードが一致しません",
       "success": "パスワードが変更されました",
       "failed": "パスワードの変更に失敗しました"

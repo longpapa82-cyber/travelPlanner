@@ -44,13 +44,13 @@
     "current": "Contraseña actual",
     "currentPlaceholder": "Ingresa contraseña actual",
     "new": "Nueva contraseña",
-    "newPlaceholder": "Ingresa nueva contraseña (6+ caracteres)",
+    "newPlaceholder": "Ingresa nueva contraseña (8+ caracteres con letras y números)",
     "confirm": "Confirmar nueva contraseña",
     "confirmPlaceholder": "Vuelve a ingresar la nueva contraseña",
     "submit": "Cambiar contraseña",
     "alerts": {
       "allFieldsRequired": "Por favor completa todos los campos",
-      "minLength": "La nueva contraseña debe tener al menos 6 caracteres",
+      "minLength": "La nueva contraseña debe tener al menos 8 caracteres con letras y números",
       "mismatch": "Las contraseñas no coinciden",
       "success": "Contraseña cambiada exitosamente",
       "failed": "Error al cambiar contraseña"
