@@ -62,6 +62,9 @@
       "title": "AI t\u1ef1 \u0111\u1ed9ng l\u1eadp k\u1ebf ho\u1ea1ch",
       "description": "AI s\u1ebd t\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch t\u1ed1i \u01b0u d\u1ef1a tr\u00ean \u0111i\u1ec3m \u0111\u1ebfn v\u00e0 l\u1ecbch tr\u00ecnh c\u1ee7a b\u1ea1n"
     },
+    "rewardedAd": {
+      "label": "Xem qu\u1ea3ng c\u00e1o \u0111\u1ec3 nh\u1eadn th\u00f4ng tin chi ti\u1ebft v\u1ec1 chuy\u1ebfn \u0111i"
+    },
     "submit": "T\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch",
     "generating": "AI \u0111ang t\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch...",
     "progress": {

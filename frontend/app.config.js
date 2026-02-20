@@ -93,6 +93,14 @@ export default ({ config }) => ({
         ios: process.env.ADMOB_IOS_INTERSTITIAL_ID || '',
         android: process.env.ADMOB_ANDROID_INTERSTITIAL_ID || '',
       },
+      appOpenAdUnitId: {
+        ios: process.env.ADMOB_IOS_APP_OPEN_ID || '',
+        android: process.env.ADMOB_ANDROID_APP_OPEN_ID || '',
+      },
+      rewardedAdUnitId: {
+        ios: process.env.ADMOB_IOS_REWARDED_ID || '',
+        android: process.env.ADMOB_ANDROID_REWARDED_ID || '',
+      },
     },
     sentryDsn: process.env.SENTRY_DSN || '',
     eas: {

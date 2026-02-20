@@ -42,7 +42,7 @@ import { useNotifications } from '../../contexts/NotificationContext';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import DestinationInsights from '../../components/DestinationInsights';
-import { useInterstitialAd } from '../../components/ads';
+import { useInterstitialAd, useRewardedAd } from '../../components/ads';
 import { getHeroImageUrl } from '../../utils/images';
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
@@ -102,6 +102,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { scheduleTripReminders } = useNotifications();
   const { t } = useTranslation('trips');
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
+  const { show: showRewarded, isLoaded: isRewardedLoaded } = useRewardedAd();
+  const [insightsUnlocked, setInsightsUnlocked] = useState(false);
 
   const POPULAR_DESTINATIONS = getPopularDestinations(t);
   const DURATION_OPTIONS = getDurationOptions(t);
@@ -580,6 +582,28 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   }
                 }}
               />
+            )}
+
+            {/* Rewarded Ad — unlock extra insights */}
+            {destination.trim().length >= 2 && isRewardedLoaded && !insightsUnlocked && (
+              <TouchableOpacity
+                style={[
+                  styles.rewardedAdButton,
+                  {
+                    backgroundColor: isDark ? `${colors.warning.main}20` : `${colors.warning.main}10`,
+                    borderColor: colors.warning.main,
+                  },
+                ]}
+                onPress={() => showRewarded(() => setInsightsUnlocked(true))}
+                accessibilityRole="button"
+                accessibilityLabel={t('create.rewardedAd.label')}
+              >
+                <Icon name="gift-outline" size={20} color={colors.warning.main} />
+                <Text style={[styles.rewardedAdText, { color: theme.colors.text }]}>
+                  {t('create.rewardedAd.label')}
+                </Text>
+                <Icon name="play-circle-outline" size={18} color={colors.warning.main} />
+              </TouchableOpacity>
             )}
           </View>
 
@@ -1386,6 +1410,21 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
     progressStepText: {
       fontSize: 14,
+    },
+    rewardedAdButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 12,
+      borderWidth: 1,
+      marginTop: 12,
+    },
+    rewardedAdText: {
+      flex: 1,
+      fontSize: 14,
+      fontWeight: '600',
     },
   });
 

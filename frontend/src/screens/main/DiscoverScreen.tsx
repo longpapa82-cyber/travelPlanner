@@ -152,7 +152,10 @@ const DiscoverScreen = () => {
         <Image source={{ uri: item.coverImage }} style={styles.coverImage} />
       ) : (
         <View style={[styles.coverImage, styles.coverPlaceholder]}>
-          <Icon name="image-off-outline" size={40} color={theme.colors.textSecondary} />
+          <Icon name="airplane" size={32} color="rgba(255,255,255,0.7)" />
+          <Text style={styles.coverPlaceholderText} numberOfLines={1}>
+            {item.destination}
+          </Text>
         </View>
       )}
       <View style={styles.cardBody}>
@@ -353,6 +356,13 @@ const createStyles = (theme: any, isDark: boolean) =>
     coverPlaceholder: {
       alignItems: 'center',
       justifyContent: 'center',
+      backgroundColor: isDark ? '#334155' : '#6366f1',
+      gap: 8,
+    },
+    coverPlaceholderText: {
+      fontSize: 16,
+      fontWeight: '600' as const,
+      color: 'rgba(255,255,255,0.85)',
     },
     cardBody: {
       padding: 14,

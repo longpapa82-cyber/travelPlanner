@@ -37,6 +37,7 @@ import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import { getDateLocale } from '../../utils/dateLocale';
 import { getHeroImageUrl } from '../../utils/images';
+import { useInterstitialAd } from '../../components/ads';
 
 type EditTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'EditTrip'>;
 type EditTripScreenRouteProp = RouteProp<TripsStackParamList, 'EditTrip'>;
@@ -73,6 +74,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { showToast } = useToast();
   const { confirm } = useConfirm();
   const { t } = useTranslation('trips');
+  const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
 
   // Derive translated arrays from META constants
   const destinations = DESTINATION_META.map((d) => ({ ...d, name: t(d.key) }));
@@ -223,7 +225,10 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
         duration: 2000,
       });
 
-      setTimeout(() => {
+      setTimeout(async () => {
+        if (isAdLoaded) {
+          await showInterstitial();
+        }
         navigation.navigate('TripDetail', { tripId });
       }, 500);
     } catch (error: any) {

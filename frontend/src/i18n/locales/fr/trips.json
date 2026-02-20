@@ -62,6 +62,9 @@
       "title": "Génération automatique par IA",
       "description": "L'IA créera le plan de voyage optimal en fonction de votre destination et de votre calendrier"
     },
+    "rewardedAd": {
+      "label": "Regarder une pub pour des infos voyage détaillées"
+    },
     "submit": "Créer le plan de voyage",
     "generating": "L'IA crée votre plan de voyage...",
     "progress": {

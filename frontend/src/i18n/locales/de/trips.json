@@ -62,6 +62,9 @@
       "title": "KI-Automatische Erstellung",
       "description": "KI erstellt den optimalen Reiseplan basierend auf Ihrem Ziel und Zeitplan"
     },
+    "rewardedAd": {
+      "label": "Werbung ansehen für detaillierte Reise-Einblicke"
+    },
     "submit": "Reiseplan erstellen",
     "generating": "KI erstellt Ihren Reiseplan...",
     "progress": {

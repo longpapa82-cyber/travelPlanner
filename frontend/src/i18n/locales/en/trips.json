@@ -62,6 +62,9 @@
       "title": "AI Auto-Generation",
       "description": "AI will create the optimal travel plan based on your destination and schedule"
     },
+    "rewardedAd": {
+      "label": "Watch ad for detailed travel insights"
+    },
     "submit": "Create Travel Plan",
     "generating": "AI is creating your travel plan...",
     "progress": {

@@ -19,6 +19,7 @@ import { initSentry } from './src/common/sentry';
 import { initWebVitals } from './src/common/web-vitals';
 import { API_URL, STORAGE_KEYS } from './src/constants/config';
 import { secureStorage } from './src/utils/storage';
+import { useAppOpenAd } from './src/components/ads/useAppOpenAd';
 
 // Initialize Sentry before app renders
 initSentry();
@@ -147,6 +148,7 @@ const callbackStyles = StyleSheet.create({
 
 const AppContent = () => {
   const { isDark } = useTheme();
+  useAppOpenAd();
 
   return (
     <>

@@ -62,6 +62,9 @@
       "title": "AI自動生成",
       "description": "目的地とスケジュールに合わせてAIが最適な旅行プランを自動生成します"
     },
+    "rewardedAd": {
+      "label": "広告を見て詳しい旅行インサイトをゲット"
+    },
     "submit": "旅行プランを作成",
     "generating": "AIが旅行プランを作成中...",
     "progress": {

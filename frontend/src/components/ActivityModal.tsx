@@ -97,7 +97,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
     savingRef.current = true;
 
     // Validation
-    if (!formData.time || !formData.title || !formData.location) {
+    if (!formData.time || !formData.title || !formData.location || !formData.description?.trim()) {
       showToast({ type: 'warning', message: t('activityModal.validationErrorMessage'), position: 'top' });
       savingRef.current = false;
       return;
@@ -228,7 +228,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 
             {/* Description Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>{t('activityModal.description')}</Text>
+              <Text style={styles.label}>{t('activityModal.description')} <Text style={styles.required}>*</Text></Text>
               <TextInput
                 style={[styles.inputContainer, styles.textArea]}
                 placeholder={t('activityModal.descriptionPlaceholder')}

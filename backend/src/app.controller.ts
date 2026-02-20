@@ -51,8 +51,7 @@ export class AppController {
   }
 
   @Get('sitemap.xml')
-  @Header('Content-Type', 'application/xml')
-  async getSitemap(): Promise<string> {
+  async getSitemap(@Res() res: Response) {
     const baseUrl = process.env.FRONTEND_URL || 'https://travelplanner.app';
     const now = new Date().toISOString().split('T')[0];
 
@@ -77,7 +76,6 @@ export class AppController {
       // Legal & info
       { loc: '/privacy', changefreq: 'monthly', priority: '0.7' },
       { loc: '/terms', changefreq: 'monthly', priority: '0.7' },
-      { loc: '/disclaimer', changefreq: 'monthly', priority: '0.7' },
       { loc: '/faq', changefreq: 'monthly', priority: '0.8' },
       // Guides index
       { loc: '/guides', changefreq: 'weekly', priority: '0.9' },
@@ -111,6 +109,16 @@ export class AppController {
       { loc: '/blog/budget-travel-guide', changefreq: 'monthly', priority: '0.75' },
       { loc: '/blog/first-solo-travel', changefreq: 'monthly', priority: '0.75' },
       { loc: '/blog/travel-insurance-guide', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/japan-transport-pass-guide', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/europe-culture-differences', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/southeast-asia-rainy-season', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/smartphone-travel-photography', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/currency-exchange-guide', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/airport-time-saving-tips', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/travel-internet-guide', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/family-travel-planning', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/travel-journal-tips', changefreq: 'monthly', priority: '0.75' },
+      { loc: '/blog/long-term-travel-guide', changefreq: 'monthly', priority: '0.75' },
     ];
 
     const staticEntries = staticUrls
@@ -135,11 +143,14 @@ export class AppController {
       )
       .join('\n');
 
-    return `<?xml version="1.0" encoding="UTF-8"?>
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticEntries}
 ${tripEntries}
 </urlset>`;
+
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.send(xml);
   }
 
   /**

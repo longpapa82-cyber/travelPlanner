@@ -62,6 +62,9 @@
       "title": "AI 자동 생성",
       "description": "목적지와 일정에 맞춰 AI가 최적의 여행 계획을 자동으로 생성합니다"
     },
+    "rewardedAd": {
+      "label": "광고 보고 상세 여행 인사이트 받기"
+    },
     "submit": "여행 계획 만들기",
     "generating": "AI가 여행 계획을 만들고 있어요...",
     "progress": {

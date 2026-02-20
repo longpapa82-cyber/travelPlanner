@@ -62,6 +62,9 @@
       "title": "AI自动生成",
       "description": "AI将根据您的目的地和行程为您制定最优旅行计划"
     },
+    "rewardedAd": {
+      "label": "观看广告获取详细旅行攻略"
+    },
     "submit": "创建旅行计划",
     "generating": "AI正在为您制定旅行计划...",
     "progress": {

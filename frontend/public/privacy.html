@@ -49,6 +49,7 @@
     .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
     .btn-primary { background: #2563EB; color: #fff; }
     .btn-primary:hover { background: #1d4ed8; }
+    .nav a.btn-primary { color: #fff; }
 
     .page-hero { background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 3rem 1.5rem; text-align: center; }
     .page-hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
@@ -67,9 +68,14 @@
 
     .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 0; overflow: hidden; }
 
-    .footer { background: #1e293b; color: #94a3b8; padding: 2rem 1.5rem; text-align: center; font-size: 0.85rem; }
-    .footer a { color: #94a3b8; margin: 0 0.75rem; }
+    .footer { background: #1e293b; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
+    .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
     .footer a:hover { color: #fff; }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #334155; text-align: center; font-size: 0.85rem; }
+    .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
 
     @media (max-width: 768px) {
       .nav { display: none; }
@@ -259,18 +265,41 @@
 </main>
 
 <footer class="footer">
-  <p>
-    <a href="/">홈</a>
-    <a href="/about">소개</a>
-    <a href="/guides/">가이드</a>
-    <a href="/blog">블로그</a>
-    <a href="/contact">문의</a>
-    <a href="/terms">이용약관</a>
-    <a href="/privacy">개인정보처리방침</a>
-    <a href="/disclaimer">면책조항</a>
-    <a href="/faq">FAQ</a>
-  </p>
-  <p style="margin-top:1rem;">&copy; 2024-2026 TravelPlanner. All rights reserved.</p>
+  <div class="footer-inner">
+    <div>
+      <h4>TravelPlanner</h4>
+      <p style="font-size:0.9rem;">AI 기반 여행 계획 서비스.<br/>목적지만 선택하면 완벽한 일정이 완성됩니다.</p>
+      <div class="langs" style="margin-top:1rem;">
+        <span class="lang-badge">🇰🇷 한국어</span>
+        <span class="lang-badge">🇺🇸 English</span>
+        <span class="lang-badge">🇯🇵 日本語</span>
+        <span class="lang-badge">🇨🇳 中文</span>
+        <span class="lang-badge">🇪🇸 Español</span>
+        <span class="lang-badge">🇩🇪 Deutsch</span>
+        <span class="lang-badge">🇫🇷 Français</span>
+        <span class="lang-badge">🇹🇭 ไทย</span>
+        <span class="lang-badge">🇻🇳 Tiếng Việt</span>
+      </div>
+    </div>
+    <div>
+      <h4>서비스</h4>
+      <a href="/login">여행 계획 만들기</a>
+      <a href="/guides/">여행 가이드</a>
+      <a href="/blog">블로그</a>
+      <a href="/about">서비스 소개</a>
+      <a href="/contact">문의하기</a>
+    </div>
+    <div>
+      <h4>정책</h4>
+      <a href="/terms">이용약관</a>
+      <a href="/privacy">개인정보처리방침</a>
+      <a href="/faq">FAQ</a>
+      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:longpapa82@gmail.com" style="display:inline;">longpapa82@gmail.com</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2024-2026 TravelPlanner. All rights reserved.</p>
+  </div>
 </footer>
 
 </body>

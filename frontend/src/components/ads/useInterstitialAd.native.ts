@@ -14,6 +14,7 @@ import {
   TestIds,
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
+import { canShowFullScreenAd, recordFullScreenAdShown } from './adFrequency';
 
 const extra = Constants.expoConfig?.extra || {};
 
@@ -64,8 +65,10 @@ export function useInterstitialAd() {
   }, [load]);
 
   const show = useCallback(async () => {
-    if (isLoaded && adRef.current) {
+    const canShow = await canShowFullScreenAd();
+    if (canShow && isLoaded && adRef.current) {
       await adRef.current.show();
+      await recordFullScreenAdShown();
     }
   }, [isLoaded]);
 
