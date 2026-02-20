@@ -15,6 +15,8 @@ import type { Response } from 'express';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
 import { t, parseLang } from '../common/i18n';
 
 @Controller('users')
@@ -31,12 +33,12 @@ export class UsersController {
   @Patch('me')
   async updateProfile(
     @CurrentUser('userId') userId: string,
-    @Body() body: { name?: string; profileImage?: string },
+    @Body() dto: UpdateProfileDto,
   ) {
     const updateData: Record<string, string> = {};
-    if (body.name !== undefined) updateData.name = body.name;
-    if (body.profileImage !== undefined)
-      updateData.profileImage = body.profileImage;
+    if (dto.name !== undefined) updateData.name = dto.name;
+    if (dto.profileImage !== undefined)
+      updateData.profileImage = dto.profileImage;
 
     return this.usersService.update(userId, updateData);
   }
@@ -91,12 +93,13 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('me')
+  @Post('me/delete')
   async deleteAccount(
     @CurrentUser('userId') userId: string,
+    @Body() dto: DeleteAccountDto,
     @Headers('accept-language') acceptLanguage?: string,
   ) {
-    await this.usersService.remove(userId);
+    await this.usersService.remove(userId, dto.password);
     return { message: t('account.deleted', parseLang(acceptLanguage)) };
   }
 

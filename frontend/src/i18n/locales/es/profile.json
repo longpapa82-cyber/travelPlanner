@@ -69,9 +69,12 @@
     "title": "Eliminar cuenta",
     "message": "Eliminar tu cuenta eliminará permanentemente todos los datos. ¿Estás seguro?",
     "button": "Eliminar cuenta",
+    "passwordConfirm": "Ingresa tu contraseña para confirmar la eliminación de la cuenta",
+    "passwordPlaceholder": "Ingresar contraseña",
     "alerts": {
       "success": "Cuenta eliminada exitosamente",
-      "failed": "Error al eliminar cuenta"
+      "failed": "Error al eliminar cuenta",
+      "passwordRequired": "Por favor ingresa tu contraseña"
     }
   },
   "version": "Versión",

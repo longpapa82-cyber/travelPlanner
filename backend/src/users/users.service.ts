@@ -110,7 +110,27 @@ export class UsersService {
     return { message: t('password.changed', lang) };
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string, password?: string): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'provider', 'passwordHash'],
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    // Email users must re-authenticate with password
+    if (user.provider === AuthProvider.EMAIL) {
+      if (!password) {
+        throw new BadRequestException('Password required to delete account');
+      }
+      if (!user.passwordHash) {
+        throw new BadRequestException('Account has no password set');
+      }
+      const valid = await bcrypt.compare(password, user.passwordHash);
+      if (!valid) {
+        throw new BadRequestException('Incorrect password');
+      }
+    }
+
     await this.userRepository.delete(id);
   }
 

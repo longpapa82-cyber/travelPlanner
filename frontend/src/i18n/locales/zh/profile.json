@@ -69,9 +69,12 @@
     "title": "删除账号",
     "message": "删除账号将永久删除所有数据。确定要删除吗？",
     "button": "删除账号",
+    "passwordConfirm": "请输入密码以确认删除账户",
+    "passwordPlaceholder": "输入密码",
     "alerts": {
       "success": "账号已删除",
-      "failed": "账号删除失败"
+      "failed": "账号删除失败",
+      "passwordRequired": "请输入密码"
     }
   },
   "version": "版本",

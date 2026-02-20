@@ -69,9 +69,12 @@
     "title": "Delete Account",
     "message": "Deleting your account will permanently remove all data. Are you sure?",
     "button": "Delete Account",
+    "passwordConfirm": "Enter your password to confirm account deletion",
+    "passwordPlaceholder": "Enter password",
     "alerts": {
       "success": "Account deleted successfully",
-      "failed": "Failed to delete account"
+      "failed": "Failed to delete account",
+      "passwordRequired": "Please enter your password"
     }
   },
   "version": "Version",

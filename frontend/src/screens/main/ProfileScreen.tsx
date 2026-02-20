@@ -131,7 +131,17 @@ const ProfileScreen = ({ navigation }: any) => {
     }
   };
 
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const handleDeleteAccount = async () => {
+    if (user?.provider === 'email') {
+      setDeletePassword('');
+      setShowDeleteConfirm(true);
+      return;
+    }
+    // OAuth users — no password needed, just confirm
     const ok = await confirm({
       title: t('deleteAccount.title'),
       message: t('deleteAccount.message'),
@@ -145,7 +155,25 @@ const ProfileScreen = ({ navigation }: any) => {
       await logout();
       showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
     } catch (error: any) {
-      showToast({ type: 'error', message: t('deleteAccount.alerts.failed'), position: 'top' });
+      showToast({ type: 'error', message: error.response?.data?.message || t('deleteAccount.alerts.failed'), position: 'top' });
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletePassword.trim()) {
+      showToast({ type: 'warning', message: t('deleteAccount.alerts.passwordRequired'), position: 'top' });
+      return;
+    }
+    setIsDeleting(true);
+    try {
+      await apiService.deleteAccount(deletePassword);
+      setShowDeleteConfirm(false);
+      await logout();
+      showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
+    } catch (error: any) {
+      showToast({ type: 'error', message: error.response?.data?.message || t('deleteAccount.alerts.failed'), position: 'top' });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -559,6 +587,36 @@ const ProfileScreen = ({ navigation }: any) => {
                   </TouchableOpacity>
                 );
               })}
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Delete Account Password Confirmation Modal */}
+      <Modal visible={showDeleteConfirm} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.error.main }]}>{t('deleteAccount.title')}</Text>
+              <TouchableOpacity onPress={() => setShowDeleteConfirm(false)}>
+                <Icon name="close" size={24} color={theme.colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.modalBody}>
+              <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('deleteAccount.passwordConfirm')}</Text>
+              <TextInput
+                style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
+                value={deletePassword}
+                onChangeText={setDeletePassword}
+                placeholder={t('deleteAccount.passwordPlaceholder')}
+                placeholderTextColor={theme.colors.textSecondary}
+                secureTextEntry
+                editable={!isDeleting}
+              />
+              <Button variant="primary" fullWidth onPress={handleConfirmDelete} loading={isDeleting} disabled={isDeleting}
+                style={{ backgroundColor: colors.error.main }}>
+                {t('deleteAccount.button')}
+              </Button>
             </View>
           </View>
         </View>

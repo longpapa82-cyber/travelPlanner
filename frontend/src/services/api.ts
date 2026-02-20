@@ -220,8 +220,8 @@ class ApiService {
     return response.data;
   }
 
-  async deleteAccount() {
-    await this.api.delete('/users/me');
+  async deleteAccount(password?: string) {
+    await this.api.post('/users/me/delete', { password });
   }
 
   // 2FA Methods

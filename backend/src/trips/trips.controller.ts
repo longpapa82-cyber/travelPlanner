@@ -36,6 +36,7 @@ import { QueryTripsDto } from './dto/query-trips.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ImageService } from '../common/image.service';
+import { validateImageMagicBytes } from '../common/utils/file-validation';
 
 @Controller('trips')
 @UseGuards(JwtAuthGuard)
@@ -344,6 +345,9 @@ export class TripsController {
   async uploadPhoto(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('No image file provided');
+    }
+    if (!validateImageMagicBytes(file.path)) {
+      throw new BadRequestException('Invalid image file: file signature does not match an allowed image format');
     }
     const result = await this.imageService.processUpload(file.path, {
       maxWidth: 1200,
