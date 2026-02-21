@@ -1,0 +1,118 @@
+{
+  "title": "प्रोफ़ाइल",
+  "guest": "अतिथि",
+  "sections": {
+    "account": "खाता",
+    "settings": "सेटिंग्स",
+    "support": "सहायता",
+    "admin": "एडमिन"
+  },
+  "menu": {
+    "editProfile": "प्रोफ़ाइल संपादित करें",
+    "changePassword": "पासवर्ड बदलें",
+    "twoFactor": "दो-कारक प्रमाणीकरण",
+    "twoFactorEnabled": "सक्षम",
+    "twoFactorDisabled": "अक्षम",
+    "language": "भाषा",
+    "notifications": "सूचनाएं",
+    "notificationsEnabled": "सक्षम",
+    "notificationsDisabled": "अक्षम",
+    "darkMode": "डार्क मोड",
+    "help": "सहायता",
+    "terms": "सेवा की शर्तें",
+    "privacy": "गोपनीयता नीति",
+    "revenue": "राजस्व डैशबोर्ड",
+    "admin": "एडमिन पैनल"
+  },
+  "editProfile": {
+    "title": "प्रोफ़ाइल संपादित करें",
+    "name": "नाम",
+    "namePlaceholder": "अपना नाम दर्ज करें",
+    "changePhoto": "प्रोफ़ाइल फोटो बदलें",
+    "save": "सहेजें",
+    "alerts": {
+      "nameRequired": "कृपया अपना नाम दर्ज करें",
+      "success": "प्रोफ़ाइल सफलतापूर्वक अपडेट हुई",
+      "failed": "प्रोफ़ाइल अपडेट करने में विफल",
+      "photoSuccess": "प्रोफ़ाइल फोटो अपडेट हुई",
+      "photoFailed": "प्रोफ़ाइल फोटो अपडेट करने में विफल",
+      "permissionDenied": "फोटो एक्सेस अनुमति आवश्यक है"
+    }
+  },
+  "changePassword": {
+    "title": "पासवर्ड बदलें",
+    "current": "वर्तमान पासवर्ड",
+    "currentPlaceholder": "वर्तमान पासवर्ड दर्ज करें",
+    "new": "नया पासवर्ड",
+    "newPlaceholder": "नया पासवर्ड दर्ज करें (8+ अक्षर, अक्षर और अंक)",
+    "confirm": "नए पासवर्ड की पुष्टि",
+    "confirmPlaceholder": "नया पासवर्ड पुनः दर्ज करें",
+    "submit": "पासवर्ड बदलें",
+    "alerts": {
+      "allFieldsRequired": "कृपया सभी फ़ील्ड भरें",
+      "minLength": "नया पासवर्ड कम से कम 8 अक्षरों का होना चाहिए जिसमें अक्षर और अंक हों",
+      "mismatch": "नए पासवर्ड मेल नहीं खाते",
+      "success": "पासवर्ड सफलतापूर्वक बदला गया",
+      "failed": "पासवर्ड बदलने में विफल"
+    }
+  },
+  "languageSelector": {
+    "title": "भाषा चुनें",
+    "description": "अपनी पसंदीदा भाषा चुनें"
+  },
+  "logout": {
+    "title": "लॉग आउट",
+    "message": "क्या आप वाकई लॉग आउट करना चाहते हैं?",
+    "button": "लॉग आउट"
+  },
+  "deleteAccount": {
+    "title": "खाता हटाएं",
+    "message": "खाता हटाने से सभी डेटा स्थायी रूप से हटा दिया जाएगा। क्या आप सुनिश्चित हैं?",
+    "button": "खाता हटाएं",
+    "passwordConfirm": "खाता हटाने की पुष्टि के लिए अपना पासवर्ड दर्ज करें",
+    "passwordPlaceholder": "पासवर्ड दर्ज करें",
+    "alerts": {
+      "success": "खाता सफलतापूर्वक हटाया गया",
+      "failed": "खाता हटाने में विफल",
+      "passwordRequired": "कृपया अपना पासवर्ड दर्ज करें"
+    }
+  },
+  "version": "संस्करण",
+  "analytics": {
+    "title": "यात्रा आंकड़े",
+    "totalTrips": "कुल यात्राएं",
+    "completedTrips": "पूर्ण",
+    "ongoingTrips": "चल रही",
+    "upcomingTrips": "आगामी",
+    "totalDays": "कुल दिन",
+    "avgDuration": "औसत अवधि",
+    "days": "दिन",
+    "countriesVisited": "देश",
+    "countries": "देश",
+    "totalSpent": "कुल खर्च",
+    "totalBudget": "कुल बजट",
+    "topDestinations": "शीर्ष गंतव्य",
+    "times": "बार",
+    "activities": "गतिविधियां",
+    "completedOf": "{{completed}} / {{total}} पूर्ण",
+    "noData": "अभी तक कोई यात्रा डेटा नहीं",
+    "loading": "आंकड़े लोड हो रहे हैं..."
+  },
+  "revenue": {
+    "last30Days": "पिछले 30 दिन",
+    "totalClicks": "कुल क्लिक",
+    "conversions": "रूपांतरण",
+    "conversionRate": "रूपांतरण दर",
+    "commission": "कमीशन",
+    "highlights": "मुख्य बातें",
+    "topProvider": "शीर्ष प्रदाता",
+    "topDestination": "शीर्ष गंतव्य",
+    "totalRevenue": "कुल राजस्व",
+    "byProvider": "प्रदाता के अनुसार",
+    "clicks": "क्लिक",
+    "conv": "रूपां.",
+    "noData": "अभी तक कोई डेटा उपलब्ध नहीं",
+    "adminOnly": "एडमिन एक्सेस आवश्यक",
+    "loadError": "डेटा लोड करने में विफल"
+  }
+}

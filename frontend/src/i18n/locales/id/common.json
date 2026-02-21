@@ -1,0 +1,103 @@
+{
+  "confirm": "OK",
+  "cancel": "Batal",
+  "save": "Simpan",
+  "delete": "Hapus",
+  "edit": "Edit",
+  "close": "Tutup",
+  "loading": "Memuat...",
+  "error": "Kesalahan",
+  "success": "Berhasil",
+  "retry": "Coba Lagi",
+  "back": "Kembali",
+  "next": "Berikutnya",
+  "done": "Selesai",
+  "copy": "Salin",
+  "search": "Cari",
+  "noResults": "Tidak ada hasil ditemukan",
+  "like": "Suka",
+  "share": "Bagikan",
+  "clear": "Hapus",
+  "seeAll": "Lihat semua \u2192",
+  "findOnProvider": "Temukan di {{name}}",
+  "offlineMode": "Mode offline \u2014 menampilkan data tersimpan",
+  "offlinePending": "Offline \u2014 {{count}} perubahan tertunda",
+  "offlineSyncing": "Menyinkronkan perubahan...",
+  "offlineSynced": "Semua perubahan tersinkronkan",
+  "errorBoundary": {
+    "title": "Kami sedikit tersesat",
+    "message": "Terjadi kesalahan yang tidak terduga.\nJangan khawatir, kami akan mengembalikan Anda ke jalur yang benar!",
+    "persistentTitle": "Kesalahan berulang terdeteksi",
+    "persistentMessage": "Kesalahan ini terus terjadi.\nSilakan coba muat ulang aplikasi.",
+    "retry": "Coba Lagi",
+    "reload": "Muat Ulang Aplikasi",
+    "goHome": "Ke Beranda",
+    "errorId": "ID Kesalahan: {{id}}"
+  },
+  "tabs": {
+    "home": "Beranda",
+    "trips": "Perjalanan Saya",
+    "notifications": "Notifikasi",
+    "profile": "Profil",
+    "discover": "Jelajahi"
+  },
+  "notifications": {
+    "emptyTitle": "Tidak ada notifikasi",
+    "emptyMessage": "Notifikasi baru akan muncul di sini",
+    "markAllRead": "Tandai semua dibaca",
+    "deleteAll": "Hapus semua",
+    "deleteAllTitle": "Hapus notifikasi",
+    "deleteAllConfirm": "Hapus semua notifikasi?",
+    "allMarkedRead": "Semua notifikasi ditandai sudah dibaca",
+    "allDeleted": "Semua notifikasi dihapus",
+    "error": "Terjadi kesalahan",
+    "fetchError": "Gagal memuat notifikasi",
+    "cancel": "Batal",
+    "delete": "Hapus",
+    "justNow": "Baru saja",
+    "minutesAgo": "{{count}} menit lalu",
+    "hoursAgo": "{{count}} jam lalu",
+    "daysAgo": "{{count}} hari lalu",
+    "prePermission": {
+      "title": "Tetap terinformasi tentang perjalanan Anda",
+      "description": "Dapatkan pengingat keberangkatan, peringatan cuaca, dan pembaruan perjalanan penting agar Anda tidak melewatkan apa pun.",
+      "benefit1": "Pengingat keberangkatan perjalanan",
+      "benefit2": "Pemberitahuan hari keberangkatan & jadwal",
+      "benefit3": "Notifikasi perubahan cuaca",
+      "enable": "Aktifkan notifikasi",
+      "later": "Nanti saja"
+    }
+  },
+  "pwa": {
+    "installTitle": "Instal sebagai aplikasi",
+    "installMessage": "Tambahkan ke layar utama untuk pengalaman lebih cepat",
+    "install": "Instal"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "Verifikasi email diperlukan",
+      "message": "Silakan periksa kotak masuk Anda untuk memverifikasi email",
+      "resend": "Kirim ulang",
+      "sent": "Email verifikasi telah dikirim ulang",
+      "error": "Gagal mengirim ulang"
+    }
+  },
+  "errors": {
+    "network": "Kesalahan jaringan. Silakan periksa koneksi Anda.",
+    "rateLimit": "Terlalu banyak permintaan. Silakan coba lagi nanti.",
+    "forbidden": "Anda tidak memiliki izin untuk tindakan ini.",
+    "notFound": "Sumber daya yang diminta tidak ditemukan.",
+    "locked": "Akun terkunci sementara. Coba lagi nanti.",
+    "server": "Kesalahan server. Silakan coba lagi nanti.",
+    "generic": "Terjadi kesalahan. Silakan coba lagi."
+  },
+  "att": {
+    "title": "Dapatkan penawaran perjalanan yang dipersonalisasi",
+    "description": "Izinkan pelacakan untuk menerima penawaran dan promo perjalanan yang disesuaikan dengan minat Anda.",
+    "benefit1": "Penawaran perjalanan yang dipersonalisasi",
+    "benefit2": "Rekomendasi destinasi yang relevan",
+    "benefit3": "Pengalaman iklan yang lebih baik",
+    "continue": "Lanjutkan",
+    "later": "Nanti saja"
+  }
+}

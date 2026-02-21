@@ -1,0 +1,118 @@
+{
+  "title": "Profil",
+  "guest": "Tamu",
+  "sections": {
+    "account": "Akun",
+    "settings": "Pengaturan",
+    "support": "Bantuan",
+    "admin": "Admin"
+  },
+  "menu": {
+    "editProfile": "Edit Profil",
+    "changePassword": "Ubah Kata Sandi",
+    "twoFactor": "Autentikasi Dua Faktor",
+    "twoFactorEnabled": "Aktif",
+    "twoFactorDisabled": "Nonaktif",
+    "language": "Bahasa",
+    "notifications": "Notifikasi",
+    "notificationsEnabled": "Aktif",
+    "notificationsDisabled": "Nonaktif",
+    "darkMode": "Mode Gelap",
+    "help": "Bantuan",
+    "terms": "Ketentuan Layanan",
+    "privacy": "Kebijakan Privasi",
+    "revenue": "Dasbor Pendapatan",
+    "admin": "Panel Admin"
+  },
+  "editProfile": {
+    "title": "Edit Profil",
+    "name": "Nama",
+    "namePlaceholder": "Masukkan nama Anda",
+    "changePhoto": "Ganti foto profil",
+    "save": "Simpan",
+    "alerts": {
+      "nameRequired": "Silakan masukkan nama Anda",
+      "success": "Profil berhasil diperbarui",
+      "failed": "Gagal memperbarui profil",
+      "photoSuccess": "Foto profil diperbarui",
+      "photoFailed": "Gagal memperbarui foto profil",
+      "permissionDenied": "Izin akses foto diperlukan"
+    }
+  },
+  "changePassword": {
+    "title": "Ubah Kata Sandi",
+    "current": "Kata Sandi Saat Ini",
+    "currentPlaceholder": "Masukkan kata sandi saat ini",
+    "new": "Kata Sandi Baru",
+    "newPlaceholder": "Masukkan kata sandi baru (8+ karakter, huruf dan angka)",
+    "confirm": "Konfirmasi Kata Sandi Baru",
+    "confirmPlaceholder": "Masukkan ulang kata sandi baru",
+    "submit": "Ubah Kata Sandi",
+    "alerts": {
+      "allFieldsRequired": "Silakan isi semua kolom",
+      "minLength": "Kata sandi baru minimal 8 karakter dengan huruf dan angka",
+      "mismatch": "Kata sandi baru tidak cocok",
+      "success": "Kata sandi berhasil diubah",
+      "failed": "Gagal mengubah kata sandi"
+    }
+  },
+  "languageSelector": {
+    "title": "Pilih Bahasa",
+    "description": "Pilih bahasa yang Anda inginkan"
+  },
+  "logout": {
+    "title": "Keluar",
+    "message": "Apakah Anda yakin ingin keluar?",
+    "button": "Keluar"
+  },
+  "deleteAccount": {
+    "title": "Hapus Akun",
+    "message": "Menghapus akun Anda akan menghapus semua data secara permanen. Apakah Anda yakin?",
+    "button": "Hapus Akun",
+    "passwordConfirm": "Masukkan kata sandi Anda untuk mengonfirmasi penghapusan akun",
+    "passwordPlaceholder": "Masukkan kata sandi",
+    "alerts": {
+      "success": "Akun berhasil dihapus",
+      "failed": "Gagal menghapus akun",
+      "passwordRequired": "Silakan masukkan kata sandi Anda"
+    }
+  },
+  "version": "Versi",
+  "analytics": {
+    "title": "Statistik Perjalanan",
+    "totalTrips": "Total Perjalanan",
+    "completedTrips": "Selesai",
+    "ongoingTrips": "Berlangsung",
+    "upcomingTrips": "Akan Datang",
+    "totalDays": "Total Hari",
+    "avgDuration": "Rata-rata Durasi",
+    "days": "hari",
+    "countriesVisited": "Negara",
+    "countries": "negara",
+    "totalSpent": "Total Pengeluaran",
+    "totalBudget": "Total Anggaran",
+    "topDestinations": "Destinasi Teratas",
+    "times": "kali",
+    "activities": "Aktivitas",
+    "completedOf": "{{completed}} / {{total}} selesai",
+    "noData": "Belum ada data perjalanan",
+    "loading": "Memuat statistik..."
+  },
+  "revenue": {
+    "last30Days": "30 hari terakhir",
+    "totalClicks": "Total Klik",
+    "conversions": "Konversi",
+    "conversionRate": "Rasio Konversi",
+    "commission": "Komisi",
+    "highlights": "Sorotan",
+    "topProvider": "Penyedia Teratas",
+    "topDestination": "Destinasi Teratas",
+    "totalRevenue": "Total Pendapatan",
+    "byProvider": "Per Penyedia",
+    "clicks": "klik",
+    "conv": "konversi",
+    "noData": "Belum ada data tersedia",
+    "adminOnly": "Akses admin diperlukan",
+    "loadError": "Gagal memuat data"
+  }
+}

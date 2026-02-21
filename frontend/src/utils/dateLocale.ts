@@ -10,6 +10,10 @@ const LOCALE_MAP: Record<SupportedLanguage, string> = {
   fr: 'fr-FR',
   th: 'th-TH',
   vi: 'vi-VN',
+  pt: 'pt-BR',
+  ar: 'ar-SA',
+  id: 'id-ID',
+  hi: 'hi-IN',
 };
 
 export function getDateLocale(): string {

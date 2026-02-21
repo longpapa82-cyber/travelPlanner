@@ -1,0 +1,99 @@
+{
+  "activityModal": {
+    "addTitle": "Tambah Aktivitas",
+    "editTitle": "Edit Aktivitas",
+    "time": "Waktu",
+    "title": "Judul",
+    "titlePlaceholder": "Masukkan judul aktivitas",
+    "location": "Lokasi",
+    "locationPlaceholder": "Masukkan lokasi",
+    "description": "Deskripsi",
+    "descriptionPlaceholder": "Masukkan deskripsi",
+    "type": "Jenis Aktivitas",
+    "duration": "Estimasi Durasi (menit)",
+    "durationPlaceholder": "60",
+    "cost": "Estimasi Biaya",
+    "actualCost": "Pengeluaran Aktual",
+    "costPlaceholder": "0",
+    "cancel": "Batal",
+    "add": "Tambah",
+    "save": "Simpan",
+    "validationError": "Kesalahan Input",
+    "validationErrorMessage": "Silakan masukkan waktu, judul, dan lokasi",
+    "invalidTimeFormat": "Silakan masukkan waktu dalam format JJ:MM (mis., 09:00)",
+    "errorTitle": "Kesalahan",
+    "saveError": "Gagal menyimpan aktivitas",
+    "types": {
+      "meal": "Makan",
+      "sightseeing": "Wisata",
+      "shopping": "Belanja",
+      "experience": "Pengalaman",
+      "rest": "Istirahat",
+      "transport": "Transportasi",
+      "other": "Lainnya"
+    }
+  },
+  "shareModal": {
+    "title": "Bagikan Perjalanan",
+    "generate": "Buat Tautan Berbagi",
+    "generateButton": "Buat Tautan",
+    "generateDescription": "Buat tautan berbagi untuk membagikan rencana perjalanan Anda kepada orang lain",
+    "generateError": "Gagal membuat tautan berbagi",
+    "linkTitle": "Tautan Berbagi",
+    "copy": "Salin Tautan",
+    "copied": "Disalin!",
+    "copiedToClipboard": "Disalin ke papan klip",
+    "copyError": "Gagal menyalin tautan",
+    "disable": "Nonaktifkan Berbagi",
+    "disableConfirm": "Nonaktifkan berbagi? Tautan yang ada tidak akan berfungsi lagi.",
+    "disableAction": "Nonaktifkan",
+    "disableSuccess": "Berbagi telah dinonaktifkan",
+    "disableError": "Gagal menonaktifkan berbagi",
+    "cancel": "Batal",
+    "error": "Kesalahan",
+    "success": "Berhasil",
+    "info": "Siapa pun dengan tautan ini dapat melihat rencana perjalanan ini. Menonaktifkan tautan akan mencabut akses.",
+    "expiry": {
+      "title": "Masa Berlaku",
+      "none": "Tanpa batas waktu",
+      "7days": "7 hari",
+      "30days": "30 hari",
+      "90days": "90 hari"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "Kelembapan",
+    "windSpeed": "Angin",
+    "feelsLike": "Terasa seperti",
+    "timezone": "Waktu Lokal",
+    "timeDiff": "Selisih Waktu",
+    "noData": "Data cuaca tidak tersedia"
+  },
+  "popularDestinations": {
+    "title": "Destinasi Populer",
+    "subtitle": "Tren dalam 3 bulan terakhir",
+    "description": "Lihat destinasi paling populer yang dipilih wisatawan sesungguhnya",
+    "visitors": "{{count}} pengunjung",
+    "avgDuration": "Rata-rata {{days}} hari",
+    "withTravelers": "Dengan {{count}} wisatawan",
+    "popularSeason": "Musim populer:"
+  },
+  "progressIndicator": {
+    "title": "Progres",
+    "status": "{{completed}} selesai / {{total}} total aktivitas"
+  },
+  "destinationInsights": {
+    "header": "Berdasarkan data wisatawan sesungguhnya",
+    "avgDuration": "Rata-rata Durasi Perjalanan",
+    "avgTravelers": "Rata-rata Ukuran Grup",
+    "popularBudget": "Anggaran Populer",
+    "popularStyle": "Gaya Populer",
+    "popularSeason": "Musim Perjalanan Populer",
+    "bestNow": "Waktu terbaik adalah sekarang!",
+    "topActivities": "Aktivitas teratas oleh wisatawan terbaru (Top {{count}})",
+    "footer": "Berdasarkan data wisatawan sesungguhnya dari 3 bulan terakhir",
+    "loading": "Memuat info destinasi...",
+    "days": "{{days}} hari",
+    "people": "{{count}} orang"
+  }
+}

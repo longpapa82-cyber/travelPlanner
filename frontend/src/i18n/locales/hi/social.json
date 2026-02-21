@@ -1,0 +1,31 @@
+{
+  "title": "खोजें",
+  "following": "फॉलो कर रहे हैं",
+  "trending": "ट्रेंडिंग",
+  "emptyFollowing": "फॉलो किए गए यात्रियों की कोई पोस्ट नहीं",
+  "emptyFollowingMessage": "उनकी सार्वजनिक यात्राएं यहां देखने के लिए यात्रियों को फॉलो करें",
+  "emptyTrending": "अभी तक कोई सार्वजनिक यात्रा नहीं",
+  "emptyTrendingMessage": "लोकप्रिय यात्राएं जल्द ही यहां दिखाई देंगी",
+  "tripBy": "{{name}} की यात्रा",
+  "likesCount": "{{count}} पसंद",
+  "profile": {
+    "followers": "फॉलोअर्स",
+    "following": "फॉलो कर रहे हैं",
+    "follow": "फॉलो करें",
+    "unfollow": "अनफॉलो करें",
+    "publicTrips": "सार्वजनिक यात्राएं",
+    "noPublicTrips": "कोई सार्वजनिक यात्रा नहीं"
+  },
+  "notifications": {
+    "newFollower": "{{name}} ने आपको फॉलो करना शुरू किया",
+    "tripLiked": "{{name}} ने {{destination}} की आपकी यात्रा पसंद की"
+  },
+  "errors": {
+    "followFailed": "फॉलो करने में विफल",
+    "unfollowFailed": "अनफॉलो करने में विफल",
+    "likeFailed": "पसंद करने में विफल",
+    "unlikeFailed": "पसंद हटाने में विफल",
+    "feedFailed": "फीड लोड करने में विफल",
+    "profileFailed": "प्रोफ़ाइल लोड करने में विफल"
+  }
+}

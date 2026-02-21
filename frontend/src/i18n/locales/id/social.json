@@ -1,0 +1,31 @@
+{
+  "title": "Jelajahi",
+  "following": "Mengikuti",
+  "trending": "Trending",
+  "emptyFollowing": "Tidak ada postingan dari wisatawan yang diikuti",
+  "emptyFollowingMessage": "Ikuti wisatawan untuk melihat perjalanan publik mereka di sini",
+  "emptyTrending": "Belum ada perjalanan publik",
+  "emptyTrendingMessage": "Perjalanan populer akan segera muncul di sini",
+  "tripBy": "Perjalanan oleh {{name}}",
+  "likesCount": "{{count}} suka",
+  "profile": {
+    "followers": "Pengikut",
+    "following": "Mengikuti",
+    "follow": "Ikuti",
+    "unfollow": "Berhenti Ikuti",
+    "publicTrips": "Perjalanan Publik",
+    "noPublicTrips": "Tidak ada perjalanan publik"
+  },
+  "notifications": {
+    "newFollower": "{{name}} mulai mengikuti Anda",
+    "tripLiked": "{{name}} menyukai perjalanan Anda ke {{destination}}"
+  },
+  "errors": {
+    "followFailed": "Gagal mengikuti",
+    "unfollowFailed": "Gagal berhenti mengikuti",
+    "likeFailed": "Gagal menyukai",
+    "unlikeFailed": "Gagal membatalkan suka",
+    "feedFailed": "Gagal memuat feed",
+    "profileFailed": "Gagal memuat profil"
+  }
+}

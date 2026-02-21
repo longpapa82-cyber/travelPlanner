@@ -1,0 +1,99 @@
+{
+  "activityModal": {
+    "addTitle": "إضافة نشاط",
+    "editTitle": "تعديل النشاط",
+    "time": "الوقت",
+    "title": "العنوان",
+    "titlePlaceholder": "أدخل عنوان النشاط",
+    "location": "الموقع",
+    "locationPlaceholder": "أدخل الموقع",
+    "description": "الوصف",
+    "descriptionPlaceholder": "أدخل الوصف",
+    "type": "نوع النشاط",
+    "duration": "المدة المقدّرة (دقيقة)",
+    "durationPlaceholder": "60",
+    "cost": "التكلفة المقدّرة",
+    "actualCost": "المبلغ المنفق فعلياً",
+    "costPlaceholder": "0",
+    "cancel": "إلغاء",
+    "add": "إضافة",
+    "save": "حفظ",
+    "validationError": "خطأ في الإدخال",
+    "validationErrorMessage": "يرجى إدخال الوقت والعنوان والموقع",
+    "invalidTimeFormat": "يرجى إدخال الوقت بصيغة HH:MM (مثال: 09:00)",
+    "errorTitle": "خطأ",
+    "saveError": "فشل حفظ النشاط",
+    "types": {
+      "meal": "وجبة",
+      "sightseeing": "مشاهدة معالم",
+      "shopping": "تسوق",
+      "experience": "تجربة",
+      "rest": "راحة",
+      "transport": "مواصلات",
+      "other": "أخرى"
+    }
+  },
+  "shareModal": {
+    "title": "مشاركة الرحلة",
+    "generate": "إنشاء رابط مشاركة",
+    "generateButton": "إنشاء رابط",
+    "generateDescription": "أنشئ رابط مشاركة لمشاركة خطة سفرك مع الآخرين",
+    "generateError": "فشل إنشاء رابط المشاركة",
+    "linkTitle": "رابط المشاركة",
+    "copy": "نسخ الرابط",
+    "copied": "تم النسخ!",
+    "copiedToClipboard": "تم النسخ إلى الحافظة",
+    "copyError": "فشل نسخ الرابط",
+    "disable": "تعطيل المشاركة",
+    "disableConfirm": "هل تريد تعطيل المشاركة؟ لن تعمل الروابط الحالية بعد ذلك.",
+    "disableAction": "تعطيل",
+    "disableSuccess": "تم تعطيل المشاركة",
+    "disableError": "فشل تعطيل المشاركة",
+    "cancel": "إلغاء",
+    "error": "خطأ",
+    "success": "تم بنجاح",
+    "info": "يمكن لأي شخص لديه هذا الرابط عرض خطة السفر هذه. تعطيل الرابط سيلغي الوصول.",
+    "expiry": {
+      "title": "مدة الصلاحية",
+      "none": "بدون انتهاء",
+      "7days": "7 أيام",
+      "30days": "30 يوماً",
+      "90days": "90 يوماً"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "الرطوبة",
+    "windSpeed": "الرياح",
+    "feelsLike": "الإحساس بـ",
+    "timezone": "التوقيت المحلي",
+    "timeDiff": "فرق التوقيت",
+    "noData": "بيانات الطقس غير متاحة"
+  },
+  "popularDestinations": {
+    "title": "الوجهات الشائعة",
+    "subtitle": "الأكثر رواجاً خلال الأشهر الثلاثة الماضية",
+    "description": "اطّلع على الوجهات الأكثر شعبية التي اختارها المسافرون الحقيقيون",
+    "visitors": "{{count}} زائر",
+    "avgDuration": "متوسط {{days}} أيام",
+    "withTravelers": "مع {{count}} مسافرين",
+    "popularSeason": "الموسم الشائع:"
+  },
+  "progressIndicator": {
+    "title": "التقدم",
+    "status": "{{completed}} مكتمل / {{total}} إجمالي الأنشطة"
+  },
+  "destinationInsights": {
+    "header": "بناءً على بيانات المسافرين الحقيقيين",
+    "avgDuration": "متوسط مدة الرحلة",
+    "avgTravelers": "متوسط حجم المجموعة",
+    "popularBudget": "الميزانية الشائعة",
+    "popularStyle": "الأسلوب الشائع",
+    "popularSeason": "موسم السفر الشائع",
+    "bestNow": "أفضل وقت هو الآن!",
+    "topActivities": "أفضل الأنشطة حسب المسافرين الأخيرين (أفضل {{count}})",
+    "footer": "بناءً على بيانات المسافرين الحقيقيين خلال الأشهر الثلاثة الماضية",
+    "loading": "جارٍ تحميل معلومات الوجهة...",
+    "days": "{{days}} أيام",
+    "people": "{{count}} أشخاص"
+  }
+}

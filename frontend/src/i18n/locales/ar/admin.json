@@ -1,0 +1,55 @@
+{
+  "title": "لوحة الإدارة",
+  "menu": {
+    "users": "إدارة المستخدمين",
+    "errorLogs": "سجلات الأخطاء",
+    "revenue": "لوحة الإيرادات"
+  },
+  "dashboard": {
+    "subtitle": "أدوات إدارة الخدمة"
+  },
+  "users": {
+    "title": "إدارة المستخدمين",
+    "totalUsers": "إجمالي المستخدمين",
+    "todaySignups": "تسجيلات اليوم",
+    "todayActive": "النشطون اليوم",
+    "weeklyActive": "النشطون أسبوعياً",
+    "people": "",
+    "signupTrend": "التسجيلات (آخر 30 يوماً)",
+    "providerBreakdown": "طريقة التسجيل",
+    "memberList": "قائمة الأعضاء",
+    "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني",
+    "allProviders": "الكل",
+    "lastLogin": "آخر تسجيل دخول",
+    "signupDate": "تاريخ الانضمام",
+    "trips": "الرحلات",
+    "never": "أبداً",
+    "noUsers": "لم يتم العثور على مستخدمين",
+    "loadMore": "تحميل المزيد"
+  },
+  "errors": {
+    "title": "سجلات الأخطاء",
+    "todayErrors": "اليوم",
+    "weeklyErrors": "هذا الأسبوع",
+    "unresolved": "غير محلولة",
+    "affectedUsers": "المستخدمون المتأثرون",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "الأخطاء (آخر 24 ساعة)",
+    "topErrors": "أهم 10 أخطاء",
+    "errorList": "قائمة الأخطاء",
+    "allSeverity": "الكل",
+    "error": "خطأ",
+    "warning": "تحذير",
+    "fatal": "حرج",
+    "unresolvedOnly": "غير المحلولة فقط",
+    "resolve": "حل",
+    "resolved": "تم الحل",
+    "screen": "الشاشة",
+    "device": "الجهاز",
+    "version": "الإصدار",
+    "noErrors": "لم يتم العثور على أخطاء",
+    "loadMore": "تحميل المزيد",
+    "occurrences": "مرات"
+  }
+}

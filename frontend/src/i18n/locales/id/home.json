@@ -1,0 +1,60 @@
+{
+  "greeting": "Halo \ud83d\udc4b",
+  "heroTitle": "Perjalanan {{name}}",
+  "subtitle": "Siap merencanakan petualangan berikutnya?",
+  "createTrip": "Buat Rencana Perjalanan AI",
+  "stats": {
+    "completed": "Selesai",
+    "ongoing": "Berlangsung",
+    "upcoming": "Akan Datang"
+  },
+  "featured": {
+    "title": "Tempat Menarik untuk Dikunjungi Sekarang",
+    "subtitle": "Jelajahi destinasi populer",
+    "seeAll": "Lihat semua \u2192"
+  },
+  "destinations": {
+    "tokyo": {
+      "name": "Tokyo",
+      "country": "Jepang",
+      "description": "Tempat tradisi bertemu modernitas"
+    },
+    "osaka": {
+      "name": "Osaka",
+      "country": "Jepang",
+      "description": "Kota cita rasa dan jalanan yang semarak"
+    },
+    "bangkok": {
+      "name": "Bangkok",
+      "country": "Thailand",
+      "description": "Kuil emas dan pasar malam"
+    },
+    "danang": {
+      "name": "Da Nang",
+      "country": "Vietnam",
+      "description": "Pantai indah dan kuliner lezat"
+    },
+    "paris": {
+      "name": "Paris",
+      "country": "Prancis",
+      "description": "Kota seni dan romansa"
+    },
+    "singapore": {
+      "name": "Singapura",
+      "country": "Singapura",
+      "description": "Petualangan kuliner di kota futuristik"
+    }
+  },
+  "quickActions": {
+    "title": "Aksi Cepat",
+    "myTrips": "Perjalanan Saya",
+    "myTripsDesc": "Periksa perjalanan yang sedang berlangsung",
+    "inspiration": "Inspirasi",
+    "inspirationDesc": "Jelajahi ide-ide baru"
+  },
+  "tip": {
+    "sectionTitle": "Tips Perjalanan",
+    "title": "\ud83d\udca1 Rencanakan Lebih Awal",
+    "description": "AI membuat jadwal optimal dengan mempertimbangkan cuaca lokal, tempat populer, dan rute perjalanan."
+  }
+}

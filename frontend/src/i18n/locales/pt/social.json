@@ -1,0 +1,21 @@
+{
+  "title": "Explorar", "following": "Seguindo", "trending": "Em Alta",
+  "emptyFollowing": "Nenhuma publicação de viajantes seguidos",
+  "emptyFollowingMessage": "Siga viajantes para ver suas viagens públicas aqui",
+  "emptyTrending": "Nenhuma viagem pública ainda",
+  "emptyTrendingMessage": "Viagens populares aparecerão aqui em breve",
+  "tripBy": "Viagem por {{name}}", "likesCount": "{{count}} curtidas",
+  "profile": {
+    "followers": "Seguidores", "following": "Seguindo", "follow": "Seguir",
+    "unfollow": "Deixar de Seguir", "publicTrips": "Viagens Públicas", "noPublicTrips": "Nenhuma viagem pública"
+  },
+  "notifications": {
+    "newFollower": "{{name}} começou a seguir você",
+    "tripLiked": "{{name}} curtiu sua viagem para {{destination}}"
+  },
+  "errors": {
+    "followFailed": "Falha ao seguir", "unfollowFailed": "Falha ao deixar de seguir",
+    "likeFailed": "Falha ao curtir", "unlikeFailed": "Falha ao descurtir",
+    "feedFailed": "Falha ao carregar feed", "profileFailed": "Falha ao carregar perfil"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "title": "استكشاف",
+  "following": "المتابَعون",
+  "trending": "الرائج",
+  "emptyFollowing": "لا توجد منشورات من المسافرين المتابَعين",
+  "emptyFollowingMessage": "تابع المسافرين لرؤية رحلاتهم العامة هنا",
+  "emptyTrending": "لا توجد رحلات عامة بعد",
+  "emptyTrendingMessage": "ستظهر الرحلات الشائعة هنا قريباً",
+  "tripBy": "رحلة بواسطة {{name}}",
+  "likesCount": "{{count}} إعجاب",
+  "profile": {
+    "followers": "المتابِعون",
+    "following": "المتابَعون",
+    "follow": "متابعة",
+    "unfollow": "إلغاء المتابعة",
+    "publicTrips": "الرحلات العامة",
+    "noPublicTrips": "لا توجد رحلات عامة"
+  },
+  "notifications": {
+    "newFollower": "{{name}} بدأ بمتابعتك",
+    "tripLiked": "{{name}} أعجب برحلتك إلى {{destination}}"
+  },
+  "errors": {
+    "followFailed": "فشلت المتابعة",
+    "unfollowFailed": "فشل إلغاء المتابعة",
+    "likeFailed": "فشل الإعجاب",
+    "unlikeFailed": "فشل إلغاء الإعجاب",
+    "feedFailed": "فشل تحميل المنشورات",
+    "profileFailed": "فشل تحميل الملف الشخصي"
+  }
+}

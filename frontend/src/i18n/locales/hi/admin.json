@@ -1,0 +1,55 @@
+{
+  "title": "एडमिन पैनल",
+  "menu": {
+    "users": "उपयोगकर्ता प्रबंधन",
+    "errorLogs": "त्रुटि लॉग",
+    "revenue": "राजस्व डैशबोर्ड"
+  },
+  "dashboard": {
+    "subtitle": "सेवा प्रबंधन टूल"
+  },
+  "users": {
+    "title": "उपयोगकर्ता प्रबंधन",
+    "totalUsers": "कुल उपयोगकर्ता",
+    "todaySignups": "आज के साइनअप",
+    "todayActive": "आज सक्रिय",
+    "weeklyActive": "साप्ताहिक सक्रिय",
+    "people": "",
+    "signupTrend": "साइनअप (पिछले 30 दिन)",
+    "providerBreakdown": "साइन-अप विधि",
+    "memberList": "सदस्य सूची",
+    "searchPlaceholder": "नाम या ईमेल खोजें",
+    "allProviders": "सभी",
+    "lastLogin": "अंतिम लॉगिन",
+    "signupDate": "शामिल हुए",
+    "trips": "यात्राएं",
+    "never": "कभी नहीं",
+    "noUsers": "कोई उपयोगकर्ता नहीं मिला",
+    "loadMore": "और लोड करें"
+  },
+  "errors": {
+    "title": "त्रुटि लॉग",
+    "todayErrors": "आज",
+    "weeklyErrors": "इस सप्ताह",
+    "unresolved": "अनसुलझे",
+    "affectedUsers": "प्रभावित उपयोगकर्ता",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "त्रुटियां (पिछले 24 घंटे)",
+    "topErrors": "शीर्ष 10 त्रुटियां",
+    "errorList": "त्रुटि सूची",
+    "allSeverity": "सभी",
+    "error": "त्रुटि",
+    "warning": "चेतावनी",
+    "fatal": "घातक",
+    "unresolvedOnly": "केवल अनसुलझे",
+    "resolve": "सुलझाएं",
+    "resolved": "सुलझा हुआ",
+    "screen": "स्क्रीन",
+    "device": "डिवाइस",
+    "version": "संस्करण",
+    "noErrors": "कोई त्रुटि नहीं मिली",
+    "loadMore": "और लोड करें",
+    "occurrences": "बार"
+  }
+}

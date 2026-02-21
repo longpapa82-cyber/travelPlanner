@@ -1,0 +1,51 @@
+{
+  "title": "الاشتراك",
+  "free": {
+    "name": "مجاني",
+    "description": "ميزات تخطيط السفر الأساسية"
+  },
+  "premium": {
+    "name": "Premium",
+    "description": "ذكاء اصطناعي غير محدود + بدون إعلانات",
+    "price": {
+      "monthly": "شهري",
+      "yearly": "سنوي",
+      "yearlySaving": "وفّر 37%",
+      "month": "شهر",
+      "year": "سنة"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "تخطيط رحلات غير محدود بالذكاء الاصطناعي",
+    "noAds": "بدون إعلانات",
+    "premiumBadge": "شارة Premium",
+    "tripCreation": "تخطيط الرحلات",
+    "social": "الميزات الاجتماعية",
+    "expenses": "إدارة المصاريف"
+  },
+  "actions": {
+    "subscribe": "اشتراك",
+    "restore": "استعادة المشتريات",
+    "manage": "إدارة الاشتراك",
+    "cancel": "إلغاء الاشتراك"
+  },
+  "paywall": {
+    "title": "الترقية إلى Premium",
+    "subtitle": "استمتع بتخطيط رحلات غير محدود بالذكاء الاصطناعي وتجربة خالية من الإعلانات",
+    "aiLimitTitle": "استخدام خطط السفر بالذكاء الاصطناعي",
+    "aiLimitReached": "تم الوصول إلى حد خطط السفر المجانية بالذكاء الاصطناعي",
+    "aiUsed": "مستخدم",
+    "compareTitle": "مقارنة الخطط",
+    "upgradeToUnlock": "قم بالترقية لفتح الميزة"
+  },
+  "status": {
+    "active": "نشط",
+    "expired": "منتهي الصلاحية",
+    "expiresOn": "حتى {{date}}"
+  },
+  "menu": {
+    "subscription": "الاشتراك",
+    "upgradePremium": "الترقية إلى Premium",
+    "managePlan": "إدارة الخطة"
+  }
+}

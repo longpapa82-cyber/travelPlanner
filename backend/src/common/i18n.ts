@@ -1,4 +1,4 @@
-type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi';
+type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi';
 
 const translations: Record<string, Record<SupportedLang, string>> = {
   'password.enterBoth': {
@@ -11,6 +11,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Veuillez saisir le mot de passe actuel et le nouveau.',
     th: 'กรุณากรอกรหัสผ่านปัจจุบันและรหัสผ่านใหม่',
     vi: 'Vui lòng nhập mật khẩu hiện tại và mật khẩu mới.',
+    pt: 'Por favor, insira a senha atual e a nova senha.',
+    ar: 'يرجى إدخال كلمة المرور الحالية والجديدة.',
+    id: 'Silakan masukkan kata sandi saat ini dan kata sandi baru.',
+    hi: 'कृपया वर्तमान और नया पासवर्ड दर्ज करें।',
   },
   'password.minLength': {
     ko: '새 비밀번호는 8자 이상이어야 합니다.',
@@ -22,6 +26,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Le nouveau mot de passe doit contenir au moins 8 caractères.',
     th: 'รหัสผ่านใหม่ต้องมีอย่างน้อย 8 ตัวอักษร',
     vi: 'Mật khẩu mới phải có ít nhất 8 ký tự.',
+    pt: 'A nova senha deve ter pelo menos 8 caracteres.',
+    ar: 'يجب أن تتكون كلمة المرور الجديدة من 8 أحرف على الأقل.',
+    id: 'Kata sandi baru harus minimal 8 karakter.',
+    hi: 'नया पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।',
   },
   'account.deleted': {
     ko: '계정이 삭제되었습니다.',
@@ -33,6 +41,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Le compte a été supprimé.',
     th: 'บัญชีถูกลบแล้ว',
     vi: 'Tài khoản đã được xóa.',
+    pt: 'A conta foi excluída.',
+    ar: 'تم حذف الحساب.',
+    id: 'Akun telah dihapus.',
+    hi: 'खाता हटा दिया गया है।',
   },
   'password.socialNotAllowed': {
     ko: '소셜 로그인 계정은 비밀번호를 변경할 수 없습니다.',
@@ -44,6 +56,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Les comptes de connexion sociale ne peuvent pas changer le mot de passe.',
     th: 'บัญชีที่เข้าสู่ระบบผ่านโซเชียลไม่สามารถเปลี่ยนรหัสผ่านได้',
     vi: 'Tài khoản đăng nhập mạng xã hội không thể đổi mật khẩu.',
+    pt: 'Contas de login social não podem alterar a senha.',
+    ar: 'لا يمكن لحسابات تسجيل الدخول الاجتماعي تغيير كلمة المرور.',
+    id: 'Akun login sosial tidak dapat mengubah kata sandi.',
+    hi: 'सोशल लॉगिन खाते पासवर्ड नहीं बदल सकते।',
   },
   'password.currentInvalid': {
     ko: '현재 비밀번호가 일치하지 않습니다.',
@@ -55,6 +71,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Le mot de passe actuel est incorrect.',
     th: 'รหัสผ่านปัจจุบันไม่ถูกต้อง',
     vi: 'Mật khẩu hiện tại không đúng.',
+    pt: 'A senha atual está incorreta.',
+    ar: 'كلمة المرور الحالية غير صحيحة.',
+    id: 'Kata sandi saat ini salah.',
+    hi: 'वर्तमान पासवर्ड गलत है।',
   },
   'password.changed': {
     ko: '비밀번호가 변경되었습니다.',
@@ -66,6 +86,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Le mot de passe a été modifié.',
     th: 'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว',
     vi: 'Mật khẩu đã được thay đổi.',
+    pt: 'A senha foi alterada.',
+    ar: 'تم تغيير كلمة المرور.',
+    id: 'Kata sandi telah diubah.',
+    hi: 'पासवर्ड बदल दिया गया है।',
   },
   'timezone.noDifference': {
     ko: '시차 없음',
@@ -77,6 +101,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Pas de décalage horaire',
     th: 'ไม่มีความต่างของเวลา',
     vi: 'Không có chênh lệch múi giờ',
+    pt: 'Sem diferença de fuso horário',
+    ar: 'لا يوجد فرق في التوقيت',
+    id: 'Tidak ada perbedaan waktu',
+    hi: 'कोई समय अंतर नहीं',
   },
   'timezone.hours': {
     ko: '시간',
@@ -88,6 +116,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'h',
     th: 'ชม.',
     vi: 'giờ',
+    pt: 'h',
+    ar: 'س',
+    id: 'jam',
+    hi: 'घंटे',
   },
   'timezone.minutes': {
     ko: '분',
@@ -99,6 +131,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'min',
     th: 'นาที',
     vi: 'phút',
+    pt: 'min',
+    ar: 'د',
+    id: 'menit',
+    hi: 'मिनट',
   },
   'timezone.ahead': {
     ko: '빠름',
@@ -110,6 +146,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: "d'avance",
     th: 'เร็วกว่า',
     vi: 'sớm hơn',
+    pt: 'adiantado',
+    ar: 'متقدم',
+    id: 'lebih cepat',
+    hi: 'आगे',
   },
   'timezone.behind': {
     ko: '느림',
@@ -121,6 +161,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'de retard',
     th: 'ช้ากว่า',
     vi: 'chậm hơn',
+    pt: 'atrasado',
+    ar: 'متأخر',
+    id: 'lebih lambat',
+    hi: 'पीछे',
   },
   'email.verification.sent': {
     ko: '인증 이메일이 발송되었습니다.',
@@ -132,6 +176,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: "L'e-mail de vérification a été envoyé.",
     th: 'อีเมลยืนยันได้ถูกส่งแล้ว',
     vi: 'Email xác minh đã được gửi.',
+    pt: 'O e-mail de verificação foi enviado.',
+    ar: 'تم إرسال بريد التحقق.',
+    id: 'Email verifikasi telah dikirim.',
+    hi: 'सत्यापन ईमेल भेज दिया गया है।',
   },
   'email.verification.invalid': {
     ko: '유효하지 않은 인증 토큰입니다.',
@@ -143,6 +191,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Jeton de vérification invalide.',
     th: 'โทเค็นยืนยันไม่ถูกต้อง',
     vi: 'Mã xác minh không hợp lệ.',
+    pt: 'Token de verificação inválido.',
+    ar: 'رمز التحقق غير صالح.',
+    id: 'Token verifikasi tidak valid.',
+    hi: 'अमान्य सत्यापन टोकन।',
   },
   'email.verification.expired': {
     ko: '인증 토큰이 만료되었습니다.',
@@ -154,6 +206,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Le jeton de vérification a expiré.',
     th: 'โทเค็นยืนยันหมดอายุแล้ว',
     vi: 'Mã xác minh đã hết hạn.',
+    pt: 'O token de verificação expirou.',
+    ar: 'انتهت صلاحية رمز التحقق.',
+    id: 'Token verifikasi telah kedaluwarsa.',
+    hi: 'सत्यापन टोकन की समय सीमा समाप्त हो गई है।',
   },
   'email.verification.success': {
     ko: '이메일이 성공적으로 인증되었습니다.',
@@ -165,6 +221,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: "L'e-mail a été vérifié avec succès.",
     th: 'ยืนยันอีเมลสำเร็จแล้ว',
     vi: 'Email đã được xác minh thành công.',
+    pt: 'O e-mail foi verificado com sucesso.',
+    ar: 'تم التحقق من البريد الإلكتروني بنجاح.',
+    id: 'Email telah berhasil diverifikasi.',
+    hi: 'ईमेल सफलतापूर्वक सत्यापित हो गया है।',
   },
   'email.already.verified': {
     ko: '이미 인증된 이메일입니다.',
@@ -176,6 +236,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: "L'e-mail est déjà vérifié.",
     th: 'อีเมลนี้ได้รับการยืนยันแล้ว',
     vi: 'Email đã được xác minh rồi.',
+    pt: 'O e-mail já foi verificado.',
+    ar: 'البريد الإلكتروني تم التحقق منه بالفعل.',
+    id: 'Email sudah diverifikasi.',
+    hi: 'ईमेल पहले से सत्यापित है।',
   },
   'password.reset.sent': {
     ko: '비밀번호 재설정 이메일이 발송되었습니다.',
@@ -187,6 +251,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: "L'e-mail de réinitialisation du mot de passe a été envoyé.",
     th: 'อีเมลรีเซ็ตรหัสผ่านได้ถูกส่งแล้ว',
     vi: 'Email đặt lại mật khẩu đã được gửi.',
+    pt: 'O e-mail de redefinição de senha foi enviado.',
+    ar: 'تم إرسال بريد إعادة تعيين كلمة المرور.',
+    id: 'Email reset kata sandi telah dikirim.',
+    hi: 'पासवर्ड रीसेट ईमेल भेज दिया गया है।',
   },
   'password.reset.invalid': {
     ko: '유효하지 않은 재설정 토큰입니다.',
@@ -198,6 +266,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Jeton de réinitialisation invalide.',
     th: 'โทเค็นรีเซ็ตไม่ถูกต้อง',
     vi: 'Mã đặt lại không hợp lệ.',
+    pt: 'Token de redefinição inválido.',
+    ar: 'رمز إعادة التعيين غير صالح.',
+    id: 'Token reset tidak valid.',
+    hi: 'अमान्य रीसेट टोकन।',
   },
   'password.reset.expired': {
     ko: '재설정 토큰이 만료되었습니다.',
@@ -209,6 +281,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Le jeton de réinitialisation a expiré.',
     th: 'โทเค็นรีเซ็ตหมดอายุแล้ว',
     vi: 'Mã đặt lại đã hết hạn.',
+    pt: 'O token de redefinição expirou.',
+    ar: 'انتهت صلاحية رمز إعادة التعيين.',
+    id: 'Token reset telah kedaluwarsa.',
+    hi: 'रीसेट टोकन की समय सीमा समाप्त हो गई है।',
   },
   'password.reset.success': {
     ko: '비밀번호가 성공적으로 재설정되었습니다.',
@@ -220,6 +296,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Le mot de passe a été réinitialisé avec succès.',
     th: 'รีเซ็ตรหัสผ่านสำเร็จแล้ว',
     vi: 'Mật khẩu đã được đặt lại thành công.',
+    pt: 'A senha foi redefinida com sucesso.',
+    ar: 'تم إعادة تعيين كلمة المرور بنجاح.',
+    id: 'Kata sandi telah berhasil direset.',
+    hi: 'पासवर्ड सफलतापूर्वक रीसेट हो गया है।',
   },
   'password.reset.socialNotAllowed': {
     ko: '소셜 로그인 계정은 비밀번호를 재설정할 수 없습니다.',
@@ -231,6 +311,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: 'Les comptes de connexion sociale ne peuvent pas réinitialiser le mot de passe.',
     th: 'บัญชีที่เข้าสู่ระบบผ่านโซเชียลไม่สามารถรีเซ็ตรหัสผ่านได้',
     vi: 'Tài khoản đăng nhập mạng xã hội không thể đặt lại mật khẩu.',
+    pt: 'Contas de login social não podem redefinir a senha.',
+    ar: 'لا يمكن لحسابات تسجيل الدخول الاجتماعي إعادة تعيين كلمة المرور.',
+    id: 'Akun login sosial tidak dapat mereset kata sandi.',
+    hi: 'सोशल लॉगिन खाते पासवर्ड रीसेट नहीं कर सकते।',
   },
   'email.verification.required': {
     ko: '이 기능을 사용하려면 이메일 인증이 필요합니다.',
@@ -242,13 +326,17 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     fr: "Vérification de l'e-mail requise pour utiliser cette fonctionnalité.",
     th: 'ต้องยืนยันอีเมลก่อนใช้ฟีเจอร์นี้',
     vi: 'Cần xác minh email để sử dụng tính năng này.',
+    pt: 'Verificação de e-mail necessária para usar este recurso.',
+    ar: 'مطلوب التحقق من البريد الإلكتروني لاستخدام هذه الميزة.',
+    id: 'Verifikasi email diperlukan untuk menggunakan fitur ini.',
+    hi: 'इस सुविधा का उपयोग करने के लिए ईमेल सत्यापन आवश्यक है।',
   },
 };
 
 export function parseLang(acceptLanguage?: string): SupportedLang {
   if (!acceptLanguage) return 'ko';
   const lang = acceptLanguage.split(',')[0].split('-')[0].toLowerCase();
-  const supported: SupportedLang[] = ['en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi'];
+  const supported: SupportedLang[] = ['en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi', 'pt', 'ar', 'id', 'hi'];
   return (supported.find((l) => l === lang) as SupportedLang) ?? 'ko';
 }
 

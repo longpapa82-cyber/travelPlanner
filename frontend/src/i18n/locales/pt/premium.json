@@ -1,0 +1,20 @@
+{
+  "title": "Assinatura",
+  "free": { "name": "Gratuito", "description": "Recursos básicos de planejamento de viagem" },
+  "premium": {
+    "name": "Premium", "description": "IA Ilimitada + Sem Anúncios",
+    "price": { "monthly": "Mensal", "yearly": "Anual", "yearlySaving": "Economize 37%", "month": "mês", "year": "ano" }
+  },
+  "benefits": {
+    "unlimitedAi": "Planejamento de viagem com IA ilimitado", "noAds": "Sem anúncios", "premiumBadge": "Selo Premium",
+    "tripCreation": "Planejamento de viagem", "social": "Recursos sociais", "expenses": "Gerenciamento de despesas"
+  },
+  "actions": { "subscribe": "Assinar", "restore": "Restaurar compra", "manage": "Gerenciar assinatura", "cancel": "Cancelar assinatura" },
+  "paywall": {
+    "title": "Upgrade para Premium", "subtitle": "Aproveite o planejamento de viagem com IA ilimitado e uma experiência sem anúncios",
+    "aiLimitTitle": "Uso do Plano de Viagem com IA", "aiLimitReached": "Limite gratuito de planos de viagem com IA atingido",
+    "aiUsed": "usados", "compareTitle": "Comparar Planos", "upgradeToUnlock": "Faça upgrade para desbloquear"
+  },
+  "status": { "active": "Ativo", "expired": "Expirado", "expiresOn": "Até {{date}}" },
+  "menu": { "subscription": "Assinatura", "upgradePremium": "Upgrade para Premium", "managePlan": "Gerenciar plano" }
+}

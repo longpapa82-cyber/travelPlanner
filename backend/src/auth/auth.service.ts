@@ -28,7 +28,7 @@ import { getErrorMessage } from '../common/types/request.types';
 import { AuditService } from '../admin/audit.service';
 import { AuditAction } from '../admin/entities/audit-log.entity';
 
-type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi';
+type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi';
 
 export interface OAuthUserData {
   providerId: string;

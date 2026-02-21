@@ -1,0 +1,118 @@
+{
+  "title": "الملف الشخصي",
+  "guest": "زائر",
+  "sections": {
+    "account": "الحساب",
+    "settings": "الإعدادات",
+    "support": "الدعم",
+    "admin": "الإدارة"
+  },
+  "menu": {
+    "editProfile": "تعديل الملف الشخصي",
+    "changePassword": "تغيير كلمة المرور",
+    "twoFactor": "المصادقة الثنائية",
+    "twoFactorEnabled": "مفعّلة",
+    "twoFactorDisabled": "معطّلة",
+    "language": "اللغة",
+    "notifications": "الإشعارات",
+    "notificationsEnabled": "مفعّلة",
+    "notificationsDisabled": "معطّلة",
+    "darkMode": "الوضع الداكن",
+    "help": "المساعدة",
+    "terms": "شروط الخدمة",
+    "privacy": "سياسة الخصوصية",
+    "revenue": "لوحة الإيرادات",
+    "admin": "لوحة الإدارة"
+  },
+  "editProfile": {
+    "title": "تعديل الملف الشخصي",
+    "name": "الاسم",
+    "namePlaceholder": "أدخل اسمك",
+    "changePhoto": "تغيير صورة الملف الشخصي",
+    "save": "حفظ",
+    "alerts": {
+      "nameRequired": "يرجى إدخال اسمك",
+      "success": "تم تحديث الملف الشخصي بنجاح",
+      "failed": "فشل تحديث الملف الشخصي",
+      "photoSuccess": "تم تحديث صورة الملف الشخصي",
+      "photoFailed": "فشل تحديث صورة الملف الشخصي",
+      "permissionDenied": "مطلوب إذن الوصول إلى الصور"
+    }
+  },
+  "changePassword": {
+    "title": "تغيير كلمة المرور",
+    "current": "كلمة المرور الحالية",
+    "currentPlaceholder": "أدخل كلمة المرور الحالية",
+    "new": "كلمة المرور الجديدة",
+    "newPlaceholder": "أدخل كلمة مرور جديدة (8 أحرف على الأقل، حروف وأرقام)",
+    "confirm": "تأكيد كلمة المرور الجديدة",
+    "confirmPlaceholder": "أعد إدخال كلمة المرور الجديدة",
+    "submit": "تغيير كلمة المرور",
+    "alerts": {
+      "allFieldsRequired": "يرجى ملء جميع الحقول",
+      "minLength": "يجب أن تتكون كلمة المرور الجديدة من 8 أحرف على الأقل تشمل حروفاً وأرقاماً",
+      "mismatch": "كلمتا المرور الجديدتان غير متطابقتين",
+      "success": "تم تغيير كلمة المرور بنجاح",
+      "failed": "فشل تغيير كلمة المرور"
+    }
+  },
+  "languageSelector": {
+    "title": "اختيار اللغة",
+    "description": "اختر لغتك المفضلة"
+  },
+  "logout": {
+    "title": "تسجيل الخروج",
+    "message": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+    "button": "تسجيل الخروج"
+  },
+  "deleteAccount": {
+    "title": "حذف الحساب",
+    "message": "سيؤدي حذف حسابك إلى إزالة جميع البيانات نهائياً. هل أنت متأكد؟",
+    "button": "حذف الحساب",
+    "passwordConfirm": "أدخل كلمة المرور لتأكيد حذف الحساب",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "alerts": {
+      "success": "تم حذف الحساب بنجاح",
+      "failed": "فشل حذف الحساب",
+      "passwordRequired": "يرجى إدخال كلمة المرور"
+    }
+  },
+  "version": "الإصدار",
+  "analytics": {
+    "title": "إحصائيات السفر",
+    "totalTrips": "إجمالي الرحلات",
+    "completedTrips": "المكتملة",
+    "ongoingTrips": "الجارية",
+    "upcomingTrips": "القادمة",
+    "totalDays": "إجمالي الأيام",
+    "avgDuration": "متوسط المدة",
+    "days": "أيام",
+    "countriesVisited": "الدول",
+    "countries": "دول",
+    "totalSpent": "إجمالي المنفق",
+    "totalBudget": "إجمالي الميزانية",
+    "topDestinations": "أفضل الوجهات",
+    "times": "مرات",
+    "activities": "الأنشطة",
+    "completedOf": "{{completed}} / {{total}} مكتمل",
+    "noData": "لا توجد بيانات سفر بعد",
+    "loading": "جارٍ تحميل الإحصائيات..."
+  },
+  "revenue": {
+    "last30Days": "آخر 30 يوماً",
+    "totalClicks": "إجمالي النقرات",
+    "conversions": "التحويلات",
+    "conversionRate": "معدل التحويل",
+    "commission": "العمولة",
+    "highlights": "أبرز النتائج",
+    "topProvider": "أفضل مزود",
+    "topDestination": "أفضل وجهة",
+    "totalRevenue": "إجمالي الإيرادات",
+    "byProvider": "حسب المزود",
+    "clicks": "نقرات",
+    "conv": "تحويل",
+    "noData": "لا توجد بيانات متاحة بعد",
+    "adminOnly": "مطلوب صلاحية المسؤول",
+    "loadError": "فشل تحميل البيانات"
+  }
+}

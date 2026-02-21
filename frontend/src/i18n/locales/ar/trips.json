@@ -1,0 +1,432 @@
+{
+  "create": {
+    "title": "إنشاء رحلة جديدة",
+    "hero": {
+      "title": "مستعد لمغامرة جديدة؟",
+      "subtitle": "ما عليك سوى اختيار وجهتك وسيقوم الذكاء الاصطناعي بإنشاء خطة السفر المثالية لك"
+    },
+    "destination": {
+      "title": "إلى أين تتجه؟",
+      "placeholder": "أدخل مدينة أو دولة",
+      "popular": "وجهات شائعة"
+    },
+    "destinations": {
+      "tokyo": "طوكيو",
+      "osaka": "أوساكا",
+      "bangkok": "بانكوك",
+      "danang": "دا نانغ",
+      "paris": "باريس",
+      "singapore": "سنغافورة",
+      "london": "لندن",
+      "newyork": "نيويورك",
+      "barcelona": "برشلونة"
+    },
+    "duration": {
+      "title": "كم ستبقى؟",
+      "options": {
+        "3days": "3 أيام",
+        "1week": "أسبوع واحد",
+        "2weeks": "أسبوعان",
+        "1month": "شهر واحد"
+      },
+      "custom": "مخصص",
+      "totalDays": "رحلة {{days}} يوم"
+    },
+    "travelers": {
+      "title": "من سيرافقك؟",
+      "options": {
+        "solo": "بمفردي",
+        "two": "شخصان",
+        "group": "3-4 أشخاص",
+        "large": "5 أشخاص أو أكثر"
+      }
+    },
+    "dates": {
+      "title": "متى ستغادر؟",
+      "start": "المغادرة",
+      "end": "العودة",
+      "selectStart": "اختر تاريخ المغادرة",
+      "selectEnd": "اختر تاريخ العودة"
+    },
+    "notes": {
+      "title": "هل لديك خطط خاصة؟",
+      "placeholder": "مثال: التركيز على الطعام، مشاهدة المعالم، سفر حر...",
+      "optional": "(اختياري)"
+    },
+    "budget": {
+      "title": "ميزانية الرحلة (اختياري)",
+      "placeholder": "أدخل الميزانية الإجمالية",
+      "currency": "العملة"
+    },
+    "aiInfo": {
+      "title": "إنشاء تلقائي بالذكاء الاصطناعي",
+      "description": "سيقوم الذكاء الاصطناعي بإنشاء خطة السفر المثلى بناءً على وجهتك وجدولك"
+    },
+    "rewardedAd": {
+      "label": "شاهد إعلاناً للحصول على معلومات سفر تفصيلية"
+    },
+    "submit": "إنشاء خطة السفر",
+    "generating": "الذكاء الاصطناعي يُنشئ خطة سفرك...",
+    "progress": {
+      "analyzing": "جارٍ تحليل الوجهة",
+      "planning": "جارٍ إنشاء الجدول",
+      "weather": "جارٍ التحقق من معلومات الطقس",
+      "finalizing": "جارٍ إنهاء خطتك"
+    },
+    "preferences": {
+      "title": "أسلوب السفر",
+      "budget": {
+        "title": "مستوى الميزانية",
+        "budget": "اقتصادي",
+        "midRange": "متوسط",
+        "luxury": "فاخر"
+      },
+      "style": {
+        "title": "وتيرة السفر",
+        "relaxed": "مسترخٍ",
+        "balanced": "متوازن",
+        "active": "نشيط",
+        "adventure": "مغامرة"
+      },
+      "interests": {
+        "title": "الاهتمامات",
+        "food": "الطعام",
+        "culture": "الثقافة",
+        "nature": "الطبيعة",
+        "shopping": "التسوق",
+        "nightlife": "الحياة الليلية",
+        "history": "التاريخ",
+        "art": "الفن",
+        "sports": "الرياضة",
+        "photography": "التصوير"
+      }
+    },
+    "mode": {
+      "title": "طريقة التخطيط",
+      "ai": "إنشاء تلقائي بالذكاء الاصطناعي",
+      "aiDesc": "يُنشئ الذكاء الاصطناعي الجدول الأمثل تلقائياً",
+      "manual": "إنشاء يدوي",
+      "manualDesc": "أنشئ بطاقات أيام فارغة واملأ خطتك الخاصة",
+      "manualCreating": "جارٍ إنشاء رحلتك..."
+    },
+    "alerts": {
+      "destinationRequired": "يرجى إدخال الوجهة",
+      "datesRequired": "يرجى اختيار تواريخ السفر",
+      "createFailed": "فشل إنشاء الرحلة",
+      "startDateRequired": "يرجى اختيار تاريخ المغادرة"
+    },
+    "aiConsent": {
+      "title": "تخطيط السفر بالذكاء الاصطناعي",
+      "body": "تستخدم هذه الميزة الذكاء الاصطناعي من OpenAI لإنشاء خطة سفر مخصصة.",
+      "dataList": "سيتم إرسال وجهتك وتواريخ السفر وعدد المسافرين وتفضيلاتك إلى الذكاء الاصطناعي.",
+      "accept": "موافق ومتابعة",
+      "cancel": "إلغاء"
+    }
+  },
+  "list": {
+    "title": "رحلاتي",
+    "searchPlaceholder": "البحث في الرحلات...",
+    "filters": {
+      "all": "الكل",
+      "upcoming": "قادمة",
+      "ongoing": "جارية",
+      "completed": "مكتملة"
+    },
+    "sections": {
+      "ongoing": "الرحلات الجارية",
+      "upcoming": "الرحلات القادمة",
+      "completed": "الرحلات السابقة (عرض فقط)"
+    },
+    "status": {
+      "upcoming": "قادمة",
+      "ongoing": "جارية",
+      "completed": "مكتملة"
+    },
+    "empty": {
+      "title": "لا توجد رحلات مخططة بعد",
+      "description": "ابدأ بتخطيط رحلة جديدة!",
+      "cta": "ابدأ تخطيط السفر بالذكاء الاصطناعي",
+      "noResults": "لم يتم العثور على نتائج",
+      "noResultsDescription": "جرّب مصطلح بحث أو فلتر مختلف",
+      "clearFilters": "مسح الفلاتر"
+    },
+    "error": {
+      "title": "تعذّر تحميل الرحلات",
+      "description": "تحقق من اتصال الشبكة وحاول مرة أخرى",
+      "retry": "إعادة المحاولة",
+      "refreshFailed": "فشل التحديث"
+    },
+    "card": {
+      "days": "{{days}} يوم",
+      "travelers": "{{count}} مسافرين",
+      "dDay": "باقي {{days}} يوم",
+      "dDayToday": "اليوم",
+      "dDayPassed": "مضى {{days}} يوم"
+    },
+    "alerts": {
+      "deleteTitle": "حذف الرحلة",
+      "deleteMessage": "هل تريد حذف '{{name}}'؟ لا يمكن التراجع عن هذا الإجراء.",
+      "deleteFailed": "فشل الحذف",
+      "error": "خطأ",
+      "cancel": "إلغاء",
+      "delete": "حذف"
+    },
+    "sort": {
+      "startDate": "حسب المغادرة",
+      "createdAt": "حسب الإنشاء",
+      "destination": "حسب الوجهة"
+    },
+    "advancedFilters": {
+      "toggle": "الفلاتر",
+      "country": "الدولة",
+      "countryPlaceholder": "أدخل الدولة",
+      "dateRange": "نطاق تاريخ المغادرة",
+      "dateFrom": "من",
+      "dateTo": "إلى",
+      "budget": "نطاق الميزانية",
+      "budgetMin": "الحد الأدنى",
+      "budgetMax": "الحد الأقصى",
+      "reset": "إعادة تعيين الفلاتر",
+      "apply": "تطبيق",
+      "activeCount": "{{count}} فلتر(ات) نشطة"
+    },
+    "resultCount": "{{count}} رحلة(ات)",
+    "createButton": "إنشاء رحلة جديدة",
+    "info": {
+      "days": "{{count}} يوم",
+      "itineraries": "{{count}} جداول",
+      "travelers": "{{count}} مسافرين"
+    },
+    "accessibility": {
+      "trip": "رحلة",
+      "viewDetail": "عرض تفاصيل الرحلة",
+      "deleteTrip": "حذف",
+      "search": "البحث في الرحلات",
+      "searchHint": "البحث في الرحلات حسب الوجهة"
+    },
+    "pagination": {
+      "showMore": "عرض المزيد",
+      "showing": "{{shown}} / {{total}}"
+    }
+  },
+  "detail": {
+    "loading": "جارٍ تحميل معلومات الرحلة...",
+    "notFound": {
+      "title": "الرحلة غير موجودة",
+      "description": "هذه الرحلة غير موجودة أو تم حذفها",
+      "back": "العودة"
+    },
+    "status": {
+      "ongoing": "جارية",
+      "completed": "مكتملة"
+    },
+    "completedBanner": {
+      "title": "اكتملت الرحلة",
+      "description": "هذه الرحلة مكتملة ولا يمكن تعديلها. تصفّح ذكرياتك الثمينة!"
+    },
+    "readOnlyMessage": "لا يمكن تعديل الأنشطة المكتملة",
+    "progress": "التقدم الإجمالي {{percentage}}%",
+    "durationDays": "{{count}} يوم",
+    "travelers": "{{count}} مسافرين",
+    "durationMinutes": "{{minutes}} دقيقة",
+    "estimatedCost": "${{cost}}",
+    "dayLabel": "اليوم {{day}}",
+    "emptyItinerary": "لم يتم إنشاء جدول بعد",
+    "emptyItineraryMessage": "أضف أنشطة إلى رحلتك",
+    "addActivity": "إضافة نشاط",
+    "affiliateSection": "احجز الفنادق والأنشطة",
+    "affiliateSubtitle": "احجز أفضل أماكن الإقامة والتجارب في {{destination}}",
+    "affiliateAccom": "أماكن الإقامة",
+    "affiliateExperience": "الجولات والأنشطة",
+    "tabs": {
+      "itinerary": "الجدول",
+      "map": "الخريطة",
+      "info": "المعلومات",
+      "share": "مشاركة"
+    },
+    "map": {
+      "noLocations": "لا توجد مواقع لعرضها",
+      "noLocationsMessage": "أنشئ رحلة جديدة لعرض الأنشطة ذات بيانات الموقع",
+      "activitiesCount": "{{count}} أنشطة",
+      "allDays": "الكل",
+      "dayLabel": "اليوم {{day}}",
+      "openInMaps": "عرض في خرائط Google",
+      "tapToOpen": "اضغط لفتح الخريطة",
+      "durationMin": "{{min}} دقيقة"
+    },
+    "budget": {
+      "title": "ملخص الميزانية",
+      "total": "الميزانية الإجمالية",
+      "estimated": "المقدّر",
+      "spent": "المُنفق",
+      "remaining": "المتبقي",
+      "byCategory": "حسب الفئة",
+      "byDay": "حسب اليوم",
+      "perDay": "لكل يوم",
+      "dayLabel": "اليوم {{day}}"
+    },
+    "activityTypes": {
+      "meal": "وجبة",
+      "sightseeing": "مشاهدة معالم",
+      "shopping": "تسوق",
+      "experience": "تجربة",
+      "rest": "راحة",
+      "transport": "مواصلات",
+      "accommodation": "إقامة",
+      "other": "أخرى"
+    },
+    "accessibility": {
+      "completed": "مكتمل",
+      "incomplete": "غير مكتمل",
+      "reorder": "إعادة ترتيب",
+      "reorderHint": "اضغط مطولاً لإعادة الترتيب",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "goBack": "العودة",
+      "editTrip": "تعديل الرحلة",
+      "duplicate": "نسخ الرحلة",
+      "duplicating": "جارٍ النسخ...",
+      "share": "مشاركة",
+      "exportIcal": "تصدير إلى التقويم",
+      "addActivityToDay": "إضافة نشاط لليوم {{day}}",
+      "moreOptions": "خيارات أخرى"
+    },
+    "alerts": {
+      "deleteTitle": "حذف النشاط",
+      "deleteMessage": "هل تريد حذف هذا النشاط؟",
+      "deleteFailed": "فشل الحذف",
+      "error": "خطأ",
+      "fetchError": "فشل تحميل معلومات الرحلة",
+      "duplicateSuccess": "تم نسخ الرحلة",
+      "duplicateCompleteTitle": "اكتمل النسخ",
+      "duplicateError": "فشل نسخ الرحلة",
+      "confirm": "موافق",
+      "cancel": "إلغاء",
+      "delete": "حذف",
+      "success": "تم بنجاح",
+      "deleteSuccess": "تم حذف الرحلة",
+      "deleteError": "فشل حذف الرحلة",
+      "toggleError": "فشل تحديث الحالة",
+      "reorderError": "فشل إعادة الترتيب"
+    },
+    "photos": {
+      "addCover": "إضافة صورة غلاف",
+      "changeCover": "تغيير صورة الغلاف",
+      "addPhoto": "إضافة صورة",
+      "photoCount": "{{count}} صور",
+      "uploadSuccess": "تم رفع الصورة",
+      "uploadFailed": "فشل رفع الصورة",
+      "viewAll": "عرض جميع الصور"
+    },
+    "collaboration": {
+      "title": "المتعاونون",
+      "invite": "دعوة",
+      "emailPlaceholder": "أدخل البريد الإلكتروني",
+      "roleViewer": "مشاهد",
+      "roleEditor": "محرر",
+      "owner": "المالك",
+      "remove": "إزالة",
+      "inviteSuccess": "تم إرسال الدعوة",
+      "inviteFailed": "فشل الدعوة",
+      "removeFailed": "فشل الإزالة",
+      "noCollaborators": "لا يوجد متعاونون بعد"
+    },
+    "expenses": {
+      "title": "المصاريف",
+      "addExpense": "إضافة مصروف",
+      "total": "إجمالي المنفق",
+      "myShare": "حصتي",
+      "iOwe": "عليّ",
+      "owedToMe": "لي عند الآخرين",
+      "settled": "تمت التسوية",
+      "paidBy": "دفعها",
+      "splitWith": "مقسّمة مع",
+      "splitEqual": "تقسيم بالتساوي",
+      "splitExact": "مبالغ مخصصة",
+      "balances": "الأرصدة",
+      "settlements": "التسويات",
+      "settleUp": "تسوية",
+      "settledMark": "تمت التسوية",
+      "noExpenses": "لا توجد مصاريف بعد",
+      "noExpensesMessage": "أضف مصاريف لتتبع إنفاق المجموعة",
+      "description": "الوصف",
+      "amount": "المبلغ",
+      "category": "الفئة",
+      "date": "التاريخ",
+      "owes": "مدين بـ",
+      "categories": {
+        "food": "طعام",
+        "transport": "مواصلات",
+        "accommodation": "إقامة",
+        "activity": "نشاط",
+        "shopping": "تسوق",
+        "other": "أخرى"
+      },
+      "tabs": {
+        "expenses": "المصاريف",
+        "balances": "الأرصدة"
+      },
+      "alerts": {
+        "createFailed": "فشل إضافة المصروف",
+        "deleteFailed": "فشل حذف المصروف",
+        "settleFailed": "فشل التسوية",
+        "deleteTitle": "حذف المصروف",
+        "deleteMessage": "هل تريد حذف هذا المصروف؟"
+      }
+    }
+  },
+  "edit": {
+    "title": "تعديل الرحلة",
+    "loading": "جارٍ تحميل معلومات الرحلة...",
+    "notFound": "الرحلة غير موجودة",
+    "goBack": "العودة",
+    "heroTitle": "تعديل معلومات الرحلة",
+    "ongoingWarning": "هذه الرحلة جارية. كن حذراً عند تغيير التواريخ.",
+    "destination": {
+      "title": "الوجهة",
+      "placeholder": "أو أدخل يدوياً"
+    },
+    "dates": {
+      "title": "تواريخ الرحلة",
+      "changeWarning": "تنبيه",
+      "totalDays": "رحلة {{days}} يوم"
+    },
+    "travelers": {
+      "title": "المسافرون",
+      "placeholder": "أو أدخل يدوياً"
+    },
+    "notes": {
+      "title": "ملاحظات الرحلة (اختياري)",
+      "placeholder": "لا تتردد في إضافة أي أهداف أو متطلبات خاصة"
+    },
+    "budget": {
+      "title": "ميزانية الرحلة (اختياري)",
+      "placeholder": "أدخل الميزانية الإجمالية",
+      "currency": "العملة"
+    },
+    "submit": "حفظ معلومات الرحلة",
+    "saving": "جارٍ الحفظ...",
+    "status": {
+      "upcoming": "قادمة",
+      "ongoing": "جارية",
+      "completed": "مكتملة"
+    },
+    "alerts": {
+      "cannotEditCompleted": "لا يمكن تعديل الرحلات المكتملة.",
+      "cannotEditTitle": "لا يمكن التعديل",
+      "loadError": "فشل تحميل معلومات الرحلة.",
+      "destinationRequired": "يرجى إدخال الوجهة.",
+      "requiredInput": "مطلوب",
+      "datesRequired": "يرجى اختيار تواريخ السفر.",
+      "endDateError": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء.",
+      "dateError": "خطأ في التاريخ",
+      "dateChangeWarningTitle": "تحذير تغيير التاريخ",
+      "dateChangeWarning": "قد يؤثر تغيير تواريخ الرحلة الجارية على الجدول. هل تريد المتابعة؟",
+      "continue": "متابعة",
+      "saveSuccess": "تم حفظ التغييرات",
+      "saveSuccessMessage": "تم تحديث معلومات الرحلة.",
+      "saveFailed": "فشل الحفظ",
+      "saveError": "فشل حفظ معلومات الرحلة. يرجى المحاولة مرة أخرى."
+    }
+  }
+}

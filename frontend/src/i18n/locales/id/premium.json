@@ -1,0 +1,51 @@
+{
+  "title": "Langganan",
+  "free": {
+    "name": "Gratis",
+    "description": "Fitur perencanaan perjalanan dasar"
+  },
+  "premium": {
+    "name": "Premium",
+    "description": "AI Tanpa Batas + Tanpa Iklan",
+    "price": {
+      "monthly": "Bulanan",
+      "yearly": "Tahunan",
+      "yearlySaving": "Hemat 37%",
+      "month": "bulan",
+      "year": "tahun"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "Perencanaan perjalanan AI tanpa batas",
+    "noAds": "Tanpa iklan",
+    "premiumBadge": "Lencana Premium",
+    "tripCreation": "Perencanaan perjalanan",
+    "social": "Fitur sosial",
+    "expenses": "Manajemen pengeluaran"
+  },
+  "actions": {
+    "subscribe": "Berlangganan",
+    "restore": "Pulihkan pembelian",
+    "manage": "Kelola langganan",
+    "cancel": "Batalkan langganan"
+  },
+  "paywall": {
+    "title": "Upgrade ke Premium",
+    "subtitle": "Nikmati perencanaan perjalanan AI tanpa batas dan pengalaman bebas iklan",
+    "aiLimitTitle": "Penggunaan Rencana Perjalanan AI",
+    "aiLimitReached": "Batas rencana perjalanan AI gratis tercapai",
+    "aiUsed": "digunakan",
+    "compareTitle": "Bandingkan Paket",
+    "upgradeToUnlock": "Upgrade untuk membuka"
+  },
+  "status": {
+    "active": "Aktif",
+    "expired": "Kedaluwarsa",
+    "expiresOn": "Hingga {{date}}"
+  },
+  "menu": {
+    "subscription": "Langganan",
+    "upgradePremium": "Upgrade ke Premium",
+    "managePlan": "Kelola paket"
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "activityModal": {
+    "addTitle": "गतिविधि जोड़ें",
+    "editTitle": "गतिविधि संपादित करें",
+    "time": "समय",
+    "title": "शीर्षक",
+    "titlePlaceholder": "गतिविधि का शीर्षक दर्ज करें",
+    "location": "स्थान",
+    "locationPlaceholder": "स्थान दर्ज करें",
+    "description": "विवरण",
+    "descriptionPlaceholder": "विवरण दर्ज करें",
+    "type": "गतिविधि प्रकार",
+    "duration": "अनुमानित अवधि (मिनट)",
+    "durationPlaceholder": "60",
+    "cost": "अनुमानित लागत",
+    "actualCost": "वास्तविक खर्च",
+    "costPlaceholder": "0",
+    "cancel": "रद्द करें",
+    "add": "जोड़ें",
+    "save": "सहेजें",
+    "validationError": "इनपुट त्रुटि",
+    "validationErrorMessage": "कृपया समय, शीर्षक और स्थान दर्ज करें",
+    "invalidTimeFormat": "कृपया HH:MM प्रारूप में समय दर्ज करें (जैसे, 09:00)",
+    "errorTitle": "त्रुटि",
+    "saveError": "गतिविधि सहेजने में विफल",
+    "types": {
+      "meal": "भोजन",
+      "sightseeing": "दर्शनीय स्थल",
+      "shopping": "खरीदारी",
+      "experience": "अनुभव",
+      "rest": "आराम",
+      "transport": "परिवहन",
+      "other": "अन्य"
+    }
+  },
+  "shareModal": {
+    "title": "यात्रा साझा करें",
+    "generate": "शेयर लिंक बनाएं",
+    "generateButton": "लिंक बनाएं",
+    "generateDescription": "अपनी यात्रा योजना दूसरों के साथ साझा करने के लिए शेयर लिंक बनाएं",
+    "generateError": "शेयर लिंक बनाने में विफल",
+    "linkTitle": "शेयर लिंक",
+    "copy": "लिंक कॉपी करें",
+    "copied": "कॉपी हो गया!",
+    "copiedToClipboard": "क्लिपबोर्ड पर कॉपी किया गया",
+    "copyError": "लिंक कॉपी करने में विफल",
+    "disable": "साझाकरण अक्षम करें",
+    "disableConfirm": "साझाकरण अक्षम करें? मौजूदा लिंक काम नहीं करेंगे।",
+    "disableAction": "अक्षम करें",
+    "disableSuccess": "साझाकरण अक्षम कर दिया गया",
+    "disableError": "साझाकरण अक्षम करने में विफल",
+    "cancel": "रद्द करें",
+    "error": "त्रुटि",
+    "success": "सफल",
+    "info": "इस लिंक वाला कोई भी व्यक्ति यह यात्रा योजना देख सकता है। लिंक अक्षम करने से एक्सेस रद्द हो जाएगा।",
+    "expiry": {
+      "title": "समाप्ति अवधि",
+      "none": "कोई समाप्ति नहीं",
+      "7days": "7 दिन",
+      "30days": "30 दिन",
+      "90days": "90 दिन"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "आर्द्रता",
+    "windSpeed": "हवा",
+    "feelsLike": "अनुभव तापमान",
+    "timezone": "स्थानीय समय",
+    "timeDiff": "समय अंतर",
+    "noData": "मौसम डेटा उपलब्ध नहीं"
+  },
+  "popularDestinations": {
+    "title": "लोकप्रिय गंतव्य",
+    "subtitle": "पिछले 3 महीनों में ट्रेंडिंग",
+    "description": "वास्तविक यात्रियों द्वारा चुने गए सबसे लोकप्रिय गंतव्य देखें",
+    "visitors": "{{count}} आगंतुक",
+    "avgDuration": "औसत {{days}} दिन",
+    "withTravelers": "{{count}} यात्रियों के साथ",
+    "popularSeason": "लोकप्रिय मौसम:"
+  },
+  "progressIndicator": {
+    "title": "प्रगति",
+    "status": "{{completed}} पूर्ण / {{total}} कुल गतिविधियां"
+  },
+  "destinationInsights": {
+    "header": "वास्तविक यात्री डेटा पर आधारित",
+    "avgDuration": "औसत यात्रा अवधि",
+    "avgTravelers": "औसत समूह आकार",
+    "popularBudget": "लोकप्रिय बजट",
+    "popularStyle": "लोकप्रिय शैली",
+    "popularSeason": "लोकप्रिय यात्रा मौसम",
+    "bestNow": "अभी सबसे अच्छा समय है!",
+    "topActivities": "हाल के यात्रियों की शीर्ष गतिविधियां (शीर्ष {{count}})",
+    "footer": "पिछले 3 महीनों के वास्तविक यात्री डेटा पर आधारित",
+    "loading": "गंतव्य जानकारी लोड हो रही है...",
+    "days": "{{days}} दिन",
+    "people": "{{count}} लोग"
+  }
+}

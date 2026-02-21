@@ -1,0 +1,22 @@
+{
+  "title": "Painel Admin",
+  "menu": { "users": "Gerenciamento de Usuários", "errorLogs": "Logs de Erros", "revenue": "Painel de Receitas" },
+  "dashboard": { "subtitle": "Ferramentas de gerenciamento do serviço" },
+  "users": {
+    "title": "Gerenciamento de Usuários", "totalUsers": "Total de Usuários", "todaySignups": "Cadastros Hoje",
+    "todayActive": "Ativos Hoje", "weeklyActive": "Ativos na Semana", "people": "",
+    "signupTrend": "Cadastros (Últimos 30 Dias)", "providerBreakdown": "Método de Cadastro",
+    "memberList": "Lista de Membros", "searchPlaceholder": "Buscar nome ou e-mail",
+    "allProviders": "Todos", "lastLogin": "Último Login", "signupDate": "Cadastro",
+    "trips": "Viagens", "never": "Nunca", "noUsers": "Nenhum usuário encontrado", "loadMore": "Carregar Mais"
+  },
+  "errors": {
+    "title": "Logs de Erros", "todayErrors": "Hoje", "weeklyErrors": "Esta Semana",
+    "unresolved": "Não Resolvidos", "affectedUsers": "Usuários Afetados", "count": "", "people": "",
+    "hourlyTrend": "Erros (Últimas 24h)", "topErrors": "Top 10 Erros", "errorList": "Lista de Erros",
+    "allSeverity": "Todos", "error": "Erro", "warning": "Alerta", "fatal": "Fatal",
+    "unresolvedOnly": "Somente Não Resolvidos", "resolve": "Resolver", "resolved": "Resolvido",
+    "screen": "Tela", "device": "Dispositivo", "version": "Versão",
+    "noErrors": "Nenhum erro encontrado", "loadMore": "Carregar Mais", "occurrences": "vezes"
+  }
+}

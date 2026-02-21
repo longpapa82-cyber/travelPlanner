@@ -1,0 +1,103 @@
+{
+  "confirm": "OK",
+  "cancel": "Cancelar",
+  "save": "Salvar",
+  "delete": "Excluir",
+  "edit": "Editar",
+  "close": "Fechar",
+  "loading": "Carregando...",
+  "error": "Erro",
+  "success": "Sucesso",
+  "retry": "Tentar novamente",
+  "back": "Voltar",
+  "next": "Avançar",
+  "done": "Concluído",
+  "copy": "Copiar",
+  "search": "Buscar",
+  "noResults": "Nenhum resultado encontrado",
+  "like": "Curtir",
+  "share": "Compartilhar",
+  "clear": "Limpar",
+  "seeAll": "Ver tudo →",
+  "findOnProvider": "Encontrar no {{name}}",
+  "offlineMode": "Modo offline — exibindo dados em cache",
+  "offlinePending": "Offline — {{count}} alteração(ões) pendente(s)",
+  "offlineSyncing": "Sincronizando alterações...",
+  "offlineSynced": "Todas as alterações sincronizadas",
+  "errorBoundary": {
+    "title": "Nos perdemos um pouco",
+    "message": "Ocorreu um erro inesperado.\nNão se preocupe, vamos te colocar de volta nos trilhos!",
+    "persistentTitle": "Erros repetidos detectados",
+    "persistentMessage": "Este erro continua ocorrendo.\nPor favor, tente recarregar o aplicativo.",
+    "retry": "Tentar Novamente",
+    "reload": "Recarregar App",
+    "goHome": "Ir para o Início",
+    "errorId": "ID do Erro: {{id}}"
+  },
+  "tabs": {
+    "home": "Início",
+    "trips": "Minhas Viagens",
+    "notifications": "Alertas",
+    "profile": "Perfil",
+    "discover": "Explorar"
+  },
+  "notifications": {
+    "emptyTitle": "Nenhuma notificação",
+    "emptyMessage": "Novas notificações aparecerão aqui",
+    "markAllRead": "Marcar todas como lidas",
+    "deleteAll": "Excluir todas",
+    "deleteAllTitle": "Excluir notificações",
+    "deleteAllConfirm": "Excluir todas as notificações?",
+    "allMarkedRead": "Todas as notificações marcadas como lidas",
+    "allDeleted": "Todas as notificações excluídas",
+    "error": "Ocorreu um erro",
+    "fetchError": "Falha ao carregar notificações",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "justNow": "Agora mesmo",
+    "minutesAgo": "{{count}}min atrás",
+    "hoursAgo": "{{count}}h atrás",
+    "daysAgo": "{{count}}d atrás",
+    "prePermission": {
+      "title": "Fique por dentro das suas viagens",
+      "description": "Receba lembretes de partida, alertas meteorológicos e atualizações importantes de viagem para não perder nada.",
+      "benefit1": "Lembretes de partida",
+      "benefit2": "Alertas do dia de partida e itinerário",
+      "benefit3": "Notificações de mudança climática",
+      "enable": "Ativar notificações",
+      "later": "Talvez depois"
+    }
+  },
+  "pwa": {
+    "installTitle": "Instalar como aplicativo",
+    "installMessage": "Adicione à tela inicial para uma experiência mais rápida",
+    "install": "Instalar"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "Verificação de e-mail necessária",
+      "message": "Por favor, verifique sua caixa de entrada para confirmar seu e-mail",
+      "resend": "Reenviar",
+      "sent": "E-mail de verificação reenviado",
+      "error": "Falha ao reenviar"
+    }
+  },
+  "errors": {
+    "network": "Erro de rede. Por favor, verifique sua conexão.",
+    "rateLimit": "Muitas solicitações. Por favor, tente novamente em breve.",
+    "forbidden": "Você não tem permissão para esta ação.",
+    "notFound": "O recurso solicitado não foi encontrado.",
+    "locked": "Conta temporariamente bloqueada. Tente novamente mais tarde.",
+    "server": "Erro no servidor. Por favor, tente novamente mais tarde.",
+    "generic": "Algo deu errado. Por favor, tente novamente."
+  },
+  "att": {
+    "title": "Receba ofertas de viagem personalizadas",
+    "description": "Permita o rastreamento para receber ofertas e promoções de viagem adaptadas aos seus interesses.",
+    "benefit1": "Ofertas de viagem personalizadas",
+    "benefit2": "Recomendações de destinos relevantes",
+    "benefit3": "Melhor experiência com anúncios",
+    "continue": "Continuar",
+    "later": "Talvez depois"
+  }
+}

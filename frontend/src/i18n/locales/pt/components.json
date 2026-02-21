@@ -1,0 +1,50 @@
+{
+  "activityModal": {
+    "addTitle": "Adicionar Atividade", "editTitle": "Editar Atividade", "time": "Horário",
+    "title": "Título", "titlePlaceholder": "Digite o título da atividade",
+    "location": "Local", "locationPlaceholder": "Digite o local",
+    "description": "Descrição", "descriptionPlaceholder": "Digite a descrição",
+    "type": "Tipo de Atividade", "duration": "Duração Estimada (min)", "durationPlaceholder": "60",
+    "cost": "Custo Estimado", "actualCost": "Gasto Real", "costPlaceholder": "0",
+    "cancel": "Cancelar", "add": "Adicionar", "save": "Salvar",
+    "validationError": "Erro de Entrada", "validationErrorMessage": "Por favor, insira horário, título e local",
+    "invalidTimeFormat": "Por favor, insira o horário no formato HH:MM (ex.: 09:00)",
+    "errorTitle": "Erro", "saveError": "Falha ao salvar atividade",
+    "types": {
+      "meal": "Refeição", "sightseeing": "Passeio", "shopping": "Compras",
+      "experience": "Experiência", "rest": "Descanso", "transport": "Transporte", "other": "Outros"
+    }
+  },
+  "shareModal": {
+    "title": "Compartilhar Viagem", "generate": "Gerar Link de Compartilhamento", "generateButton": "Gerar Link",
+    "generateDescription": "Crie um link de compartilhamento para compartilhar seu plano de viagem com outras pessoas",
+    "generateError": "Falha ao gerar link de compartilhamento", "linkTitle": "Link de Compartilhamento",
+    "copy": "Copiar Link", "copied": "Copiado!", "copiedToClipboard": "Copiado para a área de transferência",
+    "copyError": "Falha ao copiar link", "disable": "Desativar Compartilhamento",
+    "disableConfirm": "Desativar compartilhamento? Os links existentes deixarão de funcionar.",
+    "disableAction": "Desativar", "disableSuccess": "Compartilhamento desativado",
+    "disableError": "Falha ao desativar compartilhamento", "cancel": "Cancelar",
+    "error": "Erro", "success": "Sucesso",
+    "info": "Qualquer pessoa com este link pode visualizar este plano de viagem. Desativar o link revogará o acesso.",
+    "expiry": { "title": "Período de Validade", "none": "Sem validade", "7days": "7 dias", "30days": "30 dias", "90days": "90 dias" }
+  },
+  "weatherWidget": {
+    "humidity": "Umidade", "windSpeed": "Vento", "feelsLike": "Sensação térmica",
+    "timezone": "Hora Local", "timeDiff": "Dif. Horária", "noData": "Dados meteorológicos indisponíveis"
+  },
+  "popularDestinations": {
+    "title": "Destinos Populares", "subtitle": "Em alta nos últimos 3 meses",
+    "description": "Veja os destinos mais populares escolhidos por viajantes reais",
+    "visitors": "{{count}} visitantes", "avgDuration": "Média de {{days}} dias",
+    "withTravelers": "Com {{count}} viajantes", "popularSeason": "Temporada popular:"
+  },
+  "progressIndicator": { "title": "Progresso", "status": "{{completed}} concluídas / {{total}} atividades no total" },
+  "destinationInsights": {
+    "header": "Baseado em dados reais de viajantes", "avgDuration": "Duração Média da Viagem",
+    "avgTravelers": "Tamanho Médio do Grupo", "popularBudget": "Orçamento Popular",
+    "popularStyle": "Estilo Popular", "popularSeason": "Temporada Popular de Viagem",
+    "bestNow": "Melhor época é agora!", "topActivities": "Principais atividades por viajantes recentes (Top {{count}})",
+    "footer": "Baseado em dados reais de viajantes dos últimos 3 meses",
+    "loading": "Carregando informações do destino...", "days": "{{days}} dias", "people": "{{count}} pessoas"
+  }
+}

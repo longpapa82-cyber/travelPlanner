@@ -1,0 +1,16 @@
+{
+  "greeting": "مرحباً 👋", "heroTitle": "رحلات {{name}}",
+  "subtitle": "مستعد لتخطيط مغامرتك القادمة؟", "createTrip": "إنشاء خطة سفر بالذكاء الاصطناعي",
+  "stats": { "completed": "مكتملة", "ongoing": "جارية", "upcoming": "قادمة" },
+  "featured": { "title": "أماكن رائعة للزيارة الآن", "subtitle": "استكشف الوجهات الشائعة", "seeAll": "عرض الكل →" },
+  "destinations": {
+    "tokyo": { "name": "طوكيو", "country": "اليابان", "description": "حيث يلتقي التقليد بالحداثة" },
+    "osaka": { "name": "أوساكا", "country": "اليابان", "description": "مدينة النكهات والشوارع النابضة بالحياة" },
+    "bangkok": { "name": "بانكوك", "country": "تايلاند", "description": "المعابد الذهبية والأسواق الليلية" },
+    "danang": { "name": "دا نانغ", "country": "فيتنام", "description": "شواطئ جميلة وطعام رائع" },
+    "paris": { "name": "باريس", "country": "فرنسا", "description": "مدينة الفن والرومانسية" },
+    "singapore": { "name": "سنغافورة", "country": "سنغافورة", "description": "رحلة طعام في مدينة مستقبلية" }
+  },
+  "quickActions": { "title": "إجراءات سريعة", "myTrips": "رحلاتي", "myTripsDesc": "تحقق من الرحلات الجارية", "inspiration": "إلهام", "inspirationDesc": "استكشف أفكاراً جديدة" },
+  "tip": { "sectionTitle": "نصائح السفر", "title": "💡 خطط مسبقاً", "description": "يُنشئ الذكاء الاصطناعي الجدول الأمثل مع مراعاة الطقس المحلي والأماكن الشهيرة ومسارات السفر." }
+}

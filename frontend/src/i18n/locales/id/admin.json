@@ -1,0 +1,55 @@
+{
+  "title": "Panel Admin",
+  "menu": {
+    "users": "Manajemen Pengguna",
+    "errorLogs": "Log Kesalahan",
+    "revenue": "Dasbor Pendapatan"
+  },
+  "dashboard": {
+    "subtitle": "Alat manajemen layanan"
+  },
+  "users": {
+    "title": "Manajemen Pengguna",
+    "totalUsers": "Total Pengguna",
+    "todaySignups": "Pendaftaran Hari Ini",
+    "todayActive": "Aktif Hari Ini",
+    "weeklyActive": "Aktif Mingguan",
+    "people": "",
+    "signupTrend": "Pendaftaran (30 Hari Terakhir)",
+    "providerBreakdown": "Metode Pendaftaran",
+    "memberList": "Daftar Anggota",
+    "searchPlaceholder": "Cari nama atau email",
+    "allProviders": "Semua",
+    "lastLogin": "Login Terakhir",
+    "signupDate": "Bergabung",
+    "trips": "Perjalanan",
+    "never": "Tidak pernah",
+    "noUsers": "Tidak ada pengguna ditemukan",
+    "loadMore": "Muat Lagi"
+  },
+  "errors": {
+    "title": "Log Kesalahan",
+    "todayErrors": "Hari Ini",
+    "weeklyErrors": "Minggu Ini",
+    "unresolved": "Belum Diselesaikan",
+    "affectedUsers": "Pengguna Terdampak",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "Kesalahan (24 Jam Terakhir)",
+    "topErrors": "10 Kesalahan Teratas",
+    "errorList": "Daftar Kesalahan",
+    "allSeverity": "Semua",
+    "error": "Kesalahan",
+    "warning": "Peringatan",
+    "fatal": "Fatal",
+    "unresolvedOnly": "Hanya Belum Diselesaikan",
+    "resolve": "Selesaikan",
+    "resolved": "Diselesaikan",
+    "screen": "Layar",
+    "device": "Perangkat",
+    "version": "Versi",
+    "noErrors": "Tidak ada kesalahan ditemukan",
+    "loadMore": "Muat Lagi",
+    "occurrences": "kali"
+  }
+}

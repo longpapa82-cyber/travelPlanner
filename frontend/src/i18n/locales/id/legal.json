@@ -1,0 +1,250 @@
+{
+  "help": {
+    "title": "Bantuan",
+    "searchPlaceholder": "Cari bantuan...",
+    "categories": {
+      "gettingStarted": "Memulai",
+      "tripManagement": "Pengelolaan Perjalanan",
+      "accountSettings": "Akun & Pengaturan",
+      "offlineSync": "Offline & Sinkronisasi",
+      "adsPartners": "Harga & Iklan",
+      "contact": "Hubungi Kami"
+    },
+    "gettingStarted": {
+      "signup": {
+        "q": "Bagaimana cara mendaftar?",
+        "a": "Anda dapat mendaftar dengan email atau mendaftar cepat menggunakan akun Google, Apple, atau Kakao. Login sosial tidak memerlukan kata sandi terpisah."
+      },
+      "createTrip": {
+        "q": "Bagaimana cara membuat rencana perjalanan?",
+        "a": "Ketuk 'Buat Perjalanan Baru' di layar beranda, masukkan tujuan dan tanggal perjalanan Anda, dan AI akan secara otomatis membuat jadwal yang dipersonalisasi. Pilih anggaran, gaya perjalanan, dan minat Anda untuk rekomendasi yang lebih akurat."
+      },
+      "aiPlan": {
+        "q": "Bagaimana jadwal AI bekerja?",
+        "a": "Kami menggunakan teknologi AI canggih untuk menganalisis atraksi populer, restoran, dan pengalaman budaya di tujuan Anda, lalu membuat jadwal optimal dengan mempertimbangkan rute perjalanan dan waktu. Jadwal yang dihasilkan dapat dimodifikasi secara bebas."
+      },
+      "appTour": {
+        "q": "Bagaimana aplikasi ini disusun?",
+        "a": "Aplikasi ini memiliki empat tab utama: Beranda (daftar perjalanan), Detail Perjalanan (jadwal, peta, cuaca), Notifikasi, dan Profil. Navigasi dengan mudah menggunakan bilah tab di bagian bawah."
+      }
+    },
+    "tripManagement": {
+      "editPlan": {
+        "q": "Bagaimana cara mengedit jadwal saya?",
+        "a": "Ketuk aktivitas apa pun di layar detail perjalanan untuk mengedit waktu, lokasi, dan catatannya. Seret dan lepas untuk mengurutkan ulang aktivitas, atau gunakan tombol + untuk menambahkan yang baru."
+      },
+      "tripStatus": {
+        "q": "Apakah aturan pengeditan berbeda berdasarkan status perjalanan?",
+        "a": "\u2022 Sebelum perjalanan: Semua rencana dapat dimodifikasi dan ditambahkan secara bebas.\n\u2022 Selama perjalanan: Aktivitas yang sudah lewat tidak dapat diubah; hanya yang akan datang yang dapat diedit.\n\u2022 Setelah perjalanan: Hanya dapat dilihat dan dihapus; tidak dapat dimodifikasi."
+      },
+      "mapView": {
+        "q": "Bagaimana cara melihat tempat di peta?",
+        "a": "Di layar detail perjalanan, beralih ke tab peta untuk melihat semua lokasi yang direncanakan secara keseluruhan. Ketuk penanda untuk detail aktivitas."
+      },
+      "socialFeatures": {
+        "q": "Bagaimana cara menggunakan fitur sosial?",
+        "a": "Jelajahi rencana bersama wisatawan lain di tab Jelajahi. Ikuti wisatawan yang Anda sukai dan berikan suka pada rencana perjalanan mereka. Untuk membagikan perjalanan Anda sendiri, ketuk tombol bagikan di layar detail perjalanan."
+      },
+      "collaborators": {
+        "q": "Bagaimana cara merencanakan perjalanan bersama orang lain?",
+        "a": "Di layar detail perjalanan, pergi ke bagian 'Kolaborator' dan undang orang lain melalui email. Yang diundang dapat bergabung sebagai 'Pengamat' atau 'Editor'."
+      },
+      "weather": {
+        "q": "Di mana saya bisa melihat info cuaca dan zona waktu?",
+        "a": "Informasi cuaca lokal dan zona waktu muncul secara otomatis di bagian atas layar detail perjalanan untuk setiap hari. Data cuaca berasal dari layanan eksternal dan diperbarui secara real-time."
+      }
+    },
+    "accountSettings": {
+      "editProfile": {
+        "q": "Bagaimana cara mengedit profil saya?",
+        "a": "Buka tab Profil \u2192 'Edit Profil' untuk mengubah nama dan foto Anda."
+      },
+      "changePassword": {
+        "q": "Bagaimana cara mengubah kata sandi?",
+        "a": "Buka tab Profil \u2192 'Ubah Kata Sandi', masukkan kata sandi saat ini, dan atur yang baru. Pengguna login sosial tidak perlu mengubah kata sandi."
+      },
+      "twoFactor": {
+        "q": "Bagaimana cara mengatur autentikasi dua faktor?",
+        "a": "Buka tab Profil \u2192 'Autentikasi Dua Faktor' untuk mengaktifkannya. Pindai kode QR dengan aplikasi TOTP seperti Google Authenticator dan masukkan kode verifikasi. Kode cadangan juga akan diberikan."
+      },
+      "notifications": {
+        "q": "Bagaimana cara mengelola notifikasi?",
+        "a": "Buka tab Profil \u2192 'Pengaturan Notifikasi' untuk mengonfigurasi notifikasi push. Anda dapat menerima pengingat keberangkatan, pemberitahuan mulai/selesai perjalanan."
+      },
+      "deleteAccount": {
+        "q": "Bagaimana cara menghapus akun saya?",
+        "a": "Ketuk 'Hapus Akun' di bagian bawah tab Profil. Semua data akan dihapus secara permanen dalam 30 hari setelah permintaan. Tindakan ini tidak dapat dibatalkan."
+      },
+      "gdprExport": {
+        "q": "Bagaimana cara mengekspor data saya?",
+        "a": "Buka Profil \u2192 Pengaturan dan ketuk 'Ekspor Data' untuk mengunduh semua data pribadi Anda (info akun, perjalanan, pengeluaran, notifikasi) dalam format JSON. Ini menjamin hak portabilitas data Anda berdasarkan GDPR."
+      }
+    },
+    "offlineSync": {
+      "offlineUse": {
+        "q": "Bisakah saya menggunakan aplikasi secara offline?",
+        "a": "Ya, rencana perjalanan yang sudah dimuat sebelumnya dapat dilihat tanpa internet. Perubahan yang dibuat secara offline akan otomatis tersinkronkan saat Anda terhubung kembali."
+      },
+      "syncStatus": {
+        "q": "Bagaimana cara memeriksa status sinkronisasi?",
+        "a": "Banner sinkronisasi muncul di bagian atas layar: 'Tertunda (N item)' \u2192 'Menyinkronkan...' \u2192 'Tersinkronkan'. Percobaan ulang otomatis terjadi saat koneksi tidak stabil."
+      },
+      "syncError": {
+        "q": "Bagaimana jika sinkronisasi gagal?",
+        "a": "Periksa koneksi jaringan Anda dan mulai ulang aplikasi. Jika masalah berlanjut, hubungi kami melalui 'Hubungi Kami'."
+      }
+    },
+    "adsPartners": {
+      "freeService": {
+        "q": "Apakah ada biaya untuk menggunakan layanan?",
+        "a": "Semua fitur TravelPlanner gratis. Iklan mungkin ditampilkan dalam aplikasi untuk mendukung operasional layanan."
+      },
+      "adInfo": {
+        "q": "Bagaimana iklan ditampilkan?",
+        "a": "Iklan interstisial mungkin muncul setelah pembuatan perjalanan, dan iklan banner mungkin ditampilkan di beberapa layar. Iklan yang dipersonalisasi dikontrol melalui App Tracking Transparency (ATT) iOS."
+      },
+      "affiliates": {
+        "q": "Apa itu mitra afiliasi?",
+        "a": "Kami menyediakan tautan pemesanan untuk penerbangan, hotel, dan aktivitas di layar detail perjalanan. Kami bermitra dengan layanan terpercaya termasuk Booking.com, Agoda, Klook, dan GetYourGuide."
+      },
+      "premium": {
+        "q": "Apa itu langganan Premium?",
+        "a": "Premium ($3,99/bulan atau $29,99/tahun) memberi Anda pembuatan perjalanan AI tanpa batas, pengalaman bebas iklan, dan fitur yang ditingkatkan. Pengguna gratis dapat membuat hingga 3 perjalanan AI per bulan. Anda dapat membatalkan kapan saja, dan paket Anda akan kembali ke gratis di akhir periode penagihan."
+      },
+      "premiumCancel": {
+        "q": "Bagaimana cara membatalkan Premium?",
+        "a": "Batalkan langsung dari pengelolaan langganan App Store atau Google Play Anda. Anda akan terus menikmati fitur Premium hingga akhir periode penagihan Anda saat ini. Kebijakan pengembalian dana mengikuti ketentuan masing-masing toko aplikasi."
+      },
+      "premiumRestore": {
+        "q": "Bagaimana cara memulihkan langganan saya?",
+        "a": "Buka Profil \u2192 Langganan dan ketuk 'Pulihkan Pembelian'. Langganan Anda sebelumnya akan otomatis dipulihkan. Saat beralih perangkat, masuk dengan Apple ID atau akun Google yang sama."
+      }
+    },
+    "contact": {
+      "email": "Dukungan Email",
+      "emailAddress": "longpapa82@gmail.com",
+      "emailDescription": "Jika FAQ di atas tidak menyelesaikan masalah Anda, silakan hubungi kami melalui email. Info perangkat dan versi aplikasi akan disertakan secara otomatis.",
+      "sendEmail": "Kirim Email"
+    }
+  },
+  "terms": {
+    "title": "Ketentuan Layanan",
+    "effectiveDate": "Berlaku: 1 Maret 2025",
+    "articles": {
+      "art1": {
+        "title": "Pasal 1 (Tujuan)",
+        "content": "Ketentuan Layanan ini mengatur penggunaan TravelPlanner (\"Layanan\"), termasuk hak, kewajiban, dan tanggung jawab perusahaan dan pengguna."
+      },
+      "art2": {
+        "title": "Pasal 2 (Definisi)",
+        "content": "\u2460 \"Layanan\" mengacu pada layanan perencanaan dan pengelolaan perjalanan otomatis yang disediakan oleh TravelPlanner.\n\u2461 \"Anggota\" mengacu pada orang yang telah menyetujui Ketentuan ini dan mendaftar untuk Layanan.\n\u2462 \"Konten yang Dihasilkan AI\" mengacu pada jadwal perjalanan dan rekomendasi yang dihasilkan secara otomatis menggunakan kecerdasan buatan.\n\u2463 \"Data Perjalanan\" mengacu pada tujuan, jadwal, dan rencana aktivitas yang dimasukkan oleh anggota."
+      },
+      "art3": {
+        "title": "Pasal 3 (Deskripsi Layanan)",
+        "content": "Layanan menyediakan:\n\u2022 Pembuatan rencana perjalanan otomatis berbasis AI\n\u2022 Pengelolaan pengeditan, penambahan, dan penghapusan rencana perjalanan\n\u2022 Informasi cuaca lokal dan zona waktu\n\u2022 Pelacakan progres perjalanan\n\u2022 Melihat riwayat perjalanan lalu\n\u2022 Akses jadwal offline dan sinkronisasi\n\u2022 Fitur pembagian pengeluaran\n\u2022 Layanan notifikasi"
+      },
+      "art4": {
+        "title": "Pasal 4 (Pendaftaran Akun)",
+        "content": "\u2460 Anda dapat mendaftar melalui email atau akun sosial (Google, Apple, Kakao).\n\u2461 Pengguna di bawah 14 tahun tidak dapat menggunakan Layanan.\n\u2462 Anda harus memberikan informasi yang akurat. Anda bertanggung jawab atas masalah yang timbul dari informasi yang tidak akurat.\n\u2463 Anda bertanggung jawab untuk menjaga keamanan akun Anda."
+      },
+      "art5": {
+        "title": "Pasal 5 (Aturan Penggunaan Layanan)",
+        "content": "\u2460 Sebelum perjalanan: Rencana dapat dimodifikasi dan diperpanjang secara bebas.\n\u2461 Selama perjalanan: Aktivitas yang sudah selesai tidak dapat diubah; hanya aktivitas yang akan datang yang dapat dimodifikasi.\n\u2462 Setelah perjalanan: Riwayat hanya dapat dilihat atau dihapus, tidak dapat dimodifikasi.\n\u2463 Hasil yang dihasilkan AI hanya untuk referensi. Pengguna harus memverifikasi kondisi lokal saat bepergian."
+      },
+      "art6": {
+        "title": "Pasal 6 (Ketentuan Layanan AI)",
+        "content": "\u2460 Keakuratan, keamanan, dan kesesuaian rencana perjalanan yang dihasilkan AI tidak dijamin.\n\u2461 Data diproses melalui API OpenAI untuk pembuatan jadwal, seperti yang dijelaskan dalam Kebijakan Privasi kami.\n\u2462 Data perjalanan yang dimasukkan pengguna tidak digunakan untuk pelatihan model AI.\n\u2463 Layanan AI mungkin dibatasi sementara karena keadaan teknis."
+      },
+      "art7": {
+        "title": "Pasal 7 (Aktivitas yang Dilarang)",
+        "content": "Pengguna tidak boleh:\n\u2022 Mengganggu operasi normal Layanan\n\u2022 Melanggar privasi pengguna lain\n\u2022 Mengakses Layanan melalui cara otomatis dalam skala besar\n\u2022 Mengklik atau memanipulasi iklan secara curang\n\u2022 Merekayasa balik, menyalin, atau meniru Layanan\n\u2022 Melanggar hukum atau peraturan yang berlaku"
+      },
+      "art8": {
+        "title": "Pasal 8 (Iklan dan Afiliasi)",
+        "content": "\u2460 Layanan dapat menampilkan iklan melalui Google AdSense, AdMob, dan program afiliasi.\n\u2461 Tanggung jawab atas konten iklan ada pada pengiklan masing-masing.\n\u2462 Ketentuan terpisah mungkin berlaku saat memesan melalui tautan afiliasi."
+      },
+      "art9": {
+        "title": "Pasal 9 (Kekayaan Intelektual)",
+        "content": "\u2460 Hak kekayaan intelektual atas konten, desain, dan perangkat lunak Layanan adalah milik penyedia Layanan.\n\u2461 Hak atas rencana perjalanan yang dibuat oleh pengguna adalah milik pengguna."
+      },
+      "art10": {
+        "title": "Pasal 10 (Penafian)",
+        "content": "\u2460 Rencana perjalanan yang dihasilkan AI hanya untuk referensi. Verifikasi kondisi lokal saat bepergian.\n\u2461 Info cuaca dan zona waktu berdasarkan API eksternal; keakuratan tidak dijamin.\n\u2462 Layanan tidak bertanggung jawab atas gangguan karena keadaan kahar atau kegagalan sistem.\n\u2463 Layanan hanya bertindak sebagai perantara untuk pemesanan afiliasi dan tidak memikul tanggung jawab langsung."
+      },
+      "art11": {
+        "title": "Pasal 11 (Penghentian Akun)",
+        "content": "\u2460 Anda dapat menghentikan akun Anda kapan saja melalui fitur 'Hapus Akun'.\n\u2461 Semua data pribadi akan dihapus secara permanen dalam 30 hari.\n\u2462 Informasi yang diwajibkan oleh hukum akan disimpan selama periode yang ditentukan lalu dihancurkan."
+      },
+      "art12": {
+        "title": "Pasal 12 (Tanggung Jawab)",
+        "content": "Jika anggota mengalami kerugian karena kesengajaan atau kelalaian besar perusahaan, perusahaan akan memberikan kompensasi sesuai dengan hukum yang berlaku."
+      },
+      "art13": {
+        "title": "Pasal 13 (Perubahan Ketentuan)",
+        "content": "\u2460 Perubahan akan diberitahukan setidaknya 7 hari sebelum berlaku melalui pemberitahuan dalam aplikasi.\n\u2461 Jika Anda tidak setuju dengan perubahan, Anda dapat menghentikan penggunaan dan menghapus akun Anda."
+      },
+      "art14": {
+        "title": "Pasal 14 (Penyelesaian Sengketa)",
+        "content": "\u2460 Ketentuan ini diatur oleh hukum Republik Korea.\n\u2461 Setiap sengketa tunduk pada yurisdiksi Pengadilan Negeri Pusat Seoul."
+      },
+      "art15": {
+        "title": "Pasal 15 (Tambahan)",
+        "content": "Ketentuan ini berlaku mulai 1 Maret 2025."
+      }
+    }
+  },
+  "privacy": {
+    "title": "Kebijakan Privasi",
+    "effectiveDate": "Berlaku: 1 Maret 2025",
+    "articles": {
+      "art1": {
+        "title": "1. Informasi yang Kami Kumpulkan",
+        "content": "[Wajib]\n\u2022 Info akun: Nama, alamat email, foto profil\n\u2022 Login sosial: Profil publik dari Google, Apple, atau Kakao\n\n[Opsional]\n\u2022 Preferensi perjalanan: Tingkat anggaran, gaya perjalanan, minat\n\n[Otomatis]\n\u2022 Info perangkat: Jenis perangkat, OS, versi aplikasi\n\u2022 Data penggunaan: Pola penggunaan aplikasi, interaksi iklan\n\u2022 Data perjalanan: Tujuan, jadwal, rencana aktivitas\n\n[Metode] Pendaftaran, login sosial, pengumpulan otomatis selama penggunaan"
+      },
+      "art2": {
+        "title": "2. Bagaimana Kami Menggunakan Informasi Anda",
+        "content": "\u2022 Penyediaan layanan: Pengelolaan akun, pembuatan rencana perjalanan AI, info lokal\n\u2022 Pemrosesan AI: Pembuatan jadwal melalui API OpenAI (tujuan, tanggal, preferensi dikirim)\n\u2022 Personalisasi: Mengoptimalkan rekomendasi berdasarkan preferensi perjalanan\n\u2022 Iklan: Iklan yang dipersonalisasi (dengan persetujuan terpisah)\n\u2022 Peningkatan: Analisis penggunaan, perbaikan bug"
+      },
+      "art3": {
+        "title": "3. Berbagi dengan Pihak Ketiga",
+        "content": "Kami tidak membagikan info pribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Tujuan, tanggal, preferensi | Pembuatan jadwal AI |\n| Google (AdSense/AdMob) | ID iklan, pola penggunaan | Penayangan iklan |\n| Mitra afiliasi | Event klik (anonim) | Layanan afiliasi |\n\n\u203b Dengan persetujuan eksplisit pengguna\n\u203b Ketika diwajibkan oleh hukum"
+      },
+      "art4": {
+        "title": "4. Delegasi Pemrosesan Data",
+        "content": "| Penyedia | Layanan |\n| Layanan cloud (AWS dll.) | Penyimpanan dan pemrosesan data |\n| Layanan email | Email autentikasi dan notifikasi |"
+      },
+      "art5": {
+        "title": "5. Retensi Data",
+        "content": "\u2022 Penghapusan akun: Dihancurkan dalam 30 hari\n\u2022 Hukum e-commerce: Catatan transaksi disimpan selama 5 tahun\n\u2022 Hukum telekomunikasi: Log akses disimpan selama 3 bulan\n\u2022 Informasi yang diwajibkan hukum disimpan terpisah selama periode yang diperlukan lalu dihancurkan."
+      },
+      "art6": {
+        "title": "6. Hak Anda",
+        "content": "Anda dapat menggunakan hak-hak berikut:\n\u2022 Mengakses, memperbaiki, menghapus, atau menangguhkan pemrosesan info pribadi Anda\n\u2022 Meminta portabilitas data (Pasal 35-2 Undang-Undang Privasi)\n\u2022 Meminta penjelasan atau menolak keputusan otomatis (pembuatan jadwal AI)\n\u2022 Menghapus semua data secara permanen dengan menghapus akun Anda\n\u2022 Menarik persetujuan pelacakan iklan (dapat diubah di pengaturan perangkat)\n\n[Cara menggunakan]\nAplikasi: Profil \u2192 Hapus Akun\nEmail: longpapa82@gmail.com"
+      },
+      "art7": {
+        "title": "7. Perlindungan Anak di Bawah 14 Tahun",
+        "content": "Layanan ini membatasi pendaftaran untuk anak di bawah 14 tahun. Jika kami mengetahui bahwa data anak telah dikumpulkan, kami akan menghapusnya tanpa penundaan."
+      },
+      "art8": {
+        "title": "8. Penghancuran Data",
+        "content": "\u2022 File elektronik: Dihapus secara permanen menggunakan metode yang tidak dapat dipulihkan\n\u2022 Cetakan: Dirobek atau dibakar\n\u2022 Dihancurkan segera ketika periode retensi berakhir atau tujuan terpenuhi."
+      },
+      "art9": {
+        "title": "9. Iklan dan Data Perilaku",
+        "content": "\u2022 iOS: Kontrol iklan yang dipersonalisasi melalui App Tracking Transparency (ATT).\n\u2022 Android: Reset ID iklan atau nonaktifkan melalui Pengaturan \u2192 Google \u2192 Iklan.\n\u2022 Web: Nonaktifkan cookie di pengaturan browser (beberapa fitur mungkin terbatas).\n\u2022 Cookie digunakan untuk autentikasi dan peningkatan pengalaman pengguna."
+      },
+      "art10": {
+        "title": "10. Langkah Keamanan",
+        "content": "\u2022 Enkripsi kata sandi (bcrypt)\n\u2022 Enkripsi komunikasi SSL/TLS\n\u2022 Kontrol akses dan autentikasi dua faktor\n\u2022 Audit keamanan dan pemantauan rutin"
+      },
+      "art11": {
+        "title": "11. Petugas Privasi",
+        "content": "Petugas Privasi: Tim Operasional TravelPlanner\nEmail: longpapa82@gmail.com"
+      },
+      "art12": {
+        "title": "12. Perubahan Kebijakan",
+        "content": "Perubahan akan diberitahukan setidaknya 7 hari sebelum berlaku melalui pemberitahuan dalam aplikasi.\n\nKebijakan ini berlaku mulai 1 Maret 2025."
+      }
+    }
+  }
+}

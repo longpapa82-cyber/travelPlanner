@@ -1,0 +1,51 @@
+{
+  "title": "सदस्यता",
+  "free": {
+    "name": "मुफ्त",
+    "description": "बुनियादी यात्रा योजना सुविधाएं"
+  },
+  "premium": {
+    "name": "Premium",
+    "description": "असीमित AI + विज्ञापन-मुक्त",
+    "price": {
+      "monthly": "मासिक",
+      "yearly": "वार्षिक",
+      "yearlySaving": "37% बचाएं",
+      "month": "माह",
+      "year": "वर्ष"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "असीमित AI यात्रा योजना",
+    "noAds": "विज्ञापन-मुक्त",
+    "premiumBadge": "Premium बैज",
+    "tripCreation": "यात्रा योजना",
+    "social": "सोशल सुविधाएं",
+    "expenses": "खर्च प्रबंधन"
+  },
+  "actions": {
+    "subscribe": "सदस्यता लें",
+    "restore": "खरीदारी पुनर्स्थापित करें",
+    "manage": "सदस्यता प्रबंधित करें",
+    "cancel": "सदस्यता रद्द करें"
+  },
+  "paywall": {
+    "title": "Premium में अपग्रेड करें",
+    "subtitle": "असीमित AI यात्रा योजना और विज्ञापन-मुक्त अनुभव का आनंद लें",
+    "aiLimitTitle": "AI यात्रा योजना उपयोग",
+    "aiLimitReached": "मुफ्त AI यात्रा योजना सीमा पूरी हुई",
+    "aiUsed": "उपयोग किया",
+    "compareTitle": "योजनाओं की तुलना करें",
+    "upgradeToUnlock": "अनलॉक करने के लिए अपग्रेड करें"
+  },
+  "status": {
+    "active": "सक्रिय",
+    "expired": "समाप्त",
+    "expiresOn": "{{date}} तक"
+  },
+  "menu": {
+    "subscription": "सदस्यता",
+    "upgradePremium": "Premium में अपग्रेड करें",
+    "managePlan": "योजना प्रबंधित करें"
+  }
+}

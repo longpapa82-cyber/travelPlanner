@@ -1,0 +1,432 @@
+{
+  "create": {
+    "title": "नई यात्रा बनाएं",
+    "hero": {
+      "title": "नई यात्रा के लिए तैयार हैं?",
+      "subtitle": "बस एक गंतव्य चुनें और AI आपके लिए सही यात्रा योजना बनाएगा"
+    },
+    "destination": {
+      "title": "आप कहां जा रहे हैं?",
+      "placeholder": "शहर या देश दर्ज करें",
+      "popular": "लोकप्रिय गंतव्य"
+    },
+    "destinations": {
+      "tokyo": "टोक्यो",
+      "osaka": "ओसाका",
+      "bangkok": "बैंकॉक",
+      "danang": "डा नांग",
+      "paris": "पेरिस",
+      "singapore": "सिंगापुर",
+      "london": "लंदन",
+      "newyork": "न्यूयॉर्क",
+      "barcelona": "बार्सिलोना"
+    },
+    "duration": {
+      "title": "आप कितने दिन रहेंगे?",
+      "options": {
+        "3days": "3 दिन",
+        "1week": "1 सप्ताह",
+        "2weeks": "2 सप्ताह",
+        "1month": "1 महीना"
+      },
+      "custom": "कस्टम",
+      "totalDays": "{{days}}-दिन की यात्रा"
+    },
+    "travelers": {
+      "title": "कौन साथ आ रहा है?",
+      "options": {
+        "solo": "केवल मैं",
+        "two": "2 लोग",
+        "group": "3-4 लोग",
+        "large": "5+ लोग"
+      }
+    },
+    "dates": {
+      "title": "आप कब जा रहे हैं?",
+      "start": "प्रस्थान",
+      "end": "वापसी",
+      "selectStart": "प्रस्थान तिथि चुनें",
+      "selectEnd": "वापसी तिथि चुनें"
+    },
+    "notes": {
+      "title": "कोई विशेष योजना?",
+      "placeholder": "जैसे, भोजन-केंद्रित, दर्शनीय स्थल, मुक्त यात्रा...",
+      "optional": "(वैकल्पिक)"
+    },
+    "budget": {
+      "title": "यात्रा बजट (वैकल्पिक)",
+      "placeholder": "कुल बजट दर्ज करें",
+      "currency": "मुद्रा"
+    },
+    "aiInfo": {
+      "title": "AI स्वतः निर्माण",
+      "description": "AI आपके गंतव्य और कार्यक्रम के आधार पर इष्टतम यात्रा योजना बनाएगा"
+    },
+    "rewardedAd": {
+      "label": "विस्तृत यात्रा जानकारी के लिए विज्ञापन देखें"
+    },
+    "submit": "यात्रा योजना बनाएं",
+    "generating": "AI आपकी यात्रा योजना बना रहा है...",
+    "progress": {
+      "analyzing": "गंतव्य का विश्लेषण हो रहा है",
+      "planning": "कार्यक्रम बनाया जा रहा है",
+      "weather": "मौसम की जानकारी जांची जा रही है",
+      "finalizing": "आपकी योजना अंतिम रूप दिया जा रहा है"
+    },
+    "preferences": {
+      "title": "यात्रा शैली",
+      "budget": {
+        "title": "बजट स्तर",
+        "budget": "बजट",
+        "midRange": "मध्यम श्रेणी",
+        "luxury": "लक्ज़री"
+      },
+      "style": {
+        "title": "यात्रा गति",
+        "relaxed": "आरामदायक",
+        "balanced": "संतुलित",
+        "active": "सक्रिय",
+        "adventure": "रोमांचक"
+      },
+      "interests": {
+        "title": "रुचियां",
+        "food": "भोजन",
+        "culture": "संस्कृति",
+        "nature": "प्रकृति",
+        "shopping": "खरीदारी",
+        "nightlife": "नाइटलाइफ",
+        "history": "इतिहास",
+        "art": "कला",
+        "sports": "खेल",
+        "photography": "फोटोग्राफी"
+      }
+    },
+    "mode": {
+      "title": "योजना विधि",
+      "ai": "AI स्वतः निर्माण",
+      "aiDesc": "AI स्वचालित रूप से आपके लिए इष्टतम कार्यक्रम बनाता है",
+      "manual": "मैन्युअल बनाएं",
+      "manualDesc": "खाली दिन कार्ड बनाएं और अपनी योजना खुद भरें",
+      "manualCreating": "आपकी यात्रा बनाई जा रही है..."
+    },
+    "alerts": {
+      "destinationRequired": "कृपया एक गंतव्य दर्ज करें",
+      "datesRequired": "कृपया यात्रा तिथियां चुनें",
+      "createFailed": "यात्रा बनाने में विफल",
+      "startDateRequired": "कृपया प्रस्थान तिथि चुनें"
+    },
+    "aiConsent": {
+      "title": "AI यात्रा योजना",
+      "body": "यह सुविधा व्यक्तिगत यात्रा योजना बनाने के लिए OpenAI के AI का उपयोग करती है।",
+      "dataList": "आपका गंतव्य, यात्रा तिथियां, यात्रियों की संख्या और प्राथमिकताएं AI को भेजी जाएंगी।",
+      "accept": "मैं सहमत हूं और जारी रखें",
+      "cancel": "रद्द करें"
+    }
+  },
+  "list": {
+    "title": "मेरी यात्राएं",
+    "searchPlaceholder": "यात्राएं खोजें...",
+    "filters": {
+      "all": "सभी",
+      "upcoming": "आगामी",
+      "ongoing": "चल रही",
+      "completed": "पूर्ण"
+    },
+    "sections": {
+      "ongoing": "चल रही यात्राएं",
+      "upcoming": "आगामी यात्राएं",
+      "completed": "पिछली यात्राएं (केवल देखें)"
+    },
+    "status": {
+      "upcoming": "आगामी",
+      "ongoing": "चल रही",
+      "completed": "पूर्ण"
+    },
+    "empty": {
+      "title": "अभी तक कोई यात्रा नहीं",
+      "description": "एक नई यात्रा की योजना बनाना शुरू करें!",
+      "cta": "AI यात्रा योजना शुरू करें",
+      "noResults": "कोई परिणाम नहीं मिला",
+      "noResultsDescription": "कोई अलग खोज शब्द या फ़िल्टर आज़माएं",
+      "clearFilters": "फ़िल्टर साफ़ करें"
+    },
+    "error": {
+      "title": "यात्राएं लोड करने में असमर्थ",
+      "description": "अपना नेटवर्क कनेक्शन जांचें और पुनः प्रयास करें",
+      "retry": "पुनः प्रयास करें",
+      "refreshFailed": "रिफ्रेश करने में विफल"
+    },
+    "card": {
+      "days": "{{days}} दिन",
+      "travelers": "{{count}} यात्री",
+      "dDay": "D-{{days}}",
+      "dDayToday": "D-Day",
+      "dDayPassed": "D+{{days}}"
+    },
+    "alerts": {
+      "deleteTitle": "यात्रा हटाएं",
+      "deleteMessage": "'{{name}}' हटाएं? यह कार्य पूर्ववत नहीं किया जा सकता।",
+      "deleteFailed": "हटाने में विफल",
+      "error": "त्रुटि",
+      "cancel": "रद्द करें",
+      "delete": "हटाएं"
+    },
+    "sort": {
+      "startDate": "प्रस्थान तिथि से",
+      "createdAt": "निर्माण तिथि से",
+      "destination": "गंतव्य से"
+    },
+    "advancedFilters": {
+      "toggle": "फ़िल्टर",
+      "country": "देश",
+      "countryPlaceholder": "देश दर्ज करें",
+      "dateRange": "प्रस्थान तिथि सीमा",
+      "dateFrom": "से",
+      "dateTo": "तक",
+      "budget": "बजट सीमा",
+      "budgetMin": "न्यूनतम",
+      "budgetMax": "अधिकतम",
+      "reset": "फ़िल्टर रीसेट करें",
+      "apply": "लागू करें",
+      "activeCount": "{{count}} फ़िल्टर सक्रिय"
+    },
+    "resultCount": "{{count}} यात्रा(एं)",
+    "createButton": "नई यात्रा बनाएं",
+    "info": {
+      "days": "{{count}} दिन",
+      "itineraries": "{{count}} कार्यक्रम",
+      "travelers": "{{count}} यात्री"
+    },
+    "accessibility": {
+      "trip": "यात्रा",
+      "viewDetail": "यात्रा विवरण देखें",
+      "deleteTrip": "हटाएं",
+      "search": "यात्राएं खोजें",
+      "searchHint": "गंतव्य से यात्राएं खोजें"
+    },
+    "pagination": {
+      "showMore": "और दिखाएं",
+      "showing": "{{shown}} / {{total}}"
+    }
+  },
+  "detail": {
+    "loading": "यात्रा जानकारी लोड हो रही है...",
+    "notFound": {
+      "title": "यात्रा नहीं मिली",
+      "description": "यह यात्रा मौजूद नहीं है या हटा दी गई है",
+      "back": "वापस जाएं"
+    },
+    "status": {
+      "ongoing": "चल रही",
+      "completed": "पूर्ण"
+    },
+    "completedBanner": {
+      "title": "यात्रा पूर्ण",
+      "description": "यह यात्रा पूर्ण हो गई है और इसे संपादित नहीं किया जा सकता। अपनी अनमोल यादें देखें!"
+    },
+    "readOnlyMessage": "पूर्ण गतिविधियों को संपादित नहीं किया जा सकता",
+    "progress": "कुल प्रगति {{percentage}}%",
+    "durationDays": "{{count}} दिन",
+    "travelers": "{{count}} यात्री",
+    "durationMinutes": "{{minutes}} मिनट",
+    "estimatedCost": "${{cost}}",
+    "dayLabel": "दिन {{day}}",
+    "emptyItinerary": "अभी तक कोई कार्यक्रम नहीं बना",
+    "emptyItineraryMessage": "अपनी यात्रा में गतिविधियां जोड़ें",
+    "addActivity": "गतिविधि जोड़ें",
+    "affiliateSection": "होटल और गतिविधियां बुक करें",
+    "affiliateSubtitle": "{{destination}} में सर्वश्रेष्ठ आवास और अनुभव बुक करें",
+    "affiliateAccom": "आवास",
+    "affiliateExperience": "टूर और गतिविधियां",
+    "tabs": {
+      "itinerary": "कार्यक्रम",
+      "map": "मानचित्र",
+      "info": "जानकारी",
+      "share": "साझा करें"
+    },
+    "map": {
+      "noLocations": "दिखाने के लिए कोई स्थान नहीं",
+      "noLocationsMessage": "स्थान डेटा वाली गतिविधियां देखने के लिए नई यात्रा बनाएं",
+      "activitiesCount": "{{count}} गतिविधियां",
+      "allDays": "सभी",
+      "dayLabel": "दिन {{day}}",
+      "openInMaps": "Google Maps में देखें",
+      "tapToOpen": "मानचित्र खोलने के लिए टैप करें",
+      "durationMin": "{{min}} मिनट"
+    },
+    "budget": {
+      "title": "बजट सारांश",
+      "total": "कुल बजट",
+      "estimated": "अनुमानित",
+      "spent": "खर्च किया",
+      "remaining": "शेष",
+      "byCategory": "श्रेणी के अनुसार",
+      "byDay": "दिन के अनुसार",
+      "perDay": "प्रति दिन",
+      "dayLabel": "दिन {{day}}"
+    },
+    "activityTypes": {
+      "meal": "भोजन",
+      "sightseeing": "दर्शनीय स्थल",
+      "shopping": "खरीदारी",
+      "experience": "अनुभव",
+      "rest": "आराम",
+      "transport": "परिवहन",
+      "accommodation": "आवास",
+      "other": "अन्य"
+    },
+    "accessibility": {
+      "completed": "पूर्ण",
+      "incomplete": "अपूर्ण",
+      "reorder": "पुनर्क्रमित करें",
+      "reorderHint": "पुनर्क्रमित करने के लिए लंबे समय तक दबाएं",
+      "edit": "संपादित करें",
+      "delete": "हटाएं",
+      "goBack": "वापस जाएं",
+      "editTrip": "यात्रा संपादित करें",
+      "duplicate": "यात्रा डुप्लीकेट करें",
+      "duplicating": "डुप्लीकेट हो रहा है...",
+      "share": "साझा करें",
+      "exportIcal": "कैलेंडर में एक्सपोर्ट करें",
+      "addActivityToDay": "दिन {{day}} में गतिविधि जोड़ें",
+      "moreOptions": "और विकल्प"
+    },
+    "alerts": {
+      "deleteTitle": "गतिविधि हटाएं",
+      "deleteMessage": "यह गतिविधि हटाएं?",
+      "deleteFailed": "हटाने में विफल",
+      "error": "त्रुटि",
+      "fetchError": "यात्रा जानकारी लोड करने में विफल",
+      "duplicateSuccess": "यात्रा डुप्लीकेट हो गई",
+      "duplicateCompleteTitle": "डुप्लीकेट पूर्ण",
+      "duplicateError": "यात्रा डुप्लीकेट करने में विफल",
+      "confirm": "ठीक है",
+      "cancel": "रद्द करें",
+      "delete": "हटाएं",
+      "success": "सफल",
+      "deleteSuccess": "यात्रा हटा दी गई",
+      "deleteError": "यात्रा हटाने में विफल",
+      "toggleError": "स्थिति अपडेट करने में विफल",
+      "reorderError": "पुनर्क्रमित करने में विफल"
+    },
+    "photos": {
+      "addCover": "कवर फोटो जोड़ें",
+      "changeCover": "कवर फोटो बदलें",
+      "addPhoto": "फोटो जोड़ें",
+      "photoCount": "{{count}} फोटो",
+      "uploadSuccess": "फोटो अपलोड हुआ",
+      "uploadFailed": "फोटो अपलोड करने में विफल",
+      "viewAll": "सभी फोटो देखें"
+    },
+    "collaboration": {
+      "title": "सहयोगी",
+      "invite": "आमंत्रित करें",
+      "emailPlaceholder": "ईमेल पता दर्ज करें",
+      "roleViewer": "दर्शक",
+      "roleEditor": "संपादक",
+      "owner": "स्वामी",
+      "remove": "हटाएं",
+      "inviteSuccess": "आमंत्रण भेजा गया",
+      "inviteFailed": "आमंत्रित करने में विफल",
+      "removeFailed": "हटाने में विफल",
+      "noCollaborators": "अभी तक कोई सहयोगी नहीं"
+    },
+    "expenses": {
+      "title": "खर्च",
+      "addExpense": "खर्च जोड़ें",
+      "total": "कुल खर्च",
+      "myShare": "मेरा हिस्सा",
+      "iOwe": "मुझे देना है",
+      "owedToMe": "मुझे मिलना है",
+      "settled": "सभी चुकता",
+      "paidBy": "भुगतानकर्ता",
+      "splitWith": "बांटें",
+      "splitEqual": "बराबर बांटें",
+      "splitExact": "कस्टम राशि",
+      "balances": "शेष राशि",
+      "settlements": "निपटान",
+      "settleUp": "चुकता करें",
+      "settledMark": "चुकता",
+      "noExpenses": "अभी तक कोई खर्च नहीं",
+      "noExpensesMessage": "समूह खर्च ट्रैक करने के लिए खर्च जोड़ें",
+      "description": "विवरण",
+      "amount": "राशि",
+      "category": "श्रेणी",
+      "date": "तिथि",
+      "owes": "देना है",
+      "categories": {
+        "food": "भोजन",
+        "transport": "परिवहन",
+        "accommodation": "आवास",
+        "activity": "गतिविधि",
+        "shopping": "खरीदारी",
+        "other": "अन्य"
+      },
+      "tabs": {
+        "expenses": "खर्च",
+        "balances": "शेष राशि"
+      },
+      "alerts": {
+        "createFailed": "खर्च जोड़ने में विफल",
+        "deleteFailed": "खर्च हटाने में विफल",
+        "settleFailed": "चुकता करने में विफल",
+        "deleteTitle": "खर्च हटाएं",
+        "deleteMessage": "यह खर्च हटाएं?"
+      }
+    }
+  },
+  "edit": {
+    "title": "यात्रा संपादित करें",
+    "loading": "यात्रा जानकारी लोड हो रही है...",
+    "notFound": "यात्रा नहीं मिली",
+    "goBack": "वापस जाएं",
+    "heroTitle": "यात्रा जानकारी संपादित करें",
+    "ongoingWarning": "यह यात्रा चल रही है। तिथियां बदलते समय सावधान रहें।",
+    "destination": {
+      "title": "गंतव्य",
+      "placeholder": "या मैन्युअल रूप से दर्ज करें"
+    },
+    "dates": {
+      "title": "यात्रा तिथियां",
+      "changeWarning": "सावधानी",
+      "totalDays": "{{days}}-दिन की यात्रा"
+    },
+    "travelers": {
+      "title": "यात्री",
+      "placeholder": "या मैन्युअल रूप से दर्ज करें"
+    },
+    "notes": {
+      "title": "यात्रा नोट्स (वैकल्पिक)",
+      "placeholder": "कोई भी लक्ष्य या विशेष आवश्यकताएं जोड़ें"
+    },
+    "budget": {
+      "title": "यात्रा बजट (वैकल्पिक)",
+      "placeholder": "कुल बजट दर्ज करें",
+      "currency": "मुद्रा"
+    },
+    "submit": "यात्रा जानकारी सहेजें",
+    "saving": "सहेजा जा रहा है...",
+    "status": {
+      "upcoming": "आगामी",
+      "ongoing": "चल रही",
+      "completed": "पूर्ण"
+    },
+    "alerts": {
+      "cannotEditCompleted": "पूर्ण यात्राओं को संपादित नहीं किया जा सकता।",
+      "cannotEditTitle": "संपादित नहीं कर सकते",
+      "loadError": "यात्रा जानकारी लोड करने में विफल।",
+      "destinationRequired": "कृपया एक गंतव्य दर्ज करें।",
+      "requiredInput": "आवश्यक",
+      "datesRequired": "कृपया यात्रा तिथियां चुनें।",
+      "endDateError": "समाप्ति तिथि प्रारंभ तिथि के बाद होनी चाहिए।",
+      "dateError": "तिथि त्रुटि",
+      "dateChangeWarningTitle": "तिथि परिवर्तन चेतावनी",
+      "dateChangeWarning": "चल रही यात्रा की तिथियां बदलने से कार्यक्रम प्रभावित हो सकता है। जारी रखें?",
+      "continue": "जारी रखें",
+      "saveSuccess": "परिवर्तन सहेजे गए",
+      "saveSuccessMessage": "यात्रा जानकारी अपडेट हो गई।",
+      "saveFailed": "सहेजना विफल",
+      "saveError": "यात्रा जानकारी सहेजने में विफल। कृपया पुनः प्रयास करें।"
+    }
+  }
+}

@@ -103,7 +103,51 @@ import vi_admin from './locales/vi/admin.json';
 import vi_social from './locales/vi/social.json';
 import vi_premium from './locales/vi/premium.json';
 
-export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi'] as const;
+import pt_common from './locales/pt/common.json';
+import pt_auth from './locales/pt/auth.json';
+import pt_home from './locales/pt/home.json';
+import pt_trips from './locales/pt/trips.json';
+import pt_profile from './locales/pt/profile.json';
+import pt_components from './locales/pt/components.json';
+import pt_legal from './locales/pt/legal.json';
+import pt_admin from './locales/pt/admin.json';
+import pt_social from './locales/pt/social.json';
+import pt_premium from './locales/pt/premium.json';
+
+import ar_common from './locales/ar/common.json';
+import ar_auth from './locales/ar/auth.json';
+import ar_home from './locales/ar/home.json';
+import ar_trips from './locales/ar/trips.json';
+import ar_profile from './locales/ar/profile.json';
+import ar_components from './locales/ar/components.json';
+import ar_legal from './locales/ar/legal.json';
+import ar_admin from './locales/ar/admin.json';
+import ar_social from './locales/ar/social.json';
+import ar_premium from './locales/ar/premium.json';
+
+import id_common from './locales/id/common.json';
+import id_auth from './locales/id/auth.json';
+import id_home from './locales/id/home.json';
+import id_trips from './locales/id/trips.json';
+import id_profile from './locales/id/profile.json';
+import id_components from './locales/id/components.json';
+import id_legal from './locales/id/legal.json';
+import id_admin from './locales/id/admin.json';
+import id_social from './locales/id/social.json';
+import id_premium from './locales/id/premium.json';
+
+import hi_common from './locales/hi/common.json';
+import hi_auth from './locales/hi/auth.json';
+import hi_home from './locales/hi/home.json';
+import hi_trips from './locales/hi/trips.json';
+import hi_profile from './locales/hi/profile.json';
+import hi_components from './locales/hi/components.json';
+import hi_legal from './locales/hi/legal.json';
+import hi_admin from './locales/hi/admin.json';
+import hi_social from './locales/hi/social.json';
+import hi_premium from './locales/hi/premium.json';
+
+export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi', 'pt', 'ar', 'id', 'hi'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
@@ -116,6 +160,10 @@ export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
   fr: 'Français',
   th: 'ไทย',
   vi: 'Tiếng Việt',
+  pt: 'Português',
+  ar: 'العربية',
+  id: 'Bahasa Indonesia',
+  hi: 'हिन्दी',
 };
 
 export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
@@ -128,6 +176,10 @@ export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
   fr: '🇫🇷',
   th: '🇹🇭',
   vi: '🇻🇳',
+  pt: '🇧🇷',
+  ar: '🇸🇦',
+  id: '🇮🇩',
+  hi: '🇮🇳',
 };
 
 const resources = {
@@ -238,6 +290,54 @@ const resources = {
     admin: vi_admin,
     social: vi_social,
     premium: vi_premium,
+  },
+  pt: {
+    common: pt_common,
+    auth: pt_auth,
+    home: pt_home,
+    trips: pt_trips,
+    profile: pt_profile,
+    components: pt_components,
+    legal: pt_legal,
+    admin: pt_admin,
+    social: pt_social,
+    premium: pt_premium,
+  },
+  ar: {
+    common: ar_common,
+    auth: ar_auth,
+    home: ar_home,
+    trips: ar_trips,
+    profile: ar_profile,
+    components: ar_components,
+    legal: ar_legal,
+    admin: ar_admin,
+    social: ar_social,
+    premium: ar_premium,
+  },
+  id: {
+    common: id_common,
+    auth: id_auth,
+    home: id_home,
+    trips: id_trips,
+    profile: id_profile,
+    components: id_components,
+    legal: id_legal,
+    admin: id_admin,
+    social: id_social,
+    premium: id_premium,
+  },
+  hi: {
+    common: hi_common,
+    auth: hi_auth,
+    home: hi_home,
+    trips: hi_trips,
+    profile: hi_profile,
+    components: hi_components,
+    legal: hi_legal,
+    admin: hi_admin,
+    social: hi_social,
+    premium: hi_premium,
   },
 };
 
