@@ -15,6 +15,7 @@ import {
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
 import { canShowFullScreenAd, recordFullScreenAdShown } from './adFrequency';
+import { usePremium } from '../../contexts/PremiumContext';
 
 const extra = Constants.expoConfig?.extra || {};
 
@@ -25,12 +26,19 @@ const APP_OPEN_UNIT_ID = __DEV__
     : extra.admob?.appOpenAdUnitId?.android || '';
 
 export function useAppOpenAd() {
+  let isPremium = false;
+  try {
+    isPremium = usePremium().isPremium;
+  } catch {
+    // PremiumContext may not be available
+  }
+
   const adRef = useRef<AppOpenAd | null>(null);
   const isLoadedRef = useRef(false);
   const backgroundTimestamp = useRef(0);
 
   const loadAd = useCallback(() => {
-    if (!APP_OPEN_UNIT_ID) return;
+    if (!APP_OPEN_UNIT_ID || isPremium) return;
 
     const appOpen = AppOpenAd.createForAdRequest(APP_OPEN_UNIT_ID, {
       requestNonPersonalizedAdsOnly: true,

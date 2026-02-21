@@ -12,6 +12,7 @@ import HelpScreen from '../screens/main/HelpScreen';
 import TermsScreen from '../screens/main/TermsScreen';
 import PrivacyPolicyScreen from '../screens/main/PrivacyPolicyScreen';
 import UserProfileScreen from '../screens/main/UserProfileScreen';
+import SubscriptionScreen from '../screens/main/SubscriptionScreen';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 
@@ -20,6 +21,7 @@ const Stack = createNativeStackNavigator<ProfileStackParamList>();
 const ProfileNavigator = () => {
   const { theme } = useTheme();
   const { t } = useTranslation('profile');
+  const { t: tPremium } = useTranslation('premium');
   const { t: tAdmin } = useTranslation('admin');
   const { t: tLegal } = useTranslation('legal');
   const { t: tSocial } = useTranslation('social');
@@ -50,6 +52,11 @@ const ProfileNavigator = () => {
         name="RevenueDashboard"
         component={RevenueDashboardScreen}
         options={{ title: t('menu.revenue') }}
+      />
+      <Stack.Screen
+        name="Subscription"
+        component={SubscriptionScreen}
+        options={{ title: tPremium('menu.subscription') }}
       />
       <Stack.Screen
         name="AdminDashboard"

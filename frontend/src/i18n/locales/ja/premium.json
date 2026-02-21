@@ -1,0 +1,51 @@
+{
+  "title": "サブスクリプション",
+  "free": {
+    "name": "無料",
+    "description": "基本的な旅行計画機能"
+  },
+  "premium": {
+    "name": "プレミアム",
+    "description": "無制限AI + 広告なし",
+    "price": {
+      "monthly": "月額",
+      "yearly": "年額",
+      "yearlySaving": "37%お得",
+      "month": "月",
+      "year": "年"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "無制限のAI旅行プラン",
+    "noAds": "広告なし",
+    "premiumBadge": "プレミアムバッジ",
+    "tripCreation": "旅行プラン作成",
+    "social": "ソーシャル機能",
+    "expenses": "経費管理"
+  },
+  "actions": {
+    "subscribe": "購読する",
+    "restore": "購入を復元",
+    "manage": "サブスクリプション管理",
+    "cancel": "サブスクリプション解約"
+  },
+  "paywall": {
+    "title": "プレミアムにアップグレード",
+    "subtitle": "無制限のAI旅行プランと広告なしの体験をお楽しみください",
+    "aiLimitTitle": "AI旅行プラン使用量",
+    "aiLimitReached": "無料AI旅行プランの上限に達しました",
+    "aiUsed": "回使用",
+    "compareTitle": "プラン比較",
+    "upgradeToUnlock": "アップグレードして解除"
+  },
+  "status": {
+    "active": "有効",
+    "expired": "期限切れ",
+    "expiresOn": "{{date}}まで"
+  },
+  "menu": {
+    "subscription": "サブスクリプション",
+    "upgradePremium": "プレミアムにアップグレード",
+    "managePlan": "プラン管理"
+  }
+}

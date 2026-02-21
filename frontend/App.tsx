@@ -6,6 +6,7 @@ import * as Font from 'expo-font';
 import { onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { AuthProvider } from './src/contexts/AuthContext';
+import { PremiumProvider } from './src/contexts/PremiumContext';
 import { ToastProvider } from './src/components/feedback/Toast/ToastContext';
 import { ConfirmDialogProvider } from './src/components/feedback/ConfirmDialog';
 import { NotificationProvider } from './src/contexts/NotificationContext';
@@ -21,6 +22,7 @@ import { API_URL, STORAGE_KEYS } from './src/constants/config';
 import { secureStorage } from './src/utils/storage';
 import { useAppOpenAd } from './src/components/ads/useAppOpenAd';
 import { initializeAds } from './src/utils/initAds';
+import PaywallModal from './src/components/PaywallModal';
 
 // Initialize Sentry before app renders
 initSentry();
@@ -210,13 +212,16 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <AuthProvider>
-            <NotificationProvider>
-              <ToastProvider>
-                <ConfirmDialogProvider>
-                  <AppContent />
-                </ConfirmDialogProvider>
-              </ToastProvider>
-            </NotificationProvider>
+            <PremiumProvider>
+              <NotificationProvider>
+                <ToastProvider>
+                  <ConfirmDialogProvider>
+                    <AppContent />
+                    <PaywallModal />
+                  </ConfirmDialogProvider>
+                </ToastProvider>
+              </NotificationProvider>
+            </PremiumProvider>
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>

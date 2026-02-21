@@ -43,6 +43,7 @@ import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
 import DestinationInsights from '../../components/DestinationInsights';
 import { useInterstitialAd, useRewardedAd } from '../../components/ads';
+import { usePremium } from '../../contexts/PremiumContext';
 import { getHeroImageUrl } from '../../utils/images';
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
@@ -102,6 +103,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { scheduleTripReminders } = useNotifications();
   const { t } = useTranslation('trips');
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
+  const { isPremium, aiTripsRemaining, showPaywall } = usePremium();
   const { show: showRewarded, isLoaded: isRewardedLoaded } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
 
@@ -214,6 +216,12 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     }
     setFieldErrors({});
 
+    // Check AI trip limit for free users before starting
+    if (planningMode === 'ai' && !isPremium && aiTripsRemaining <= 0) {
+      showPaywall();
+      return;
+    }
+
     setIsLoading(true);
     setGenerationStep(0);
     progressAnim.setValue(0);
@@ -286,9 +294,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         duration: 2000,
       });
 
-      // Show interstitial ad after trip creation, then navigate
+      // Show interstitial ad after trip creation (skip for premium), then navigate
       setTimeout(async () => {
-        if (isAdLoaded) {
+        if (!isPremium && isAdLoaded) {
           await showInterstitial();
         }
         navigation.navigate('TripDetail', { tripId: trip.id });
@@ -1060,6 +1068,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>
                 {t('create.aiInfo.description')}
               </Text>
+              {!isPremium && (
+                <Text style={[styles.infoText, { color: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600' }]}>
+                  {t('create.aiInfo.remaining', { count: aiTripsRemaining, total: 3 })}
+                </Text>
+              )}
             </View>
           </View>
           )}

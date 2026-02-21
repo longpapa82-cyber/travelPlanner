@@ -1,0 +1,51 @@
+{
+  "title": "Abonnement",
+  "free": {
+    "name": "Kostenlos",
+    "description": "Grundlegende Reiseplanungsfunktionen"
+  },
+  "premium": {
+    "name": "Premium",
+    "description": "Unbegrenzte KI + Keine Werbung",
+    "price": {
+      "monthly": "Monatlich",
+      "yearly": "Jährlich",
+      "yearlySaving": "37% sparen",
+      "month": "Monat",
+      "year": "Jahr"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "Unbegrenzte KI-Reiseplanung",
+    "noAds": "Keine Werbung",
+    "premiumBadge": "Premium-Abzeichen",
+    "tripCreation": "Reiseplanerstellung",
+    "social": "Soziale Funktionen",
+    "expenses": "Ausgabenverwaltung"
+  },
+  "actions": {
+    "subscribe": "Abonnieren",
+    "restore": "Kauf wiederherstellen",
+    "manage": "Abonnement verwalten",
+    "cancel": "Abonnement kündigen"
+  },
+  "paywall": {
+    "title": "Auf Premium upgraden",
+    "subtitle": "Genießen Sie unbegrenzte KI-Reiseplanung und ein werbefreies Erlebnis",
+    "aiLimitTitle": "KI-Reiseplan-Nutzung",
+    "aiLimitReached": "Kostenloses KI-Reiseplan-Limit erreicht",
+    "aiUsed": "verwendet",
+    "compareTitle": "Pläne vergleichen",
+    "upgradeToUnlock": "Upgraden zum Freischalten"
+  },
+  "status": {
+    "active": "Aktiv",
+    "expired": "Abgelaufen",
+    "expiresOn": "Bis {{date}}"
+  },
+  "menu": {
+    "subscription": "Abonnement",
+    "upgradePremium": "Auf Premium upgraden",
+    "managePlan": "Plan verwalten"
+  }
+}

@@ -38,6 +38,7 @@ import DatePickerField from '../../components/core/DatePicker';
 import { getDateLocale } from '../../utils/dateLocale';
 import { getHeroImageUrl } from '../../utils/images';
 import { useInterstitialAd } from '../../components/ads';
+import { usePremium } from '../../contexts/PremiumContext';
 
 type EditTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'EditTrip'>;
 type EditTripScreenRouteProp = RouteProp<TripsStackParamList, 'EditTrip'>;
@@ -75,6 +76,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { confirm } = useConfirm();
   const { t } = useTranslation('trips');
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
+  const { isPremium } = usePremium();
 
   // Derive translated arrays from META constants
   const destinations = DESTINATION_META.map((d) => ({ ...d, name: t(d.key) }));
@@ -226,7 +228,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       });
 
       setTimeout(async () => {
-        if (isAdLoaded) {
+        if (!isPremium && isAdLoaded) {
           await showInterstitial();
         }
         navigation.navigate('TripDetail', { tripId });

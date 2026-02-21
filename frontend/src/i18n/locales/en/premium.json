@@ -1,0 +1,51 @@
+{
+  "title": "Subscription",
+  "free": {
+    "name": "Free",
+    "description": "Basic travel planning features"
+  },
+  "premium": {
+    "name": "Premium",
+    "description": "Unlimited AI + No Ads",
+    "price": {
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "yearlySaving": "Save 37%",
+      "month": "month",
+      "year": "year"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "Unlimited AI trip planning",
+    "noAds": "No ads",
+    "premiumBadge": "Premium badge",
+    "tripCreation": "Trip planning",
+    "social": "Social features",
+    "expenses": "Expense management"
+  },
+  "actions": {
+    "subscribe": "Subscribe",
+    "restore": "Restore purchase",
+    "manage": "Manage subscription",
+    "cancel": "Cancel subscription"
+  },
+  "paywall": {
+    "title": "Upgrade to Premium",
+    "subtitle": "Enjoy unlimited AI trip planning and an ad-free experience",
+    "aiLimitTitle": "AI Trip Plan Usage",
+    "aiLimitReached": "Free AI trip plan limit reached",
+    "aiUsed": "used",
+    "compareTitle": "Compare Plans",
+    "upgradeToUnlock": "Upgrade to unlock"
+  },
+  "status": {
+    "active": "Active",
+    "expired": "Expired",
+    "expiresOn": "Until {{date}}"
+  },
+  "menu": {
+    "subscription": "Subscription",
+    "upgradePremium": "Upgrade to Premium",
+    "managePlan": "Manage plan"
+  }
+}

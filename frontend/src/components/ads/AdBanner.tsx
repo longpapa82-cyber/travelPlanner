@@ -11,6 +11,7 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
+import { usePremium } from '../../contexts/PremiumContext';
 import AdSense from './AdSense';
 import AdMobBanner from './AdMobBanner';
 import type { AdMobBannerSize } from './AdMobBanner';
@@ -43,6 +44,14 @@ const AdBanner: React.FC<AdBannerProps> = ({
   format = 'auto',
   style,
 }) => {
+  // Premium users don't see banner ads
+  try {
+    const { isPremium } = usePremium();
+    if (isPremium) return null;
+  } catch {
+    // PremiumContext may not be available (e.g. outside provider)
+  }
+
   if (Platform.OS === 'web') {
     const slot = adSenseSlot || DEFAULT_ADSENSE_SLOT;
     if (!slot) return null;

@@ -25,6 +25,8 @@ import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { useConfirm } from '../../components/feedback/ConfirmDialog';
 import Button from '../../components/core/Button';
 import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
+import PremiumBadge from '../../components/PremiumBadge';
+import { usePremium } from '../../contexts/PremiumContext';
 import apiService from '../../services/api';
 
 const ProfileScreen = ({ navigation }: any) => {
@@ -34,6 +36,8 @@ const ProfileScreen = ({ navigation }: any) => {
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
+  const { isPremium } = usePremium();
+  const { t: tPremium } = useTranslation('premium');
 
   // Modal states
   const [showEditProfile, setShowEditProfile] = useState(false);
@@ -401,6 +405,22 @@ const ProfileScreen = ({ navigation }: any) => {
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
         */}
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('Subscription')}
+          accessibilityRole="button"
+          accessibilityLabel={tPremium('menu.subscription')}
+        >
+          <Icon name="crown" size={24} color="#F59E0B" />
+          <Text style={styles.menuText}>{tPremium('menu.subscription')}</Text>
+          {isPremium ? (
+            <PremiumBadge size="small" />
+          ) : (
+            <Text style={[styles.menuValue, { color: '#F59E0B' }]}>{tPremium('free.name')}</Text>
+          )}
+          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.section}>

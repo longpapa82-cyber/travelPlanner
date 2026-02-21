@@ -4,7 +4,7 @@ import request from 'supertest';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { AuthProvider } from '../users/entities/user.entity';
+import { AuthProvider, SubscriptionTier } from '../users/entities/user.entity';
 import { NotificationsService } from '../notifications/notifications.service';
 
 describe('AuthController (Integration)', () => {
@@ -361,6 +361,9 @@ describe('AuthController (Integration)', () => {
         profileImage: mockUser.profileImage,
         isEmailVerified: false,
         isTwoFactorEnabled: false,
+        subscriptionTier: SubscriptionTier.FREE,
+        subscriptionExpiresAt: undefined,
+        aiTripsUsedThisMonth: 0,
         createdAt: now,
         updatedAt: now,
       };

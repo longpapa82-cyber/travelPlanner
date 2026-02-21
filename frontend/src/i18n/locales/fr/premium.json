@@ -1,0 +1,51 @@
+{
+  "title": "Abonnement",
+  "free": {
+    "name": "Gratuit",
+    "description": "Fonctions de base de planification de voyage"
+  },
+  "premium": {
+    "name": "Premium",
+    "description": "IA illimitée + Sans publicité",
+    "price": {
+      "monthly": "Mensuel",
+      "yearly": "Annuel",
+      "yearlySaving": "Économisez 37%",
+      "month": "mois",
+      "year": "an"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "Planification de voyage IA illimitée",
+    "noAds": "Sans publicité",
+    "premiumBadge": "Badge premium",
+    "tripCreation": "Création de voyage",
+    "social": "Fonctions sociales",
+    "expenses": "Gestion des dépenses"
+  },
+  "actions": {
+    "subscribe": "S'abonner",
+    "restore": "Restaurer l'achat",
+    "manage": "Gérer l'abonnement",
+    "cancel": "Annuler l'abonnement"
+  },
+  "paywall": {
+    "title": "Passer à Premium",
+    "subtitle": "Profitez d'une planification de voyage IA illimitée et d'une expérience sans publicité",
+    "aiLimitTitle": "Utilisation du plan de voyage IA",
+    "aiLimitReached": "Limite gratuite de plans de voyage IA atteinte",
+    "aiUsed": "utilisés",
+    "compareTitle": "Comparer les forfaits",
+    "upgradeToUnlock": "Passez à Premium pour débloquer"
+  },
+  "status": {
+    "active": "Actif",
+    "expired": "Expiré",
+    "expiresOn": "Jusqu'au {{date}}"
+  },
+  "menu": {
+    "subscription": "Abonnement",
+    "upgradePremium": "Passer à Premium",
+    "managePlan": "Gérer le forfait"
+  }
+}

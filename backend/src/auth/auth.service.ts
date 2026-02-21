@@ -260,6 +260,9 @@ export class AuthService {
       profileImage: user.profileImage,
       isEmailVerified: user.isEmailVerified,
       isTwoFactorEnabled: user.isTwoFactorEnabled,
+      subscriptionTier: user.subscriptionTier,
+      subscriptionExpiresAt: user.subscriptionExpiresAt,
+      aiTripsUsedThisMonth: user.aiTripsUsedThisMonth,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

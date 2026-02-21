@@ -1,0 +1,51 @@
+{
+  "title": "การสมัครสมาชิก",
+  "free": {
+    "name": "ฟรี",
+    "description": "ฟีเจอร์พื้นฐานในการวางแผนการเดินทาง"
+  },
+  "premium": {
+    "name": "พรีเมียม",
+    "description": "AI ไม่จำกัด + ไม่มีโฆษณา",
+    "price": {
+      "monthly": "รายเดือน",
+      "yearly": "รายปี",
+      "yearlySaving": "ประหยัด 37%",
+      "month": "เดือน",
+      "year": "ปี"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "วางแผนการเดินทางด้วย AI ไม่จำกัด",
+    "noAds": "ไม่มีโฆษณา",
+    "premiumBadge": "ตราพรีเมียม",
+    "tripCreation": "สร้างแผนการเดินทาง",
+    "social": "ฟีเจอร์โซเชียล",
+    "expenses": "จัดการค่าใช้จ่าย"
+  },
+  "actions": {
+    "subscribe": "สมัครสมาชิก",
+    "restore": "กู้คืนการซื้อ",
+    "manage": "จัดการการสมัครสมาชิก",
+    "cancel": "ยกเลิกการสมัครสมาชิก"
+  },
+  "paywall": {
+    "title": "อัปเกรดเป็นพรีเมียม",
+    "subtitle": "เพลิดเพลินกับการวางแผนการเดินทาง AI ไม่จำกัดและประสบการณ์ไร้โฆษณา",
+    "aiLimitTitle": "การใช้งานแผน AI",
+    "aiLimitReached": "ถึงขีดจำกัดแผน AI ฟรีแล้ว",
+    "aiUsed": "ครั้งที่ใช้",
+    "compareTitle": "เปรียบเทียบแผน",
+    "upgradeToUnlock": "อัปเกรดเพื่อปลดล็อก"
+  },
+  "status": {
+    "active": "ใช้งานอยู่",
+    "expired": "หมดอายุ",
+    "expiresOn": "ถึง {{date}}"
+  },
+  "menu": {
+    "subscription": "การสมัครสมาชิก",
+    "upgradePremium": "อัปเกรดเป็นพรีเมียม",
+    "managePlan": "จัดการแผน"
+  }
+}

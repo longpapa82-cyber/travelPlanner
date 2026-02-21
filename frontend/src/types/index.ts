@@ -1,4 +1,6 @@
 // User types matching backend
+export type SubscriptionTier = 'free' | 'premium';
+
 export interface User {
   id: string;
   email: string;
@@ -8,8 +10,21 @@ export interface User {
   isEmailVerified?: boolean;
   isTwoFactorEnabled?: boolean;
   travelPreferences?: TripPreferences;
+  subscriptionTier?: SubscriptionTier;
+  subscriptionExpiresAt?: string;
+  aiTripsUsedThisMonth?: number;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface SubscriptionStatus {
+  tier: SubscriptionTier;
+  isPremium: boolean;
+  platform?: string;
+  expiresAt?: string;
+  aiTripsUsed: number;
+  aiTripsLimit: number;
+  aiTripsRemaining: number;
 }
 
 export interface AuthResponse {
@@ -181,6 +196,7 @@ export type ProfileStackParamList = {
   ProfileMain: undefined;
   TwoFactorSettings: undefined;
   RevenueDashboard: undefined;
+  Subscription: undefined;
   AdminDashboard: undefined;
   UserManagement: undefined;
   ErrorLog: undefined;

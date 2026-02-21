@@ -23,6 +23,7 @@ import { WeatherService } from './services/weather.service';
 import { TripStatusScheduler } from './trip-status.scheduler';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/entities/notification.entity';
+import { SubscriptionService } from '../subscription/subscription.service';
 import { updateItinerariesCompletionStatus } from './helpers/trip-progress.helper';
 import { QueryTripsDto, SortBy, SortOrder } from './dto/query-trips.dto';
 import { getErrorMessage } from '../common/types/request.types';
@@ -43,6 +44,7 @@ export class TripsService {
     private readonly weatherService: WeatherService,
     private readonly tripStatusScheduler: TripStatusScheduler,
     private readonly notificationsService: NotificationsService,
+    private readonly subscriptionService: SubscriptionService,
   ) {}
 
   async create(
@@ -184,6 +186,31 @@ export class TripsService {
         `Created ${itineraries.length} empty itineraries (manual mode) for trip ${savedTrip.id}`,
       );
     } else {
+      // AI mode: check free-tier limit before generating
+      const aiLimit = await this.subscriptionService.checkAiTripLimit(userId);
+      if (!aiLimit.allowed) {
+        // Fallback to empty itineraries instead of failing the trip creation
+        this.logger.log(
+          `AI trip limit reached for user ${userId}. Creating empty itineraries.`,
+        );
+        const weatherMap = await fetchWeatherMap();
+        await createEmptyItineraries(weatherMap);
+
+        // Mark trip so frontend knows AI was skipped due to limit
+        await this.tripRepository.update(savedTrip.id, {
+          description: savedTrip.description
+            ? `${savedTrip.description}`
+            : undefined,
+        });
+
+        throw new ForbiddenException(
+          'AI trip generation limit reached. Upgrade to Premium for unlimited AI trips.',
+        );
+      }
+
+      // Increment AI trip count before generation
+      await this.subscriptionService.incrementAiTripCount(userId);
+
       // AI mode: generate itineraries with AI + weather in parallel
       try {
         const aiPromise = this.aiService.generateAllItineraries({

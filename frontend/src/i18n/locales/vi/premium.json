@@ -1,0 +1,51 @@
+{
+  "title": "Đăng ký",
+  "free": {
+    "name": "Miễn phí",
+    "description": "Tính năng lập kế hoạch du lịch cơ bản"
+  },
+  "premium": {
+    "name": "Cao cấp",
+    "description": "AI không giới hạn + Không quảng cáo",
+    "price": {
+      "monthly": "Hàng tháng",
+      "yearly": "Hàng năm",
+      "yearlySaving": "Tiết kiệm 37%",
+      "month": "tháng",
+      "year": "năm"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "Lập kế hoạch du lịch AI không giới hạn",
+    "noAds": "Không quảng cáo",
+    "premiumBadge": "Huy hiệu cao cấp",
+    "tripCreation": "Tạo kế hoạch du lịch",
+    "social": "Tính năng xã hội",
+    "expenses": "Quản lý chi phí"
+  },
+  "actions": {
+    "subscribe": "Đăng ký",
+    "restore": "Khôi phục mua hàng",
+    "manage": "Quản lý đăng ký",
+    "cancel": "Hủy đăng ký"
+  },
+  "paywall": {
+    "title": "Nâng cấp lên Cao cấp",
+    "subtitle": "Tận hưởng lập kế hoạch du lịch AI không giới hạn và trải nghiệm không quảng cáo",
+    "aiLimitTitle": "Sử dụng kế hoạch AI",
+    "aiLimitReached": "Đã đạt giới hạn kế hoạch AI miễn phí",
+    "aiUsed": "đã sử dụng",
+    "compareTitle": "So sánh gói",
+    "upgradeToUnlock": "Nâng cấp để mở khóa"
+  },
+  "status": {
+    "active": "Đang hoạt động",
+    "expired": "Đã hết hạn",
+    "expiresOn": "Đến {{date}}"
+  },
+  "menu": {
+    "subscription": "Đăng ký",
+    "upgradePremium": "Nâng cấp Cao cấp",
+    "managePlan": "Quản lý gói"
+  }
+}

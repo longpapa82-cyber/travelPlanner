@@ -1,0 +1,51 @@
+{
+  "title": "Suscripción",
+  "free": {
+    "name": "Gratis",
+    "description": "Funciones básicas de planificación de viajes"
+  },
+  "premium": {
+    "name": "Premium",
+    "description": "IA ilimitada + Sin anuncios",
+    "price": {
+      "monthly": "Mensual",
+      "yearly": "Anual",
+      "yearlySaving": "Ahorra 37%",
+      "month": "mes",
+      "year": "año"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "Planificación de viajes con IA ilimitada",
+    "noAds": "Sin anuncios",
+    "premiumBadge": "Insignia premium",
+    "tripCreation": "Creación de viajes",
+    "social": "Funciones sociales",
+    "expenses": "Gestión de gastos"
+  },
+  "actions": {
+    "subscribe": "Suscribirse",
+    "restore": "Restaurar compra",
+    "manage": "Gestionar suscripción",
+    "cancel": "Cancelar suscripción"
+  },
+  "paywall": {
+    "title": "Actualizar a Premium",
+    "subtitle": "Disfruta de planificación de viajes con IA ilimitada y una experiencia sin anuncios",
+    "aiLimitTitle": "Uso de planes de viaje con IA",
+    "aiLimitReached": "Has alcanzado el límite de planes gratuitos con IA",
+    "aiUsed": "usados",
+    "compareTitle": "Comparar planes",
+    "upgradeToUnlock": "Actualiza para desbloquear"
+  },
+  "status": {
+    "active": "Activa",
+    "expired": "Expirada",
+    "expiresOn": "Hasta {{date}}"
+  },
+  "menu": {
+    "subscription": "Suscripción",
+    "upgradePremium": "Actualizar a Premium",
+    "managePlan": "Gestionar plan"
+  }
+}

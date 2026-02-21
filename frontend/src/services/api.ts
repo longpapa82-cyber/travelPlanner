@@ -664,6 +664,17 @@ class ApiService {
     return response.data;
   }
 
+  // Subscription
+  async getSubscriptionStatus() {
+    const response = await this.api.get('/subscription/status');
+    return response.data;
+  }
+
+  async restoreSubscription() {
+    const response = await this.api.post('/subscription/restore');
+    return response.data;
+  }
+
   // Places Autocomplete
   async placesAutocomplete(input: string, sessionToken?: string, language?: string) {
     const params: Record<string, string> = { input };

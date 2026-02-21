@@ -1,0 +1,51 @@
+{
+  "title": "구독",
+  "free": {
+    "name": "무료",
+    "description": "기본 여행 계획 기능"
+  },
+  "premium": {
+    "name": "프리미엄",
+    "description": "무제한 AI + 광고 없음",
+    "price": {
+      "monthly": "월간",
+      "yearly": "연간",
+      "yearlySaving": "37% 절약",
+      "month": "월",
+      "year": "년"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "무제한 AI 여행 계획",
+    "noAds": "광고 없음",
+    "premiumBadge": "프리미엄 뱃지",
+    "tripCreation": "여행 계획 생성",
+    "social": "소셜 기능",
+    "expenses": "경비 관리"
+  },
+  "actions": {
+    "subscribe": "구독하기",
+    "restore": "구매 복원",
+    "manage": "구독 관리",
+    "cancel": "구독 취소"
+  },
+  "paywall": {
+    "title": "프리미엄으로 업그레이드",
+    "subtitle": "무제한 AI 여행 계획과 광고 없는 경험을 즐기세요",
+    "aiLimitTitle": "AI 여행 계획 사용량",
+    "aiLimitReached": "무료 AI 여행 계획 한도에 도달했습니다",
+    "aiUsed": "회 사용",
+    "compareTitle": "기능 비교",
+    "upgradeToUnlock": "프리미엄으로 잠금 해제"
+  },
+  "status": {
+    "active": "활성",
+    "expired": "만료됨",
+    "expiresOn": "{{date}}까지"
+  },
+  "menu": {
+    "subscription": "구독",
+    "upgradePremium": "프리미엄 업그레이드",
+    "managePlan": "플랜 관리"
+  }
+}

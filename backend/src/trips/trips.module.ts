@@ -21,6 +21,7 @@ import { TemplateWarmupService } from './services/template-warmup.service';
 import { TripStatusScheduler } from './trip-status.scheduler';
 import { User } from '../users/entities/user.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { SubscriptionModule } from '../subscription/subscription.module';
 import { ImageService } from '../common/image.service';
 
 @Module({
@@ -28,6 +29,7 @@ import { ImageService } from '../common/image.service';
     TypeOrmModule.forFeature([Trip, Itinerary, ItineraryTemplate, Collaborator, User]),
     ConfigModule,
     NotificationsModule,
+    SubscriptionModule,
   ],
   providers: [
     TripsService,

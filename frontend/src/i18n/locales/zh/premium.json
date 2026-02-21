@@ -1,0 +1,51 @@
+{
+  "title": "订阅",
+  "free": {
+    "name": "免费",
+    "description": "基本旅行规划功能"
+  },
+  "premium": {
+    "name": "高级版",
+    "description": "无限AI + 无广告",
+    "price": {
+      "monthly": "月度",
+      "yearly": "年度",
+      "yearlySaving": "节省37%",
+      "month": "月",
+      "year": "年"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "无限AI旅行规划",
+    "noAds": "无广告",
+    "premiumBadge": "高级徽章",
+    "tripCreation": "旅行规划创建",
+    "social": "社交功能",
+    "expenses": "费用管理"
+  },
+  "actions": {
+    "subscribe": "订阅",
+    "restore": "恢复购买",
+    "manage": "管理订阅",
+    "cancel": "取消订阅"
+  },
+  "paywall": {
+    "title": "升级为高级版",
+    "subtitle": "享受无限AI旅行规划和无广告体验",
+    "aiLimitTitle": "AI旅行规划使用量",
+    "aiLimitReached": "免费AI旅行规划次数已用完",
+    "aiUsed": "次已使用",
+    "compareTitle": "方案对比",
+    "upgradeToUnlock": "升级解锁"
+  },
+  "status": {
+    "active": "活跃",
+    "expired": "已过期",
+    "expiresOn": "有效期至{{date}}"
+  },
+  "menu": {
+    "subscription": "订阅",
+    "upgradePremium": "升级高级版",
+    "managePlan": "管理方案"
+  }
+}

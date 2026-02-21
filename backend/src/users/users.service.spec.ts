@@ -4,7 +4,7 @@ import { Repository, DataSource } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
-import { User, AuthProvider, UserRole } from './entities/user.entity';
+import { User, AuthProvider, UserRole, SubscriptionTier } from './entities/user.entity';
 
 // Mock bcrypt
 jest.mock('bcrypt');
@@ -27,6 +27,8 @@ describe('UsersService', () => {
     isTwoFactorEnabled: false,
     followersCount: 0,
     followingCount: 0,
+    subscriptionTier: SubscriptionTier.FREE,
+    aiTripsUsedThisMonth: 0,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };

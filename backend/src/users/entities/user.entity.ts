@@ -19,6 +19,17 @@ export enum UserRole {
   ADMIN = 'admin',
 }
 
+export enum SubscriptionTier {
+  FREE = 'free',
+  PREMIUM = 'premium',
+}
+
+export enum SubscriptionPlatform {
+  IOS = 'ios',
+  ANDROID = 'android',
+  WEB = 'web',
+}
+
 @Entity('users')
 @Index(['provider', 'providerId'])
 export class User {
@@ -96,6 +107,29 @@ export class User {
 
   @Column({ type: 'int', default: 0 })
   followingCount: number;
+
+  @Column({
+    type: 'enum',
+    enum: SubscriptionTier,
+    default: SubscriptionTier.FREE,
+  })
+  subscriptionTier: SubscriptionTier;
+
+  @Column({
+    type: 'enum',
+    enum: SubscriptionPlatform,
+    nullable: true,
+  })
+  subscriptionPlatform?: SubscriptionPlatform;
+
+  @Column({ type: 'timestamp', nullable: true })
+  subscriptionExpiresAt?: Date;
+
+  @Column({ type: 'varchar', nullable: true })
+  revenuecatAppUserId?: string;
+
+  @Column({ type: 'int', default: 0 })
+  aiTripsUsedThisMonth: number;
 
   @Column({ default: true })
   isActive: boolean;
