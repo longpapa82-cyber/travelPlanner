@@ -114,6 +114,13 @@
       "datesRequired": "请选择旅行日期",
       "createFailed": "旅行创建失败",
       "startDateRequired": "请选择出发日期"
+    },
+    "aiConsent": {
+      "title": "AI旅行规划",
+      "body": "此功能使用OpenAI的AI为您生成个性化旅行计划。",
+      "dataList": "您的目的地、旅行日期、旅客人数和偏好将发送给AI。",
+      "accept": "同意并继续",
+      "cancel": "取消"
     }
   },
   "list": {

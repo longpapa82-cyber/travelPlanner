@@ -12,7 +12,7 @@
  * - Dark mode support
  */
 
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -25,7 +25,9 @@ import {
   Platform,
   ImageBackground,
   Animated,
+  Modal,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -106,6 +108,23 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { isPremium, aiTripsRemaining, showPaywall } = usePremium();
   const { show: showRewarded, isLoaded: isRewardedLoaded } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
+  const [showAiConsent, setShowAiConsent] = useState(false);
+  const [aiConsentGiven, setAiConsentGiven] = useState(false);
+
+  // Check if AI consent was previously given
+  useEffect(() => {
+    AsyncStorage.getItem('@travelplanner:ai_consent').then((val) => {
+      if (val === 'true') setAiConsentGiven(true);
+    }).catch(() => {});
+  }, []);
+
+  const handleAiConsentAccept = useCallback(async () => {
+    setAiConsentGiven(true);
+    setShowAiConsent(false);
+    await AsyncStorage.setItem('@travelplanner:ai_consent', 'true').catch(() => {});
+    // Resume trip creation after consent
+    doCreateTrip();
+  }, []);
 
   const POPULAR_DESTINATIONS = getPopularDestinations(t);
   const DURATION_OPTIONS = getDurationOptions(t);
@@ -222,6 +241,16 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       return;
     }
 
+    // Show AI consent modal on first AI usage (Apple App Store requirement)
+    if (planningMode === 'ai' && !aiConsentGiven) {
+      setShowAiConsent(true);
+      return;
+    }
+
+    doCreateTrip();
+  };
+
+  const doCreateTrip = async () => {
     setIsLoading(true);
     setGenerationStep(0);
     progressAnim.setValue(0);
@@ -1154,6 +1183,46 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
         <View style={{ height: 40 }} />
       </ScrollView>
+      {/* AI Usage Consent Modal (Apple App Store requirement) */}
+      <Modal
+        visible={showAiConsent}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowAiConsent(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: theme.colors.card }]}>
+            <Icon name="robot" size={40} color={theme.colors.primary} />
+            <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
+              {t('create.aiConsent.title')}
+            </Text>
+            <Text style={[styles.modalBody, { color: theme.colors.textSecondary }]}>
+              {t('create.aiConsent.body')}
+            </Text>
+            <Text style={[styles.modalDataList, { color: theme.colors.textSecondary }]}>
+              {t('create.aiConsent.dataList')}
+            </Text>
+            <TouchableOpacity
+              style={[styles.modalButton, { backgroundColor: theme.colors.primary }]}
+              onPress={handleAiConsentAccept}
+              accessibilityRole="button"
+            >
+              <Text style={styles.modalButtonText}>
+                {t('create.aiConsent.accept')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalCancelButton}
+              onPress={() => setShowAiConsent(false)}
+              accessibilityRole="button"
+            >
+              <Text style={[styles.modalCancelText, { color: theme.colors.textSecondary }]}>
+                {t('create.aiConsent.cancel')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
@@ -1438,6 +1507,58 @@ const createStyles = (theme: any, isDark: boolean) =>
       flex: 1,
       fontSize: 14,
       fontWeight: '600',
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 24,
+    },
+    modalContent: {
+      borderRadius: 20,
+      padding: 28,
+      alignItems: 'center',
+      maxWidth: 360,
+      width: '100%',
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      marginTop: 16,
+      marginBottom: 12,
+      textAlign: 'center',
+    },
+    modalBody: {
+      fontSize: 15,
+      lineHeight: 22,
+      textAlign: 'center',
+      marginBottom: 12,
+    },
+    modalDataList: {
+      fontSize: 13,
+      lineHeight: 20,
+      textAlign: 'center',
+      marginBottom: 24,
+    },
+    modalButton: {
+      width: '100%',
+      paddingVertical: 14,
+      borderRadius: 12,
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    modalButtonText: {
+      color: colors.neutral[0],
+      fontSize: 16,
+      fontWeight: '700',
+    },
+    modalCancelButton: {
+      paddingVertical: 8,
+    },
+    modalCancelText: {
+      fontSize: 14,
+      fontWeight: '500',
     },
   });
 

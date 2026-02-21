@@ -114,6 +114,13 @@
       "datesRequired": "旅行日程を選択してください",
       "createFailed": "旅行の作成に失敗しました",
       "startDateRequired": "出発日を選択してください"
+    },
+    "aiConsent": {
+      "title": "AI旅行プラン作成",
+      "body": "この機能はOpenAIのAIを使用して、パーソナライズされた旅行プランを作成します。",
+      "dataList": "目的地、旅行日程、人数、好みの情報がAIに送信されます。",
+      "accept": "同意して続ける",
+      "cancel": "キャンセル"
     }
   },
   "list": {

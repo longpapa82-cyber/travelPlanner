@@ -1,18 +1,22 @@
+# syntax=docker/dockerfile:1
 # Stage 1: Build the Expo web app
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm npm ci
 
-COPY . .
+COPY tsconfig.json app.json app.config.js index.ts ./
+COPY src/ src/
+COPY assets/ assets/
+COPY public/ public/
 
 # Build-time env vars (overridable via --build-arg)
 ARG EXPO_PUBLIC_API_URL=/api
 ENV EXPO_PUBLIC_API_URL=$EXPO_PUBLIC_API_URL
 
-RUN npx expo export --platform web
+RUN --mount=type=cache,target=/app/.expo npx expo export --platform web
 
 # Remove source maps from production build
 RUN find /app/dist -name '*.map' -delete 2>/dev/null || true

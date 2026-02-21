@@ -114,6 +114,13 @@
       "datesRequired": "여행 날짜를 선택해주세요",
       "createFailed": "여행 생성에 실패했습니다",
       "startDateRequired": "출발일을 선택해주세요"
+    },
+    "aiConsent": {
+      "title": "AI 여행 계획 안내",
+      "body": "이 기능은 OpenAI의 AI를 사용하여 맞춤 여행 계획을 생성합니다.",
+      "dataList": "목적지, 여행 날짜, 여행자 수, 선호도 정보가 AI에 전달됩니다.",
+      "accept": "동의하고 계속하기",
+      "cancel": "취소"
     }
   },
   "list": {

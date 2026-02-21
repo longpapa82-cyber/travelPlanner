@@ -8,10 +8,28 @@ import DiscoverScreen from '../screens/main/DiscoverScreen';
 import TripsNavigator from './TripsNavigator';
 import NotificationsScreen from '../screens/main/NotificationsScreen';
 import ProfileNavigator from './ProfileNavigator';
+import ErrorBoundary from '../components/ErrorBoundary';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors, darkColors } from '../constants/theme';
 import apiService from '../services/api';
+
+/** Wrap a screen component with ErrorBoundary so crashes are isolated per-tab */
+const withErrorBoundary = <P extends object>(Component: React.ComponentType<P>) => {
+  const Wrapped = (props: P) => (
+    <ErrorBoundary>
+      <Component {...props} />
+    </ErrorBoundary>
+  );
+  Wrapped.displayName = `WithErrorBoundary(${Component.displayName || Component.name})`;
+  return Wrapped;
+};
+
+const SafeHomeScreen = withErrorBoundary(HomeScreen);
+const SafeDiscoverScreen = withErrorBoundary(DiscoverScreen);
+const SafeTripsNavigator = withErrorBoundary(TripsNavigator);
+const SafeNotificationsScreen = withErrorBoundary(NotificationsScreen);
+const SafeProfileNavigator = withErrorBoundary(ProfileNavigator);
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -59,7 +77,7 @@ const MainNavigator = () => {
     >
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={SafeHomeScreen}
         options={{
           title: t('tabs.home'),
           tabBarIcon: ({ color, size }) => (
@@ -69,7 +87,7 @@ const MainNavigator = () => {
       />
       <Tab.Screen
         name="Discover"
-        component={DiscoverScreen}
+        component={SafeDiscoverScreen}
         options={{
           title: t('tabs.discover'),
           tabBarIcon: ({ color, size }) => (
@@ -79,7 +97,7 @@ const MainNavigator = () => {
       />
       <Tab.Screen
         name="Trips"
-        component={TripsNavigator}
+        component={SafeTripsNavigator}
         options={{
           title: t('tabs.trips'),
           headerShown: false,
@@ -90,7 +108,7 @@ const MainNavigator = () => {
       />
       <Tab.Screen
         name="Notifications"
-        component={NotificationsScreen}
+        component={SafeNotificationsScreen}
         options={{
           title: t('tabs.notifications'),
           tabBarIcon: ({ color, size }) => (
@@ -109,7 +127,7 @@ const MainNavigator = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileNavigator}
+        component={SafeProfileNavigator}
         options={{
           title: t('tabs.profile'),
           headerShown: false,

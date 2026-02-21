@@ -235,6 +235,13 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [isLoading]);
 
+  const handleScroll = useCallback((event: any) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 300) {
+      loadMoreTrips();
+    }
+  }, [currentPage, totalTrips, isLoadingMore, trips.length]);
+
   const onRefresh = () => {
     setIsRefreshing(true);
     fetchTrips({
@@ -286,7 +293,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     ) + 1;
   };
 
-  const getStatusConfig = (status: string) => {
+  const getStatusConfig = useCallback((status: string) => {
     switch (status) {
       case 'upcoming':
         return {
@@ -317,7 +324,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
           bgColor: colors.neutral[500],
         };
     }
-  };
+  }, [t]);
 
   const groupedTrips = useMemo(() => ({
     ongoing: trips.filter(t => t.status === 'ongoing'),
@@ -325,7 +332,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     completed: trips.filter(t => t.status === 'completed'),
   }), [trips]);
 
-  const renderTripCard = (trip: Trip, index: number) => {
+  const renderTripCard = useCallback((trip: Trip, index: number) => {
     const statusConfig = getStatusConfig(trip.status);
     const imageUrl = getDestinationImageUrl(trip.destination, { width: 400 });
     const duration = getDaysDuration(trip.startDate, trip.endDate);
@@ -459,10 +466,10 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
         </TouchableOpacity>
       </Animated.View>
     );
-  };
+  }, [fadeAnim, slideAnim, isDark, theme, navigation, t, handleDeleteTrip]);
 
-  const renderSection = (title: string, trips: Trip[], icon: string) => {
-    if (trips.length === 0) return null;
+  const renderSection = (title: string, sectionTrips: Trip[], icon: string) => {
+    if (sectionTrips.length === 0) return null;
 
     return (
       <View style={styles.section}>
@@ -473,11 +480,11 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
           </Text>
           <View style={styles.sectionBadge}>
             <Text style={[styles.sectionBadgeText, { color: theme.colors.primary }]}>
-              {trips.length}
+              {sectionTrips.length}
             </Text>
           </View>
         </View>
-        {trips.map((trip, index) => renderTripCard(trip, index))}
+        {sectionTrips.map((trip, index) => renderTripCard(trip, index))}
       </View>
     );
   };
@@ -516,6 +523,8 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
       <ScrollView
         style={styles.content}
         removeClippedSubviews={Platform.OS !== 'web'}
+        onScroll={handleScroll}
+        scrollEventThrottle={400}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}

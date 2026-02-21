@@ -114,6 +114,13 @@
       "datesRequired": "Bitte wählen Sie Reisedaten",
       "createFailed": "Reise konnte nicht erstellt werden",
       "startDateRequired": "Bitte wählen Sie ein Abreisedatum"
+    },
+    "aiConsent": {
+      "title": "KI-Reiseplanung",
+      "body": "Diese Funktion verwendet OpenAIs KI, um einen personalisierten Reiseplan zu erstellen.",
+      "dataList": "Ihr Reiseziel, Reisedaten, Anzahl der Reisenden und Präferenzen werden an die KI gesendet.",
+      "accept": "Zustimmen und fortfahren",
+      "cancel": "Abbrechen"
     }
   },
   "list": {

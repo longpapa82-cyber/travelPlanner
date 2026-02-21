@@ -114,6 +114,13 @@
       "datesRequired": "Please select travel dates",
       "createFailed": "Failed to create trip",
       "startDateRequired": "Please select a departure date"
+    },
+    "aiConsent": {
+      "title": "AI Travel Planning",
+      "body": "This feature uses OpenAI's AI to generate a personalized travel plan.",
+      "dataList": "Your destination, travel dates, number of travelers, and preferences will be sent to AI.",
+      "accept": "I Agree & Continue",
+      "cancel": "Cancel"
     }
   },
   "list": {

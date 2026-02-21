@@ -114,6 +114,13 @@
       "datesRequired": "Veuillez sélectionner les dates de voyage",
       "createFailed": "Échec de la création du voyage",
       "startDateRequired": "Veuillez sélectionner une date de départ"
+    },
+    "aiConsent": {
+      "title": "Planification IA",
+      "body": "Cette fonctionnalité utilise l'IA d'OpenAI pour générer un plan de voyage personnalisé.",
+      "dataList": "Votre destination, dates de voyage, nombre de voyageurs et préférences seront envoyés à l'IA.",
+      "accept": "J'accepte et continuer",
+      "cancel": "Annuler"
     }
   },
   "list": {

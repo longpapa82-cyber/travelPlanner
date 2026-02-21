@@ -114,6 +114,13 @@
       "datesRequired": "Vui lòng chọn ngày du lịch",
       "createFailed": "Tạo chuyến đi thất bại",
       "startDateRequired": "Vui lòng chọn ngày khởi hành"
+    },
+    "aiConsent": {
+      "title": "Lập kế hoạch du lịch AI",
+      "body": "Tính năng này sử dụng AI của OpenAI để tạo kế hoạch du lịch cá nhân hóa.",
+      "dataList": "Điểm đến, ngày du lịch, số lượng du khách và sở thích của bạn sẽ được gửi đến AI.",
+      "accept": "Đồng ý và tiếp tục",
+      "cancel": "Hủy"
     }
   },
   "list": {
