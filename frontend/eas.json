@@ -33,9 +33,7 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "a090723@naver.com",
-        "ascAppId": "",
-        "appleTeamId": ""
+        "appleId": "a090723@naver.com"
       },
       "android": {
         "track": "internal",
