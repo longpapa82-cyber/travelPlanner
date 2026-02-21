@@ -294,7 +294,8 @@
       "duplicating": "Duplicating...",
       "share": "Share",
       "exportIcal": "Export to calendar",
-      "addActivityToDay": "Add activity to Day {{day}}"
+      "addActivityToDay": "Add activity to Day {{day}}",
+      "moreOptions": "More options"
     },
     "alerts": {
       "deleteTitle": "Delete Activity",

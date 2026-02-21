@@ -22,6 +22,7 @@ import {
   ImageBackground,
   Platform,
   useWindowDimensions,
+  Share,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -191,6 +192,16 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       params: { destination: destination.name },
     });
   };
+
+  const handleShareDestination = useCallback(async (destination: typeof FEATURED_DESTINATIONS[0]) => {
+    try {
+      await Share.share({
+        message: `${destination.name}, ${destination.country}\n${destination.description}\n\nhttps://mytravelplanner.duckdns.org`,
+      });
+    } catch {
+      // User cancelled share
+    }
+  }, []);
 
   const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
@@ -390,10 +401,21 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
                   {/* Actions */}
                   <View style={styles.destinationActions}>
-                    <TouchableOpacity style={styles.iconButton} accessibilityLabel={t('common:like')}>
-                      <Icon name="heart-outline" size={20} color={colors.neutral[0]} />
+                    <TouchableOpacity
+                      style={styles.ctaButton}
+                      onPress={() => handleDestinationPress(destination)}
+                      accessibilityLabel={`${destination.name} - ${t('createTrip')}`}
+                      accessibilityRole="button"
+                    >
+                      <Icon name="plus-circle" size={18} color={colors.neutral[0]} />
+                      <Text style={styles.ctaButtonText}>{t('createTrip')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton} accessibilityLabel={t('common:share')}>
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={() => handleShareDestination(destination)}
+                      accessibilityLabel={`${t('common:share')} ${destination.name}`}
+                      accessibilityRole="button"
+                    >
                       <Icon name="share-variant" size={20} color={colors.neutral[0]} />
                     </TouchableOpacity>
                   </View>
@@ -630,6 +652,20 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     backgroundColor: getColorWithOpacity(colors.neutral[900], 0.6),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  ctaButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 14,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: getColorWithOpacity(colors.primary[500], 0.85),
+  },
+  ctaButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.neutral[0],
   },
 
   // Quick Actions

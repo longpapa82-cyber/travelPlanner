@@ -41,6 +41,14 @@
         "q": "Wie sehe ich Orte auf der Karte?",
         "a": "Wechseln Sie im Reisedetail-Bildschirm zum Karte-Tab, um alle geplanten Orte auf einen Blick zu sehen. Tippen Sie auf Markierungen für Aktivitätsdetails."
       },
+      "socialFeatures": {
+        "q": "Wie nutze ich die sozialen Funktionen?",
+        "a": "Durchstöbern Sie geteilte Reisepläne anderer Reisender im Entdecken-Tab. Folgen Sie Reisenden und vergeben Sie Likes. Um Ihre Reise zu teilen, tippen Sie auf den Teilen-Button im Reisedetail."
+      },
+      "collaborators": {
+        "q": "Wie plane ich eine Reise mit anderen?",
+        "a": "Im Reisedetail-Bildschirm können Sie im Abschnitt 'Mitreisende' andere per E-Mail einladen. Eingeladene können als 'Nur anzeigen' oder 'Bearbeiten' teilnehmen."
+      },
       "weather": {
         "q": "Wo sehe ich Wetter- und Zeitzonen-Infos?",
         "a": "Lokale Wetter- und Zeitzonen-Informationen erscheinen automatisch oben im Reisedetail-Bildschirm für jeden Tag. Wetterdaten werden in Echtzeit aktualisiert."
@@ -66,6 +74,10 @@
       "deleteAccount": {
         "q": "Wie lösche ich mein Konto?",
         "a": "Tippen Sie unten im Profil-Tab auf 'Konto löschen'. Alle Daten werden innerhalb von 30 Tagen dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden."
+      },
+      "gdprExport": {
+        "q": "Wie exportiere ich meine Daten?",
+        "a": "Gehen Sie zu Profil → Einstellungen und tippen Sie auf 'Daten exportieren', um alle persönlichen Daten (Kontoinformationen, Reisen, Ausgaben, Benachrichtigungen) im JSON-Format herunterzuladen."
       }
     },
     "offlineSync": {
@@ -94,6 +106,18 @@
       "affiliates": {
         "q": "Was sind Affiliate-Partner?",
         "a": "Wir bieten Buchungslinks für Flüge, Hotels und Aktivitäten im Reisedetail-Bildschirm. Wir arbeiten mit vertrauenswürdigen Services wie Booking.com, Agoda, Klook und GetYourGuide zusammen."
+      },
+      "premium": {
+        "q": "Was ist das Premium-Abonnement?",
+        "a": "Premium ($3,99/Monat oder $29,99/Jahr) bietet unbegrenzte KI-Reiseplanung, werbefreies Erlebnis und erweiterte Funktionen. Kostenlose Nutzer können bis zu 3 KI-Reisen pro Monat erstellen. Jederzeit kündbar."
+      },
+      "premiumCancel": {
+        "q": "Wie kündige ich Premium?",
+        "a": "Kündigen Sie direkt in der Abonnementverwaltung des App Store oder Google Play. Sie können Premium-Funktionen bis zum Ende des aktuellen Abrechnungszeitraums weiter nutzen."
+      },
+      "premiumRestore": {
+        "q": "Wie stelle ich mein Abonnement wieder her?",
+        "a": "Gehen Sie zu Profil → Abonnement und tippen Sie auf 'Käufe wiederherstellen'. Melden Sie sich mit derselben Apple-ID oder demselben Google-Konto an."
       }
     },
     "contact": {

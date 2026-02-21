@@ -294,7 +294,8 @@
       "duplicating": "複製中...",
       "share": "共有",
       "exportIcal": "カレンダーにエクスポート",
-      "addActivityToDay": "Day {{day}}にアクティビティを追加"
+      "addActivityToDay": "Day {{day}}にアクティビティを追加",
+      "moreOptions": "その他"
     },
     "alerts": {
       "deleteTitle": "アクティビティを削除",

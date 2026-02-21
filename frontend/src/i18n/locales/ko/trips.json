@@ -294,7 +294,8 @@
       "duplicating": "복제 중...",
       "share": "공유",
       "exportIcal": "캘린더로 내보내기",
-      "addActivityToDay": "Day {{day}}에 활동 추가"
+      "addActivityToDay": "Day {{day}}에 활동 추가",
+      "moreOptions": "더 보기"
     },
     "alerts": {
       "deleteTitle": "활동 삭제",

@@ -288,7 +288,8 @@
       "duplicating": "กำลังทำสำเนา...",
       "share": "แชร์",
       "exportIcal": "ส่งออกไปปฏิทิน",
-      "addActivityToDay": "เพิ่มกิจกรรมในวันที่ {{day}}"
+      "addActivityToDay": "เพิ่มกิจกรรมในวันที่ {{day}}",
+      "moreOptions": "ตัวเลือกเพิ่มเติม"
     },
     "alerts": {
       "deleteTitle": "ลบกิจกรรม",

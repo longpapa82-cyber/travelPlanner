@@ -2,7 +2,7 @@
  * TripHero - Hero section with destination image, trip info, and action buttons
  */
 
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
   ActivityIndicator,
   ImageBackground,
   Animated,
+  Modal,
+  Pressable,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
@@ -52,6 +54,7 @@ const TripHero: React.FC<TripHeroProps> = ({
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('trips');
   const styles = createStyles(theme, isDark);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   const progress = getTripProgress(trip.itineraries, trip.status);
 
@@ -103,43 +106,6 @@ const TripHero: React.FC<TripHeroProps> = ({
             )}
 
             <TouchableOpacity
-              onPress={onDuplicate}
-              disabled={isDuplicating}
-              style={{ opacity: isDuplicating ? 0.5 : 1 }}
-              accessibilityLabel={isDuplicating ? t('detail.accessibility.duplicating') : t('detail.accessibility.duplicate')}
-              accessibilityRole="button"
-            >
-              <View style={styles.iconButtonInner}>
-                {isDuplicating ? (
-                  <ActivityIndicator size={24} color={colors.neutral[0]} />
-                ) : (
-                  <Icon name="content-copy" size={24} color={colors.neutral[0]} />
-                )}
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={onExportIcal}
-              accessibilityLabel={t('detail.accessibility.exportIcal')}
-              accessibilityRole="button"
-            >
-              <View style={styles.iconButtonInner}>
-                <Icon name="calendar-export" size={24} color={colors.neutral[0]} />
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={onChangeCoverPhoto}
-              accessibilityLabel={trip.coverImage ? t('detail.photos.changeCover') : t('detail.photos.addCover')}
-              accessibilityRole="button"
-            >
-              <View style={styles.iconButtonInner}>
-                <Icon name="camera" size={24} color={colors.neutral[0]} />
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.shareButton}
               onPress={onShare}
               accessibilityLabel={t('detail.accessibility.share')}
               accessibilityRole="button"
@@ -148,7 +114,63 @@ const TripHero: React.FC<TripHeroProps> = ({
                 <Icon name="share-variant" size={24} color={colors.neutral[0]} />
               </View>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => setMenuVisible(true)}
+              accessibilityLabel={t('detail.moreOptions')}
+              accessibilityRole="button"
+            >
+              <View style={styles.iconButtonInner}>
+                <Icon name="dots-horizontal" size={24} color={colors.neutral[0]} />
+              </View>
+            </TouchableOpacity>
           </View>
+
+          {/* Overflow Menu */}
+          <Modal
+            visible={menuVisible}
+            transparent
+            animationType="fade"
+            onRequestClose={() => setMenuVisible(false)}
+          >
+            <Pressable style={styles.menuOverlay} onPress={() => setMenuVisible(false)}>
+              <View style={styles.menuContainer} onStartShouldSetResponder={() => true}>
+                <View style={styles.menuHandle} />
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => { setMenuVisible(false); onDuplicate(); }}
+                  disabled={isDuplicating}
+                >
+                  {isDuplicating ? (
+                    <ActivityIndicator size={20} color={theme.colors.text} />
+                  ) : (
+                    <Icon name="content-copy" size={20} color={theme.colors.text} />
+                  )}
+                  <Text style={styles.menuItemText}>
+                    {isDuplicating ? t('detail.accessibility.duplicating') : t('detail.accessibility.duplicate')}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => { setMenuVisible(false); onExportIcal(); }}
+                >
+                  <Icon name="calendar-export" size={20} color={theme.colors.text} />
+                  <Text style={styles.menuItemText}>{t('detail.accessibility.exportIcal')}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => { setMenuVisible(false); onChangeCoverPhoto(); }}
+                >
+                  <Icon name="camera" size={20} color={theme.colors.text} />
+                  <Text style={styles.menuItemText}>
+                    {trip.coverImage ? t('detail.photos.changeCover') : t('detail.photos.addCover')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Pressable>
+          </Modal>
         </View>
 
         <Animated.View
@@ -238,9 +260,6 @@ const createStyles = (theme: any, isDark: boolean) =>
     editButton: {
       alignSelf: 'flex-end',
     },
-    shareButton: {
-      alignSelf: 'flex-end',
-    },
     iconButtonInner: {
       width: 44,
       height: 44,
@@ -312,6 +331,38 @@ const createStyles = (theme: any, isDark: boolean) =>
       height: '100%',
       backgroundColor: colors.neutral[0],
       borderRadius: 2,
+    },
+    menuOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.4)',
+      justifyContent: 'flex-end',
+    },
+    menuContainer: {
+      backgroundColor: isDark ? colors.neutral[800] : colors.neutral[0],
+      borderTopLeftRadius: 16,
+      borderTopRightRadius: 16,
+      paddingTop: 8,
+      paddingBottom: 32,
+    },
+    menuHandle: {
+      width: 36,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: isDark ? colors.neutral[600] : colors.neutral[300],
+      alignSelf: 'center',
+      marginBottom: 8,
+    },
+    menuItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 16,
+      paddingHorizontal: 24,
+      gap: 16,
+    },
+    menuItemText: {
+      fontSize: 16,
+      color: isDark ? colors.neutral[100] : colors.neutral[800],
+      fontWeight: '500',
     },
   });
 

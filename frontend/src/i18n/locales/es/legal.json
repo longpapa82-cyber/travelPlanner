@@ -41,6 +41,14 @@
         "q": "¿Cómo veo lugares en el mapa?",
         "a": "En la pantalla de detalle del viaje, cambia a la pestaña de mapa para ver todas las ubicaciones planeadas de un vistazo. Toca los marcadores para ver detalles de la actividad."
       },
+      "socialFeatures": {
+        "q": "¿Cómo uso las funciones sociales?",
+        "a": "Explora los planes compartidos de otros viajeros en la pestaña Descubrir. Sigue a viajeros que te gusten y dale 'me gusta' a sus planes. Para compartir tu viaje, toca el botón de compartir en la pantalla de detalles."
+      },
+      "collaborators": {
+        "q": "¿Cómo planifico un viaje con otros?",
+        "a": "En la pantalla de detalles del viaje, ve a la sección 'Colaboradores' e invita a otros por correo electrónico. Los invitados pueden participar como 'Solo lectura' o 'Editor'."
+      },
       "weather": {
         "q": "¿Dónde puedo ver el clima y la zona horaria?",
         "a": "La información del clima local y zona horaria aparece automáticamente en la parte superior de la pantalla de detalle del viaje para cada día. Los datos meteorológicos provienen de servicios externos y se actualizan en tiempo real."
@@ -66,6 +74,10 @@
       "deleteAccount": {
         "q": "¿Cómo elimino mi cuenta?",
         "a": "Toca 'Eliminar cuenta' en la parte inferior de la pestaña Perfil. Todos los datos se eliminarán permanentemente dentro de 30 días. Esta acción no se puede deshacer."
+      },
+      "gdprExport": {
+        "q": "¿Cómo exporto mis datos?",
+        "a": "Ve a Perfil → Configuración y toca 'Exportar datos' para descargar todos tus datos personales (cuenta, viajes, gastos, notificaciones) en formato JSON."
       }
     },
     "offlineSync": {
@@ -94,6 +106,18 @@
       "affiliates": {
         "q": "¿Qué son los socios afiliados?",
         "a": "Proporcionamos enlaces de reserva para vuelos, hoteles y actividades en la pantalla de detalle del viaje. Nos asociamos con servicios confiables como Booking.com, Agoda, Klook y GetYourGuide."
+      },
+      "premium": {
+        "q": "¿Qué es la suscripción Premium?",
+        "a": "Premium ($3.99/mes o $29.99/año) ofrece generación ilimitada de viajes con IA, sin anuncios y funciones mejoradas. Los usuarios gratuitos pueden crear hasta 3 viajes con IA al mes. Puedes cancelar en cualquier momento."
+      },
+      "premiumCancel": {
+        "q": "¿Cómo cancelo Premium?",
+        "a": "Cancela directamente desde la gestión de suscripciones de App Store o Google Play. Seguirás disfrutando de las funciones Premium hasta el final del período de facturación actual."
+      },
+      "premiumRestore": {
+        "q": "¿Cómo restauro mi suscripción?",
+        "a": "Ve a Perfil → Suscripción y toca 'Restaurar compras'. Inicia sesión con el mismo Apple ID o cuenta de Google para restaurar."
       }
     },
     "contact": {

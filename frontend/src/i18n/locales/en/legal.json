@@ -41,6 +41,14 @@
         "q": "How do I view places on the map?",
         "a": "In the trip detail screen, switch to the map tab to see all planned locations at a glance. Tap markers for activity details."
       },
+      "socialFeatures": {
+        "q": "How do I use social features?",
+        "a": "Browse other travelers' shared plans in the Discover tab. Follow travelers you like and give likes to their trip plans. To share your own trip, tap the share button in the trip detail screen."
+      },
+      "collaborators": {
+        "q": "How do I plan a trip with others?",
+        "a": "In the trip detail screen, go to the 'Collaborators' section and invite others by email. Invitees can join as 'Viewer' or 'Editor'."
+      },
       "weather": {
         "q": "Where can I see weather and time zone info?",
         "a": "Local weather and time zone information appears automatically at the top of the trip detail screen for each day. Weather data comes from external services and updates in real-time."
@@ -66,6 +74,10 @@
       "deleteAccount": {
         "q": "How do I delete my account?",
         "a": "Tap 'Delete Account' at the bottom of the Profile tab. All data will be permanently deleted within 30 days of the request. This action cannot be undone."
+      },
+      "gdprExport": {
+        "q": "How do I export my data?",
+        "a": "Go to Profile → Settings and tap 'Export Data' to download all your personal data (account info, trips, expenses, notifications) in JSON format. This ensures your right to data portability under GDPR."
       }
     },
     "offlineSync": {
@@ -94,6 +106,18 @@
       "affiliates": {
         "q": "What are affiliate partners?",
         "a": "We provide booking links for flights, hotels, and activities in the trip detail screen. We partner with trusted services including Booking.com, Agoda, Klook, and GetYourGuide."
+      },
+      "premium": {
+        "q": "What is Premium subscription?",
+        "a": "Premium ($3.99/month or $29.99/year) gives you unlimited AI trip generation, ad-free experience, and enhanced features. Free users can create up to 3 AI trips per month. You can cancel anytime, and your plan will revert to free at the end of the billing period."
+      },
+      "premiumCancel": {
+        "q": "How do I cancel Premium?",
+        "a": "Cancel directly from your App Store or Google Play subscription management. You'll continue to enjoy Premium features until the end of your current billing period. Refund policies follow each app store's terms."
+      },
+      "premiumRestore": {
+        "q": "How do I restore my subscription?",
+        "a": "Go to Profile → Subscription and tap 'Restore Purchases'. Your previous subscription will be automatically restored. When switching devices, sign in with the same Apple ID or Google account."
       }
     },
     "contact": {

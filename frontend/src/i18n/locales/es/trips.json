@@ -288,7 +288,8 @@
       "duplicating": "Duplicando...",
       "share": "Compartir",
       "exportIcal": "Exportar al calendario",
-      "addActivityToDay": "Añadir actividad al Día {{day}}"
+      "addActivityToDay": "Añadir actividad al Día {{day}}",
+      "moreOptions": "Más opciones"
     },
     "alerts": {
       "deleteTitle": "Eliminar actividad",

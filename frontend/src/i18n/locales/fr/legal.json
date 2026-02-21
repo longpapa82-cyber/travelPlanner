@@ -41,6 +41,14 @@
         "q": "Comment voir les lieux sur la carte ?",
         "a": "Dans l'écran de détail du voyage, passez à l'onglet carte pour voir tous les lieux prévus en un coup d'œil. Appuyez sur les marqueurs pour les détails de l'activité."
       },
+      "socialFeatures": {
+        "q": "Comment utiliser les fonctions sociales ?",
+        "a": "Parcourez les plans partagés d'autres voyageurs dans l'onglet Découvrir. Suivez les voyageurs et aimez leurs plans. Pour partager votre voyage, appuyez sur le bouton de partage dans les détails du voyage."
+      },
+      "collaborators": {
+        "q": "Comment planifier un voyage avec d'autres ?",
+        "a": "Dans l'écran de détails du voyage, allez dans la section 'Collaborateurs' et invitez d'autres personnes par e-mail. Les invités participent en tant que 'Lecteur' ou 'Éditeur'."
+      },
       "weather": {
         "q": "Où puis-je voir la météo et le fuseau horaire ?",
         "a": "Les informations de météo locale et de fuseau horaire apparaissent automatiquement en haut de l'écran de détail du voyage pour chaque jour. Les données météo proviennent de services externes et sont mises à jour en temps réel."
@@ -66,6 +74,10 @@
       "deleteAccount": {
         "q": "Comment supprimer mon compte ?",
         "a": "Appuyez sur « Supprimer le compte » en bas de l'onglet Profil. Toutes les données seront définitivement supprimées dans les 30 jours suivant la demande. Cette action est irréversible."
+      },
+      "gdprExport": {
+        "q": "Comment exporter mes données ?",
+        "a": "Allez dans Profil → Paramètres et appuyez sur 'Exporter les données' pour télécharger toutes vos données personnelles (compte, voyages, dépenses, notifications) au format JSON."
       }
     },
     "offlineSync": {
@@ -94,6 +106,18 @@
       "affiliates": {
         "q": "Que sont les partenaires affiliés ?",
         "a": "Nous proposons des liens de réservation pour les vols, les hôtels et les activités dans l'écran de détail du voyage. Nous collaborons avec des services de confiance tels que Booking.com, Agoda, Klook et GetYourGuide."
+      },
+      "premium": {
+        "q": "Qu'est-ce que l'abonnement Premium ?",
+        "a": "Premium (3,99 $/mois ou 29,99 $/an) offre la génération illimitée de voyages IA, une expérience sans publicité et des fonctionnalités améliorées. Les utilisateurs gratuits peuvent créer jusqu'à 3 voyages IA par mois. Annulable à tout moment."
+      },
+      "premiumCancel": {
+        "q": "Comment annuler Premium ?",
+        "a": "Annulez directement depuis la gestion des abonnements de l'App Store ou Google Play. Vous continuerez à profiter des fonctionnalités Premium jusqu'à la fin de votre période de facturation."
+      },
+      "premiumRestore": {
+        "q": "Comment restaurer mon abonnement ?",
+        "a": "Allez dans Profil → Abonnement et appuyez sur 'Restaurer les achats'. Connectez-vous avec le même identifiant Apple ou compte Google."
       }
     },
     "contact": {

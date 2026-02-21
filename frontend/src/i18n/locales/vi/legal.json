@@ -1,225 +1,249 @@
 {
   "help": {
-    "title": "Tr\u1ee3 gi\u00fap",
-    "searchPlaceholder": "T\u00ecm ki\u1ebfm tr\u1ee3 gi\u00fap...",
+    "title": "Trợ giúp",
+    "searchPlaceholder": "Tìm kiếm trợ giúp...",
     "categories": {
-      "gettingStarted": "B\u1eaft \u0111\u1ea7u",
-      "tripManagement": "Qu\u1ea3n l\u00fd chuy\u1ebfn \u0111i",
-      "accountSettings": "T\u00e0i kho\u1ea3n & C\u00e0i \u0111\u1eb7t",
-      "offlineSync": "Ngo\u1ea1i tuy\u1ebfn & \u0110\u1ed3ng b\u1ed9",
-      "adsPartners": "Gi\u00e1 c\u1ea3 & Qu\u1ea3ng c\u00e1o",
-      "contact": "Li\u00ean h\u1ec7"
+      "gettingStarted": "Bắt đầu",
+      "tripManagement": "Quản lý chuyến đi",
+      "accountSettings": "Tài khoản & Cài đặt",
+      "offlineSync": "Ngoại tuyến & Đồng bộ",
+      "adsPartners": "Giá cả & Quảng cáo",
+      "contact": "Liên hệ"
     },
     "gettingStarted": {
       "signup": {
-        "q": "L\u00e0m sao \u0111\u1ec3 \u0111\u0103ng k\u00fd?",
-        "a": "B\u1ea1n c\u00f3 th\u1ec3 \u0111\u0103ng k\u00fd b\u1eb1ng email ho\u1eb7c nhanh ch\u00f3ng \u0111\u0103ng k\u00fd qua t\u00e0i kho\u1ea3n Google, Apple ho\u1eb7c Kakao. \u0110\u0103ng nh\u1eadp qua m\u1ea1ng x\u00e3 h\u1ed9i kh\u00f4ng c\u1ea7n m\u1eadt kh\u1ea9u ri\u00eang."
+        "q": "Làm sao để đăng ký?",
+        "a": "Bạn có thể đăng ký bằng email hoặc nhanh chóng đăng ký qua tài khoản Google, Apple hoặc Kakao. Đăng nhập qua mạng xã hội không cần mật khẩu riêng."
       },
       "createTrip": {
-        "q": "L\u00e0m sao \u0111\u1ec3 t\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch?",
-        "a": "Nh\u1ea5n 'T\u1ea1o chuy\u1ebfn \u0111i m\u1edbi' tr\u00ean trang ch\u1ee7, nh\u1eadp \u0111i\u1ec3m \u0111\u1ebfn v\u00e0 ng\u00e0y du l\u1ecbch, AI s\u1ebd t\u1ef1 \u0111\u1ed9ng t\u1ea1o l\u1ecbch tr\u00ecnh c\u00e1 nh\u00e2n h\u00f3a. Ch\u1ecdn m\u1ee9c ng\u00e2n s\u00e1ch, phong c\u00e1ch du l\u1ecbch v\u00e0 s\u1edf th\u00edch \u0111\u1ec3 \u0111\u01b0\u1ee3c g\u1ee3i \u00fd ch\u00ednh x\u00e1c h\u01a1n."
+        "q": "Làm sao để tạo kế hoạch du lịch?",
+        "a": "Nhấn 'Tạo chuyến đi mới' trên trang chủ, nhập điểm đến và ngày du lịch, AI sẽ tự động tạo lịch trình cá nhân hóa. Chọn mức ngân sách, phong cách du lịch và sở thích để được gợi ý chính xác hơn."
       },
       "aiPlan": {
-        "q": "L\u1ecbch tr\u00ecnh AI ho\u1ea1t \u0111\u1ed9ng nh\u01b0 th\u1ebf n\u00e0o?",
-        "a": "Ch\u00fang t\u00f4i s\u1eed d\u1ee5ng c\u00f4ng ngh\u1ec7 AI ti\u00ean ti\u1ebfn \u0111\u1ec3 ph\u00e2n t\u00edch c\u00e1c \u0111\u1ecba \u0111i\u1ec3m du l\u1ecbch, nh\u00e0 h\u00e0ng v\u00e0 tr\u1ea3i nghi\u1ec7m v\u0103n h\u00f3a ph\u1ed5 bi\u1ebfn t\u1ea1i \u0111i\u1ec3m \u0111\u1ebfn, sau \u0111\u00f3 t\u1ea1o l\u1ecbch tr\u00ecnh t\u1ed1i \u01b0u c\u00f3 t\u00ednh \u0111\u1ebfn tuy\u1ebfn \u0111\u01b0\u1eddng v\u00e0 th\u1eddi gian di chuy\u1ec3n. L\u1ecbch tr\u00ecnh \u0111\u01b0\u1ee3c t\u1ea1o c\u00f3 th\u1ec3 t\u1ef1 do ch\u1ec9nh s\u1eeda."
+        "q": "Lịch trình AI hoạt động như thế nào?",
+        "a": "Chúng tôi sử dụng công nghệ AI tiên tiến để phân tích các địa điểm du lịch, nhà hàng và trải nghiệm văn hóa phổ biến tại điểm đến, sau đó tạo lịch trình tối ưu có tính đến tuyến đường và thời gian di chuyển. Lịch trình được tạo có thể tự do chỉnh sửa."
       },
       "appTour": {
-        "q": "\u1ee8ng d\u1ee5ng \u0111\u01b0\u1ee3c t\u1ed5 ch\u1ee9c nh\u01b0 th\u1ebf n\u00e0o?",
-        "a": "\u1ee8ng d\u1ee5ng c\u00f3 b\u1ed1n tab ch\u00ednh: Trang ch\u1ee7 (danh s\u00e1ch chuy\u1ebfn \u0111i), Chi ti\u1ebft chuy\u1ebfn \u0111i (l\u1ecbch tr\u00ecnh, b\u1ea3n \u0111\u1ed3, th\u1eddi ti\u1ebft), Th\u00f4ng b\u00e1o v\u00e0 C\u00e1 nh\u00e2n. D\u1ec5 d\u00e0ng \u0111i\u1ec1u h\u01b0\u1edbng b\u1eb1ng thanh tab ph\u00eda d\u01b0\u1edbi."
+        "q": "Ứng dụng được tổ chức như thế nào?",
+        "a": "Ứng dụng có bốn tab chính: Trang chủ (danh sách chuyến đi), Chi tiết chuyến đi (lịch trình, bản đồ, thời tiết), Thông báo và Cá nhân. Dễ dàng điều hướng bằng thanh tab phía dưới."
       }
     },
     "tripManagement": {
       "editPlan": {
-        "q": "L\u00e0m sao \u0111\u1ec3 ch\u1ec9nh s\u1eeda l\u1ecbch tr\u00ecnh?",
-        "a": "Nh\u1ea5n v\u00e0o b\u1ea5t k\u1ef3 ho\u1ea1t \u0111\u1ed9ng n\u00e0o trong m\u00e0n h\u00ecnh chi ti\u1ebft chuy\u1ebfn \u0111i \u0111\u1ec3 ch\u1ec9nh s\u1eeda th\u1eddi gian, \u0111\u1ecba \u0111i\u1ec3m v\u00e0 ghi ch\u00fa. K\u00e9o th\u1ea3 \u0111\u1ec3 s\u1eafp x\u1ebfp l\u1ea1i, ho\u1eb7c d\u00f9ng n\u00fat + \u0111\u1ec3 th\u00eam ho\u1ea1t \u0111\u1ed9ng m\u1edbi."
+        "q": "Làm sao để chỉnh sửa lịch trình?",
+        "a": "Nhấn vào bất kỳ hoạt động nào trong màn hình chi tiết chuyến đi để chỉnh sửa thời gian, địa điểm và ghi chú. Kéo thả để sắp xếp lại, hoặc dùng nút + để thêm hoạt động mới."
       },
       "tripStatus": {
-        "q": "Quy t\u1eafc ch\u1ec9nh s\u1eeda c\u00f3 kh\u00e1c nhau theo tr\u1ea1ng th\u00e1i chuy\u1ebfn \u0111i kh\u00f4ng?",
-        "a": "\u2022 Tr\u01b0\u1edbc chuy\u1ebfn \u0111i: T\u1ef1 do ch\u1ec9nh s\u1eeda v\u00e0 th\u00eam v\u00e0o t\u1ea5t c\u1ea3 k\u1ebf ho\u1ea1ch.\n\u2022 Trong chuy\u1ebfn \u0111i: Kh\u00f4ng th\u1ec3 thay \u0111\u1ed5i ho\u1ea1t \u0111\u1ed9ng \u0111\u00e3 qua; ch\u1ec9 c\u00f3 th\u1ec3 ch\u1ec9nh s\u1eeda ho\u1ea1t \u0111\u1ed9ng s\u1eafp t\u1edbi.\n\u2022 Sau chuy\u1ebfn \u0111i: Ch\u1ec9 xem v\u00e0 x\u00f3a; kh\u00f4ng th\u1ec3 ch\u1ec9nh s\u1eeda."
+        "q": "Quy tắc chỉnh sửa có khác nhau theo trạng thái chuyến đi không?",
+        "a": "• Trước chuyến đi: Tự do chỉnh sửa và thêm vào tất cả kế hoạch.\n• Trong chuyến đi: Không thể thay đổi hoạt động đã qua; chỉ có thể chỉnh sửa hoạt động sắp tới.\n• Sau chuyến đi: Chỉ xem và xóa; không thể chỉnh sửa."
       },
       "mapView": {
-        "q": "L\u00e0m sao \u0111\u1ec3 xem c\u00e1c \u0111\u1ecba \u0111i\u1ec3m tr\u00ean b\u1ea3n \u0111\u1ed3?",
-        "a": "Trong m\u00e0n h\u00ecnh chi ti\u1ebft chuy\u1ebfn \u0111i, chuy\u1ec3n sang tab b\u1ea3n \u0111\u1ed3 \u0111\u1ec3 xem t\u1ea5t c\u1ea3 \u0111\u1ecba \u0111i\u1ec3m \u0111\u00e3 l\u00ean k\u1ebf ho\u1ea1ch. Nh\u1ea5n v\u00e0o \u0111\u00e1nh d\u1ea5u \u0111\u1ec3 xem chi ti\u1ebft ho\u1ea1t \u0111\u1ed9ng."
+        "q": "Làm sao để xem các địa điểm trên bản đồ?",
+        "a": "Trong màn hình chi tiết chuyến đi, chuyển sang tab bản đồ để xem tất cả địa điểm đã lên kế hoạch. Nhấn vào đánh dấu để xem chi tiết hoạt động."
+      },
+      "socialFeatures": {
+        "q": "Sử dụng tính năng xã hội như thế nào?",
+        "a": "Duyệt kế hoạch chia sẻ của du khách khác trong tab Khám phá. Theo dõi du khách bạn thích và thích kế hoạch chuyến đi. Để chia sẻ chuyến đi của bạn, nhấn nút chia sẻ trong chi tiết chuyến đi."
+      },
+      "collaborators": {
+        "q": "Lập kế hoạch du lịch với người khác như thế nào?",
+        "a": "Trong màn hình chi tiết chuyến đi, vào phần 'Cộng tác viên' và mời người khác qua email. Người được mời có thể tham gia với vai trò 'Chỉ xem' hoặc 'Chỉnh sửa'."
       },
       "weather": {
-        "q": "Xem th\u00f4ng tin th\u1eddi ti\u1ebft v\u00e0 m\u00fai gi\u1edd \u1edf \u0111\u00e2u?",
-        "a": "Th\u00f4ng tin th\u1eddi ti\u1ebft v\u00e0 m\u00fai gi\u1edd \u0111\u1ecba ph\u01b0\u01a1ng t\u1ef1 \u0111\u1ed9ng hi\u1ec3n th\u1ecb ph\u00eda tr\u00ean m\u00e0n h\u00ecnh chi ti\u1ebft chuy\u1ebfn \u0111i cho m\u1ed7i ng\u00e0y. D\u1eef li\u1ec7u th\u1eddi ti\u1ebft \u0111\u01b0\u1ee3c cung c\u1ea5p b\u1edfi d\u1ecbch v\u1ee5 b\u00ean ngo\u00e0i v\u00e0 c\u1eadp nh\u1eadt theo th\u1eddi gian th\u1ef1c."
+        "q": "Xem thông tin thời tiết và múi giờ ở đâu?",
+        "a": "Thông tin thời tiết và múi giờ địa phương tự động hiển thị phía trên màn hình chi tiết chuyến đi cho mỗi ngày. Dữ liệu thời tiết được cung cấp bởi dịch vụ bên ngoài và cập nhật theo thời gian thực."
       }
     },
     "accountSettings": {
       "editProfile": {
-        "q": "L\u00e0m sao \u0111\u1ec3 ch\u1ec9nh s\u1eeda h\u1ed3 s\u01a1?",
-        "a": "V\u00e0o tab C\u00e1 nh\u00e2n \u2192 'Ch\u1ec9nh s\u1eeda h\u1ed3 s\u01a1' \u0111\u1ec3 thay \u0111\u1ed5i t\u00ean v\u00e0 \u1ea3nh \u0111\u1ea1i di\u1ec7n."
+        "q": "Làm sao để chỉnh sửa hồ sơ?",
+        "a": "Vào tab Cá nhân → 'Chỉnh sửa hồ sơ' để thay đổi tên và ảnh đại diện."
       },
       "changePassword": {
-        "q": "L\u00e0m sao \u0111\u1ec3 \u0111\u1ed5i m\u1eadt kh\u1ea9u?",
-        "a": "V\u00e0o tab C\u00e1 nh\u00e2n \u2192 '\u0110\u1ed5i m\u1eadt kh\u1ea9u', nh\u1eadp m\u1eadt kh\u1ea9u hi\u1ec7n t\u1ea1i v\u00e0 \u0111\u1eb7t m\u1eadt kh\u1ea9u m\u1edbi. Ng\u01b0\u1eddi d\u00f9ng \u0111\u0103ng nh\u1eadp qua m\u1ea1ng x\u00e3 h\u1ed9i kh\u00f4ng c\u1ea7n \u0111\u1ed5i m\u1eadt kh\u1ea9u."
+        "q": "Làm sao để đổi mật khẩu?",
+        "a": "Vào tab Cá nhân → 'Đổi mật khẩu', nhập mật khẩu hiện tại và đặt mật khẩu mới. Người dùng đăng nhập qua mạng xã hội không cần đổi mật khẩu."
       },
       "twoFactor": {
-        "q": "L\u00e0m sao \u0111\u1ec3 thi\u1ebft l\u1eadp x\u00e1c th\u1ef1c hai y\u1ebfu t\u1ed1?",
-        "a": "V\u00e0o tab C\u00e1 nh\u00e2n \u2192 'X\u00e1c th\u1ef1c hai y\u1ebfu t\u1ed1' \u0111\u1ec3 b\u1eadt. Qu\u00e9t m\u00e3 QR b\u1eb1ng \u1ee9ng d\u1ee5ng TOTP nh\u01b0 Google Authenticator v\u00e0 nh\u1eadp m\u00e3 x\u00e1c minh. M\u00e3 d\u1ef1 ph\u00f2ng c\u0169ng s\u1ebd \u0111\u01b0\u1ee3c cung c\u1ea5p."
+        "q": "Làm sao để thiết lập xác thực hai yếu tố?",
+        "a": "Vào tab Cá nhân → 'Xác thực hai yếu tố' để bật. Quét mã QR bằng ứng dụng TOTP như Google Authenticator và nhập mã xác minh. Mã dự phòng cũng sẽ được cung cấp."
       },
       "notifications": {
-        "q": "L\u00e0m sao \u0111\u1ec3 qu\u1ea3n l\u00fd th\u00f4ng b\u00e1o?",
-        "a": "V\u00e0o tab C\u00e1 nh\u00e2n \u2192 'C\u00e0i \u0111\u1eb7t th\u00f4ng b\u00e1o' \u0111\u1ec3 c\u1ea5u h\u00ecnh th\u00f4ng b\u00e1o \u0111\u1ea9y. B\u1ea1n c\u00f3 th\u1ec3 nh\u1eadn nh\u1eafc nh\u1edf kh\u1edfi h\u00e0nh, th\u00f4ng b\u00e1o b\u1eaft \u0111\u1ea7u/ho\u00e0n th\u00e0nh chuy\u1ebfn \u0111i."
+        "q": "Làm sao để quản lý thông báo?",
+        "a": "Vào tab Cá nhân → 'Cài đặt thông báo' để cấu hình thông báo đẩy. Bạn có thể nhận nhắc nhở khởi hành, thông báo bắt đầu/hoàn thành chuyến đi."
       },
       "deleteAccount": {
-        "q": "L\u00e0m sao \u0111\u1ec3 x\u00f3a t\u00e0i kho\u1ea3n?",
-        "a": "Nh\u1ea5n 'X\u00f3a t\u00e0i kho\u1ea3n' ph\u00eda d\u01b0\u1edbi tab C\u00e1 nh\u00e2n. To\u00e0n b\u1ed9 d\u1eef li\u1ec7u s\u1ebd b\u1ecb x\u00f3a v\u0129nh vi\u1ec5n trong v\u00f2ng 30 ng\u00e0y k\u1ec3 t\u1eeb y\u00eau c\u1ea7u. Thao t\u00e1c n\u00e0y kh\u00f4ng th\u1ec3 ho\u00e0n t\u00e1c."
+        "q": "Làm sao để xóa tài khoản?",
+        "a": "Nhấn 'Xóa tài khoản' phía dưới tab Cá nhân. Toàn bộ dữ liệu sẽ bị xóa vĩnh viễn trong vòng 30 ngày kể từ yêu cầu. Thao tác này không thể hoàn tác."
+      },
+      "gdprExport": {
+        "q": "Xuất dữ liệu của tôi như thế nào?",
+        "a": "Vào Hồ sơ → Cài đặt và nhấn 'Xuất dữ liệu' để tải xuống tất cả dữ liệu cá nhân (tài khoản, chuyến đi, chi phí, thông báo) dưới dạng JSON."
       }
     },
     "offlineSync": {
       "offlineUse": {
-        "q": "T\u00f4i c\u00f3 th\u1ec3 d\u00f9ng \u1ee9ng d\u1ee5ng khi ngo\u1ea1i tuy\u1ebfn kh\u00f4ng?",
-        "a": "C\u00f3, c\u00e1c k\u1ebf ho\u1ea1ch du l\u1ecbch \u0111\u00e3 t\u1ea3i tr\u01b0\u1edbc \u0111\u00f3 c\u00f3 th\u1ec3 xem m\u00e0 kh\u00f4ng c\u1ea7n internet. C\u00e1c thay \u0111\u1ed5i khi ngo\u1ea1i tuy\u1ebfn s\u1ebd t\u1ef1 \u0111\u1ed9ng \u0111\u1ed3ng b\u1ed9 khi b\u1ea1n k\u1ebft n\u1ed1i l\u1ea1i."
+        "q": "Tôi có thể dùng ứng dụng khi ngoại tuyến không?",
+        "a": "Có, các kế hoạch du lịch đã tải trước đó có thể xem mà không cần internet. Các thay đổi khi ngoại tuyến sẽ tự động đồng bộ khi bạn kết nối lại."
       },
       "syncStatus": {
-        "q": "L\u00e0m sao \u0111\u1ec3 ki\u1ec3m tra tr\u1ea1ng th\u00e1i \u0111\u1ed3ng b\u1ed9?",
-        "a": "Banner \u0111\u1ed3ng b\u1ed9 xu\u1ea5t hi\u1ec7n ph\u00eda tr\u00ean m\u00e0n h\u00ecnh: '\u0110ang ch\u1edd (N m\u1ee5c)' \u2192 '\u0110ang \u0111\u1ed3ng b\u1ed9...' \u2192 '\u0110\u00e3 \u0111\u1ed3ng b\u1ed9'. T\u1ef1 \u0111\u1ed9ng th\u1eed l\u1ea1i khi k\u1ebft n\u1ed1i kh\u00f4ng \u1ed5n \u0111\u1ecbnh."
+        "q": "Làm sao để kiểm tra trạng thái đồng bộ?",
+        "a": "Banner đồng bộ xuất hiện phía trên màn hình: 'Đang chờ (N mục)' → 'Đang đồng bộ...' → 'Đã đồng bộ'. Tự động thử lại khi kết nối không ổn định."
       },
       "syncError": {
-        "q": "N\u1ebfu \u0111\u1ed3ng b\u1ed9 th\u1ea5t b\u1ea1i th\u00ec sao?",
-        "a": "Ki\u1ec3m tra k\u1ebft n\u1ed1i m\u1ea1ng v\u00e0 kh\u1edfi \u0111\u1ed9ng l\u1ea1i \u1ee9ng d\u1ee5ng. N\u1ebfu v\u1ea5n \u0111\u1ec1 v\u1eabn ti\u1ebfp t\u1ee5c, li\u00ean h\u1ec7 ch\u00fang t\u00f4i qua ph\u1ea7n 'Li\u00ean h\u1ec7'."
+        "q": "Nếu đồng bộ thất bại thì sao?",
+        "a": "Kiểm tra kết nối mạng và khởi động lại ứng dụng. Nếu vấn đề vẫn tiếp tục, liên hệ chúng tôi qua phần 'Liên hệ'."
       }
     },
     "adsPartners": {
       "freeService": {
-        "q": "S\u1eed d\u1ee5ng d\u1ecbch v\u1ee5 c\u00f3 m\u1ea5t ph\u00ed kh\u00f4ng?",
-        "a": "T\u1ea5t c\u1ea3 t\u00ednh n\u0103ng c\u1ee7a TravelPlanner \u0111\u1ec1u mi\u1ec5n ph\u00ed. Qu\u1ea3ng c\u00e1o c\u00f3 th\u1ec3 \u0111\u01b0\u1ee3c hi\u1ec3n th\u1ecb trong \u1ee9ng d\u1ee5ng \u0111\u1ec3 h\u1ed7 tr\u1ee3 v\u1eadn h\u00e0nh d\u1ecbch v\u1ee5."
+        "q": "Sử dụng dịch vụ có mất phí không?",
+        "a": "Tất cả tính năng của TravelPlanner đều miễn phí. Quảng cáo có thể được hiển thị trong ứng dụng để hỗ trợ vận hành dịch vụ."
       },
       "adInfo": {
-        "q": "Qu\u1ea3ng c\u00e1o \u0111\u01b0\u1ee3c hi\u1ec3n th\u1ecb nh\u01b0 th\u1ebf n\u00e0o?",
-        "a": "Qu\u1ea3ng c\u00e1o xen k\u1ebd c\u00f3 th\u1ec3 xu\u1ea5t hi\u1ec7n sau khi t\u1ea1o chuy\u1ebfn \u0111i, v\u00e0 banner qu\u1ea3ng c\u00e1o c\u00f3 th\u1ec3 hi\u1ec3n th\u1ecb tr\u00ean m\u1ed9t s\u1ed1 m\u00e0n h\u00ecnh. Qu\u1ea3ng c\u00e1o c\u00e1 nh\u00e2n h\u00f3a \u0111\u01b0\u1ee3c ki\u1ec3m so\u00e1t qua iOS App Tracking Transparency (ATT)."
+        "q": "Quảng cáo được hiển thị như thế nào?",
+        "a": "Quảng cáo xen kẽ có thể xuất hiện sau khi tạo chuyến đi, và banner quảng cáo có thể hiển thị trên một số màn hình. Quảng cáo cá nhân hóa được kiểm soát qua iOS App Tracking Transparency (ATT)."
       },
       "affiliates": {
-        "q": "\u0110\u1ed1i t\u00e1c li\u00ean k\u1ebft l\u00e0 g\u00ec?",
-        "a": "Ch\u00fang t\u00f4i cung c\u1ea5p li\u00ean k\u1ebft \u0111\u1eb7t v\u00e9 m\u00e1y bay, kh\u00e1ch s\u1ea1n v\u00e0 ho\u1ea1t \u0111\u1ed9ng trong m\u00e0n h\u00ecnh chi ti\u1ebft chuy\u1ebfn \u0111i. Ch\u00fang t\u00f4i h\u1ee3p t\u00e1c v\u1edbi c\u00e1c d\u1ecbch v\u1ee5 uy t\u00edn bao g\u1ed3m Booking.com, Agoda, Klook v\u00e0 GetYourGuide."
+        "q": "Đối tác liên kết là gì?",
+        "a": "Chúng tôi cung cấp liên kết đặt vé máy bay, khách sạn và hoạt động trong màn hình chi tiết chuyến đi. Chúng tôi hợp tác với các dịch vụ uy tín bao gồm Booking.com, Agoda, Klook và GetYourGuide."
+      },
+      "premium": {
+        "q": "Đăng ký Premium là gì?",
+        "a": "Premium ($3,99/tháng hoặc $29,99/năm) cung cấp tạo chuyến đi AI không giới hạn, không quảng cáo và các tính năng nâng cao. Người dùng miễn phí có thể tạo tối đa 3 chuyến đi AI mỗi tháng. Có thể hủy bất cứ lúc nào."
+      },
+      "premiumCancel": {
+        "q": "Làm sao để hủy Premium?",
+        "a": "Hủy trực tiếp từ quản lý đăng ký của App Store hoặc Google Play. Bạn vẫn sử dụng được tính năng Premium cho đến hết chu kỳ thanh toán hiện tại."
+      },
+      "premiumRestore": {
+        "q": "Làm sao để khôi phục đăng ký?",
+        "a": "Vào Hồ sơ → Đăng ký và nhấn 'Khôi phục giao dịch'. Đăng nhập bằng cùng Apple ID hoặc tài khoản Google để khôi phục."
       }
     },
     "contact": {
-      "email": "H\u1ed7 tr\u1ee3 qua Email",
+      "email": "Hỗ trợ qua Email",
       "emailAddress": "longpapa82@gmail.com",
-      "emailDescription": "N\u1ebfu c\u00e2u h\u1ecfi th\u01b0\u1eddng g\u1eb7p ph\u00eda tr\u00ean kh\u00f4ng gi\u1ea3i quy\u1ebft \u0111\u01b0\u1ee3c v\u1ea5n \u0111\u1ec1, vui l\u00f2ng li\u00ean h\u1ec7 qua email. Th\u00f4ng tin thi\u1ebft b\u1ecb v\u00e0 phi\u00ean b\u1ea3n \u1ee9ng d\u1ee5ng s\u1ebd \u0111\u01b0\u1ee3c \u0111\u00ednh k\u00e8m t\u1ef1 \u0111\u1ed9ng.",
-      "sendEmail": "G\u1eedi Email"
+      "emailDescription": "Nếu câu hỏi thường gặp phía trên không giải quyết được vấn đề, vui lòng liên hệ qua email. Thông tin thiết bị và phiên bản ứng dụng sẽ được đính kèm tự động.",
+      "sendEmail": "Gửi Email"
     }
   },
   "terms": {
-    "title": "\u0110i\u1ec1u kho\u1ea3n d\u1ecbch v\u1ee5",
-    "effectiveDate": "C\u00f3 hi\u1ec7u l\u1ef1c: 01 th\u00e1ng 3, 2025",
+    "title": "Điều khoản dịch vụ",
+    "effectiveDate": "Có hiệu lực: 01 tháng 3, 2025",
     "articles": {
       "art1": {
-        "title": "\u0110i\u1ec1u 1 (M\u1ee5c \u0111\u00edch)",
-        "content": "\u0110i\u1ec1u kho\u1ea3n d\u1ecbch v\u1ee5 n\u00e0y quy \u0111\u1ecbnh vi\u1ec7c s\u1eed d\u1ee5ng TravelPlanner (\"D\u1ecbch v\u1ee5\"), bao g\u1ed3m quy\u1ec1n, ngh\u0129a v\u1ee5 v\u00e0 tr\u00e1ch nhi\u1ec7m c\u1ee7a c\u00f4ng ty v\u00e0 ng\u01b0\u1eddi d\u00f9ng."
+        "title": "Điều 1 (Mục đích)",
+        "content": "Điều khoản dịch vụ này quy định việc sử dụng TravelPlanner (\"Dịch vụ\"), bao gồm quyền, nghĩa vụ và trách nhiệm của công ty và người dùng."
       },
       "art2": {
-        "title": "\u0110i\u1ec1u 2 (\u0110\u1ecbnh ngh\u0129a)",
-        "content": "\u2460 \"D\u1ecbch v\u1ee5\" l\u00e0 d\u1ecbch v\u1ee5 l\u1eadp k\u1ebf ho\u1ea1ch v\u00e0 qu\u1ea3n l\u00fd du l\u1ecbch t\u1ef1 \u0111\u1ed9ng do TravelPlanner cung c\u1ea5p.\n\u2461 \"Th\u00e0nh vi\u00ean\" l\u00e0 ng\u01b0\u1eddi \u0111\u00e3 \u0111\u1ed3ng \u00fd v\u1edbi \u0110i\u1ec1u kho\u1ea3n n\u00e0y v\u00e0 \u0111\u0103ng k\u00fd s\u1eed d\u1ee5ng D\u1ecbch v\u1ee5.\n\u2462 \"N\u1ed9i dung do AI t\u1ea1o\" l\u00e0 l\u1ecbch tr\u00ecnh v\u00e0 g\u1ee3i \u00fd du l\u1ecbch \u0111\u01b0\u1ee3c t\u1ea1o t\u1ef1 \u0111\u1ed9ng b\u1eb1ng tr\u00ed tu\u1ec7 nh\u00e2n t\u1ea1o.\n\u2463 \"D\u1eef li\u1ec7u du l\u1ecbch\" l\u00e0 \u0111i\u1ec3m \u0111\u1ebfn, l\u1ecbch tr\u00ecnh v\u00e0 k\u1ebf ho\u1ea1ch ho\u1ea1t \u0111\u1ed9ng do th\u00e0nh vi\u00ean nh\u1eadp."
+        "title": "Điều 2 (Định nghĩa)",
+        "content": "① \"Dịch vụ\" là dịch vụ lập kế hoạch và quản lý du lịch tự động do TravelPlanner cung cấp.\n② \"Thành viên\" là người đã đồng ý với Điều khoản này và đăng ký sử dụng Dịch vụ.\n③ \"Nội dung do AI tạo\" là lịch trình và gợi ý du lịch được tạo tự động bằng trí tuệ nhân tạo.\n④ \"Dữ liệu du lịch\" là điểm đến, lịch trình và kế hoạch hoạt động do thành viên nhập."
       },
       "art3": {
-        "title": "\u0110i\u1ec1u 3 (M\u00f4 t\u1ea3 d\u1ecbch v\u1ee5)",
-        "content": "D\u1ecbch v\u1ee5 cung c\u1ea5p:\n\u2022 T\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch t\u1ef1 \u0111\u1ed9ng b\u1eb1ng AI\n\u2022 Qu\u1ea3n l\u00fd ch\u1ec9nh s\u1eeda, th\u00eam v\u00e0 x\u00f3a k\u1ebf ho\u1ea1ch du l\u1ecbch\n\u2022 Th\u00f4ng tin th\u1eddi ti\u1ebft v\u00e0 m\u00fai gi\u1edd \u0111\u1ecba ph\u01b0\u01a1ng\n\u2022 Theo d\u00f5i ti\u1ebfn \u0111\u1ed9 chuy\u1ebfn \u0111i\n\u2022 Xem l\u1ecbch s\u1eed du l\u1ecbch tr\u01b0\u1edbc \u0111\u00e2y\n\u2022 Truy c\u1eadp l\u1ecbch tr\u00ecnh ngo\u1ea1i tuy\u1ebfn v\u00e0 \u0111\u1ed3ng b\u1ed9\n\u2022 T\u00ednh n\u0103ng chia s\u1ebb chi ph\u00ed\n\u2022 D\u1ecbch v\u1ee5 th\u00f4ng b\u00e1o"
+        "title": "Điều 3 (Mô tả dịch vụ)",
+        "content": "Dịch vụ cung cấp:\n• Tạo kế hoạch du lịch tự động bằng AI\n• Quản lý chỉnh sửa, thêm và xóa kế hoạch du lịch\n• Thông tin thời tiết và múi giờ địa phương\n• Theo dõi tiến độ chuyến đi\n• Xem lịch sử du lịch trước đây\n• Truy cập lịch trình ngoại tuyến và đồng bộ\n• Tính năng chia sẻ chi phí\n• Dịch vụ thông báo"
       },
       "art4": {
-        "title": "\u0110i\u1ec1u 4 (\u0110\u0103ng k\u00fd t\u00e0i kho\u1ea3n)",
-        "content": "\u2460 B\u1ea1n c\u00f3 th\u1ec3 \u0111\u0103ng k\u00fd qua email ho\u1eb7c t\u00e0i kho\u1ea3n m\u1ea1ng x\u00e3 h\u1ed9i (Google, Apple, Kakao).\n\u2461 Ng\u01b0\u1eddi d\u00f9ng d\u01b0\u1edbi 14 tu\u1ed5i kh\u00f4ng th\u1ec3 s\u1eed d\u1ee5ng D\u1ecbch v\u1ee5.\n\u2462 B\u1ea1n ph\u1ea3i cung c\u1ea5p th\u00f4ng tin ch\u00ednh x\u00e1c. B\u1ea1n ch\u1ecbu tr\u00e1ch nhi\u1ec7m v\u1ec1 m\u1ecdi v\u1ea5n \u0111\u1ec1 ph\u00e1t sinh t\u1eeb th\u00f4ng tin kh\u00f4ng ch\u00ednh x\u00e1c.\n\u2463 B\u1ea1n ch\u1ecbu tr\u00e1ch nhi\u1ec7m b\u1ea3o m\u1eadt t\u00e0i kho\u1ea3n c\u1ee7a m\u00ecnh."
+        "title": "Điều 4 (Đăng ký tài khoản)",
+        "content": "① Bạn có thể đăng ký qua email hoặc tài khoản mạng xã hội (Google, Apple, Kakao).\n② Người dùng dưới 14 tuổi không thể sử dụng Dịch vụ.\n③ Bạn phải cung cấp thông tin chính xác. Bạn chịu trách nhiệm về mọi vấn đề phát sinh từ thông tin không chính xác.\n④ Bạn chịu trách nhiệm bảo mật tài khoản của mình."
       },
       "art5": {
-        "title": "\u0110i\u1ec1u 5 (Quy t\u1eafc s\u1eed d\u1ee5ng d\u1ecbch v\u1ee5)",
-        "content": "\u2460 Tr\u01b0\u1edbc chuy\u1ebfn \u0111i: K\u1ebf ho\u1ea1ch c\u00f3 th\u1ec3 t\u1ef1 do ch\u1ec9nh s\u1eeda v\u00e0 m\u1edf r\u1ed9ng.\n\u2461 Trong chuy\u1ebfn \u0111i: Kh\u00f4ng th\u1ec3 thay \u0111\u1ed5i ho\u1ea1t \u0111\u1ed9ng \u0111\u00e3 ho\u00e0n th\u00e0nh; ch\u1ec9 c\u00f3 th\u1ec3 ch\u1ec9nh s\u1eeda ho\u1ea1t \u0111\u1ed9ng s\u1eafp t\u1edbi.\n\u2462 Sau chuy\u1ebfn \u0111i: L\u1ecbch s\u1eed ch\u1ec9 c\u00f3 th\u1ec3 xem ho\u1eb7c x\u00f3a, kh\u00f4ng th\u1ec3 ch\u1ec9nh s\u1eeda.\n\u2463 K\u1ebft qu\u1ea3 do AI t\u1ea1o ch\u1ec9 mang t\u00ednh tham kh\u1ea3o. Ng\u01b0\u1eddi d\u00f9ng n\u00ean x\u00e1c minh \u0111i\u1ec1u ki\u1ec7n \u0111\u1ecba ph\u01b0\u01a1ng khi du l\u1ecbch."
+        "title": "Điều 5 (Quy tắc sử dụng dịch vụ)",
+        "content": "① Trước chuyến đi: Kế hoạch có thể tự do chỉnh sửa và mở rộng.\n② Trong chuyến đi: Không thể thay đổi hoạt động đã hoàn thành; chỉ có thể chỉnh sửa hoạt động sắp tới.\n③ Sau chuyến đi: Lịch sử chỉ có thể xem hoặc xóa, không thể chỉnh sửa.\n④ Kết quả do AI tạo chỉ mang tính tham khảo. Người dùng nên xác minh điều kiện địa phương khi du lịch."
       },
       "art6": {
-        "title": "\u0110i\u1ec1u 6 (\u0110i\u1ec1u kho\u1ea3n d\u1ecbch v\u1ee5 AI)",
-        "content": "\u2460 \u0110\u1ed9 ch\u00ednh x\u00e1c, an to\u00e0n v\u00e0 s\u1ef1 ph\u00f9 h\u1ee3p c\u1ee7a k\u1ebf ho\u1ea1ch du l\u1ecbch do AI t\u1ea1o kh\u00f4ng \u0111\u01b0\u1ee3c \u0111\u1ea3m b\u1ea3o.\n\u2461 D\u1eef li\u1ec7u \u0111\u01b0\u1ee3c x\u1eed l\u00fd qua API OpenAI \u0111\u1ec3 t\u1ea1o l\u1ecbch tr\u00ecnh, nh\u01b0 m\u00f4 t\u1ea3 trong Ch\u00ednh s\u00e1ch quy\u1ec1n ri\u00eang t\u01b0.\n\u2462 D\u1eef li\u1ec7u du l\u1ecbch do ng\u01b0\u1eddi d\u00f9ng nh\u1eadp kh\u00f4ng \u0111\u01b0\u1ee3c s\u1eed d\u1ee5ng \u0111\u1ec3 hu\u1ea5n luy\u1ec7n m\u00f4 h\u00ecnh AI.\n\u2463 D\u1ecbch v\u1ee5 AI c\u00f3 th\u1ec3 b\u1ecb gi\u1edbi h\u1ea1n t\u1ea1m th\u1eddi do ho\u00e0n c\u1ea3nh k\u1ef9 thu\u1eadt."
+        "title": "Điều 6 (Điều khoản dịch vụ AI)",
+        "content": "① Độ chính xác, an toàn và sự phù hợp của kế hoạch du lịch do AI tạo không được đảm bảo.\n② Dữ liệu được xử lý qua API OpenAI để tạo lịch trình, như mô tả trong Chính sách quyền riêng tư.\n③ Dữ liệu du lịch do người dùng nhập không được sử dụng để huấn luyện mô hình AI.\n④ Dịch vụ AI có thể bị giới hạn tạm thời do hoàn cảnh kỹ thuật."
       },
       "art7": {
-        "title": "\u0110i\u1ec1u 7 (Ho\u1ea1t \u0111\u1ed9ng b\u1ecb c\u1ea5m)",
-        "content": "Ng\u01b0\u1eddi d\u00f9ng kh\u00f4ng \u0111\u01b0\u1ee3c:\n\u2022 Can thi\u1ec7p v\u00e0o ho\u1ea1t \u0111\u1ed9ng b\u00ecnh th\u01b0\u1eddng c\u1ee7a D\u1ecbch v\u1ee5\n\u2022 Vi ph\u1ea1m quy\u1ec1n ri\u00eang t\u01b0 c\u1ee7a ng\u01b0\u1eddi d\u00f9ng kh\u00e1c\n\u2022 Truy c\u1eadp D\u1ecbch v\u1ee5 quy m\u00f4 l\u1edbn b\u1eb1ng ph\u01b0\u01a1ng th\u1ee9c t\u1ef1 \u0111\u1ed9ng\n\u2022 Nh\u1ea5p gian l\u1eadn ho\u1eb7c thao t\u00fang qu\u1ea3ng c\u00e1o\n\u2022 Ph\u00e2n t\u00edch ng\u01b0\u1ee3c, sao ch\u00e9p ho\u1eb7c b\u1eaft ch\u01b0\u1edbc D\u1ecbch v\u1ee5\n\u2022 Vi ph\u1ea1m b\u1ea5t k\u1ef3 lu\u1eadt l\u1ec7 ho\u1eb7c quy \u0111\u1ecbnh hi\u1ec7n h\u00e0nh n\u00e0o"
+        "title": "Điều 7 (Hoạt động bị cấm)",
+        "content": "Người dùng không được:\n• Can thiệp vào hoạt động bình thường của Dịch vụ\n• Vi phạm quyền riêng tư của người dùng khác\n• Truy cập Dịch vụ quy mô lớn bằng phương thức tự động\n• Nhấp gian lận hoặc thao túng quảng cáo\n• Phân tích ngược, sao chép hoặc bắt chước Dịch vụ\n• Vi phạm bất kỳ luật lệ hoặc quy định hiện hành nào"
       },
       "art8": {
-        "title": "\u0110i\u1ec1u 8 (Qu\u1ea3ng c\u00e1o v\u00e0 \u0111\u1ed1i t\u00e1c li\u00ean k\u1ebft)",
-        "content": "\u2460 D\u1ecbch v\u1ee5 c\u00f3 th\u1ec3 hi\u1ec3n th\u1ecb qu\u1ea3ng c\u00e1o qua Google AdSense, AdMob v\u00e0 ch\u01b0\u01a1ng tr\u00ecnh li\u00ean k\u1ebft.\n\u2461 Tr\u00e1ch nhi\u1ec7m v\u1ec1 n\u1ed9i dung qu\u1ea3ng c\u00e1o thu\u1ed9c v\u1ec1 c\u00e1c nh\u00e0 qu\u1ea3ng c\u00e1o t\u01b0\u01a1ng \u1ee9ng.\n\u2462 C\u00e1c \u0111i\u1ec1u kho\u1ea3n ri\u00eang c\u00f3 th\u1ec3 \u00e1p d\u1ee5ng khi \u0111\u1eb7t ch\u1ed7 qua li\u00ean k\u1ebft \u0111\u1ed1i t\u00e1c."
+        "title": "Điều 8 (Quảng cáo và đối tác liên kết)",
+        "content": "① Dịch vụ có thể hiển thị quảng cáo qua Google AdSense, AdMob và chương trình liên kết.\n② Trách nhiệm về nội dung quảng cáo thuộc về các nhà quảng cáo tương ứng.\n③ Các điều khoản riêng có thể áp dụng khi đặt chỗ qua liên kết đối tác."
       },
       "art9": {
-        "title": "\u0110i\u1ec1u 9 (S\u1edf h\u1eefu tr\u00ed tu\u1ec7)",
-        "content": "\u2460 Quy\u1ec1n s\u1edf h\u1eefu tr\u00ed tu\u1ec7 \u0111\u1ed1i v\u1edbi n\u1ed9i dung, thi\u1ebft k\u1ebf v\u00e0 ph\u1ea7n m\u1ec1m c\u1ee7a D\u1ecbch v\u1ee5 thu\u1ed9c v\u1ec1 nh\u00e0 cung c\u1ea5p D\u1ecbch v\u1ee5.\n\u2461 Quy\u1ec1n \u0111\u1ed1i v\u1edbi k\u1ebf ho\u1ea1ch du l\u1ecbch do ng\u01b0\u1eddi d\u00f9ng t\u1ea1o thu\u1ed9c v\u1ec1 ng\u01b0\u1eddi d\u00f9ng."
+        "title": "Điều 9 (Sở hữu trí tuệ)",
+        "content": "① Quyền sở hữu trí tuệ đối với nội dung, thiết kế và phần mềm của Dịch vụ thuộc về nhà cung cấp Dịch vụ.\n② Quyền đối với kế hoạch du lịch do người dùng tạo thuộc về người dùng."
       },
       "art10": {
-        "title": "\u0110i\u1ec1u 10 (Mi\u1ec5n tr\u1eeb tr\u00e1ch nhi\u1ec7m)",
-        "content": "\u2460 K\u1ebf ho\u1ea1ch du l\u1ecbch do AI t\u1ea1o ch\u1ec9 mang t\u00ednh tham kh\u1ea3o. H\u00e3y x\u00e1c minh \u0111i\u1ec1u ki\u1ec7n \u0111\u1ecba ph\u01b0\u01a1ng khi du l\u1ecbch.\n\u2461 Th\u00f4ng tin th\u1eddi ti\u1ebft v\u00e0 m\u00fai gi\u1edd d\u1ef1a tr\u00ean API b\u00ean ngo\u00e0i; \u0111\u1ed9 ch\u00ednh x\u00e1c kh\u00f4ng \u0111\u01b0\u1ee3c \u0111\u1ea3m b\u1ea3o.\n\u2462 D\u1ecbch v\u1ee5 kh\u00f4ng ch\u1ecbu tr\u00e1ch nhi\u1ec7m v\u1ec1 gi\u00e1n \u0111o\u1ea1n do b\u1ea5t kh\u1ea3 kh\u00e1ng ho\u1eb7c l\u1ed7i h\u1ec7 th\u1ed1ng.\n\u2463 D\u1ecbch v\u1ee5 ch\u1ec9 \u0111\u00f3ng vai tr\u00f2 trung gian cho \u0111\u1eb7t ch\u1ed7 li\u00ean k\u1ebft v\u00e0 kh\u00f4ng ch\u1ecbu tr\u00e1ch nhi\u1ec7m tr\u1ef1c ti\u1ebfp."
+        "title": "Điều 10 (Miễn trừ trách nhiệm)",
+        "content": "① Kế hoạch du lịch do AI tạo chỉ mang tính tham khảo. Hãy xác minh điều kiện địa phương khi du lịch.\n② Thông tin thời tiết và múi giờ dựa trên API bên ngoài; độ chính xác không được đảm bảo.\n③ Dịch vụ không chịu trách nhiệm về gián đoạn do bất khả kháng hoặc lỗi hệ thống.\n④ Dịch vụ chỉ đóng vai trò trung gian cho đặt chỗ liên kết và không chịu trách nhiệm trực tiếp."
       },
       "art11": {
-        "title": "\u0110i\u1ec1u 11 (Ch\u1ea5m d\u1ee9t t\u00e0i kho\u1ea3n)",
-        "content": "\u2460 B\u1ea1n c\u00f3 th\u1ec3 ch\u1ea5m d\u1ee9t t\u00e0i kho\u1ea3n b\u1ea5t c\u1ee9 l\u00fac n\u00e0o qua t\u00ednh n\u0103ng 'X\u00f3a t\u00e0i kho\u1ea3n'.\n\u2461 To\u00e0n b\u1ed9 d\u1eef li\u1ec7u c\u00e1 nh\u00e2n s\u1ebd b\u1ecb x\u00f3a v\u0129nh vi\u1ec5n trong v\u00f2ng 30 ng\u00e0y.\n\u2462 Th\u00f4ng tin b\u1eaft bu\u1ed9c theo lu\u1eadt s\u1ebd \u0111\u01b0\u1ee3c l\u01b0u gi\u1eef trong th\u1eddi gian quy \u0111\u1ecbnh r\u1ed3i h\u1ee7y."
+        "title": "Điều 11 (Chấm dứt tài khoản)",
+        "content": "① Bạn có thể chấm dứt tài khoản bất cứ lúc nào qua tính năng 'Xóa tài khoản'.\n② Toàn bộ dữ liệu cá nhân sẽ bị xóa vĩnh viễn trong vòng 30 ngày.\n③ Thông tin bắt buộc theo luật sẽ được lưu giữ trong thời gian quy định rồi hủy."
       },
       "art12": {
-        "title": "\u0110i\u1ec1u 12 (Tr\u00e1ch nhi\u1ec7m)",
-        "content": "N\u1ebfu th\u00e0nh vi\u00ean b\u1ecb thi\u1ec7t h\u1ea1i do l\u1ed7i c\u1ed1 \u00fd ho\u1eb7c s\u01a1 su\u1ea5t nghi\u00eam tr\u1ecdng c\u1ee7a c\u00f4ng ty, c\u00f4ng ty s\u1ebd b\u1ed3i th\u01b0\u1eddng theo lu\u1eadt hi\u1ec7n h\u00e0nh."
+        "title": "Điều 12 (Trách nhiệm)",
+        "content": "Nếu thành viên bị thiệt hại do lỗi cố ý hoặc sơ suất nghiêm trọng của công ty, công ty sẽ bồi thường theo luật hiện hành."
       },
       "art13": {
-        "title": "\u0110i\u1ec1u 13 (Thay \u0111\u1ed5i \u0111i\u1ec1u kho\u1ea3n)",
-        "content": "\u2460 Thay \u0111\u1ed5i s\u1ebd \u0111\u01b0\u1ee3c th\u00f4ng b\u00e1o \u00edt nh\u1ea5t 7 ng\u00e0y tr\u01b0\u1edbc khi c\u00f3 hi\u1ec7u l\u1ef1c qua th\u00f4ng b\u00e1o trong \u1ee9ng d\u1ee5ng.\n\u2461 N\u1ebfu b\u1ea1n kh\u00f4ng \u0111\u1ed3ng \u00fd v\u1edbi thay \u0111\u1ed5i, b\u1ea1n c\u00f3 th\u1ec3 ng\u1eebng s\u1eed d\u1ee5ng v\u00e0 x\u00f3a t\u00e0i kho\u1ea3n."
+        "title": "Điều 13 (Thay đổi điều khoản)",
+        "content": "① Thay đổi sẽ được thông báo ít nhất 7 ngày trước khi có hiệu lực qua thông báo trong ứng dụng.\n② Nếu bạn không đồng ý với thay đổi, bạn có thể ngừng sử dụng và xóa tài khoản."
       },
       "art14": {
-        "title": "\u0110i\u1ec1u 14 (Gi\u1ea3i quy\u1ebft tranh ch\u1ea5p)",
-        "content": "\u2460 \u0110i\u1ec1u kho\u1ea3n n\u00e0y \u0111\u01b0\u1ee3c \u0111i\u1ec1u ch\u1ec9nh b\u1edfi lu\u1eadt ph\u00e1p H\u00e0n Qu\u1ed1c.\n\u2461 M\u1ecdi tranh ch\u1ea5p s\u1ebd thu\u1ed9c th\u1ea9m quy\u1ec1n c\u1ee7a T\u00f2a \u00e1n Trung t\u00e2m Qu\u1eadn Seoul."
+        "title": "Điều 14 (Giải quyết tranh chấp)",
+        "content": "① Điều khoản này được điều chỉnh bởi luật pháp Hàn Quốc.\n② Mọi tranh chấp sẽ thuộc thẩm quyền của Tòa án Trung tâm Quận Seoul."
       },
       "art15": {
-        "title": "\u0110i\u1ec1u 15 (Ph\u1ee5 l\u1ee5c)",
-        "content": "\u0110i\u1ec1u kho\u1ea3n n\u00e0y c\u00f3 hi\u1ec7u l\u1ef1c t\u1eeb ng\u00e0y 01 th\u00e1ng 3, 2025."
+        "title": "Điều 15 (Phụ lục)",
+        "content": "Điều khoản này có hiệu lực từ ngày 01 tháng 3, 2025."
       }
     }
   },
   "privacy": {
-    "title": "Ch\u00ednh s\u00e1ch quy\u1ec1n ri\u00eang t\u01b0",
-    "effectiveDate": "C\u00f3 hi\u1ec7u l\u1ef1c: 01 th\u00e1ng 3, 2025",
+    "title": "Chính sách quyền riêng tư",
+    "effectiveDate": "Có hiệu lực: 01 tháng 3, 2025",
     "articles": {
       "art1": {
-        "title": "1. Th\u00f4ng tin ch\u00fang t\u00f4i thu th\u1eadp",
-        "content": "[B\u1eaft bu\u1ed9c]\n\u2022 Th\u00f4ng tin t\u00e0i kho\u1ea3n: T\u00ean, \u0111\u1ecba ch\u1ec9 email, \u1ea3nh \u0111\u1ea1i di\u1ec7n\n\u2022 \u0110\u0103ng nh\u1eadp m\u1ea1ng x\u00e3 h\u1ed9i: H\u1ed3 s\u01a1 c\u00f4ng khai t\u1eeb Google, Apple ho\u1eb7c Kakao\n\n[T\u00f9y ch\u1ecdn]\n\u2022 S\u1edf th\u00edch du l\u1ecbch: M\u1ee9c ng\u00e2n s\u00e1ch, phong c\u00e1ch du l\u1ecbch, s\u1edf th\u00edch\n\n[T\u1ef1 \u0111\u1ed9ng]\n\u2022 Th\u00f4ng tin thi\u1ebft b\u1ecb: Lo\u1ea1i thi\u1ebft b\u1ecb, h\u1ec7 \u0111i\u1ec1u h\u00e0nh, phi\u00ean b\u1ea3n \u1ee9ng d\u1ee5ng\n\u2022 D\u1eef li\u1ec7u s\u1eed d\u1ee5ng: M\u00f4 h\u00ecnh s\u1eed d\u1ee5ng \u1ee9ng d\u1ee5ng, t\u01b0\u01a1ng t\u00e1c qu\u1ea3ng c\u00e1o\n\u2022 D\u1eef li\u1ec7u du l\u1ecbch: \u0110i\u1ec3m \u0111\u1ebfn, l\u1ecbch tr\u00ecnh, k\u1ebf ho\u1ea1ch ho\u1ea1t \u0111\u1ed9ng\n\n[Ph\u01b0\u01a1ng th\u1ee9c] \u0110\u0103ng k\u00fd, \u0111\u0103ng nh\u1eadp m\u1ea1ng x\u00e3 h\u1ed9i, thu th\u1eadp t\u1ef1 \u0111\u1ed9ng trong qu\u00e1 tr\u00ecnh s\u1eed d\u1ee5ng"
+        "title": "1. Thông tin chúng tôi thu thập",
+        "content": "[Bắt buộc]\n• Thông tin tài khoản: Tên, địa chỉ email, ảnh đại diện\n• Đăng nhập mạng xã hội: Hồ sơ công khai từ Google, Apple hoặc Kakao\n\n[Tùy chọn]\n• Sở thích du lịch: Mức ngân sách, phong cách du lịch, sở thích\n\n[Tự động]\n• Thông tin thiết bị: Loại thiết bị, hệ điều hành, phiên bản ứng dụng\n• Dữ liệu sử dụng: Mô hình sử dụng ứng dụng, tương tác quảng cáo\n• Dữ liệu du lịch: Điểm đến, lịch trình, kế hoạch hoạt động\n\n[Phương thức] Đăng ký, đăng nhập mạng xã hội, thu thập tự động trong quá trình sử dụng"
       },
       "art2": {
-        "title": "2. C\u00e1ch ch\u00fang t\u00f4i s\u1eed d\u1ee5ng th\u00f4ng tin",
-        "content": "\u2022 Cung c\u1ea5p d\u1ecbch v\u1ee5: Qu\u1ea3n l\u00fd t\u00e0i kho\u1ea3n, t\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch AI, th\u00f4ng tin \u0111\u1ecba ph\u01b0\u01a1ng\n\u2022 X\u1eed l\u00fd AI: T\u1ea1o l\u1ecbch tr\u00ecnh qua API OpenAI (\u0111i\u1ec3m \u0111\u1ebfn, ng\u00e0y, s\u1edf th\u00edch \u0111\u01b0\u1ee3c g\u1eedi)\n\u2022 C\u00e1 nh\u00e2n h\u00f3a: T\u1ed1i \u01b0u h\u00f3a g\u1ee3i \u00fd d\u1ef1a tr\u00ean s\u1edf th\u00edch du l\u1ecbch\n\u2022 Qu\u1ea3ng c\u00e1o: Qu\u1ea3ng c\u00e1o c\u00e1 nh\u00e2n h\u00f3a (v\u1edbi s\u1ef1 \u0111\u1ed3ng \u00fd ri\u00eang)\n\u2022 C\u1ea3i thi\u1ec7n: Ph\u00e2n t\u00edch s\u1eed d\u1ee5ng, s\u1eeda l\u1ed7i"
+        "title": "2. Cách chúng tôi sử dụng thông tin",
+        "content": "• Cung cấp dịch vụ: Quản lý tài khoản, tạo kế hoạch du lịch AI, thông tin địa phương\n• Xử lý AI: Tạo lịch trình qua API OpenAI (điểm đến, ngày, sở thích được gửi)\n• Cá nhân hóa: Tối ưu hóa gợi ý dựa trên sở thích du lịch\n• Quảng cáo: Quảng cáo cá nhân hóa (với sự đồng ý riêng)\n• Cải thiện: Phân tích sử dụng, sửa lỗi"
       },
       "art3": {
-        "title": "3. Chia s\u1ebb v\u1edbi b\u00ean th\u1ee9 ba",
-        "content": "Ch\u00fang t\u00f4i kh\u00f4ng chia s\u1ebb th\u00f4ng tin c\u00e1 nh\u00e2n ngo\u1ea1i tr\u1eeb:\n\n| Ng\u01b0\u1eddi nh\u1eadn | D\u1eef li\u1ec7u | M\u1ee5c \u0111\u00edch |\n| OpenAI | \u0110i\u1ec3m \u0111\u1ebfn, ng\u00e0y, s\u1edf th\u00edch | T\u1ea1o l\u1ecbch tr\u00ecnh AI |\n| Google (AdSense/AdMob) | ID qu\u1ea3ng c\u00e1o, m\u00f4 h\u00ecnh s\u1eed d\u1ee5ng | Ph\u00e2n ph\u1ed1i qu\u1ea3ng c\u00e1o |\n| \u0110\u1ed1i t\u00e1c li\u00ean k\u1ebft | S\u1ef1 ki\u1ec7n nh\u1ea5p (\u1ea9n danh) | D\u1ecbch v\u1ee5 li\u00ean k\u1ebft |\n\n\u203b V\u1edbi s\u1ef1 \u0111\u1ed3ng \u00fd r\u00f5 r\u00e0ng c\u1ee7a ng\u01b0\u1eddi d\u00f9ng\n\u203b Khi lu\u1eadt ph\u00e1p y\u00eau c\u1ea7u"
+        "title": "3. Chia sẻ với bên thứ ba",
+        "content": "Chúng tôi không chia sẻ thông tin cá nhân ngoại trừ:\n\n| Người nhận | Dữ liệu | Mục đích |\n| OpenAI | Điểm đến, ngày, sở thích | Tạo lịch trình AI |\n| Google (AdSense/AdMob) | ID quảng cáo, mô hình sử dụng | Phân phối quảng cáo |\n| Đối tác liên kết | Sự kiện nhấp (ẩn danh) | Dịch vụ liên kết |\n\n※ Với sự đồng ý rõ ràng của người dùng\n※ Khi luật pháp yêu cầu"
       },
       "art4": {
-        "title": "4. \u1ee6y th\u00e1c x\u1eed l\u00fd d\u1eef li\u1ec7u",
-        "content": "| Nh\u00e0 cung c\u1ea5p | D\u1ecbch v\u1ee5 |\n| D\u1ecbch v\u1ee5 \u0111\u00e1m m\u00e2y (AWS, v.v.) | L\u01b0u tr\u1eef v\u00e0 x\u1eed l\u00fd d\u1eef li\u1ec7u |\n| D\u1ecbch v\u1ee5 email | Email x\u00e1c th\u1ef1c v\u00e0 th\u00f4ng b\u00e1o |"
+        "title": "4. Ủy thác xử lý dữ liệu",
+        "content": "| Nhà cung cấp | Dịch vụ |\n| Dịch vụ đám mây (AWS, v.v.) | Lưu trữ và xử lý dữ liệu |\n| Dịch vụ email | Email xác thực và thông báo |"
       },
       "art5": {
-        "title": "5. L\u01b0u gi\u1eef d\u1eef li\u1ec7u",
-        "content": "\u2022 X\u00f3a t\u00e0i kho\u1ea3n: H\u1ee7y trong v\u00f2ng 30 ng\u00e0y\n\u2022 Lu\u1eadt th\u01b0\u01a1ng m\u1ea1i \u0111i\u1ec7n t\u1eed: H\u1ed3 s\u01a1 giao d\u1ecbch l\u01b0u 5 n\u0103m\n\u2022 Lu\u1eadt vi\u1ec5n th\u00f4ng: Nh\u1eadt k\u00fd truy c\u1eadp l\u01b0u 3 th\u00e1ng\n\u2022 Th\u00f4ng tin b\u1eaft bu\u1ed9c theo lu\u1eadt \u0111\u01b0\u1ee3c l\u01b0u ri\u00eang trong th\u1eddi gian quy \u0111\u1ecbnh r\u1ed3i h\u1ee7y."
+        "title": "5. Lưu giữ dữ liệu",
+        "content": "• Xóa tài khoản: Hủy trong vòng 30 ngày\n• Luật thương mại điện tử: Hồ sơ giao dịch lưu 5 năm\n• Luật viễn thông: Nhật ký truy cập lưu 3 tháng\n• Thông tin bắt buộc theo luật được lưu riêng trong thời gian quy định rồi hủy."
       },
       "art6": {
-        "title": "6. Quy\u1ec1n c\u1ee7a b\u1ea1n",
-        "content": "B\u1ea1n c\u00f3 th\u1ec3 th\u1ef1c hi\u1ec7n c\u00e1c quy\u1ec1n sau:\n\u2022 Truy c\u1eadp, s\u1eeda, x\u00f3a ho\u1eb7c t\u1ea1m d\u1eebng x\u1eed l\u00fd th\u00f4ng tin c\u00e1 nh\u00e2n\n\u2022 Y\u00eau c\u1ea7u chuy\u1ec3n d\u1eef li\u1ec7u (\u0110i\u1ec1u 35-2 Lu\u1eadt B\u1ea3o v\u1ec7 d\u1eef li\u1ec7u c\u00e1 nh\u00e2n)\n\u2022 Y\u00eau c\u1ea7u gi\u1ea3i th\u00edch ho\u1eb7c t\u1eeb ch\u1ed1i quy\u1ebft \u0111\u1ecbnh t\u1ef1 \u0111\u1ed9ng (t\u1ea1o l\u1ecbch tr\u00ecnh AI)\n\u2022 X\u00f3a v\u0129nh vi\u1ec5n to\u00e0n b\u1ed9 d\u1eef li\u1ec7u b\u1eb1ng c\u00e1ch x\u00f3a t\u00e0i kho\u1ea3n\n\u2022 R\u00fat l\u1ea1i s\u1ef1 \u0111\u1ed3ng \u00fd theo d\u00f5i qu\u1ea3ng c\u00e1o (c\u00f3 th\u1ec3 thay \u0111\u1ed5i trong c\u00e0i \u0111\u1eb7t thi\u1ebft b\u1ecb)\n\n[C\u00e1ch th\u1ef1c hi\u1ec7n]\n\u1ee8ng d\u1ee5ng: C\u00e1 nh\u00e2n \u2192 X\u00f3a t\u00e0i kho\u1ea3n\nEmail: longpapa82@gmail.com"
+        "title": "6. Quyền của bạn",
+        "content": "Bạn có thể thực hiện các quyền sau:\n• Truy cập, sửa, xóa hoặc tạm dừng xử lý thông tin cá nhân\n• Yêu cầu chuyển dữ liệu (Điều 35-2 Luật Bảo vệ dữ liệu cá nhân)\n• Yêu cầu giải thích hoặc từ chối quyết định tự động (tạo lịch trình AI)\n• Xóa vĩnh viễn toàn bộ dữ liệu bằng cách xóa tài khoản\n• Rút lại sự đồng ý theo dõi quảng cáo (có thể thay đổi trong cài đặt thiết bị)\n\n[Cách thực hiện]\nỨng dụng: Cá nhân → Xóa tài khoản\nEmail: longpapa82@gmail.com"
       },
       "art7": {
-        "title": "7. B\u1ea3o v\u1ec7 tr\u1ebb em d\u01b0\u1edbi 14 tu\u1ed5i",
-        "content": "D\u1ecbch v\u1ee5 n\u00e0y h\u1ea1n ch\u1ebf \u0111\u0103ng k\u00fd cho tr\u1ebb em d\u01b0\u1edbi 14 tu\u1ed5i. N\u1ebfu ch\u00fang t\u00f4i ph\u00e1t hi\u1ec7n d\u1eef li\u1ec7u c\u1ee7a tr\u1ebb em \u0111\u00e3 \u0111\u01b0\u1ee3c thu th\u1eadp, ch\u00fang t\u00f4i s\u1ebd x\u00f3a ngay l\u1eadp t\u1ee9c."
+        "title": "7. Bảo vệ trẻ em dưới 14 tuổi",
+        "content": "Dịch vụ này hạn chế đăng ký cho trẻ em dưới 14 tuổi. Nếu chúng tôi phát hiện dữ liệu của trẻ em đã được thu thập, chúng tôi sẽ xóa ngay lập tức."
       },
       "art8": {
-        "title": "8. H\u1ee7y d\u1eef li\u1ec7u",
-        "content": "\u2022 T\u1ec7p \u0111i\u1ec7n t\u1eed: X\u00f3a v\u0129nh vi\u1ec5n b\u1eb1ng ph\u01b0\u01a1ng ph\u00e1p kh\u00f4ng th\u1ec3 kh\u00f4i ph\u1ee5c\n\u2022 B\u1ea3n in: C\u1eaft nh\u1ecf ho\u1eb7c \u0111\u1ed1t\n\u2022 H\u1ee7y ngay khi h\u1ebft th\u1eddi h\u1ea1n l\u01b0u gi\u1eef ho\u1eb7c ho\u00e0n th\u00e0nh m\u1ee5c \u0111\u00edch."
+        "title": "8. Hủy dữ liệu",
+        "content": "• Tệp điện tử: Xóa vĩnh viễn bằng phương pháp không thể khôi phục\n• Bản in: Cắt nhỏ hoặc đốt\n• Hủy ngay khi hết thời hạn lưu giữ hoặc hoàn thành mục đích."
       },
       "art9": {
-        "title": "9. Qu\u1ea3ng c\u00e1o v\u00e0 d\u1eef li\u1ec7u h\u00e0nh vi",
-        "content": "\u2022 iOS: Ki\u1ec3m so\u00e1t qu\u1ea3ng c\u00e1o c\u00e1 nh\u00e2n h\u00f3a qua App Tracking Transparency (ATT).\n\u2022 Android: \u0110\u1eb7t l\u1ea1i ID qu\u1ea3ng c\u00e1o ho\u1eb7c t\u1eeb ch\u1ed1i qua C\u00e0i \u0111\u1eb7t \u2192 Google \u2192 Qu\u1ea3ng c\u00e1o.\n\u2022 Web: T\u1eaft cookie trong c\u00e0i \u0111\u1eb7t tr\u00ecnh duy\u1ec7t (m\u1ed9t s\u1ed1 t\u00ednh n\u0103ng c\u00f3 th\u1ec3 b\u1ecb h\u1ea1n ch\u1ebf).\n\u2022 Cookie \u0111\u01b0\u1ee3c s\u1eed d\u1ee5ng \u0111\u1ec3 x\u00e1c th\u1ef1c v\u00e0 c\u1ea3i thi\u1ec7n tr\u1ea3i nghi\u1ec7m ng\u01b0\u1eddi d\u00f9ng."
+        "title": "9. Quảng cáo và dữ liệu hành vi",
+        "content": "• iOS: Kiểm soát quảng cáo cá nhân hóa qua App Tracking Transparency (ATT).\n• Android: Đặt lại ID quảng cáo hoặc từ chối qua Cài đặt → Google → Quảng cáo.\n• Web: Tắt cookie trong cài đặt trình duyệt (một số tính năng có thể bị hạn chế).\n• Cookie được sử dụng để xác thực và cải thiện trải nghiệm người dùng."
       },
       "art10": {
-        "title": "10. Bi\u1ec7n ph\u00e1p b\u1ea3o m\u1eadt",
-        "content": "\u2022 M\u00e3 h\u00f3a m\u1eadt kh\u1ea9u (bcrypt)\n\u2022 M\u00e3 h\u00f3a truy\u1ec1n th\u00f4ng SSL/TLS\n\u2022 Ki\u1ec3m so\u00e1t truy c\u1eadp v\u00e0 x\u00e1c th\u1ef1c hai y\u1ebfu t\u1ed1\n\u2022 Ki\u1ec3m tra v\u00e0 gi\u00e1m s\u00e1t b\u1ea3o m\u1eadt \u0111\u1ecbnh k\u1ef3"
+        "title": "10. Biện pháp bảo mật",
+        "content": "• Mã hóa mật khẩu (bcrypt)\n• Mã hóa truyền thông SSL/TLS\n• Kiểm soát truy cập và xác thực hai yếu tố\n• Kiểm tra và giám sát bảo mật định kỳ"
       },
       "art11": {
-        "title": "11. Ng\u01b0\u1eddi ph\u1ee5 tr\u00e1ch b\u1ea3o m\u1eadt",
-        "content": "Ng\u01b0\u1eddi ph\u1ee5 tr\u00e1ch b\u1ea3o m\u1eadt: \u0110\u1ed9i v\u1eadn h\u00e0nh TravelPlanner\nEmail: longpapa82@gmail.com"
+        "title": "11. Người phụ trách bảo mật",
+        "content": "Người phụ trách bảo mật: Đội vận hành TravelPlanner\nEmail: longpapa82@gmail.com"
       },
       "art12": {
-        "title": "12. Thay \u0111\u1ed5i ch\u00ednh s\u00e1ch",
-        "content": "Thay \u0111\u1ed5i s\u1ebd \u0111\u01b0\u1ee3c th\u00f4ng b\u00e1o \u00edt nh\u1ea5t 7 ng\u00e0y tr\u01b0\u1edbc khi c\u00f3 hi\u1ec7u l\u1ef1c qua th\u00f4ng b\u00e1o trong \u1ee9ng d\u1ee5ng.\n\nCh\u00ednh s\u00e1ch n\u00e0y c\u00f3 hi\u1ec7u l\u1ef1c t\u1eeb ng\u00e0y 01 th\u00e1ng 3, 2025."
+        "title": "12. Thay đổi chính sách",
+        "content": "Thay đổi sẽ được thông báo ít nhất 7 ngày trước khi có hiệu lực qua thông báo trong ứng dụng.\n\nChính sách này có hiệu lực từ ngày 01 tháng 3, 2025."
       }
     }
   }

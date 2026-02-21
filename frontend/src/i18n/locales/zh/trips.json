@@ -288,7 +288,8 @@
       "duplicating": "复制中...",
       "share": "分享",
       "exportIcal": "导出到日历",
-      "addActivityToDay": "为第{{day}}天添加活动"
+      "addActivityToDay": "为第{{day}}天添加活动",
+      "moreOptions": "更多选项"
     },
     "alerts": {
       "deleteTitle": "删除活动",
