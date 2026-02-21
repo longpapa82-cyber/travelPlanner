@@ -1,0 +1,13 @@
+{
+  "language": "zh",
+  "name": "旅行规划师 - AI行程助手",
+  "subtitle": "AI智能定制您的专属旅行计划",
+  "description": "使用旅行规划师，轻松计划完美旅程！\n\nAI根据您的偏好自动生成个性化旅行行程。只需输入目的地、日期和预算，即可获得最优行程方案。\n\n主要功能：\n- AI智能行程自动生成\n- 手动创建旅行计划\n- 实时天气信息和时差查询\n- 旅行费用管理与AA制\n- 离线模式支持\n- 旅行相册\n- 社交功能：分享旅行、关注旅友、点赞\n- 深色模式\n- 支持9种语言\n\n开启智慧旅行，从旅行规划师开始。",
+  "keywords": "旅行,行程,规划,AI,旅行计划,出境游,自由行,攻略,预算,旅游",
+  "releaseNotes": "v1.0 正式发布\n- AI智能行程生成\n- 支持9种语言（韩/英/日/中/西/德/法/泰/越）\n- 社交功能（旅行分享、关注）\n- 高级订阅选项",
+  "category": "Travel",
+  "ageRating": "4+",
+  "privacyUrl": "https://mytravelplanner.duckdns.org/privacy",
+  "termsUrl": "https://mytravelplanner.duckdns.org/terms",
+  "supportUrl": "https://mytravelplanner.duckdns.org/help"
+}
