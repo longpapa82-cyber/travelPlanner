@@ -177,8 +177,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [tripId]);
 
   const handleChangeCoverPhoto = useCallback(async () => {
-    const permResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permResult.granted) return;
+    // System picker (PHPicker / Photo Picker) — no permission required
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,

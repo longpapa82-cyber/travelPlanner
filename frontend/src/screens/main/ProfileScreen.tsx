@@ -184,11 +184,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const handlePickProfilePhoto = async () => {
     if (isUploadingPhoto) return;
     try {
-      const permResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permResult.granted) {
-        showToast({ type: 'warning', message: t('editProfile.alerts.permissionDenied'), position: 'top' });
-        return;
-      }
+      // System picker (PHPicker / Photo Picker) — no permission required
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
         allowsEditing: true,

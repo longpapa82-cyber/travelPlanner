@@ -57,7 +57,16 @@
     "justNow": "Ahora",
     "minutesAgo": "hace {{count}}min",
     "hoursAgo": "hace {{count}}h",
-    "daysAgo": "hace {{count}}d"
+    "daysAgo": "hace {{count}}d",
+    "prePermission": {
+      "title": "Mantente informado de tus viajes",
+      "description": "Recibe recordatorios de salida, alertas de clima y actualizaciones importantes de viaje.",
+      "benefit1": "Recordatorios de salida de viaje",
+      "benefit2": "Alertas de día de salida e itinerario",
+      "benefit3": "Notificaciones de cambio de clima",
+      "enable": "Activar notificaciones",
+      "later": "Quizás después"
+    }
   },
   "pwa": {
     "installTitle": "Instalar como app",
@@ -72,5 +81,23 @@
       "sent": "Correo de verificación reenviado",
       "error": "Error al enviar"
     }
+  },
+  "errors": {
+    "network": "Error de red. Por favor, comprueba tu conexión.",
+    "rateLimit": "Demasiadas solicitudes. Inténtalo de nuevo en breve.",
+    "forbidden": "No tienes permiso para esta acción.",
+    "notFound": "No se encontró el recurso solicitado.",
+    "locked": "Cuenta bloqueada temporalmente. Inténtalo más tarde.",
+    "server": "Error del servidor. Inténtalo más tarde.",
+    "generic": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "att": {
+    "title": "Recibe ofertas de viaje personalizadas",
+    "description": "Permite el seguimiento para recibir ofertas y recomendaciones de viaje adaptadas a tus intereses.",
+    "benefit1": "Ofertas de viaje personalizadas",
+    "benefit2": "Recomendaciones de destinos relevantes",
+    "benefit3": "Mejor experiencia publicitaria",
+    "continue": "Continuar",
+    "later": "Quizás después"
   }
 }

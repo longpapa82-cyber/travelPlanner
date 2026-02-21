@@ -25,10 +25,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { AuthStackParamList } from '../../types';
 import AuthLegalModal from '../../components/legal/AuthLegalModal';
+import { ONBOARDING_KEY } from '../../navigation/AuthNavigator';
 
 type OnboardingScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList>;
@@ -77,6 +79,10 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
   const scrollTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const SLIDES = getSlides(t);
 
+  const markOnboardingSeen = useCallback(async () => {
+    await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
+  }, []);
+
   const handleNext = useCallback(() => {
     const nextIndex = currentIndex + 1;
     if (nextIndex < SLIDES.length) {
@@ -86,13 +92,15 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
       });
       setCurrentIndex(nextIndex);
     } else {
+      markOnboardingSeen();
       navigation.navigate('Login');
     }
-  }, [currentIndex, SLIDES.length, SCREEN_WIDTH, navigation]);
+  }, [currentIndex, SLIDES.length, SCREEN_WIDTH, navigation, markOnboardingSeen]);
 
   const handleSkip = useCallback(() => {
+    markOnboardingSeen();
     navigation.navigate('Login');
-  }, [navigation]);
+  }, [navigation, markOnboardingSeen]);
 
   const renderSlide = ({ item }: { item: OnboardingSlide }) => (
     <View style={[styles.slide, { width: SCREEN_WIDTH, height: SCREEN_HEIGHT }]}>
@@ -229,10 +237,10 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
                   styles.startButton,
                   pressed && styles.nextButtonPressed,
                 ]}
-                onPress={() => navigation.navigate('Login')}
+                onPress={() => { markOnboardingSeen(); navigation.navigate('Login'); }}
                 accessibilityLabel={t('onboarding.start')}
                 accessibilityRole="button"
-                {...webClick(() => navigation.navigate('Login'))}
+                {...webClick(() => { markOnboardingSeen(); navigation.navigate('Login'); })}
               >
                 <Icon name="login" size={20} color={colors.primary[700]} />
                 <Text style={styles.startButtonText}>{t('onboarding.start')}</Text>
@@ -242,10 +250,10 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
                   styles.registerLink,
                   pressed && styles.buttonPressed,
                 ]}
-                onPress={() => navigation.navigate('Register')}
+                onPress={() => { markOnboardingSeen(); navigation.navigate('Register'); }}
                 accessibilityLabel={t('onboarding.noAccount')}
                 accessibilityRole="link"
-                {...webClick(() => navigation.navigate('Register'))}
+                {...webClick(() => { markOnboardingSeen(); navigation.navigate('Register'); })}
               >
                 <Text style={styles.registerLinkText}>
                   {t('onboarding.noAccount')}

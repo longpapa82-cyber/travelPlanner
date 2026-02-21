@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { NavigationContainer, LinkingOptions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
@@ -9,11 +9,16 @@ import { RootStackParamList } from '../types';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import PrePermissionATTModal, { shouldShowATTPrePermission } from '../components/PrePermissionATTModal';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: [Linking.createURL('/'), 'travelplanner://', 'https://travelplanner.app'],
+  prefixes: [
+    Linking.createURL('/'),
+    'travelplanner://',
+    'https://mytravelplanner.duckdns.org',
+  ],
   config: {
     screens: {
       Main: {
@@ -46,7 +51,21 @@ const linking: LinkingOptions<RootStackParamList> = {
 const RootNavigator = () => {
   const { isAuthenticated, isLoading } = useAuth();
   const { theme } = useTheme();
-  useTrackingTransparency();
+  const { shouldShowPrePermission, sessionCount, requestTracking } = useTrackingTransparency();
+
+  // ATT pre-permission modal state
+  const [showATTModal, setShowATTModal] = useState(false);
+
+  useEffect(() => {
+    if (!shouldShowPrePermission) return;
+    shouldShowATTPrePermission(sessionCount).then((show) => {
+      if (show) setShowATTModal(true);
+    });
+  }, [shouldShowPrePermission, sessionCount]);
+
+  const handleATTDismiss = useCallback(() => {
+    setShowATTModal(false);
+  }, []);
 
   if (isLoading) {
     return (
@@ -65,6 +84,13 @@ const RootNavigator = () => {
           <Stack.Screen name="Auth" component={AuthNavigator} />
         )}
       </Stack.Navigator>
+
+      <PrePermissionATTModal
+        visible={showATTModal}
+        sessionCount={sessionCount}
+        onRequestTracking={requestTracking}
+        onDismiss={handleATTDismiss}
+      />
     </NavigationContainer>
   );
 };

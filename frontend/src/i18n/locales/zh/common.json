@@ -57,7 +57,16 @@
     "justNow": "刚刚",
     "minutesAgo": "{{count}}分钟前",
     "hoursAgo": "{{count}}小时前",
-    "daysAgo": "{{count}}天前"
+    "daysAgo": "{{count}}天前",
+    "prePermission": {
+      "title": "接收旅行通知",
+      "description": "获取出发提醒、天气变化等重要旅行信息，让您不错过任何重要时刻。",
+      "benefit1": "旅行出发提醒",
+      "benefit2": "出发日与行程提醒",
+      "benefit3": "天气变化通知",
+      "enable": "开启通知",
+      "later": "以后再说"
+    }
   },
   "pwa": {
     "installTitle": "安装为应用",
@@ -72,5 +81,23 @@
       "sent": "验证邮件已重新发送",
       "error": "发送失败"
     }
+  },
+  "errors": {
+    "network": "网络错误，请检查您的网络连接。",
+    "rateLimit": "请求过多，请稍后再试。",
+    "forbidden": "您没有执行此操作的权限。",
+    "notFound": "未找到请求的资源。",
+    "locked": "账户暂时被锁定，请稍后再试。",
+    "server": "服务器错误，请稍后再试。",
+    "generic": "出了点问题，请重试。"
+  },
+  "att": {
+    "title": "获取个性化旅行优惠",
+    "description": "允许跟踪以接收根据您的兴趣定制的旅行优惠和推荐。",
+    "benefit1": "个性化旅行优惠",
+    "benefit2": "相关目的地推荐",
+    "benefit3": "更好的广告体验",
+    "continue": "继续",
+    "later": "以后再说"
   }
 }

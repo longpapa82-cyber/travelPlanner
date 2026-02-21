@@ -12,6 +12,7 @@ interface AdMobBannerProps {
   adUnitId?: string;
   size?: AdMobBannerSize;
   style?: any;
+  requestNonPersonalizedAdsOnly?: boolean;
 }
 
 const AdMobBannerComponent: React.FC<AdMobBannerProps> = () => null;

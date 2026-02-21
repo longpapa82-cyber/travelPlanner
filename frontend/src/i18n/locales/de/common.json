@@ -57,7 +57,16 @@
     "justNow": "Gerade eben",
     "minutesAgo": "Vor {{count}} Min.",
     "hoursAgo": "Vor {{count}} Std.",
-    "daysAgo": "Vor {{count}} Tag(en)"
+    "daysAgo": "Vor {{count}} Tag(en)",
+    "prePermission": {
+      "title": "Bleib über deine Reisen informiert",
+      "description": "Erhalte Abfahrtserinnerungen, Wetterwarnungen und wichtige Reise-Updates.",
+      "benefit1": "Reise-Abfahrtserinnerungen",
+      "benefit2": "Abreisetag- & Reiseplan-Benachrichtigungen",
+      "benefit3": "Wetteränderungs-Benachrichtigungen",
+      "enable": "Benachrichtigungen aktivieren",
+      "later": "Vielleicht später"
+    }
   },
   "pwa": {
     "installTitle": "Als App installieren",
@@ -72,5 +81,23 @@
       "sent": "Verifizierungs-E-Mail erneut gesendet",
       "error": "Erneutes Senden fehlgeschlagen"
     }
+  },
+  "errors": {
+    "network": "Netzwerkfehler. Bitte überprüfe deine Verbindung.",
+    "rateLimit": "Zu viele Anfragen. Bitte versuche es in Kürze erneut.",
+    "forbidden": "Du hast keine Berechtigung für diese Aktion.",
+    "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
+    "locked": "Konto vorübergehend gesperrt. Versuche es später erneut.",
+    "server": "Serverfehler. Bitte versuche es später erneut.",
+    "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+  },
+  "att": {
+    "title": "Personalisierte Reiseangebote erhalten",
+    "description": "Erlaube Tracking, um Reiseangebote und Empfehlungen zu erhalten, die auf deine Interessen zugeschnitten sind.",
+    "benefit1": "Personalisierte Reiseangebote",
+    "benefit2": "Relevante Reiseziel-Empfehlungen",
+    "benefit3": "Besseres Werbeerlebnis",
+    "continue": "Weiter",
+    "later": "Vielleicht später"
   }
 }

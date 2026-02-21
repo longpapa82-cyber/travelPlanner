@@ -57,7 +57,16 @@
     "justNow": "Just now",
     "minutesAgo": "{{count}}m ago",
     "hoursAgo": "{{count}}h ago",
-    "daysAgo": "{{count}}d ago"
+    "daysAgo": "{{count}}d ago",
+    "prePermission": {
+      "title": "Stay updated on your trips",
+      "description": "Get departure reminders, weather alerts, and important travel updates so you never miss a thing.",
+      "benefit1": "Trip departure reminders",
+      "benefit2": "Departure day & itinerary alerts",
+      "benefit3": "Weather change notifications",
+      "enable": "Enable notifications",
+      "later": "Maybe later"
+    }
   },
   "pwa": {
     "installTitle": "Install as app",
@@ -72,5 +81,23 @@
       "sent": "Verification email resent",
       "error": "Failed to resend"
     }
+  },
+  "errors": {
+    "network": "Network error. Please check your connection.",
+    "rateLimit": "Too many requests. Please try again shortly.",
+    "forbidden": "You do not have permission for this action.",
+    "notFound": "The requested resource was not found.",
+    "locked": "Account temporarily locked. Try again later.",
+    "server": "Server error. Please try again later.",
+    "generic": "Something went wrong. Please try again."
+  },
+  "att": {
+    "title": "Get personalized travel deals",
+    "description": "Allow tracking to receive travel deals and offers tailored to your interests.",
+    "benefit1": "Personalized travel deals",
+    "benefit2": "Relevant destination recommendations",
+    "benefit3": "Better ad experience",
+    "continue": "Continue",
+    "later": "Maybe later"
   }
 }

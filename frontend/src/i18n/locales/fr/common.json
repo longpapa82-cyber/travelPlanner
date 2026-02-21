@@ -57,7 +57,16 @@
     "justNow": "À l'instant",
     "minutesAgo": "Il y a {{count}} min",
     "hoursAgo": "Il y a {{count}} h",
-    "daysAgo": "Il y a {{count}} j"
+    "daysAgo": "Il y a {{count}} j",
+    "prePermission": {
+      "title": "Restez informé de vos voyages",
+      "description": "Recevez des rappels de départ, des alertes météo et des mises à jour de voyage importantes.",
+      "benefit1": "Rappels de départ de voyage",
+      "benefit2": "Alertes de jour de départ et d'itinéraire",
+      "benefit3": "Notifications de changement météo",
+      "enable": "Activer les notifications",
+      "later": "Peut-être plus tard"
+    }
   },
   "pwa": {
     "installTitle": "Installer comme application",
@@ -72,5 +81,23 @@
       "sent": "E-mail de vérification renvoyé",
       "error": "Échec du renvoi"
     }
+  },
+  "errors": {
+    "network": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "rateLimit": "Trop de requêtes. Veuillez réessayer dans un moment.",
+    "forbidden": "Vous n'avez pas la permission pour cette action.",
+    "notFound": "La ressource demandée est introuvable.",
+    "locked": "Compte temporairement verrouillé. Réessayez plus tard.",
+    "server": "Erreur serveur. Veuillez réessayer plus tard.",
+    "generic": "Quelque chose s'est mal passé. Veuillez réessayer."
+  },
+  "att": {
+    "title": "Recevez des offres de voyage personnalisées",
+    "description": "Autorisez le suivi pour recevoir des offres et recommandations de voyage adaptées à vos intérêts.",
+    "benefit1": "Offres de voyage personnalisées",
+    "benefit2": "Recommandations de destinations pertinentes",
+    "benefit3": "Meilleure expérience publicitaire",
+    "continue": "Continuer",
+    "later": "Peut-être plus tard"
   }
 }

@@ -15,6 +15,7 @@ interface AdMobBannerProps {
   adUnitId?: string;
   size?: AdMobBannerSize;
   style?: any;
+  requestNonPersonalizedAdsOnly?: boolean;
 }
 
 const BANNER_SIZE_MAP: Record<AdMobBannerSize, keyof typeof BannerAdSize> = {
@@ -30,6 +31,7 @@ const AdMobBannerComponent: React.FC<AdMobBannerProps> = ({
   adUnitId,
   size = 'adaptive',
   style,
+  requestNonPersonalizedAdsOnly = false,
 }) => {
   const { isDark } = useTheme();
   const [adError, setAdError] = useState(false);
@@ -47,7 +49,7 @@ const AdMobBannerComponent: React.FC<AdMobBannerProps> = ({
       <BannerAd
         unitId={unitId}
         size={adSize}
-        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+        requestOptions={{ requestNonPersonalizedAdsOnly }}
         onAdLoaded={() => setAdError(false)}
         onAdFailedToLoad={() => setAdError(true)}
       />

@@ -16,9 +16,10 @@ export default ({ config }) => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.travelplanner.app',
+    buildNumber: '1',
     usesAppleSignIn: true,
     associatedDomains: [
-      'applinks:travelplanner.app',
+      'applinks:mytravelplanner.duckdns.org',
     ],
     infoPlist: {
       CFBundleURLTypes: [
@@ -27,7 +28,7 @@ export default ({ config }) => ({
         },
       ],
       NSUserTrackingUsageDescription:
-        '맞춤형 여행 광고를 제공하기 위해 활동 추적 권한이 필요합니다. This helps us show you relevant travel deals.',
+        'This allows us to show you personalized travel deals and offers.',
     },
   },
   android: {
@@ -37,13 +38,14 @@ export default ({ config }) => ({
     },
     edgeToEdgeEnabled: true,
     package: 'com.travelplanner.app',
+    versionCode: 1,
     intentFilters: [
       {
         action: 'VIEW',
         autoVerify: true,
         data: [
           { scheme: 'travelplanner' },
-          { scheme: 'https', host: 'travelplanner.app', pathPrefix: '/auth' },
+          { scheme: 'https', host: 'mytravelplanner.duckdns.org', pathPrefix: '/auth' },
         ],
         category: ['BROWSABLE', 'DEFAULT'],
       },
@@ -69,6 +71,42 @@ export default ({ config }) => ({
       {
         androidAppId: process.env.ADMOB_ANDROID_APP_ID || 'ca-app-pub-7330738950092177~5475101490',
         iosAppId: process.env.ADMOB_IOS_APP_ID || 'ca-app-pub-7330738950092177~7468498577',
+      },
+    ],
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          privacyManifests: {
+            NSPrivacyAccessedAPITypes: [
+              {
+                NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryUserDefaults',
+                NSPrivacyAccessedAPITypeReasons: ['CA92.1'],
+              },
+            ],
+            NSPrivacyCollectedDataTypes: [
+              {
+                NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypeEmailAddress',
+                NSPrivacyCollectedDataTypeLinked: true,
+                NSPrivacyCollectedDataTypeTracking: false,
+                NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeAppFunctionality'],
+              },
+              {
+                NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypeUserID',
+                NSPrivacyCollectedDataTypeLinked: true,
+                NSPrivacyCollectedDataTypeTracking: false,
+                NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeAppFunctionality'],
+              },
+              {
+                NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypePhotosorVideos',
+                NSPrivacyCollectedDataTypeLinked: true,
+                NSPrivacyCollectedDataTypeTracking: false,
+                NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeAppFunctionality'],
+              },
+            ],
+            NSPrivacyTracking: false,
+          },
+        },
       },
     ],
   ],

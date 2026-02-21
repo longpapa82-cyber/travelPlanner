@@ -57,7 +57,16 @@
     "justNow": "V\u1eeba xong",
     "minutesAgo": "{{count}} ph\u00fat tr\u01b0\u1edbc",
     "hoursAgo": "{{count}} gi\u1edd tr\u01b0\u1edbc",
-    "daysAgo": "{{count}} ng\u00e0y tr\u01b0\u1edbc"
+    "daysAgo": "{{count}} ngày trước",
+    "prePermission": {
+      "title": "Nhận thông báo về chuyến đi",
+      "description": "Nhận nhắc nhở khởi hành, cảnh báo thời tiết và cập nhật hành trình quan trọng.",
+      "benefit1": "Nhắc nhở khởi hành chuyến đi",
+      "benefit2": "Thông báo ngày khởi hành và lịch trình",
+      "benefit3": "Thông báo thay đổi thời tiết",
+      "enable": "Bật thông báo",
+      "later": "Để sau"
+    }
   },
   "pwa": {
     "installTitle": "C\u00e0i \u0111\u1eb7t \u1ee9ng d\u1ee5ng",
@@ -72,5 +81,23 @@
       "sent": "\u0110\u00e3 g\u1eedi l\u1ea1i email x\u00e1c minh",
       "error": "G\u1eedi l\u1ea1i th\u1ea5t b\u1ea1i"
     }
+  },
+  "errors": {
+    "network": "L\u1ed7i m\u1ea1ng. Vui l\u00f2ng ki\u1ec3m tra k\u1ebft n\u1ed1i c\u1ee7a b\u1ea1n.",
+    "rateLimit": "Qu\u00e1 nhi\u1ec1u y\u00eau c\u1ea7u. Vui l\u00f2ng th\u1eed l\u1ea1i sau.",
+    "forbidden": "B\u1ea1n kh\u00f4ng c\u00f3 quy\u1ec1n th\u1ef1c hi\u1ec7n h\u00e0nh \u0111\u1ed9ng n\u00e0y.",
+    "notFound": "Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i nguy\u00ean y\u00eau c\u1ea7u.",
+    "locked": "T\u00e0i kho\u1ea3n t\u1ea1m th\u1eddi b\u1ecb kh\u00f3a. Vui l\u00f2ng th\u1eed l\u1ea1i sau.",
+    "server": "L\u1ed7i m\u00e1y ch\u1ee7. Vui l\u00f2ng th\u1eed l\u1ea1i sau.",
+    "generic": "Đã xảy ra lỗi. Vui lòng thử lại."
+  },
+  "att": {
+    "title": "Nhận ưu đãi du lịch cá nhân hóa",
+    "description": "Cho phép theo dõi để nhận ưu đãi và gợi ý du lịch phù hợp với sở thích của bạn.",
+    "benefit1": "Ưu đãi du lịch cá nhân hóa",
+    "benefit2": "Gợi ý điểm đến phù hợp",
+    "benefit3": "Trải nghiệm quảng cáo tốt hơn",
+    "continue": "Tiếp tục",
+    "later": "Để sau"
   }
 }

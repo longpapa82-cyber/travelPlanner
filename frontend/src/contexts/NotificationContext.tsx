@@ -3,10 +3,14 @@ import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { type EventSubscription } from 'expo-modules-core';
 import * as Device from 'expo-device';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Trip } from '../types';
 import i18next from 'i18next';
 import apiService from '../services/api';
 import { setPushRegistrationCallback } from './AuthContext';
+import PrePermissionNotificationModal from '../components/PrePermissionNotificationModal';
+
+const NOTIFICATION_PREPERM_KEY = '@travelplanner:notification_preperm_shown';
 
 if (Platform.OS !== 'web') {
   Notifications.setNotificationHandler({
@@ -28,6 +32,8 @@ interface NotificationContextValue {
   unregisterPushToken: () => Promise<void>;
   expoPushToken: string | null;
   lastNotificationResponse: Notifications.NotificationResponse | null;
+  showPrePermissionModal: boolean;
+  onPrePermissionDismiss: () => void;
 }
 
 const NotificationContext = createContext<NotificationContextValue>({
@@ -39,6 +45,8 @@ const NotificationContext = createContext<NotificationContextValue>({
   unregisterPushToken: async () => {},
   expoPushToken: null,
   lastNotificationResponse: null,
+  showPrePermissionModal: false,
+  onPrePermissionDismiss: () => {},
 });
 
 export const useNotifications = () => useContext(NotificationContext);
@@ -87,6 +95,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
   const [lastNotificationResponse, setLastNotificationResponse] =
     useState<Notifications.NotificationResponse | null>(null);
+  const [showPrePermissionModal, setShowPrePermissionModal] = useState(false);
   const notificationListener = useRef<EventSubscription | null>(null);
   const responseListener = useRef<EventSubscription | null>(null);
 
@@ -180,10 +189,29 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
   }, []);
 
-  // Bridge: AuthContext calls this after successful login to register push token
+  const onPrePermissionDismiss = useCallback(() => {
+    setShowPrePermissionModal(false);
+  }, []);
+
+  // Bridge: AuthContext calls this after successful login
+  // Instead of auto-requesting, show pre-permission modal (once)
   useEffect(() => {
-    setPushRegistrationCallback(() => {
-      registerForPushNotifications();
+    setPushRegistrationCallback(async () => {
+      if (Platform.OS === 'web') {
+        registerForPushNotifications();
+        return;
+      }
+      // If already granted, just register
+      const { status } = await Notifications.getPermissionsAsync();
+      if (status === 'granted') {
+        registerForPushNotifications();
+        return;
+      }
+      // Check if pre-permission was already shown
+      const shown = await AsyncStorage.getItem(NOTIFICATION_PREPERM_KEY);
+      if (shown === 'true') return;
+      // Show pre-permission modal
+      setShowPrePermissionModal(true);
     });
     return () => {
       setPushRegistrationCallback(null);
@@ -278,9 +306,20 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         unregisterPushToken,
         expoPushToken,
         lastNotificationResponse,
+        showPrePermissionModal,
+        onPrePermissionDismiss,
       }}
     >
       {children}
+      <PrePermissionNotificationModal
+        visible={showPrePermissionModal}
+        onRequestPermission={async () => {
+          const granted = await requestPermission();
+          if (granted) await registerForPushNotifications();
+          return granted;
+        }}
+        onDismiss={onPrePermissionDismiss}
+      />
     </NotificationContext.Provider>
   );
 };

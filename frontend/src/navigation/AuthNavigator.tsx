@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthStackParamList } from '../types';
 import { OnboardingScreen } from '../screens/auth/OnboardingScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -11,9 +12,23 @@ import TwoFactorLoginScreen from '../screens/auth/TwoFactorLoginScreen';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
+const ONBOARDING_KEY = '@travelplanner:has_seen_onboarding';
+
 const AuthNavigator = () => {
+  const [initialRoute, setInitialRoute] = useState<keyof AuthStackParamList | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem(ONBOARDING_KEY).then((value) => {
+      setInitialRoute(value === 'true' ? 'Login' : 'Onboarding');
+    });
+  }, []);
+
+  // Wait until we know which screen to start with
+  if (!initialRoute) return null;
+
   return (
     <Stack.Navigator
+      initialRouteName={initialRoute}
       screenOptions={{
         headerShown: false,
       }}
@@ -30,3 +45,4 @@ const AuthNavigator = () => {
 };
 
 export default AuthNavigator;
+export { ONBOARDING_KEY };

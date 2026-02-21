@@ -17,15 +17,26 @@
         "EXPO_PUBLIC_API_URL": "http://10.0.2.2:3001/api"
       }
     },
+    "staging": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://mytravelplanner.duckdns.org/api"
+      }
+    },
     "production": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.travelplanner.app/api"
+        "EXPO_PUBLIC_API_URL": "https://mytravelplanner.duckdns.org/api"
       },
       "autoIncrement": true
     }
   },
   "submit": {
     "production": {
+      "ios": {
+        "appleId": "a090723@naver.com",
+        "ascAppId": "",
+        "appleTeamId": ""
+      },
       "android": {
         "track": "internal",
         "releaseStatus": "draft"

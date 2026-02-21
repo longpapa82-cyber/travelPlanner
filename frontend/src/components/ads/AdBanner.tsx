@@ -6,12 +6,14 @@
  * - Web: Google AdSense via DOM injection
  *
  * Reads default ad unit IDs from app.config.js extra when not explicitly provided.
+ * Respects GDPR consent: non-personalized ads when consent not obtained.
  */
 
 import React from 'react';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { usePremium } from '../../contexts/PremiumContext';
+import { useGDPRConsent } from '../../hooks/useGDPRConsent';
 import AdSense from './AdSense';
 import AdMobBanner from './AdMobBanner';
 import type { AdMobBannerSize } from './AdMobBanner';
@@ -52,6 +54,12 @@ const AdBanner: React.FC<AdBannerProps> = ({
     // PremiumContext may not be available (e.g. outside provider)
   }
 
+  // Check GDPR consent (non-personalized ads if not consented)
+  const { isReady: consentReady, canShowPersonalizedAds } = useGDPRConsent();
+
+  // Wait for consent check on native before showing ads
+  if (Platform.OS !== 'web' && !consentReady) return null;
+
   if (Platform.OS === 'web') {
     const slot = adSenseSlot || DEFAULT_ADSENSE_SLOT;
     if (!slot) return null;
@@ -72,6 +80,7 @@ const AdBanner: React.FC<AdBannerProps> = ({
       adUnitId={unitId}
       size={size}
       style={style}
+      requestNonPersonalizedAdsOnly={!canShowPersonalizedAds}
     />
   );
 };
