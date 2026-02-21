@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# DEPRECATED: Use ./scripts/deploy.sh instead (zero-downtime deploy + BuildKit + auto-rollback)
+echo "⚠️  WARNING: deploy-full.sh is deprecated. Use ./scripts/deploy.sh instead."
+echo "   New script features: zero-downtime blue-green, BuildKit cache, auto-rollback"
+echo ""
+
 # Full deployment: Build Docker images locally, transfer to OCI, restart services.
 # Local Mac build is 5-10x faster than building on the 1GB RAM OCI micro instance.
 #
