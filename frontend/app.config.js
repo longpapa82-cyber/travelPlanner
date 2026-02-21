@@ -37,7 +37,7 @@ export default ({ config }) => ({
       backgroundColor: '#ffffff',
     },
     edgeToEdgeEnabled: true,
-    package: 'com.travelplanner.app',
+    package: 'com.longpapa82.travelplanner',
     versionCode: 1,
     intentFilters: [
       {

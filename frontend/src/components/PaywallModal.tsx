@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,12 +8,14 @@ import {
   ScrollView,
   ActivityIndicator,
   Platform,
+  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { usePremium } from '../contexts/PremiumContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
+import { getOfferings, purchasePackage, restorePurchases } from '../services/revenueCat';
 
 interface BenefitItem {
   icon: string;
@@ -33,28 +35,74 @@ const BENEFITS: BenefitItem[] = [
 
 const PaywallModal: React.FC = () => {
   const { t } = useTranslation('premium');
-  const { isPaywallVisible, hidePaywall } = usePremium();
+  const { isPaywallVisible, hidePaywall, refreshStatus } = usePremium();
   const { theme, isDark } = useTheme();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [isPurchasing, setIsPurchasing] = useState(false);
+  const [packages, setPackages] = useState<{ monthly: any; yearly: any }>({ monthly: null, yearly: null });
+  const offeringsLoaded = useRef(false);
+
+  // Load RevenueCat offerings when paywall becomes visible
+  useEffect(() => {
+    if (!isPaywallVisible || offeringsLoaded.current) return;
+    if (Platform.OS === 'web') return;
+
+    (async () => {
+      const offerings = await getOfferings();
+      const current = offerings?.current;
+      if (current) {
+        setPackages({
+          monthly: current.monthly,
+          yearly: current.annual,
+        });
+        offeringsLoaded.current = true;
+      }
+    })();
+  }, [isPaywallVisible]);
 
   const handlePurchase = async () => {
+    if (Platform.OS === 'web') {
+      Alert.alert(t('actions.subscribe'), t('paywall.webMessage') || 'Please use the mobile app to subscribe.');
+      return;
+    }
+
+    const pkg = selectedPlan === 'monthly' ? packages.monthly : packages.yearly;
+    if (!pkg) {
+      Alert.alert('Error', 'Subscription packages not loaded. Please try again.');
+      return;
+    }
+
     setIsPurchasing(true);
     try {
-      // RevenueCat purchase will be wired in Phase 4
-      // For now, this is a placeholder
-      if (Platform.OS === 'web') {
-        // Web: show message to use mobile app
+      const customerInfo = await purchasePackage(pkg);
+      if (customerInfo) {
+        // Purchase successful — refresh user profile from backend
+        await refreshStatus();
+        hidePaywall();
       }
+      // null = user cancelled, do nothing
+    } catch (error: any) {
+      Alert.alert('Error', error?.message || 'Purchase failed. Please try again.');
     } finally {
       setIsPurchasing(false);
     }
   };
 
   const handleRestore = async () => {
+    if (Platform.OS === 'web') return;
+
     setIsPurchasing(true);
     try {
-      // RevenueCat restore will be wired in Phase 4
+      const customerInfo = await restorePurchases();
+      if (customerInfo?.entitlements?.active?.['premium']) {
+        await refreshStatus();
+        hidePaywall();
+        Alert.alert(t('actions.restore'), t('paywall.restoreSuccess') || 'Subscription restored successfully!');
+      } else {
+        Alert.alert(t('actions.restore'), t('paywall.restoreNone') || 'No active subscription found.');
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error?.message || 'Restore failed. Please try again.');
     } finally {
       setIsPurchasing(false);
     }
@@ -134,7 +182,7 @@ const PaywallModal: React.FC = () => {
                   {t('premium.price.yearly')}
                 </Text>
                 <Text style={[styles.planPrice, { color: theme.colors.text }]}>
-                  $29.99
+                  {packages.yearly?.product?.priceString || '$29.99'}
                 </Text>
                 <Text style={[styles.planPer, { color: theme.colors.textSecondary }]}>
                   / {t('premium.price.year')}
@@ -159,7 +207,7 @@ const PaywallModal: React.FC = () => {
                   {t('premium.price.monthly')}
                 </Text>
                 <Text style={[styles.planPrice, { color: theme.colors.text }]}>
-                  $3.99
+                  {packages.monthly?.product?.priceString || '$3.99'}
                 </Text>
                 <Text style={[styles.planPer, { color: theme.colors.textSecondary }]}>
                   / {t('premium.price.month')}
