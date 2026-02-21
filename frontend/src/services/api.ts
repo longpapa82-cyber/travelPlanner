@@ -98,18 +98,31 @@ class ApiService {
               await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, accessToken);
               await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
 
+              // Verify tokens were persisted (keychain can silently fail)
+              const verified = await secureStorage.verifyItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
+              if (!verified) {
+                // Retry once
+                await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
+              }
+
               this.isRefreshing = false;
               this.onRefreshed(accessToken);
 
               // Retry original request with new token
               originalRequest.headers.Authorization = `Bearer ${accessToken}`;
               return this.api(originalRequest);
-            } catch (refreshError) {
+            } catch (refreshError: any) {
               this.isRefreshing = false;
               this.refreshSubscribers = [];
-              await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-              await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-              this.onAuthExpired?.();
+
+              // Only clear tokens on explicit server rejection (401/403)
+              // Network errors should preserve tokens for retry on next launch
+              const status = refreshError?.response?.status;
+              if (status === 401 || status === 403) {
+                await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+                await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+                this.onAuthExpired?.();
+              }
               return Promise.reject(error);
             }
           }

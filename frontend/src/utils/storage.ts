@@ -9,6 +9,13 @@ const memoryStore = new Map<string, string>();
 // Keys stored only in memory on web — never written to localStorage
 const MEMORY_ONLY_KEYS = ['@travelplanner:auth_token'];
 
+const KEYCHAIN_MAX_RETRIES = 3;
+const KEYCHAIN_RETRY_DELAY_MS = 300;
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export const secureStorage = {
   async setItem(key: string, value: string): Promise<void> {
     if (isWeb) {
@@ -29,12 +36,24 @@ export const secureStorage = {
       }
       return localStorage.getItem(key);
     } else {
-      try {
-        const credentials = await Keychain.getGenericPassword({ service: key });
-        return credentials ? credentials.password : null;
-      } catch (error) {
-        return null;
+      // Retry up to 3 times — react-native-keychain can return false
+      // spuriously on Android after app restart (known issue #594)
+      for (let attempt = 1; attempt <= KEYCHAIN_MAX_RETRIES; attempt++) {
+        try {
+          const credentials = await Keychain.getGenericPassword({ service: key });
+          if (credentials) return credentials.password;
+          // credentials === false — may be a spurious miss on Android
+          if (attempt < KEYCHAIN_MAX_RETRIES) {
+            await delay(KEYCHAIN_RETRY_DELAY_MS);
+          }
+        } catch (error) {
+          console.warn(`[SecureStorage] getItem("${key}") attempt ${attempt} failed:`, error);
+          if (attempt < KEYCHAIN_MAX_RETRIES) {
+            await delay(KEYCHAIN_RETRY_DELAY_MS);
+          }
+        }
       }
+      return null;
     }
   },
 
@@ -70,6 +89,17 @@ export const secureStorage = {
       } catch (error) {
         // Silent fail — best-effort clear
       }
+    }
+  },
+
+  /** Verify a value was actually persisted to keychain */
+  async verifyItem(key: string, expected: string): Promise<boolean> {
+    if (isWeb) return true;
+    try {
+      const credentials = await Keychain.getGenericPassword({ service: key });
+      return credentials ? credentials.password === expected : false;
+    } catch {
+      return false;
     }
   },
 };

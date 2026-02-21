@@ -18,4 +18,5 @@ export const STORAGE_KEYS = {
   REFRESH_TOKEN: '@travelplanner:refresh_token',
   USER_DATA: '@travelplanner:user_data',
   LANGUAGE: '@travelplanner:language',
+  SESSION_FLAG: '@travelplanner:is_logged_in',
 };

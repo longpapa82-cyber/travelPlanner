@@ -1,4 +1,6 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect, useRef, ReactNode } from 'react';
+import { AppState, AppStateStatus } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User, AuthResponse } from '../types';
 import { STORAGE_KEYS } from '../constants/config';
 import apiService from '../services/api';
@@ -59,11 +61,34 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const appState = useRef<AppStateStatus>(AppState.currentState);
+
+  // Session flag helpers — AsyncStorage is more reliable than Keychain for simple flags
+  const setSessionFlag = async (loggedIn: boolean) => {
+    try {
+      if (loggedIn) {
+        await AsyncStorage.setItem(STORAGE_KEYS.SESSION_FLAG, 'true');
+      } else {
+        await AsyncStorage.removeItem(STORAGE_KEYS.SESSION_FLAG);
+      }
+    } catch {
+      // Best-effort — non-critical
+    }
+  };
+
+  const getSessionFlag = async (): Promise<boolean> => {
+    try {
+      return (await AsyncStorage.getItem(STORAGE_KEYS.SESSION_FLAG)) === 'true';
+    } catch {
+      return false;
+    }
+  };
 
   // Register auth expired callback so 401 responses trigger logout
   useEffect(() => {
     apiService.setOnAuthExpired(() => {
       setUser(null);
+      setSessionFlag(false);
     });
   }, []);
 
@@ -72,32 +97,103 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuthStatus();
   }, []);
 
+  // T6: Refresh tokens when app returns to foreground
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextState: AppStateStatus) => {
+      if (appState.current.match(/inactive|background/) && nextState === 'active') {
+        silentRefresh();
+      }
+      appState.current = nextState;
+    });
+    return () => subscription.remove();
+  }, []);
+
   const checkAuthStatus = async () => {
     try {
       const token = await secureStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
 
       if (token) {
-        const profile = await apiService.getProfile();
-        setUser(profile);
-        registerPushAfterLogin();
-      } else {
-        // Access token lost (web page refresh) — try silent refresh
-        const refreshToken = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-        if (refreshToken) {
+        try {
+          const profile = await apiService.getProfile();
+          setUser(profile);
+          setSessionFlag(true);
+          registerPushAfterLogin();
+          return;
+        } catch (profileError: any) {
+          // 401 = token expired → fall through to refresh
+          // Network error = offline → try cached profile
+          if (profileError?.response?.status !== 401) {
+            const cached = await offlineCache.get('profile');
+            if (cached) {
+              setUser(cached as User);
+              return;
+            }
+          }
+          // Fall through to refresh attempt
+        }
+      }
+
+      // Access token missing or expired — try silent refresh
+      const refreshToken = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+
+      if (refreshToken) {
+        try {
           const response = await apiService.refreshToken(refreshToken);
           await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
           await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
           const profile = await apiService.getProfile();
           setUser(profile);
+          setSessionFlag(true);
           registerPushAfterLogin();
+          return;
+        } catch (refreshError: any) {
+          const status = refreshError?.response?.status;
+          // Only clear tokens on explicit server rejection (401/403)
+          // Network errors → keep tokens, user can retry next time
+          if (status === 401 || status === 403) {
+            await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+            await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+            await setSessionFlag(false);
+            return;
+          }
         }
       }
+
+      // T4+T5: Last resort — if session flag says we were logged in,
+      // serve cached profile (keychain may have lost both tokens)
+      const wasLoggedIn = await getSessionFlag();
+      if (wasLoggedIn) {
+        const cached = await offlineCache.get('profile');
+        if (cached) {
+          setUser(cached as User);
+          return;
+        }
+        // Session flag set but no cache — clear stale flag
+        await setSessionFlag(false);
+      }
     } catch (error) {
-      // Auth failed — clear stale tokens and show login screen
-      await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-      await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+      // Unexpected error in keychain access itself
+      console.warn('[AuthContext] checkAuthStatus unexpected error:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // T6: Silent refresh on foreground — keeps 15min token fresh
+  const silentRefresh = async () => {
+    try {
+      const refreshToken = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+      if (!refreshToken) return;
+
+      const response = await apiService.refreshToken(refreshToken);
+      await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
+      await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
+
+      // Refresh user profile while we're at it
+      const profile = await apiService.getProfile();
+      setUser(profile);
+    } catch {
+      // Silent fail — don't disrupt the user on foreground
     }
   };
 
@@ -121,6 +217,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authResponse.refreshToken);
 
       setUser(authResponse.user);
+      await setSessionFlag(true);
       trackEvent('login', { method: 'email' });
       registerPushAfterLogin();
     } catch (error) {
@@ -138,6 +235,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
 
       setUser(response.user);
+      await setSessionFlag(true);
       trackEvent('login', { method: '2fa' });
       registerPushAfterLogin();
     } catch (error) {
@@ -154,6 +252,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
 
       setUser(response.user);
+      await setSessionFlag(true);
       trackEvent('register', { method: 'email' });
     } catch (error) {
       throw error;
@@ -173,6 +272,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authResponse.refreshToken);
 
     setUser(authResponse.user);
+    await setSessionFlag(true);
     registerPushAfterLogin();
   };
 
@@ -231,11 +331,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Clear tokens and cached data
       await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
       await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+      await setSessionFlag(false);
       await offlineCache.clearAll();
 
       setUser(null);
     } catch (error) {
       // Silent fail - force clear user state regardless
+      await setSessionFlag(false);
       setUser(null);
     }
   };
