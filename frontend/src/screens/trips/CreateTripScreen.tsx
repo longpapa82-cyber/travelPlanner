@@ -1191,7 +1191,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         onRequestClose={() => setShowAiConsent(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: theme.colors.card }]}>
+          <View style={[styles.modalContent, { backgroundColor: theme.colors.surface }]}>
             <Icon name="robot" size={40} color={theme.colors.primary} />
             <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
               {t('create.aiConsent.title')}
