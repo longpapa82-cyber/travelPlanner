@@ -208,6 +208,12 @@ export class AuthService {
         await this.cacheManager.del(`refresh:${payload.jti}`);
       }
 
+      // Reject refresh if account was deleted
+      const isDeleted = await this.cacheManager.get(`deleted_user:${payload.sub}`);
+      if (isDeleted) {
+        throw new UnauthorizedException('Account has been deleted');
+      }
+
       // Get user to include in response
       const user = await this.usersService.findById(payload.sub);
 
@@ -528,10 +534,20 @@ export class AuthService {
       // Non-numeric code (e.g. backup code) — TOTP check fails, try backup below
     }
 
-    // Try backup code if TOTP fails
+    // Try backup code if TOTP fails — separate rate limit from TOTP
     let usedBackupCode = false;
     let remainingBackupCodes = user.twoFactorBackupCodes?.length ?? 0;
     if (!isValid && user.twoFactorBackupCodes) {
+      // Check backup code attempt lockout (separate from TOTP)
+      const backupLockKey = `2fa_backup_attempts:${payload.sub}`;
+      const backupAttempts = await this.cacheManager.get<number>(backupLockKey);
+      if (backupAttempts !== null && backupAttempts !== undefined && backupAttempts >= 3) {
+        throw new HttpException(
+          'Backup code verification temporarily locked. Try again in 15 minutes.',
+          HttpStatus.LOCKED,
+        );
+      }
+
       const codeUpper = code.toUpperCase();
       const idx = user.twoFactorBackupCodes.indexOf(codeUpper);
       if (idx !== -1) {
@@ -541,14 +557,19 @@ export class AuthService {
         remaining.splice(idx, 1);
         remainingBackupCodes = remaining.length;
         await this.usersService.updateBackupCodes(user.id, remaining);
+        await this.cacheManager.del(backupLockKey);
         this.logger.warn(
           `2FA backup code used for user ${user.id}. Remaining: ${remainingBackupCodes}`,
         );
+      } else {
+        // Track failed backup code attempts separately
+        const currentBackup = (await this.cacheManager.get<number>(backupLockKey)) || 0;
+        await this.cacheManager.set(backupLockKey, currentBackup + 1, this.LOGIN_LOCKOUT_TTL);
       }
     }
 
     if (!isValid) {
-      // Track failed 2FA attempts
+      // Track failed TOTP attempts
       const current = (await this.cacheManager.get<number>(tfaLockKey)) || 0;
       await this.cacheManager.set(tfaLockKey, current + 1, this.LOGIN_LOCKOUT_TTL);
       throw new UnauthorizedException('Invalid 2FA code');

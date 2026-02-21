@@ -1,10 +1,12 @@
 import {
   Injectable,
+  Inject,
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { User, AuthProvider } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
@@ -16,6 +18,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly dataSource: DataSource,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   async create(data: {
@@ -132,6 +135,9 @@ export class UsersService {
     }
 
     await this.userRepository.delete(id);
+
+    // Blacklist deleted user for 30 days so refresh tokens cannot mint new access tokens
+    await this.cacheManager.set(`deleted_user:${id}`, '1', 30 * 24 * 60 * 60 * 1000);
   }
 
   async generateEmailVerificationToken(userId: string): Promise<string> {

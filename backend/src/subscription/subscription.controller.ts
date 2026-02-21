@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
+  InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -44,11 +45,17 @@ export class SubscriptionController {
     @Body() dto: RevenueCatWebhookDto,
     @Headers('authorization') authHeader: string,
   ) {
-    // Verify webhook secret
+    // Verify webhook secret — mandatory in production
     const webhookSecret = this.configService.get<string>(
       'REVENUECAT_WEBHOOK_SECRET',
     );
-    if (webhookSecret) {
+    if (!webhookSecret) {
+      if (process.env.NODE_ENV === 'production') {
+        this.logger.error('REVENUECAT_WEBHOOK_SECRET not configured in production');
+        throw new InternalServerErrorException('Webhook not configured');
+      }
+      this.logger.warn('RevenueCat webhook: no secret configured, skipping auth');
+    } else {
       const expectedAuth = `Bearer ${webhookSecret}`;
       if (authHeader !== expectedAuth) {
         this.logger.warn('RevenueCat webhook: invalid authorization header');

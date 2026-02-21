@@ -14,9 +14,7 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { SplitMethod, ExpenseCategory } from '../entities/expense.entity';
-
-const stripHtml = ({ value }: { value: unknown }) =>
-  typeof value === 'string' ? value.replace(/<[^>]*>/g, '') : value;
+import { stripHtml } from '../../common/utils/sanitize';
 
 class SplitDto {
   @IsUUID()

@@ -13,9 +13,7 @@ import {
 import { Transform } from 'class-transformer';
 import { TripStatus } from '../entities/trip.entity';
 import { IsAfterDate } from '../../common/validators/is-after-date.validator';
-
-const stripHtml = ({ value }: { value: unknown }) =>
-  typeof value === 'string' ? value.replace(/<[^>]*>/g, '') : value;
+import { stripHtml } from '../../common/utils/sanitize';
 
 export class UpdateTripDto {
   @IsString()

@@ -44,11 +44,12 @@ export class SocialService {
       throw new NotFoundException('User not found');
     }
 
+    // Idempotent follow — silently succeed if already following
     const existing = await this.followRepository.findOne({
       where: { followerId, followingId },
     });
     if (existing) {
-      throw new ConflictException('Already following this user');
+      return;
     }
 
     await this.followRepository.save(
@@ -94,7 +95,7 @@ export class SocialService {
       where: { followerId, followingId },
     });
     if (!existing) {
-      throw new NotFoundException('Not following this user');
+      return; // Idempotent — already not following
     }
 
     await this.followRepository.remove(existing);
@@ -176,11 +177,12 @@ export class SocialService {
       throw new BadRequestException('Cannot like a private trip');
     }
 
+    // Idempotent like — silently succeed if already liked
     const existing = await this.tripLikeRepository.findOne({
       where: { userId, tripId },
     });
     if (existing) {
-      throw new ConflictException('Already liked this trip');
+      return;
     }
 
     await this.tripLikeRepository.save(

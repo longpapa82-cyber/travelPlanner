@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Repository, DataSource } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -63,6 +64,10 @@ describe('UsersService', () => {
         {
           provide: DataSource,
           useValue: mockDataSource,
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: { get: jest.fn(), set: jest.fn(), del: jest.fn() },
         },
       ],
     }).compile();
@@ -423,24 +428,29 @@ describe('UsersService', () => {
   });
 
   describe('remove', () => {
-    it('should delete user', async () => {
-      // Arrange
-      const userId = mockUser.id;
+    it('should delete user and blacklist in cache', async () => {
+      // Arrange — OAuth user (no password required)
+      const oauthUser = { ...mockUser, provider: AuthProvider.GOOGLE };
+      repository.findOne.mockResolvedValue(oauthUser);
       repository.delete.mockResolvedValue(undefined as any);
 
       // Act
-      await service.remove(userId);
+      await service.remove(mockUser.id);
 
       // Assert
-      expect(repository.delete).toHaveBeenCalledWith(userId);
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { id: mockUser.id },
+        select: ['id', 'provider', 'passwordHash'],
+      });
+      expect(repository.delete).toHaveBeenCalledWith(mockUser.id);
     });
 
-    it('should not throw error if user does not exist', async () => {
+    it('should throw NotFoundException if user does not exist', async () => {
       // Arrange
-      repository.delete.mockResolvedValue({ affected: 0 } as any);
+      repository.findOne.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(service.remove('non-existent-id')).resolves.not.toThrow();
+      await expect(service.remove('non-existent-id')).rejects.toThrow(NotFoundException);
     });
   });
 });

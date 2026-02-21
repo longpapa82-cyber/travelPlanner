@@ -12,10 +12,7 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { IsAfterDate } from '../../common/validators/is-after-date.validator';
-
-/** Strip HTML tags to prevent stored XSS */
-const stripHtml = ({ value }: { value: unknown }) =>
-  typeof value === 'string' ? value.replace(/<[^>]*>/g, '') : value;
+import { stripHtml } from '../../common/utils/sanitize';
 
 export class CreateTripDto {
   @IsString()

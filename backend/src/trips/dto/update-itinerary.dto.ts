@@ -11,9 +11,7 @@ import {
   Matches,
 } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
-
-const stripHtml = ({ value }: { value: unknown }) =>
-  typeof value === 'string' ? value.replace(/<[^>]*>/g, '') : value;
+import { stripHtml } from '../../common/utils/sanitize';
 
 export class ActivityDto {
   @IsString()

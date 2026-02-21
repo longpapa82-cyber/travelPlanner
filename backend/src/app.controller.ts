@@ -1,10 +1,18 @@
-import { Controller, Get, Header, Inject, Param, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Res,
+  HttpStatus,
+} from '@nestjs/common';
 import type { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull, MoreThan, Not } from 'typeorm';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Trip } from './trips/entities/trip.entity';
 import { AppService } from './app.service';
+import { isShuttingDown } from './common/lifecycle.service';
 
 @Controller()
 export class AppController {
@@ -20,7 +28,15 @@ export class AppController {
   }
 
   @Get('health')
-  async getHealth() {
+  async getHealth(@Res() res: Response) {
+    // During graceful shutdown, return 503 so Nginx/Docker stop routing traffic
+    if (isShuttingDown) {
+      return res.status(HttpStatus.SERVICE_UNAVAILABLE).json({
+        status: 'shutting_down',
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     const checks: Record<string, 'up' | 'down'> = {};
 
     // Database check
@@ -42,12 +58,12 @@ export class AppController {
 
     const allUp = Object.values(checks).every((v) => v === 'up');
 
-    return {
+    return res.status(HttpStatus.OK).json({
       status: allUp ? 'ok' : 'degraded',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       checks,
-    };
+    });
   }
 
   @Get('sitemap.xml')

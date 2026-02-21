@@ -98,8 +98,11 @@ async function bootstrap() {
     defaultVersion: VERSION_NEUTRAL,
   });
 
-  // Enable CORS — no wildcard fallback in production
-  const corsOrigin = process.env.CORS_ORIGIN?.split(',');
+  // Enable CORS — fail-fast in production if not configured
+  const corsOrigin = process.env.CORS_ORIGIN?.split(',').map(s => s.trim()).filter(Boolean);
+  if ((!corsOrigin || corsOrigin.length === 0) && process.env.NODE_ENV === 'production') {
+    throw new Error('CORS_ORIGIN must be set in production environment');
+  }
   app.enableCors({
     origin: corsOrigin || [
       'http://localhost:8081',
