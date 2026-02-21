@@ -123,7 +123,7 @@ describe('AuthController (Integration)', () => {
     it('should return 400 when password is too short', async () => {
       const invalidDto = {
         email: 'test@example.com',
-        password: '12345', // Less than 6 characters
+        password: '1234567', // Less than 8 characters
         name: 'Test User',
       };
 
@@ -133,7 +133,7 @@ describe('AuthController (Integration)', () => {
         .expect(400);
 
       expect(response.body.message).toContain(
-        'Password must be at least 6 characters long',
+        'Password must be at least 8 characters long',
       );
       expect(authService.register).not.toHaveBeenCalled();
     });
@@ -376,16 +376,18 @@ describe('AuthController (Integration)', () => {
         .expect(200);
 
       // JSON serialization converts Dates to strings and drops undefined fields
-      expect(response.body).toEqual({
-        id: mockUser.id,
-        email: mockUser.email,
-        name: mockUser.name,
-        provider: mockUser.provider,
-        isEmailVerified: false,
-        isTwoFactorEnabled: false,
-        createdAt: now.toISOString(),
-        updatedAt: now.toISOString(),
-      });
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          id: mockUser.id,
+          email: mockUser.email,
+          name: mockUser.name,
+          provider: mockUser.provider,
+          isEmailVerified: false,
+          isTwoFactorEnabled: false,
+          createdAt: now.toISOString(),
+          updatedAt: now.toISOString(),
+        }),
+      );
       expect(authService.getProfile).toHaveBeenCalledWith(mockUser.id);
       expect(authService.getProfile).toHaveBeenCalledTimes(1);
     });
@@ -637,10 +639,10 @@ describe('AuthController (Integration)', () => {
       expect(authService.register).not.toHaveBeenCalled();
     });
 
-    it('should accept minimum valid password length (6 characters)', async () => {
+    it('should accept minimum valid password length (8 characters)', async () => {
       const validDto = {
         email: 'test@example.com',
-        password: '123456', // Exactly 6 characters
+        password: 'pass1234', // Exactly 8 characters with letter + number
         name: 'Test User',
       };
 

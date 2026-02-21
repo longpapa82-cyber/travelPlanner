@@ -11,6 +11,7 @@ import { TimezoneService } from './services/timezone.service';
 import { WeatherService } from './services/weather.service';
 import { TripStatusScheduler } from './trip-status.scheduler';
 import { NotificationsService } from '../notifications/notifications.service';
+import { SubscriptionService } from '../subscription/subscription.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { SortBy, SortOrder } from './dto/query-trips.dto';
@@ -191,6 +192,13 @@ describe('TripsService', () => {
             createForMultipleUsers: jest.fn().mockResolvedValue(undefined),
             registerPushToken: jest.fn().mockResolvedValue(undefined),
             removePushToken: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: SubscriptionService,
+          useValue: {
+            checkAiTripLimit: jest.fn().mockResolvedValue({ allowed: true, remaining: 3 }),
+            incrementAiTripCount: jest.fn().mockResolvedValue(undefined),
           },
         },
       ],
