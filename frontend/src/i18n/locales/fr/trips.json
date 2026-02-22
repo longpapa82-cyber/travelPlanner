@@ -307,7 +307,9 @@
       "deleteSuccess": "Le voyage a été supprimé",
       "deleteError": "Échec de la suppression du voyage",
       "toggleError": "Échec de la mise à jour du statut",
-      "reorderError": "Échec de la réorganisation"
+      "reorderError": "Échec de la réorganisation",
+      "exportSuccess": "Fichier calendrier exporté",
+      "exportError": "Échec de l'exportation du calendrier"
     },
     "photos": {
       "addCover": "Ajouter une photo de couverture",

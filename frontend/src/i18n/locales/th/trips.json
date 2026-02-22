@@ -307,7 +307,9 @@
       "deleteSuccess": "ลบทริปแล้ว",
       "deleteError": "ลบทริปไม่สำเร็จ",
       "toggleError": "อัปเดตสถานะไม่สำเร็จ",
-      "reorderError": "เรียงลำดับใหม่ไม่สำเร็จ"
+      "reorderError": "เรียงลำดับใหม่ไม่สำเร็จ",
+      "exportSuccess": "ส่งออกไฟล์ปฏิทินสำเร็จ",
+      "exportError": "ส่งออกปฏิทินไม่สำเร็จ"
     },
     "photos": {
       "addCover": "เพิ่มรูปปก",

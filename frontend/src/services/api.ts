@@ -355,6 +355,17 @@ class ApiService {
     return `${API_URL}/trips/${id}/export/ical`;
   }
 
+  async downloadIcal(id: string): Promise<{ data: string; filename: string }> {
+    const response = await this.api.get(`/trips/${id}/export/ical`, {
+      responseType: 'text',
+      headers: { Accept: 'text/calendar' },
+    });
+    const disposition = response.headers['content-disposition'] || '';
+    const filenameMatch = disposition.match(/filename="?([^";]+)"?/);
+    const filename = filenameMatch ? filenameMatch[1] : 'trip.ics';
+    return { data: response.data, filename };
+  }
+
   // Activity Methods
   async addActivity(tripId: string, itineraryId: string, activityData: any) {
     try {
@@ -480,10 +491,28 @@ class ApiService {
 
   async uploadPhoto(uri: string): Promise<{ url: string }> {
     const formData = new FormData();
-    const filename = uri.split('/').pop() || 'photo.jpg';
-    const match = /\.(\w+)$/.exec(filename);
-    const type = match ? `image/${match[1]}` : 'image/jpeg';
-    formData.append('photo', { uri, name: filename, type } as any);
+    const isWeb = typeof document !== 'undefined';
+
+    if (isWeb && uri.startsWith('data:')) {
+      // Web: convert data URI to Blob
+      const res = await fetch(uri);
+      const blob = await res.blob();
+      const ext = blob.type.split('/')[1] || 'jpeg';
+      formData.append('photo', blob, `photo.${ext}`);
+    } else if (isWeb && uri.startsWith('blob:')) {
+      // Web: blob URL from file picker
+      const res = await fetch(uri);
+      const blob = await res.blob();
+      const ext = blob.type.split('/')[1] || 'jpeg';
+      formData.append('photo', blob, `photo.${ext}`);
+    } else {
+      // Native: RN-style { uri, name, type } object
+      const filename = uri.split('/').pop() || 'photo.jpg';
+      const match = /\.(\w+)$/.exec(filename);
+      const type = match ? `image/${match[1]}` : 'image/jpeg';
+      formData.append('photo', { uri, name: filename, type } as any);
+    }
+
     const response = await this.api.post('/trips/upload/photo', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });

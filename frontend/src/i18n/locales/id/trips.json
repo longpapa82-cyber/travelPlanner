@@ -307,7 +307,9 @@
       "deleteSuccess": "Perjalanan telah dihapus",
       "deleteError": "Gagal menghapus perjalanan",
       "toggleError": "Gagal memperbarui status",
-      "reorderError": "Gagal mengurutkan ulang"
+      "reorderError": "Gagal mengurutkan ulang",
+      "exportSuccess": "File kalender berhasil diekspor",
+      "exportError": "Gagal mengekspor kalender"
     },
     "photos": {
       "addCover": "Tambah foto sampul",

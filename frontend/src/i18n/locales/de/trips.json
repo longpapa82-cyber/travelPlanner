@@ -307,7 +307,9 @@
       "deleteSuccess": "Reise wurde gelöscht",
       "deleteError": "Reise konnte nicht gelöscht werden",
       "toggleError": "Status konnte nicht aktualisiert werden",
-      "reorderError": "Neuordnung fehlgeschlagen"
+      "reorderError": "Neuordnung fehlgeschlagen",
+      "exportSuccess": "Kalenderdatei exportiert",
+      "exportError": "Kalenderexport fehlgeschlagen"
     },
     "photos": {
       "addCover": "Titelbild hinzufügen",

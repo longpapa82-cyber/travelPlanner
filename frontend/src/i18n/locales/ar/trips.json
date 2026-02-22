@@ -307,7 +307,9 @@
       "deleteSuccess": "تم حذف الرحلة",
       "deleteError": "فشل حذف الرحلة",
       "toggleError": "فشل تحديث الحالة",
-      "reorderError": "فشل إعادة الترتيب"
+      "reorderError": "فشل إعادة الترتيب",
+      "exportSuccess": "تم تصدير ملف التقويم",
+      "exportError": "فشل تصدير التقويم"
     },
     "photos": {
       "addCover": "إضافة صورة غلاف",

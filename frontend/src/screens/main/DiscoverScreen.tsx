@@ -8,6 +8,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Image,
+  Share,
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -19,6 +20,7 @@ import { FeedTrip, ProfileStackParamList } from '../../types';
 import apiService from '../../services/api';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { trackEvent } from '../../services/eventTracker';
+import { APP_URL } from '../../constants/config';
 
 type Tab = 'following' | 'trending';
 
@@ -137,6 +139,22 @@ const DiscoverScreen = () => {
     navigation.navigate('UserProfile', { userId });
   };
 
+  const handleTripPress = (tripId: string) => {
+    trackEvent('trip_viewed', { tripId, source: 'discover' });
+    (navigation as any).navigate('Trips', { screen: 'TripDetail', params: { tripId } });
+  };
+
+  const handleShareTrip = async (trip: FeedTrip) => {
+    try {
+      await Share.share({
+        message: `${trip.destination}${trip.country ? `, ${trip.country}` : ''}\n${t('tripBy', { name: trip.user.name })}\n\n${APP_URL}`,
+      });
+      trackEvent('trip_shared', { tripId: trip.id, source: 'discover' });
+    } catch {
+      // User cancelled share
+    }
+  };
+
   const formatDateRange = (start: string, end: string): string => {
     const s = new Date(start);
     const e = new Date(end);
@@ -147,7 +165,13 @@ const DiscoverScreen = () => {
   const styles = createStyles(theme, isDark);
 
   const renderTripCard = ({ item }: { item: FeedTrip }) => (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => handleTripPress(item.id)}
+      activeOpacity={0.85}
+      accessibilityRole="button"
+      accessibilityLabel={`${item.destination} - ${t('tripBy', { name: item.user.name })}`}
+    >
       {item.coverImage ? (
         <Image source={{ uri: item.coverImage }} style={styles.coverImage} />
       ) : (
@@ -191,6 +215,8 @@ const DiscoverScreen = () => {
             style={styles.likeButton}
             onPress={() => handleLikeToggle(item)}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityLabel={t('common:like')}
+            accessibilityRole="button"
           >
             <Icon
               name={item.isLiked ? 'heart' : 'heart-outline'}
@@ -206,9 +232,22 @@ const DiscoverScreen = () => {
               {item.likesCount}
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.shareButton}
+            onPress={() => handleShareTrip(item)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityLabel={t('common:share')}
+            accessibilityRole="button"
+          >
+            <Icon
+              name="share-variant"
+              size={20}
+              color={theme.colors.textSecondary}
+            />
+          </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   const emptyKey = activeTab === 'following' ? 'emptyFollowing' : 'emptyTrending';
@@ -404,12 +443,16 @@ const createStyles = (theme: any, isDark: boolean) =>
     cardFooter: {
       flexDirection: 'row',
       alignItems: 'center',
+      justifyContent: 'space-between',
       marginTop: 4,
     },
     likeButton: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 4,
+    },
+    shareButton: {
+      padding: 4,
     },
     likeCount: {
       fontSize: 14,

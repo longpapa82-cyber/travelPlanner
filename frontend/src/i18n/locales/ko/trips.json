@@ -313,7 +313,9 @@
       "deleteSuccess": "여행이 삭제되었습니다",
       "deleteError": "삭제에 실패했습니다",
       "toggleError": "상태 변경에 실패했습니다",
-      "reorderError": "순서 변경에 실패했습니다"
+      "reorderError": "순서 변경에 실패했습니다",
+      "exportSuccess": "캘린더 파일이 내보내졌습니다",
+      "exportError": "캘린더 내보내기에 실패했습니다"
     },
     "photos": {
       "addCover": "커버 사진 추가",

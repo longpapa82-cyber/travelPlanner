@@ -307,7 +307,9 @@
       "deleteSuccess": "Chuy\u1ebfn \u0111i \u0111\u00e3 \u0111\u01b0\u1ee3c x\u00f3a",
       "deleteError": "X\u00f3a chuy\u1ebfn \u0111i th\u1ea5t b\u1ea1i",
       "toggleError": "C\u1eadp nh\u1eadt tr\u1ea1ng th\u00e1i th\u1ea5t b\u1ea1i",
-      "reorderError": "S\u1eafp x\u1ebfp l\u1ea1i th\u1ea5t b\u1ea1i"
+      "reorderError": "S\u1eafp x\u1ebfp l\u1ea1i th\u1ea5t b\u1ea1i",
+      "exportSuccess": "Xu\u1ea5t file l\u1ecbch th\u00e0nh c\u00f4ng",
+      "exportError": "Xu\u1ea5t l\u1ecbch th\u1ea5t b\u1ea1i"
     },
     "photos": {
       "addCover": "Th\u00eam \u1ea3nh b\u00eca",

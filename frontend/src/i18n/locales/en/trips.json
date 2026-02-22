@@ -313,7 +313,9 @@
       "deleteSuccess": "Trip has been deleted",
       "deleteError": "Failed to delete trip",
       "toggleError": "Failed to update status",
-      "reorderError": "Failed to reorder"
+      "reorderError": "Failed to reorder",
+      "exportSuccess": "Calendar file exported successfully",
+      "exportError": "Failed to export calendar"
     },
     "photos": {
       "addCover": "Add cover photo",

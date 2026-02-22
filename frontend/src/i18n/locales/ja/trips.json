@@ -313,7 +313,9 @@
       "deleteSuccess": "旅行が削除されました",
       "deleteError": "削除に失敗しました",
       "toggleError": "状態の変更に失敗しました",
-      "reorderError": "並べ替えに失敗しました"
+      "reorderError": "並べ替えに失敗しました",
+      "exportSuccess": "カレンダーファイルをエクスポートしました",
+      "exportError": "カレンダーのエクスポートに失敗しました"
     },
     "photos": {
       "addCover": "カバー写真を追加",

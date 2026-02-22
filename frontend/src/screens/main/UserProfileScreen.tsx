@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  Share,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -19,6 +20,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import apiService from '../../services/api';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { trackEvent } from '../../services/eventTracker';
+import { APP_URL } from '../../constants/config';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'UserProfile'>;
 
@@ -147,6 +149,17 @@ const UserProfileScreen = ({ route }: Props) => {
     }
   };
 
+  const handleShareTrip = async (trip: FeedTrip) => {
+    try {
+      await Share.share({
+        message: `${trip.destination}${trip.country ? `, ${trip.country}` : ''}\n${t('tripBy', { name: profile?.name || '' })}\n\n${APP_URL}`,
+      });
+      trackEvent('trip_shared', { tripId: trip.id, source: 'user_profile' });
+    } catch {
+      // User cancelled share
+    }
+  };
+
   const formatDateRange = (start: string, end: string): string => {
     const s = new Date(start);
     const e = new Date(end);
@@ -268,25 +281,41 @@ const UserProfileScreen = ({ route }: Props) => {
         <Text style={[styles.tripDate, { color: theme.colors.textSecondary }]}>
           {formatDateRange(item.startDate, item.endDate)}
         </Text>
-        <TouchableOpacity
-          style={styles.likeRow}
-          onPress={() => handleLikeToggle(item)}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Icon
-            name={item.isLiked ? 'heart' : 'heart-outline'}
-            size={18}
-            color={item.isLiked ? colors.error.main : theme.colors.textSecondary}
-          />
-          <Text
-            style={[
-              styles.likeCount,
-              { color: item.isLiked ? colors.error.main : theme.colors.textSecondary },
-            ]}
+        <View style={styles.tripActions}>
+          <TouchableOpacity
+            style={styles.likeRow}
+            onPress={() => handleLikeToggle(item)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityLabel={t('common:like')}
+            accessibilityRole="button"
           >
-            {item.likesCount}
-          </Text>
-        </TouchableOpacity>
+            <Icon
+              name={item.isLiked ? 'heart' : 'heart-outline'}
+              size={18}
+              color={item.isLiked ? colors.error.main : theme.colors.textSecondary}
+            />
+            <Text
+              style={[
+                styles.likeCount,
+                { color: item.isLiked ? colors.error.main : theme.colors.textSecondary },
+              ]}
+            >
+              {item.likesCount}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleShareTrip(item)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityLabel={t('common:share')}
+            accessibilityRole="button"
+          >
+            <Icon
+              name="share-variant"
+              size={18}
+              color={theme.colors.textSecondary}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -428,11 +457,16 @@ const createStyles = (theme: any, isDark: boolean) =>
     tripDate: {
       fontSize: 13,
     },
+    tripActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: 2,
+    },
     likeRow: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 4,
-      marginTop: 2,
     },
     likeCount: {
       fontSize: 13,

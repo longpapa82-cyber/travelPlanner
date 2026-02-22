@@ -307,7 +307,9 @@
       "deleteSuccess": "Viaje eliminado",
       "deleteError": "Error al eliminar viaje",
       "toggleError": "Error al actualizar estado",
-      "reorderError": "Error al reordenar"
+      "reorderError": "Error al reordenar",
+      "exportSuccess": "Archivo de calendario exportado",
+      "exportError": "Error al exportar el calendario"
     },
     "photos": {
       "addCover": "Añadir foto de portada",

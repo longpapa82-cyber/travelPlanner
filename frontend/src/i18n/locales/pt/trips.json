@@ -163,7 +163,9 @@
       "duplicateError": "Falha ao duplicar viagem", "confirm": "OK", "cancel": "Cancelar",
       "delete": "Excluir", "success": "Sucesso", "deleteSuccess": "Viagem excluída",
       "deleteError": "Falha ao excluir viagem", "toggleError": "Falha ao atualizar status",
-      "reorderError": "Falha ao reordenar"
+      "reorderError": "Falha ao reordenar",
+      "exportSuccess": "Arquivo de calendário exportado",
+      "exportError": "Falha ao exportar calendário"
     },
     "photos": {
       "addCover": "Adicionar foto de capa", "changeCover": "Alterar foto de capa",

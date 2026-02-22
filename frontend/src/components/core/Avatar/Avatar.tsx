@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { AvatarProps } from './Avatar.types';
 import { getAvatarStyles } from './Avatar.styles';
 import { theme } from '../../../constants/theme';

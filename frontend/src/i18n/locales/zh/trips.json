@@ -307,7 +307,9 @@
       "deleteSuccess": "旅行已删除",
       "deleteError": "删除旅行失败",
       "toggleError": "状态更新失败",
-      "reorderError": "排序失败"
+      "reorderError": "排序失败",
+      "exportSuccess": "日历文件已导出",
+      "exportError": "日历导出失败"
     },
     "photos": {
       "addCover": "添加封面照片",

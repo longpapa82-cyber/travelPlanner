@@ -34,7 +34,8 @@ export type EventName =
   | 'trip_liked'
   | 'trip_unliked'
   | 'feed_viewed'
-  | 'profile_viewed';
+  | 'profile_viewed'
+  | 'trip_exported_ical';
 
 interface AnalyticsEvent {
   name: EventName;

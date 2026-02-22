@@ -167,14 +167,32 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [isDuplicating, tripId, t, navigation]);
 
-  const handleExportIcal = useCallback(() => {
-    const url = apiService.getExportIcalUrl(tripId);
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      window.open(url, '_blank');
-    } else {
-      import('react-native').then(({ Linking }) => Linking.openURL(url));
+  const handleExportIcal = useCallback(async () => {
+    try {
+      const { data, filename } = await apiService.downloadIcal(tripId);
+      if (Platform.OS === 'web' && typeof window !== 'undefined') {
+        const blob = new Blob([data], { type: 'text/calendar;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } else {
+        const { shareAsync } = await import('expo-sharing');
+        const { writeAsStringAsync, cacheDirectory } = await import('expo-file-system');
+        const fileUri = `${cacheDirectory}${filename}`;
+        await writeAsStringAsync(fileUri, data);
+        await shareAsync(fileUri, { mimeType: 'text/calendar', UTI: 'com.apple.ical.ics' });
+      }
+      trackEvent('trip_exported_ical', { tripId });
+      showToast({ type: 'success', message: t('detail.alerts.exportSuccess'), position: 'top' });
+    } catch {
+      showToast({ type: 'error', message: t('detail.alerts.exportError'), position: 'top' });
     }
-  }, [tripId]);
+  }, [tripId, t, showToast]);
 
   const handleChangeCoverPhoto = useCallback(async () => {
     // System picker (PHPicker / Photo Picker) — no permission required
