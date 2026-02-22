@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci
 
-COPY tsconfig.json app.json app.config.js index.ts ./
+COPY tsconfig.json app.json app.config.js App.tsx index.ts ./
 COPY src/ src/
 COPY assets/ assets/
 COPY public/ public/
