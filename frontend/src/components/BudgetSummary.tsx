@@ -52,7 +52,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   숙소: '#EF4444',
 };
 
-export const BudgetSummary: React.FC<Props> = memo(({ trip }) => {
+const BudgetSummaryInner: React.FC<Props> = ({ trip }) => {
   const { t } = useTranslation('trips');
   const { t: tComp } = useTranslation('components');
   const { isDark } = useTheme();
@@ -290,7 +290,10 @@ export const BudgetSummary: React.FC<Props> = memo(({ trip }) => {
       )}
     </View>
   );
-});
+};
+
+export const BudgetSummary = memo(BudgetSummaryInner);
+BudgetSummary.displayName = 'BudgetSummary';
 
 const styles = StyleSheet.create({
   container: {

@@ -26,12 +26,8 @@ const APP_OPEN_UNIT_ID = __DEV__
     : extra.admob?.appOpenAdUnitId?.android || '';
 
 export function useAppOpenAd() {
-  let isPremium = false;
-  try {
-    isPremium = usePremium().isPremium;
-  } catch {
-    // PremiumContext may not be available
-  }
+  // Hook must be called unconditionally (Rules of Hooks)
+  const { isPremium } = usePremium();
 
   const adRef = useRef<AppOpenAd | null>(null);
   const isLoadedRef = useRef(false);
@@ -65,7 +61,7 @@ export function useAppOpenAd() {
       closedUnsub();
       errorUnsub();
     };
-  }, []);
+  }, [isPremium]);
 
   useEffect(() => {
     const cleanup = loadAd();

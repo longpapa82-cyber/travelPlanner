@@ -6,8 +6,8 @@ const isWeb = Platform.OS === 'web';
 // In-memory store for sensitive tokens on web (XSS protection)
 const memoryStore = new Map<string, string>();
 
-// Keys stored only in memory on web — never written to localStorage
-const MEMORY_ONLY_KEYS = ['@travelplanner:auth_token'];
+// Keys stored only in memory on web — never written to localStorage (XSS protection)
+const MEMORY_ONLY_KEYS = ['@travelplanner:auth_token', '@travelplanner:refresh_token'];
 
 const KEYCHAIN_MAX_RETRIES = 3;
 const KEYCHAIN_RETRY_DELAY_MS = 300;

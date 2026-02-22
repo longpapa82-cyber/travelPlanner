@@ -112,7 +112,7 @@ const ACTIVITY_TYPE_ICONS: Record<string, string> = {
   휴식: 'coffee',
 };
 
-export const TripMapView: React.FC<Props> = memo(({ itineraries, destination }) => {
+const TripMapViewInner: React.FC<Props> = ({ itineraries, destination }) => {
   const { t } = useTranslation('trips');
   const { theme, isDark } = useTheme();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -344,7 +344,10 @@ export const TripMapView: React.FC<Props> = memo(({ itineraries, destination }) 
       })}
     </View>
   );
-});
+};
+
+export const TripMapView = memo(TripMapViewInner);
+TripMapView.displayName = 'TripMapView';
 
 const styles = StyleSheet.create({
   container: {

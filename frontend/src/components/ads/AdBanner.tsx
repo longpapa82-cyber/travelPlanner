@@ -46,16 +46,12 @@ const AdBanner: React.FC<AdBannerProps> = ({
   format = 'auto',
   style,
 }) => {
-  // Premium users don't see banner ads
-  try {
-    const { isPremium } = usePremium();
-    if (isPremium) return null;
-  } catch {
-    // PremiumContext may not be available (e.g. outside provider)
-  }
-
-  // Check GDPR consent (non-personalized ads if not consented)
+  // Hooks must be called unconditionally (Rules of Hooks)
+  const { isPremium } = usePremium();
   const { isReady: consentReady, canShowPersonalizedAds } = useGDPRConsent();
+
+  // Premium users don't see banner ads
+  if (isPremium) return null;
 
   // Wait for consent check on native before showing ads
   if (Platform.OS !== 'web' && !consentReady) return null;
