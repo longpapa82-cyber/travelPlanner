@@ -38,7 +38,7 @@ export default ({ config }) => ({
     },
     edgeToEdgeEnabled: true,
     package: 'com.longpapa82.travelplanner',
-    versionCode: 1,
+    versionCode: 3,
     intentFilters: [
       {
         action: 'VIEW',

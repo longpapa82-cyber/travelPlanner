@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { useAuth } from './AuthContext';
 import { SubscriptionStatus } from '../types';
 import { initRevenueCat, logIn, logOut as rcLogOut } from '../services/revenueCat';
+import { PREMIUM_ENABLED } from '../constants/config';
 
 const AI_TRIPS_FREE_LIMIT = 3;
 
@@ -59,6 +60,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const aiTripsRemaining = isPremium ? -1 : Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed);
 
   const showPaywall = useCallback(() => {
+    if (!PREMIUM_ENABLED) return; // Subscription disabled until business registration
     setIsPaywallVisible(true);
   }, []);
 

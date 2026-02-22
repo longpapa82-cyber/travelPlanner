@@ -46,6 +46,7 @@ import DatePickerField from '../../components/core/DatePicker';
 import DestinationInsights from '../../components/DestinationInsights';
 import { useInterstitialAd, useRewardedAd } from '../../components/ads';
 import { usePremium } from '../../contexts/PremiumContext';
+import { PREMIUM_ENABLED } from '../../constants/config';
 import { getHeroImageUrl } from '../../utils/images';
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
@@ -235,8 +236,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     }
     setFieldErrors({});
 
-    // Check AI trip limit for free users before starting
-    if (planningMode === 'ai' && !isPremium && aiTripsRemaining <= 0) {
+    // Check AI trip limit for free users before starting (only when subscription is enabled)
+    if (PREMIUM_ENABLED && planningMode === 'ai' && !isPremium && aiTripsRemaining <= 0) {
       showPaywall();
       return;
     }
@@ -1097,7 +1098,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>
                 {t('create.aiInfo.description')}
               </Text>
-              {!isPremium && (
+              {PREMIUM_ENABLED && !isPremium && (
                 <Text style={[styles.infoText, { color: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600' }]}>
                   {t('create.aiInfo.remaining', { count: aiTripsRemaining, total: 3 })}
                 </Text>

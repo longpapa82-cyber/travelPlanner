@@ -13,6 +13,9 @@ export const OAUTH_CONFIG = {
   },
 };
 
+// Feature flag: set to true after business registration (사업자 등록) to enable subscription UI
+export const PREMIUM_ENABLED = false;
+
 export const STORAGE_KEYS = {
   AUTH_TOKEN: '@travelplanner:auth_token',
   REFRESH_TOKEN: '@travelplanner:refresh_token',

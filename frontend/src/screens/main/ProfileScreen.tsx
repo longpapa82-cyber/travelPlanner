@@ -27,6 +27,7 @@ import Button from '../../components/core/Button';
 import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import PremiumBadge from '../../components/PremiumBadge';
 import { usePremium } from '../../contexts/PremiumContext';
+import { PREMIUM_ENABLED } from '../../constants/config';
 import apiService from '../../services/api';
 
 const ProfileScreen = ({ navigation }: any) => {
@@ -402,21 +403,23 @@ const ProfileScreen = ({ navigation }: any) => {
         </TouchableOpacity>
         */}
 
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('Subscription')}
-          accessibilityRole="button"
-          accessibilityLabel={tPremium('menu.subscription')}
-        >
-          <Icon name="crown" size={24} color="#F59E0B" />
-          <Text style={styles.menuText}>{tPremium('menu.subscription')}</Text>
-          {isPremium ? (
-            <PremiumBadge size="small" />
-          ) : (
-            <Text style={[styles.menuValue, { color: '#F59E0B' }]}>{tPremium('free.name')}</Text>
-          )}
-          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
-        </TouchableOpacity>
+        {PREMIUM_ENABLED && (
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate('Subscription')}
+            accessibilityRole="button"
+            accessibilityLabel={tPremium('menu.subscription')}
+          >
+            <Icon name="crown" size={24} color="#F59E0B" />
+            <Text style={styles.menuText}>{tPremium('menu.subscription')}</Text>
+            {isPremium ? (
+              <PremiumBadge size="small" />
+            ) : (
+              <Text style={[styles.menuValue, { color: '#F59E0B' }]}>{tPremium('free.name')}</Text>
+            )}
+            <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={styles.section}>
