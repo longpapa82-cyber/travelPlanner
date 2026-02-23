@@ -8,6 +8,7 @@ import { useTrackingTransparency } from '../hooks/useTrackingTransparency';
 import { RootStackParamList } from '../types';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
+import VerifyEmailScreen from '../screens/auth/VerifyEmailScreen';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import PrePermissionATTModal, { shouldShowATTPrePermission } from '../components/PrePermissionATTModal';
 
@@ -21,6 +22,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   ],
   config: {
     screens: {
+      VerifyEmail: 'verify-email',
       Main: {
         screens: {
           Home: 'home',
@@ -41,7 +43,6 @@ const linking: LinkingOptions<RootStackParamList> = {
           Onboarding: 'onboarding',
           ForgotPassword: 'forgot-password',
           ResetPassword: 'reset-password',
-          VerifyEmail: 'verify-email',
         },
       },
     },
@@ -83,6 +84,7 @@ const RootNavigator = () => {
         ) : (
           <Stack.Screen name="Auth" component={AuthNavigator} />
         )}
+        <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
       </Stack.Navigator>
 
       <PrePermissionATTModal

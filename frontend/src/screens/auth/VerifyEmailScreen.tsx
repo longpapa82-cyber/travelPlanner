@@ -16,22 +16,24 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AuthStackParamList } from '../../types';
+import { RootStackParamList } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { colors } from '../../constants/theme';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { FadeIn } from '../../components/animation/FadeIn';
 import Button from '../../components/core/Button';
 import apiService from '../../services/api';
 
-type Props = NativeStackScreenProps<AuthStackParamList, 'VerifyEmail'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'VerifyEmail'>;
 
 type VerifyState = 'verifying' | 'success' | 'error';
 
 const VerifyEmailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { token } = route.params;
   const { theme, isDark } = useTheme();
+  const { isAuthenticated } = useAuth();
   const { t } = useTranslation('auth');
   const [state, setState] = useState<VerifyState>('verifying');
   const [errorMessage, setErrorMessage] = useState('');
@@ -87,10 +89,16 @@ const VerifyEmailScreen: React.FC<Props> = ({ navigation, route }) => {
               <Button
                 variant="primary"
                 size="lg"
-                onPress={() => navigation.navigate('Login')}
+                onPress={() => {
+                  if (isAuthenticated) {
+                    navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
+                  } else {
+                    navigation.reset({ index: 0, routes: [{ name: 'Auth' }] });
+                  }
+                }}
                 style={styles.actionButton}
               >
-                {t('verifyEmail.goToLogin')}
+                {isAuthenticated ? t('verifyEmail.goToHome', { defaultValue: t('verifyEmail.goToLogin') }) : t('verifyEmail.goToLogin')}
               </Button>
             </View>
           </FadeIn>
@@ -108,10 +116,16 @@ const VerifyEmailScreen: React.FC<Props> = ({ navigation, route }) => {
               <Button
                 variant="primary"
                 size="lg"
-                onPress={() => navigation.navigate('Login')}
+                onPress={() => {
+                  if (isAuthenticated) {
+                    navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
+                  } else {
+                    navigation.reset({ index: 0, routes: [{ name: 'Auth' }] });
+                  }
+                }}
                 style={styles.actionButton}
               >
-                {t('verifyEmail.goToLogin')}
+                {isAuthenticated ? t('verifyEmail.goToHome', { defaultValue: t('verifyEmail.goToLogin') }) : t('verifyEmail.goToLogin')}
               </Button>
             </View>
           </FadeIn>

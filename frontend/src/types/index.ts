@@ -162,6 +162,7 @@ export interface Settlement {
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
+  VerifyEmail: { token: string };
 };
 
 export type AuthStackParamList = {
