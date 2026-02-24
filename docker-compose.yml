@@ -72,6 +72,10 @@ services:
     image: travelplanner-frontend:latest
     build:
       context: ./frontend
+      args:
+        ADSENSE_CLIENT_ID: ${ADSENSE_CLIENT_ID:-}
+        ADSENSE_DEFAULT_SLOT: ${ADSENSE_DEFAULT_SLOT:-}
+        EXPO_PUBLIC_GOOGLE_MAPS_KEY: ${EXPO_PUBLIC_GOOGLE_MAPS_KEY:-}
     ports:
       - '${FRONTEND_PORT:-8080}:8080'
     volumes:

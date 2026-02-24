@@ -112,7 +112,7 @@ export default ({ config }) => ({
   ],
   extra: {
     apiUrl: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api',
-    adsenseClientId: process.env.ADSENSE_CLIENT_ID || '',
+    adsenseClientId: process.env.ADSENSE_CLIENT_ID || 'ca-pub-7330738950092177',
     adsenseDefaultSlot: process.env.ADSENSE_DEFAULT_SLOT || '',
     affiliateIds: {
       booking: process.env.AFFILIATE_BOOKING_ID || '',
@@ -124,20 +124,20 @@ export default ({ config }) => ({
     },
     admob: {
       bannerAdUnitId: {
-        ios: process.env.ADMOB_IOS_BANNER_ID || '',
-        android: process.env.ADMOB_ANDROID_BANNER_ID || '',
+        ios: process.env.ADMOB_IOS_BANNER_ID || 'ca-app-pub-7330738950092177/6974109326',
+        android: process.env.ADMOB_ANDROID_BANNER_ID || 'ca-app-pub-7330738950092177/6507205462',
       },
       interstitialAdUnitId: {
-        ios: process.env.ADMOB_IOS_INTERSTITIAL_ID || '',
-        android: process.env.ADMOB_ANDROID_INTERSTITIAL_ID || '',
+        ios: process.env.ADMOB_IOS_INTERSTITIAL_ID || 'ca-app-pub-7330738950092177/6010288116',
+        android: process.env.ADMOB_ANDROID_INTERSTITIAL_ID || 'ca-app-pub-7330738950092177/1039256361',
       },
       appOpenAdUnitId: {
-        ios: process.env.ADMOB_IOS_APP_OPEN_ID || '',
-        android: process.env.ADMOB_ANDROID_APP_OPEN_ID || '',
+        ios: process.env.ADMOB_IOS_APP_OPEN_ID || 'ca-app-pub-7330738950092177/6405873931',
+        android: process.env.ADMOB_ANDROID_APP_OPEN_ID || 'ca-app-pub-7330738950092177/4051173331',
       },
       rewardedAdUnitId: {
-        ios: process.env.ADMOB_IOS_REWARDED_ID || '',
-        android: process.env.ADMOB_ANDROID_REWARDED_ID || '',
+        ios: process.env.ADMOB_IOS_REWARDED_ID || 'ca-app-pub-7330738950092177/7718955609',
+        android: process.env.ADMOB_ANDROID_REWARDED_ID || 'ca-app-pub-7330738950092177/9032037274',
       },
     },
     revenueCatIosKey: process.env.REVENUECAT_IOS_KEY || '',
