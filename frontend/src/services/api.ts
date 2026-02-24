@@ -97,7 +97,15 @@ class ApiService {
 
             try {
               const storedRefresh = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-              if (!storedRefresh) throw new Error('No refresh token');
+              if (!storedRefresh) {
+                // No refresh token available — session cannot be recovered.
+                // Clear stale access token and trigger logout.
+                this.isRefreshing = false;
+                this.onRefreshFailed(error);
+                await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+                this.onAuthExpired?.();
+                return Promise.reject(error);
+              }
 
               const response = await this.api.post('/auth/refresh', { refreshToken: storedRefresh });
               const data = response.data?.accessToken ? response.data : response.data?.data;
@@ -123,8 +131,8 @@ class ApiService {
               this.isRefreshing = false;
               this.onRefreshFailed(error);
 
-              // Only clear tokens on explicit server rejection (401/403)
-              // Network errors should preserve tokens for retry on next launch
+              // Clear tokens on explicit server rejection (401/403) or missing refresh token.
+              // Network errors should preserve tokens for retry on next launch.
               const status = refreshError?.response?.status;
               if (status === 401 || status === 403) {
                 await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);

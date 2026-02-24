@@ -3,11 +3,14 @@ import * as Keychain from 'react-native-keychain';
 
 const isWeb = Platform.OS === 'web';
 
-// In-memory store for sensitive tokens on web (XSS protection)
+// In-memory store for access token on web (XSS protection — short-lived, 15m)
 const memoryStore = new Map<string, string>();
 
-// Keys stored only in memory on web — never written to localStorage (XSS protection)
-const MEMORY_ONLY_KEYS = ['@travelplanner:auth_token', '@travelplanner:refresh_token'];
+// Access token: memory-only (XSS protection, 15m expiry means low risk on page reload)
+// Refresh token: sessionStorage (survives page reload within same tab, cleared on tab close)
+// This hybrid approach balances XSS protection with session continuity on web.
+const MEMORY_ONLY_KEYS = ['@travelplanner:auth_token'];
+const SESSION_STORAGE_KEYS = ['@travelplanner:refresh_token'];
 
 const KEYCHAIN_MAX_RETRIES = 3;
 const KEYCHAIN_RETRY_DELAY_MS = 300;
@@ -21,6 +24,9 @@ export const secureStorage = {
     if (isWeb) {
       if (MEMORY_ONLY_KEYS.includes(key)) {
         memoryStore.set(key, value);
+      } else if (SESSION_STORAGE_KEYS.includes(key)) {
+        memoryStore.set(key, value); // Also keep in memory for fast access
+        try { sessionStorage.setItem(key, value); } catch { /* private browsing */ }
       } else {
         localStorage.setItem(key, value);
       }
@@ -33,6 +39,21 @@ export const secureStorage = {
     if (isWeb) {
       if (MEMORY_ONLY_KEYS.includes(key)) {
         return memoryStore.get(key) ?? null;
+      }
+      if (SESSION_STORAGE_KEYS.includes(key)) {
+        // Try memory first (fastest), fall back to sessionStorage (survives reload)
+        const fromMemory = memoryStore.get(key);
+        if (fromMemory) return fromMemory;
+        try {
+          const fromSession = sessionStorage.getItem(key);
+          if (fromSession) {
+            // Restore to memory for fast subsequent access
+            memoryStore.set(key, fromSession);
+          }
+          return fromSession;
+        } catch {
+          return null;
+        }
       }
       return localStorage.getItem(key);
     } else {
@@ -61,6 +82,9 @@ export const secureStorage = {
     if (isWeb) {
       if (MEMORY_ONLY_KEYS.includes(key)) {
         memoryStore.delete(key);
+      } else if (SESSION_STORAGE_KEYS.includes(key)) {
+        memoryStore.delete(key);
+        try { sessionStorage.removeItem(key); } catch { /* private browsing */ }
       } else {
         localStorage.removeItem(key);
       }
@@ -76,6 +100,10 @@ export const secureStorage = {
   async clear(): Promise<void> {
     if (isWeb) {
       memoryStore.clear();
+      try {
+        // Clear session storage tokens
+        SESSION_STORAGE_KEYS.forEach((key) => sessionStorage.removeItem(key));
+      } catch { /* private browsing */ }
       const keys = Object.keys(localStorage);
       keys.forEach((key) => {
         if (key.startsWith('@travelplanner:')) {

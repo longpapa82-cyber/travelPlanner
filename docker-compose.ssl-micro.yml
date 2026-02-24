@@ -16,7 +16,7 @@ services:
       - '443:443'
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/templates/default.conf.template:ro
-      - ./proxy/upstreams.conf:/etc/nginx/conf.d/upstreams.conf  # writable for zero-downtime deploy
+      - ./proxy/upstreams.conf:/etc/nginx/upstreams.conf  # outside conf.d to avoid duplicate include
       - certbot_conf:/etc/letsencrypt:ro
       - certbot_www:/var/www/certbot:ro
     environment:
