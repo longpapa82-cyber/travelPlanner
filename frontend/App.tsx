@@ -104,10 +104,15 @@ const WebOAuthCallbackHandler: React.FC = () => {
         const json = await response.json();
         // Backend wraps responses in { data, meta } envelope — unwrap it
         const data = json.data ?? json;
-        await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, data.accessToken);
-        await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken);
 
-        // Redirect to app root — AuthProvider will pick up the stored token
+        // Bridge tokens via sessionStorage to survive the page reload.
+        // secureStorage uses in-memory Map on web (XSS protection),
+        // which is cleared on navigation. sessionStorage persists across
+        // same-tab reloads and is cleaned up by AuthContext on next load.
+        sessionStorage.setItem('__oauth_access_token', data.accessToken);
+        sessionStorage.setItem('__oauth_refresh_token', data.refreshToken);
+
+        // Redirect to app root — AuthContext.checkAuthStatus picks up bridge tokens
         window.location.replace('/');
       } catch (err: any) {
         console.error('OAuth callback error:', err);

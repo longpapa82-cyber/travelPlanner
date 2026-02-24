@@ -17,6 +17,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   Platform,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -143,6 +145,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     >
       <View style={styles.overlay}>
         <View style={styles.modalContainer} testID="share-modal">
+         <ScrollView
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+          style={styles.modalScroll}
+          contentContainerStyle={styles.modalScrollContent}
+         >
           {/* Header */}
           <View style={styles.header}>
             <View style={styles.headerLeft}>
@@ -326,6 +334,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               {t('shareModal.info')}
             </Text>
           </View>
+         </ScrollView>
         </View>
       </View>
     </Modal>
@@ -344,10 +353,16 @@ const createStyles = (theme: any, isDark: boolean) =>
     modalContainer: {
       backgroundColor: theme.colors.card,
       borderRadius: 24,
-      padding: 24,
       width: '100%',
       maxWidth: 480,
+      maxHeight: Dimensions.get('window').height * 0.85,
       ...theme.shadows.lg,
+    },
+    modalScroll: {
+      flexGrow: 0,
+    },
+    modalScrollContent: {
+      padding: 24,
     },
     header: {
       flexDirection: 'row',

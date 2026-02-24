@@ -110,6 +110,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
+      // Pick up OAuth bridge tokens left by WebOAuthCallbackHandler.
+      // On web, secureStorage uses in-memory Map (cleared on page reload),
+      // so OAuth stores tokens in sessionStorage to survive the redirect.
+      if (typeof sessionStorage !== 'undefined') {
+        const bridgeAccess = sessionStorage.getItem('__oauth_access_token');
+        const bridgeRefresh = sessionStorage.getItem('__oauth_refresh_token');
+        if (bridgeAccess && bridgeRefresh) {
+          sessionStorage.removeItem('__oauth_access_token');
+          sessionStorage.removeItem('__oauth_refresh_token');
+          await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, bridgeAccess);
+          await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, bridgeRefresh);
+        }
+      }
+
       const token = await secureStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
 
       if (token) {

@@ -17,7 +17,10 @@ class ApiService {
   private api: AxiosInstance;
   private onAuthExpired: (() => void) | null = null;
   private isRefreshing = false;
-  private refreshSubscribers: Array<(token: string) => void> = [];
+  private refreshSubscribers: Array<{
+    resolve: (token: string) => void;
+    reject: (error: any) => void;
+  }> = [];
 
   constructor() {
     this.api = axios.create({
@@ -36,12 +39,17 @@ class ApiService {
   }
 
   private onRefreshed(token: string) {
-    this.refreshSubscribers.forEach((cb) => cb(token));
+    this.refreshSubscribers.forEach((sub) => sub.resolve(token));
     this.refreshSubscribers = [];
   }
 
-  private addRefreshSubscriber(callback: (token: string) => void) {
-    this.refreshSubscribers.push(callback);
+  private onRefreshFailed(error: any) {
+    this.refreshSubscribers.forEach((sub) => sub.reject(error));
+    this.refreshSubscribers = [];
+  }
+
+  private addRefreshSubscriber(resolve: (token: string) => void, reject: (error: any) => void) {
+    this.refreshSubscribers.push({ resolve, reject });
   }
 
   private setupInterceptors() {
@@ -113,7 +121,7 @@ class ApiService {
               return this.api(originalRequest);
             } catch (refreshError: any) {
               this.isRefreshing = false;
-              this.refreshSubscribers = [];
+              this.onRefreshFailed(error);
 
               // Only clear tokens on explicit server rejection (401/403)
               // Network errors should preserve tokens for retry on next launch
@@ -128,11 +136,16 @@ class ApiService {
           }
 
           // Queue requests while refresh is in progress
-          return new Promise((resolve) => {
-            this.addRefreshSubscriber((newToken: string) => {
-              originalRequest.headers.Authorization = `Bearer ${newToken}`;
-              resolve(this.api(originalRequest));
-            });
+          return new Promise((resolve, reject) => {
+            this.addRefreshSubscriber(
+              (newToken: string) => {
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                resolve(this.api(originalRequest));
+              },
+              (err: any) => {
+                reject(err);
+              },
+            );
           });
         }
 

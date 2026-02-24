@@ -47,6 +47,7 @@ async function bootstrap() {
           fontSrc: ["'self'", 'https://fonts.gstatic.com'],
           connectSrc: [
             "'self'",
+            'blob:',
             'https://exp.host',
             'https://api.openai.com',
             'https://maps.googleapis.com',
