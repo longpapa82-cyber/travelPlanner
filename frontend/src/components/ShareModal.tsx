@@ -349,6 +349,14 @@ const createStyles = (theme: any, isDark: boolean) =>
       justifyContent: 'center',
       alignItems: 'center',
       padding: 20,
+      ...(Platform.OS === 'web' ? {
+        position: 'fixed' as any,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 9999,
+      } : {}),
     },
     modalContainer: {
       backgroundColor: theme.colors.card,
@@ -357,6 +365,7 @@ const createStyles = (theme: any, isDark: boolean) =>
       maxWidth: 480,
       maxHeight: Dimensions.get('window').height * 0.85,
       ...theme.shadows.lg,
+      ...(Platform.OS === 'web' ? { zIndex: 10000 } : {}),
     },
     modalScroll: {
       flexGrow: 0,

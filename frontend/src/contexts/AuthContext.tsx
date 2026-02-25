@@ -193,17 +193,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // T6: Silent refresh on foreground — keeps 15min token fresh
+  // T6: Silent refresh on foreground — keeps 15min token fresh.
+  // Delegates to getProfile() which triggers the interceptor's auto-refresh
+  // if the access token is expired. This avoids a race condition where
+  // silentRefresh and the interceptor both consume the one-time-use refresh token.
   const silentRefresh = async () => {
     try {
-      const refreshToken = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-      if (!refreshToken) return;
+      const hasRefresh = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+      if (!hasRefresh) return;
 
-      const response = await apiService.refreshToken(refreshToken);
-      await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
-      await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
-
-      // Refresh user profile while we're at it
+      // getProfile() will auto-refresh via the 401 interceptor if needed.
+      // The interceptor handles token storage and retry atomically.
       const profile = await apiService.getProfile();
       setUser(profile);
     } catch {

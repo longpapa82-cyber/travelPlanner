@@ -16,7 +16,7 @@ import { AuditService } from './audit.service';
 import { AuditAction } from './entities/audit-log.entity';
 
 // Admin-only endpoints
-@Controller('api/admin')
+@Controller('admin')
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class AdminController {
   constructor(
@@ -86,7 +86,7 @@ export class AdminController {
 }
 
 // Public error reporting endpoint (JWT only, no admin check)
-@Controller('api/error-logs')
+@Controller('error-logs')
 @UseGuards(JwtAuthGuard)
 export class ErrorLogController {
   constructor(private readonly adminService: AdminService) {}

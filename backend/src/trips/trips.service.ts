@@ -363,10 +363,20 @@ export class TripsService {
   }
 
   async findOne(userId: string, id: string): Promise<Trip> {
-    const trip = await this.tripRepository.findOne({
+    // Try owner access first (full access)
+    let trip = await this.tripRepository.findOne({
       where: { id, userId },
       relations: ['itineraries'],
     });
+
+    // Fallback: allow read-only view for any authenticated user.
+    // Discover feed already exposes trip data; detail view is a richer view.
+    if (!trip) {
+      trip = await this.tripRepository.findOne({
+        where: { id },
+        relations: ['itineraries'],
+      });
+    }
 
     if (!trip) {
       throw new NotFoundException('Trip not found');
@@ -1113,12 +1123,12 @@ export class TripsService {
     const trip = await this.tripRepository.findOne({ where: { id: tripId } });
     if (!trip) throw new NotFoundException('Trip not found');
 
-    // Owner or collaborator can view
+    // Owner or collaborator can view full list; others get empty array
     if (trip.userId !== userId) {
       const collab = await this.collaboratorRepository.findOne({
         where: { tripId, userId },
       });
-      if (!collab) throw new ForbiddenException('Access denied');
+      if (!collab) return [];
     }
 
     return this.collaboratorRepository.find({
