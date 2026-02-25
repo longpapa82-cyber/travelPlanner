@@ -18,7 +18,7 @@ RUN addgroup -g 1001 -S appgroup && adduser -S appuser -u 1001 -G appgroup
 WORKDIR /app
 
 COPY package*.json ./
-RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev && npm cache clean --force
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/templates ./templates
