@@ -1,7 +1,11 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import sharp from 'sharp';
 import { join, parse } from 'path';
-import { existsSync, mkdirSync, unlinkSync } from 'fs';
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
+
+// Memory optimization for constrained environments (300MB container, 200MB Node heap)
+sharp.cache(false);
+sharp.concurrency(1);
 
 interface ProcessedImage {
   /** Relative URL path (e.g. /uploads/photos/abc-optimized.webp) */
@@ -67,15 +71,20 @@ export class ImageService {
     try {
       // Validate magic bytes before processing
       await this.validateImage(filePath);
-      await sharp(filePath)
+
+      // Read the file once into a buffer to avoid multiple file reads
+      const inputBuffer = await sharp(filePath)
         .resize(options.maxWidth, options.maxHeight, {
           fit: 'inside',
           withoutEnlargement: true,
         })
         .webp({ quality: options.quality })
-        .toFile(outputPath);
+        .toBuffer();
 
-      // Remove original file if different from output
+      // Write the processed image
+      writeFileSync(outputPath, inputBuffer);
+
+      // Remove original file immediately to free disk space
       if (filePath !== outputPath && existsSync(filePath)) {
         unlinkSync(filePath);
       }
@@ -89,11 +98,12 @@ export class ImageService {
         if (!existsSync(thumbDir)) mkdirSync(thumbDir, { recursive: true });
 
         const thumbPath = join(thumbDir, outputName);
-        await sharp(outputPath)
+        // Generate thumbnail from the already-resized buffer (avoids re-reading original)
+        await sharp(inputBuffer)
           .resize(options.thumbnailSize, options.thumbnailSize, {
             fit: 'cover',
           })
-          .webp({ quality: 70 })
+          .webp({ quality: 60 })
           .toFile(thumbPath);
 
         result.thumbnailUrl = this.toUrlPath(thumbPath);

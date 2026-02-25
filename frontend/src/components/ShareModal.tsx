@@ -19,6 +19,7 @@ import {
   Platform,
   ScrollView,
   Dimensions,
+  Pressable,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -136,21 +137,15 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
   const styles = createStyles(theme, isDark);
 
-  return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onClose}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.modalContainer} testID="share-modal">
-         <ScrollView
+  const modalContent = (
+    <Pressable style={styles.overlay} onPress={onClose}>
+      <Pressable style={styles.modalContainer} testID="share-modal" onPress={(e) => e.stopPropagation()}>
+        <ScrollView
           bounces={false}
           showsVerticalScrollIndicator={false}
           style={styles.modalScroll}
           contentContainerStyle={styles.modalScrollContent}
-         >
+        >
           {/* Header */}
           <View style={styles.header}>
             <View style={styles.headerLeft}>
@@ -334,9 +329,24 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               {t('shareModal.info')}
             </Text>
           </View>
-         </ScrollView>
-        </View>
-      </View>
+        </ScrollView>
+      </Pressable>
+    </Pressable>
+  );
+
+  if (Platform.OS === 'web') {
+    if (!visible) return null;
+    return modalContent;
+  }
+
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      {modalContent}
     </Modal>
   );
 };

@@ -163,6 +163,7 @@ export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
   VerifyEmail: { token: string };
+  SharedTrip: { shareToken: string };
 };
 
 export type AuthStackParamList = {
