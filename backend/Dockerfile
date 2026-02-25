@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/templates ./templates
 
-RUN chown -R appuser:appgroup /app
+RUN mkdir -p /app/uploads/photos/thumbs && chown -R appuser:appgroup /app
 USER appuser
 
 EXPOSE 3000
