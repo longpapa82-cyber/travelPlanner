@@ -9,6 +9,7 @@ import { RootStackParamList } from '../types';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
 import VerifyEmailScreen from '../screens/auth/VerifyEmailScreen';
+import SharedTripViewScreen from '../screens/trips/SharedTripViewScreen';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import PrePermissionATTModal, { shouldShowATTPrePermission } from '../components/PrePermissionATTModal';
 
@@ -22,6 +23,9 @@ const linking: LinkingOptions<RootStackParamList> = {
   ],
   config: {
     screens: {
+      SharedTrip: {
+        path: 'share/:shareToken',
+      },
       VerifyEmail: 'verify-email',
       Main: {
         screens: {
@@ -85,6 +89,7 @@ const RootNavigator = () => {
           <Stack.Screen name="Auth" component={AuthNavigator} />
         )}
         <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
+        <Stack.Screen name="SharedTrip" component={SharedTripViewScreen} />
       </Stack.Navigator>
 
       <PrePermissionATTModal
