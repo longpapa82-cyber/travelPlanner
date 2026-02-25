@@ -910,12 +910,13 @@ export class TripsService {
       throw new ForbiddenException('This share link has expired');
     }
 
-    // Remove sensitive user information
+    // Whitelist only safe public fields — never expose internal user data
     if (trip.user) {
-      trip.user = Object.assign(trip.user, {
-        email: undefined,
-        password: undefined,
-      });
+      trip.user = {
+        id: trip.user.id,
+        name: trip.user.name,
+        profileImage: trip.user.profileImage,
+      } as any;
     }
 
     this.logger.log(`Shared trip ${trip.id} accessed via token`);
