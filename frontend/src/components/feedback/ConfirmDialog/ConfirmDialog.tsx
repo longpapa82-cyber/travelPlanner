@@ -12,6 +12,12 @@ import {
 import { theme } from '../../../constants/theme';
 import { ConfirmDialogProps } from './ConfirmDialog.types';
 
+// On web, use createPortal to escape parent stacking contexts
+const createPortal =
+  Platform.OS === 'web'
+    ? require('react-dom').createPortal
+    : undefined;
+
 export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   visible,
   title,
@@ -56,6 +62,87 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     }
   }, [visible, opacity, scale]);
 
+  // Web: lock body scroll when dialog is open
+  useEffect(() => {
+    if (Platform.OS !== 'web' || !visible) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, [visible]);
+
+  const dialogContent = (
+    <Animated.View style={[styles.dialog, { transform: [{ scale }] }]}>
+      <View style={styles.content}>
+        <Text style={styles.title}>{title}</Text>
+        {message ? <Text style={styles.message}>{message}</Text> : null}
+      </View>
+      <View style={styles.actions}>
+        {cancelText ? (
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={onCancel}
+            activeOpacity={0.7}
+            accessibilityRole="button"
+          >
+            <Text style={styles.cancelText}>{cancelText}</Text>
+          </TouchableOpacity>
+        ) : null}
+        <TouchableOpacity
+          style={[
+            styles.confirmButton,
+            destructive && styles.confirmButtonDestructive,
+            !cancelText && styles.confirmButtonFull,
+          ]}
+          onPress={onConfirm}
+          activeOpacity={0.7}
+          accessibilityRole="button"
+        >
+          <Text
+            style={[
+              styles.confirmText,
+              destructive && styles.confirmTextDestructive,
+            ]}
+          >
+            {confirmText}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </Animated.View>
+  );
+
+  // Web: use createPortal with z-index above ShareModal (9999)
+  if (Platform.OS === 'web') {
+    if (!visible) return null;
+
+    return createPortal(
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 10001,
+          padding: 40,
+        }}
+        onClick={(e: any) => { if (e.target === e.currentTarget) onCancel?.(); }}
+      >
+        <div
+          style={{ width: '100%', maxWidth: 340 }}
+          onClick={(e: any) => e.stopPropagation()}
+        >
+          {dialogContent}
+        </div>
+      </div>,
+      document.body,
+    );
+  }
+
+  // Native: use React Native Modal
   return (
     <Modal
       visible={visible}
@@ -67,43 +154,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       <TouchableWithoutFeedback onPress={onCancel}>
         <Animated.View style={[styles.overlay, { opacity }]}>
           <TouchableWithoutFeedback>
-            <Animated.View style={[styles.dialog, { transform: [{ scale }] }]}>
-              <View style={styles.content}>
-                <Text style={styles.title}>{title}</Text>
-                {message ? <Text style={styles.message}>{message}</Text> : null}
-              </View>
-              <View style={styles.actions}>
-                {cancelText ? (
-                  <TouchableOpacity
-                    style={styles.cancelButton}
-                    onPress={onCancel}
-                    activeOpacity={0.7}
-                    accessibilityRole="button"
-                  >
-                    <Text style={styles.cancelText}>{cancelText}</Text>
-                  </TouchableOpacity>
-                ) : null}
-                <TouchableOpacity
-                  style={[
-                    styles.confirmButton,
-                    destructive && styles.confirmButtonDestructive,
-                    !cancelText && styles.confirmButtonFull,
-                  ]}
-                  onPress={onConfirm}
-                  activeOpacity={0.7}
-                  accessibilityRole="button"
-                >
-                  <Text
-                    style={[
-                      styles.confirmText,
-                      destructive && styles.confirmTextDestructive,
-                    ]}
-                  >
-                    {confirmText}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </Animated.View>
+            {dialogContent}
           </TouchableWithoutFeedback>
         </Animated.View>
       </TouchableWithoutFeedback>
@@ -120,7 +171,7 @@ const styles = StyleSheet.create({
     padding: 40,
   },
   dialog: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: '#FFFFFF',
     borderRadius: theme.borderRadius.xl,
     width: '100%',
     maxWidth: 340,
