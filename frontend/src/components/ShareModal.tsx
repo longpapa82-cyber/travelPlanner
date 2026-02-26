@@ -84,6 +84,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     }
   }, [visible, currentShareToken]);
 
+  // Web: lock body scroll when modal is open
+  useEffect(() => {
+    if (Platform.OS !== 'web' || !visible) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, [visible]);
+
   const getBaseUrl = () => {
     if (Platform.OS === 'web') {
       return window.location.origin;
@@ -144,210 +152,235 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
   const styles = createStyles(theme, isDark);
 
-  const modalContent = (
-    <Pressable style={styles.overlay} onPress={onClose}>
-      <Pressable style={[styles.modalContainer, { maxHeight: windowHeight * 0.85 }]} testID="share-modal" onPress={(e) => e.stopPropagation()}>
-        <ScrollView
-          bounces={false}
-          showsVerticalScrollIndicator={false}
-          style={styles.modalScroll}
-          contentContainerStyle={styles.modalScrollContent}
-        >
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Icon name="share-variant" size={24} color={theme.colors.primary} />
-              <Text style={[styles.title, { color: theme.colors.text }]}>
-                {t('shareModal.title')}
-              </Text>
-            </View>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Icon name="close" size={24} color={theme.colors.textSecondary} />
-            </TouchableOpacity>
-          </View>
+  const innerContent = (
+    <ScrollView
+      bounces={false}
+      showsVerticalScrollIndicator={false}
+      style={styles.modalScroll}
+      contentContainerStyle={styles.modalScrollContent}
+    >
+      {/* Header */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <Icon name="share-variant" size={24} color={theme.colors.primary} />
+          <Text style={[styles.title, { color: theme.colors.text }]}>
+            {t('shareModal.title')}
+          </Text>
+        </View>
+        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+          <Icon name="close" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
+      </View>
 
-          {/* Destination */}
-          <View style={styles.destinationCard}>
-            <Icon name="map-marker" size={20} color={theme.colors.primary} />
-            <Text style={[styles.destinationText, { color: theme.colors.text }]}>
-              {tripDestination}
+      {/* Destination */}
+      <View style={styles.destinationCard}>
+        <Icon name="map-marker" size={20} color={theme.colors.primary} />
+        <Text style={[styles.destinationText, { color: theme.colors.text }]}>
+          {tripDestination}
+        </Text>
+      </View>
+
+      {/* Share Link Section */}
+      {!shareToken ? (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+            {t('shareModal.generate')}
+          </Text>
+          <Text style={[styles.sectionDescription, { color: theme.colors.textSecondary }]}>
+            {t('shareModal.generateDescription')}
+          </Text>
+
+          {/* Expiry Options */}
+          <View style={styles.expiryContainer}>
+            <Text style={[styles.expiryLabel, { color: theme.colors.text }]}>
+              {t('shareModal.expiry.title')}
             </Text>
-          </View>
-
-          {/* Share Link Section */}
-          {!shareToken ? (
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                {t('shareModal.generate')}
-              </Text>
-              <Text style={[styles.sectionDescription, { color: theme.colors.textSecondary }]}>
-                {t('shareModal.generateDescription')}
-              </Text>
-
-              {/* Expiry Options */}
-              <View style={styles.expiryContainer}>
-                <Text style={[styles.expiryLabel, { color: theme.colors.text }]}>
-                  {t('shareModal.expiry.title')}
-                </Text>
-                <View style={styles.expiryOptions}>
-                  {EXPIRY_OPTIONS.map((option) => (
-                    <TouchableOpacity
-                      key={option.label}
-                      style={[
-                        styles.expiryOption,
-                        {
-                          backgroundColor: selectedExpiry === option.value
-                            ? theme.colors.primary
-                            : isDark
-                            ? colors.neutral[700]
-                            : colors.neutral[100],
-                          borderColor: selectedExpiry === option.value
-                            ? theme.colors.primary
-                            : 'transparent',
-                        },
-                      ]}
-                      onPress={() => setSelectedExpiry(option.value)}
-                    >
-                      <Text
-                        style={[
-                          styles.expiryOptionText,
-                          {
-                            color: selectedExpiry === option.value
-                              ? colors.neutral[0]
-                              : theme.colors.text,
-                          },
-                        ]}
-                      >
-                        {option.label}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-
-              {/* Generate Button */}
-              <TouchableOpacity
-                style={[
-                  styles.primaryButton,
-                  { backgroundColor: theme.colors.primary },
-                  loading && styles.buttonDisabled,
-                ]}
-                onPress={handleGenerateLink}
-                disabled={loading}
-              >
-                {loading ? (
-                  <ActivityIndicator size="small" color={colors.neutral[0]} />
-                ) : (
-                  <>
-                    <Icon name="link-variant" size={20} color={colors.neutral[0]} />
-                    <Text style={styles.primaryButtonText}>{t('shareModal.generateButton')}</Text>
-                  </>
-                )}
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-                {t('shareModal.linkTitle')}
-              </Text>
-
-              {/* Share URL Display */}
-              <View
-                style={[
-                  styles.urlContainer,
-                  {
-                    backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50],
-                    borderColor: theme.colors.border,
-                  },
-                ]}
-              >
-                <Text
-                  style={[styles.urlText, { color: theme.colors.textSecondary }]}
-                  numberOfLines={1}
-                  ellipsizeMode="middle"
-                >
-                  {shareUrl}
-                </Text>
-              </View>
-
-              {/* Copy Button */}
-              <TouchableOpacity
-                style={[
-                  styles.secondaryButton,
-                  {
-                    backgroundColor: copied
-                      ? colors.success.light
-                      : isDark
-                      ? colors.neutral[700]
-                      : colors.neutral[100],
-                    borderColor: copied ? colors.success.main : theme.colors.border,
-                  },
-                ]}
-                onPress={handleCopyLink}
-              >
-                <Icon
-                  name={copied ? 'check' : 'content-copy'}
-                  size={20}
-                  color={copied ? colors.success.main : theme.colors.primary}
-                />
-                <Text
+            <View style={styles.expiryOptions}>
+              {EXPIRY_OPTIONS.map((option) => (
+                <TouchableOpacity
+                  key={option.label}
                   style={[
-                    styles.secondaryButtonText,
+                    styles.expiryOption,
                     {
-                      color: copied ? colors.success.main : theme.colors.primary,
+                      backgroundColor: selectedExpiry === option.value
+                        ? theme.colors.primary
+                        : isDark
+                        ? colors.neutral[700]
+                        : colors.neutral[100],
+                      borderColor: selectedExpiry === option.value
+                        ? theme.colors.primary
+                        : 'transparent',
                     },
                   ]}
+                  onPress={() => setSelectedExpiry(option.value)}
                 >
-                  {copied ? t('shareModal.copied') : t('shareModal.copy')}
-                </Text>
-              </TouchableOpacity>
-
-              {/* Disable Sharing Button */}
-              <TouchableOpacity
-                style={[
-                  styles.dangerButton,
-                  { borderColor: colors.error.main },
-                  loading && styles.buttonDisabled,
-                ]}
-                onPress={handleDisableSharing}
-                disabled={loading}
-              >
-                <Icon name="link-variant-off" size={20} color={colors.error.main} />
-                <Text style={[styles.dangerButtonText, { color: colors.error.main }]}>
-                  {t('shareModal.disable')}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={[
+                      styles.expiryOptionText,
+                      {
+                        color: selectedExpiry === option.value
+                          ? colors.neutral[0]
+                          : theme.colors.text,
+                      },
+                    ]}
+                  >
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
-          )}
+          </View>
 
-          {/* Info Section */}
+          {/* Generate Button */}
+          <TouchableOpacity
+            style={[
+              styles.primaryButton,
+              { backgroundColor: theme.colors.primary },
+              loading && styles.buttonDisabled,
+            ]}
+            onPress={handleGenerateLink}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color={colors.neutral[0]} />
+            ) : (
+              <>
+                <Icon name="link-variant" size={20} color={colors.neutral[0]} />
+                <Text style={styles.primaryButtonText}>{t('shareModal.generateButton')}</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+            {t('shareModal.linkTitle')}
+          </Text>
+
+          {/* Share URL Display */}
           <View
             style={[
-              styles.infoCard,
+              styles.urlContainer,
               {
-                backgroundColor: isDark
-                  ? `${colors.primary[700]}20`
-                  : `${colors.primary[50]}80`,
+                backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50],
+                borderColor: theme.colors.border,
               },
             ]}
           >
-            <Icon name="information-outline" size={18} color={theme.colors.primary} />
-            <Text style={[styles.infoText, { color: theme.colors.text }]}>
-              {t('shareModal.info')}
+            <Text
+              style={[styles.urlText, { color: theme.colors.textSecondary }]}
+              numberOfLines={1}
+              ellipsizeMode="middle"
+            >
+              {shareUrl}
             </Text>
           </View>
-        </ScrollView>
-      </Pressable>
-    </Pressable>
+
+          {/* Copy Button */}
+          <TouchableOpacity
+            style={[
+              styles.secondaryButton,
+              {
+                backgroundColor: copied
+                  ? colors.success.light
+                  : isDark
+                  ? colors.neutral[700]
+                  : colors.neutral[100],
+                borderColor: copied ? colors.success.main : theme.colors.border,
+              },
+            ]}
+            onPress={handleCopyLink}
+          >
+            <Icon
+              name={copied ? 'check' : 'content-copy'}
+              size={20}
+              color={copied ? colors.success.main : theme.colors.primary}
+            />
+            <Text
+              style={[
+                styles.secondaryButtonText,
+                {
+                  color: copied ? colors.success.main : theme.colors.primary,
+                },
+              ]}
+            >
+              {copied ? t('shareModal.copied') : t('shareModal.copy')}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Disable Sharing Button */}
+          <TouchableOpacity
+            style={[
+              styles.dangerButton,
+              { borderColor: colors.error.main },
+              loading && styles.buttonDisabled,
+            ]}
+            onPress={handleDisableSharing}
+            disabled={loading}
+          >
+            <Icon name="link-variant-off" size={20} color={colors.error.main} />
+            <Text style={[styles.dangerButtonText, { color: colors.error.main }]}>
+              {t('shareModal.disable')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Info Section */}
+      <View
+        style={[
+          styles.infoCard,
+          {
+            backgroundColor: isDark
+              ? `${colors.primary[700]}20`
+              : `${colors.primary[50]}80`,
+          },
+        ]}
+      >
+        <Icon name="information-outline" size={18} color={theme.colors.primary} />
+        <Text style={[styles.infoText, { color: theme.colors.text }]}>
+          {t('shareModal.info')}
+        </Text>
+      </View>
+    </ScrollView>
   );
 
+  // Web: use native HTML elements for the overlay to guarantee position:fixed works.
+  // React Native Web's Pressable adds internal wrapper divs that can break fixed layout.
   if (Platform.OS === 'web') {
     if (!visible) return null;
-    // Portal to document.body to escape parent stacking contexts
-    // (overflow: hidden, transform, etc.) that break position: fixed
-    return createPortal(modalContent, document.body);
+
+    return createPortal(
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 9999,
+          padding: 20,
+        }}
+        onClick={(e: any) => { if (e.target === e.currentTarget) onClose(); }}
+      >
+        <div
+          style={{ width: '100%', maxWidth: 480, maxHeight: windowHeight * 0.85, zIndex: 10000 }}
+          onClick={(e: any) => e.stopPropagation()}
+        >
+          <View style={styles.webModalCard} testID="share-modal">
+            {innerContent}
+          </View>
+        </div>
+      </div>,
+      document.body,
+    );
   }
 
+  // Native: use React Native Modal
   return (
     <Modal
       visible={visible}
@@ -355,7 +388,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      {modalContent}
+      <Pressable style={styles.overlay} onPress={onClose}>
+        <Pressable style={[styles.modalContainer, { maxHeight: windowHeight * 0.85 }]} testID="share-modal" onPress={(e) => e.stopPropagation()}>
+          {innerContent}
+        </Pressable>
+      </Pressable>
     </Modal>
   );
 };
@@ -368,23 +405,19 @@ const createStyles = (theme: any, isDark: boolean) =>
       justifyContent: 'center',
       alignItems: 'center',
       padding: 20,
-      ...(Platform.OS === 'web' ? {
-        position: 'fixed' as any,
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 9999,
-      } : {}),
     },
     modalContainer: {
       backgroundColor: theme.colors.card,
       borderRadius: 24,
       width: '100%',
       maxWidth: 480,
-      // maxHeight is set inline via useWindowDimensions for reactive updates
       ...theme.shadows.lg,
-      ...(Platform.OS === 'web' ? { zIndex: 10000 } : {}),
+    },
+    webModalCard: {
+      backgroundColor: theme.colors.card,
+      borderRadius: 24,
+      overflow: 'hidden' as any,
+      ...theme.shadows.lg,
     },
     modalScroll: {
       flexGrow: 0,

@@ -52,6 +52,18 @@
       "weather": {
         "q": "Xem thông tin thời tiết và múi giờ ở đâu?",
         "a": "Thông tin thời tiết và múi giờ địa phương tự động hiển thị phía trên màn hình chi tiết chuyến đi cho mỗi ngày. Dữ liệu thời tiết được cung cấp bởi dịch vụ bên ngoài và cập nhật theo thời gian thực."
+      },
+      "linkSharing": {
+        "q": "Chia se chuyen di qua lien ket nhu the nao?",
+        "a": "Nhan nut chia se trong man hinh chi tiet chuyen di de tao lien ket chia se duy nhat. Bat ky ai co lien ket deu co the xem ke hoach chuyen di. Ban co the vo hieu hoa chia se bat ky luc nao va dat thoi han het han (7/30/90 ngay)."
+      },
+      "photos": {
+        "q": "Quan ly anh chuyen di nhu the nao?",
+        "a": "Ban co the thay doi anh bia hoac them anh cho tung hoat dong. Anh tai len se duoc toi uu hoa tu dong (chuyen doi WebP)."
+      },
+      "budget": {
+        "q": "Quan ly ngan sach va chi phi nhu the nao?",
+        "a": "Dat ngan sach tong khi tao chuyen di. Theo doi chi phi theo danh muc trong tab ngan sach."
       }
     },
     "accountSettings": {
@@ -78,6 +90,14 @@
       "gdprExport": {
         "q": "Xuất dữ liệu của tôi như thế nào?",
         "a": "Vào Hồ sơ → Cài đặt và nhấn 'Xuất dữ liệu' để tải xuống tất cả dữ liệu cá nhân (tài khoản, chuyến đi, chi phí, thông báo) dưới dạng JSON."
+      },
+      "darkMode": {
+        "q": "Bat che do toi nhu the nao?",
+        "a": "Bat cong tac che do toi trong tab ho so. Che do toi giam moi mat va tiet kiem pin."
+      },
+      "language": {
+        "q": "Thay doi ngon ngu ung dung nhu the nao?",
+        "a": "Vao Ho so → Ngon ngu va chon tu 13 ngon ngu."
       }
     },
     "offlineSync": {
@@ -190,6 +210,14 @@
       "art15": {
         "title": "Điều 15 (Phụ lục)",
         "content": "Điều khoản này có hiệu lực từ ngày 01 tháng 3, 2025."
+      },
+      "art16": {
+        "title": "Dieu 16 (Giai quyet tranh chap)",
+        "content": "Cac dieu khoan nay duoc dieu chinh boi phap luat Han Quoc."
+      },
+      "art17": {
+        "title": "Dieu 17 (Phu luc)",
+        "content": "Cac dieu khoan nay co hieu luc tu ngay 1 thang 3 nam 2026."
       }
     }
   },
@@ -244,6 +272,14 @@
       "art12": {
         "title": "12. Thay đổi chính sách",
         "content": "Thay đổi sẽ được thông báo ít nhất 7 ngày trước khi có hiệu lực qua thông báo trong ứng dụng.\n\nChính sách này có hiệu lực từ ngày 01 tháng 3, 2025."
+      },
+      "art13": {
+        "title": "13. Thong bao vi pham du lieu",
+        "content": "Trong truong hop vi pham du lieu, chung toi se thong bao kip thoi cho nguoi dung bi anh huong."
+      },
+      "art14": {
+        "title": "14. Thay doi chinh sach",
+        "content": "Thay doi se duoc thong bao truoc it nhat 7 ngay. Chinh sach nay co hieu luc tu ngay 1 thang 3 nam 2026."
       }
     }
   }

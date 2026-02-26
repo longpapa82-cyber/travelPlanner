@@ -3,86 +3,284 @@
     "title": "Ajuda",
     "searchPlaceholder": "Buscar ajuda...",
     "categories": {
-      "gettingStarted": "Primeiros Passos", "tripManagement": "Gerenciamento de Viagens",
-      "accountSettings": "Conta e Configurações", "offlineSync": "Offline e Sincronização",
-      "adsPartners": "Preços e Anúncios", "contact": "Fale Conosco"
+      "gettingStarted": "Primeiros Passos",
+      "tripManagement": "Gerenciamento de Viagens",
+      "accountSettings": "Conta e Configurações",
+      "offlineSync": "Offline e Sincronização",
+      "adsPartners": "Preços e Anúncios",
+      "contact": "Fale Conosco"
     },
     "gettingStarted": {
-      "signup": { "q": "Como faço para me cadastrar?", "a": "Você pode se cadastrar com seu e-mail ou rapidamente usando contas do Google, Apple ou Kakao. O login social não requer uma senha separada." },
-      "createTrip": { "q": "Como faço para criar um plano de viagem?", "a": "Toque em 'Criar Nova Viagem' na tela inicial, insira seu destino e datas de viagem, e a IA gerará automaticamente um itinerário personalizado. Selecione seu orçamento, estilo de viagem e interesses para recomendações mais precisas." },
-      "aiPlan": { "q": "Como funciona o itinerário por IA?", "a": "Utilizamos tecnologia avançada de IA para analisar atrações populares, restaurantes e experiências culturais no seu destino, e então criamos um cronograma otimizado considerando rotas de viagem e horários. Os itinerários gerados podem ser livremente modificados." },
-      "appTour": { "q": "Como o aplicativo é organizado?", "a": "O aplicativo tem quatro abas principais: Início (lista de viagens), Detalhes da Viagem (itinerário, mapa, clima), Notificações e Perfil. Navegue facilmente usando a barra de abas na parte inferior." }
+      "signup": {
+        "q": "Como faço para me cadastrar?",
+        "a": "Você pode se cadastrar com seu e-mail ou rapidamente usando contas do Google, Apple ou Kakao. O login social não requer uma senha separada."
+      },
+      "createTrip": {
+        "q": "Como faço para criar um plano de viagem?",
+        "a": "Toque em 'Criar Nova Viagem' na tela inicial, insira seu destino e datas de viagem, e a IA gerará automaticamente um itinerário personalizado. Selecione seu orçamento, estilo de viagem e interesses para recomendações mais precisas."
+      },
+      "aiPlan": {
+        "q": "Como funciona o itinerário por IA?",
+        "a": "Utilizamos tecnologia avançada de IA para analisar atrações populares, restaurantes e experiências culturais no seu destino, e então criamos um cronograma otimizado considerando rotas de viagem e horários. Os itinerários gerados podem ser livremente modificados."
+      },
+      "appTour": {
+        "q": "Como o aplicativo é organizado?",
+        "a": "O aplicativo tem quatro abas principais: Início (lista de viagens), Detalhes da Viagem (itinerário, mapa, clima), Notificações e Perfil. Navegue facilmente usando a barra de abas na parte inferior."
+      }
     },
     "tripManagement": {
-      "editPlan": { "q": "Como edito meu itinerário?", "a": "Toque em qualquer atividade na tela de detalhes da viagem para editar horário, local e notas. Arraste e solte para reordenar atividades, ou use o botão + para adicionar novas." },
-      "tripStatus": { "q": "As regras de edição diferem por status da viagem?", "a": "• Antes da viagem: Modifique e adicione livremente a todos os planos.\n• Durante a viagem: Atividades passadas não podem ser alteradas; apenas as próximas podem ser editadas.\n• Após a viagem: Somente visualização e exclusão; modificações não são permitidas." },
-      "mapView": { "q": "Como visualizo lugares no mapa?", "a": "Na tela de detalhes da viagem, mude para a aba do mapa para ver todos os locais planejados de uma só vez. Toque nos marcadores para ver detalhes das atividades." },
-      "socialFeatures": { "q": "Como uso os recursos sociais?", "a": "Navegue pelos planos compartilhados de outros viajantes na aba Explorar. Siga viajantes que você gosta e dê curtidas nos planos de viagem deles. Para compartilhar sua própria viagem, toque no botão de compartilhar na tela de detalhes da viagem." },
-      "collaborators": { "q": "Como planejo uma viagem com outras pessoas?", "a": "Na tela de detalhes da viagem, vá até a seção 'Colaboradores' e convide pessoas por e-mail. Os convidados podem participar como 'Visualizador' ou 'Editor'." },
-      "weather": { "q": "Onde posso ver informações de clima e fuso horário?", "a": "Informações de clima local e fuso horário aparecem automaticamente no topo da tela de detalhes da viagem para cada dia. Os dados meteorológicos vêm de serviços externos e são atualizados em tempo real." }
+      "editPlan": {
+        "q": "Como edito meu itinerário?",
+        "a": "Toque em qualquer atividade na tela de detalhes da viagem para editar horário, local e notas. Arraste e solte para reordenar atividades, ou use o botão + para adicionar novas."
+      },
+      "tripStatus": {
+        "q": "As regras de edição diferem por status da viagem?",
+        "a": "• Antes da viagem: Modifique e adicione livremente a todos os planos.\n• Durante a viagem: Atividades passadas não podem ser alteradas; apenas as próximas podem ser editadas.\n• Após a viagem: Somente visualização e exclusão; modificações não são permitidas."
+      },
+      "mapView": {
+        "q": "Como visualizo lugares no mapa?",
+        "a": "Na tela de detalhes da viagem, mude para a aba do mapa para ver todos os locais planejados de uma só vez. Toque nos marcadores para ver detalhes das atividades."
+      },
+      "socialFeatures": {
+        "q": "Como uso os recursos sociais?",
+        "a": "Navegue pelos planos compartilhados de outros viajantes na aba Explorar. Siga viajantes que você gosta e dê curtidas nos planos de viagem deles. Para compartilhar sua própria viagem, toque no botão de compartilhar na tela de detalhes da viagem."
+      },
+      "collaborators": {
+        "q": "Como planejo uma viagem com outras pessoas?",
+        "a": "Na tela de detalhes da viagem, vá até a seção 'Colaboradores' e convide pessoas por e-mail. Os convidados podem participar como 'Visualizador' ou 'Editor'."
+      },
+      "weather": {
+        "q": "Onde posso ver informações de clima e fuso horário?",
+        "a": "Informações de clima local e fuso horário aparecem automaticamente no topo da tela de detalhes da viagem para cada dia. Os dados meteorológicos vêm de serviços externos e são atualizados em tempo real."
+      },
+      "linkSharing": {
+        "q": "Como compartilhar uma viagem por link?",
+        "a": "Toque no botao de compartilhar na tela de detalhes da viagem para gerar um link unico. Qualquer pessoa com o link pode ver seu plano. Voce pode desativar o compartilhamento a qualquer momento e definir um periodo de expiracao (7/30/90 dias)."
+      },
+      "photos": {
+        "q": "Como gerenciar fotos da viagem?",
+        "a": "Voce pode alterar a foto de capa ou adicionar fotos a atividades individuais. As fotos enviadas sao otimizadas automaticamente (conversao WebP)."
+      },
+      "budget": {
+        "q": "Como gerenciar meu orcamento e despesas?",
+        "a": "Defina seu orcamento total ao criar uma viagem. Acompanhe despesas por categoria na aba de orcamento."
+      }
     },
     "accountSettings": {
-      "editProfile": { "q": "Como edito meu perfil?", "a": "Vá em Perfil → 'Editar Perfil' para alterar seu nome e foto." },
-      "changePassword": { "q": "Como altero minha senha?", "a": "Vá em Perfil → 'Alterar Senha', insira sua senha atual e defina uma nova. Usuários com login social não precisam alterar senhas." },
-      "twoFactor": { "q": "Como configuro a autenticação de dois fatores?", "a": "Vá em Perfil → 'Autenticação de Dois Fatores' para ativá-la. Escaneie o código QR com um aplicativo TOTP como o Google Authenticator e insira o código de verificação. Códigos de backup também serão fornecidos." },
-      "notifications": { "q": "Como gerencio as notificações?", "a": "Vá em Perfil → 'Configurações de Notificação' para configurar notificações push. Você pode receber lembretes de partida e alertas de início/conclusão de viagem." },
-      "deleteAccount": { "q": "Como excluo minha conta?", "a": "Toque em 'Excluir Conta' na parte inferior da aba Perfil. Todos os dados serão excluídos permanentemente dentro de 30 dias após a solicitação. Esta ação não pode ser desfeita." },
-      "gdprExport": { "q": "Como exporto meus dados?", "a": "Vá em Perfil → Configurações e toque em 'Exportar Dados' para baixar todos os seus dados pessoais (informações da conta, viagens, despesas, notificações) em formato JSON. Isso garante seu direito à portabilidade de dados de acordo com o GDPR." }
+      "editProfile": {
+        "q": "Como edito meu perfil?",
+        "a": "Vá em Perfil → 'Editar Perfil' para alterar seu nome e foto."
+      },
+      "changePassword": {
+        "q": "Como altero minha senha?",
+        "a": "Vá em Perfil → 'Alterar Senha', insira sua senha atual e defina uma nova. Usuários com login social não precisam alterar senhas."
+      },
+      "twoFactor": {
+        "q": "Como configuro a autenticação de dois fatores?",
+        "a": "Vá em Perfil → 'Autenticação de Dois Fatores' para ativá-la. Escaneie o código QR com um aplicativo TOTP como o Google Authenticator e insira o código de verificação. Códigos de backup também serão fornecidos."
+      },
+      "notifications": {
+        "q": "Como gerencio as notificações?",
+        "a": "Vá em Perfil → 'Configurações de Notificação' para configurar notificações push. Você pode receber lembretes de partida e alertas de início/conclusão de viagem."
+      },
+      "deleteAccount": {
+        "q": "Como excluo minha conta?",
+        "a": "Toque em 'Excluir Conta' na parte inferior da aba Perfil. Todos os dados serão excluídos permanentemente dentro de 30 dias após a solicitação. Esta ação não pode ser desfeita."
+      },
+      "gdprExport": {
+        "q": "Como exporto meus dados?",
+        "a": "Vá em Perfil → Configurações e toque em 'Exportar Dados' para baixar todos os seus dados pessoais (informações da conta, viagens, despesas, notificações) em formato JSON. Isso garante seu direito à portabilidade de dados de acordo com o GDPR."
+      },
+      "darkMode": {
+        "q": "Como ativar o modo escuro?",
+        "a": "Ative o modo escuro na aba de perfil. O modo escuro reduz o cansaco visual e economiza bateria."
+      },
+      "language": {
+        "q": "Como mudar o idioma do app?",
+        "a": "Va para Perfil → Idioma e escolha entre 13 idiomas."
+      }
     },
     "offlineSync": {
-      "offlineUse": { "q": "Posso usar o aplicativo offline?", "a": "Sim, planos de viagem carregados anteriormente podem ser visualizados sem internet. Alterações feitas offline serão sincronizadas automaticamente quando você se reconectar." },
-      "syncStatus": { "q": "Como verifico o status de sincronização?", "a": "Um banner de sincronização aparece no topo da tela: 'Pendente (N itens)' → 'Sincronizando...' → 'Sincronizado'. A tentativa automática ocorre em conexões instáveis." },
-      "syncError": { "q": "E se a sincronização falhar?", "a": "Verifique sua conexão de rede e reinicie o aplicativo. Se o problema persistir, entre em contato conosco através do 'Fale Conosco'." }
+      "offlineUse": {
+        "q": "Posso usar o aplicativo offline?",
+        "a": "Sim, planos de viagem carregados anteriormente podem ser visualizados sem internet. Alterações feitas offline serão sincronizadas automaticamente quando você se reconectar."
+      },
+      "syncStatus": {
+        "q": "Como verifico o status de sincronização?",
+        "a": "Um banner de sincronização aparece no topo da tela: 'Pendente (N itens)' → 'Sincronizando...' → 'Sincronizado'. A tentativa automática ocorre em conexões instáveis."
+      },
+      "syncError": {
+        "q": "E se a sincronização falhar?",
+        "a": "Verifique sua conexão de rede e reinicie o aplicativo. Se o problema persistir, entre em contato conosco através do 'Fale Conosco'."
+      }
     },
     "adsPartners": {
-      "freeService": { "q": "Existe alguma taxa para usar o serviço?", "a": "Todos os recursos do TravelPlanner são gratuitos. Anúncios podem ser exibidos dentro do aplicativo para apoiar a operação do serviço." },
-      "adInfo": { "q": "Como os anúncios são exibidos?", "a": "Anúncios intersticiais podem aparecer após a criação de viagens, e banners publicitários podem ser exibidos em algumas telas. Anúncios personalizados são controlados através da Transparência de Rastreamento de Apps (ATT) do iOS." },
-      "affiliates": { "q": "O que são parceiros afiliados?", "a": "Fornecemos links de reserva para voos, hotéis e atividades na tela de detalhes da viagem. Temos parcerias com serviços confiáveis incluindo Booking.com, Agoda, Klook e GetYourGuide." },
-      "premium": { "q": "O que é a assinatura Premium?", "a": "O Premium (R$19,99/mês ou R$149,99/ano) oferece geração ilimitada de viagens com IA, experiência sem anúncios e recursos aprimorados. Usuários gratuitos podem criar até 3 viagens com IA por mês. Você pode cancelar a qualquer momento, e seu plano reverterá para gratuito no final do período de cobrança." },
-      "premiumCancel": { "q": "Como cancelo o Premium?", "a": "Cancele diretamente no gerenciamento de assinaturas da App Store ou Google Play. Você continuará aproveitando os recursos Premium até o final do período de cobrança atual. As políticas de reembolso seguem os termos de cada loja de aplicativos." },
-      "premiumRestore": { "q": "Como restauro minha assinatura?", "a": "Vá em Perfil → Assinatura e toque em 'Restaurar Compras'. Sua assinatura anterior será restaurada automaticamente. Ao trocar de dispositivo, faça login com o mesmo Apple ID ou conta Google." }
+      "freeService": {
+        "q": "Existe alguma taxa para usar o serviço?",
+        "a": "Todos os recursos do TravelPlanner são gratuitos. Anúncios podem ser exibidos dentro do aplicativo para apoiar a operação do serviço."
+      },
+      "adInfo": {
+        "q": "Como os anúncios são exibidos?",
+        "a": "Anúncios intersticiais podem aparecer após a criação de viagens, e banners publicitários podem ser exibidos em algumas telas. Anúncios personalizados são controlados através da Transparência de Rastreamento de Apps (ATT) do iOS."
+      },
+      "affiliates": {
+        "q": "O que são parceiros afiliados?",
+        "a": "Fornecemos links de reserva para voos, hotéis e atividades na tela de detalhes da viagem. Temos parcerias com serviços confiáveis incluindo Booking.com, Agoda, Klook e GetYourGuide."
+      },
+      "premium": {
+        "q": "O que é a assinatura Premium?",
+        "a": "O Premium (R$19,99/mês ou R$149,99/ano) oferece geração ilimitada de viagens com IA, experiência sem anúncios e recursos aprimorados. Usuários gratuitos podem criar até 3 viagens com IA por mês. Você pode cancelar a qualquer momento, e seu plano reverterá para gratuito no final do período de cobrança."
+      },
+      "premiumCancel": {
+        "q": "Como cancelo o Premium?",
+        "a": "Cancele diretamente no gerenciamento de assinaturas da App Store ou Google Play. Você continuará aproveitando os recursos Premium até o final do período de cobrança atual. As políticas de reembolso seguem os termos de cada loja de aplicativos."
+      },
+      "premiumRestore": {
+        "q": "Como restauro minha assinatura?",
+        "a": "Vá em Perfil → Assinatura e toque em 'Restaurar Compras'. Sua assinatura anterior será restaurada automaticamente. Ao trocar de dispositivo, faça login com o mesmo Apple ID ou conta Google."
+      }
     },
     "contact": {
-      "email": "Suporte por E-mail", "emailAddress": "longpapa82@gmail.com",
+      "email": "Suporte por E-mail",
+      "emailAddress": "longpapa82@gmail.com",
       "emailDescription": "Se o FAQ acima não resolver seu problema, entre em contato conosco por e-mail. Informações do dispositivo e versão do aplicativo serão incluídas automaticamente.",
       "sendEmail": "Enviar E-mail"
     }
   },
   "terms": {
-    "title": "Termos de Serviço", "effectiveDate": "Vigência: 1 de março de 2025",
+    "title": "Termos de Serviço",
+    "effectiveDate": "Vigência: 1 de março de 2025",
     "articles": {
-      "art1": { "title": "Artigo 1 (Objetivo)", "content": "Estes Termos de Serviço regem o uso do TravelPlanner (\"Serviço\"), incluindo os direitos, obrigações e responsabilidades tanto da empresa quanto dos usuários." },
-      "art2": { "title": "Artigo 2 (Definições)", "content": "① \"Serviço\" refere-se ao serviço de planejamento e gerenciamento automático de viagens fornecido pelo TravelPlanner.\n② \"Membro\" refere-se à pessoa que concordou com estes Termos e se cadastrou no Serviço.\n③ \"Conteúdo Gerado por IA\" refere-se a itinerários de viagem e recomendações gerados automaticamente usando inteligência artificial.\n④ \"Dados de Viagem\" refere-se a destinos, cronogramas e planos de atividades inseridos pelos membros." },
-      "art3": { "title": "Artigo 3 (Descrição do Serviço)", "content": "O Serviço oferece:\n• Geração automática de planos de viagem com IA\n• Gerenciamento de edição, adição e exclusão de planos de viagem\n• Informações de clima local e fuso horário\n• Acompanhamento do progresso da viagem\n• Visualização do histórico de viagens anteriores\n• Acesso offline ao itinerário e sincronização\n• Recursos de divisão de despesas\n• Serviços de notificação" },
-      "art4": { "title": "Artigo 4 (Registro de Conta)", "content": "① Você pode se registrar por e-mail ou contas sociais (Google, Apple, Kakao).\n② Usuários menores de 14 anos não podem usar o Serviço.\n③ Você deve fornecer informações precisas. Você é responsável por quaisquer problemas decorrentes de informações imprecisas.\n④ Você é responsável por manter a segurança da sua conta." },
-      "art5": { "title": "Artigo 5 (Regras de Uso do Serviço)", "content": "① Antes da viagem: Os planos podem ser livremente modificados e estendidos.\n② Durante a viagem: Atividades concluídas não podem ser alteradas; apenas atividades futuras podem ser modificadas.\n③ Após a viagem: O histórico só pode ser visualizado ou excluído, não modificado.\n④ Os resultados gerados por IA são apenas para referência. Os usuários devem verificar as condições locais ao viajar." },
-      "art6": { "title": "Artigo 6 (Termos do Serviço de IA)", "content": "① A precisão, segurança e adequação dos planos de viagem gerados por IA não são garantidas.\n② Os dados são processados através da API do OpenAI para geração de itinerários, conforme descrito em nossa Política de Privacidade.\n③ Os dados de viagem inseridos pelos usuários não são usados para treinamento de modelos de IA.\n④ Os serviços de IA podem ser temporariamente limitados por circunstâncias técnicas." },
-      "art7": { "title": "Artigo 7 (Atividades Proibidas)", "content": "Os usuários não devem:\n• Interferir no funcionamento normal do Serviço\n• Violar a privacidade de outros usuários\n• Acessar o Serviço por meios automatizados em larga escala\n• Clicar ou manipular anúncios de forma fraudulenta\n• Fazer engenharia reversa, copiar ou imitar o Serviço\n• Violar quaisquer leis ou regulamentos aplicáveis" },
-      "art8": { "title": "Artigo 8 (Publicidade e Afiliados)", "content": "① O Serviço pode exibir anúncios através do Google AdSense, AdMob e programas de afiliados.\n② A responsabilidade pelo conteúdo dos anúncios é dos respectivos anunciantes.\n③ Termos separados podem se aplicar ao fazer reservas através de links de afiliados." },
-      "art9": { "title": "Artigo 9 (Propriedade Intelectual)", "content": "① Os direitos de propriedade intelectual do conteúdo, design e software do Serviço pertencem ao provedor do Serviço.\n② Os direitos sobre planos de viagem criados pelos usuários pertencem aos usuários." },
-      "art10": { "title": "Artigo 10 (Isenções de Responsabilidade)", "content": "① Planos de viagem gerados por IA são apenas para referência. Verifique as condições locais ao viajar.\n② Informações de clima e fuso horário são baseadas em APIs externas; a precisão não é garantida.\n③ O Serviço não é responsável por interrupções devido a força maior ou falhas do sistema.\n④ O Serviço atua apenas como intermediário para reservas de afiliados e não tem responsabilidade direta." },
-      "art11": { "title": "Artigo 11 (Encerramento de Conta)", "content": "① Você pode encerrar sua conta a qualquer momento através do recurso 'Excluir Conta'.\n② Todos os dados pessoais serão excluídos permanentemente dentro de 30 dias.\n③ Informações exigidas por lei serão retidas pelo período especificado e depois destruídas." },
-      "art12": { "title": "Artigo 12 (Responsabilidade)", "content": "Se um membro sofrer danos devido a dolo ou negligência grave da empresa, a empresa compensará de acordo com as leis aplicáveis." },
-      "art13": { "title": "Artigo 13 (Alterações nos Termos)", "content": "① As alterações serão notificadas com pelo menos 7 dias de antecedência através de avisos no aplicativo.\n② Se você discordar das alterações, poderá descontinuar o uso e excluir sua conta." },
-      "art14": { "title": "Artigo 14 (Resolução de Disputas)", "content": "① Estes Termos serão regidos pelas leis da República da Coreia.\n② Quaisquer disputas estarão sujeitas à jurisdição do Tribunal Distrital Central de Seul." },
-      "art15": { "title": "Artigo 15 (Disposições Adicionais)", "content": "Estes Termos entram em vigor a partir de 1 de março de 2025." }
+      "art1": {
+        "title": "Artigo 1 (Objetivo)",
+        "content": "Estes Termos de Serviço regem o uso do TravelPlanner (\"Serviço\"), incluindo os direitos, obrigações e responsabilidades tanto da empresa quanto dos usuários."
+      },
+      "art2": {
+        "title": "Artigo 2 (Definições)",
+        "content": "① \"Serviço\" refere-se ao serviço de planejamento e gerenciamento automático de viagens fornecido pelo TravelPlanner.\n② \"Membro\" refere-se à pessoa que concordou com estes Termos e se cadastrou no Serviço.\n③ \"Conteúdo Gerado por IA\" refere-se a itinerários de viagem e recomendações gerados automaticamente usando inteligência artificial.\n④ \"Dados de Viagem\" refere-se a destinos, cronogramas e planos de atividades inseridos pelos membros."
+      },
+      "art3": {
+        "title": "Artigo 3 (Descrição do Serviço)",
+        "content": "O Serviço oferece:\n• Geração automática de planos de viagem com IA\n• Gerenciamento de edição, adição e exclusão de planos de viagem\n• Informações de clima local e fuso horário\n• Acompanhamento do progresso da viagem\n• Visualização do histórico de viagens anteriores\n• Acesso offline ao itinerário e sincronização\n• Recursos de divisão de despesas\n• Serviços de notificação"
+      },
+      "art4": {
+        "title": "Artigo 4 (Registro de Conta)",
+        "content": "① Você pode se registrar por e-mail ou contas sociais (Google, Apple, Kakao).\n② Usuários menores de 14 anos não podem usar o Serviço.\n③ Você deve fornecer informações precisas. Você é responsável por quaisquer problemas decorrentes de informações imprecisas.\n④ Você é responsável por manter a segurança da sua conta."
+      },
+      "art5": {
+        "title": "Artigo 5 (Regras de Uso do Serviço)",
+        "content": "① Antes da viagem: Os planos podem ser livremente modificados e estendidos.\n② Durante a viagem: Atividades concluídas não podem ser alteradas; apenas atividades futuras podem ser modificadas.\n③ Após a viagem: O histórico só pode ser visualizado ou excluído, não modificado.\n④ Os resultados gerados por IA são apenas para referência. Os usuários devem verificar as condições locais ao viajar."
+      },
+      "art6": {
+        "title": "Artigo 6 (Termos do Serviço de IA)",
+        "content": "① A precisão, segurança e adequação dos planos de viagem gerados por IA não são garantidas.\n② Os dados são processados através da API do OpenAI para geração de itinerários, conforme descrito em nossa Política de Privacidade.\n③ Os dados de viagem inseridos pelos usuários não são usados para treinamento de modelos de IA.\n④ Os serviços de IA podem ser temporariamente limitados por circunstâncias técnicas."
+      },
+      "art7": {
+        "title": "Artigo 7 (Atividades Proibidas)",
+        "content": "Os usuários não devem:\n• Interferir no funcionamento normal do Serviço\n• Violar a privacidade de outros usuários\n• Acessar o Serviço por meios automatizados em larga escala\n• Clicar ou manipular anúncios de forma fraudulenta\n• Fazer engenharia reversa, copiar ou imitar o Serviço\n• Violar quaisquer leis ou regulamentos aplicáveis"
+      },
+      "art8": {
+        "title": "Artigo 8 (Publicidade e Afiliados)",
+        "content": "① O Serviço pode exibir anúncios através do Google AdSense, AdMob e programas de afiliados.\n② A responsabilidade pelo conteúdo dos anúncios é dos respectivos anunciantes.\n③ Termos separados podem se aplicar ao fazer reservas através de links de afiliados."
+      },
+      "art9": {
+        "title": "Artigo 9 (Propriedade Intelectual)",
+        "content": "① Os direitos de propriedade intelectual do conteúdo, design e software do Serviço pertencem ao provedor do Serviço.\n② Os direitos sobre planos de viagem criados pelos usuários pertencem aos usuários."
+      },
+      "art10": {
+        "title": "Artigo 10 (Isenções de Responsabilidade)",
+        "content": "① Planos de viagem gerados por IA são apenas para referência. Verifique as condições locais ao viajar.\n② Informações de clima e fuso horário são baseadas em APIs externas; a precisão não é garantida.\n③ O Serviço não é responsável por interrupções devido a força maior ou falhas do sistema.\n④ O Serviço atua apenas como intermediário para reservas de afiliados e não tem responsabilidade direta."
+      },
+      "art11": {
+        "title": "Artigo 11 (Encerramento de Conta)",
+        "content": "① Você pode encerrar sua conta a qualquer momento através do recurso 'Excluir Conta'.\n② Todos os dados pessoais serão excluídos permanentemente dentro de 30 dias.\n③ Informações exigidas por lei serão retidas pelo período especificado e depois destruídas."
+      },
+      "art12": {
+        "title": "Artigo 12 (Responsabilidade)",
+        "content": "Se um membro sofrer danos devido a dolo ou negligência grave da empresa, a empresa compensará de acordo com as leis aplicáveis."
+      },
+      "art13": {
+        "title": "Artigo 13 (Alterações nos Termos)",
+        "content": "① As alterações serão notificadas com pelo menos 7 dias de antecedência através de avisos no aplicativo.\n② Se você discordar das alterações, poderá descontinuar o uso e excluir sua conta."
+      },
+      "art14": {
+        "title": "Artigo 14 (Resolução de Disputas)",
+        "content": "① Estes Termos serão regidos pelas leis da República da Coreia.\n② Quaisquer disputas estarão sujeitas à jurisdição do Tribunal Distrital Central de Seul."
+      },
+      "art15": {
+        "title": "Artigo 15 (Disposições Adicionais)",
+        "content": "Estes Termos entram em vigor a partir de 1 de março de 2025."
+      },
+      "art16": {
+        "title": "Artigo 16 (Resolucao de Disputas)",
+        "content": "Estes Termos sao regidos pelas leis da Republica da Coreia."
+      },
+      "art17": {
+        "title": "Artigo 17 (Adendo)",
+        "content": "Estes Termos entram em vigor em 1 de marco de 2026."
+      }
     }
   },
   "privacy": {
-    "title": "Política de Privacidade", "effectiveDate": "Vigência: 1 de março de 2025",
+    "title": "Política de Privacidade",
+    "effectiveDate": "Vigência: 1 de março de 2025",
     "articles": {
-      "art1": { "title": "1. Informações que Coletamos", "content": "[Obrigatórias]\n• Informações da conta: Nome, endereço de e-mail, foto de perfil\n• Login social: Perfil público do Google, Apple ou Kakao\n\n[Opcionais]\n• Preferências de viagem: Nível de orçamento, estilo de viagem, interesses\n\n[Automáticas]\n• Informações do dispositivo: Tipo de dispositivo, SO, versão do aplicativo\n• Dados de uso: Padrões de uso do aplicativo, interações com anúncios\n• Dados de viagem: Destinos, cronogramas, planos de atividades\n\n[Métodos] Registro, login social, coleta automática durante o uso" },
-      "art2": { "title": "2. Como Usamos Suas Informações", "content": "• Prestação do serviço: Gerenciamento de conta, geração de plano de viagem com IA, informações locais\n• Processamento de IA: Geração de itinerário via API do OpenAI (destino, datas, preferências enviados)\n• Personalização: Otimização de recomendações com base nas preferências de viagem\n• Publicidade: Anúncios personalizados (com consentimento separado)\n• Melhoria: Análise de uso, correção de bugs" },
-      "art3": { "title": "3. Compartilhamento com Terceiros", "content": "Não compartilhamos informações pessoais exceto:\n\n| Destinatário | Dados | Finalidade |\n| OpenAI | Destino, datas, preferências | Geração de itinerário com IA |\n| Google (AdSense/AdMob) | ID de anúncio, padrões de uso | Entrega de anúncios |\n| Parceiros afiliados | Eventos de clique (anonimizados) | Serviços de afiliados |\n\n※ Com consentimento explícito do usuário\n※ Quando exigido por lei" },
-      "art4": { "title": "4. Delegação de Processamento de Dados", "content": "| Provedor | Serviço |\n| Serviços em nuvem (AWS etc.) | Armazenamento e processamento de dados |\n| Serviço de e-mail | E-mails de autenticação e notificação |" },
-      "art5": { "title": "5. Retenção de Dados", "content": "• Exclusão de conta: Destruído dentro de 30 dias\n• Lei do comércio eletrônico: Registros de transações retidos por 5 anos\n• Lei de telecomunicações: Logs de acesso retidos por 3 meses\n• Informações exigidas por lei são armazenadas separadamente pelo período necessário e depois destruídas." },
-      "art6": { "title": "6. Seus Direitos", "content": "Você pode exercer os seguintes direitos:\n• Acessar, corrigir, excluir ou suspender o processamento de suas informações pessoais\n• Solicitar portabilidade de dados (Artigo 35-2 da Lei de Privacidade)\n• Solicitar explicação ou recusar decisões automatizadas (geração de itinerário com IA)\n• Excluir permanentemente todos os dados excluindo sua conta\n• Retirar consentimento de rastreamento de anúncios (alterável nas configurações do dispositivo)\n\n[Como exercer]\nAplicativo: Perfil → Excluir Conta\nE-mail: longpapa82@gmail.com" },
-      "art7": { "title": "7. Proteção de Menores de 14 Anos", "content": "Este Serviço restringe o registro de menores de 14 anos. Se tomarmos conhecimento de que dados de uma criança foram coletados, os excluiremos sem demora." },
-      "art8": { "title": "8. Destruição de Dados", "content": "• Arquivos eletrônicos: Excluídos permanentemente usando métodos irrecuperáveis\n• Impressos: Triturados ou incinerados\n• Destruídos prontamente quando o período de retenção expira ou o propósito é cumprido." },
-      "art9": { "title": "9. Publicidade e Dados Comportamentais", "content": "• iOS: Controle anúncios personalizados via Transparência de Rastreamento de Apps (ATT).\n• Android: Redefina o ID de anúncio ou desative em Configurações → Google → Anúncios.\n• Web: Desative cookies nas configurações do navegador (alguns recursos podem ser limitados).\n• Cookies são usados para autenticação e melhoria da experiência do usuário." },
-      "art10": { "title": "10. Medidas de Segurança", "content": "• Criptografia de senhas (bcrypt)\n• Criptografia de comunicação SSL/TLS\n• Controle de acesso e autenticação de dois fatores\n• Auditorias de segurança regulares e monitoramento" },
-      "art11": { "title": "11. Responsável pela Privacidade", "content": "Responsável pela Privacidade: Equipe de Operações do TravelPlanner\nE-mail: longpapa82@gmail.com" },
-      "art12": { "title": "12. Alterações na Política", "content": "As alterações serão notificadas com pelo menos 7 dias de antecedência através de avisos no aplicativo.\n\nEsta política entra em vigor a partir de 1 de março de 2025." }
+      "art1": {
+        "title": "1. Informações que Coletamos",
+        "content": "[Obrigatórias]\n• Informações da conta: Nome, endereço de e-mail, foto de perfil\n• Login social: Perfil público do Google, Apple ou Kakao\n\n[Opcionais]\n• Preferências de viagem: Nível de orçamento, estilo de viagem, interesses\n\n[Automáticas]\n• Informações do dispositivo: Tipo de dispositivo, SO, versão do aplicativo\n• Dados de uso: Padrões de uso do aplicativo, interações com anúncios\n• Dados de viagem: Destinos, cronogramas, planos de atividades\n\n[Métodos] Registro, login social, coleta automática durante o uso"
+      },
+      "art2": {
+        "title": "2. Como Usamos Suas Informações",
+        "content": "• Prestação do serviço: Gerenciamento de conta, geração de plano de viagem com IA, informações locais\n• Processamento de IA: Geração de itinerário via API do OpenAI (destino, datas, preferências enviados)\n• Personalização: Otimização de recomendações com base nas preferências de viagem\n• Publicidade: Anúncios personalizados (com consentimento separado)\n• Melhoria: Análise de uso, correção de bugs"
+      },
+      "art3": {
+        "title": "3. Compartilhamento com Terceiros",
+        "content": "Não compartilhamos informações pessoais exceto:\n\n| Destinatário | Dados | Finalidade |\n| OpenAI | Destino, datas, preferências | Geração de itinerário com IA |\n| Google (AdSense/AdMob) | ID de anúncio, padrões de uso | Entrega de anúncios |\n| Parceiros afiliados | Eventos de clique (anonimizados) | Serviços de afiliados |\n\n※ Com consentimento explícito do usuário\n※ Quando exigido por lei"
+      },
+      "art4": {
+        "title": "4. Delegação de Processamento de Dados",
+        "content": "| Provedor | Serviço |\n| Serviços em nuvem (AWS etc.) | Armazenamento e processamento de dados |\n| Serviço de e-mail | E-mails de autenticação e notificação |"
+      },
+      "art5": {
+        "title": "5. Retenção de Dados",
+        "content": "• Exclusão de conta: Destruído dentro de 30 dias\n• Lei do comércio eletrônico: Registros de transações retidos por 5 anos\n• Lei de telecomunicações: Logs de acesso retidos por 3 meses\n• Informações exigidas por lei são armazenadas separadamente pelo período necessário e depois destruídas."
+      },
+      "art6": {
+        "title": "6. Seus Direitos",
+        "content": "Você pode exercer os seguintes direitos:\n• Acessar, corrigir, excluir ou suspender o processamento de suas informações pessoais\n• Solicitar portabilidade de dados (Artigo 35-2 da Lei de Privacidade)\n• Solicitar explicação ou recusar decisões automatizadas (geração de itinerário com IA)\n• Excluir permanentemente todos os dados excluindo sua conta\n• Retirar consentimento de rastreamento de anúncios (alterável nas configurações do dispositivo)\n\n[Como exercer]\nAplicativo: Perfil → Excluir Conta\nE-mail: longpapa82@gmail.com"
+      },
+      "art7": {
+        "title": "7. Proteção de Menores de 14 Anos",
+        "content": "Este Serviço restringe o registro de menores de 14 anos. Se tomarmos conhecimento de que dados de uma criança foram coletados, os excluiremos sem demora."
+      },
+      "art8": {
+        "title": "8. Destruição de Dados",
+        "content": "• Arquivos eletrônicos: Excluídos permanentemente usando métodos irrecuperáveis\n• Impressos: Triturados ou incinerados\n• Destruídos prontamente quando o período de retenção expira ou o propósito é cumprido."
+      },
+      "art9": {
+        "title": "9. Publicidade e Dados Comportamentais",
+        "content": "• iOS: Controle anúncios personalizados via Transparência de Rastreamento de Apps (ATT).\n• Android: Redefina o ID de anúncio ou desative em Configurações → Google → Anúncios.\n• Web: Desative cookies nas configurações do navegador (alguns recursos podem ser limitados).\n• Cookies são usados para autenticação e melhoria da experiência do usuário."
+      },
+      "art10": {
+        "title": "10. Medidas de Segurança",
+        "content": "• Criptografia de senhas (bcrypt)\n• Criptografia de comunicação SSL/TLS\n• Controle de acesso e autenticação de dois fatores\n• Auditorias de segurança regulares e monitoramento"
+      },
+      "art11": {
+        "title": "11. Responsável pela Privacidade",
+        "content": "Responsável pela Privacidade: Equipe de Operações do TravelPlanner\nE-mail: longpapa82@gmail.com"
+      },
+      "art12": {
+        "title": "12. Alterações na Política",
+        "content": "As alterações serão notificadas com pelo menos 7 dias de antecedência através de avisos no aplicativo.\n\nEsta política entra em vigor a partir de 1 de março de 2025."
+      },
+      "art13": {
+        "title": "13. Notificacao de Violacao de Dados",
+        "content": "Em caso de violacao de dados, notificaremos prontamente os usuarios afetados."
+      },
+      "art14": {
+        "title": "14. Alteracoes na Politica",
+        "content": "Alteracoes serao notificadas com pelo menos 7 dias de antecedencia. Esta politica entra em vigor em 1 de marco de 2026."
+      }
     }
   }
 }

@@ -52,6 +52,18 @@
       "weather": {
         "q": "Où puis-je voir la météo et le fuseau horaire ?",
         "a": "Les informations de météo locale et de fuseau horaire apparaissent automatiquement en haut de l'écran de détail du voyage pour chaque jour. Les données météo proviennent de services externes et sont mises à jour en temps réel."
+      },
+      "linkSharing": {
+        "q": "Comment partager un voyage par lien ?",
+        "a": "Appuyez sur le bouton de partage dans la vue detail du voyage pour generer un lien unique. Toute personne ayant le lien peut voir votre plan. Vous pouvez desactiver le partage a tout moment et definir une date d expiration (7/30/90 jours)."
+      },
+      "photos": {
+        "q": "Comment gerer les photos de voyage ?",
+        "a": "Vous pouvez changer la photo de couverture ou ajouter des photos aux activites individuelles. Les photos sont automatiquement optimisees (conversion WebP)."
+      },
+      "budget": {
+        "q": "Comment gerer mon budget et mes depenses ?",
+        "a": "Definissez votre budget total lors de la creation du voyage. Suivez vos depenses par categorie dans l onglet budget."
       }
     },
     "accountSettings": {
@@ -78,6 +90,14 @@
       "gdprExport": {
         "q": "Comment exporter mes données ?",
         "a": "Allez dans Profil → Paramètres et appuyez sur 'Exporter les données' pour télécharger toutes vos données personnelles (compte, voyages, dépenses, notifications) au format JSON."
+      },
+      "darkMode": {
+        "q": "Comment activer le mode sombre ?",
+        "a": "Activez le mode sombre dans l onglet profil. Le mode sombre reduit la fatigue oculaire et economise la batterie."
+      },
+      "language": {
+        "q": "Comment changer la langue ?",
+        "a": "Allez dans Profil - Langue et choisissez parmi 13 langues."
       }
     },
     "offlineSync": {
@@ -190,6 +210,14 @@
       "art15": {
         "title": "Article 15 (Annexe)",
         "content": "Les présentes Conditions entrent en vigueur le 1er mars 2025."
+      },
+      "art16": {
+        "title": "Article 16 (Resolution des litiges)",
+        "content": "Les presentes conditions sont regies par les lois de la Republique de Coree."
+      },
+      "art17": {
+        "title": "Article 17 (Addendum)",
+        "content": "Les presentes conditions entrent en vigueur le 1er mars 2026."
       }
     }
   },
@@ -244,6 +272,14 @@
       "art12": {
         "title": "12. Modifications de la politique",
         "content": "Les modifications seront notifiées au moins 7 jours avant leur entrée en vigueur via des avis dans l'application.\n\nCette politique entre en vigueur le 1er mars 2025."
+      },
+      "art13": {
+        "title": "13. Notification de violation de donnees",
+        "content": "En cas de violation de donnees, nous informerons rapidement les utilisateurs concernes."
+      },
+      "art14": {
+        "title": "14. Modifications de la politique",
+        "content": "Les modifications seront notifiees au moins 7 jours avant leur entree en vigueur. Cette politique entre en vigueur le 1er mars 2026."
       }
     }
   }

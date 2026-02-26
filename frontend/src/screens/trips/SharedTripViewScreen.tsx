@@ -98,7 +98,7 @@ const SharedTripViewScreen: React.FC<Props> = ({ route }) => {
   }
 
   const coverUri = trip.coverImage
-    ? `${API_URL}${trip.coverImage}`
+    ? (trip.coverImage.startsWith('http') ? trip.coverImage : `${API_URL.replace('/api', '')}${trip.coverImage}`)
     : getDestinationImageUrl(trip.destination);
   const totalDays = trip.itineraries?.length || 0;
   const totalActivities = trip.itineraries?.reduce(
