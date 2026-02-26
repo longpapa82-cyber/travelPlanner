@@ -407,14 +407,14 @@ const createStyles = (theme: any, isDark: boolean) =>
       padding: 20,
     },
     modalContainer: {
-      backgroundColor: theme.colors.card,
+      backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
       borderRadius: 24,
       width: '100%',
       maxWidth: 480,
       ...theme.shadows.lg,
     },
     webModalCard: {
-      backgroundColor: theme.colors.card,
+      backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
       borderRadius: 24,
       overflow: 'hidden' as any,
       ...theme.shadows.lg,
