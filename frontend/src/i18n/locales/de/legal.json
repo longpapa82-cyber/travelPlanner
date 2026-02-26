@@ -52,6 +52,18 @@
       "weather": {
         "q": "Wo sehe ich Wetter- und Zeitzonen-Infos?",
         "a": "Lokale Wetter- und Zeitzonen-Informationen erscheinen automatisch oben im Reisedetail-Bildschirm für jeden Tag. Wetterdaten werden in Echtzeit aktualisiert."
+      },
+      "linkSharing": {
+        "q": "Wie teile ich eine Reise per Link?",
+        "a": "Tippe auf die Teilen-Schaltflaeche im Reisedetailbildschirm, um einen einzigartigen Freigabelink zu erstellen. Jeder mit dem Link kann deinen Reiseplan ansehen. Du kannst das Teilen jederzeit deaktivieren und eine Ablaufzeit (7/30/90 Tage) festlegen."
+      },
+      "photos": {
+        "q": "Wie verwalte ich Reisefotos?",
+        "a": "Du kannst das Titelbild im Reisedetailbildschirm aendern oder Fotos zu einzelnen Aktivitaeten hinzufuegen. Hochgeladene Fotos werden automatisch optimiert (WebP-Konvertierung)."
+      },
+      "budget": {
+        "q": "Wie verwalte ich mein Budget und Ausgaben?",
+        "a": "Lege dein Gesamtbudget beim Erstellen einer Reise fest. Im Budget-Tab des Reisedetailbildschirms kannst du Ausgaben nach Kategorie (Transport, Unterkunft, Essen, Sehenswuerdigkeiten usw.) verfolgen."
       }
     },
     "accountSettings": {
@@ -78,6 +90,14 @@
       "gdprExport": {
         "q": "Wie exportiere ich meine Daten?",
         "a": "Gehen Sie zu Profil → Einstellungen und tippen Sie auf 'Daten exportieren', um alle persönlichen Daten (Kontoinformationen, Reisen, Ausgaben, Benachrichtigungen) im JSON-Format herunterzuladen."
+      },
+      "darkMode": {
+        "q": "Wie aktiviere ich den Dunkelmodus?",
+        "a": "Aktiviere den Dunkelmodus-Schalter im Profil-Tab. Der Dunkelmodus reduziert die Augenbelastung bei schlechten Lichtverhaeltnissen und spart Akku."
+      },
+      "language": {
+        "q": "Wie aendere ich die App-Sprache?",
+        "a": "Gehe zu Profil-Tab - Sprache und waehle aus 13 Sprachen."
       }
     },
     "offlineSync": {
@@ -190,6 +210,14 @@
       "art15": {
         "title": "Artikel 15 (Zusatz)",
         "content": "Diese Bedingungen gelten ab dem 1. März 2025."
+      },
+      "art16": {
+        "title": "Artikel 16 (Streitbeilegung)",
+        "content": "Diese Bedingungen unterliegen den Gesetzen der Republik Korea. Streitigkeiten unterliegen der Gerichtsbarkeit des Zentralbezirksgerichts Seoul."
+      },
+      "art17": {
+        "title": "Artikel 17 (Nachtrag)",
+        "content": "Diese Bedingungen treten am 1. Maerz 2026 in Kraft."
       }
     }
   },
@@ -244,6 +272,14 @@
       "art12": {
         "title": "12. Richtlinienänderungen",
         "content": "Änderungen werden mindestens 7 Tage vor Inkrafttreten über In-App-Benachrichtigungen mitgeteilt.\n\nDiese Richtlinie gilt ab dem 1. März 2025."
+      },
+      "art13": {
+        "title": "13. Benachrichtigung bei Datenschutzverletzungen",
+        "content": "Im Falle einer Datenschutzverletzung werden wir betroffene Nutzer umgehend benachrichtigen."
+      },
+      "art14": {
+        "title": "14. Aenderungen der Richtlinie",
+        "content": "Aenderungen werden mindestens 7 Tage vor Inkrafttreten ueber In-App-Benachrichtigungen mitgeteilt. Diese Richtlinie tritt am 1. Maerz 2026 in Kraft."
       }
     }
   }
