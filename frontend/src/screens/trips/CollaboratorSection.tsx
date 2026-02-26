@@ -11,6 +11,7 @@ import {
   Modal,
   TextInput,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../constants/theme';
@@ -19,6 +20,12 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { useConfirm } from '../../components/feedback/ConfirmDialog';
+
+// On web, use createPortal to escape parent stacking contexts (overflow, transform)
+const createPortal =
+  Platform.OS === 'web'
+    ? require('react-dom').createPortal
+    : undefined;
 
 interface CollaboratorSectionProps {
   tripId: string;
@@ -114,9 +121,9 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
         )}
       </View>
 
-      {/* Collaboration Invite Modal */}
-      <Modal visible={showCollabModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
+      {/* Collaboration Invite Modal — uses portal on web */}
+      {(() => {
+        const collabModalContent = (
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
@@ -196,8 +203,45 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
               )}
             </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
+        );
+
+        if (Platform.OS === 'web') {
+          if (!showCollabModal) return null;
+          return createPortal(
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.4)',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                zIndex: 9998,
+              }}
+              onClick={(e: any) => { if (e.target === e.currentTarget) setShowCollabModal(false); }}
+            >
+              <div
+                style={{ width: '100%', maxWidth: 600 }}
+                onClick={(e: any) => e.stopPropagation()}
+              >
+                {collabModalContent}
+              </div>
+            </div>,
+            document.body,
+          );
+        }
+
+        return (
+          <Modal visible={showCollabModal} transparent animationType="slide">
+            <View style={styles.modalOverlay}>
+              {collabModalContent}
+            </View>
+          </Modal>
+        );
+      })()}
     </>
   );
 };

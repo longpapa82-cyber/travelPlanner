@@ -13,6 +13,7 @@ import {
   Animated,
   Modal,
   Pressable,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +22,12 @@ import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { formatDateShort, getTripProgress } from './tripDetailUtils';
+
+// On web, use createPortal to escape parent stacking contexts (overflow, transform)
+const createPortal =
+  Platform.OS === 'web'
+    ? require('react-dom').createPortal
+    : undefined;
 
 interface TripHeroProps {
   trip: Trip;
@@ -126,51 +133,109 @@ const TripHero: React.FC<TripHeroProps> = ({
             </TouchableOpacity>
           </View>
 
-          {/* Overflow Menu */}
-          <Modal
-            visible={menuVisible}
-            transparent
-            animationType="fade"
-            onRequestClose={() => setMenuVisible(false)}
-          >
-            <Pressable style={styles.menuOverlay} onPress={() => setMenuVisible(false)}>
-              <View style={styles.menuContainer} onStartShouldSetResponder={() => true}>
-                <View style={styles.menuHandle} />
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => { setMenuVisible(false); onDuplicate(); }}
-                  disabled={isDuplicating}
+          {/* Overflow Menu — uses portal on web to escape overflow:hidden parent */}
+          {Platform.OS === 'web' ? (
+            menuVisible ? createPortal(
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(0,0,0,0.4)',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                  zIndex: 9997,
+                }}
+                onClick={() => setMenuVisible(false)}
+              >
+                <div
+                  style={{ width: '100%', maxWidth: 600 }}
+                  onClick={(e: any) => e.stopPropagation()}
                 >
-                  {isDuplicating ? (
-                    <ActivityIndicator size={20} color={theme.colors.text} />
-                  ) : (
-                    <Icon name="content-copy" size={20} color={theme.colors.text} />
-                  )}
-                  <Text style={styles.menuItemText}>
-                    {isDuplicating ? t('detail.accessibility.duplicating') : t('detail.accessibility.duplicate')}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => { setMenuVisible(false); onExportIcal(); }}
-                >
-                  <Icon name="calendar-export" size={20} color={theme.colors.text} />
-                  <Text style={styles.menuItemText}>{t('detail.accessibility.exportIcal')}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => { setMenuVisible(false); onChangeCoverPhoto(); }}
-                >
-                  <Icon name="camera" size={20} color={theme.colors.text} />
-                  <Text style={styles.menuItemText}>
-                    {trip.coverImage ? t('detail.photos.changeCover') : t('detail.photos.addCover')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </Pressable>
-          </Modal>
+                  <View style={styles.menuContainer}>
+                    <View style={styles.menuHandle} />
+                    <TouchableOpacity
+                      style={styles.menuItem}
+                      onPress={() => { setMenuVisible(false); onDuplicate(); }}
+                      disabled={isDuplicating}
+                    >
+                      {isDuplicating ? (
+                        <ActivityIndicator size={20} color={theme.colors.text} />
+                      ) : (
+                        <Icon name="content-copy" size={20} color={theme.colors.text} />
+                      )}
+                      <Text style={styles.menuItemText}>
+                        {isDuplicating ? t('detail.accessibility.duplicating') : t('detail.accessibility.duplicate')}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.menuItem}
+                      onPress={() => { setMenuVisible(false); onExportIcal(); }}
+                    >
+                      <Icon name="calendar-export" size={20} color={theme.colors.text} />
+                      <Text style={styles.menuItemText}>{t('detail.accessibility.exportIcal')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.menuItem}
+                      onPress={() => { setMenuVisible(false); onChangeCoverPhoto(); }}
+                    >
+                      <Icon name="camera" size={20} color={theme.colors.text} />
+                      <Text style={styles.menuItemText}>
+                        {trip.coverImage ? t('detail.photos.changeCover') : t('detail.photos.addCover')}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </div>
+              </div>,
+              document.body,
+            ) : null
+          ) : (
+            <Modal
+              visible={menuVisible}
+              transparent
+              animationType="fade"
+              onRequestClose={() => setMenuVisible(false)}
+            >
+              <Pressable style={styles.menuOverlay} onPress={() => setMenuVisible(false)}>
+                <View style={styles.menuContainer} onStartShouldSetResponder={() => true}>
+                  <View style={styles.menuHandle} />
+                  <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={() => { setMenuVisible(false); onDuplicate(); }}
+                    disabled={isDuplicating}
+                  >
+                    {isDuplicating ? (
+                      <ActivityIndicator size={20} color={theme.colors.text} />
+                    ) : (
+                      <Icon name="content-copy" size={20} color={theme.colors.text} />
+                    )}
+                    <Text style={styles.menuItemText}>
+                      {isDuplicating ? t('detail.accessibility.duplicating') : t('detail.accessibility.duplicate')}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={() => { setMenuVisible(false); onExportIcal(); }}
+                  >
+                    <Icon name="calendar-export" size={20} color={theme.colors.text} />
+                    <Text style={styles.menuItemText}>{t('detail.accessibility.exportIcal')}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.menuItem}
+                    onPress={() => { setMenuVisible(false); onChangeCoverPhoto(); }}
+                  >
+                    <Icon name="camera" size={20} color={theme.colors.text} />
+                    <Text style={styles.menuItemText}>
+                      {trip.coverImage ? t('detail.photos.changeCover') : t('detail.photos.addCover')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </Pressable>
+            </Modal>
+          )}
         </View>
 
         <Animated.View

@@ -369,11 +369,25 @@ export class TripsService {
       relations: ['itineraries'],
     });
 
-    // Fallback: allow read-only view for any authenticated user.
-    // Discover feed already exposes trip data; detail view is a richer view.
+    // Fallback: allow read-only view for PUBLIC trips only (social feed detail).
+    // Private trips are strictly owner-only unless the user is a collaborator.
     if (!trip) {
+      // Check collaborator access
+      const collab = await this.collaboratorRepository.findOne({
+        where: { tripId: id, userId },
+      });
+      if (collab) {
+        trip = await this.tripRepository.findOne({
+          where: { id },
+          relations: ['itineraries'],
+        });
+      }
+    }
+
+    if (!trip) {
+      // Allow read-only access to public trips (for social feed detail view)
       trip = await this.tripRepository.findOne({
-        where: { id },
+        where: { id, isPublic: true },
         relations: ['itineraries'],
       });
     }
@@ -411,6 +425,17 @@ export class TripsService {
   ): Promise<Trip> {
     const trip = await this.findOne(userId, id);
 
+    // Strict ownership check — only owner can update
+    if (trip.userId !== userId) {
+      // Check if user is a collaborator with editor role
+      const collab = await this.collaboratorRepository.findOne({
+        where: { tripId: id, userId },
+      });
+      if (!collab || collab.role !== CollaboratorRole.EDITOR) {
+        throw new ForbiddenException('Only the trip owner or editors can modify this trip');
+      }
+    }
+
     // Check if trip can be modified
     this.canModifyTrip(trip);
 
@@ -423,6 +448,12 @@ export class TripsService {
 
   async remove(userId: string, id: string): Promise<void> {
     const trip = await this.findOne(userId, id);
+
+    // Strict ownership check — only owner can delete
+    if (trip.userId !== userId) {
+      throw new ForbiddenException('Only the trip owner can delete this trip');
+    }
+
     await this.tripRepository.remove(trip);
   }
 
@@ -494,8 +525,9 @@ export class TripsService {
     itineraryId: string,
     updateItineraryDto: UpdateItineraryDto,
   ): Promise<Itinerary> {
-    // Verify trip belongs to user and check modification permission
+    // Verify trip access and write permission
     const trip = await this.findOne(userId, tripId);
+    await this.canWriteTrip(trip, userId);
     this.canModifyTrip(trip);
 
     const itinerary = await this.itineraryRepository.findOne({
@@ -583,6 +615,19 @@ export class TripsService {
   }
 
   /**
+   * Check if user has write access to a trip (owner or editor collaborator)
+   */
+  private async canWriteTrip(trip: Trip, userId: string): Promise<void> {
+    if (trip.userId === userId) return; // Owner always has write access
+    const collab = await this.collaboratorRepository.findOne({
+      where: { tripId: trip.id, userId },
+    });
+    if (!collab || collab.role !== CollaboratorRole.EDITOR) {
+      throw new ForbiddenException('Only the trip owner or editors can modify this trip');
+    }
+  }
+
+  /**
    * Check if specific activity can be modified
    */
   private canModifyActivity(trip: Trip, _activityTime: string): void {
@@ -610,8 +655,9 @@ export class TripsService {
     itineraryId: string,
     addActivityDto: AddActivityDto,
   ): Promise<Itinerary> {
-    // Verify trip belongs to user and get trip details
+    // Verify trip access and write permission
     const trip = await this.findOne(userId, tripId);
+    await this.canWriteTrip(trip, userId);
     this.canModifyTrip(trip);
 
     const itinerary = await this.itineraryRepository.findOne({
@@ -670,8 +716,9 @@ export class TripsService {
     activityIndex: number,
     updateActivityDto: UpdateActivityDto,
   ): Promise<Itinerary> {
-    // Verify trip belongs to user and get trip details
+    // Verify trip access and write permission
     const trip = await this.findOne(userId, tripId);
+    await this.canWriteTrip(trip, userId);
 
     const itinerary = await this.itineraryRepository.findOne({
       where: { id: itineraryId, tripId },
@@ -740,8 +787,9 @@ export class TripsService {
     itineraryId: string,
     activityIndex: number,
   ): Promise<Itinerary> {
-    // Verify trip belongs to user and get trip details
+    // Verify trip access and write permission
     const trip = await this.findOne(userId, tripId);
+    await this.canWriteTrip(trip, userId);
 
     const itinerary = await this.itineraryRepository.findOne({
       where: { id: itineraryId, tripId },
@@ -796,8 +844,9 @@ export class TripsService {
     itineraryId: string,
     reorderDto: ReorderActivitiesDto,
   ): Promise<Itinerary> {
-    // Verify trip belongs to user
+    // Verify trip access and write permission
     const trip = await this.findOne(userId, tripId);
+    await this.canWriteTrip(trip, userId);
     this.canModifyTrip(trip);
 
     const itinerary = await this.itineraryRepository.findOne({
