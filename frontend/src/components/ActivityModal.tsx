@@ -9,6 +9,8 @@ import {
   ScrollView,
   ActivityIndicator,
   Platform,
+  Pressable,
+  useWindowDimensions,
 } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -16,6 +18,12 @@ import { useTranslation } from 'react-i18next';
 import { theme } from '../constants/theme';
 import { useToast } from './feedback/Toast/ToastContext';
 import { PlacesAutocomplete } from './PlacesAutocomplete';
+
+// On web, use createPortal to escape parent stacking contexts (overflow, transform)
+const createPortal =
+  Platform.OS === 'web'
+    ? require('react-dom').createPortal
+    : undefined;
 
 interface Activity {
   time: string;
@@ -120,9 +128,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
     }
   };
 
-  return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <View style={styles.modalOverlay}>
+  const modalInner = (
         <View style={styles.modalContainer}>
           {/* Header */}
           <View style={styles.header}>
@@ -358,6 +364,43 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
             </TouchableOpacity>
           </View>
         </View>
+  );
+
+  // Web: use createPortal to escape parent stacking contexts (overflow: hidden)
+  if (Platform.OS === 'web') {
+    if (!visible) return null;
+    return createPortal(
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          zIndex: 9998,
+        }}
+        onClick={(e: any) => { if (e.target === e.currentTarget) onClose(); }}
+      >
+        <div
+          style={{ width: '100%', maxWidth: 600 }}
+          onClick={(e: any) => e.stopPropagation()}
+        >
+          {modalInner}
+        </div>
+      </div>,
+      document.body,
+    );
+  }
+
+  // Native: use React Native Modal
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <View style={styles.modalOverlay}>
+        {modalInner}
       </View>
     </Modal>
   );
