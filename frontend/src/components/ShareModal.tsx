@@ -18,7 +18,7 @@ import {
   ActivityIndicator,
   Platform,
   ScrollView,
-  Dimensions,
+  useWindowDimensions,
   Pressable,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
@@ -31,6 +31,12 @@ import apiService from '../services/api';
 import { APP_URL } from '../constants/config';
 import { useToast } from './feedback/Toast/ToastContext';
 import { useConfirm } from './feedback/ConfirmDialog';
+
+// On web, use createPortal to escape parent stacking contexts (overflow, transform)
+const createPortal =
+  Platform.OS === 'web'
+    ? require('react-dom').createPortal
+    : undefined;
 
 const getExpiryOptions = (t: TFunction) => [
   { label: t('shareModal.expiry.none'), value: undefined },
@@ -58,6 +64,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   const { t } = useTranslation('components');
   const { showToast } = useToast();
   const { confirm } = useConfirm();
+  const { height: windowHeight } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
   const [shareToken, setShareToken] = useState<string | undefined>(currentShareToken);
   const [shareUrl, setShareUrl] = useState<string>('');
@@ -139,7 +146,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
   const modalContent = (
     <Pressable style={styles.overlay} onPress={onClose}>
-      <Pressable style={styles.modalContainer} testID="share-modal" onPress={(e) => e.stopPropagation()}>
+      <Pressable style={[styles.modalContainer, { maxHeight: windowHeight * 0.85 }]} testID="share-modal" onPress={(e) => e.stopPropagation()}>
         <ScrollView
           bounces={false}
           showsVerticalScrollIndicator={false}
@@ -336,7 +343,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
   if (Platform.OS === 'web') {
     if (!visible) return null;
-    return modalContent;
+    // Portal to document.body to escape parent stacking contexts
+    // (overflow: hidden, transform, etc.) that break position: fixed
+    return createPortal(modalContent, document.body);
   }
 
   return (
@@ -373,7 +382,7 @@ const createStyles = (theme: any, isDark: boolean) =>
       borderRadius: 24,
       width: '100%',
       maxWidth: 480,
-      maxHeight: Dimensions.get('window').height * 0.85,
+      // maxHeight is set inline via useWindowDimensions for reactive updates
       ...theme.shadows.lg,
       ...(Platform.OS === 'web' ? { zIndex: 10000 } : {}),
     },

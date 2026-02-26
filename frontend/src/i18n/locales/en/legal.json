@@ -25,7 +25,7 @@
       },
       "appTour": {
         "q": "How is the app organized?",
-        "a": "The app has four main tabs: Home (trip list), Trip Detail (itinerary, map, weather), Notifications, and Profile. Navigate easily using the bottom tab bar."
+        "a": "The app has five main tabs: Home (trip list), Discover (find other travelers), Trip Detail (itinerary, map, weather, budget), Notifications, and Profile. Navigate easily using the bottom tab bar."
       }
     },
     "tripManagement": {
@@ -41,6 +41,10 @@
         "q": "How do I view places on the map?",
         "a": "In the trip detail screen, switch to the map tab to see all planned locations at a glance. Tap markers for activity details."
       },
+      "weather": {
+        "q": "Where can I see weather and time zone info?",
+        "a": "Local weather and time zone information appears automatically at the top of the trip detail screen for each day. Weather data comes from external services and updates in real-time."
+      },
       "socialFeatures": {
         "q": "How do I use social features?",
         "a": "Browse other travelers' shared plans in the Discover tab. Follow travelers you like and give likes to their trip plans. To share your own trip, tap the share button in the trip detail screen."
@@ -49,9 +53,17 @@
         "q": "How do I plan a trip with others?",
         "a": "In the trip detail screen, go to the 'Collaborators' section and invite others by email. Invitees can join as 'Viewer' or 'Editor'."
       },
-      "weather": {
-        "q": "Where can I see weather and time zone info?",
-        "a": "Local weather and time zone information appears automatically at the top of the trip detail screen for each day. Weather data comes from external services and updates in real-time."
+      "linkSharing": {
+        "q": "How do I share a trip via link?",
+        "a": "Tap the share button in the trip detail screen to generate a unique share link. Anyone with the link can view your trip plan. You can disable sharing anytime and set an expiration period (7/30/90 days)."
+      },
+      "photos": {
+        "q": "How do I manage trip photos?",
+        "a": "You can change the cover photo in the trip detail screen or add photos to individual activities. Uploaded photos are automatically optimized (converted to WebP) for storage."
+      },
+      "budget": {
+        "q": "How do I manage my budget and expenses?",
+        "a": "Set your total budget when creating a trip. In the trip detail screen's budget tab, track expenses by category (transport, accommodation, food, attractions, etc.). View daily averages and remaining budget at a glance."
       }
     },
     "accountSettings": {
@@ -78,6 +90,14 @@
       "gdprExport": {
         "q": "How do I export my data?",
         "a": "Go to Profile → Settings and tap 'Export Data' to download all your personal data (account info, trips, expenses, notifications) in JSON format. This ensures your right to data portability under GDPR."
+      },
+      "darkMode": {
+        "q": "How do I enable dark mode?",
+        "a": "Toggle the dark mode switch in the Profile tab. Dark mode reduces eye strain in low-light environments and helps save battery."
+      },
+      "language": {
+        "q": "How do I change the app language?",
+        "a": "Go to Profile tab → 'Language' and choose from 13 languages (Korean, English, Japanese, Chinese, Spanish, German, French, Thai, Vietnamese, Portuguese, Arabic, Indonesian, Hindi)."
       }
     },
     "offlineSync": {
@@ -97,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Is there a fee to use the service?",
-        "a": "All TravelPlanner features are free. Ads may be displayed within the app to support service operations."
+        "a": "TravelPlanner is free to use with up to 3 AI trip generations per month. Premium subscription ($3.99/month or $29.99/year) unlocks unlimited AI generation, ad-free experience, and enhanced features. Free users will see ads to support service operations."
       },
       "adInfo": {
         "q": "How are ads displayed?",
@@ -129,7 +149,7 @@
   },
   "terms": {
     "title": "Terms of Service",
-    "effectiveDate": "Effective: March 1, 2025",
+    "effectiveDate": "Effective: March 1, 2026",
     "articles": {
       "art1": {
         "title": "Article 1 (Purpose)",
@@ -137,11 +157,11 @@
       },
       "art2": {
         "title": "Article 2 (Definitions)",
-        "content": "① \"Service\" refers to the automatic travel planning and management service provided by TravelPlanner.\n② \"Member\" refers to a person who has agreed to these Terms and registered for the Service.\n③ \"AI-Generated Content\" refers to travel itineraries and recommendations automatically generated using artificial intelligence.\n④ \"Travel Data\" refers to destinations, schedules, and activity plans entered by members."
+        "content": "① \"Service\" refers to the automatic travel planning and management service provided by TravelPlanner.\n② \"Member\" refers to a person who has agreed to these Terms and registered for the Service.\n③ \"AI-Generated Content\" refers to travel itineraries and recommendations automatically generated using artificial intelligence.\n④ \"Travel Data\" refers to destinations, schedules, and activity plans entered by members.\n⑤ \"Premium Subscription\" refers to the paid service tier that provides enhanced features."
       },
       "art3": {
         "title": "Article 3 (Service Description)",
-        "content": "The Service provides:\n• AI-powered automatic travel plan generation\n• Travel plan editing, adding, and deletion management\n• Local weather and time zone information\n• Travel progress tracking\n• Past travel history viewing\n• Offline itinerary access and sync\n• Expense splitting features\n• Notification services"
+        "content": "The Service provides:\n• AI-powered automatic travel plan generation\n• Travel plan editing, adding, and deletion management\n• Local weather and time zone information\n• Travel progress tracking\n• Past travel history viewing\n• Offline itinerary access and sync\n• Budget management and expense tracking\n• Trip photo upload and management\n• Social features (trip discovery, follow, likes)\n• Trip sharing (link-based sharing, collaborator invitations)\n• Premium subscription (unlimited AI, ad-free)\n• Multi-language support (13 languages)\n• Notification services"
       },
       "art4": {
         "title": "Article 4 (Account Registration)",
@@ -153,73 +173,81 @@
       },
       "art6": {
         "title": "Article 6 (AI Service Terms)",
-        "content": "① The accuracy, safety, and suitability of AI-generated travel plans are not guaranteed.\n② Data is processed through the OpenAI API for itinerary generation, as described in our Privacy Policy.\n③ User-entered travel data is not used for AI model training.\n④ AI services may be temporarily limited due to technical circumstances."
+        "content": "① The accuracy, safety, and suitability of AI-generated travel plans are not guaranteed.\n② Data is processed through the OpenAI API for itinerary generation, as described in our Privacy Policy.\n③ User-entered travel data is not used for AI model training.\n④ AI services may be temporarily limited due to technical circumstances.\n⑤ Free users are limited to 3 AI trip generations per month; Premium subscribers have unlimited access."
       },
       "art7": {
         "title": "Article 7 (Prohibited Activities)",
-        "content": "Users must not:\n• Interfere with the normal operation of the Service\n• Violate other users' privacy\n• Access the Service through automated means at scale\n• Fraudulently click or manipulate advertisements\n• Reverse-engineer, copy, or imitate the Service\n• Violate any applicable laws or regulations"
+        "content": "Users must not:\n• Interfere with the normal operation of the Service\n• Violate other users' privacy\n• Access the Service through automated means at scale\n• Fraudulently click or manipulate advertisements\n• Reverse-engineer, copy, or imitate the Service\n• Share inappropriate content through shared trip plans\n• Violate any applicable laws or regulations"
       },
       "art8": {
         "title": "Article 8 (Advertising and Affiliates)",
-        "content": "① The Service may display ads through Google AdSense, AdMob, and affiliate programs.\n② Responsibility for ad content lies with the respective advertisers.\n③ Separate terms may apply when booking through affiliate links."
+        "content": "① The Service may display ads through Google AdSense, AdMob, and affiliate programs.\n② Responsibility for ad content lies with the respective advertisers.\n③ Separate terms may apply when booking through affiliate links.\n④ Premium subscribers do not see advertisements."
       },
       "art9": {
-        "title": "Article 9 (Intellectual Property)",
-        "content": "① IP rights for the Service's content, design, and software belong to the Service provider.\n② Rights to travel plans created by users belong to the users."
+        "title": "Article 9 (Premium Subscription)",
+        "content": "① Premium subscription is available as monthly ($3.99/month) or annual ($29.99/year) plans.\n② Premium provides unlimited AI trip generation, ad removal, and enhanced features.\n③ Subscriptions auto-renew on the billing date. Cancel at least 24 hours before renewal to avoid charges.\n④ Cancellation is managed through Apple App Store or Google Play Store subscription settings.\n⑤ After cancellation, Premium features remain available until the end of the current billing period.\n⑥ Refund policies follow Apple and Google's respective app store policies.\n⑦ Payments are processed through RevenueCat. Credit card information is not stored directly by the Service."
       },
       "art10": {
-        "title": "Article 10 (Disclaimers)",
-        "content": "① AI-generated travel plans are for reference only. Verify local conditions when traveling.\n② Weather and time zone info is based on external APIs; accuracy is not guaranteed.\n③ The Service is not liable for interruptions due to force majeure or system failures.\n④ The Service acts only as an intermediary for affiliate bookings and bears no direct liability."
+        "title": "Article 10 (User Content and Sharing)",
+        "content": "① Rights to user-created content (trip plans, photos, reviews) belong to the user.\n② When you set a trip to 'public' or generate a share link, the content becomes visible to others.\n③ The Service has a non-exclusive license to use publicly shared content within the scope necessary for service operation.\n④ Users must not share inappropriate or illegal content (violence, adult material, discriminatory content, etc.).\n⑤ The Service may remove or hide content that violates operational policies without prior notice.\n⑥ Uploaded photos are optimized on the server (resizing, WebP conversion). Original files are not retained."
       },
       "art11": {
-        "title": "Article 11 (Account Termination)",
-        "content": "① You may terminate your account anytime through the 'Delete Account' feature.\n② All personal data will be permanently deleted within 30 days.\n③ Information required by law will be retained for the specified period then destroyed."
+        "title": "Article 11 (Intellectual Property)",
+        "content": "① IP rights for the Service's content, design, and software belong to the Service provider.\n② Rights to travel plans created by users belong to the users."
       },
       "art12": {
-        "title": "Article 12 (Liability)",
-        "content": "If a member suffers damages due to the company's intentional or gross negligence, the company shall compensate in accordance with applicable laws."
+        "title": "Article 12 (Disclaimers)",
+        "content": "① AI-generated travel plans are for reference only. Verify local conditions when traveling.\n② Weather and time zone info is based on external APIs; accuracy is not guaranteed.\n③ The Service is not liable for interruptions due to force majeure or system failures.\n④ The Service acts only as an intermediary for affiliate bookings and bears no direct liability."
       },
       "art13": {
-        "title": "Article 13 (Changes to Terms)",
-        "content": "① Changes will be notified at least 7 days before taking effect via in-app notices.\n② If you disagree with changes, you may discontinue use and delete your account."
+        "title": "Article 13 (Account Termination)",
+        "content": "① You may terminate your account anytime through the 'Delete Account' feature.\n② All personal data will be permanently deleted within 30 days.\n③ Information required by law will be retained for the specified period then destroyed.\n④ If you have an active Premium subscription, cancel it through the app store before deleting your account."
       },
       "art14": {
-        "title": "Article 14 (Dispute Resolution)",
-        "content": "① These Terms shall be governed by the laws of the Republic of Korea.\n② Any disputes shall be subject to the jurisdiction of the Seoul Central District Court."
+        "title": "Article 14 (Liability)",
+        "content": "If a member suffers damages due to the company's intentional or gross negligence, the company shall compensate in accordance with applicable laws."
       },
       "art15": {
-        "title": "Article 15 (Addendum)",
-        "content": "These Terms are effective from March 1, 2025."
+        "title": "Article 15 (Changes to Terms)",
+        "content": "① Changes will be notified at least 7 days before taking effect via in-app notices.\n② If you disagree with changes, you may discontinue use and delete your account."
+      },
+      "art16": {
+        "title": "Article 16 (Dispute Resolution)",
+        "content": "① These Terms shall be governed by the laws of the Republic of Korea.\n② Any disputes shall be subject to the jurisdiction of the Seoul Central District Court."
+      },
+      "art17": {
+        "title": "Article 17 (Addendum)",
+        "content": "These Terms are effective from March 1, 2026."
       }
     }
   },
   "privacy": {
     "title": "Privacy Policy",
-    "effectiveDate": "Effective: March 1, 2025",
+    "effectiveDate": "Effective: March 1, 2026",
     "articles": {
       "art1": {
         "title": "1. Information We Collect",
-        "content": "[Required]\n• Account info: Name, email address, profile photo\n• Social login: Public profile from Google, Apple, or Kakao\n\n[Optional]\n• Travel preferences: Budget level, travel style, interests\n\n[Automatic]\n• Device info: Device type, OS, app version\n• Usage data: App usage patterns, ad interactions\n• Travel data: Destinations, schedules, activity plans\n\n[Methods] Registration, social login, automatic collection during use"
+        "content": "[Required]\n• Account info: Name, email address, profile photo\n• Social login: Public profile from Google, Apple, or Kakao\n\n[Optional]\n• Travel preferences: Budget level, travel style, interests\n• Photos: Trip cover photos, activity photos (converted to WebP on upload)\n\n[Automatic]\n• Device info: Device type, OS, app version, push notification token\n• Usage data: App usage patterns, ad interactions, analytics events\n• Travel data: Destinations, schedules, activity plans, location coordinates\n• Security data: Audit logs (login, password changes, and other security events, IP addresses)\n• Subscription data: Subscription tier, platform, expiry date, monthly AI usage count\n• Social data: Follow relationships, likes, share tokens\n\n[Methods] Registration, social login, automatic collection during use"
       },
       "art2": {
         "title": "2. How We Use Your Information",
-        "content": "• Service delivery: Account management, AI travel plan generation, local info\n• AI processing: Itinerary generation via OpenAI API (destination, dates, preferences sent)\n• Personalization: Optimizing recommendations based on travel preferences\n• Advertising: Personalized ads (with separate consent)\n• Improvement: Usage analysis, bug fixing"
+        "content": "• Service delivery: Account management, AI travel plan generation, local info\n• AI processing: Itinerary generation via OpenAI API (destination, dates, preferences sent)\n• Personalization: Optimizing recommendations based on travel preferences\n• Advertising: Personalized ads (with separate consent)\n• Improvement: Usage analysis, bug fixing\n• Subscription management: Premium status verification, feature access control\n• Security: Abnormal access detection, audit logging"
       },
       "art3": {
         "title": "3. Third-Party Sharing",
-        "content": "We do not share personal info except:\n\n| Recipient | Data | Purpose |\n| OpenAI | Destination, dates, preferences | AI itinerary generation |\n| Google (AdSense/AdMob) | Ad ID, usage patterns | Ad delivery |\n| Affiliate partners | Click events (anonymized) | Affiliate services |\n\n※ With explicit user consent\n※ When required by law"
+        "content": "We do not share personal info except:\n\n| Recipient | Data | Purpose |\n| OpenAI | Destination, dates, preferences | AI itinerary generation |\n| Google (AdSense/AdMob) | Ad ID, usage patterns | Ad delivery |\n| RevenueCat | App user ID, subscription info | Subscription payment processing |\n| Google Maps API | Search queries, session tokens | Place search |\n| OpenWeather API | Latitude, longitude coordinates | Weather information |\n| Sentry | Error data, user context | Error monitoring |\n| Affiliate partners | Click events, IP address, User Agent | Affiliate service connection and conversion tracking |\n| App Store / Google Play | Purchase data | In-app purchase processing |\n\n※ With explicit user consent\n※ When required by law"
       },
       "art4": {
         "title": "4. Data Processing Delegation",
-        "content": "| Provider | Service |\n| Cloud services (AWS etc.) | Data storage and processing |\n| Email service | Authentication and notification emails |"
+        "content": "| Provider | Service |\n| Cloud services (Oracle Cloud Infrastructure) | Data storage and processing |\n| Email service | Authentication and notification emails |\n| RevenueCat | Subscription payment management |"
       },
       "art5": {
         "title": "5. Data Retention",
-        "content": "• Account deletion: Destroyed within 30 days\n• E-commerce law: Transaction records retained for 5 years\n• Telecom law: Access logs retained for 3 months\n• Information required by law is stored separately for the required period then destroyed."
+        "content": "• Account deletion: Destroyed within 30 days\n• E-commerce law: Transaction records retained for 5 years\n• Telecom law: Access logs retained for 3 months\n• Audit logs: Retained for 30 days then automatically deleted\n• Information required by law is stored separately for the required period then destroyed."
       },
       "art6": {
         "title": "6. Your Rights",
-        "content": "You may exercise the following rights:\n• Access, correct, delete, or suspend processing of your personal info\n• Request data portability (Article 35-2 of the Privacy Act)\n• Request explanation of or refuse automated decisions (AI itinerary generation)\n• Permanently delete all data by deleting your account\n• Withdraw ad tracking consent (changeable in device settings)\n\n[How to exercise]\nApp: Profile → Delete Account\nEmail: longpapa82@gmail.com"
+        "content": "You may exercise the following rights:\n• Access, correct, delete, or suspend processing of your personal info\n• Request data portability (Article 35-2 of the Privacy Act)\n• Request explanation of or refuse automated decisions (AI itinerary generation)\n• Permanently delete all data by deleting your account\n• Withdraw ad tracking consent (changeable in device settings)\n\n[Data Export Scope]\nIncluded in data export: User profile, trip plans, expense records, notification history.\nNot included: Social relationships (follows), uploaded photos, analytics events, audit logs.\n\n[How to exercise]\nApp: Profile → Delete Account\nEmail: longpapa82@gmail.com"
       },
       "art7": {
         "title": "7. Protection of Children Under 14",
@@ -227,23 +255,31 @@
       },
       "art8": {
         "title": "8. Data Destruction",
-        "content": "• Electronic files: Permanently deleted using irrecoverable methods\n• Printouts: Shredded or incinerated\n• Destroyed promptly when retention period expires or purpose is fulfilled."
+        "content": "• Electronic files: Permanently deleted using irrecoverable methods\n• Printouts: Shredded or incinerated\n• Uploaded photos: Permanently deleted from server upon account deletion\n• Destroyed promptly when retention period expires or purpose is fulfilled."
       },
       "art9": {
         "title": "9. Advertising and Behavioral Data",
-        "content": "• iOS: Control personalized ads via App Tracking Transparency (ATT).\n• Android: Reset ad ID or opt out via Settings → Google → Ads.\n• Web: Disable cookies in browser settings (some features may be limited).\n• Cookies are used for authentication and user experience improvement."
+        "content": "• iOS: Control personalized ads via App Tracking Transparency (ATT).\n• Android: Reset ad ID or opt out via Settings → Google → Ads.\n• Web: Disable cookies in browser settings (some features may be limited).\n• Authentication tokens (JWT) are stored in secure storage for session management."
       },
       "art10": {
         "title": "10. Security Measures",
-        "content": "• Password encryption (bcrypt)\n• SSL/TLS communication encryption\n• Access control and two-factor authentication\n• Regular security audits and monitoring"
+        "content": "• Password encryption (bcrypt, 12 rounds)\n• SSL/TLS communication encryption (HSTS enabled)\n• Access control and two-factor authentication (TOTP)\n• Regular security audits and monitoring\n• Account lockout (15-minute lock after 10 failed attempts)\n• Sensitive data masking (PII filtering in logs)\n• Audit logging (security events retained for 30 days)"
       },
       "art11": {
         "title": "11. Privacy Officer",
         "content": "Privacy Officer: TravelPlanner Operations Team\nEmail: longpapa82@gmail.com"
       },
       "art12": {
-        "title": "12. Policy Changes",
-        "content": "Changes will be notified at least 7 days before taking effect via in-app notices.\n\nThis policy is effective from March 1, 2025."
+        "title": "12. Cross-Border Data Transfer",
+        "content": "Your personal information may be transferred outside of Korea for service operation:\n\n| Recipient | Location | Data | Purpose |\n| OpenAI | USA | Travel data | AI itinerary generation |\n| Google | USA | Ad ID, usage patterns | Ad delivery |\n| RevenueCat | USA | Subscription info | Payment processing |\n| Sentry | USA | Error data | Error monitoring |\n\nEach service maintains appropriate data protection measures, and transfers are made with user consent in accordance with applicable laws."
+      },
+      "art13": {
+        "title": "13. Data Breach Notification",
+        "content": "In the event of a data breach, we will promptly notify affected users of:\n• Categories of personal information breached\n• Timing and circumstances of the breach\n• Recommended actions to minimize potential harm\n• Our response measures and remediation procedures\n• Contact information for the responsible department\n\nNotification will be made via email, in-app notices, or other appropriate means."
+      },
+      "art14": {
+        "title": "14. Policy Changes",
+        "content": "Changes will be notified at least 7 days before taking effect via in-app notices.\n\nThis policy is effective from March 1, 2026."
       }
     }
   }

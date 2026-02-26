@@ -44,10 +44,10 @@ const CATEGORY_KEYS = [
 
 const FAQ_ITEM_KEYS: Record<string, string[]> = {
   gettingStarted: ['signup', 'createTrip', 'aiPlan', 'appTour'],
-  tripManagement: ['editPlan', 'tripStatus', 'mapView', 'weather'],
-  accountSettings: ['editProfile', 'changePassword', 'twoFactor', 'notifications', 'deleteAccount'],
+  tripManagement: ['editPlan', 'tripStatus', 'mapView', 'weather', 'socialFeatures', 'collaborators', 'linkSharing', 'photos', 'budget'],
+  accountSettings: ['editProfile', 'changePassword', 'twoFactor', 'notifications', 'deleteAccount', 'gdprExport', 'darkMode', 'language'],
   offlineSync: ['offlineUse', 'syncStatus', 'syncError'],
-  adsPartners: ['freeService', 'adInfo', 'affiliates'],
+  adsPartners: ['freeService', 'adInfo', 'affiliates', 'premium', 'premiumCancel', 'premiumRestore'],
 };
 
 const HelpScreen: React.FC<Props> = () => {
