@@ -331,7 +331,13 @@
       "inviteSuccess": "Undangan terkirim",
       "inviteFailed": "Gagal mengundang",
       "removeFailed": "Gagal menghapus",
-      "noCollaborators": "Belum ada kolaborator"
+      "noCollaborators": "Belum ada kolaborator",
+      "leave": "Keluar dari perjalanan",
+      "leaveTitle": "Keluar dari perjalanan",
+      "leaveMessage": "Apakah Anda yakin ingin keluar dari perjalanan ini? Anda tidak akan bisa mengaksesnya lagi.",
+      "leaveConfirm": "Keluar",
+      "leaveSuccess": "Anda telah keluar dari perjalanan",
+      "leaveFailed": "Gagal keluar dari perjalanan"
     },
     "expenses": {
       "title": "Pengeluaran",

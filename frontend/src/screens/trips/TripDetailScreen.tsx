@@ -28,6 +28,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { TripsStackParamList, Trip, Activity } from '../../types';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
 import { trackEvent } from '../../services/eventTracker';
@@ -64,6 +65,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { t } = useTranslation('trips');
   const { showToast } = useToast();
   const { confirm } = useConfirm();
+  const { user } = useAuth();
 
   // Activity modal state
   const [modalVisible, setModalVisible] = useState(false);
@@ -149,7 +151,27 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     if (trip) fetchCollaborators();
   }, [trip?.id, fetchCollaborators]);
 
+  const isOwner = trip?.userId === user?.id;
+
   // ── Hero action handlers ──────────────────────────────
+
+  const handleLeaveTrip = useCallback(async () => {
+    const ok = await confirm({
+      title: t('detail.collaboration.leaveTitle'),
+      message: t('detail.collaboration.leaveMessage'),
+      confirmText: t('detail.collaboration.leaveConfirm'),
+      cancelText: t('detail.alerts.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      await apiService.leaveTrip(tripId);
+      showToast({ type: 'success', message: t('detail.collaboration.leaveSuccess'), position: 'top' });
+      navigation.goBack();
+    } catch {
+      showToast({ type: 'error', message: t('detail.collaboration.leaveFailed'), position: 'top' });
+    }
+  }, [tripId, t, confirm, showToast, navigation]);
 
   const handleDuplicateTrip = useCallback(async () => {
     if (isDuplicating) return;
@@ -400,6 +422,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           fadeAnim={fadeAnim}
           slideAnim={slideAnim}
           isDuplicating={isDuplicating}
+          isOwner={isOwner}
           onGoBack={() => navigation.goBack()}
           onEdit={() => navigation.navigate('EditTrip', { tripId: trip.id })}
           onDuplicate={handleDuplicateTrip}
@@ -598,7 +621,9 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           <CollaboratorSection
             tripId={tripId}
             collaborators={collaborators}
+            isOwner={isOwner}
             onRefreshCollaborators={fetchCollaborators}
+            onLeaveTrip={handleLeaveTrip}
           />
 
           <View style={{ height: 40 }} />

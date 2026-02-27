@@ -331,7 +331,13 @@
       "inviteSuccess": "تم إرسال الدعوة",
       "inviteFailed": "فشل الدعوة",
       "removeFailed": "فشل الإزالة",
-      "noCollaborators": "لا يوجد متعاونون بعد"
+      "noCollaborators": "لا يوجد متعاونون بعد",
+      "leave": "مغادرة الرحلة",
+      "leaveTitle": "مغادرة الرحلة",
+      "leaveMessage": "هل أنت متأكد أنك تريد مغادرة هذه الرحلة؟ لن تتمكن من الوصول إليها بعد ذلك.",
+      "leaveConfirm": "مغادرة",
+      "leaveSuccess": "لقد غادرت الرحلة",
+      "leaveFailed": "فشل في مغادرة الرحلة"
     },
     "expenses": {
       "title": "المصاريف",

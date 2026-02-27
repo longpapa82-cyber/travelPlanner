@@ -337,7 +337,13 @@
       "inviteSuccess": "초대가 전송되었습니다",
       "inviteFailed": "초대에 실패했습니다",
       "removeFailed": "제거에 실패했습니다",
-      "noCollaborators": "아직 공동 여행자가 없습니다"
+      "noCollaborators": "아직 공동 여행자가 없습니다",
+      "leave": "여행 나가기",
+      "leaveTitle": "여행 나가기",
+      "leaveMessage": "이 여행에서 나가시겠습니까? 더 이상 이 여행을 볼 수 없습니다.",
+      "leaveConfirm": "나가기",
+      "leaveSuccess": "여행에서 나갔습니다",
+      "leaveFailed": "여행 나가기에 실패했습니다"
     },
     "expenses": {
       "title": "경비",

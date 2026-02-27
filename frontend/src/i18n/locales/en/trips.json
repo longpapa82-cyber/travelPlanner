@@ -337,7 +337,13 @@
       "inviteSuccess": "Invitation sent",
       "inviteFailed": "Failed to invite",
       "removeFailed": "Failed to remove",
-      "noCollaborators": "No collaborators yet"
+      "noCollaborators": "No collaborators yet",
+      "leave": "Leave Trip",
+      "leaveTitle": "Leave Trip",
+      "leaveMessage": "Are you sure you want to leave this trip? You will no longer have access to it.",
+      "leaveConfirm": "Leave",
+      "leaveSuccess": "You have left the trip",
+      "leaveFailed": "Failed to leave the trip"
     },
     "expenses": {
       "title": "Expenses",

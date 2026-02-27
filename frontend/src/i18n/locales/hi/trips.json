@@ -331,7 +331,13 @@
       "inviteSuccess": "आमंत्रण भेजा गया",
       "inviteFailed": "आमंत्रित करने में विफल",
       "removeFailed": "हटाने में विफल",
-      "noCollaborators": "अभी तक कोई सहयोगी नहीं"
+      "noCollaborators": "अभी तक कोई सहयोगी नहीं",
+      "leave": "यात्रा छोड़ें",
+      "leaveTitle": "यात्रा छोड़ें",
+      "leaveMessage": "क्या आप वाकई इस यात्रा को छोड़ना चाहते हैं? आप इसे फिर से एक्सेस नहीं कर पाएंगे।",
+      "leaveConfirm": "छोड़ें",
+      "leaveSuccess": "आपने यात्रा छोड़ दी",
+      "leaveFailed": "यात्रा छोड़ने में विफल"
     },
     "expenses": {
       "title": "खर्च",

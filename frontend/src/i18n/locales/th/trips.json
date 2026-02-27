@@ -331,7 +331,13 @@
       "inviteSuccess": "ส่งคำเชิญแล้ว",
       "inviteFailed": "ส่งคำเชิญไม่สำเร็จ",
       "removeFailed": "ลบออกไม่สำเร็จ",
-      "noCollaborators": "ยังไม่มีผู้ร่วมเดินทาง"
+      "noCollaborators": "ยังไม่มีผู้ร่วมเดินทาง",
+      "leave": "ออกจากทริป",
+      "leaveTitle": "ออกจากทริป",
+      "leaveMessage": "คุณแน่ใจหรือไม่ว่าต้องการออกจากทริปนี้? คุณจะไม่สามารถเข้าถึงได้อีก",
+      "leaveConfirm": "ออก",
+      "leaveSuccess": "คุณออกจากทริปแล้ว",
+      "leaveFailed": "ไม่สามารถออกจากทริปได้"
     },
     "expenses": {
       "title": "ค่าใช้จ่าย",

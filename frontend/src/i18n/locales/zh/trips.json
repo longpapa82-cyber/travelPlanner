@@ -331,7 +331,13 @@
       "inviteSuccess": "邀请已发送",
       "inviteFailed": "邀请失败",
       "removeFailed": "移除失败",
-      "noCollaborators": "暂无协作者"
+      "noCollaborators": "暂无协作者",
+      "leave": "退出旅行",
+      "leaveTitle": "退出旅行",
+      "leaveMessage": "确定要退出此旅行吗？退出后将无法再访问。",
+      "leaveConfirm": "退出",
+      "leaveSuccess": "已退出旅行",
+      "leaveFailed": "退出旅行失败"
     },
     "expenses": {
       "title": "费用",
