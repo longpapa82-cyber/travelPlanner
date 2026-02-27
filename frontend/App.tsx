@@ -201,8 +201,8 @@ function App() {
 
   if (!appReady) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF9' }}>
+        <ActivityIndicator size="large" color="#3B82F6" />
       </View>
     );
   }

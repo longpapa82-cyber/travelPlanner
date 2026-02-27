@@ -34,7 +34,7 @@ export default ({ config }) => ({
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#4A90D9',
     },
     edgeToEdgeEnabled: true,
     package: 'com.longpapa82.travelplanner',
