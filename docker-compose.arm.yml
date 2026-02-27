@@ -1,0 +1,97 @@
+version: '3.8'
+
+# Override for OCI A1.Flex ARM instance (4 OCPU, 24GB RAM)
+# Usage: docker compose -f docker-compose.yml -f docker-compose.arm.yml -f docker-compose.ssl-arm.yml up -d
+
+services:
+  postgres:
+    ports: !reset []
+    mem_limit: 4g
+    cpus: 1.5
+    command: >
+      postgres
+        -c shared_buffers=1GB
+        -c effective_cache_size=3GB
+        -c work_mem=16MB
+        -c maintenance_work_mem=256MB
+        -c max_connections=100
+    logging:
+      driver: json-file
+      options:
+        max-size: '20m'
+        max-file: '3'
+
+  redis:
+    ports: !reset []
+    mem_limit: 512m
+    cpus: 0.5
+    command: >
+      redis-server
+        --requirepass ${REDIS_PASSWORD:-redis_secure_password_change_me}
+        --maxmemory 256mb
+        --maxmemory-policy volatile-lru
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  backend:
+    ports: !reset []
+    mem_limit: 2g
+    cpus: 1.5
+    environment:
+      NODE_OPTIONS: "--max-old-space-size=1536"
+    logging:
+      driver: json-file
+      options:
+        max-size: '20m'
+        max-file: '5'
+
+  frontend:
+    ports: !reset []
+    mem_limit: 256m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  db-backup:
+    image: postgres:16-alpine
+    environment:
+      PGPASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - ./backups:/backups
+    entrypoint: >
+      /bin/sh -c "
+        while true; do
+          sleep_until=$$(date -d 'tomorrow 03:00' +%s 2>/dev/null || date -v+1d -v3H -v0M -v0S +%s 2>/dev/null || echo 86400);
+          now=$$(date +%s);
+          sleep_secs=$$((sleep_until - now));
+          if [ $$sleep_secs -le 0 ] || [ $$sleep_secs -gt 86400 ]; then sleep_secs=86400; fi;
+          sleep $$sleep_secs;
+          FNAME=/backups/travelplanner_$$(date +%Y%m%d_%H%M%S).sql.gz;
+          pg_dump -h postgres -U $${DB_USERNAME:-postgres} travelplanner | gzip > $$FNAME;
+          if [ $$? -eq 0 ]; then echo \"Backup OK: $$FNAME\"; else echo \"Backup FAILED\"; fi;
+          find /backups -name '*.sql.gz' -mtime +14 -delete 2>/dev/null;
+        done
+      "
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - travelplanner
+    mem_limit: 128m
+    cpus: 0.2
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: '5m'
+        max-file: '2'
+
+networks:
+  travelplanner:
+    driver: bridge
