@@ -989,11 +989,11 @@ export class TripsService {
       );
     }
 
-    trip.shareToken = null;
-    trip.isPublic = false;
-    trip.shareExpiresAt = null;
-
-    await this.tripRepository.save(trip);
+    await this.tripRepository.update(tripId, {
+      shareToken: null as any,
+      isPublic: false,
+      shareExpiresAt: null as any,
+    });
 
     this.logger.log(`Disabled sharing for trip ${tripId}`);
   }
