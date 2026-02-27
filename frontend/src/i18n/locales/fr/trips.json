@@ -331,7 +331,13 @@
       "inviteSuccess": "Invitation envoyée",
       "inviteFailed": "Échec de l'invitation",
       "removeFailed": "Échec du retrait",
-      "noCollaborators": "Aucun collaborateur pour le moment"
+      "noCollaborators": "Aucun collaborateur pour le moment",
+      "leave": "Quitter le voyage",
+      "leaveTitle": "Quitter le voyage",
+      "leaveMessage": "Êtes-vous sûr de vouloir quitter ce voyage ? Vous n'y aurez plus accès.",
+      "leaveConfirm": "Quitter",
+      "leaveSuccess": "Vous avez quitté le voyage",
+      "leaveFailed": "Échec de la sortie du voyage"
     },
     "expenses": {
       "title": "Dépenses",

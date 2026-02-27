@@ -331,7 +331,13 @@
       "inviteSuccess": "\u0110\u00e3 g\u1eedi l\u1eddi m\u1eddi",
       "inviteFailed": "G\u1eedi l\u1eddi m\u1eddi th\u1ea5t b\u1ea1i",
       "removeFailed": "X\u00f3a th\u1ea5t b\u1ea1i",
-      "noCollaborators": "Ch\u01b0a c\u00f3 c\u1ed9ng t\u00e1c vi\u00ean"
+      "noCollaborators": "Ch\u01b0a c\u00f3 c\u1ed9ng t\u00e1c vi\u00ean",
+      "leave": "R\u1eddi chuy\u1ebfn \u0111i",
+      "leaveTitle": "R\u1eddi chuy\u1ebfn \u0111i",
+      "leaveMessage": "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn mu\u1ed1n r\u1eddi chuy\u1ebfn \u0111i n\u00e0y kh\u00f4ng? B\u1ea1n s\u1ebd kh\u00f4ng th\u1ec3 truy c\u1eadp n\u1eefa.",
+      "leaveConfirm": "R\u1eddi",
+      "leaveSuccess": "B\u1ea1n \u0111\u00e3 r\u1eddi chuy\u1ebfn \u0111i",
+      "leaveFailed": "Kh\u00f4ng th\u1ec3 r\u1eddi chuy\u1ebfn \u0111i"
     },
     "expenses": {
       "title": "Chi ph\u00ed",

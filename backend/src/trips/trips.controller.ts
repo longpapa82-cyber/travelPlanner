@@ -306,6 +306,15 @@ export class TripsController {
     return this.tripsService.updateCollaboratorRole(id, userId, collabId, role);
   }
 
+  @Delete(':id/leave')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  leaveTrip(
+    @CurrentUser('userId') userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.tripsService.leaveTrip(id, userId);
+  }
+
   @Delete(':id/collaborators/:collabId')
   @HttpCode(HttpStatus.NO_CONTENT)
   removeCollaborator(

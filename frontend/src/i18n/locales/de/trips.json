@@ -331,7 +331,13 @@
       "inviteSuccess": "Einladung gesendet",
       "inviteFailed": "Einladung fehlgeschlagen",
       "removeFailed": "Entfernen fehlgeschlagen",
-      "noCollaborators": "Noch keine Mitreisenden"
+      "noCollaborators": "Noch keine Mitreisenden",
+      "leave": "Reise verlassen",
+      "leaveTitle": "Reise verlassen",
+      "leaveMessage": "Möchten Sie diese Reise wirklich verlassen? Sie haben danach keinen Zugriff mehr.",
+      "leaveConfirm": "Verlassen",
+      "leaveSuccess": "Sie haben die Reise verlassen",
+      "leaveFailed": "Fehler beim Verlassen der Reise"
     },
     "expenses": {
       "title": "Ausgaben",

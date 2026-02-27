@@ -331,7 +331,13 @@
       "inviteSuccess": "Invitación enviada",
       "inviteFailed": "Error al invitar",
       "removeFailed": "Error al eliminar",
-      "noCollaborators": "Aún no hay colaboradores"
+      "noCollaborators": "Aún no hay colaboradores",
+      "leave": "Salir del viaje",
+      "leaveTitle": "Salir del viaje",
+      "leaveMessage": "¿Estás seguro de que quieres salir de este viaje? Ya no tendrás acceso.",
+      "leaveConfirm": "Salir",
+      "leaveSuccess": "Has salido del viaje",
+      "leaveFailed": "Error al salir del viaje"
     },
     "expenses": {
       "title": "Gastos",

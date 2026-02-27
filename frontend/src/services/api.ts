@@ -556,6 +556,10 @@ class ApiService {
     return response.data;
   }
 
+  async leaveTrip(tripId: string) {
+    await this.api.delete(`/trips/${tripId}/leave`);
+  }
+
   async removeCollaborator(tripId: string, collabId: string) {
     const response = await this.api.delete(`/trips/${tripId}/collaborators/${collabId}`);
     return response.data;

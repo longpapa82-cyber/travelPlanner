@@ -1189,6 +1189,17 @@ export class TripsService {
     });
   }
 
+  async leaveTrip(tripId: string, userId: string): Promise<void> {
+    const collab = await this.collaboratorRepository.findOne({
+      where: { tripId, userId },
+    });
+    if (!collab) {
+      throw new NotFoundException('You are not a collaborator of this trip');
+    }
+    await this.collaboratorRepository.remove(collab);
+    this.logger.log(`User ${userId} left trip ${tripId}`);
+  }
+
   async updateCollaboratorRole(
     tripId: string,
     userId: string,

@@ -177,7 +177,13 @@
       "title": "Colaboradores", "invite": "Convidar", "emailPlaceholder": "Digite o endereço de e-mail",
       "roleViewer": "Visualizador", "roleEditor": "Editor", "owner": "Proprietário", "remove": "Remover",
       "inviteSuccess": "Convite enviado", "inviteFailed": "Falha ao convidar",
-      "removeFailed": "Falha ao remover", "noCollaborators": "Nenhum colaborador ainda"
+      "removeFailed": "Falha ao remover", "noCollaborators": "Nenhum colaborador ainda",
+      "leave": "Sair da viagem",
+      "leaveTitle": "Sair da viagem",
+      "leaveMessage": "Tem certeza de que deseja sair desta viagem? Você não terá mais acesso.",
+      "leaveConfirm": "Sair",
+      "leaveSuccess": "Você saiu da viagem",
+      "leaveFailed": "Falha ao sair da viagem"
     },
     "expenses": {
       "title": "Despesas", "addExpense": "Adicionar Despesa", "total": "Total Gasto",

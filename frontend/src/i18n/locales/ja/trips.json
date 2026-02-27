@@ -337,7 +337,13 @@
       "inviteSuccess": "招待を送信しました",
       "inviteFailed": "招待に失敗しました",
       "removeFailed": "削除に失敗しました",
-      "noCollaborators": "共同旅行者がいません"
+      "noCollaborators": "共同旅行者がいません",
+      "leave": "旅行から退出",
+      "leaveTitle": "旅行から退出",
+      "leaveMessage": "この旅行から退出しますか？以後、この旅行にアクセスできなくなります。",
+      "leaveConfirm": "退出",
+      "leaveSuccess": "旅行から退出しました",
+      "leaveFailed": "旅行からの退出に失敗しました"
     },
     "expenses": {
       "title": "経費",

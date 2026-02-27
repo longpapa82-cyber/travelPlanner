@@ -36,6 +36,7 @@ interface TripHeroProps {
   fadeAnim: Animated.Value;
   slideAnim: Animated.Value;
   isDuplicating: boolean;
+  isOwner: boolean;
   onGoBack: () => void;
   onEdit: () => void;
   onDuplicate: () => void;
@@ -51,6 +52,7 @@ const TripHero: React.FC<TripHeroProps> = ({
   fadeAnim,
   slideAnim,
   isDuplicating,
+  isOwner,
   onGoBack,
   onEdit,
   onDuplicate,
@@ -99,7 +101,7 @@ const TripHero: React.FC<TripHeroProps> = ({
           </TouchableOpacity>
 
           <View style={styles.rightButtons}>
-            {trip.status !== 'completed' && (
+            {isOwner && trip.status !== 'completed' && (
               <TouchableOpacity
                 style={styles.editButton}
                 onPress={onEdit}
@@ -178,15 +180,17 @@ const TripHero: React.FC<TripHeroProps> = ({
                       <Icon name="calendar-export" size={20} color={theme.colors.text} />
                       <Text style={styles.menuItemText}>{t('detail.accessibility.exportIcal')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.menuItem}
-                      onPress={() => { setMenuVisible(false); onChangeCoverPhoto(); }}
-                    >
-                      <Icon name="camera" size={20} color={theme.colors.text} />
-                      <Text style={styles.menuItemText}>
-                        {trip.coverImage ? t('detail.photos.changeCover') : t('detail.photos.addCover')}
-                      </Text>
-                    </TouchableOpacity>
+                    {isOwner && (
+                      <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => { setMenuVisible(false); onChangeCoverPhoto(); }}
+                      >
+                        <Icon name="camera" size={20} color={theme.colors.text} />
+                        <Text style={styles.menuItemText}>
+                          {trip.coverImage ? t('detail.photos.changeCover') : t('detail.photos.addCover')}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </div>
               </div>,
@@ -223,15 +227,17 @@ const TripHero: React.FC<TripHeroProps> = ({
                     <Icon name="calendar-export" size={20} color={theme.colors.text} />
                     <Text style={styles.menuItemText}>{t('detail.accessibility.exportIcal')}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.menuItem}
-                    onPress={() => { setMenuVisible(false); onChangeCoverPhoto(); }}
-                  >
-                    <Icon name="camera" size={20} color={theme.colors.text} />
-                    <Text style={styles.menuItemText}>
-                      {trip.coverImage ? t('detail.photos.changeCover') : t('detail.photos.addCover')}
-                    </Text>
-                  </TouchableOpacity>
+                  {isOwner && (
+                    <TouchableOpacity
+                      style={styles.menuItem}
+                      onPress={() => { setMenuVisible(false); onChangeCoverPhoto(); }}
+                    >
+                      <Icon name="camera" size={20} color={theme.colors.text} />
+                      <Text style={styles.menuItemText}>
+                        {trip.coverImage ? t('detail.photos.changeCover') : t('detail.photos.addCover')}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               </Pressable>
             </Modal>

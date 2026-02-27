@@ -30,13 +30,17 @@ const createPortal =
 interface CollaboratorSectionProps {
   tripId: string;
   collaborators: any[];
+  isOwner: boolean;
   onRefreshCollaborators: () => void;
+  onLeaveTrip: () => void;
 }
 
 const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
   tripId,
   collaborators,
+  isOwner,
   onRefreshCollaborators,
+  onLeaveTrip,
 }) => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('trips');
@@ -89,12 +93,14 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
             <Icon name="account-group" size={20} color={theme.colors.primary} />{' '}
             {t('detail.collaboration.title')}
           </Text>
-          <TouchableOpacity
-            onPress={() => setShowCollabModal(true)}
-            style={[styles.inviteButton, { backgroundColor: theme.colors.primary }]}
-          >
-            <Text style={styles.inviteButtonText}>{t('detail.collaboration.invite')}</Text>
-          </TouchableOpacity>
+          {isOwner && (
+            <TouchableOpacity
+              onPress={() => setShowCollabModal(true)}
+              style={[styles.inviteButton, { backgroundColor: theme.colors.primary }]}
+            >
+              <Text style={styles.inviteButtonText}>{t('detail.collaboration.invite')}</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {collaborators.length === 0 ? (
@@ -113,11 +119,23 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
                   {c.role === 'editor' ? t('detail.collaboration.roleEditor') : t('detail.collaboration.roleViewer')}
                 </Text>
               </View>
-              <TouchableOpacity onPress={() => handleRemoveCollaborator(c.id)}>
-                <Icon name="close-circle-outline" size={22} color={colors.error.main} />
-              </TouchableOpacity>
+              {isOwner && (
+                <TouchableOpacity onPress={() => handleRemoveCollaborator(c.id)}>
+                  <Icon name="close-circle-outline" size={22} color={colors.error.main} />
+                </TouchableOpacity>
+              )}
             </View>
           ))
+        )}
+
+        {!isOwner && (
+          <TouchableOpacity
+            onPress={onLeaveTrip}
+            style={styles.leaveButton}
+          >
+            <Icon name="exit-run" size={18} color={colors.error.main} />
+            <Text style={styles.leaveButtonText}>{t('detail.collaboration.leave')}</Text>
+          </TouchableOpacity>
         )}
       </View>
 
@@ -297,6 +315,22 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
     collaboratorRole: {
       fontSize: 12,
+    },
+    leaveButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+      marginTop: 16,
+      paddingVertical: 12,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.error.main,
+    },
+    leaveButtonText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.error.main,
     },
     // Modal styles
     modalOverlay: {
