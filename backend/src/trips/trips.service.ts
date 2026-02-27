@@ -989,9 +989,9 @@ export class TripsService {
       );
     }
 
-    trip.shareToken = undefined;
+    trip.shareToken = null;
     trip.isPublic = false;
-    trip.shareExpiresAt = undefined;
+    trip.shareExpiresAt = null;
 
     await this.tripRepository.save(trip);
 
