@@ -19,7 +19,7 @@ export default ({ config }) => ({
     buildNumber: '1',
     usesAppleSignIn: true,
     associatedDomains: [
-      'applinks:mytravelplanner.duckdns.org',
+      'applinks:mytravel-planner.com',
     ],
     infoPlist: {
       CFBundleURLTypes: [
@@ -45,7 +45,7 @@ export default ({ config }) => ({
         autoVerify: true,
         data: [
           { scheme: 'travelplanner' },
-          { scheme: 'https', host: 'mytravelplanner.duckdns.org', pathPrefix: '/auth' },
+          { scheme: 'https', host: 'mytravel-planner.com', pathPrefix: '/auth' },
         ],
         category: ['BROWSABLE', 'DEFAULT'],
       },
