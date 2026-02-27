@@ -196,7 +196,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const handleShareDestination = useCallback(async (destination: typeof FEATURED_DESTINATIONS[0]) => {
     try {
       await Share.share({
-        message: `${destination.name}, ${destination.country}\n${destination.description}\n\nhttps://mytravelplanner.duckdns.org`,
+        message: `${destination.name}, ${destination.country}\n${destination.description}\n\nhttps://mytravel-planner.com`,
       });
     } catch {
       // User cancelled share

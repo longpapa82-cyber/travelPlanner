@@ -7,7 +7,7 @@
   "releaseNotes": "v1.0 Lancement officiel\n- Génération d'itinéraires par IA\n- 9 langues (KO/EN/JA/ZH/ES/DE/FR/TH/VI)\n- Fonctions sociales (partage de voyages, suivi)\n- Abonnement premium",
   "category": "Travel",
   "ageRating": "4+",
-  "privacyUrl": "https://mytravelplanner.duckdns.org/privacy",
-  "termsUrl": "https://mytravelplanner.duckdns.org/terms",
-  "supportUrl": "https://mytravelplanner.duckdns.org/help"
+  "privacyUrl": "https://mytravel-planner.com/privacy",
+  "termsUrl": "https://mytravel-planner.com/terms",
+  "supportUrl": "https://mytravel-planner.com/help"
 }

@@ -21,7 +21,7 @@ set -euo pipefail
 OCI_HOST="ubuntu@150.230.251.32"
 OCI_KEY="$HOME/.ssh/travelplanner-oci"
 REMOTE_DIR="~/travelPlanner"
-DOMAIN="mytravelplanner.duckdns.org"
+DOMAIN="mytravel-planner.com"
 SSH_CMD="ssh -i $OCI_KEY -o ConnectTimeout=10 -o ServerAliveInterval=30 $OCI_HOST"
 SCP_CMD="scp -i $OCI_KEY -o ConnectTimeout=10"
 COMPOSE_CMD="docker compose -f docker-compose.yml -f docker-compose.micro.yml -f docker-compose.ssl-micro.yml"

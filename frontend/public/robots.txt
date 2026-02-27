@@ -17,4 +17,4 @@ Disallow: /profile/
 Disallow: /settings
 Disallow: /admin/
 
-Sitemap: https://mytravelplanner.duckdns.org/sitemap.xml
+Sitemap: https://mytravel-planner.com/sitemap.xml

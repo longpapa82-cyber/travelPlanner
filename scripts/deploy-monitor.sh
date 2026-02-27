@@ -12,7 +12,7 @@ set -euo pipefail
 # Run in a separate terminal during deployment to verify zero-downtime.
 ###############################################################################
 
-DOMAIN="mytravelplanner.duckdns.org"
+DOMAIN="mytravel-planner.com"
 INTERVAL=1
 DURATION=0  # 0 = infinite
 ENDPOINT="https://$DOMAIN/api/health"

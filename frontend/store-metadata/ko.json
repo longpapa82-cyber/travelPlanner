@@ -7,7 +7,7 @@
   "releaseNotes": "v1.0 정식 출시\n- AI 맞춤 여행 일정 생성\n- 9개 언어 지원 (한/영/일/중/스/독/불/태/베)\n- 소셜 기능 (여행 공유, 팔로우)\n- 프리미엄 구독 옵션",
   "category": "Travel",
   "ageRating": "4+",
-  "privacyUrl": "https://mytravelplanner.duckdns.org/privacy",
-  "termsUrl": "https://mytravelplanner.duckdns.org/terms",
-  "supportUrl": "https://mytravelplanner.duckdns.org/help"
+  "privacyUrl": "https://mytravel-planner.com/privacy",
+  "termsUrl": "https://mytravel-planner.com/terms",
+  "supportUrl": "https://mytravel-planner.com/help"
 }

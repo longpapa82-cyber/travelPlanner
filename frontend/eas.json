@@ -20,12 +20,12 @@
     "staging": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://mytravelplanner.duckdns.org/api"
+        "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api"
       }
     },
     "production": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://mytravelplanner.duckdns.org/api"
+        "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api"
       },
       "autoIncrement": true
     }
