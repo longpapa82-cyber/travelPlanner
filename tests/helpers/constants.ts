@@ -2,11 +2,11 @@
 export const IS_PROD = process.env.PROD_TEST === '1';
 
 export const BASE_URL = IS_PROD
-  ? 'https://mytravelplanner.duckdns.org'
+  ? 'https://mytravel-planner.com'
   : 'http://localhost:8081';
 
 export const API_URL = IS_PROD
-  ? 'https://mytravelplanner.duckdns.org/api'
+  ? 'https://mytravel-planner.com/api'
   : 'http://localhost:3001/api';
 
 export const TEST_PASSWORD = 'Test1234!@';

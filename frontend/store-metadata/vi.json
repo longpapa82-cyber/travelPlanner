@@ -7,7 +7,7 @@
   "releaseNotes": "v1.0 Ra mắt chính thức\n- Tạo lịch trình bằng AI\n- Hỗ trợ 9 ngôn ngữ (KO/EN/JA/ZH/ES/DE/FR/TH/VI)\n- Tính năng xã hội (chia sẻ chuyến đi, theo dõi)\n- Tùy chọn đăng ký premium",
   "category": "Travel",
   "ageRating": "4+",
-  "privacyUrl": "https://mytravelplanner.duckdns.org/privacy",
-  "termsUrl": "https://mytravelplanner.duckdns.org/terms",
-  "supportUrl": "https://mytravelplanner.duckdns.org/help"
+  "privacyUrl": "https://mytravel-planner.com/privacy",
+  "termsUrl": "https://mytravel-planner.com/terms",
+  "supportUrl": "https://mytravel-planner.com/help"
 }

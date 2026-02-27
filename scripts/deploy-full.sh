@@ -77,7 +77,7 @@ verify_containers() {
   # Final HTTP check
   echo ""
   echo "   Testing HTTPS endpoint..."
-  HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://mytravelplanner.duckdns.org 2>/dev/null || echo "000")
+  HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://mytravel-planner.com 2>/dev/null || echo "000")
   if [ "$HTTP_CODE" = "200" ]; then
     echo "   Site is live (HTTP $HTTP_CODE)"
   else
@@ -204,4 +204,4 @@ SECONDS_=$((ELAPSED % 60))
 
 echo ""
 echo "=== Deploy Complete (${MINUTES}m ${SECONDS_}s) ==="
-echo "URL: https://mytravelplanner.duckdns.org"
+echo "URL: https://mytravel-planner.com"

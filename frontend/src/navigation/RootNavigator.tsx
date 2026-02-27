@@ -19,7 +19,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [
     Linking.createURL('/'),
     'travelplanner://',
-    'https://mytravelplanner.duckdns.org',
+    'https://mytravel-planner.com',
   ],
   config: {
     screens: {

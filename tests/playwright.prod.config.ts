@@ -1,7 +1,7 @@
 /**
  * Production E2E Playwright Configuration
  *
- * Targets https://mytravelplanner.duckdns.org (OCI VM.Standard.E2.1.Micro)
+ * Targets https://mytravel-planner.com (OCI VM.Standard.E2.1.Micro)
  * Run with: PROD_TEST=1 npx playwright test --config=tests/playwright.prod.config.ts
  *
  * Key differences from local config:
