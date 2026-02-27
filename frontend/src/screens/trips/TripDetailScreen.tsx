@@ -620,6 +620,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           tripId={tripId}
           tripDestination={trip.destination}
           currentShareToken={trip.shareToken}
+          onShareChanged={fetchTripDetails}
         />
       </View>
     </RootWrapper>

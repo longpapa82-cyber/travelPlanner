@@ -51,6 +51,7 @@ interface ShareModalProps {
   tripId: string;
   tripDestination: string;
   currentShareToken?: string;
+  onShareChanged?: () => void;
 }
 
 export const ShareModal: React.FC<ShareModalProps> = ({
@@ -59,6 +60,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   tripId,
   tripDestination,
   currentShareToken,
+  onShareChanged,
 }) => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('components');
@@ -107,6 +109,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       const url = `${getBaseUrl()}${response.shareUrl}`;
       setShareUrl(url);
       setCopied(false);
+      onShareChanged?.();
     } catch (error: any) {
       showToast({ type: 'error', message: error.response?.data?.message || t('shareModal.generateError'), position: 'top' });
     } finally {
@@ -141,6 +144,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       await apiService.disableSharing(tripId);
       setShareToken(undefined);
       setShareUrl('');
+      onShareChanged?.();
       showToast({ type: 'success', message: t('shareModal.disableSuccess'), position: 'top' });
       onClose();
     } catch (error: any) {

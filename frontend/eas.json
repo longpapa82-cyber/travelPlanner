@@ -36,7 +36,7 @@
         "appleId": "a090723@naver.com"
       },
       "android": {
-        "track": "internal",
+        "track": "alpha",
         "releaseStatus": "draft"
       }
     }
