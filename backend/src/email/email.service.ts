@@ -54,19 +54,19 @@ export class EmailService {
   ): Promise<void> {
     const verificationUrl = `${this.frontendUrl}/verify-email?token=${token}`;
     const subjects: Record<SupportedLang, string> = {
-      ko: '[TravelPlanner] 이메일 인증을 완료해주세요',
-      en: '[TravelPlanner] Please verify your email',
-      ja: '[TravelPlanner] メールアドレスを認証してください',
-      zh: '[TravelPlanner] 请验证您的邮箱',
-      es: '[TravelPlanner] Por favor verifica tu correo',
-      de: '[TravelPlanner] Bitte verifizieren Sie Ihre E-Mail',
-      fr: '[TravelPlanner] Veuillez vérifier votre e-mail',
-      th: '[TravelPlanner] กรุณายืนยันอีเมลของคุณ',
-      vi: '[TravelPlanner] Vui lòng xác minh email của bạn',
-      pt: '[TravelPlanner] Por favor, verifique seu e-mail',
-      ar: '[TravelPlanner] يرجى تأكيد بريدك الإلكتروني',
-      id: '[TravelPlanner] Silakan verifikasi email Anda',
-      hi: '[TravelPlanner] कृपया अपना ईमेल सत्यापित करें',
+      ko: '[MyTravel] 이메일 인증을 완료해주세요',
+      en: '[MyTravel] Please verify your email',
+      ja: '[MyTravel] メールアドレスを認証してください',
+      zh: '[MyTravel] 请验证您的邮箱',
+      es: '[MyTravel] Por favor verifica tu correo',
+      de: '[MyTravel] Bitte verifizieren Sie Ihre E-Mail',
+      fr: '[MyTravel] Veuillez vérifier votre e-mail',
+      th: '[MyTravel] กรุณายืนยันอีเมลของคุณ',
+      vi: '[MyTravel] Vui lòng xác minh email của bạn',
+      pt: '[MyTravel] Por favor, verifique seu e-mail',
+      ar: '[MyTravel] يرجى تأكيد بريدك الإلكتروني',
+      id: '[MyTravel] Silakan verifikasi email Anda',
+      hi: '[MyTravel] कृपया अपना ईमेल सत्यापित करें',
     };
     const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
 
@@ -106,19 +106,19 @@ export class EmailService {
   ): Promise<void> {
     const resetUrl = `${this.frontendUrl}/reset-password?token=${token}`;
     const subjects: Record<SupportedLang, string> = {
-      ko: '[TravelPlanner] 비밀번호 재설정',
-      en: '[TravelPlanner] Reset your password',
-      ja: '[TravelPlanner] パスワードのリセット',
-      zh: '[TravelPlanner] 重置密码',
-      es: '[TravelPlanner] Restablece tu contraseña',
-      de: '[TravelPlanner] Passwort zurücksetzen',
-      fr: '[TravelPlanner] Réinitialisez votre mot de passe',
-      th: '[TravelPlanner] รีเซ็ตรหัสผ่านของคุณ',
-      vi: '[TravelPlanner] Đặt lại mật khẩu của bạn',
-      pt: '[TravelPlanner] Redefina sua senha',
-      ar: '[TravelPlanner] إعادة تعيين كلمة المرور',
-      id: '[TravelPlanner] Atur ulang kata sandi Anda',
-      hi: '[TravelPlanner] अपना पासवर्ड रीसेट करें',
+      ko: '[MyTravel] 비밀번호 재설정',
+      en: '[MyTravel] Reset your password',
+      ja: '[MyTravel] パスワードのリセット',
+      zh: '[MyTravel] 重置密码',
+      es: '[MyTravel] Restablece tu contraseña',
+      de: '[MyTravel] Passwort zurücksetzen',
+      fr: '[MyTravel] Réinitialisez votre mot de passe',
+      th: '[MyTravel] รีเซ็ตรหัสผ่านของคุณ',
+      vi: '[MyTravel] Đặt lại mật khẩu của bạn',
+      pt: '[MyTravel] Redefina sua senha',
+      ar: '[MyTravel] إعادة تعيين كلمة المرور',
+      id: '[MyTravel] Atur ulang kata sandi Anda',
+      hi: '[MyTravel] अपना पासवर्ड रीसेट करें',
     };
     const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
 

@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Existe alguma taxa para usar o serviço?",
-        "a": "Todos os recursos do TravelPlanner são gratuitos. Anúncios podem ser exibidos dentro do aplicativo para apoiar a operação do serviço."
+        "a": "Todos os recursos do MyTravel são gratuitos. Anúncios podem ser exibidos dentro do aplicativo para apoiar a operação do serviço."
       },
       "adInfo": {
         "q": "Como os anúncios são exibidos?",
@@ -153,11 +153,11 @@
     "articles": {
       "art1": {
         "title": "Artigo 1 (Objetivo)",
-        "content": "Estes Termos de Serviço regem o uso do TravelPlanner (\"Serviço\"), incluindo os direitos, obrigações e responsabilidades tanto da empresa quanto dos usuários."
+        "content": "Estes Termos de Serviço regem o uso do MyTravel (\"Serviço\"), incluindo os direitos, obrigações e responsabilidades tanto da empresa quanto dos usuários."
       },
       "art2": {
         "title": "Artigo 2 (Definições)",
-        "content": "① \"Serviço\" refere-se ao serviço de planejamento e gerenciamento automático de viagens fornecido pelo TravelPlanner.\n② \"Membro\" refere-se à pessoa que concordou com estes Termos e se cadastrou no Serviço.\n③ \"Conteúdo Gerado por IA\" refere-se a itinerários de viagem e recomendações gerados automaticamente usando inteligência artificial.\n④ \"Dados de Viagem\" refere-se a destinos, cronogramas e planos de atividades inseridos pelos membros."
+        "content": "① \"Serviço\" refere-se ao serviço de planejamento e gerenciamento automático de viagens fornecido pelo MyTravel.\n② \"Membro\" refere-se à pessoa que concordou com estes Termos e se cadastrou no Serviço.\n③ \"Conteúdo Gerado por IA\" refere-se a itinerários de viagem e recomendações gerados automaticamente usando inteligência artificial.\n④ \"Dados de Viagem\" refere-se a destinos, cronogramas e planos de atividades inseridos pelos membros."
       },
       "art3": {
         "title": "Artigo 3 (Descrição do Serviço)",
@@ -267,7 +267,7 @@
       },
       "art11": {
         "title": "11. Responsável pela Privacidade",
-        "content": "Responsável pela Privacidade: Equipe de Operações do TravelPlanner\nE-mail: longpapa82@gmail.com"
+        "content": "Responsável pela Privacidade: Equipe de Operações do MyTravel\nE-mail: longpapa82@gmail.com"
       },
       "art12": {
         "title": "12. Alterações na Política",

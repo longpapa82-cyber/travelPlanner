@@ -1,6 +1,6 @@
 export default ({ config }) => ({
   ...config,
-  name: 'TravelPlanner',
+  name: 'MyTravel',
   slug: 'travel-planner',
   version: '1.0.0',
   orientation: 'portrait',

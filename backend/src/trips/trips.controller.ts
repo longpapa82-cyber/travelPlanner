@@ -136,7 +136,7 @@ export class TripsController {
     const lines: string[] = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//TravelPlanner//EN',
+      'PRODID:-//MyTravel//EN',
       `X-WR-CALNAME:${trip.destination}`,
     ];
 

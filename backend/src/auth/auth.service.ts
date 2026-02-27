@@ -430,7 +430,7 @@ export class AuthService {
     }
 
     const secret = generateSecret();
-    const appName = 'TravelPlanner';
+    const appName = 'MyTravel';
     const otpauthUrl = generateURI({
       issuer: appName,
       label: user.email || user.id,

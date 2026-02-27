@@ -196,7 +196,7 @@ ${tripEntries}
     const title = `${trip.destination} ${days > 0 ? `${days}일` : ''} 여행 계획`;
     const description =
       trip.description ||
-      `${trip.destination} 여행 계획을 확인해보세요! TravelPlanner에서 AI가 만든 일정입니다.`;
+      `${trip.destination} 여행 계획을 확인해보세요! MyTravel에서 AI가 만든 일정입니다.`;
     const ogImage = trip.coverImage || `${baseUrl}/assets/og-image.png`;
     const url = `${baseUrl}/trips/shared/${token}`;
 
@@ -205,7 +205,7 @@ ${tripEntries}
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>${escapeHtml(title)} | TravelPlanner</title>
+  <title>${escapeHtml(title)} | MyTravel</title>
   <meta name="description" content="${escapeHtml(description)}" />
   <link rel="canonical" href="${url}" />
   <meta property="og:title" content="${escapeHtml(title)}" />
@@ -213,7 +213,7 @@ ${tripEntries}
   <meta property="og:type" content="article" />
   <meta property="og:url" content="${url}" />
   <meta property="og:image" content="${escapeHtml(ogImage)}" />
-  <meta property="og:site_name" content="TravelPlanner" />
+  <meta property="og:site_name" content="MyTravel" />
   <meta property="og:locale" content="ko_KR" />
   <meta property="og:locale:alternate" content="en_US" />
   <meta property="og:locale:alternate" content="ja_JP" />
@@ -229,7 +229,7 @@ ${tripEntries}
     description,
     url,
     image: ogImage,
-    provider: { '@type': 'Organization', name: 'TravelPlanner' },
+    provider: { '@type': 'Organization', name: 'MyTravel' },
   }).replace(/</g, '\\u003c')}</script>
   <script>window.location.replace("${url}");</script>
 </head>

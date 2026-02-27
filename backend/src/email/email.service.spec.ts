@@ -77,7 +77,7 @@ describe('EmailService', () => {
 
       expect(mailerService.sendMail).toHaveBeenCalledWith({
         to: 'user@example.com',
-        subject: '[TravelPlanner] 이메일 인증을 완료해주세요',
+        subject: '[MyTravel] 이메일 인증을 완료해주세요',
         template: 'verify-email-ko',
         context: {
           name: 'User',
@@ -96,7 +96,7 @@ describe('EmailService', () => {
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
-          subject: '[TravelPlanner] Please verify your email',
+          subject: '[MyTravel] Please verify your email',
           template: 'verify-email-en',
         }),
       );
@@ -112,7 +112,7 @@ describe('EmailService', () => {
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
-          subject: '[TravelPlanner] メールアドレスを認証してください',
+          subject: '[MyTravel] メールアドレスを認証してください',
           template: 'verify-email-ja',
         }),
       );
@@ -127,7 +127,7 @@ describe('EmailService', () => {
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
-          subject: '[TravelPlanner] 이메일 인증을 완료해주세요',
+          subject: '[MyTravel] 이메일 인증을 완료해주세요',
           template: 'verify-email-ko',
         }),
       );
@@ -203,7 +203,7 @@ describe('EmailService', () => {
 
       expect(mailerService.sendMail).toHaveBeenCalledWith({
         to: 'user@example.com',
-        subject: '[TravelPlanner] 비밀번호 재설정',
+        subject: '[MyTravel] 비밀번호 재설정',
         template: 'reset-password-ko',
         context: {
           name: 'User',
@@ -222,7 +222,7 @@ describe('EmailService', () => {
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
-          subject: '[TravelPlanner] Reset your password',
+          subject: '[MyTravel] Reset your password',
           template: 'reset-password-en',
         }),
       );
@@ -238,7 +238,7 @@ describe('EmailService', () => {
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
-          subject: '[TravelPlanner] パスワードのリセット',
+          subject: '[MyTravel] パスワードのリセット',
           template: 'reset-password-ja',
         }),
       );

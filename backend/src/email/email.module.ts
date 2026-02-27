@@ -26,7 +26,7 @@ const logger = new Logger('EmailModule');
               jsonTransport: true,
             },
             defaults: {
-              from: `"TravelPlanner" <${configService.get<string>('email.from')}>`,
+              from: `"MyTravel" <${configService.get<string>('email.from')}>`,
             },
             template: {
               dir: join(__dirname, '..', '..', 'templates', 'email'),
@@ -47,7 +47,7 @@ const logger = new Logger('EmailModule');
             },
           },
           defaults: {
-            from: `"TravelPlanner" <${configService.get<string>('email.from')}>`,
+            from: `"MyTravel" <${configService.get<string>('email.from')}>`,
           },
           template: {
             dir: join(__dirname, '..', '..', 'templates', 'email'),

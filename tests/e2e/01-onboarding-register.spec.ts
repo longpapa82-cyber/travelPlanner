@@ -408,7 +408,7 @@ test.describe('TC-2: Registration', () => {
     await loginClickable.first().click({ force: true });
 
     // Should navigate to login screen — verify login-specific elements
-    await expect(page.getByText('TravelPlanner')).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
+    await expect(page.getByText('MyTravel')).toBeVisible({ timeout: TIMEOUTS.MEDIUM });
     await expect(
       page.locator('input[placeholder*="이메일"], input[aria-label*="이메일"]').first()
     ).toBeVisible({ timeout: TIMEOUTS.SHORT });

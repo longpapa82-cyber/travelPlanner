@@ -1,5 +1,5 @@
 #!/bin/bash
-# Initialize Let's Encrypt certificates for TravelPlanner
+# Initialize Let's Encrypt certificates for MyTravel
 #
 # Usage: ./init-letsencrypt.sh <domain> <email>
 # Example: ./init-letsencrypt.sh travelplanner.app admin@travelplanner.app
@@ -10,7 +10,7 @@ DOMAIN=${1:?"Usage: $0 <domain> <email>"}
 EMAIL=${2:?"Usage: $0 <domain> <email>"}
 COMPOSE_FILE="../docker-compose.prod.yml"
 
-echo "=== TravelPlanner SSL Setup ==="
+echo "=== MyTravel SSL Setup ==="
 echo "Domain: $DOMAIN"
 echo "Email:  $EMAIL"
 echo ""

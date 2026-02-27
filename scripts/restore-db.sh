@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# PostgreSQL restore script for TravelPlanner
+# PostgreSQL restore script for MyTravel
 # Usage: ./scripts/restore-db.sh <backup_file>
 
 if [ $# -eq 0 ]; then

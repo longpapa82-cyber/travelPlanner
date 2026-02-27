@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# TravelPlanner 개발 서버 실행 스크립트
+# MyTravel 개발 서버 실행 스크립트
 # 사용법: ./start-dev.sh
 
 set -e
 
-echo "🚀 TravelPlanner 개발 서버 시작..."
+echo "🚀 MyTravel 개발 서버 시작..."
 echo ""
 
 # 색상 정의

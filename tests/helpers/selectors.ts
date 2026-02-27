@@ -1,5 +1,5 @@
 /**
- * Common selectors for TravelPlanner E2E tests.
+ * Common selectors for MyTravel E2E tests.
  * Uses data-testid where possible, falls back to text/role selectors.
  */
 
