@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthStackParamList } from '../types';
@@ -24,7 +25,7 @@ const AuthNavigator = () => {
   }, []);
 
   // Wait until we know which screen to start with
-  if (!initialRoute) return null;
+  if (!initialRoute) return <View style={{ flex: 1, backgroundColor: '#FAFAF9' }} />;
 
   return (
     <Stack.Navigator

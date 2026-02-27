@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import { NavigationContainer, LinkingOptions } from '@react-navigation/native';
+import { NavigationContainer, LinkingOptions, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
 import { useAuth } from '../contexts/AuthContext';
@@ -55,7 +55,7 @@ const linking: LinkingOptions<RootStackParamList> = {
 
 const RootNavigator = () => {
   const { isAuthenticated, isLoading } = useAuth();
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
   const { shouldShowPrePermission, sessionCount, requestTracking } = useTrackingTransparency();
 
   // ATT pre-permission modal state
@@ -81,7 +81,19 @@ const RootNavigator = () => {
   }
 
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer
+      linking={linking}
+      theme={{
+        ...(isDark ? DarkTheme : DefaultTheme),
+        colors: {
+          ...(isDark ? DarkTheme.colors : DefaultTheme.colors),
+          background: theme.colors.background,
+          card: theme.colors.card,
+          text: theme.colors.text,
+          primary: theme.colors.primary,
+        },
+      }}
+    >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isAuthenticated ? (
           <Stack.Screen name="Main" component={MainNavigator} />
