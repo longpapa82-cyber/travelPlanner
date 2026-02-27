@@ -8,6 +8,7 @@ import {
   Param,
   Req,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
@@ -65,7 +66,7 @@ export class AdminController {
   }
 
   @Patch('error-logs/:id/resolve')
-  resolveErrorLog(@Param('id') id: string) {
+  resolveErrorLog(@Param('id', ParseUUIDPipe) id: string) {
     return this.adminService.resolveErrorLog(id);
   }
 
