@@ -15,6 +15,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -86,14 +87,14 @@ export class TripsController {
   }
 
   @Get(':id')
-  findOne(@CurrentUser('userId') userId: string, @Param('id') id: string) {
+  findOne(@CurrentUser('userId') userId: string, @Param('id', ParseUUIDPipe) id: string) {
     return this.tripsService.findOne(userId, id);
   }
 
   @Patch(':id')
   update(
     @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTripDto: UpdateTripDto,
   ) {
     return this.tripsService.update(userId, id, updateTripDto);
@@ -101,15 +102,15 @@ export class TripsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@CurrentUser('userId') userId: string, @Param('id') id: string) {
+  remove(@CurrentUser('userId') userId: string, @Param('id', ParseUUIDPipe) id: string) {
     return this.tripsService.remove(userId, id);
   }
 
   @Patch(':tripId/itineraries/:itineraryId')
   updateItinerary(
     @CurrentUser('userId') userId: string,
-    @Param('tripId') tripId: string,
-    @Param('itineraryId') itineraryId: string,
+    @Param('tripId', ParseUUIDPipe) tripId: string,
+    @Param('itineraryId', ParseUUIDPipe) itineraryId: string,
     @Body() updateItineraryDto: UpdateItineraryDto,
   ) {
     return this.tripsService.updateItinerary(
@@ -121,14 +122,14 @@ export class TripsController {
   }
 
   @Post(':id/duplicate')
-  duplicate(@CurrentUser('userId') userId: string, @Param('id') id: string) {
+  duplicate(@CurrentUser('userId') userId: string, @Param('id', ParseUUIDPipe) id: string) {
     return this.tripsService.duplicate(userId, id);
   }
 
   @Get(':id/export/ical')
   async exportIcal(
     @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Res() res: Response,
   ) {
     const trip = await this.tripsService.findOne(userId, id);
@@ -189,8 +190,8 @@ export class TripsController {
   @Post(':tripId/itineraries/:itineraryId/activities')
   addActivity(
     @CurrentUser('userId') userId: string,
-    @Param('tripId') tripId: string,
-    @Param('itineraryId') itineraryId: string,
+    @Param('tripId', ParseUUIDPipe) tripId: string,
+    @Param('itineraryId', ParseUUIDPipe) itineraryId: string,
     @Body() addActivityDto: AddActivityDto,
   ) {
     return this.tripsService.addActivity(
@@ -205,8 +206,8 @@ export class TripsController {
   @Patch(':tripId/itineraries/:itineraryId/activities/reorder')
   reorderActivities(
     @CurrentUser('userId') userId: string,
-    @Param('tripId') tripId: string,
-    @Param('itineraryId') itineraryId: string,
+    @Param('tripId', ParseUUIDPipe) tripId: string,
+    @Param('itineraryId', ParseUUIDPipe) itineraryId: string,
     @Body() reorderDto: ReorderActivitiesDto,
   ) {
     return this.tripsService.reorderActivities(
@@ -220,8 +221,8 @@ export class TripsController {
   @Patch(':tripId/itineraries/:itineraryId/activities/:index')
   updateActivity(
     @CurrentUser('userId') userId: string,
-    @Param('tripId') tripId: string,
-    @Param('itineraryId') itineraryId: string,
+    @Param('tripId', ParseUUIDPipe) tripId: string,
+    @Param('itineraryId', ParseUUIDPipe) itineraryId: string,
     @Param('index') index: string,
     @Body() updateActivityDto: UpdateActivityDto,
   ) {
@@ -238,8 +239,8 @@ export class TripsController {
   @HttpCode(HttpStatus.OK)
   deleteActivity(
     @CurrentUser('userId') userId: string,
-    @Param('tripId') tripId: string,
-    @Param('itineraryId') itineraryId: string,
+    @Param('tripId', ParseUUIDPipe) tripId: string,
+    @Param('itineraryId', ParseUUIDPipe) itineraryId: string,
     @Param('index') index: string,
   ) {
     return this.tripsService.deleteActivity(
@@ -258,7 +259,7 @@ export class TripsController {
   @Throttle({ short: { ttl: 60000, limit: 5 } })
   generateShareLink(
     @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() body?: { expiresInDays?: number },
   ) {
     return this.tripsService.generateShareToken(
@@ -272,7 +273,7 @@ export class TripsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   disableSharing(
     @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.tripsService.disableSharing(id, userId);
   }
@@ -281,7 +282,7 @@ export class TripsController {
   @Post(':id/collaborators')
   addCollaborator(
     @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: AddCollaboratorDto,
   ) {
     return this.tripsService.addCollaborator(id, userId, dto.email, dto.role);
@@ -290,7 +291,7 @@ export class TripsController {
   @Get(':id/collaborators')
   getCollaborators(
     @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.tripsService.getCollaborators(id, userId);
   }
@@ -298,8 +299,8 @@ export class TripsController {
   @Patch(':id/collaborators/:collabId')
   updateCollaboratorRole(
     @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
-    @Param('collabId') collabId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('collabId', ParseUUIDPipe) collabId: string,
     @Body('role') role: CollaboratorRole,
   ) {
     return this.tripsService.updateCollaboratorRole(id, userId, collabId, role);
@@ -309,8 +310,8 @@ export class TripsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   removeCollaborator(
     @CurrentUser('userId') userId: string,
-    @Param('id') id: string,
-    @Param('collabId') collabId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('collabId', ParseUUIDPipe) collabId: string,
   ) {
     return this.tripsService.removeCollaborator(id, userId, collabId);
   }
