@@ -35,7 +35,7 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 if [ $# -lt 2 ]; then
   echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "  DuckDNS Setup for TravelPlanner"
+  echo "  DuckDNS Setup for MyTravel"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo ""
   echo "  Step 1: Go to https://www.duckdns.org"

@@ -27,7 +27,7 @@ check() {
 }
 
 echo ""
-echo "🔍 TravelPlanner E2E Preflight Check"
+echo "🔍 MyTravel E2E Preflight Check"
 echo "─────────────────────────────────────"
 
 # 1. PostgreSQL

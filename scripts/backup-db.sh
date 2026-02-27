@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# PostgreSQL backup script for TravelPlanner
+# PostgreSQL backup script for MyTravel
 # Usage: ./scripts/backup-db.sh [backup_dir]
 # Cron:  0 3 * * * cd /app/travelplanner && ./scripts/backup-db.sh
 

@@ -1,6 +1,6 @@
 {
-  "name": "TravelPlanner",
-  "short_name": "TravelPlanner",
+  "name": "MyTravel",
+  "short_name": "MyTravel",
   "description": "AI-powered travel planning. Pick your destination and get a complete itinerary instantly.",
   "start_url": "/",
   "display": "standalone",

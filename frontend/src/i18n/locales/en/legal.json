@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Is there a fee to use the service?",
-        "a": "TravelPlanner is free to use with up to 3 AI trip generations per month. Premium subscription ($3.99/month or $29.99/year) unlocks unlimited AI generation, ad-free experience, and enhanced features. Free users will see ads to support service operations."
+        "a": "MyTravel is free to use with up to 3 AI trip generations per month. Premium subscription ($3.99/month or $29.99/year) unlocks unlimited AI generation, ad-free experience, and enhanced features. Free users will see ads to support service operations."
       },
       "adInfo": {
         "q": "How are ads displayed?",
@@ -153,11 +153,11 @@
     "articles": {
       "art1": {
         "title": "Article 1 (Purpose)",
-        "content": "These Terms of Service govern the use of TravelPlanner (\"Service\"), including the rights, obligations, and responsibilities of both the company and users."
+        "content": "These Terms of Service govern the use of MyTravel (\"Service\"), including the rights, obligations, and responsibilities of both the company and users."
       },
       "art2": {
         "title": "Article 2 (Definitions)",
-        "content": "① \"Service\" refers to the automatic travel planning and management service provided by TravelPlanner.\n② \"Member\" refers to a person who has agreed to these Terms and registered for the Service.\n③ \"AI-Generated Content\" refers to travel itineraries and recommendations automatically generated using artificial intelligence.\n④ \"Travel Data\" refers to destinations, schedules, and activity plans entered by members.\n⑤ \"Premium Subscription\" refers to the paid service tier that provides enhanced features."
+        "content": "① \"Service\" refers to the automatic travel planning and management service provided by MyTravel.\n② \"Member\" refers to a person who has agreed to these Terms and registered for the Service.\n③ \"AI-Generated Content\" refers to travel itineraries and recommendations automatically generated using artificial intelligence.\n④ \"Travel Data\" refers to destinations, schedules, and activity plans entered by members.\n⑤ \"Premium Subscription\" refers to the paid service tier that provides enhanced features."
       },
       "art3": {
         "title": "Article 3 (Service Description)",
@@ -267,7 +267,7 @@
       },
       "art11": {
         "title": "11. Privacy Officer",
-        "content": "Privacy Officer: TravelPlanner Operations Team\nEmail: longpapa82@gmail.com"
+        "content": "Privacy Officer: MyTravel Operations Team\nEmail: longpapa82@gmail.com"
       },
       "art12": {
         "title": "12. Cross-Border Data Transfer",

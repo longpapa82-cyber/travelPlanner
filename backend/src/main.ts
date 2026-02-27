@@ -136,7 +136,7 @@ async function bootstrap() {
   // Swagger API documentation (only in non-production)
   if (process.env.NODE_ENV !== 'production') {
     const swaggerConfig = new DocumentBuilder()
-      .setTitle('TravelPlanner API')
+      .setTitle('MyTravel API')
       .setDescription('Travel planning service API documentation')
       .setVersion('1.0')
       .addBearerAuth()

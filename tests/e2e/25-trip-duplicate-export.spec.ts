@@ -87,7 +87,7 @@ test.describe('Trip Duplicate & iCal Export E2E', () => {
     expect(ical.headers['content-type']).toContain('text/calendar');
     expect(ical.text).toContain('BEGIN:VCALENDAR');
     expect(ical.text).toContain('END:VCALENDAR');
-    expect(ical.text).toContain('PRODID:-//TravelPlanner//EN');
+    expect(ical.text).toContain('PRODID:-//MyTravel//EN');
   });
 
   test('TC-25-05: iCal VEVENT includes activity info', async () => {

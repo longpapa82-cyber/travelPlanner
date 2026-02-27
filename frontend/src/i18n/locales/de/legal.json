@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Ist der Service kostenpflichtig?",
-        "a": "Alle TravelPlanner-Funktionen sind kostenlos. Zur Unterstützung des Service können Werbeanzeigen in der App erscheinen."
+        "a": "Alle MyTravel-Funktionen sind kostenlos. Zur Unterstützung des Service können Werbeanzeigen in der App erscheinen."
       },
       "adInfo": {
         "q": "Wie werden Anzeigen dargestellt?",
@@ -153,11 +153,11 @@
     "articles": {
       "art1": {
         "title": "Artikel 1 (Zweck)",
-        "content": "Diese Nutzungsbedingungen regeln die Nutzung von TravelPlanner (\"Service\"), einschließlich der Rechte, Pflichten und Verantwortlichkeiten beider Parteien."
+        "content": "Diese Nutzungsbedingungen regeln die Nutzung von MyTravel (\"Service\"), einschließlich der Rechte, Pflichten und Verantwortlichkeiten beider Parteien."
       },
       "art2": {
         "title": "Artikel 2 (Definitionen)",
-        "content": "① \"Service\" bezieht sich auf den automatischen Reiseplanungs- und Verwaltungsservice von TravelPlanner.\n② \"Mitglied\" bezieht sich auf eine Person, die diesen Bedingungen zugestimmt und sich für den Service registriert hat.\n③ \"KI-generierte Inhalte\" bezieht sich auf Reisepläne und Empfehlungen, die automatisch mittels künstlicher Intelligenz erstellt werden.\n④ \"Reisedaten\" bezieht sich auf Reiseziele, Zeitpläne und Aktivitätspläne, die von Mitgliedern eingegeben werden."
+        "content": "① \"Service\" bezieht sich auf den automatischen Reiseplanungs- und Verwaltungsservice von MyTravel.\n② \"Mitglied\" bezieht sich auf eine Person, die diesen Bedingungen zugestimmt und sich für den Service registriert hat.\n③ \"KI-generierte Inhalte\" bezieht sich auf Reisepläne und Empfehlungen, die automatisch mittels künstlicher Intelligenz erstellt werden.\n④ \"Reisedaten\" bezieht sich auf Reiseziele, Zeitpläne und Aktivitätspläne, die von Mitgliedern eingegeben werden."
       },
       "art3": {
         "title": "Artikel 3 (Servicebeschreibung)",
@@ -267,7 +267,7 @@
       },
       "art11": {
         "title": "11. Datenschutzbeauftragter",
-        "content": "Datenschutzbeauftragter: TravelPlanner Operations Team\nE-Mail: longpapa82@gmail.com"
+        "content": "Datenschutzbeauftragter: MyTravel Operations Team\nE-Mail: longpapa82@gmail.com"
       },
       "art12": {
         "title": "12. Richtlinienänderungen",

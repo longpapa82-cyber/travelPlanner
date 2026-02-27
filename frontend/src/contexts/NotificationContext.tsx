@@ -160,7 +160,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       // Android needs notification channel
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('default', {
-          name: 'TravelPlanner',
+          name: 'MyTravel',
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
         });

@@ -231,7 +231,7 @@ const SharedTripViewScreen: React.FC<Props> = ({ route }) => {
       {/* Footer */}
       <View style={styles.footer}>
         <Text style={[styles.footerText, { color: theme.colors.textSecondary }]}>
-          {t('sharedTrip.footer', 'Shared via TravelPlanner')}
+          {t('sharedTrip.footer', 'Shared via MyTravel')}
         </Text>
       </View>
     </ScrollView>

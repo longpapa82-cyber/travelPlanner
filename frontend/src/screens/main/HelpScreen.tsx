@@ -97,7 +97,7 @@ const HelpScreen: React.FC<Props> = () => {
   };
 
   const handleSendEmail = () => {
-    const subject = encodeURIComponent('TravelPlanner Support');
+    const subject = encodeURIComponent('MyTravel Support');
     const body = encodeURIComponent(
       `\n\n---\nDevice: ${Platform.OS} ${Platform.Version}\nApp Version: 1.0.0`,
     );

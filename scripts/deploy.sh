@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ###############################################################################
-# Zero-Downtime Production Deploy for TravelPlanner
+# Zero-Downtime Production Deploy for MyTravel
 #
 # Usage:
 #   ./scripts/deploy.sh                    # Full zero-downtime deploy

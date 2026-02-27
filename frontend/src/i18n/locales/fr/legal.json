@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "L'utilisation du service est-elle payante ?",
-        "a": "Toutes les fonctionnalités de TravelPlanner sont gratuites. Des publicités peuvent être affichées dans l'application pour soutenir le fonctionnement du service."
+        "a": "Toutes les fonctionnalités de MyTravel sont gratuites. Des publicités peuvent être affichées dans l'application pour soutenir le fonctionnement du service."
       },
       "adInfo": {
         "q": "Comment les publicités sont-elles affichées ?",
@@ -153,11 +153,11 @@
     "articles": {
       "art1": {
         "title": "Article 1 (Objet)",
-        "content": "Les présentes Conditions d'utilisation régissent l'utilisation de TravelPlanner (le « Service »), y compris les droits, obligations et responsabilités de la société et des utilisateurs."
+        "content": "Les présentes Conditions d'utilisation régissent l'utilisation de MyTravel (le « Service »), y compris les droits, obligations et responsabilités de la société et des utilisateurs."
       },
       "art2": {
         "title": "Article 2 (Définitions)",
-        "content": "① « Service » désigne le service de planification et de gestion automatique de voyages fourni par TravelPlanner.\n② « Membre » désigne toute personne ayant accepté les présentes Conditions et s'étant inscrite au Service.\n③ « Contenu généré par l'IA » désigne les itinéraires de voyage et les recommandations générés automatiquement à l'aide de l'intelligence artificielle.\n④ « Données de voyage » désigne les destinations, les plannings et les plans d'activités saisis par les membres."
+        "content": "① « Service » désigne le service de planification et de gestion automatique de voyages fourni par MyTravel.\n② « Membre » désigne toute personne ayant accepté les présentes Conditions et s'étant inscrite au Service.\n③ « Contenu généré par l'IA » désigne les itinéraires de voyage et les recommandations générés automatiquement à l'aide de l'intelligence artificielle.\n④ « Données de voyage » désigne les destinations, les plannings et les plans d'activités saisis par les membres."
       },
       "art3": {
         "title": "Article 3 (Description du Service)",
@@ -267,7 +267,7 @@
       },
       "art11": {
         "title": "11. Responsable de la protection des données",
-        "content": "Responsable de la protection des données : Équipe opérationnelle TravelPlanner\nE-mail : longpapa82@gmail.com"
+        "content": "Responsable de la protection des données : Équipe opérationnelle MyTravel\nE-mail : longpapa82@gmail.com"
       },
       "art12": {
         "title": "12. Modifications de la politique",

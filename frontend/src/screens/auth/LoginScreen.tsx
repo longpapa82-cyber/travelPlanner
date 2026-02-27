@@ -167,7 +167,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               style={styles.heroGradient}
             >
               <Icon name="airplane-takeoff" size={64} color={colors.neutral[0]} />
-              <Text style={styles.appName}>TravelPlanner</Text>
+              <Text style={styles.appName}>MyTravel</Text>
               <Text style={styles.tagline}>{t('login.tagline')}</Text>
             </LinearGradient>
           </ImageBackground>

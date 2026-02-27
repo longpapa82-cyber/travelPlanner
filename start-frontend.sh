@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# TravelPlanner Frontend 실행 스크립트
+# MyTravel Frontend 실행 스크립트
 # 사용법: ./start-frontend.sh
 
 set -e
@@ -11,7 +11,7 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}📱 TravelPlanner Frontend 시작...${NC}"
+echo -e "${BLUE}📱 MyTravel Frontend 시작...${NC}"
 echo ""
 
 # 의존성 확인

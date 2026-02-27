@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Sử dụng dịch vụ có mất phí không?",
-        "a": "Tất cả tính năng của TravelPlanner đều miễn phí. Quảng cáo có thể được hiển thị trong ứng dụng để hỗ trợ vận hành dịch vụ."
+        "a": "Tất cả tính năng của MyTravel đều miễn phí. Quảng cáo có thể được hiển thị trong ứng dụng để hỗ trợ vận hành dịch vụ."
       },
       "adInfo": {
         "q": "Quảng cáo được hiển thị như thế nào?",
@@ -153,11 +153,11 @@
     "articles": {
       "art1": {
         "title": "Điều 1 (Mục đích)",
-        "content": "Điều khoản dịch vụ này quy định việc sử dụng TravelPlanner (\"Dịch vụ\"), bao gồm quyền, nghĩa vụ và trách nhiệm của công ty và người dùng."
+        "content": "Điều khoản dịch vụ này quy định việc sử dụng MyTravel (\"Dịch vụ\"), bao gồm quyền, nghĩa vụ và trách nhiệm của công ty và người dùng."
       },
       "art2": {
         "title": "Điều 2 (Định nghĩa)",
-        "content": "① \"Dịch vụ\" là dịch vụ lập kế hoạch và quản lý du lịch tự động do TravelPlanner cung cấp.\n② \"Thành viên\" là người đã đồng ý với Điều khoản này và đăng ký sử dụng Dịch vụ.\n③ \"Nội dung do AI tạo\" là lịch trình và gợi ý du lịch được tạo tự động bằng trí tuệ nhân tạo.\n④ \"Dữ liệu du lịch\" là điểm đến, lịch trình và kế hoạch hoạt động do thành viên nhập."
+        "content": "① \"Dịch vụ\" là dịch vụ lập kế hoạch và quản lý du lịch tự động do MyTravel cung cấp.\n② \"Thành viên\" là người đã đồng ý với Điều khoản này và đăng ký sử dụng Dịch vụ.\n③ \"Nội dung do AI tạo\" là lịch trình và gợi ý du lịch được tạo tự động bằng trí tuệ nhân tạo.\n④ \"Dữ liệu du lịch\" là điểm đến, lịch trình và kế hoạch hoạt động do thành viên nhập."
       },
       "art3": {
         "title": "Điều 3 (Mô tả dịch vụ)",
@@ -267,7 +267,7 @@
       },
       "art11": {
         "title": "11. Người phụ trách bảo mật",
-        "content": "Người phụ trách bảo mật: Đội vận hành TravelPlanner\nEmail: longpapa82@gmail.com"
+        "content": "Người phụ trách bảo mật: Đội vận hành MyTravel\nEmail: longpapa82@gmail.com"
       },
       "art12": {
         "title": "12. Thay đổi chính sách",

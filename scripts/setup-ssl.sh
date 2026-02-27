@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # =============================================================================
-# SSL Setup Script for TravelPlanner (DuckDNS + Let's Encrypt)
+# SSL Setup Script for MyTravel (DuckDNS + Let's Encrypt)
 # =============================================================================
 # This script:
 #   1. Validates DuckDNS domain is pointing to this server

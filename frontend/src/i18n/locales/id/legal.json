@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Apakah ada biaya untuk menggunakan layanan?",
-        "a": "Semua fitur TravelPlanner gratis. Iklan mungkin ditampilkan dalam aplikasi untuk mendukung operasional layanan."
+        "a": "Semua fitur MyTravel gratis. Iklan mungkin ditampilkan dalam aplikasi untuk mendukung operasional layanan."
       },
       "adInfo": {
         "q": "Bagaimana iklan ditampilkan?",
@@ -153,11 +153,11 @@
     "articles": {
       "art1": {
         "title": "Pasal 1 (Tujuan)",
-        "content": "Ketentuan Layanan ini mengatur penggunaan TravelPlanner (\"Layanan\"), termasuk hak, kewajiban, dan tanggung jawab perusahaan dan pengguna."
+        "content": "Ketentuan Layanan ini mengatur penggunaan MyTravel (\"Layanan\"), termasuk hak, kewajiban, dan tanggung jawab perusahaan dan pengguna."
       },
       "art2": {
         "title": "Pasal 2 (Definisi)",
-        "content": "① \"Layanan\" mengacu pada layanan perencanaan dan pengelolaan perjalanan otomatis yang disediakan oleh TravelPlanner.\n② \"Anggota\" mengacu pada orang yang telah menyetujui Ketentuan ini dan mendaftar untuk Layanan.\n③ \"Konten yang Dihasilkan AI\" mengacu pada jadwal perjalanan dan rekomendasi yang dihasilkan secara otomatis menggunakan kecerdasan buatan.\n④ \"Data Perjalanan\" mengacu pada tujuan, jadwal, dan rencana aktivitas yang dimasukkan oleh anggota."
+        "content": "① \"Layanan\" mengacu pada layanan perencanaan dan pengelolaan perjalanan otomatis yang disediakan oleh MyTravel.\n② \"Anggota\" mengacu pada orang yang telah menyetujui Ketentuan ini dan mendaftar untuk Layanan.\n③ \"Konten yang Dihasilkan AI\" mengacu pada jadwal perjalanan dan rekomendasi yang dihasilkan secara otomatis menggunakan kecerdasan buatan.\n④ \"Data Perjalanan\" mengacu pada tujuan, jadwal, dan rencana aktivitas yang dimasukkan oleh anggota."
       },
       "art3": {
         "title": "Pasal 3 (Deskripsi Layanan)",
@@ -267,7 +267,7 @@
       },
       "art11": {
         "title": "11. Petugas Privasi",
-        "content": "Petugas Privasi: Tim Operasional TravelPlanner\nEmail: longpapa82@gmail.com"
+        "content": "Petugas Privasi: Tim Operasional MyTravel\nEmail: longpapa82@gmail.com"
       },
       "art12": {
         "title": "12. Perubahan Kebijakan",
