@@ -8,7 +8,7 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -47,6 +47,7 @@ const NotificationsScreen = () => {
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
+  const navigation = useNavigation<any>();
 
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [total, setTotal] = useState(0);
@@ -145,6 +146,33 @@ const NotificationsScreen = () => {
     }
   };
 
+  const handleNotificationPress = (item: AppNotification) => {
+    handleMarkAsRead(item);
+
+    const tripTypes = [
+      'collaborator_invite',
+      'collaborator_joined',
+      'trip_updated',
+      'trip_started',
+      'trip_completed',
+      'trip_departure',
+      'activity_reminder',
+      'trip_liked',
+    ];
+
+    if (tripTypes.includes(item.type) && item.data?.tripId) {
+      navigation.navigate('Trips', {
+        screen: 'TripDetail',
+        params: { tripId: item.data.tripId },
+      });
+    } else if (item.type === 'new_follower' && item.data?.userId) {
+      navigation.navigate('Profile', {
+        screen: 'UserProfile',
+        params: { userId: item.data.userId },
+      });
+    }
+  };
+
   const getTimeAgo = (dateStr: string): string => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
@@ -169,7 +197,7 @@ const NotificationsScreen = () => {
           styles.notificationItem,
           !item.isRead && styles.unreadItem,
         ]}
-        onPress={() => handleMarkAsRead(item)}
+        onPress={() => handleNotificationPress(item)}
         activeOpacity={0.7}
       >
         <View style={[styles.iconCircle, { backgroundColor: `${iconColor}15` }]}>

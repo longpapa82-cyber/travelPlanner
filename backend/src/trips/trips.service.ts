@@ -285,11 +285,12 @@ export class TripsService {
       limit = 50,
     } = queryDto || {};
 
-    // Build query
+    // Build query — include trips where user is owner OR collaborator
     const queryBuilder = this.tripRepository
       .createQueryBuilder('trip')
       .leftJoinAndSelect('trip.itineraries', 'itinerary')
-      .where('trip.userId = :userId', { userId });
+      .leftJoin('collaborators', 'collab', 'collab.tripId = trip.id AND collab.userId = :collabUserId', { collabUserId: userId })
+      .where('(trip.userId = :userId OR collab.id IS NOT NULL)', { userId });
 
     // Search filter (destination or description)
     if (search) {
