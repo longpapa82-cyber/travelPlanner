@@ -10,17 +10,25 @@ import { TripStatus } from './entities/trip.entity';
 // Helper to simulate JSON serialization (Date -> string, undefined fields dropped)
 const jsonify = (obj: any) => JSON.parse(JSON.stringify(obj));
 
+// Valid UUIDs for test data (ParseUUIDPipe requires valid UUIDs)
+const MOCK_USER_ID = '00000000-0000-4000-a000-000000000001';
+const MOCK_TRIP_ID = '00000000-0000-4000-a000-000000000010';
+const MOCK_TRIP_ID_2 = '00000000-0000-4000-a000-000000000011';
+const MOCK_TRIP_ID_3 = '00000000-0000-4000-a000-000000000012';
+const MOCK_ITINERARY_ID = '00000000-0000-4000-a000-000000000020';
+const MOCK_COLLAB_ID = '00000000-0000-4000-a000-000000000030';
+
 describe('TripsController (Integration)', () => {
   let app: INestApplication;
   let tripsService: jest.Mocked<TripsService>;
 
   // Mock user data
-  const mockUserId = 'user-123';
+  const mockUserId = MOCK_USER_ID;
   const mockUser = { userId: mockUserId, isEmailVerified: true };
 
   // Mock trip data
   const mockTrip = {
-    id: 'trip-123',
+    id: MOCK_TRIP_ID,
     userId: mockUserId,
     destination: 'Paris, France',
     country: 'France',
@@ -37,8 +45,8 @@ describe('TripsController (Integration)', () => {
     },
     itineraries: [
       {
-        id: 'itinerary-1',
-        tripId: 'trip-123',
+        id: MOCK_ITINERARY_ID,
+        tripId: MOCK_TRIP_ID,
         date: new Date('2024-06-01'),
         dayNumber: 1,
         activities: [
@@ -81,8 +89,15 @@ describe('TripsController (Integration)', () => {
     getUpcomingTrips: jest.fn(),
     getOngoingTrips: jest.fn(),
     getCompletedTrips: jest.fn(),
+    getUserStats: jest.fn(),
+    duplicate: jest.fn(),
     generateShareToken: jest.fn(),
     disableSharing: jest.fn(),
+    addCollaborator: jest.fn(),
+    getCollaborators: jest.fn(),
+    updateCollaboratorRole: jest.fn(),
+    removeCollaborator: jest.fn(),
+    leaveTrip: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -367,46 +382,53 @@ describe('TripsController (Integration)', () => {
       tripsService.findOne.mockResolvedValue(mockTrip as any);
 
       const response = await request(app.getHttpServer())
-        .get('/trips/trip-123')
+        .get(`/trips/${MOCK_TRIP_ID}`)
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
       expect(response.body).toEqual(jsonify(mockTrip));
-      expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, 'trip-123');
+      expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, MOCK_TRIP_ID);
       expect(tripsService.findOne).toHaveBeenCalledTimes(1);
     });
 
-    it('should return 404 when trip not found', async () => {
-      tripsService.findOne.mockRejectedValue({
-        status: 404,
-        response: { message: 'Trip not found' },
-      });
-
+    it('should return 400 when trip id is not a valid UUID', async () => {
       await request(app.getHttpServer())
         .get('/trips/non-existent-id')
         .set('Authorization', 'Bearer mock-token')
-        .expect(500); // NestJS converts unhandled exceptions to 500
+        .expect(400);
+
+      expect(tripsService.findOne).not.toHaveBeenCalled();
+    });
+
+    it('should return 404 when trip not found', async () => {
+      tripsService.findOne.mockRejectedValue(
+        new (require('@nestjs/common').NotFoundException)('Trip not found'),
+      );
+
+      await request(app.getHttpServer())
+        .get(`/trips/${MOCK_TRIP_ID_2}`)
+        .set('Authorization', 'Bearer mock-token')
+        .expect(404);
 
       expect(tripsService.findOne).toHaveBeenCalledWith(
         mockUserId,
-        'non-existent-id',
+        MOCK_TRIP_ID_2,
       );
     });
 
     it("should return 403 when trying to access another user's trip", async () => {
-      tripsService.findOne.mockRejectedValue({
-        status: 403,
-        response: { message: 'Forbidden' },
-      });
+      tripsService.findOne.mockRejectedValue(
+        new (require('@nestjs/common').ForbiddenException)('Forbidden'),
+      );
 
       await request(app.getHttpServer())
-        .get('/trips/other-user-trip')
+        .get(`/trips/${MOCK_TRIP_ID_3}`)
         .set('Authorization', 'Bearer mock-token')
-        .expect(500); // NestJS converts unhandled exceptions to 500
+        .expect(403);
 
       expect(tripsService.findOne).toHaveBeenCalledWith(
         mockUserId,
-        'other-user-trip',
+        MOCK_TRIP_ID_3,
       );
     });
   });
@@ -422,7 +444,7 @@ describe('TripsController (Integration)', () => {
       tripsService.update.mockResolvedValue(updatedTrip as any);
 
       const response = await request(app.getHttpServer())
-        .patch('/trips/trip-123')
+        .patch(`/trips/${MOCK_TRIP_ID}`)
         .set('Authorization', 'Bearer mock-token')
         .send(updateTripDto)
         .expect(200);
@@ -430,7 +452,7 @@ describe('TripsController (Integration)', () => {
       expect(response.body).toEqual(jsonify(updatedTrip));
       expect(tripsService.update).toHaveBeenCalledWith(
         mockUserId,
-        'trip-123',
+        MOCK_TRIP_ID,
         updateTripDto,
       );
       expect(tripsService.update).toHaveBeenCalledTimes(1);
@@ -442,7 +464,7 @@ describe('TripsController (Integration)', () => {
       };
 
       await request(app.getHttpServer())
-        .patch('/trips/trip-123')
+        .patch(`/trips/${MOCK_TRIP_ID}`)
         .set('Authorization', 'Bearer mock-token')
         .send(invalidDto)
         .expect(400);
@@ -451,24 +473,23 @@ describe('TripsController (Integration)', () => {
     });
 
     it('should return 403 when trying to update completed trip', async () => {
-      tripsService.update.mockRejectedValue({
-        status: 403,
-        response: { message: 'Cannot modify completed trips' },
-      });
+      tripsService.update.mockRejectedValue(
+        new (require('@nestjs/common').ForbiddenException)('Cannot modify completed trips'),
+      );
 
       const updateDto = {
         destination: 'New destination',
       };
 
       await request(app.getHttpServer())
-        .patch('/trips/completed-trip-id')
+        .patch(`/trips/${MOCK_TRIP_ID_2}`)
         .set('Authorization', 'Bearer mock-token')
         .send(updateDto)
-        .expect(500); // NestJS converts unhandled exceptions to 500
+        .expect(403);
 
       expect(tripsService.update).toHaveBeenCalledWith(
         mockUserId,
-        'completed-trip-id',
+        MOCK_TRIP_ID_2,
         updateDto,
       );
     });
@@ -484,14 +505,14 @@ describe('TripsController (Integration)', () => {
       } as any);
 
       await request(app.getHttpServer())
-        .patch('/trips/trip-123')
+        .patch(`/trips/${MOCK_TRIP_ID}`)
         .set('Authorization', 'Bearer mock-token')
         .send(partialUpdate)
         .expect(200);
 
       expect(tripsService.update).toHaveBeenCalledWith(
         mockUserId,
-        'trip-123',
+        MOCK_TRIP_ID,
         partialUpdate,
       );
     });
@@ -502,28 +523,27 @@ describe('TripsController (Integration)', () => {
       tripsService.remove.mockResolvedValue(undefined);
 
       await request(app.getHttpServer())
-        .delete('/trips/trip-123')
+        .delete(`/trips/${MOCK_TRIP_ID}`)
         .set('Authorization', 'Bearer mock-token')
         .expect(204);
 
-      expect(tripsService.remove).toHaveBeenCalledWith(mockUserId, 'trip-123');
+      expect(tripsService.remove).toHaveBeenCalledWith(mockUserId, MOCK_TRIP_ID);
       expect(tripsService.remove).toHaveBeenCalledTimes(1);
     });
 
     it('should return 404 when trying to delete non-existent trip', async () => {
-      tripsService.remove.mockRejectedValue({
-        status: 404,
-        response: { message: 'Trip not found' },
-      });
+      tripsService.remove.mockRejectedValue(
+        new (require('@nestjs/common').NotFoundException)('Trip not found'),
+      );
 
       await request(app.getHttpServer())
-        .delete('/trips/non-existent-id')
+        .delete(`/trips/${MOCK_TRIP_ID_2}`)
         .set('Authorization', 'Bearer mock-token')
-        .expect(500); // NestJS converts unhandled exceptions to 500
+        .expect(404);
 
       expect(tripsService.remove).toHaveBeenCalledWith(
         mockUserId,
-        'non-existent-id',
+        MOCK_TRIP_ID_2,
       );
     });
   });
@@ -593,7 +613,7 @@ describe('TripsController (Integration)', () => {
       tripsService.addActivity.mockResolvedValue(updatedItinerary as any);
 
       const response = await request(app.getHttpServer())
-        .post('/trips/trip-123/itineraries/itinerary-1/activities')
+        .post(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities`)
         .set('Authorization', 'Bearer mock-token')
         .send(addActivityDto)
         .expect(201);
@@ -601,8 +621,8 @@ describe('TripsController (Integration)', () => {
       expect(response.body).toEqual(jsonify(updatedItinerary));
       expect(tripsService.addActivity).toHaveBeenCalledWith(
         mockUserId,
-        'trip-123',
-        'itinerary-1',
+        MOCK_TRIP_ID,
+        MOCK_ITINERARY_ID,
         addActivityDto,
       );
     });
@@ -613,7 +633,7 @@ describe('TripsController (Integration)', () => {
       };
 
       await request(app.getHttpServer())
-        .post('/trips/trip-123/itineraries/itinerary-1/activities')
+        .post(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities`)
         .set('Authorization', 'Bearer mock-token')
         .send(invalidDto)
         .expect(400);
@@ -633,7 +653,7 @@ describe('TripsController (Integration)', () => {
       tripsService.updateActivity.mockResolvedValue(updatedItinerary as any);
 
       const response = await request(app.getHttpServer())
-        .patch('/trips/trip-123/itineraries/itinerary-1/activities/0')
+        .patch(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/0`)
         .set('Authorization', 'Bearer mock-token')
         .send(updateActivityDto)
         .expect(200);
@@ -641,28 +661,27 @@ describe('TripsController (Integration)', () => {
       expect(response.body).toEqual(jsonify(updatedItinerary));
       expect(tripsService.updateActivity).toHaveBeenCalledWith(
         mockUserId,
-        'trip-123',
-        'itinerary-1',
+        MOCK_TRIP_ID,
+        MOCK_ITINERARY_ID,
         0,
         updateActivityDto,
       );
     });
 
     it('should return 403 when trying to modify past activity in ongoing trip', async () => {
-      tripsService.updateActivity.mockRejectedValue({
-        status: 403,
-        response: { message: 'Cannot modify past activities' },
-      });
+      tripsService.updateActivity.mockRejectedValue(
+        new (require('@nestjs/common').ForbiddenException)('Cannot modify past activities'),
+      );
 
       const updateDto = {
         title: 'Updated title',
       };
 
       await request(app.getHttpServer())
-        .patch('/trips/trip-123/itineraries/itinerary-1/activities/0')
+        .patch(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/0`)
         .set('Authorization', 'Bearer mock-token')
         .send(updateDto)
-        .expect(500); // NestJS converts unhandled exceptions to 500
+        .expect(403);
 
       expect(tripsService.updateActivity).toHaveBeenCalled();
     });
@@ -678,34 +697,33 @@ describe('TripsController (Integration)', () => {
       tripsService.deleteActivity.mockResolvedValue(updatedItinerary as any);
 
       const response = await request(app.getHttpServer())
-        .delete('/trips/trip-123/itineraries/itinerary-1/activities/0')
+        .delete(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/0`)
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
       expect(response.body).toEqual(jsonify(updatedItinerary));
       expect(tripsService.deleteActivity).toHaveBeenCalledWith(
         mockUserId,
-        'trip-123',
-        'itinerary-1',
+        MOCK_TRIP_ID,
+        MOCK_ITINERARY_ID,
         0,
       );
     });
 
     it('should return 404 when activity index is invalid', async () => {
-      tripsService.deleteActivity.mockRejectedValue({
-        status: 404,
-        response: { message: 'Activity not found at the specified index' },
-      });
+      tripsService.deleteActivity.mockRejectedValue(
+        new (require('@nestjs/common').NotFoundException)('Activity not found at the specified index'),
+      );
 
       await request(app.getHttpServer())
-        .delete('/trips/trip-123/itineraries/itinerary-1/activities/999')
+        .delete(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/999`)
         .set('Authorization', 'Bearer mock-token')
-        .expect(500); // NestJS converts unhandled exceptions to 500
+        .expect(404);
 
       expect(tripsService.deleteActivity).toHaveBeenCalledWith(
         mockUserId,
-        'trip-123',
-        'itinerary-1',
+        MOCK_TRIP_ID,
+        MOCK_ITINERARY_ID,
         999,
       );
     });
@@ -721,14 +739,14 @@ describe('TripsController (Integration)', () => {
       tripsService.generateShareToken.mockResolvedValue(shareResponse);
 
       const response = await request(app.getHttpServer())
-        .post('/trips/trip-123/share')
+        .post(`/trips/${MOCK_TRIP_ID}/share`)
         .set('Authorization', 'Bearer mock-token')
         .send({ expiresInDays: 7 })
         .expect(201);
 
       expect(response.body).toEqual(jsonify(shareResponse));
       expect(tripsService.generateShareToken).toHaveBeenCalledWith(
-        'trip-123',
+        MOCK_TRIP_ID,
         mockUserId,
         7,
       );
@@ -743,13 +761,13 @@ describe('TripsController (Integration)', () => {
       tripsService.generateShareToken.mockResolvedValue(shareResponse);
 
       await request(app.getHttpServer())
-        .post('/trips/trip-123/share')
+        .post(`/trips/${MOCK_TRIP_ID}/share`)
         .set('Authorization', 'Bearer mock-token')
         .send({})
         .expect(201);
 
       expect(tripsService.generateShareToken).toHaveBeenCalledWith(
-        'trip-123',
+        MOCK_TRIP_ID,
         mockUserId,
         undefined,
       );
@@ -761,12 +779,28 @@ describe('TripsController (Integration)', () => {
       tripsService.disableSharing.mockResolvedValue(undefined);
 
       await request(app.getHttpServer())
-        .delete('/trips/trip-123/share')
+        .delete(`/trips/${MOCK_TRIP_ID}/share`)
         .set('Authorization', 'Bearer mock-token')
         .expect(204);
 
       expect(tripsService.disableSharing).toHaveBeenCalledWith(
-        'trip-123',
+        MOCK_TRIP_ID,
+        mockUserId,
+      );
+    });
+  });
+
+  describe('DELETE /trips/:id/leave', () => {
+    it('should leave trip and return 204', async () => {
+      tripsService.leaveTrip.mockResolvedValue(undefined);
+
+      await request(app.getHttpServer())
+        .delete(`/trips/${MOCK_TRIP_ID}/leave`)
+        .set('Authorization', 'Bearer mock-token')
+        .expect(204);
+
+      expect(tripsService.leaveTrip).toHaveBeenCalledWith(
+        MOCK_TRIP_ID,
         mockUserId,
       );
     });
@@ -789,7 +823,7 @@ describe('TripsController (Integration)', () => {
       tripsService.findOne.mockResolvedValue(mockTrip as any);
 
       await request(app.getHttpServer())
-        .get('/trips/trip-123')
+        .get(`/trips/${MOCK_TRIP_ID}`)
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
@@ -806,7 +840,7 @@ describe('TripsController (Integration)', () => {
       tripsService.findOne.mockResolvedValue(mockTrip as any);
 
       const response = await request(app.getHttpServer())
-        .get('/trips/trip-123')
+        .get(`/trips/${MOCK_TRIP_ID}`)
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
@@ -857,17 +891,17 @@ describe('TripsController (Integration)', () => {
 
       // Test multiple endpoints
       await request(testApp.getHttpServer()).get('/trips').expect(403);
-      await request(testApp.getHttpServer()).get('/trips/trip-123').expect(403);
+      await request(testApp.getHttpServer()).get(`/trips/${MOCK_TRIP_ID}`).expect(403);
       await request(testApp.getHttpServer())
         .post('/trips')
         .send({})
         .expect(403);
       await request(testApp.getHttpServer())
-        .patch('/trips/trip-123')
+        .patch(`/trips/${MOCK_TRIP_ID}`)
         .send({})
         .expect(403);
       await request(testApp.getHttpServer())
-        .delete('/trips/trip-123')
+        .delete(`/trips/${MOCK_TRIP_ID}`)
         .expect(403);
 
       // No service methods should be called

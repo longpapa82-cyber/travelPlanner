@@ -1,7 +1,7 @@
 version: '3.8'
 
 # Production override — adds SSL reverse proxy with Let's Encrypt
-# Usage: DOMAIN=travelplanner.app docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 services:
   # SSL-terminating reverse proxy
@@ -15,7 +15,7 @@ services:
       - ./certbot/conf:/etc/letsencrypt:ro
       - ./certbot/www:/var/www/certbot:ro
     environment:
-      DOMAIN: ${DOMAIN:-travelplanner.app}
+      DOMAIN: ${DOMAIN:-mytravel-planner.com}
     depends_on:
       frontend:
         condition: service_healthy

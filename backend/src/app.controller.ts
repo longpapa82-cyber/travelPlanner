@@ -68,7 +68,7 @@ export class AppController {
 
   @Get('sitemap.xml')
   async getSitemap(@Res() res: Response) {
-    const baseUrl = process.env.FRONTEND_URL || 'https://travelplanner.app';
+    const baseUrl = process.env.FRONTEND_URL || 'https://mytravel-planner.com';
     const now = new Date().toISOString().split('T')[0];
 
     // Fetch public shared trips for dynamic sitemap entries (filter test data)
@@ -176,7 +176,7 @@ ${tripEntries}
    */
   @Get('trips/og/:token')
   async getSharedTripOg(@Param('token') token: string, @Res() res: Response) {
-    const baseUrl = process.env.FRONTEND_URL || 'https://travelplanner.app';
+    const baseUrl = process.env.FRONTEND_URL || 'https://mytravel-planner.com';
 
     const trip = await this.tripRepo.findOne({
       where: { shareToken: token },
