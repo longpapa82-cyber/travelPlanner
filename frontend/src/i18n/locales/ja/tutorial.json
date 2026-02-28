@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "AIで旅行プラン",
+      "description": "AIがあなただけの旅行プランを作成します"
+    },
+    "slide2": {
+      "title": "友達と一緒に",
+      "description": "友達を招待して一緒に旅行を計画しましょう"
+    },
+    "slide3": {
+      "title": "今すぐ始めよう",
+      "description": "最初の旅行を作って新しい冒険を始めましょう"
+    },
+    "skip": "スキップ",
+    "createFirst": "最初の旅行を作成",
+    "explore": "見てみる"
+  },
+  "coach": {
+    "createTrip": "ここをタップして最初の旅行を始めましょう！",
+    "next": "了解",
+    "dismiss": "スキップ"
+  },
+  "settings": {
+    "resetTutorial": "チュートリアルを再表示"
+  }
+}

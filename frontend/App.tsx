@@ -23,6 +23,8 @@ import { secureStorage } from './src/utils/storage';
 import { useAppOpenAd } from './src/components/ads/useAppOpenAd';
 import { initializeAds } from './src/utils/initAds';
 import PaywallModal from './src/components/PaywallModal';
+import { TutorialProvider } from './src/contexts/TutorialContext';
+import WelcomeModal from './src/components/tutorial/WelcomeModal';
 
 // Initialize Sentry before app renders
 initSentry();
@@ -218,14 +220,17 @@ function App() {
         <ThemeProvider>
           <AuthProvider>
             <PremiumProvider>
-              <NotificationProvider>
-                <ToastProvider>
-                  <ConfirmDialogProvider>
-                    <AppContent />
-                    <PaywallModal />
-                  </ConfirmDialogProvider>
-                </ToastProvider>
-              </NotificationProvider>
+              <TutorialProvider>
+                <NotificationProvider>
+                  <ToastProvider>
+                    <ConfirmDialogProvider>
+                      <AppContent />
+                      <PaywallModal />
+                      <WelcomeModal />
+                    </ConfirmDialogProvider>
+                  </ToastProvider>
+                </NotificationProvider>
+              </TutorialProvider>
             </PremiumProvider>
           </AuthProvider>
         </ThemeProvider>

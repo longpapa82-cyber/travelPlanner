@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "Planos com IA",
+      "description": "A IA cria roteiros de viagem personalizados para você"
+    },
+    "slide2": {
+      "title": "Viaje junto",
+      "description": "Convide amigos para planejar a viagem juntos"
+    },
+    "slide3": {
+      "title": "Comece agora",
+      "description": "Crie sua primeira viagem e inicie uma nova aventura"
+    },
+    "skip": "Pular",
+    "createFirst": "Criar primeira viagem",
+    "explore": "Explorar"
+  },
+  "coach": {
+    "createTrip": "Toque aqui para começar sua primeira viagem!",
+    "next": "Entendi",
+    "dismiss": "Pular"
+  },
+  "settings": {
+    "resetTutorial": "Rever tutorial"
+  }
+}

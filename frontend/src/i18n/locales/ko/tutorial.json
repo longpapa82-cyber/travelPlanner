@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "AI 맞춤 일정",
+      "description": "AI가 당신만의 완벽한 여행 일정을 만들어줍니다"
+    },
+    "slide2": {
+      "title": "친구와 함께",
+      "description": "친구를 초대해 함께 여행을 계획하세요"
+    },
+    "slide3": {
+      "title": "지금 시작하세요",
+      "description": "첫 여행을 만들고 새로운 모험을 시작해보세요"
+    },
+    "skip": "건너뛰기",
+    "createFirst": "첫 여행 만들기",
+    "explore": "둘러보기"
+  },
+  "coach": {
+    "createTrip": "여기를 눌러 첫 여행을 시작하세요!",
+    "next": "확인",
+    "dismiss": "건너뛰기"
+  },
+  "settings": {
+    "resetTutorial": "튜토리얼 다시 보기"
+  }
+}

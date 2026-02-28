@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "KI-Reiseplanung",
+      "description": "KI erstellt personalisierte Reiseplaene nur fuer dich"
+    },
+    "slide2": {
+      "title": "Gemeinsam reisen",
+      "description": "Lade Freunde ein, um die Reise zusammen zu planen"
+    },
+    "slide3": {
+      "title": "Jetzt starten",
+      "description": "Erstelle deine erste Reise und starte ein neues Abenteuer"
+    },
+    "skip": "Ueberspringen",
+    "createFirst": "Erste Reise erstellen",
+    "explore": "Erkunden"
+  },
+  "coach": {
+    "createTrip": "Tippe hier, um deine erste Reise zu starten!",
+    "next": "Verstanden",
+    "dismiss": "Ueberspringen"
+  },
+  "settings": {
+    "resetTutorial": "Tutorial erneut anzeigen"
+  }
+}
