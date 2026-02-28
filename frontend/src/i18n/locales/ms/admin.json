@@ -1,0 +1,55 @@
+{
+  "title": "Panel Pentadbir",
+  "menu": {
+    "users": "Pengurusan Pengguna",
+    "errorLogs": "Log Ralat",
+    "revenue": "Papan Pemuka Hasil"
+  },
+  "dashboard": {
+    "subtitle": "Alat pengurusan perkhidmatan"
+  },
+  "users": {
+    "title": "Pengurusan Pengguna",
+    "totalUsers": "Jumlah Pengguna",
+    "todaySignups": "Pendaftaran Hari Ini",
+    "todayActive": "Aktif Hari Ini",
+    "weeklyActive": "Aktif Mingguan",
+    "people": "",
+    "signupTrend": "Pendaftaran (30 Hari Terakhir)",
+    "providerBreakdown": "Kaedah Pendaftaran",
+    "memberList": "Senarai Ahli",
+    "searchPlaceholder": "Cari nama atau e-mel",
+    "allProviders": "Semua",
+    "lastLogin": "Log Masuk Terakhir",
+    "signupDate": "Tarikh Daftar",
+    "trips": "Perjalanan",
+    "never": "Tidak Pernah",
+    "noUsers": "Tiada pengguna ditemui",
+    "loadMore": "Muat Lagi"
+  },
+  "errors": {
+    "title": "Log Ralat",
+    "todayErrors": "Hari Ini",
+    "weeklyErrors": "Minggu Ini",
+    "unresolved": "Belum Diselesaikan",
+    "affectedUsers": "Pengguna Terjejas",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "Ralat (24 Jam Terakhir)",
+    "topErrors": "10 Ralat Teratas",
+    "errorList": "Senarai Ralat",
+    "allSeverity": "Semua",
+    "error": "Ralat",
+    "warning": "Amaran",
+    "fatal": "Kritikal",
+    "unresolvedOnly": "Belum Diselesaikan Sahaja",
+    "resolve": "Selesaikan",
+    "resolved": "Diselesaikan",
+    "screen": "Skrin",
+    "device": "Peranti",
+    "version": "Versi",
+    "noErrors": "Tiada ralat ditemui",
+    "loadMore": "Muat Lagi",
+    "occurrences": "kali"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "title": "Профиль",
+  "guest": "Гость",
+  "sections": {
+    "account": "Аккаунт",
+    "settings": "Настройки",
+    "support": "Поддержка",
+    "admin": "Администрирование"
+  },
+  "menu": {
+    "editProfile": "Редактировать профиль",
+    "changePassword": "Изменить пароль",
+    "twoFactor": "Двухфакторная аутентификация",
+    "twoFactorEnabled": "Включена",
+    "twoFactorDisabled": "Отключена",
+    "language": "Язык",
+    "notifications": "Уведомления",
+    "notificationsEnabled": "Включены",
+    "notificationsDisabled": "Отключены",
+    "darkMode": "Тёмная тема",
+    "help": "Помощь",
+    "terms": "Условия использования",
+    "privacy": "Политика конфиденциальности",
+    "revenue": "Панель доходов",
+    "admin": "Панель администратора"
+  },
+  "editProfile": {
+    "title": "Редактировать профиль",
+    "name": "Имя",
+    "namePlaceholder": "Введите имя",
+    "changePhoto": "Изменить фото профиля",
+    "save": "Сохранить",
+    "alerts": {
+      "nameRequired": "Введите имя",
+      "success": "Профиль успешно обновлён",
+      "failed": "Не удалось обновить профиль",
+      "photoSuccess": "Фото профиля обновлено",
+      "photoFailed": "Не удалось обновить фото профиля",
+      "permissionDenied": "Требуется разрешение на доступ к фото"
+    }
+  },
+  "changePassword": {
+    "title": "Изменить пароль",
+    "current": "Текущий пароль",
+    "currentPlaceholder": "Введите текущий пароль",
+    "new": "Новый пароль",
+    "newPlaceholder": "Введите новый пароль (8+ символов, буквы и цифры)",
+    "confirm": "Подтвердите новый пароль",
+    "confirmPlaceholder": "Введите новый пароль ещё раз",
+    "submit": "Изменить пароль",
+    "alerts": {
+      "allFieldsRequired": "Заполните все поля",
+      "minLength": "Новый пароль должен содержать не менее 8 символов, включая буквы и цифры",
+      "mismatch": "Новые пароли не совпадают",
+      "success": "Пароль успешно изменён",
+      "failed": "Не удалось изменить пароль"
+    }
+  },
+  "languageSelector": {
+    "title": "Выбор языка",
+    "description": "Выберите предпочитаемый язык"
+  },
+  "logout": {
+    "title": "Выход",
+    "message": "Вы уверены, что хотите выйти?",
+    "button": "Выйти"
+  },
+  "deleteAccount": {
+    "title": "Удаление аккаунта",
+    "message": "Удаление аккаунта приведёт к безвозвратной потере всех данных. Вы уверены?",
+    "button": "Удалить аккаунт",
+    "passwordConfirm": "Введите пароль для подтверждения удаления аккаунта",
+    "passwordPlaceholder": "Введите пароль",
+    "alerts": {
+      "success": "Аккаунт успешно удалён",
+      "failed": "Не удалось удалить аккаунт",
+      "passwordRequired": "Введите пароль"
+    }
+  },
+  "version": "Версия",
+  "analytics": {
+    "title": "Статистика путешествий",
+    "totalTrips": "Всего поездок",
+    "completedTrips": "Завершённые",
+    "ongoingTrips": "Текущие",
+    "upcomingTrips": "Предстоящие",
+    "totalDays": "Всего дней",
+    "avgDuration": "Средняя длительность",
+    "days": "дней",
+    "countriesVisited": "Страны",
+    "countries": "стран",
+    "totalSpent": "Всего потрачено",
+    "totalBudget": "Общий бюджет",
+    "topDestinations": "Топ направлений",
+    "times": "раз",
+    "activities": "Активности",
+    "completedOf": "{{completed}} / {{total}} выполнено",
+    "noData": "Пока нет данных о путешествиях",
+    "loading": "Загрузка статистики..."
+  },
+  "revenue": {
+    "last30Days": "Последние 30 дней",
+    "totalClicks": "Всего кликов",
+    "conversions": "Конверсии",
+    "conversionRate": "Конверсия",
+    "commission": "Комиссия",
+    "highlights": "Основные показатели",
+    "topProvider": "Лучший провайдер",
+    "topDestination": "Топ направление",
+    "totalRevenue": "Общий доход",
+    "byProvider": "По провайдерам",
+    "clicks": "кликов",
+    "conv": "конв.",
+    "noData": "Пока нет данных",
+    "adminOnly": "Требуется доступ администратора",
+    "loadError": "Не удалось загрузить данные"
+  }
+}

@@ -3,7 +3,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { getErrorMessage } from '../common/types/request.types';
 
-type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi';
+type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms';
 type EmailTemplateLang = 'ko' | 'en' | 'ja';
 
 const EMAIL_TEMPLATE_FALLBACK: Record<SupportedLang, EmailTemplateLang> = {
@@ -20,6 +20,10 @@ const EMAIL_TEMPLATE_FALLBACK: Record<SupportedLang, EmailTemplateLang> = {
   ar: 'en',
   id: 'en',
   hi: 'en',
+  it: 'en',
+  ru: 'en',
+  tr: 'en',
+  ms: 'en',
 };
 
 function maskEmail(email: string): string {
@@ -67,6 +71,10 @@ export class EmailService {
       ar: '[MyTravel] يرجى تأكيد بريدك الإلكتروني',
       id: '[MyTravel] Silakan verifikasi email Anda',
       hi: '[MyTravel] कृपया अपना ईमेल सत्यापित करें',
+      it: '[MyTravel] Verifica la tua email',
+      ru: '[MyTravel] Подтвердите вашу электронную почту',
+      tr: '[MyTravel] Lütfen e-postanızı doğrulayın',
+      ms: '[MyTravel] Sila sahkan e-mel anda',
     };
     const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
 
@@ -119,6 +127,10 @@ export class EmailService {
       ar: '[MyTravel] إعادة تعيين كلمة المرور',
       id: '[MyTravel] Atur ulang kata sandi Anda',
       hi: '[MyTravel] अपना पासवर्ड रीसेट करें',
+      it: '[MyTravel] Reimposta la tua password',
+      ru: '[MyTravel] Сброс пароля',
+      tr: '[MyTravel] Şifrenizi sıfırlayın',
+      ms: '[MyTravel] Tetapkan semula kata laluan anda',
     };
     const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
 

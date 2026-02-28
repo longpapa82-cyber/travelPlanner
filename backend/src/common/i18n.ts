@@ -1,4 +1,4 @@
-type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi';
+type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms';
 
 const translations: Record<string, Record<SupportedLang, string>> = {
   'password.enterBoth': {
@@ -15,6 +15,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'يرجى إدخال كلمة المرور الحالية والجديدة.',
     id: 'Silakan masukkan kata sandi saat ini dan kata sandi baru.',
     hi: 'कृपया वर्तमान और नया पासवर्ड दर्ज करें।',
+    it: 'Inserisci la password attuale e quella nuova.',
+    ru: 'Пожалуйста, введите текущий и новый пароль.',
+    tr: 'Lütfen mevcut ve yeni şifrenizi girin.',
+    ms: 'Sila masukkan kata laluan semasa dan baharu.',
   },
   'password.minLength': {
     ko: '새 비밀번호는 8자 이상이어야 합니다.',
@@ -30,6 +34,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'يجب أن تتكون كلمة المرور الجديدة من 8 أحرف على الأقل.',
     id: 'Kata sandi baru harus minimal 8 karakter.',
     hi: 'नया पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।',
+    it: 'La nuova password deve contenere almeno 8 caratteri.',
+    ru: 'Новый пароль должен содержать не менее 8 символов.',
+    tr: 'Yeni şifre en az 8 karakter olmalıdır.',
+    ms: 'Kata laluan baharu mestilah sekurang-kurangnya 8 aksara.',
   },
   'password.complexity': {
     ko: '비밀번호에 문자와 숫자가 각각 하나 이상 포함되어야 합니다.',
@@ -45,6 +53,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'يجب أن تحتوي كلمة المرور على حرف واحد ورقم واحد على الأقل.',
     id: 'Kata sandi harus mengandung setidaknya satu huruf dan satu angka.',
     hi: 'पासवर्ड में कम से कम एक अक्षर और एक संख्या होनी चाहिए।',
+    it: 'La password deve contenere almeno una lettera e un numero.',
+    ru: 'Пароль должен содержать хотя бы одну букву и одну цифру.',
+    tr: 'Şifre en az bir harf ve bir rakam içermelidir.',
+    ms: 'Kata laluan mesti mengandungi sekurang-kurangnya satu huruf dan satu nombor.',
   },
   'account.deleted': {
     ko: '계정이 삭제되었습니다.',
@@ -60,6 +72,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'تم حذف الحساب.',
     id: 'Akun telah dihapus.',
     hi: 'खाता हटा दिया गया है।',
+    it: "L'account è stato eliminato.",
+    ru: 'Аккаунт удалён.',
+    tr: 'Hesap silindi.',
+    ms: 'Akaun telah dipadamkan.',
   },
   'password.socialNotAllowed': {
     ko: '소셜 로그인 계정은 비밀번호를 변경할 수 없습니다.',
@@ -75,6 +91,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'لا يمكن لحسابات تسجيل الدخول الاجتماعي تغيير كلمة المرور.',
     id: 'Akun login sosial tidak dapat mengubah kata sandi.',
     hi: 'सोशल लॉगिन खाते पासवर्ड नहीं बदल सकते।',
+    it: 'Gli account con login social non possono cambiare la password.',
+    ru: 'Аккаунты с социальным входом не могут изменить пароль.',
+    tr: 'Sosyal giriş hesapları şifre değiştiremez.',
+    ms: 'Akaun log masuk sosial tidak boleh menukar kata laluan.',
   },
   'password.currentInvalid': {
     ko: '현재 비밀번호가 일치하지 않습니다.',
@@ -90,6 +110,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'كلمة المرور الحالية غير صحيحة.',
     id: 'Kata sandi saat ini salah.',
     hi: 'वर्तमान पासवर्ड गलत है।',
+    it: 'La password attuale non è corretta.',
+    ru: 'Текущий пароль неверен.',
+    tr: 'Mevcut şifre yanlış.',
+    ms: 'Kata laluan semasa tidak betul.',
   },
   'password.changed': {
     ko: '비밀번호가 변경되었습니다.',
@@ -105,6 +129,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'تم تغيير كلمة المرور.',
     id: 'Kata sandi telah diubah.',
     hi: 'पासवर्ड बदल दिया गया है।',
+    it: 'La password è stata modificata.',
+    ru: 'Пароль изменён.',
+    tr: 'Şifre değiştirildi.',
+    ms: 'Kata laluan telah ditukar.',
   },
   'timezone.noDifference': {
     ko: '시차 없음',
@@ -120,6 +148,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'لا يوجد فرق في التوقيت',
     id: 'Tidak ada perbedaan waktu',
     hi: 'कोई समय अंतर नहीं',
+    it: 'Nessuna differenza di fuso orario',
+    ru: 'Нет разницы во времени',
+    tr: 'Saat farkı yok',
+    ms: 'Tiada perbezaan masa',
   },
   'timezone.hours': {
     ko: '시간',
@@ -135,6 +167,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'س',
     id: 'jam',
     hi: 'घंटे',
+    it: 'h',
+    ru: 'ч.',
+    tr: 'sa',
+    ms: 'jam',
   },
   'timezone.minutes': {
     ko: '분',
@@ -150,6 +186,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'د',
     id: 'menit',
     hi: 'मिनट',
+    it: 'min',
+    ru: 'мин.',
+    tr: 'dk',
+    ms: 'min',
   },
   'timezone.ahead': {
     ko: '빠름',
@@ -165,6 +205,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'متقدم',
     id: 'lebih cepat',
     hi: 'आगे',
+    it: 'avanti',
+    ru: 'вперёд',
+    tr: 'ileri',
+    ms: 'lebih awal',
   },
   'timezone.behind': {
     ko: '느림',
@@ -180,6 +224,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'متأخر',
     id: 'lebih lambat',
     hi: 'पीछे',
+    it: 'indietro',
+    ru: 'назад',
+    tr: 'geri',
+    ms: 'lewat',
   },
   'email.verification.sent': {
     ko: '인증 이메일이 발송되었습니다.',
@@ -195,6 +243,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'تم إرسال بريد التحقق.',
     id: 'Email verifikasi telah dikirim.',
     hi: 'सत्यापन ईमेल भेज दिया गया है।',
+    it: "L'email di verifica è stata inviata.",
+    ru: 'Письмо для подтверждения отправлено.',
+    tr: 'Doğrulama e-postası gönderildi.',
+    ms: 'E-mel pengesahan telah dihantar.',
   },
   'email.verification.invalid': {
     ko: '유효하지 않은 인증 토큰입니다.',
@@ -210,6 +262,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'رمز التحقق غير صالح.',
     id: 'Token verifikasi tidak valid.',
     hi: 'अमान्य सत्यापन टोकन।',
+    it: 'Token di verifica non valido.',
+    ru: 'Недействительный токен подтверждения.',
+    tr: 'Geçersiz doğrulama kodu.',
+    ms: 'Token pengesahan tidak sah.',
   },
   'email.verification.expired': {
     ko: '인증 토큰이 만료되었습니다.',
@@ -225,6 +281,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'انتهت صلاحية رمز التحقق.',
     id: 'Token verifikasi telah kedaluwarsa.',
     hi: 'सत्यापन टोकन की समय सीमा समाप्त हो गई है।',
+    it: 'Il token di verifica è scaduto.',
+    ru: 'Срок действия токена подтверждения истёк.',
+    tr: 'Doğrulama kodunun süresi doldu.',
+    ms: 'Token pengesahan telah tamat tempoh.',
   },
   'email.verification.success': {
     ko: '이메일이 성공적으로 인증되었습니다.',
@@ -240,6 +300,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'تم التحقق من البريد الإلكتروني بنجاح.',
     id: 'Email telah berhasil diverifikasi.',
     hi: 'ईमेल सफलतापूर्वक सत्यापित हो गया है।',
+    it: "L'email è stata verificata con successo.",
+    ru: 'Email успешно подтверждён.',
+    tr: 'E-posta başarıyla doğrulandı.',
+    ms: 'E-mel telah berjaya disahkan.',
   },
   'email.already.verified': {
     ko: '이미 인증된 이메일입니다.',
@@ -255,6 +319,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'البريد الإلكتروني تم التحقق منه بالفعل.',
     id: 'Email sudah diverifikasi.',
     hi: 'ईमेल पहले से सत्यापित है।',
+    it: "L'email è già verificata.",
+    ru: 'Email уже подтверждён.',
+    tr: 'E-posta zaten doğrulanmış.',
+    ms: 'E-mel sudah disahkan.',
   },
   'password.reset.sent': {
     ko: '비밀번호 재설정 이메일이 발송되었습니다.',
@@ -270,6 +338,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'تم إرسال بريد إعادة تعيين كلمة المرور.',
     id: 'Email reset kata sandi telah dikirim.',
     hi: 'पासवर्ड रीसेट ईमेल भेज दिया गया है।',
+    it: "L'email di reimpostazione password è stata inviata.",
+    ru: 'Письмо для сброса пароля отправлено.',
+    tr: 'Şifre sıfırlama e-postası gönderildi.',
+    ms: 'E-mel set semula kata laluan telah dihantar.',
   },
   'password.reset.invalid': {
     ko: '유효하지 않은 재설정 토큰입니다.',
@@ -285,6 +357,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'رمز إعادة التعيين غير صالح.',
     id: 'Token reset tidak valid.',
     hi: 'अमान्य रीसेट टोकन।',
+    it: 'Token di reimpostazione non valido.',
+    ru: 'Недействительный токен сброса.',
+    tr: 'Geçersiz sıfırlama kodu.',
+    ms: 'Token set semula tidak sah.',
   },
   'password.reset.expired': {
     ko: '재설정 토큰이 만료되었습니다.',
@@ -300,6 +376,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'انتهت صلاحية رمز إعادة التعيين.',
     id: 'Token reset telah kedaluwarsa.',
     hi: 'रीसेट टोकन की समय सीमा समाप्त हो गई है।',
+    it: 'Il token di reimpostazione è scaduto.',
+    ru: 'Срок действия токена сброса истёк.',
+    tr: 'Sıfırlama kodunun süresi doldu.',
+    ms: 'Token set semula telah tamat tempoh.',
   },
   'password.reset.success': {
     ko: '비밀번호가 성공적으로 재설정되었습니다.',
@@ -315,6 +395,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'تم إعادة تعيين كلمة المرور بنجاح.',
     id: 'Kata sandi telah berhasil direset.',
     hi: 'पासवर्ड सफलतापूर्वक रीसेट हो गया है।',
+    it: 'La password è stata reimpostata con successo.',
+    ru: 'Пароль успешно сброшен.',
+    tr: 'Şifre başarıyla sıfırlandı.',
+    ms: 'Kata laluan telah berjaya ditetapkan semula.',
   },
   'password.reset.socialNotAllowed': {
     ko: '소셜 로그인 계정은 비밀번호를 재설정할 수 없습니다.',
@@ -330,6 +414,10 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'لا يمكن لحسابات تسجيل الدخول الاجتماعي إعادة تعيين كلمة المرور.',
     id: 'Akun login sosial tidak dapat mereset kata sandi.',
     hi: 'सोशल लॉगिन खाते पासवर्ड रीसेट नहीं कर सकते।',
+    it: 'Gli account con login social non possono reimpostare la password.',
+    ru: 'Аккаунты с социальным входом не могут сбросить пароль.',
+    tr: 'Sosyal giriş hesapları şifre sıfırlayamaz.',
+    ms: 'Akaun log masuk sosial tidak boleh menetapkan semula kata laluan.',
   },
   'email.verification.required': {
     ko: '이 기능을 사용하려면 이메일 인증이 필요합니다.',
@@ -345,13 +433,17 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ar: 'مطلوب التحقق من البريد الإلكتروني لاستخدام هذه الميزة.',
     id: 'Verifikasi email diperlukan untuk menggunakan fitur ini.',
     hi: 'इस सुविधा का उपयोग करने के लिए ईमेल सत्यापन आवश्यक है।',
+    it: "Verifica dell'email necessaria per utilizzare questa funzione.",
+    ru: 'Для использования этой функции требуется подтверждение email.',
+    tr: 'Bu özelliği kullanmak için e-posta doğrulaması gereklidir.',
+    ms: 'Pengesahan e-mel diperlukan untuk menggunakan ciri ini.',
   },
 };
 
 export function parseLang(acceptLanguage?: string): SupportedLang {
   if (!acceptLanguage) return 'ko';
   const lang = acceptLanguage.split(',')[0].split('-')[0].toLowerCase();
-  const supported: SupportedLang[] = ['en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi', 'pt', 'ar', 'id', 'hi'];
+  const supported: SupportedLang[] = ['en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi', 'pt', 'ar', 'id', 'hi', 'it', 'ru', 'tr', 'ms'];
   return (supported.find((l) => l === lang) as SupportedLang) ?? 'ko';
 }
 

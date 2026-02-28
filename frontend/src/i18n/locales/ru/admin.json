@@ -1,0 +1,55 @@
+{
+  "title": "Панель администратора",
+  "menu": {
+    "users": "Управление пользователями",
+    "errorLogs": "Журнал ошибок",
+    "revenue": "Панель доходов"
+  },
+  "dashboard": {
+    "subtitle": "Инструменты управления сервисом"
+  },
+  "users": {
+    "title": "Управление пользователями",
+    "totalUsers": "Всего пользователей",
+    "todaySignups": "Регистрации за сегодня",
+    "todayActive": "Активные сегодня",
+    "weeklyActive": "Активные за неделю",
+    "people": "",
+    "signupTrend": "Регистрации (последние 30 дней)",
+    "providerBreakdown": "Способ регистрации",
+    "memberList": "Список пользователей",
+    "searchPlaceholder": "Поиск по имени или email",
+    "allProviders": "Все",
+    "lastLogin": "Последний вход",
+    "signupDate": "Дата регистрации",
+    "trips": "Поездки",
+    "never": "Нет данных",
+    "noUsers": "Пользователи не найдены",
+    "loadMore": "Загрузить ещё"
+  },
+  "errors": {
+    "title": "Журнал ошибок",
+    "todayErrors": "Сегодня",
+    "weeklyErrors": "На этой неделе",
+    "unresolved": "Нерешённые",
+    "affectedUsers": "Затронутые пользователи",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "Ошибки (последние 24 ч.)",
+    "topErrors": "Топ-10 ошибок",
+    "errorList": "Список ошибок",
+    "allSeverity": "Все",
+    "error": "Ошибка",
+    "warning": "Предупреждение",
+    "fatal": "Критическая",
+    "unresolvedOnly": "Только нерешённые",
+    "resolve": "Решено",
+    "resolved": "Решено",
+    "screen": "Экран",
+    "device": "Устройство",
+    "version": "Версия",
+    "noErrors": "Ошибки не найдены",
+    "loadMore": "Загрузить ещё",
+    "occurrences": "раз"
+  }
+}

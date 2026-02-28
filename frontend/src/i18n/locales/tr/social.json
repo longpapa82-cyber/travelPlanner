@@ -1,0 +1,31 @@
+{
+  "title": "Keşfet",
+  "following": "Takip Edilenler",
+  "trending": "Trendler",
+  "emptyFollowing": "Takip edilen gezginlerden gönderi yok",
+  "emptyFollowingMessage": "Herkese açık gezilerini burada görmek için gezginleri takip edin",
+  "emptyTrending": "Henüz herkese açık gezi yok",
+  "emptyTrendingMessage": "Popüler geziler yakında burada görünecek",
+  "tripBy": "{{name}} tarafından",
+  "likesCount": "{{count}} beğeni",
+  "profile": {
+    "followers": "Takipçiler",
+    "following": "Takip Edilenler",
+    "follow": "Takip Et",
+    "unfollow": "Takibi Bırak",
+    "publicTrips": "Herkese Açık Geziler",
+    "noPublicTrips": "Herkese açık gezi yok"
+  },
+  "notifications": {
+    "newFollower": "{{name}} sizi takip etmeye başladı",
+    "tripLiked": "{{name}} {{destination}} gezinizi beğendi"
+  },
+  "errors": {
+    "followFailed": "Takip edilemedi",
+    "unfollowFailed": "Takip bırakılamadı",
+    "likeFailed": "Beğenilemedi",
+    "unlikeFailed": "Beğeni kaldırılamadı",
+    "feedFailed": "Akış yüklenemedi",
+    "profileFailed": "Profil yüklenemedi"
+  }
+}

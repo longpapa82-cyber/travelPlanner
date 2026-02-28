@@ -1,0 +1,60 @@
+{
+  "greeting": "Hai 👋",
+  "heroTitle": "Perjalanan {{name}}",
+  "subtitle": "Bersedia merancang pengembaraan seterusnya?",
+  "createTrip": "Buat Pelan Perjalanan AI",
+  "stats": {
+    "completed": "Selesai",
+    "ongoing": "Sedang Berjalan",
+    "upcoming": "Akan Datang"
+  },
+  "featured": {
+    "title": "Tempat Menarik untuk Dilawati Sekarang",
+    "subtitle": "Terokai destinasi popular",
+    "seeAll": "Lihat semua →"
+  },
+  "destinations": {
+    "tokyo": {
+      "name": "Tokyo",
+      "country": "Jepun",
+      "description": "Di mana tradisi bertemu kemodenan"
+    },
+    "osaka": {
+      "name": "Osaka",
+      "country": "Jepun",
+      "description": "Kota rasa dan jalanan meriah"
+    },
+    "bangkok": {
+      "name": "Bangkok",
+      "country": "Thailand",
+      "description": "Kuil emas dan pasar malam"
+    },
+    "danang": {
+      "name": "Da Nang",
+      "country": "Vietnam",
+      "description": "Pantai indah dan makanan lazat"
+    },
+    "paris": {
+      "name": "Paris",
+      "country": "Perancis",
+      "description": "Kota seni dan percintaan"
+    },
+    "singapore": {
+      "name": "Singapura",
+      "country": "Singapura",
+      "description": "Pengembaraan kuliner di kota futuristik"
+    }
+  },
+  "quickActions": {
+    "title": "Tindakan Pantas",
+    "myTrips": "Perjalanan Saya",
+    "myTripsDesc": "Semak perjalanan semasa",
+    "inspiration": "Inspirasi",
+    "inspirationDesc": "Terokai idea baharu"
+  },
+  "tip": {
+    "sectionTitle": "Tips Perjalanan",
+    "title": "💡 Rancang Lebih Awal",
+    "description": "AI mencipta jadual perjalanan optimum dengan mengambil kira cuaca tempatan, tempat popular, dan laluan perjalanan."
+  }
+}

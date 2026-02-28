@@ -1,0 +1,118 @@
+{
+  "title": "Profil",
+  "guest": "Misafir",
+  "sections": {
+    "account": "Hesap",
+    "settings": "Ayarlar",
+    "support": "Destek",
+    "admin": "Yönetici"
+  },
+  "menu": {
+    "editProfile": "Profili Düzenle",
+    "changePassword": "Şifre Değiştir",
+    "twoFactor": "İki Faktörlü Doğrulama",
+    "twoFactorEnabled": "Etkin",
+    "twoFactorDisabled": "Devre Dışı",
+    "language": "Dil",
+    "notifications": "Bildirimler",
+    "notificationsEnabled": "Etkin",
+    "notificationsDisabled": "Devre Dışı",
+    "darkMode": "Karanlık Mod",
+    "help": "Yardım",
+    "terms": "Kullanım Koşulları",
+    "privacy": "Gizlilik Politikası",
+    "revenue": "Gelir Paneli",
+    "admin": "Yönetici Paneli"
+  },
+  "editProfile": {
+    "title": "Profili Düzenle",
+    "name": "Ad",
+    "namePlaceholder": "Adınızı girin",
+    "changePhoto": "Profil fotoğrafını değiştir",
+    "save": "Kaydet",
+    "alerts": {
+      "nameRequired": "Lütfen adınızı girin",
+      "success": "Profil başarıyla güncellendi",
+      "failed": "Profil güncellenemedi",
+      "photoSuccess": "Profil fotoğrafı güncellendi",
+      "photoFailed": "Profil fotoğrafı güncellenemedi",
+      "permissionDenied": "Fotoğraf erişim izni gerekli"
+    }
+  },
+  "changePassword": {
+    "title": "Şifre Değiştir",
+    "current": "Mevcut Şifre",
+    "currentPlaceholder": "Mevcut şifrenizi girin",
+    "new": "Yeni Şifre",
+    "newPlaceholder": "Yeni şifre girin (8+ karakter, harf ve rakam)",
+    "confirm": "Yeni Şifre Onayı",
+    "confirmPlaceholder": "Yeni şifrenizi tekrar girin",
+    "submit": "Şifreyi Değiştir",
+    "alerts": {
+      "allFieldsRequired": "Lütfen tüm alanları doldurun",
+      "minLength": "Yeni şifre en az 8 karakter, harf ve rakam içermelidir",
+      "mismatch": "Yeni şifreler eşleşmiyor",
+      "success": "Şifre başarıyla değiştirildi",
+      "failed": "Şifre değiştirilemedi"
+    }
+  },
+  "languageSelector": {
+    "title": "Dil Seçin",
+    "description": "Tercih ettiğiniz dili seçin"
+  },
+  "logout": {
+    "title": "Çıkış Yap",
+    "message": "Çıkış yapmak istediğinizden emin misiniz?",
+    "button": "Çıkış Yap"
+  },
+  "deleteAccount": {
+    "title": "Hesabı Sil",
+    "message": "Hesabınızı silmek tüm verileri kalıcı olarak kaldıracaktır. Emin misiniz?",
+    "button": "Hesabı Sil",
+    "passwordConfirm": "Hesap silme işlemini onaylamak için şifrenizi girin",
+    "passwordPlaceholder": "Şifrenizi girin",
+    "alerts": {
+      "success": "Hesap başarıyla silindi",
+      "failed": "Hesap silinemedi",
+      "passwordRequired": "Lütfen şifrenizi girin"
+    }
+  },
+  "version": "Sürüm",
+  "analytics": {
+    "title": "Seyahat İstatistikleri",
+    "totalTrips": "Toplam Gezi",
+    "completedTrips": "Tamamlanan",
+    "ongoingTrips": "Devam Eden",
+    "upcomingTrips": "Yaklaşan",
+    "totalDays": "Toplam Gün",
+    "avgDuration": "Ort. Süre",
+    "days": "gün",
+    "countriesVisited": "Ülkeler",
+    "countries": "ülke",
+    "totalSpent": "Toplam Harcama",
+    "totalBudget": "Toplam Bütçe",
+    "topDestinations": "En Çok Gidilen Yerler",
+    "times": "kez",
+    "activities": "Etkinlikler",
+    "completedOf": "{{completed}} / {{total}} tamamlandı",
+    "noData": "Henüz seyahat verisi yok",
+    "loading": "İstatistikler yükleniyor..."
+  },
+  "revenue": {
+    "last30Days": "Son 30 gün",
+    "totalClicks": "Toplam Tıklama",
+    "conversions": "Dönüşümler",
+    "conversionRate": "Dönüşüm Oranı",
+    "commission": "Komisyon",
+    "highlights": "Öne Çıkanlar",
+    "topProvider": "En İyi Sağlayıcı",
+    "topDestination": "En İyi Destinasyon",
+    "totalRevenue": "Toplam Gelir",
+    "byProvider": "Sağlayıcıya Göre",
+    "clicks": "tıklama",
+    "conv": "dönüşüm",
+    "noData": "Henüz veri yok",
+    "adminOnly": "Yönetici erişimi gerekli",
+    "loadError": "Veriler yüklenemedi"
+  }
+}

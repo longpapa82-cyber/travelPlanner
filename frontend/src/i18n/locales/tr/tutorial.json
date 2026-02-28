@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "AI Gezi Planları",
+      "description": "AI, size özel kişiselleştirilmiş gezi planları oluşturur"
+    },
+    "slide2": {
+      "title": "Birlikte Seyahat Edin",
+      "description": "Arkadaşlarınızı davet ederek birlikte planlayın"
+    },
+    "slide3": {
+      "title": "Haydi Başlayalım",
+      "description": "İlk gezinizi oluşturun ve yeni bir maceraya başlayın"
+    },
+    "skip": "Atla",
+    "createFirst": "İlk Geziyi Oluştur",
+    "explore": "Keşfet"
+  },
+  "coach": {
+    "createTrip": "İlk gezinizi başlatmak için buraya dokunun!",
+    "next": "Anladım",
+    "dismiss": "Atla"
+  },
+  "settings": {
+    "resetTutorial": "Eğitimi Tekrarla"
+  }
+}

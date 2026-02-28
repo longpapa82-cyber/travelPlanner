@@ -1,0 +1,440 @@
+{
+  "create": {
+    "title": "Yeni Gezi Oluştur",
+    "hero": {
+      "title": "Yeni bir maceraya hazır mısınız?",
+      "subtitle": "Bir destinasyon seçin, AI sizin için mükemmel gezi planını oluştursun"
+    },
+    "destination": {
+      "title": "Nereye gidiyorsunuz?",
+      "placeholder": "Şehir veya ülke girin",
+      "popular": "Popüler Destinasyonlar"
+    },
+    "destinations": {
+      "tokyo": "Tokyo",
+      "osaka": "Osaka",
+      "bangkok": "Bangkok",
+      "danang": "Da Nang",
+      "paris": "Paris",
+      "singapore": "Singapur",
+      "london": "Londra",
+      "newyork": "New York",
+      "barcelona": "Barselona"
+    },
+    "duration": {
+      "title": "Ne kadar kalacaksınız?",
+      "options": {
+        "3days": "3 gün",
+        "1week": "1 hafta",
+        "2weeks": "2 hafta",
+        "1month": "1 ay"
+      },
+      "custom": "Özel",
+      "totalDays": "{{days}} günlük gezi"
+    },
+    "travelers": {
+      "title": "Kimler geliyor?",
+      "options": {
+        "solo": "Sadece ben",
+        "two": "2 kişi",
+        "group": "3-4 kişi",
+        "large": "5+ kişi"
+      }
+    },
+    "dates": {
+      "title": "Ne zaman yola çıkıyorsunuz?",
+      "start": "Gidiş",
+      "end": "Dönüş",
+      "selectStart": "Gidiş tarihini seçin",
+      "selectEnd": "Dönüş tarihini seçin"
+    },
+    "notes": {
+      "title": "Özel planlarınız var mı?",
+      "placeholder": "ör. yemek odaklı, gezi, serbest seyahat...",
+      "optional": "(İsteğe bağlı)"
+    },
+    "budget": {
+      "title": "Gezi Bütçesi (İsteğe Bağlı)",
+      "placeholder": "Toplam bütçeyi girin",
+      "currency": "Para Birimi"
+    },
+    "aiInfo": {
+      "title": "AI Otomatik Oluşturma",
+      "description": "AI, destinasyon ve programınıza göre en uygun gezi planını oluşturacak"
+    },
+    "rewardedAd": {
+      "label": "Ayrıntılı seyahat bilgileri için reklam izleyin"
+    },
+    "submit": "Gezi Planı Oluştur",
+    "generating": "AI gezi planınızı oluşturuyor...",
+    "progress": {
+      "analyzing": "Destinasyon analiz ediliyor",
+      "planning": "Güzergah oluşturuluyor",
+      "weather": "Hava durumu bilgisi kontrol ediliyor",
+      "finalizing": "Planınız tamamlanıyor"
+    },
+    "preferences": {
+      "title": "Seyahat Tarzı",
+      "budget": {
+        "title": "Bütçe Düzeyi",
+        "budget": "Ekonomik",
+        "midRange": "Orta",
+        "luxury": "Lüks"
+      },
+      "style": {
+        "title": "Seyahat Temposu",
+        "relaxed": "Rahat",
+        "balanced": "Dengeli",
+        "active": "Aktif",
+        "adventure": "Macera"
+      },
+      "interests": {
+        "title": "İlgi Alanları",
+        "food": "Yemek",
+        "culture": "Kültür",
+        "nature": "Doğa",
+        "shopping": "Alışveriş",
+        "nightlife": "Gece Hayatı",
+        "history": "Tarih",
+        "art": "Sanat",
+        "sports": "Spor",
+        "photography": "Fotoğrafçılık"
+      }
+    },
+    "mode": {
+      "title": "Planlama Yöntemi",
+      "ai": "AI Otomatik Oluşturma",
+      "aiDesc": "AI sizin için en uygun güzergahı otomatik olarak oluşturur",
+      "manual": "Manuel Oluşturma",
+      "manualDesc": "Boş gün kartları oluşturup kendi planınızı doldurun",
+      "manualCreating": "Geziniz oluşturuluyor..."
+    },
+    "alerts": {
+      "destinationRequired": "Lütfen bir destinasyon girin",
+      "datesRequired": "Lütfen seyahat tarihlerini seçin",
+      "createFailed": "Gezi oluşturulamadı",
+      "startDateRequired": "Lütfen gidiş tarihini seçin"
+    },
+    "aiConsent": {
+      "title": "AI Gezi Planlama",
+      "body": "Bu özellik, kişiselleştirilmiş gezi planı oluşturmak için OpenAI'nin yapay zekasını kullanır.",
+      "dataList": "Destinasyon, seyahat tarihleri, yolcu sayısı ve tercihleriniz AI'ya gönderilecektir.",
+      "accept": "Kabul Ediyorum ve Devam Et",
+      "cancel": "İptal"
+    }
+  },
+  "list": {
+    "title": "Gezilerim",
+    "searchPlaceholder": "Gezi ara...",
+    "filters": {
+      "all": "Tümü",
+      "upcoming": "Yaklaşan",
+      "ongoing": "Devam Eden",
+      "completed": "Tamamlanan"
+    },
+    "sections": {
+      "ongoing": "Devam Eden Geziler",
+      "upcoming": "Yaklaşan Geziler",
+      "completed": "Geçmiş Geziler (Yalnızca Görüntüleme)"
+    },
+    "status": {
+      "upcoming": "Yaklaşan",
+      "ongoing": "Devam Eden",
+      "completed": "Tamamlanan"
+    },
+    "empty": {
+      "title": "Henüz planlanmış gezi yok",
+      "description": "Yeni bir gezi planlamaya başlayın!",
+      "cta": "AI Gezi Planlamayı Başlat",
+      "noResults": "Sonuç bulunamadı",
+      "noResultsDescription": "Farklı bir arama terimi veya filtre deneyin",
+      "clearFilters": "Filtreleri Temizle"
+    },
+    "error": {
+      "title": "Geziler yüklenemedi",
+      "description": "Ağ bağlantınızı kontrol edip tekrar deneyin",
+      "retry": "Tekrar Dene",
+      "refreshFailed": "Yenileme başarısız"
+    },
+    "card": {
+      "days": "{{days}} gün",
+      "travelers": "{{count}} yolcu",
+      "dDay": "D-{{days}}",
+      "dDayToday": "Bugün",
+      "dDayPassed": "D+{{days}}"
+    },
+    "alerts": {
+      "deleteTitle": "Geziyi Sil",
+      "deleteMessage": "'{{name}}' silinsin mi? Bu işlem geri alınamaz.",
+      "deleteFailed": "Silme başarısız",
+      "error": "Hata",
+      "cancel": "İptal",
+      "delete": "Sil"
+    },
+    "sort": {
+      "startDate": "Gidiş tarihine göre",
+      "createdAt": "Oluşturma tarihine göre",
+      "destination": "Destinasyona göre"
+    },
+    "advancedFilters": {
+      "toggle": "Filtreler",
+      "country": "Ülke",
+      "countryPlaceholder": "Ülke girin",
+      "dateRange": "Gidiş tarihi aralığı",
+      "dateFrom": "Başlangıç",
+      "dateTo": "Bitiş",
+      "budget": "Bütçe aralığı",
+      "budgetMin": "Min",
+      "budgetMax": "Maks",
+      "reset": "Filtreleri sıfırla",
+      "apply": "Uygula",
+      "activeCount": "{{count}} filtre aktif"
+    },
+    "resultCount": "{{count}} gezi",
+    "createButton": "Yeni Gezi Oluştur",
+    "info": {
+      "days": "{{count}} gün",
+      "itineraries": "{{count}} güzergah",
+      "travelers": "{{count}} yolcu"
+    },
+    "accessibility": {
+      "trip": "gezi",
+      "viewDetail": "Gezi detaylarını görüntüle",
+      "deleteTrip": "Sil",
+      "search": "Gezi ara",
+      "searchHint": "Destinasyona göre gezi ara"
+    },
+    "pagination": {
+      "showMore": "Daha fazla göster",
+      "showing": "{{shown}} / {{total}}"
+    }
+  },
+  "detail": {
+    "loading": "Gezi bilgileri yükleniyor...",
+    "notFound": {
+      "title": "Gezi bulunamadı",
+      "description": "Bu gezi mevcut değil veya silinmiş",
+      "back": "Geri dön"
+    },
+    "status": {
+      "ongoing": "Devam Eden",
+      "completed": "Tamamlanan"
+    },
+    "completedBanner": {
+      "title": "Gezi Tamamlandı",
+      "description": "Bu gezi tamamlanmıştır ve düzenlenemez. Değerli anılarınıza göz atın!"
+    },
+    "readOnlyMessage": "Tamamlanan etkinlikler düzenlenemez",
+    "progress": "Genel ilerleme %{{percentage}}",
+    "durationDays": "{{count}} gün",
+    "travelers": "{{count}} yolcu",
+    "durationMinutes": "{{minutes}} dk",
+    "estimatedCost": "${{cost}}",
+    "dayLabel": "Gün {{day}}",
+    "emptyItinerary": "Henüz güzergah oluşturulmadı",
+    "emptyItineraryMessage": "Gezinize etkinlik ekleyin",
+    "addActivity": "Etkinlik Ekle",
+    "affiliateSection": "Otel ve Etkinlik Rezervasyonu",
+    "affiliateSubtitle": "{{destination}} için en iyi konaklama ve deneyimleri rezerve edin",
+    "affiliateAccom": "Konaklama",
+    "affiliateExperience": "Tur ve Etkinlikler",
+    "tabs": {
+      "itinerary": "Güzergah",
+      "map": "Harita",
+      "info": "Bilgi",
+      "share": "Paylaş"
+    },
+    "map": {
+      "noLocations": "Gösterilecek konum yok",
+      "noLocationsMessage": "Konum verisi olan etkinlikleri görmek için yeni bir gezi oluşturun",
+      "activitiesCount": "{{count}} etkinlik",
+      "allDays": "Tümü",
+      "dayLabel": "Gün {{day}}",
+      "openInMaps": "Google Haritalar'da görüntüle",
+      "tapToOpen": "Haritayı açmak için dokunun",
+      "durationMin": "{{min}}dk"
+    },
+    "budget": {
+      "title": "Bütçe Özeti",
+      "total": "Toplam Bütçe",
+      "estimated": "Tahmini",
+      "spent": "Harcanan",
+      "remaining": "Kalan",
+      "byCategory": "Kategoriye Göre",
+      "byDay": "Güne Göre",
+      "perDay": "Günlük",
+      "dayLabel": "Gün {{day}}"
+    },
+    "activityTypes": {
+      "meal": "Yemek",
+      "sightseeing": "Gezi",
+      "shopping": "Alışveriş",
+      "experience": "Deneyim",
+      "rest": "Dinlenme",
+      "transport": "Ulaşım",
+      "accommodation": "Konaklama",
+      "other": "Diğer"
+    },
+    "accessibility": {
+      "completed": "Tamamlandı",
+      "incomplete": "Tamamlanmadı",
+      "reorder": "Sırayı değiştir",
+      "reorderHint": "Sıralamak için uzun basın",
+      "edit": "Düzenle",
+      "delete": "Sil",
+      "goBack": "Geri dön",
+      "editTrip": "Geziyi düzenle",
+      "duplicate": "Geziyi kopyala",
+      "duplicating": "Kopyalanıyor...",
+      "share": "Paylaş",
+      "exportIcal": "Takvime aktar",
+      "addActivityToDay": "Gün {{day}}'e etkinlik ekle",
+      "moreOptions": "Daha fazla seçenek"
+    },
+    "alerts": {
+      "deleteTitle": "Etkinliği Sil",
+      "deleteMessage": "Bu etkinlik silinsin mi?",
+      "deleteFailed": "Silme başarısız",
+      "error": "Hata",
+      "fetchError": "Gezi bilgileri yüklenemedi",
+      "duplicateSuccess": "Gezi kopyalandı",
+      "duplicateCompleteTitle": "Kopyalama Tamamlandı",
+      "duplicateError": "Gezi kopyalanamadı",
+      "confirm": "Tamam",
+      "cancel": "İptal",
+      "delete": "Sil",
+      "success": "Başarılı",
+      "deleteSuccess": "Gezi silindi",
+      "deleteError": "Gezi silinemedi",
+      "toggleError": "Durum güncellenemedi",
+      "reorderError": "Sıralama değiştirilemedi",
+      "exportSuccess": "Takvim dosyası başarıyla dışa aktarıldı",
+      "exportError": "Takvim dışa aktarılamadı"
+    },
+    "photos": {
+      "addCover": "Kapak fotoğrafı ekle",
+      "changeCover": "Kapak fotoğrafını değiştir",
+      "addPhoto": "Fotoğraf ekle",
+      "photoCount": "{{count}} fotoğraf",
+      "uploadSuccess": "Fotoğraf yüklendi",
+      "uploadFailed": "Fotoğraf yüklenemedi",
+      "viewAll": "Tüm fotoğrafları görüntüle"
+    },
+    "collaboration": {
+      "title": "İşbirlikçiler",
+      "invite": "Davet Et",
+      "emailPlaceholder": "E-posta adresini girin",
+      "roleViewer": "Görüntüleyici",
+      "roleEditor": "Düzenleyici",
+      "owner": "Sahip",
+      "remove": "Kaldır",
+      "inviteSuccess": "Davet gönderildi",
+      "inviteFailed": "Davet gönderilemedi",
+      "removeFailed": "Kaldırma başarısız",
+      "noCollaborators": "Henüz işbirlikçi yok",
+      "leave": "Geziden Ayrıl",
+      "leaveTitle": "Geziden Ayrıl",
+      "leaveMessage": "Bu geziden ayrılmak istediğinizden emin misiniz? Artık bu geziye erişiminiz olmayacaktır.",
+      "leaveConfirm": "Ayrıl",
+      "leaveSuccess": "Geziden ayrıldınız",
+      "leaveFailed": "Geziden ayrılma başarısız"
+    },
+    "expenses": {
+      "title": "Harcamalar",
+      "addExpense": "Harcama Ekle",
+      "total": "Toplam Harcama",
+      "myShare": "Benim Payım",
+      "iOwe": "Borcum",
+      "owedToMe": "Bana Borçlu",
+      "settled": "Tümü Ödendi",
+      "paidBy": "Ödeyen",
+      "splitWith": "Paylaşılan",
+      "splitEqual": "Eşit bölüştür",
+      "splitExact": "Özel tutarlar",
+      "balances": "Bakiyeler",
+      "settlements": "Hesaplaşmalar",
+      "settleUp": "Hesabı Kapat",
+      "settledMark": "Ödendi",
+      "noExpenses": "Henüz harcama yok",
+      "noExpensesMessage": "Grup harcamalarını takip etmek için harcama ekleyin",
+      "description": "Açıklama",
+      "amount": "Tutar",
+      "category": "Kategori",
+      "date": "Tarih",
+      "owes": "borçlu",
+      "categories": {
+        "food": "Yemek",
+        "transport": "Ulaşım",
+        "accommodation": "Konaklama",
+        "activity": "Etkinlik",
+        "shopping": "Alışveriş",
+        "other": "Diğer"
+      },
+      "tabs": {
+        "expenses": "Harcamalar",
+        "balances": "Bakiyeler"
+      },
+      "alerts": {
+        "createFailed": "Harcama eklenemedi",
+        "deleteFailed": "Harcama silinemedi",
+        "settleFailed": "Hesaplaşma başarısız",
+        "deleteTitle": "Harcamayı Sil",
+        "deleteMessage": "Bu harcama silinsin mi?"
+      }
+    }
+  },
+  "edit": {
+    "title": "Geziyi Düzenle",
+    "loading": "Gezi bilgileri yükleniyor...",
+    "notFound": "Gezi bulunamadı",
+    "goBack": "Geri Dön",
+    "heroTitle": "Gezi Bilgilerini Düzenle",
+    "ongoingWarning": "Bu gezi devam ediyor. Tarihleri değiştirirken dikkatli olun.",
+    "destination": {
+      "title": "Destinasyon",
+      "placeholder": "Veya manuel olarak girin"
+    },
+    "dates": {
+      "title": "Gezi Tarihleri",
+      "changeWarning": "Dikkat",
+      "totalDays": "{{days}} günlük gezi"
+    },
+    "travelers": {
+      "title": "Yolcular",
+      "placeholder": "Veya manuel olarak girin"
+    },
+    "notes": {
+      "title": "Gezi Notları (İsteğe Bağlı)",
+      "placeholder": "Hedeflerinizi veya özel gereksinimlerinizi eklemekten çekinmeyin"
+    },
+    "budget": {
+      "title": "Gezi Bütçesi (İsteğe Bağlı)",
+      "placeholder": "Toplam bütçeyi girin",
+      "currency": "Para Birimi"
+    },
+    "submit": "Gezi Bilgilerini Kaydet",
+    "saving": "Kaydediliyor...",
+    "status": {
+      "upcoming": "Yaklaşan",
+      "ongoing": "Devam Eden",
+      "completed": "Tamamlanan"
+    },
+    "alerts": {
+      "cannotEditCompleted": "Tamamlanan geziler düzenlenemez.",
+      "cannotEditTitle": "Düzenlenemez",
+      "loadError": "Gezi bilgileri yüklenemedi.",
+      "destinationRequired": "Lütfen bir destinasyon girin.",
+      "requiredInput": "Gerekli",
+      "datesRequired": "Lütfen seyahat tarihlerini seçin.",
+      "endDateError": "Bitiş tarihi başlangıç tarihinden sonra olmalıdır.",
+      "dateError": "Tarih Hatası",
+      "dateChangeWarningTitle": "Tarih Değişikliği Uyarısı",
+      "dateChangeWarning": "Devam eden bir gezinin tarihlerini değiştirmek programı etkileyebilir. Devam edilsin mi?",
+      "continue": "Devam Et",
+      "saveSuccess": "Değişiklikler Kaydedildi",
+      "saveSuccessMessage": "Gezi bilgileri güncellendi.",
+      "saveFailed": "Kaydetme Başarısız",
+      "saveError": "Gezi bilgileri kaydedilemedi. Lütfen tekrar deneyin."
+    }
+  }
+}

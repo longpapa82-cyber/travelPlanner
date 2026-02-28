@@ -1,0 +1,440 @@
+{
+  "create": {
+    "title": "Buat Perjalanan Baharu",
+    "hero": {
+      "title": "Bersedia untuk pengembaraan baharu?",
+      "subtitle": "Pilih destinasi sahaja dan AI akan mencipta pelan perjalanan sempurna untuk anda"
+    },
+    "destination": {
+      "title": "Ke mana anda pergi?",
+      "placeholder": "Masukkan bandar atau negara",
+      "popular": "Destinasi Popular"
+    },
+    "destinations": {
+      "tokyo": "Tokyo",
+      "osaka": "Osaka",
+      "bangkok": "Bangkok",
+      "danang": "Da Nang",
+      "paris": "Paris",
+      "singapore": "Singapura",
+      "london": "London",
+      "newyork": "New York",
+      "barcelona": "Barcelona"
+    },
+    "duration": {
+      "title": "Berapa lama anda akan tinggal?",
+      "options": {
+        "3days": "3 hari",
+        "1week": "1 minggu",
+        "2weeks": "2 minggu",
+        "1month": "1 bulan"
+      },
+      "custom": "Tersuai",
+      "totalDays": "Perjalanan {{days}} hari"
+    },
+    "travelers": {
+      "title": "Siapa yang ikut?",
+      "options": {
+        "solo": "Sendiri",
+        "two": "2 orang",
+        "group": "3-4 orang",
+        "large": "5+ orang"
+      }
+    },
+    "dates": {
+      "title": "Bila anda berlepas?",
+      "start": "Berlepas",
+      "end": "Pulang",
+      "selectStart": "Pilih tarikh berlepas",
+      "selectEnd": "Pilih tarikh pulang"
+    },
+    "notes": {
+      "title": "Ada rancangan khas?",
+      "placeholder": "cth., fokus makanan, lawatan, perjalanan bebas...",
+      "optional": "(Pilihan)"
+    },
+    "budget": {
+      "title": "Bajet Perjalanan (Pilihan)",
+      "placeholder": "Masukkan jumlah bajet",
+      "currency": "Mata Wang"
+    },
+    "aiInfo": {
+      "title": "Penjanaan Automatik AI",
+      "description": "AI akan mencipta pelan perjalanan optimum berdasarkan destinasi dan jadual anda"
+    },
+    "rewardedAd": {
+      "label": "Tonton iklan untuk maklumat perjalanan terperinci"
+    },
+    "submit": "Buat Pelan Perjalanan",
+    "generating": "AI sedang mencipta pelan perjalanan anda...",
+    "progress": {
+      "analyzing": "Menganalisis destinasi",
+      "planning": "Mencipta jadual perjalanan",
+      "weather": "Menyemak maklumat cuaca",
+      "finalizing": "Memuktamadkan pelan anda"
+    },
+    "preferences": {
+      "title": "Gaya Perjalanan",
+      "budget": {
+        "title": "Tahap Bajet",
+        "budget": "Jimat",
+        "midRange": "Sederhana",
+        "luxury": "Mewah"
+      },
+      "style": {
+        "title": "Rentak Perjalanan",
+        "relaxed": "Santai",
+        "balanced": "Seimbang",
+        "active": "Aktif",
+        "adventure": "Pengembaraan"
+      },
+      "interests": {
+        "title": "Minat",
+        "food": "Makanan",
+        "culture": "Budaya",
+        "nature": "Alam Semula Jadi",
+        "shopping": "Membeli-belah",
+        "nightlife": "Kehidupan Malam",
+        "history": "Sejarah",
+        "art": "Seni",
+        "sports": "Sukan",
+        "photography": "Fotografi"
+      }
+    },
+    "mode": {
+      "title": "Kaedah Perancangan",
+      "ai": "Penjanaan Automatik AI",
+      "aiDesc": "AI mencipta jadual perjalanan optimum untuk anda secara automatik",
+      "manual": "Bina Secara Manual",
+      "manualDesc": "Cipta kad hari kosong dan isi pelan anda sendiri",
+      "manualCreating": "Mencipta perjalanan anda..."
+    },
+    "alerts": {
+      "destinationRequired": "Sila masukkan destinasi",
+      "datesRequired": "Sila pilih tarikh perjalanan",
+      "createFailed": "Gagal mencipta perjalanan",
+      "startDateRequired": "Sila pilih tarikh berlepas"
+    },
+    "aiConsent": {
+      "title": "Perancangan Perjalanan AI",
+      "body": "Ciri ini menggunakan AI OpenAI untuk menjana pelan perjalanan yang diperibadikan.",
+      "dataList": "Destinasi, tarikh perjalanan, bilangan pengembara, dan pilihan anda akan dihantar kepada AI.",
+      "accept": "Saya Setuju & Teruskan",
+      "cancel": "Batal"
+    }
+  },
+  "list": {
+    "title": "Perjalanan Saya",
+    "searchPlaceholder": "Cari perjalanan...",
+    "filters": {
+      "all": "Semua",
+      "upcoming": "Akan Datang",
+      "ongoing": "Sedang Berjalan",
+      "completed": "Selesai"
+    },
+    "sections": {
+      "ongoing": "Perjalanan Sedang Berjalan",
+      "upcoming": "Perjalanan Akan Datang",
+      "completed": "Perjalanan Lepas (Lihat Sahaja)"
+    },
+    "status": {
+      "upcoming": "Akan Datang",
+      "ongoing": "Sedang Berjalan",
+      "completed": "Selesai"
+    },
+    "empty": {
+      "title": "Belum ada perjalanan dirancang",
+      "description": "Mula merancang perjalanan baharu!",
+      "cta": "Mula Perancangan Perjalanan AI",
+      "noResults": "Tiada hasil ditemui",
+      "noResultsDescription": "Cuba istilah carian atau penapis lain",
+      "clearFilters": "Kosongkan Penapis"
+    },
+    "error": {
+      "title": "Tidak dapat memuatkan perjalanan",
+      "description": "Semak sambungan rangkaian anda dan cuba semula",
+      "retry": "Cuba Semula",
+      "refreshFailed": "Gagal memuat semula"
+    },
+    "card": {
+      "days": "{{days}} hari",
+      "travelers": "{{count}} pengembara",
+      "dDay": "H-{{days}}",
+      "dDayToday": "Hari-H",
+      "dDayPassed": "H+{{days}}"
+    },
+    "alerts": {
+      "deleteTitle": "Padam Perjalanan",
+      "deleteMessage": "Padam '{{name}}'? Tindakan ini tidak boleh dibatalkan.",
+      "deleteFailed": "Gagal memadam",
+      "error": "Ralat",
+      "cancel": "Batal",
+      "delete": "Padam"
+    },
+    "sort": {
+      "startDate": "Mengikut berlepas",
+      "createdAt": "Mengikut tarikh cipta",
+      "destination": "Mengikut destinasi"
+    },
+    "advancedFilters": {
+      "toggle": "Penapis",
+      "country": "Negara",
+      "countryPlaceholder": "Masukkan negara",
+      "dateRange": "Julat tarikh berlepas",
+      "dateFrom": "Dari",
+      "dateTo": "Hingga",
+      "budget": "Julat bajet",
+      "budgetMin": "Min",
+      "budgetMax": "Maks",
+      "reset": "Tetapkan semula penapis",
+      "apply": "Terapkan",
+      "activeCount": "{{count}} penapis aktif"
+    },
+    "resultCount": "{{count}} perjalanan",
+    "createButton": "Buat Perjalanan Baharu",
+    "info": {
+      "days": "{{count}} hari",
+      "itineraries": "{{count}} jadual perjalanan",
+      "travelers": "{{count}} pengembara"
+    },
+    "accessibility": {
+      "trip": "perjalanan",
+      "viewDetail": "Lihat butiran perjalanan",
+      "deleteTrip": "Padam",
+      "search": "Cari perjalanan",
+      "searchHint": "Cari perjalanan mengikut destinasi"
+    },
+    "pagination": {
+      "showMore": "Tunjukkan lagi",
+      "showing": "{{shown}} / {{total}}"
+    }
+  },
+  "detail": {
+    "loading": "Memuatkan maklumat perjalanan...",
+    "notFound": {
+      "title": "Perjalanan tidak ditemui",
+      "description": "Perjalanan ini tidak wujud atau telah dipadamkan",
+      "back": "Kembali"
+    },
+    "status": {
+      "ongoing": "Sedang Berjalan",
+      "completed": "Selesai"
+    },
+    "completedBanner": {
+      "title": "Perjalanan Selesai",
+      "description": "Perjalanan ini telah selesai dan tidak boleh diedit. Lihat kenangan berharga anda!"
+    },
+    "readOnlyMessage": "Aktiviti yang telah selesai tidak boleh diedit",
+    "progress": "Kemajuan keseluruhan {{percentage}}%",
+    "durationDays": "{{count}} hari",
+    "travelers": "{{count}} pengembara",
+    "durationMinutes": "{{minutes}} min",
+    "estimatedCost": "${{cost}}",
+    "dayLabel": "Hari {{day}}",
+    "emptyItinerary": "Belum ada jadual perjalanan dicipta",
+    "emptyItineraryMessage": "Tambah aktiviti ke perjalanan anda",
+    "addActivity": "Tambah Aktiviti",
+    "affiliateSection": "Tempah Hotel & Aktiviti",
+    "affiliateSubtitle": "Tempah penginapan dan pengalaman terbaik di {{destination}}",
+    "affiliateAccom": "Penginapan",
+    "affiliateExperience": "Lawatan & Aktiviti",
+    "tabs": {
+      "itinerary": "Jadual Perjalanan",
+      "map": "Peta",
+      "info": "Maklumat",
+      "share": "Kongsi"
+    },
+    "map": {
+      "noLocations": "Tiada lokasi untuk dipaparkan",
+      "noLocationsMessage": "Cipta perjalanan baharu untuk melihat aktiviti dengan data lokasi",
+      "activitiesCount": "{{count}} aktiviti",
+      "allDays": "Semua",
+      "dayLabel": "Hari {{day}}",
+      "openInMaps": "Lihat di Google Maps",
+      "tapToOpen": "Ketik untuk buka peta",
+      "durationMin": "{{min}} min"
+    },
+    "budget": {
+      "title": "Ringkasan Bajet",
+      "total": "Jumlah Bajet",
+      "estimated": "Anggaran",
+      "spent": "Dibelanjakan",
+      "remaining": "Baki",
+      "byCategory": "Mengikut Kategori",
+      "byDay": "Mengikut Hari",
+      "perDay": "Setiap Hari",
+      "dayLabel": "Hari {{day}}"
+    },
+    "activityTypes": {
+      "meal": "Makan",
+      "sightseeing": "Lawatan",
+      "shopping": "Membeli-belah",
+      "experience": "Pengalaman",
+      "rest": "Rehat",
+      "transport": "Pengangkutan",
+      "accommodation": "Penginapan",
+      "other": "Lain-lain"
+    },
+    "accessibility": {
+      "completed": "Selesai",
+      "incomplete": "Belum selesai",
+      "reorder": "Susun semula",
+      "reorderHint": "Tekan lama untuk menyusun semula",
+      "edit": "Edit",
+      "delete": "Padam",
+      "goBack": "Kembali",
+      "editTrip": "Edit perjalanan",
+      "duplicate": "Salin perjalanan",
+      "duplicating": "Menyalin...",
+      "share": "Kongsi",
+      "exportIcal": "Eksport ke kalendar",
+      "addActivityToDay": "Tambah aktiviti ke Hari {{day}}",
+      "moreOptions": "Lagi pilihan"
+    },
+    "alerts": {
+      "deleteTitle": "Padam Aktiviti",
+      "deleteMessage": "Padam aktiviti ini?",
+      "deleteFailed": "Gagal memadam",
+      "error": "Ralat",
+      "fetchError": "Gagal memuatkan maklumat perjalanan",
+      "duplicateSuccess": "Perjalanan telah disalin",
+      "duplicateCompleteTitle": "Penyalinan Selesai",
+      "duplicateError": "Gagal menyalin perjalanan",
+      "confirm": "OK",
+      "cancel": "Batal",
+      "delete": "Padam",
+      "success": "Berjaya",
+      "deleteSuccess": "Perjalanan telah dipadamkan",
+      "deleteError": "Gagal memadam perjalanan",
+      "toggleError": "Gagal mengemas kini status",
+      "reorderError": "Gagal menyusun semula",
+      "exportSuccess": "Fail kalendar berjaya dieksport",
+      "exportError": "Gagal mengeksport kalendar"
+    },
+    "photos": {
+      "addCover": "Tambah foto kulit",
+      "changeCover": "Tukar foto kulit",
+      "addPhoto": "Tambah foto",
+      "photoCount": "{{count}} foto",
+      "uploadSuccess": "Foto dimuat naik",
+      "uploadFailed": "Gagal memuat naik foto",
+      "viewAll": "Lihat semua foto"
+    },
+    "collaboration": {
+      "title": "Kolaborator",
+      "invite": "Jemput",
+      "emailPlaceholder": "Masukkan alamat e-mel",
+      "roleViewer": "Pemerhati",
+      "roleEditor": "Penyunting",
+      "owner": "Pemilik",
+      "remove": "Alih keluar",
+      "inviteSuccess": "Jemputan dihantar",
+      "inviteFailed": "Gagal menjemput",
+      "removeFailed": "Gagal mengalih keluar",
+      "noCollaborators": "Belum ada kolaborator",
+      "leave": "Tinggalkan Perjalanan",
+      "leaveTitle": "Tinggalkan Perjalanan",
+      "leaveMessage": "Adakah anda pasti mahu meninggalkan perjalanan ini? Anda tidak akan mempunyai akses lagi.",
+      "leaveConfirm": "Tinggalkan",
+      "leaveSuccess": "Anda telah meninggalkan perjalanan",
+      "leaveFailed": "Gagal meninggalkan perjalanan"
+    },
+    "expenses": {
+      "title": "Perbelanjaan",
+      "addExpense": "Tambah Perbelanjaan",
+      "total": "Jumlah Dibelanjakan",
+      "myShare": "Bahagian Saya",
+      "iOwe": "Saya Berhutang",
+      "owedToMe": "Hutang Kepada Saya",
+      "settled": "Semua Diselesaikan",
+      "paidBy": "Dibayar oleh",
+      "splitWith": "Bahagi dengan",
+      "splitEqual": "Bahagi sama rata",
+      "splitExact": "Jumlah tersuai",
+      "balances": "Baki",
+      "settlements": "Penyelesaian",
+      "settleUp": "Selesaikan",
+      "settledMark": "Diselesaikan",
+      "noExpenses": "Belum ada perbelanjaan",
+      "noExpensesMessage": "Tambah perbelanjaan untuk menjejaki perbelanjaan kumpulan",
+      "description": "Penerangan",
+      "amount": "Jumlah",
+      "category": "Kategori",
+      "date": "Tarikh",
+      "owes": "berhutang",
+      "categories": {
+        "food": "Makanan",
+        "transport": "Pengangkutan",
+        "accommodation": "Penginapan",
+        "activity": "Aktiviti",
+        "shopping": "Membeli-belah",
+        "other": "Lain-lain"
+      },
+      "tabs": {
+        "expenses": "Perbelanjaan",
+        "balances": "Baki"
+      },
+      "alerts": {
+        "createFailed": "Gagal menambah perbelanjaan",
+        "deleteFailed": "Gagal memadam perbelanjaan",
+        "settleFailed": "Gagal menyelesaikan",
+        "deleteTitle": "Padam Perbelanjaan",
+        "deleteMessage": "Padam perbelanjaan ini?"
+      }
+    }
+  },
+  "edit": {
+    "title": "Edit Perjalanan",
+    "loading": "Memuatkan maklumat perjalanan...",
+    "notFound": "Perjalanan tidak ditemui",
+    "goBack": "Kembali",
+    "heroTitle": "Edit Maklumat Perjalanan",
+    "ongoingWarning": "Perjalanan ini sedang berjalan. Berhati-hati semasa menukar tarikh.",
+    "destination": {
+      "title": "Destinasi",
+      "placeholder": "Atau masukkan secara manual"
+    },
+    "dates": {
+      "title": "Tarikh Perjalanan",
+      "changeWarning": "Perhatian",
+      "totalDays": "Perjalanan {{days}} hari"
+    },
+    "travelers": {
+      "title": "Pengembara",
+      "placeholder": "Atau masukkan secara manual"
+    },
+    "notes": {
+      "title": "Nota Perjalanan (Pilihan)",
+      "placeholder": "Sila tambah sebarang matlamat atau keperluan khas"
+    },
+    "budget": {
+      "title": "Bajet Perjalanan (Pilihan)",
+      "placeholder": "Masukkan jumlah bajet",
+      "currency": "Mata Wang"
+    },
+    "submit": "Simpan Maklumat Perjalanan",
+    "saving": "Menyimpan...",
+    "status": {
+      "upcoming": "Akan Datang",
+      "ongoing": "Sedang Berjalan",
+      "completed": "Selesai"
+    },
+    "alerts": {
+      "cannotEditCompleted": "Perjalanan yang telah selesai tidak boleh diedit.",
+      "cannotEditTitle": "Tidak Boleh Edit",
+      "loadError": "Gagal memuatkan maklumat perjalanan.",
+      "destinationRequired": "Sila masukkan destinasi.",
+      "requiredInput": "Diperlukan",
+      "datesRequired": "Sila pilih tarikh perjalanan.",
+      "endDateError": "Tarikh pulang mesti selepas tarikh berlepas.",
+      "dateError": "Ralat Tarikh",
+      "dateChangeWarningTitle": "Amaran Perubahan Tarikh",
+      "dateChangeWarning": "Menukar tarikh untuk perjalanan yang sedang berjalan mungkin menjejaskan jadual. Teruskan?",
+      "continue": "Teruskan",
+      "saveSuccess": "Perubahan Disimpan",
+      "saveSuccessMessage": "Maklumat perjalanan telah dikemas kini.",
+      "saveFailed": "Gagal Menyimpan",
+      "saveError": "Gagal menyimpan maklumat perjalanan. Sila cuba semula."
+    }
+  }
+}

@@ -1,0 +1,286 @@
+{
+  "help": {
+    "title": "Bantuan",
+    "searchPlaceholder": "Cari bantuan...",
+    "categories": {
+      "gettingStarted": "Bermula",
+      "tripManagement": "Pengurusan Perjalanan",
+      "accountSettings": "Akaun & Tetapan",
+      "offlineSync": "Luar Talian & Segerak",
+      "adsPartners": "Harga & Iklan",
+      "contact": "Hubungi Kami"
+    },
+    "gettingStarted": {
+      "signup": {
+        "q": "Bagaimana cara mendaftar?",
+        "a": "Anda boleh mendaftar dengan e-mel atau mendaftar dengan cepat menggunakan akaun Google, Apple, atau Kakao. Log masuk sosial tidak memerlukan kata laluan berasingan."
+      },
+      "createTrip": {
+        "q": "Bagaimana cara membuat pelan perjalanan?",
+        "a": "Ketik 'Buat Perjalanan Baharu' di skrin utama, masukkan destinasi dan tarikh perjalanan anda, dan AI akan menjana jadual perjalanan yang diperibadikan secara automatik. Pilih bajet, gaya perjalanan, dan minat anda untuk cadangan yang lebih tepat."
+      },
+      "aiPlan": {
+        "q": "Bagaimana jadual perjalanan AI berfungsi?",
+        "a": "Kami menggunakan teknologi AI canggih untuk menganalisis tarikan popular, restoran, dan pengalaman budaya di destinasi anda, kemudian mencipta jadual optimum dengan mengambil kira laluan perjalanan dan pemasaan. Jadual yang dijana boleh diubah suai secara bebas."
+      },
+      "appTour": {
+        "q": "Bagaimana aplikasi ini disusun?",
+        "a": "Aplikasi ini mempunyai lima tab utama: Utama (senarai perjalanan), Terokai (cari pengembara lain), Butiran Perjalanan (jadual, peta, cuaca, bajet), Pemberitahuan, dan Profil. Navigasi dengan mudah menggunakan bar tab di bahagian bawah."
+      }
+    },
+    "tripManagement": {
+      "editPlan": {
+        "q": "Bagaimana cara mengedit jadual perjalanan saya?",
+        "a": "Ketik mana-mana aktiviti di skrin butiran perjalanan untuk mengedit masa, lokasi, dan nota. Seret dan lepas untuk menyusun semula aktiviti, atau gunakan butang + untuk menambah yang baharu."
+      },
+      "tripStatus": {
+        "q": "Adakah peraturan pengeditan berbeza mengikut status perjalanan?",
+        "a": "• Sebelum perjalanan: Boleh mengubah suai dan menambah semua pelan secara bebas.\n• Semasa perjalanan: Aktiviti yang telah lepas tidak boleh diubah; hanya yang akan datang boleh diedit.\n• Selepas perjalanan: Lihat dan padam sahaja; tiada pengubahsuaian dibenarkan."
+      },
+      "mapView": {
+        "q": "Bagaimana cara melihat tempat di peta?",
+        "a": "Di skrin butiran perjalanan, tukar ke tab peta untuk melihat semua lokasi yang dirancang secara sepintas lalu. Ketik penanda untuk butiran aktiviti."
+      },
+      "weather": {
+        "q": "Di mana saya boleh melihat maklumat cuaca dan zon waktu?",
+        "a": "Maklumat cuaca tempatan dan zon waktu dipaparkan secara automatik di bahagian atas skrin butiran perjalanan untuk setiap hari. Data cuaca datang daripada perkhidmatan luaran dan dikemas kini secara masa nyata."
+      },
+      "socialFeatures": {
+        "q": "Bagaimana cara menggunakan ciri sosial?",
+        "a": "Layari pelan perjalanan kongsi pengembara lain di tab Terokai. Ikuti pengembara yang anda suka dan beri suka pada pelan perjalanan mereka. Untuk berkongsi perjalanan anda sendiri, ketik butang kongsi di skrin butiran perjalanan."
+      },
+      "collaborators": {
+        "q": "Bagaimana cara merancang perjalanan bersama orang lain?",
+        "a": "Di skrin butiran perjalanan, pergi ke bahagian 'Kolaborator' dan jemput orang lain melalui e-mel. Yang dijemput boleh menyertai sebagai 'Pemerhati' atau 'Penyunting'."
+      },
+      "linkSharing": {
+        "q": "Bagaimana cara berkongsi perjalanan melalui pautan?",
+        "a": "Ketik butang kongsi di skrin butiran perjalanan untuk menjana pautan perkongsian unik. Sesiapa yang mempunyai pautan boleh melihat pelan perjalanan anda. Anda boleh menyahaktifkan perkongsian pada bila-bila masa dan menetapkan tempoh tamat (7/30/90 hari)."
+      },
+      "photos": {
+        "q": "Bagaimana cara mengurus foto perjalanan?",
+        "a": "Anda boleh menukar foto kulit di skrin butiran perjalanan atau menambah foto pada aktiviti individu. Foto yang dimuat naik dioptimumkan secara automatik (ditukar kepada WebP) untuk penyimpanan."
+      },
+      "budget": {
+        "q": "Bagaimana cara mengurus bajet dan perbelanjaan saya?",
+        "a": "Tetapkan jumlah bajet anda semasa mencipta perjalanan. Di tab bajet skrin butiran perjalanan, jejak perbelanjaan mengikut kategori (pengangkutan, penginapan, makanan, tarikan, dll.). Lihat purata harian dan baki bajet secara sepintas lalu."
+      }
+    },
+    "accountSettings": {
+      "editProfile": {
+        "q": "Bagaimana cara mengedit profil saya?",
+        "a": "Pergi ke tab Profil → 'Edit Profil' untuk menukar nama dan foto anda."
+      },
+      "changePassword": {
+        "q": "Bagaimana cara menukar kata laluan saya?",
+        "a": "Pergi ke tab Profil → 'Tukar Kata Laluan', masukkan kata laluan semasa anda, dan tetapkan yang baharu. Pengguna log masuk sosial tidak perlu menukar kata laluan."
+      },
+      "twoFactor": {
+        "q": "Bagaimana cara menyediakan pengesahan dua faktor?",
+        "a": "Pergi ke tab Profil → 'Pengesahan Dua Faktor' untuk mengaktifkannya. Imbas kod QR dengan aplikasi TOTP seperti Google Authenticator dan masukkan kod pengesahan. Kod sandaran juga akan disediakan."
+      },
+      "notifications": {
+        "q": "Bagaimana cara mengurus pemberitahuan?",
+        "a": "Pergi ke tab Profil → 'Tetapan Pemberitahuan' untuk mengkonfigurasi pemberitahuan tolak. Anda boleh menerima peringatan berlepas, amaran mula/selesai perjalanan."
+      },
+      "deleteAccount": {
+        "q": "Bagaimana cara memadam akaun saya?",
+        "a": "Ketik 'Padam Akaun' di bahagian bawah tab Profil. Semua data akan dihapuskan secara kekal dalam tempoh 30 hari dari permintaan. Tindakan ini tidak boleh dibatalkan."
+      },
+      "gdprExport": {
+        "q": "Bagaimana cara mengeksport data saya?",
+        "a": "Pergi ke Profil → Tetapan dan ketik 'Eksport Data' untuk memuat turun semua data peribadi anda (maklumat akaun, perjalanan, perbelanjaan, pemberitahuan) dalam format JSON. Ini memastikan hak mudah alih data anda di bawah GDPR."
+      },
+      "darkMode": {
+        "q": "Bagaimana cara mengaktifkan mod gelap?",
+        "a": "Togol suis mod gelap di tab Profil. Mod gelap mengurangkan ketegangan mata dalam persekitaran cahaya rendah dan membantu menjimatkan bateri."
+      },
+      "language": {
+        "q": "Bagaimana cara menukar bahasa aplikasi?",
+        "a": "Pergi ke tab Profil → 'Bahasa' dan pilih daripada 17 bahasa (Korea, Inggeris, Jepun, Cina, Sepanyol, Jerman, Perancis, Thai, Vietnam, Portugis, Arab, Indonesia, Hindi, Itali, Rusia, Turki, Melayu)."
+      }
+    },
+    "offlineSync": {
+      "offlineUse": {
+        "q": "Bolehkah saya menggunakan aplikasi secara luar talian?",
+        "a": "Ya, pelan perjalanan yang telah dimuatkan sebelumnya boleh dilihat tanpa internet. Perubahan yang dibuat secara luar talian akan disegerakkan secara automatik apabila anda bersambung semula."
+      },
+      "syncStatus": {
+        "q": "Bagaimana cara menyemak status penyegerakan?",
+        "a": "Sepanduk penyegerakan muncul di bahagian atas skrin: 'Menunggu (N item)' → 'Menyegerakkan...' → 'Disegerakkan'. Percubaan semula automatik berlaku pada sambungan yang tidak stabil."
+      },
+      "syncError": {
+        "q": "Bagaimana jika penyegerakan gagal?",
+        "a": "Semak sambungan rangkaian anda dan mulakan semula aplikasi. Jika masalah berterusan, hubungi kami melalui 'Hubungi Kami'."
+      }
+    },
+    "adsPartners": {
+      "freeService": {
+        "q": "Adakah terdapat bayaran untuk menggunakan perkhidmatan ini?",
+        "a": "MyTravel adalah percuma dengan sehingga 3 penjanaan perjalanan AI sebulan. Langganan Premium ($3.99/bulan atau $29.99/tahun) membuka kunci penjanaan AI tanpa had, pengalaman tanpa iklan, dan ciri yang dipertingkatkan. Pengguna percuma akan melihat iklan untuk menyokong operasi perkhidmatan."
+      },
+      "adInfo": {
+        "q": "Bagaimana iklan dipaparkan?",
+        "a": "Iklan interstisial mungkin muncul selepas penciptaan perjalanan, dan iklan sepanduk mungkin dipaparkan di beberapa skrin. Iklan peribadi dikawal melalui Ketelusan Penjejakan Aplikasi (ATT) iOS."
+      },
+      "affiliates": {
+        "q": "Apakah rakan kongsi afiliasi?",
+        "a": "Kami menyediakan pautan tempahan untuk penerbangan, hotel, dan aktiviti di skrin butiran perjalanan. Kami bekerjasama dengan perkhidmatan yang dipercayai termasuk Booking.com, Agoda, Klook, dan GetYourGuide."
+      },
+      "premium": {
+        "q": "Apakah langganan Premium?",
+        "a": "Premium ($3.99/bulan atau $29.99/tahun) memberikan anda penjanaan perjalanan AI tanpa had, pengalaman tanpa iklan, dan ciri yang dipertingkatkan. Pengguna percuma boleh mencipta sehingga 3 perjalanan AI sebulan. Anda boleh membatalkan pada bila-bila masa, dan pelan anda akan kembali kepada percuma pada akhir tempoh pengebilan."
+      },
+      "premiumCancel": {
+        "q": "Bagaimana cara membatalkan Premium?",
+        "a": "Batalkan terus daripada pengurusan langganan App Store atau Google Play anda. Anda akan terus menikmati ciri Premium sehingga akhir tempoh pengebilan semasa anda. Dasar bayaran balik mengikut terma setiap gedung aplikasi."
+      },
+      "premiumRestore": {
+        "q": "Bagaimana cara memulihkan langganan saya?",
+        "a": "Pergi ke Profil → Langganan dan ketik 'Pulihkan Pembelian'. Langganan terdahulu anda akan dipulihkan secara automatik. Apabila bertukar peranti, log masuk dengan Apple ID atau akaun Google yang sama."
+      }
+    },
+    "contact": {
+      "email": "Sokongan E-mel",
+      "emailAddress": "longpapa82@gmail.com",
+      "emailDescription": "Jika Soalan Lazim di atas tidak menyelesaikan masalah anda, sila hubungi kami melalui e-mel. Maklumat peranti dan versi aplikasi akan disertakan secara automatik.",
+      "sendEmail": "Hantar E-mel"
+    }
+  },
+  "terms": {
+    "title": "Terma Perkhidmatan",
+    "effectiveDate": "Berkuat kuasa: 1 Mac 2026",
+    "articles": {
+      "art1": {
+        "title": "Perkara 1 (Tujuan)",
+        "content": "Terma Perkhidmatan ini mengawal penggunaan MyTravel (\"Perkhidmatan\"), termasuk hak, kewajipan, dan tanggungjawab kedua-dua syarikat dan pengguna."
+      },
+      "art2": {
+        "title": "Perkara 2 (Definisi)",
+        "content": "① \"Perkhidmatan\" merujuk kepada perkhidmatan perancangan dan pengurusan perjalanan automatik yang disediakan oleh MyTravel.\n② \"Ahli\" merujuk kepada individu yang telah bersetuju dengan Terma ini dan mendaftar untuk Perkhidmatan.\n③ \"Kandungan Dijana AI\" merujuk kepada jadual perjalanan dan cadangan yang dijana secara automatik menggunakan kecerdasan buatan.\n④ \"Data Perjalanan\" merujuk kepada destinasi, jadual, dan pelan aktiviti yang dimasukkan oleh ahli.\n⑤ \"Langganan Premium\" merujuk kepada peringkat perkhidmatan berbayar yang menyediakan ciri yang dipertingkatkan."
+      },
+      "art3": {
+        "title": "Perkara 3 (Penerangan Perkhidmatan)",
+        "content": "Perkhidmatan ini menyediakan:\n• Penjanaan pelan perjalanan automatik berkuasa AI\n• Pengurusan pengeditan, penambahan, dan pemadaman pelan perjalanan\n• Maklumat cuaca tempatan dan zon waktu\n• Penjejakan kemajuan perjalanan\n• Melihat sejarah perjalanan lepas\n• Akses jadual perjalanan luar talian dan segerak\n• Pengurusan bajet dan penjejakan perbelanjaan\n• Muat naik dan pengurusan foto perjalanan\n• Ciri sosial (penemuan perjalanan, ikuti, suka)\n• Perkongsian perjalanan (perkongsian berasaskan pautan, jemputan kolaborator)\n• Langganan Premium (AI tanpa had, tanpa iklan)\n• Sokongan pelbagai bahasa (17 bahasa)\n• Perkhidmatan pemberitahuan"
+      },
+      "art4": {
+        "title": "Perkara 4 (Pendaftaran Akaun)",
+        "content": "① Anda boleh mendaftar melalui e-mel atau akaun sosial (Google, Apple, Kakao).\n② Pengguna di bawah umur 14 tahun tidak boleh menggunakan Perkhidmatan.\n③ Anda mesti memberikan maklumat yang tepat. Anda bertanggungjawab atas sebarang isu daripada maklumat yang tidak tepat.\n④ Anda bertanggungjawab untuk mengekalkan keselamatan akaun anda."
+      },
+      "art5": {
+        "title": "Perkara 5 (Peraturan Penggunaan Perkhidmatan)",
+        "content": "① Sebelum perjalanan: Pelan boleh diubah suai dan dilanjutkan secara bebas.\n② Semasa perjalanan: Aktiviti yang telah selesai tidak boleh diubah; hanya aktiviti yang akan datang boleh diubah suai.\n③ Selepas perjalanan: Sejarah hanya boleh dilihat atau dipadamkan, tidak boleh diubah suai.\n④ Hasil yang dijana AI adalah untuk rujukan sahaja. Pengguna harus mengesahkan keadaan tempatan semasa mengembara."
+      },
+      "art6": {
+        "title": "Perkara 6 (Terma Perkhidmatan AI)",
+        "content": "① Ketepatan, keselamatan, dan kesesuaian pelan perjalanan yang dijana AI tidak dijamin.\n② Data diproses melalui API OpenAI untuk penjanaan jadual perjalanan, seperti yang diterangkan dalam Dasar Privasi kami.\n③ Data perjalanan yang dimasukkan pengguna tidak digunakan untuk latihan model AI.\n④ Perkhidmatan AI mungkin dihadkan sementara atas sebab teknikal.\n⑤ Pengguna percuma dihadkan kepada 3 penjanaan perjalanan AI sebulan; pelanggan Premium mempunyai akses tanpa had."
+      },
+      "art7": {
+        "title": "Perkara 7 (Aktiviti Dilarang)",
+        "content": "Pengguna tidak boleh:\n• Mengganggu operasi normal Perkhidmatan\n• Melanggar privasi pengguna lain\n• Mengakses Perkhidmatan melalui cara automatik secara besar-besaran\n• Mengklik atau memanipulasi iklan secara penipuan\n• Merekayasa balik, menyalin, atau meniru Perkhidmatan\n• Berkongsi kandungan yang tidak sesuai melalui pelan perjalanan yang dikongsi\n• Melanggar mana-mana undang-undang atau peraturan yang terpakai"
+      },
+      "art8": {
+        "title": "Perkara 8 (Pengiklanan dan Afiliasi)",
+        "content": "① Perkhidmatan boleh memaparkan iklan melalui Google AdSense, AdMob, dan program afiliasi.\n② Tanggungjawab untuk kandungan iklan terletak pada pengiklan masing-masing.\n③ Terma berasingan mungkin terpakai apabila membuat tempahan melalui pautan afiliasi.\n④ Pelanggan Premium tidak melihat iklan."
+      },
+      "art9": {
+        "title": "Perkara 9 (Langganan Premium)",
+        "content": "① Langganan Premium tersedia sebagai pelan bulanan ($3.99/bulan) atau tahunan ($29.99/tahun).\n② Premium menyediakan penjanaan perjalanan AI tanpa had, penyingkiran iklan, dan ciri yang dipertingkatkan.\n③ Langganan diperbaharui secara automatik pada tarikh pengebilan. Batalkan sekurang-kurangnya 24 jam sebelum pembaharuan untuk mengelakkan caj.\n④ Pembatalan diuruskan melalui tetapan langganan Apple App Store atau Google Play Store.\n⑤ Selepas pembatalan, ciri Premium kekal tersedia sehingga akhir tempoh pengebilan semasa.\n⑥ Dasar bayaran balik mengikut dasar gedung aplikasi Apple dan Google masing-masing.\n⑦ Pembayaran diproses melalui RevenueCat. Maklumat kad kredit tidak disimpan secara langsung oleh Perkhidmatan."
+      },
+      "art10": {
+        "title": "Perkara 10 (Kandungan Pengguna dan Perkongsian)",
+        "content": "① Hak ke atas kandungan yang dicipta pengguna (pelan perjalanan, foto, ulasan) adalah milik pengguna.\n② Apabila anda menetapkan perjalanan kepada 'awam' atau menjana pautan perkongsian, kandungan tersebut boleh dilihat oleh orang lain.\n③ Perkhidmatan mempunyai lesen bukan eksklusif untuk menggunakan kandungan yang dikongsi secara awam dalam skop yang perlu untuk operasi perkhidmatan.\n④ Pengguna tidak boleh berkongsi kandungan yang tidak sesuai atau haram (keganasan, bahan dewasa, kandungan diskriminasi, dll.).\n⑤ Perkhidmatan boleh mengalih keluar atau menyembunyikan kandungan yang melanggar dasar operasi tanpa notis terlebih dahulu.\n⑥ Foto yang dimuat naik dioptimumkan di pelayan (mengubah saiz, penukaran WebP). Fail asal tidak disimpan."
+      },
+      "art11": {
+        "title": "Perkara 11 (Harta Intelek)",
+        "content": "① Hak harta intelek untuk kandungan, reka bentuk, dan perisian Perkhidmatan adalah milik pembekal Perkhidmatan.\n② Hak ke atas pelan perjalanan yang dicipta pengguna adalah milik pengguna."
+      },
+      "art12": {
+        "title": "Perkara 12 (Penafian)",
+        "content": "① Pelan perjalanan yang dijana AI adalah untuk rujukan sahaja. Sahkan keadaan tempatan semasa mengembara.\n② Maklumat cuaca dan zon waktu berdasarkan API luaran; ketepatan tidak dijamin.\n③ Perkhidmatan tidak bertanggungjawab atas gangguan akibat keadaan force majeure atau kegagalan sistem.\n④ Perkhidmatan bertindak hanya sebagai perantara untuk tempahan afiliasi dan tidak menanggung liabiliti langsung."
+      },
+      "art13": {
+        "title": "Perkara 13 (Penamatan Akaun)",
+        "content": "① Anda boleh menamatkan akaun anda pada bila-bila masa melalui ciri 'Padam Akaun'.\n② Semua data peribadi akan dihapuskan secara kekal dalam tempoh 30 hari.\n③ Maklumat yang diperlukan oleh undang-undang akan disimpan untuk tempoh yang ditetapkan kemudian dihapuskan.\n④ Jika anda mempunyai langganan Premium aktif, batalkan melalui gedung aplikasi sebelum memadam akaun anda."
+      },
+      "art14": {
+        "title": "Perkara 14 (Liabiliti)",
+        "content": "Jika ahli mengalami kerugian akibat niat atau kecuaian besar syarikat, syarikat akan memberi pampasan selaras dengan undang-undang yang terpakai."
+      },
+      "art15": {
+        "title": "Perkara 15 (Perubahan Terma)",
+        "content": "① Perubahan akan dimaklumkan sekurang-kurangnya 7 hari sebelum berkuat kuasa melalui notis dalam aplikasi.\n② Jika anda tidak bersetuju dengan perubahan, anda boleh menghentikan penggunaan dan memadam akaun anda."
+      },
+      "art16": {
+        "title": "Perkara 16 (Penyelesaian Pertikaian)",
+        "content": "① Terma ini akan ditadbir oleh undang-undang Republik Korea.\n② Sebarang pertikaian akan tertakluk kepada bidang kuasa Mahkamah Daerah Pusat Seoul."
+      },
+      "art17": {
+        "title": "Perkara 17 (Tambahan)",
+        "content": "Terma ini berkuat kuasa mulai 1 Mac 2026."
+      }
+    }
+  },
+  "privacy": {
+    "title": "Dasar Privasi",
+    "effectiveDate": "Berkuat kuasa: 1 Mac 2026",
+    "articles": {
+      "art1": {
+        "title": "1. Maklumat Yang Kami Kumpul",
+        "content": "[Wajib]\n• Maklumat akaun: Nama, alamat e-mel, foto profil\n• Log masuk sosial: Profil awam daripada Google, Apple, atau Kakao\n\n[Pilihan]\n• Pilihan perjalanan: Tahap bajet, gaya perjalanan, minat\n• Foto: Foto kulit perjalanan, foto aktiviti (ditukar kepada WebP semasa muat naik)\n\n[Automatik]\n• Maklumat peranti: Jenis peranti, OS, versi aplikasi, token pemberitahuan tolak\n• Data penggunaan: Corak penggunaan aplikasi, interaksi iklan, peristiwa analitik\n• Data perjalanan: Destinasi, jadual, pelan aktiviti, koordinat lokasi\n• Data keselamatan: Log audit (log masuk, perubahan kata laluan, dan peristiwa keselamatan lain, alamat IP)\n• Data langganan: Peringkat langganan, platform, tarikh tamat, kiraan penggunaan AI bulanan\n• Data sosial: Hubungan ikutan, suka, token perkongsian\n\n[Kaedah] Pendaftaran, log masuk sosial, pengumpulan automatik semasa penggunaan"
+      },
+      "art2": {
+        "title": "2. Bagaimana Kami Menggunakan Maklumat Anda",
+        "content": "• Penyampaian perkhidmatan: Pengurusan akaun, penjanaan pelan perjalanan AI, maklumat tempatan\n• Pemprosesan AI: Penjanaan jadual perjalanan melalui API OpenAI (destinasi, tarikh, pilihan dihantar)\n• Pemperibadian: Mengoptimumkan cadangan berdasarkan pilihan perjalanan\n• Pengiklanan: Iklan peribadi (dengan persetujuan berasingan)\n• Penambahbaikan: Analisis penggunaan, pembetulan pepijat\n• Pengurusan langganan: Pengesahan status Premium, kawalan akses ciri\n• Keselamatan: Pengesanan akses luar biasa, pengelogan audit"
+      },
+      "art3": {
+        "title": "3. Perkongsian Dengan Pihak Ketiga",
+        "content": "Kami tidak berkongsi maklumat peribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Destinasi, tarikh, pilihan | Penjanaan jadual perjalanan AI |\n| Google (AdSense/AdMob) | ID iklan, corak penggunaan | Penyampaian iklan |\n| RevenueCat | ID pengguna aplikasi, maklumat langganan | Pemprosesan pembayaran langganan |\n| Google Maps API | Pertanyaan carian, token sesi | Carian tempat |\n| OpenWeather API | Koordinat latitud, longitud | Maklumat cuaca |\n| Sentry | Data ralat, konteks pengguna | Pemantauan ralat |\n| Rakan kongsi afiliasi | Peristiwa klik, alamat IP, Ejen Pengguna | Sambungan perkhidmatan afiliasi dan penjejakan penukaran |\n| App Store / Google Play | Data pembelian | Pemprosesan pembelian dalam aplikasi |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Apabila dikehendaki oleh undang-undang"
+      },
+      "art4": {
+        "title": "4. Delegasi Pemprosesan Data",
+        "content": "| Pembekal | Perkhidmatan |\n| Perkhidmatan awan (Oracle Cloud Infrastructure) | Penyimpanan dan pemprosesan data |\n| Perkhidmatan e-mel | E-mel pengesahan dan pemberitahuan |\n| RevenueCat | Pengurusan pembayaran langganan |"
+      },
+      "art5": {
+        "title": "5. Penyimpanan Data",
+        "content": "• Pemadaman akaun: Dihapuskan dalam tempoh 30 hari\n• Undang-undang e-dagang: Rekod transaksi disimpan selama 5 tahun\n• Undang-undang telekomunikasi: Log akses disimpan selama 3 bulan\n• Log audit: Disimpan selama 30 hari kemudian dihapuskan secara automatik\n• Maklumat yang diperlukan oleh undang-undang disimpan secara berasingan untuk tempoh yang diperlukan kemudian dihapuskan."
+      },
+      "art6": {
+        "title": "6. Hak Anda",
+        "content": "Anda boleh melaksanakan hak berikut:\n• Mengakses, membetulkan, memadam, atau menggantung pemprosesan maklumat peribadi anda\n• Meminta kemudahalihan data (Perkara 35-2 Akta Privasi)\n• Meminta penjelasan atau menolak keputusan automatik (penjanaan jadual perjalanan AI)\n• Menghapuskan semua data secara kekal dengan memadam akaun anda\n• Menarik balik persetujuan penjejakan iklan (boleh ditukar dalam tetapan peranti)\n\n[Skop Eksport Data]\nTermasuk dalam eksport data: Profil pengguna, pelan perjalanan, rekod perbelanjaan, sejarah pemberitahuan.\nTidak termasuk: Hubungan sosial (ikutan), foto yang dimuat naik, peristiwa analitik, log audit.\n\n[Cara melaksanakan]\nAplikasi: Profil → Padam Akaun\nE-mel: longpapa82@gmail.com"
+      },
+      "art7": {
+        "title": "7. Perlindungan Kanak-Kanak Bawah 14 Tahun",
+        "content": "Perkhidmatan ini menyekat pendaftaran untuk kanak-kanak di bawah 14 tahun. Jika kami mendapati data kanak-kanak telah dikumpul, kami akan menghapuskannya tanpa berlengah."
+      },
+      "art8": {
+        "title": "8. Pemusnahan Data",
+        "content": "• Fail elektronik: Dihapuskan secara kekal menggunakan kaedah yang tidak boleh dipulihkan\n• Cetakan: Dicarik atau dibakar\n• Foto yang dimuat naik: Dihapuskan secara kekal daripada pelayan apabila akaun dipadamkan\n• Dihapuskan dengan segera apabila tempoh penyimpanan tamat atau tujuan dipenuhi."
+      },
+      "art9": {
+        "title": "9. Data Pengiklanan dan Tingkah Laku",
+        "content": "• iOS: Kawal iklan peribadi melalui Ketelusan Penjejakan Aplikasi (ATT).\n• Android: Tetapkan semula ID iklan atau keluar melalui Tetapan → Google → Iklan.\n• Web: Nyahaktifkan kuki dalam tetapan pelayar (beberapa ciri mungkin terhad).\n• Token pengesahan (JWT) disimpan dalam storan selamat untuk pengurusan sesi."
+      },
+      "art10": {
+        "title": "10. Langkah Keselamatan",
+        "content": "• Penyulitan kata laluan (bcrypt, 12 pusingan)\n• Penyulitan komunikasi SSL/TLS (HSTS diaktifkan)\n• Kawalan akses dan pengesahan dua faktor (TOTP)\n• Audit keselamatan dan pemantauan berkala\n• Kunci akaun (kunci 15 minit selepas 10 percubaan gagal)\n• Penyamaran data sensitif (penapisan PII dalam log)\n• Pengelogan audit (peristiwa keselamatan disimpan selama 30 hari)"
+      },
+      "art11": {
+        "title": "11. Pegawai Privasi",
+        "content": "Pegawai Privasi: Pasukan Operasi MyTravel\nE-mel: longpapa82@gmail.com"
+      },
+      "art12": {
+        "title": "12. Pemindahan Data Rentas Sempadan",
+        "content": "Maklumat peribadi anda mungkin dipindahkan ke luar Korea untuk operasi perkhidmatan:\n\n| Penerima | Lokasi | Data | Tujuan |\n| OpenAI | AS | Data perjalanan | Penjanaan jadual perjalanan AI |\n| Google | AS | ID iklan, corak penggunaan | Penyampaian iklan |\n| RevenueCat | AS | Maklumat langganan | Pemprosesan pembayaran |\n| Sentry | AS | Data ralat | Pemantauan ralat |\n\nSetiap perkhidmatan mengekalkan langkah perlindungan data yang sewajarnya, dan pemindahan dibuat dengan persetujuan pengguna selaras dengan undang-undang yang terpakai."
+      },
+      "art13": {
+        "title": "13. Pemberitahuan Pelanggaran Data",
+        "content": "Sekiranya berlaku pelanggaran data, kami akan segera memaklumkan pengguna yang terjejas tentang:\n• Kategori maklumat peribadi yang dilanggar\n• Masa dan keadaan pelanggaran\n• Tindakan yang disyorkan untuk meminimumkan potensi kemudaratan\n• Langkah tindak balas dan pemulihan kami\n• Maklumat hubungan jabatan yang bertanggungjawab\n\nPemberitahuan akan dibuat melalui e-mel, notis dalam aplikasi, atau cara lain yang sesuai."
+      },
+      "art14": {
+        "title": "14. Perubahan Dasar",
+        "content": "Perubahan akan dimaklumkan sekurang-kurangnya 7 hari sebelum berkuat kuasa melalui notis dalam aplikasi.\n\nDasar ini berkuat kuasa mulai 1 Mac 2026."
+      }
+    }
+  }
+}

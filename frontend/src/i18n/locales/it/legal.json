@@ -1,0 +1,286 @@
+{
+  "help": {
+    "title": "Aiuto",
+    "searchPlaceholder": "Cerca nell'aiuto...",
+    "categories": {
+      "gettingStarted": "Per iniziare",
+      "tripManagement": "Gestione viaggi",
+      "accountSettings": "Account e impostazioni",
+      "offlineSync": "Offline e sincronizzazione",
+      "adsPartners": "Prezzi e pubblicità",
+      "contact": "Contattaci"
+    },
+    "gettingStarted": {
+      "signup": {
+        "q": "Come mi registro?",
+        "a": "Puoi registrarti con la tua email o rapidamente tramite gli account Google, Apple o Kakao. L'accesso social non richiede una password separata."
+      },
+      "createTrip": {
+        "q": "Come creo un piano di viaggio?",
+        "a": "Tocca 'Crea nuovo viaggio' nella schermata home, inserisci la destinazione e le date del viaggio, e l'AI genererà automaticamente un itinerario personalizzato. Seleziona il tuo budget, stile di viaggio e interessi per raccomandazioni più precise."
+      },
+      "aiPlan": {
+        "q": "Come funziona l'itinerario AI?",
+        "a": "Utilizziamo una tecnologia AI avanzata per analizzare le attrazioni più popolari, i ristoranti e le esperienze culturali della tua destinazione, creando poi un programma ottimizzato che tiene conto dei percorsi di viaggio e dei tempi. Gli itinerari generati possono essere modificati liberamente."
+      },
+      "appTour": {
+        "q": "Come è organizzata l'app?",
+        "a": "L'app ha cinque schede principali: Home (lista viaggi), Esplora (scopri altri viaggiatori), Dettaglio viaggio (itinerario, mappa, meteo, budget), Notifiche e Profilo. Naviga facilmente usando la barra delle schede in basso."
+      }
+    },
+    "tripManagement": {
+      "editPlan": {
+        "q": "Come modifico il mio itinerario?",
+        "a": "Tocca qualsiasi attività nella schermata di dettaglio del viaggio per modificare orario, luogo e note. Trascina e rilascia per riordinare le attività, o usa il pulsante + per aggiungerne di nuove."
+      },
+      "tripStatus": {
+        "q": "Le regole di modifica cambiano in base allo stato del viaggio?",
+        "a": "• Prima del viaggio: Modifica e aggiungi liberamente a tutti i piani.\n• Durante il viaggio: Le attività passate non possono essere cambiate; solo quelle future possono essere modificate.\n• Dopo il viaggio: Solo visualizzazione ed eliminazione; non sono consentite modifiche."
+      },
+      "mapView": {
+        "q": "Come visualizzo i luoghi sulla mappa?",
+        "a": "Nella schermata di dettaglio del viaggio, passa alla scheda mappa per vedere tutti i luoghi pianificati a colpo d'occhio. Tocca i marcatori per i dettagli delle attività."
+      },
+      "weather": {
+        "q": "Dove posso vedere le informazioni su meteo e fuso orario?",
+        "a": "Le informazioni su meteo locale e fuso orario appaiono automaticamente nella parte superiore della schermata di dettaglio del viaggio per ogni giorno. I dati meteo provengono da servizi esterni e si aggiornano in tempo reale."
+      },
+      "socialFeatures": {
+        "q": "Come utilizzo le funzioni social?",
+        "a": "Sfoglia i piani condivisi da altri viaggiatori nella scheda Esplora. Segui i viaggiatori che ti piacciono e metti mi piace ai loro piani di viaggio. Per condividere il tuo viaggio, tocca il pulsante di condivisione nella schermata di dettaglio del viaggio."
+      },
+      "collaborators": {
+        "q": "Come pianifico un viaggio con altri?",
+        "a": "Nella schermata di dettaglio del viaggio, vai alla sezione 'Collaboratori' e invita altri tramite email. Gli invitati possono unirsi come 'Visualizzatore' o 'Editor'."
+      },
+      "linkSharing": {
+        "q": "Come condivido un viaggio tramite link?",
+        "a": "Tocca il pulsante di condivisione nella schermata di dettaglio del viaggio per generare un link di condivisione univoco. Chiunque abbia il link può visualizzare il tuo piano di viaggio. Puoi disattivare la condivisione in qualsiasi momento e impostare un periodo di scadenza (7/30/90 giorni)."
+      },
+      "photos": {
+        "q": "Come gestisco le foto del viaggio?",
+        "a": "Puoi cambiare la foto di copertina nella schermata di dettaglio del viaggio o aggiungere foto alle singole attività. Le foto caricate vengono ottimizzate automaticamente (convertite in WebP) per lo storage."
+      },
+      "budget": {
+        "q": "Come gestisco il budget e le spese?",
+        "a": "Imposta il budget totale quando crei un viaggio. Nella scheda budget della schermata di dettaglio del viaggio, monitora le spese per categoria (trasporto, alloggio, cibo, attrazioni, ecc.). Visualizza le medie giornaliere e il budget rimanente a colpo d'occhio."
+      }
+    },
+    "accountSettings": {
+      "editProfile": {
+        "q": "Come modifico il mio profilo?",
+        "a": "Vai alla scheda Profilo → 'Modifica profilo' per cambiare nome e foto."
+      },
+      "changePassword": {
+        "q": "Come cambio la password?",
+        "a": "Vai alla scheda Profilo → 'Cambia password', inserisci la password attuale e imposta quella nuova. Gli utenti con accesso social non devono cambiare la password."
+      },
+      "twoFactor": {
+        "q": "Come configuro l'autenticazione a due fattori?",
+        "a": "Vai alla scheda Profilo → 'Autenticazione a due fattori' per attivarla. Scansiona il codice QR con un'app TOTP come Google Authenticator e inserisci il codice di verifica. Verranno forniti anche i codici di backup."
+      },
+      "notifications": {
+        "q": "Come gestisco le notifiche?",
+        "a": "Vai alla scheda Profilo → 'Impostazioni notifiche' per configurare le notifiche push. Puoi ricevere promemoria di partenza, avvisi di inizio/completamento viaggio."
+      },
+      "deleteAccount": {
+        "q": "Come elimino il mio account?",
+        "a": "Tocca 'Elimina account' in fondo alla scheda Profilo. Tutti i dati verranno eliminati permanentemente entro 30 giorni dalla richiesta. Questa azione non può essere annullata."
+      },
+      "gdprExport": {
+        "q": "Come esporto i miei dati?",
+        "a": "Vai a Profilo → Impostazioni e tocca 'Esporta dati' per scaricare tutti i tuoi dati personali (informazioni account, viaggi, spese, notifiche) in formato JSON. Questo garantisce il tuo diritto alla portabilità dei dati ai sensi del GDPR."
+      },
+      "darkMode": {
+        "q": "Come attivo la modalità scura?",
+        "a": "Attiva l'interruttore della modalità scura nella scheda Profilo. La modalità scura riduce l'affaticamento degli occhi in ambienti poco illuminati e aiuta a risparmiare batteria."
+      },
+      "language": {
+        "q": "Come cambio la lingua dell'app?",
+        "a": "Vai alla scheda Profilo → 'Lingua' e scegli tra 17 lingue (coreano, inglese, giapponese, cinese, spagnolo, tedesco, francese, thailandese, vietnamita, portoghese, arabo, indonesiano, hindi, italiano, russo, turco, malese)."
+      }
+    },
+    "offlineSync": {
+      "offlineUse": {
+        "q": "Posso usare l'app offline?",
+        "a": "Sì, i piani di viaggio caricati in precedenza possono essere visualizzati senza internet. Le modifiche effettuate offline verranno sincronizzate automaticamente alla riconnessione."
+      },
+      "syncStatus": {
+        "q": "Come controllo lo stato della sincronizzazione?",
+        "a": "Un banner di sincronizzazione appare nella parte superiore dello schermo: 'In sospeso (N elementi)' → 'Sincronizzazione...' → 'Sincronizzato'. Il nuovo tentativo avviene automaticamente con connessioni instabili."
+      },
+      "syncError": {
+        "q": "Cosa faccio se la sincronizzazione fallisce?",
+        "a": "Controlla la connessione di rete e riavvia l'app. Se il problema persiste, contattaci tramite 'Contattaci'."
+      }
+    },
+    "adsPartners": {
+      "freeService": {
+        "q": "L'utilizzo del servizio è a pagamento?",
+        "a": "MyTravel è gratuito con fino a 3 generazioni di viaggi AI al mese. L'abbonamento Premium (3,99$/mese o 29,99$/anno) sblocca la generazione AI illimitata, un'esperienza senza pubblicità e funzionalità avanzate. Gli utenti gratuiti vedranno pubblicità per supportare le operazioni del servizio."
+      },
+      "adInfo": {
+        "q": "Come vengono mostrate le pubblicità?",
+        "a": "Annunci interstitial possono apparire dopo la creazione del viaggio, e banner pubblicitari possono essere mostrati in alcune schermate. Le pubblicità personalizzate sono controllate tramite App Tracking Transparency (ATT) di iOS."
+      },
+      "affiliates": {
+        "q": "Cosa sono i partner affiliati?",
+        "a": "Forniamo link di prenotazione per voli, hotel e attività nella schermata di dettaglio del viaggio. Collaboriamo con servizi affidabili tra cui Booking.com, Agoda, Klook e GetYourGuide."
+      },
+      "premium": {
+        "q": "Cos'è l'abbonamento Premium?",
+        "a": "Premium (3,99$/mese o 29,99$/anno) ti offre generazione di viaggi AI illimitata, esperienza senza pubblicità e funzionalità avanzate. Gli utenti gratuiti possono creare fino a 3 viaggi AI al mese. Puoi annullare in qualsiasi momento e il tuo piano tornerà gratuito alla fine del periodo di fatturazione."
+      },
+      "premiumCancel": {
+        "q": "Come annullo l'abbonamento Premium?",
+        "a": "Annulla direttamente dalla gestione abbonamenti di App Store o Google Play. Continuerai a usufruire delle funzionalità Premium fino alla fine del periodo di fatturazione corrente. Le politiche di rimborso seguono i termini di ciascun app store."
+      },
+      "premiumRestore": {
+        "q": "Come ripristino il mio abbonamento?",
+        "a": "Vai a Profilo → Abbonamento e tocca 'Ripristina acquisti'. Il tuo abbonamento precedente verrà ripristinato automaticamente. Quando cambi dispositivo, accedi con lo stesso Apple ID o account Google."
+      }
+    },
+    "contact": {
+      "email": "Supporto email",
+      "emailAddress": "longpapa82@gmail.com",
+      "emailDescription": "Se le FAQ qui sopra non risolvono il tuo problema, contattaci via email. Le informazioni del dispositivo e la versione dell'app verranno incluse automaticamente.",
+      "sendEmail": "Invia email"
+    }
+  },
+  "terms": {
+    "title": "Termini di servizio",
+    "effectiveDate": "In vigore dal: 1 marzo 2026",
+    "articles": {
+      "art1": {
+        "title": "Articolo 1 (Scopo)",
+        "content": "I presenti Termini di servizio disciplinano l'utilizzo di MyTravel (\"Servizio\"), inclusi i diritti, gli obblighi e le responsabilità sia dell'azienda che degli utenti."
+      },
+      "art2": {
+        "title": "Articolo 2 (Definizioni)",
+        "content": "① \"Servizio\" indica il servizio di pianificazione e gestione automatica dei viaggi fornito da MyTravel.\n② \"Membro\" indica una persona che ha accettato i presenti Termini e si è registrata al Servizio.\n③ \"Contenuto generato dall'AI\" indica itinerari di viaggio e raccomandazioni generati automaticamente tramite intelligenza artificiale.\n④ \"Dati di viaggio\" indica destinazioni, programmi e piani di attività inseriti dai membri.\n⑤ \"Abbonamento Premium\" indica il livello di servizio a pagamento che offre funzionalità avanzate."
+      },
+      "art3": {
+        "title": "Articolo 3 (Descrizione del servizio)",
+        "content": "Il Servizio fornisce:\n• Generazione automatica di piani di viaggio tramite AI\n• Gestione di modifica, aggiunta ed eliminazione dei piani di viaggio\n• Informazioni su meteo locale e fusi orari\n• Monitoraggio dei progressi di viaggio\n• Visualizzazione dello storico dei viaggi passati\n• Accesso offline all'itinerario e sincronizzazione\n• Gestione del budget e monitoraggio delle spese\n• Caricamento e gestione delle foto di viaggio\n• Funzioni social (scoperta viaggi, follow, mi piace)\n• Condivisione viaggi (condivisione tramite link, inviti per collaboratori)\n• Abbonamento Premium (AI illimitata, senza pubblicità)\n• Supporto multilingue (17 lingue)\n• Servizi di notifica"
+      },
+      "art4": {
+        "title": "Articolo 4 (Registrazione dell'account)",
+        "content": "① È possibile registrarsi tramite email o account social (Google, Apple, Kakao).\n② Gli utenti di età inferiore a 14 anni non possono utilizzare il Servizio.\n③ È necessario fornire informazioni accurate. L'utente è responsabile di eventuali problemi derivanti da informazioni inesatte.\n④ L'utente è responsabile del mantenimento della sicurezza del proprio account."
+      },
+      "art5": {
+        "title": "Articolo 5 (Regole di utilizzo del servizio)",
+        "content": "① Prima del viaggio: I piani possono essere liberamente modificati ed estesi.\n② Durante il viaggio: Le attività completate non possono essere cambiate; solo le attività future possono essere modificate.\n③ Dopo il viaggio: Lo storico può solo essere visualizzato o eliminato, non modificato.\n④ I risultati generati dall'AI sono solo a scopo indicativo. Gli utenti devono verificare le condizioni locali durante il viaggio."
+      },
+      "art6": {
+        "title": "Articolo 6 (Termini del servizio AI)",
+        "content": "① L'accuratezza, la sicurezza e l'idoneità dei piani di viaggio generati dall'AI non sono garantite.\n② I dati vengono elaborati tramite l'API di OpenAI per la generazione dell'itinerario, come descritto nella nostra Informativa sulla privacy.\n③ I dati di viaggio inseriti dagli utenti non vengono utilizzati per l'addestramento del modello AI.\n④ I servizi AI possono essere temporaneamente limitati per circostanze tecniche.\n⑤ Gli utenti gratuiti sono limitati a 3 generazioni di viaggi AI al mese; gli abbonati Premium hanno accesso illimitato."
+      },
+      "art7": {
+        "title": "Articolo 7 (Attività vietate)",
+        "content": "Gli utenti non devono:\n• Interferire con il normale funzionamento del Servizio\n• Violare la privacy di altri utenti\n• Accedere al Servizio tramite mezzi automatizzati su larga scala\n• Cliccare fraudolentemente o manipolare le pubblicità\n• Decompilare, copiare o imitare il Servizio\n• Condividere contenuti inappropriati tramite piani di viaggio condivisi\n• Violare leggi o regolamenti applicabili"
+      },
+      "art8": {
+        "title": "Articolo 8 (Pubblicità e affiliati)",
+        "content": "① Il Servizio può mostrare pubblicità tramite Google AdSense, AdMob e programmi di affiliazione.\n② La responsabilità per il contenuto pubblicitario è dei rispettivi inserzionisti.\n③ Termini separati possono applicarsi per prenotazioni tramite link affiliati.\n④ Gli abbonati Premium non vedono pubblicità."
+      },
+      "art9": {
+        "title": "Articolo 9 (Abbonamento Premium)",
+        "content": "① L'abbonamento Premium è disponibile in piani mensili (3,99$/mese) o annuali (29,99$/anno).\n② Premium fornisce generazione di viaggi AI illimitata, rimozione delle pubblicità e funzionalità avanzate.\n③ Gli abbonamenti si rinnovano automaticamente alla data di fatturazione. Annulla almeno 24 ore prima del rinnovo per evitare addebiti.\n④ L'annullamento viene gestito tramite le impostazioni dell'abbonamento di Apple App Store o Google Play Store.\n⑤ Dopo l'annullamento, le funzionalità Premium rimangono disponibili fino alla fine del periodo di fatturazione corrente.\n⑥ Le politiche di rimborso seguono le rispettive politiche degli app store di Apple e Google.\n⑦ I pagamenti vengono elaborati tramite RevenueCat. Le informazioni della carta di credito non vengono memorizzate direttamente dal Servizio."
+      },
+      "art10": {
+        "title": "Articolo 10 (Contenuti degli utenti e condivisione)",
+        "content": "① I diritti sui contenuti creati dagli utenti (piani di viaggio, foto, recensioni) appartengono all'utente.\n② Quando imposti un viaggio come 'pubblico' o generi un link di condivisione, il contenuto diventa visibile ad altri.\n③ Il Servizio ha una licenza non esclusiva per utilizzare i contenuti condivisi pubblicamente nell'ambito necessario per il funzionamento del servizio.\n④ Gli utenti non devono condividere contenuti inappropriati o illegali (violenza, materiale per adulti, contenuti discriminatori, ecc.).\n⑤ Il Servizio può rimuovere o nascondere contenuti che violano le politiche operative senza preavviso.\n⑥ Le foto caricate vengono ottimizzate sul server (ridimensionamento, conversione WebP). I file originali non vengono conservati."
+      },
+      "art11": {
+        "title": "Articolo 11 (Proprietà intellettuale)",
+        "content": "① I diritti di proprietà intellettuale sui contenuti, il design e il software del Servizio appartengono al fornitore del Servizio.\n② I diritti sui piani di viaggio creati dagli utenti appartengono agli utenti."
+      },
+      "art12": {
+        "title": "Articolo 12 (Esclusioni di responsabilità)",
+        "content": "① I piani di viaggio generati dall'AI sono solo a scopo indicativo. Verifica le condizioni locali durante il viaggio.\n② Le informazioni su meteo e fusi orari si basano su API esterne; l'accuratezza non è garantita.\n③ Il Servizio non è responsabile per interruzioni dovute a cause di forza maggiore o guasti del sistema.\n④ Il Servizio agisce solo come intermediario per le prenotazioni affiliate e non ha responsabilità diretta."
+      },
+      "art13": {
+        "title": "Articolo 13 (Chiusura dell'account)",
+        "content": "① Puoi chiudere il tuo account in qualsiasi momento tramite la funzione 'Elimina account'.\n② Tutti i dati personali verranno eliminati permanentemente entro 30 giorni.\n③ Le informazioni richieste dalla legge verranno conservate per il periodo specificato e poi distrutte.\n④ Se hai un abbonamento Premium attivo, annullalo tramite l'app store prima di eliminare il tuo account."
+      },
+      "art14": {
+        "title": "Articolo 14 (Responsabilità)",
+        "content": "Se un membro subisce danni a causa di dolo o colpa grave dell'azienda, l'azienda risarcirà in conformità con le leggi applicabili."
+      },
+      "art15": {
+        "title": "Articolo 15 (Modifiche ai termini)",
+        "content": "① Le modifiche verranno notificate almeno 7 giorni prima dell'entrata in vigore tramite avvisi in-app.\n② In caso di disaccordo con le modifiche, è possibile interrompere l'uso ed eliminare il proprio account."
+      },
+      "art16": {
+        "title": "Articolo 16 (Risoluzione delle controversie)",
+        "content": "① I presenti Termini sono disciplinati dalle leggi della Repubblica di Corea.\n② Eventuali controversie saranno soggette alla giurisdizione del Tribunale Distrettuale Centrale di Seul."
+      },
+      "art17": {
+        "title": "Articolo 17 (Disposizioni aggiuntive)",
+        "content": "I presenti Termini sono in vigore dal 1 marzo 2026."
+      }
+    }
+  },
+  "privacy": {
+    "title": "Informativa sulla privacy",
+    "effectiveDate": "In vigore dal: 1 marzo 2026",
+    "articles": {
+      "art1": {
+        "title": "1. Informazioni che raccogliamo",
+        "content": "[Obbligatorie]\n• Informazioni account: Nome, indirizzo email, foto profilo\n• Accesso social: Profilo pubblico da Google, Apple o Kakao\n\n[Facoltative]\n• Preferenze di viaggio: Livello di budget, stile di viaggio, interessi\n• Foto: Foto di copertina dei viaggi, foto delle attività (convertite in WebP al caricamento)\n\n[Automatiche]\n• Informazioni dispositivo: Tipo di dispositivo, sistema operativo, versione app, token notifiche push\n• Dati di utilizzo: Pattern di utilizzo dell'app, interazioni pubblicitarie, eventi di analisi\n• Dati di viaggio: Destinazioni, programmi, piani di attività, coordinate geografiche\n• Dati di sicurezza: Log di audit (accessi, modifiche password e altri eventi di sicurezza, indirizzi IP)\n• Dati abbonamento: Livello di abbonamento, piattaforma, data di scadenza, conteggio utilizzo AI mensile\n• Dati social: Relazioni di follow, mi piace, token di condivisione\n\n[Metodi] Registrazione, accesso social, raccolta automatica durante l'utilizzo"
+      },
+      "art2": {
+        "title": "2. Come utilizziamo le tue informazioni",
+        "content": "• Erogazione del servizio: Gestione account, generazione piani di viaggio AI, informazioni locali\n• Elaborazione AI: Generazione itinerari tramite API OpenAI (destinazione, date, preferenze inviate)\n• Personalizzazione: Ottimizzazione delle raccomandazioni in base alle preferenze di viaggio\n• Pubblicità: Annunci personalizzati (con consenso separato)\n• Miglioramento: Analisi dell'utilizzo, correzione bug\n• Gestione abbonamenti: Verifica dello stato Premium, controllo accesso alle funzionalità\n• Sicurezza: Rilevamento accessi anomali, registrazione di audit"
+      },
+      "art3": {
+        "title": "3. Condivisione con terze parti",
+        "content": "Non condividiamo informazioni personali ad eccezione di:\n\n| Destinatario | Dati | Scopo |\n| OpenAI | Destinazione, date, preferenze | Generazione itinerario AI |\n| Google (AdSense/AdMob) | ID pubblicitario, pattern di utilizzo | Distribuzione pubblicità |\n| RevenueCat | ID utente app, informazioni abbonamento | Elaborazione pagamenti abbonamento |\n| Google Maps API | Query di ricerca, token di sessione | Ricerca luoghi |\n| OpenWeather API | Coordinate latitudine, longitudine | Informazioni meteo |\n| Sentry | Dati errore, contesto utente | Monitoraggio errori |\n| Partner affiliati | Eventi clic, indirizzo IP, User Agent | Connessione servizio affiliato e tracciamento conversioni |\n| App Store / Google Play | Dati di acquisto | Elaborazione acquisti in-app |\n\n※ Con consenso esplicito dell'utente\n※ Quando richiesto dalla legge"
+      },
+      "art4": {
+        "title": "4. Delega dell'elaborazione dati",
+        "content": "| Fornitore | Servizio |\n| Servizi cloud (Oracle Cloud Infrastructure) | Archiviazione ed elaborazione dati |\n| Servizio email | Email di autenticazione e notifica |\n| RevenueCat | Gestione pagamenti abbonamento |"
+      },
+      "art5": {
+        "title": "5. Conservazione dei dati",
+        "content": "• Eliminazione account: Distruzione entro 30 giorni\n• Legge sul commercio elettronico: Registrazioni delle transazioni conservate per 5 anni\n• Legge sulle telecomunicazioni: Log di accesso conservati per 3 mesi\n• Log di audit: Conservati per 30 giorni poi eliminati automaticamente\n• Le informazioni richieste dalla legge vengono archiviate separatamente per il periodo richiesto e poi distrutte."
+      },
+      "art6": {
+        "title": "6. I tuoi diritti",
+        "content": "Puoi esercitare i seguenti diritti:\n• Accedere, correggere, eliminare o sospendere il trattamento delle tue informazioni personali\n• Richiedere la portabilità dei dati (Articolo 35-2 della Legge sulla privacy)\n• Richiedere spiegazioni o rifiutare decisioni automatizzate (generazione itinerario AI)\n• Eliminare permanentemente tutti i dati eliminando il tuo account\n• Revocare il consenso al tracciamento pubblicitario (modificabile nelle impostazioni del dispositivo)\n\n[Ambito dell'esportazione dati]\nIncluso nell'esportazione: Profilo utente, piani di viaggio, registrazioni spese, cronologia notifiche.\nNon incluso: Relazioni social (follow), foto caricate, eventi di analisi, log di audit.\n\n[Come esercitare i diritti]\nApp: Profilo → Elimina account\nEmail: longpapa82@gmail.com"
+      },
+      "art7": {
+        "title": "7. Protezione dei minori di 14 anni",
+        "content": "Questo Servizio limita la registrazione per i minori di 14 anni. Se veniamo a conoscenza della raccolta di dati di un minore, li elimineremo senza indugio."
+      },
+      "art8": {
+        "title": "8. Distruzione dei dati",
+        "content": "• File elettronici: Eliminati permanentemente con metodi irrecuperabili\n• Stampe: Distrutte con trituratore o incenerite\n• Foto caricate: Eliminate permanentemente dal server alla cancellazione dell'account\n• Distruzione tempestiva alla scadenza del periodo di conservazione o al raggiungimento dello scopo."
+      },
+      "art9": {
+        "title": "9. Pubblicità e dati comportamentali",
+        "content": "• iOS: Controlla gli annunci personalizzati tramite App Tracking Transparency (ATT).\n• Android: Reimposta l'ID pubblicitario o disattiva tramite Impostazioni → Google → Annunci.\n• Web: Disabilita i cookie nelle impostazioni del browser (alcune funzionalità potrebbero essere limitate).\n• I token di autenticazione (JWT) vengono memorizzati in uno storage sicuro per la gestione delle sessioni."
+      },
+      "art10": {
+        "title": "10. Misure di sicurezza",
+        "content": "• Crittografia delle password (bcrypt, 12 round)\n• Crittografia delle comunicazioni SSL/TLS (HSTS attivo)\n• Controllo degli accessi e autenticazione a due fattori (TOTP)\n• Audit di sicurezza e monitoraggio regolari\n• Blocco dell'account (blocco di 15 minuti dopo 10 tentativi falliti)\n• Mascheramento dei dati sensibili (filtro PII nei log)\n• Registrazione di audit (eventi di sicurezza conservati per 30 giorni)"
+      },
+      "art11": {
+        "title": "11. Responsabile della privacy",
+        "content": "Responsabile della privacy: Team operativo MyTravel\nEmail: longpapa82@gmail.com"
+      },
+      "art12": {
+        "title": "12. Trasferimento transfrontaliero dei dati",
+        "content": "Le tue informazioni personali possono essere trasferite al di fuori della Corea per il funzionamento del servizio:\n\n| Destinatario | Località | Dati | Scopo |\n| OpenAI | USA | Dati di viaggio | Generazione itinerario AI |\n| Google | USA | ID pubblicitario, pattern di utilizzo | Distribuzione pubblicità |\n| RevenueCat | USA | Informazioni abbonamento | Elaborazione pagamenti |\n| Sentry | USA | Dati errore | Monitoraggio errori |\n\nOgni servizio mantiene misure appropriate di protezione dei dati, e i trasferimenti vengono effettuati con il consenso dell'utente in conformità con le leggi applicabili."
+      },
+      "art13": {
+        "title": "13. Notifica di violazione dei dati",
+        "content": "In caso di violazione dei dati, informeremo tempestivamente gli utenti interessati riguardo:\n• Categorie di informazioni personali violate\n• Tempistiche e circostanze della violazione\n• Azioni raccomandate per minimizzare i potenziali danni\n• Le nostre misure di risposta e procedure di rimedio\n• Informazioni di contatto del dipartimento responsabile\n\nLa notifica verrà effettuata tramite email, avvisi in-app o altri mezzi appropriati."
+      },
+      "art14": {
+        "title": "14. Modifiche all'informativa",
+        "content": "Le modifiche verranno notificate almeno 7 giorni prima dell'entrata in vigore tramite avvisi in-app.\n\nLa presente informativa è in vigore dal 1 marzo 2026."
+      }
+    }
+  }
+}

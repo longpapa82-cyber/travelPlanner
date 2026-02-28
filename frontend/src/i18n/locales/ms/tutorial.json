@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "Pelan Perjalanan AI",
+      "description": "AI mencipta jadual perjalanan peribadi khas untuk anda"
+    },
+    "slide2": {
+      "title": "Mengembara Bersama",
+      "description": "Jemput rakan untuk merancang perjalanan bersama"
+    },
+    "slide3": {
+      "title": "Jom Mula",
+      "description": "Buat perjalanan pertama anda dan mulakan pengembaraan baharu"
+    },
+    "skip": "Langkau",
+    "createFirst": "Buat Perjalanan Pertama",
+    "explore": "Terokai"
+  },
+  "coach": {
+    "createTrip": "Ketik di sini untuk memulakan perjalanan pertama anda!",
+    "next": "Faham",
+    "dismiss": "Langkau"
+  },
+  "settings": {
+    "resetTutorial": "Main Semula Tutorial"
+  }
+}
