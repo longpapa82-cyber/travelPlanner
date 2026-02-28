@@ -417,6 +417,7 @@ describe('TripsService', () => {
       const queryBuilder = {
         createQueryBuilder: jest.fn().mockReturnThis(),
         leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
@@ -434,9 +435,10 @@ describe('TripsService', () => {
       const result = await service.findAll(mockUserId);
 
       expect(tripRepository.createQueryBuilder).toHaveBeenCalledWith('trip');
-      expect(queryBuilder.where).toHaveBeenCalledWith('trip.userId = :userId', {
-        userId: mockUserId,
-      });
+      expect(queryBuilder.where).toHaveBeenCalledWith(
+        '(trip.userId = :userId OR collab.id IS NOT NULL)',
+        { userId: mockUserId },
+      );
       expect(result.trips).toHaveLength(2);
     });
 
@@ -444,6 +446,7 @@ describe('TripsService', () => {
       const queryBuilder = {
         createQueryBuilder: jest.fn().mockReturnThis(),
         leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
@@ -471,6 +474,7 @@ describe('TripsService', () => {
       const queryBuilder = {
         createQueryBuilder: jest.fn().mockReturnThis(),
         leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
@@ -502,6 +506,7 @@ describe('TripsService', () => {
       const queryBuilder = {
         createQueryBuilder: jest.fn().mockReturnThis(),
         leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
@@ -531,6 +536,7 @@ describe('TripsService', () => {
       const queryBuilder = {
         createQueryBuilder: jest.fn().mockReturnThis(),
         leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
@@ -557,6 +563,7 @@ describe('TripsService', () => {
       const queryBuilder = {
         createQueryBuilder: jest.fn().mockReturnThis(),
         leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
@@ -584,6 +591,7 @@ describe('TripsService', () => {
       const queryBuilder = {
         createQueryBuilder: jest.fn().mockReturnThis(),
         leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
@@ -618,6 +626,7 @@ describe('TripsService', () => {
       const queryBuilder = {
         createQueryBuilder: jest.fn().mockReturnThis(),
         leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
