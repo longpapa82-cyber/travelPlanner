@@ -53,6 +53,23 @@ export class UsersService {
     return user;
   }
 
+  async findProfileById(id: string): Promise<Partial<User>> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: [
+        'id', 'email', 'name', 'provider', 'profileImage', 'role',
+        'isEmailVerified', 'isTwoFactorEnabled',
+        'subscriptionTier', 'subscriptionExpiresAt', 'aiTripsUsedThisMonth',
+        'travelPreferences', 'followersCount', 'followingCount',
+        'createdAt', 'updatedAt',
+      ],
+    });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return user;
+  }
+
   async findPublicProfile(id: string): Promise<Pick<User, 'id' | 'name' | 'profileImage' | 'followersCount' | 'followingCount' | 'createdAt'>> {
     const user = await this.userRepository.findOne({
       where: { id },

@@ -11,13 +11,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AnalyticsEvent } from './entities/analytics-event.entity';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
+import { TrackEventsDto } from './dto/track-events.dto';
 import { Request } from 'express';
-
-interface EventPayload {
-  name: string;
-  properties?: Record<string, any>;
-  timestamp: number;
-}
 
 @Controller('analytics')
 export class EventsController {
@@ -30,11 +25,11 @@ export class EventsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(OptionalJwtAuthGuard)
   async trackEvents(
-    @Body() body: { events: EventPayload[] },
+    @Body() dto: TrackEventsDto,
     @Req() req: Request & { user?: { userId: string } },
   ) {
     const userId = req.user?.userId;
-    const events = (body.events || []).slice(0, 100);
+    const events = dto.events.slice(0, 100);
 
     if (events.length === 0) return;
 

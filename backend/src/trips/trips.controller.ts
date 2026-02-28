@@ -39,6 +39,15 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ImageService } from '../common/image.service';
 import { validateImageMagicBytes } from '../common/utils/file-validation';
 
+/** Escape a string value for safe inclusion in iCalendar output (RFC 5545 §3.3.11). */
+function escapeIcalValue(value: string): string {
+  return value
+    .replace(/\\/g, '\\\\')
+    .replace(/;/g, '\\;')
+    .replace(/,/g, '\\,')
+    .replace(/\r\n|\r|\n/g, '\\n');
+}
+
 @Controller('trips')
 @UseGuards(JwtAuthGuard)
 export class TripsController {
@@ -137,7 +146,7 @@ export class TripsController {
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'PRODID:-//MyTravel//EN',
-      `X-WR-CALNAME:${trip.destination}`,
+      `X-WR-CALNAME:${escapeIcalValue(trip.destination)}`,
     ];
 
     for (const itinerary of trip.itineraries || []) {
@@ -161,9 +170,9 @@ export class TripsController {
           'BEGIN:VEVENT',
           `DTSTART:${startTime}`,
           `DTEND:${endTime}`,
-          `SUMMARY:${activity.title}`,
-          `DESCRIPTION:${(activity.description || '').replace(/\n/g, '\\n')}`,
-          `LOCATION:${activity.location || ''}`,
+          `SUMMARY:${escapeIcalValue(activity.title)}`,
+          `DESCRIPTION:${escapeIcalValue(activity.description || '')}`,
+          `LOCATION:${escapeIcalValue(activity.location || '')}`,
           'END:VEVENT',
         );
       }

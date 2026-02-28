@@ -9,7 +9,6 @@ import {
   Headers,
   Res,
   UseGuards,
-  BadRequestException,
   ParseUUIDPipe,
 } from '@nestjs/common';
 import type { Response } from 'express';
@@ -18,6 +17,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { DeleteAccountDto } from './dto/delete-account.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { UpdateTravelPreferencesDto } from './dto/update-travel-preferences.dto';
 import { t, parseLang } from '../common/i18n';
 
 @Controller('users')
@@ -27,7 +28,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getProfile(@CurrentUser('userId') userId: string) {
-    return this.usersService.findById(userId);
+    return this.usersService.findProfileById(userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -48,23 +49,14 @@ export class UsersController {
   @Post('me/password')
   async changePassword(
     @CurrentUser('userId') userId: string,
-    @Body() body: { currentPassword: string; newPassword: string },
+    @Body() dto: ChangePasswordDto,
     @Headers('accept-language') acceptLanguage?: string,
   ) {
     const lang = parseLang(acceptLanguage);
-    if (!body.currentPassword || !body.newPassword) {
-      throw new BadRequestException(t('password.enterBoth', lang));
-    }
-    if (body.newPassword.length < 8) {
-      throw new BadRequestException(t('password.minLength', lang));
-    }
-    if (!/(?=.*[A-Za-z])(?=.*\d)/.test(body.newPassword)) {
-      throw new BadRequestException('Password must contain at least one letter and one number');
-    }
     return this.usersService.changePassword(
       userId,
-      body.currentPassword,
-      body.newPassword,
+      dto.currentPassword,
+      dto.newPassword,
       lang,
     );
   }
@@ -73,9 +65,9 @@ export class UsersController {
   @Patch('me/travel-preferences')
   async updateTravelPreferences(
     @CurrentUser('userId') userId: string,
-    @Body() body: { budget?: string; travelStyle?: string; interests?: string[] },
+    @Body() dto: UpdateTravelPreferencesDto,
   ) {
-    return this.usersService.updateTravelPreferences(userId, body);
+    return this.usersService.updateTravelPreferences(userId, dto);
   }
 
   @UseGuards(JwtAuthGuard)

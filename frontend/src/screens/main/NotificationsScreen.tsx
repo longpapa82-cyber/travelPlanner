@@ -165,10 +165,10 @@ const NotificationsScreen = () => {
         screen: 'TripDetail',
         params: { tripId: item.data.tripId },
       });
-    } else if (item.type === 'new_follower' && item.data?.userId) {
+    } else if (item.type === 'new_follower' && item.data?.followerId) {
       navigation.navigate('Profile', {
         screen: 'UserProfile',
-        params: { userId: item.data.userId },
+        params: { userId: item.data.followerId },
       });
     }
   };
