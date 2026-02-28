@@ -944,10 +944,14 @@ export class TripsService {
    * Get trip by share token (public access)
    */
   async getSharedTrip(shareToken: string): Promise<Trip> {
-    const trip = await this.tripRepository.findOne({
-      where: { shareToken, isPublic: true },
-      relations: ['itineraries', 'user'],
-    });
+    const trip = await this.tripRepository
+      .createQueryBuilder('trip')
+      .leftJoinAndSelect('trip.itineraries', 'itineraries')
+      .leftJoin('trip.user', 'user')
+      .addSelect(['user.id', 'user.name', 'user.profileImage'])
+      .where('trip.shareToken = :shareToken', { shareToken })
+      .andWhere('trip.isPublic = :isPublic', { isPublic: true })
+      .getOne();
 
     if (!trip) {
       throw new NotFoundException(
@@ -958,15 +962,6 @@ export class TripsService {
     // Check if share token has expired
     if (trip.shareExpiresAt && new Date() > trip.shareExpiresAt) {
       throw new ForbiddenException('This share link has expired');
-    }
-
-    // Whitelist only safe public fields — never expose internal user data
-    if (trip.user) {
-      trip.user = {
-        id: trip.user.id,
-        name: trip.user.name,
-        profileImage: trip.user.profileImage,
-      } as any;
     }
 
     this.logger.log(`Shared trip ${trip.id} accessed via token`);
