@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "AI Travel Plans",
+      "description": "AI creates personalized travel itineraries just for you"
+    },
+    "slide2": {
+      "title": "Travel Together",
+      "description": "Invite friends to plan your trip together"
+    },
+    "slide3": {
+      "title": "Get Started",
+      "description": "Create your first trip and start a new adventure"
+    },
+    "skip": "Skip",
+    "createFirst": "Create First Trip",
+    "explore": "Explore"
+  },
+  "coach": {
+    "createTrip": "Tap here to start your first trip!",
+    "next": "Got it",
+    "dismiss": "Skip"
+  },
+  "settings": {
+    "resetTutorial": "Replay Tutorial"
+  }
+}

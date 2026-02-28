@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "Rencana dengan AI",
+      "description": "AI membuat rencana perjalanan yang dipersonalisasi untuk Anda"
+    },
+    "slide2": {
+      "title": "Jalan-jalan bareng",
+      "description": "Undang teman untuk merencanakan perjalanan bersama"
+    },
+    "slide3": {
+      "title": "Mulai sekarang",
+      "description": "Buat perjalanan pertamamu dan mulai petualangan baru"
+    },
+    "skip": "Lewati",
+    "createFirst": "Buat perjalanan pertama",
+    "explore": "Jelajahi"
+  },
+  "coach": {
+    "createTrip": "Ketuk di sini untuk memulai perjalanan pertamamu!",
+    "next": "Mengerti",
+    "dismiss": "Lewati"
+  },
+  "settings": {
+    "resetTutorial": "Lihat tutorial lagi"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "Lịch trình bằng AI",
+      "description": "AI tạo lịch trình du lịch phù hợp với bạn"
+    },
+    "slide2": {
+      "title": "Đi cùng bạn bè",
+      "description": "Mời bạn bè cùng lên kế hoạch du lịch"
+    },
+    "slide3": {
+      "title": "Bắt đầu ngay",
+      "description": "Tạo chuyến đi đầu tiên và bắt đầu cuộc phiêu lưu mới"
+    },
+    "skip": "Bỏ qua",
+    "createFirst": "Tạo chuyến đi đầu tiên",
+    "explore": "Khám phá"
+  },
+  "coach": {
+    "createTrip": "Nhấn vào đây để bắt đầu chuyến đi đầu tiên!",
+    "next": "Đã hiểu",
+    "dismiss": "Bỏ qua"
+  },
+  "settings": {
+    "resetTutorial": "Xem lại hướng dẫn"
+  }
+}

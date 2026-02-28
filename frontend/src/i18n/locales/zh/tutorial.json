@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "AI定制行程",
+      "description": "AI为你量身打造完美旅行计划"
+    },
+    "slide2": {
+      "title": "与朋友同行",
+      "description": "邀请朋友一起规划旅行"
+    },
+    "slide3": {
+      "title": "立即开始",
+      "description": "创建你的第一次旅行，开启新的冒险"
+    },
+    "skip": "跳过",
+    "createFirst": "创建第一次旅行",
+    "explore": "先看看"
+  },
+  "coach": {
+    "createTrip": "点击这里开始你的第一次旅行！",
+    "next": "知道了",
+    "dismiss": "跳过"
+  },
+  "settings": {
+    "resetTutorial": "重新查看教程"
+  }
+}

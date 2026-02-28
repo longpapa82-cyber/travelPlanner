@@ -29,6 +29,7 @@ import PremiumBadge from '../../components/PremiumBadge';
 import { usePremium } from '../../contexts/PremiumContext';
 import { PREMIUM_ENABLED } from '../../constants/config';
 import apiService from '../../services/api';
+import { useTutorial } from '../../contexts/TutorialContext';
 
 const ProfileScreen = ({ navigation }: any) => {
   const { t } = useTranslation('profile');
@@ -39,6 +40,8 @@ const ProfileScreen = ({ navigation }: any) => {
   const { confirm } = useConfirm();
   const { isPremium } = usePremium();
   const { t: tPremium } = useTranslation('premium');
+  const { t: tTutorial } = useTranslation('tutorial');
+  const { resetTutorial } = useTutorial();
 
   // Modal states
   const [showEditProfile, setShowEditProfile] = useState(false);
@@ -429,6 +432,20 @@ const ProfileScreen = ({ navigation }: any) => {
           <Icon name="translate" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.language')}</Text>
           <Text style={styles.menuValue}>{LANGUAGE_FLAGS[getCurrentLanguage()]} {LANGUAGE_LABELS[getCurrentLanguage()]}</Text>
+          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={async () => {
+            await resetTutorial();
+            showToast({ type: 'success', message: tTutorial('settings.resetTutorial'), position: 'top' });
+          }}
+          accessibilityRole="button"
+          accessibilityLabel={tTutorial('settings.resetTutorial')}
+        >
+          <Icon name="school-outline" size={24} color={theme.colors.textSecondary} />
+          <Text style={styles.menuText}>{tTutorial('settings.resetTutorial')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 

@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "Planes con IA",
+      "description": "La IA crea itinerarios de viaje personalizados para ti"
+    },
+    "slide2": {
+      "title": "Viaja en grupo",
+      "description": "Invita a amigos para planificar el viaje juntos"
+    },
+    "slide3": {
+      "title": "Empieza ya",
+      "description": "Crea tu primer viaje y comienza una nueva aventura"
+    },
+    "skip": "Omitir",
+    "createFirst": "Crear primer viaje",
+    "explore": "Explorar"
+  },
+  "coach": {
+    "createTrip": "Toca aqui para comenzar tu primer viaje!",
+    "next": "Entendido",
+    "dismiss": "Omitir"
+  },
+  "settings": {
+    "resetTutorial": "Ver tutorial de nuevo"
+  }
+}

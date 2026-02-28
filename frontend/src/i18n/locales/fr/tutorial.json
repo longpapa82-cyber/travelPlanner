@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "Voyages avec l'IA",
+      "description": "L'IA cree des itineraires de voyage personnalises pour vous"
+    },
+    "slide2": {
+      "title": "Voyagez ensemble",
+      "description": "Invitez vos amis pour planifier le voyage ensemble"
+    },
+    "slide3": {
+      "title": "Commencez maintenant",
+      "description": "Creez votre premier voyage et demarrez une nouvelle aventure"
+    },
+    "skip": "Passer",
+    "createFirst": "Creer le premier voyage",
+    "explore": "Explorer"
+  },
+  "coach": {
+    "createTrip": "Appuyez ici pour commencer votre premier voyage !",
+    "next": "Compris",
+    "dismiss": "Passer"
+  },
+  "settings": {
+    "resetTutorial": "Revoir le tutoriel"
+  }
+}
