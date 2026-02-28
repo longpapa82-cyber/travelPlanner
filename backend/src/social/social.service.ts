@@ -127,13 +127,15 @@ export class SocialService {
     page = 1,
     limit = 20,
   ): Promise<{ users: Partial<User>[]; total: number }> {
-    const [follows, total] = await this.followRepository.findAndCount({
-      where: { followingId: userId },
-      relations: ['follower'],
-      order: { createdAt: 'DESC' },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+    const [follows, total] = await this.followRepository
+      .createQueryBuilder('follow')
+      .leftJoin('follow.follower', 'follower')
+      .addSelect(['follower.id', 'follower.name', 'follower.profileImage'])
+      .where('follow.followingId = :userId', { userId })
+      .orderBy('follow.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
 
     const users = follows.map((f) => ({
       id: f.follower.id,
@@ -149,13 +151,15 @@ export class SocialService {
     page = 1,
     limit = 20,
   ): Promise<{ users: Partial<User>[]; total: number }> {
-    const [follows, total] = await this.followRepository.findAndCount({
-      where: { followerId: userId },
-      relations: ['following'],
-      order: { createdAt: 'DESC' },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+    const [follows, total] = await this.followRepository
+      .createQueryBuilder('follow')
+      .leftJoin('follow.following', 'following')
+      .addSelect(['following.id', 'following.name', 'following.profileImage'])
+      .where('follow.followerId = :userId', { userId })
+      .orderBy('follow.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
 
     const users = follows.map((f) => ({
       id: f.following.id,

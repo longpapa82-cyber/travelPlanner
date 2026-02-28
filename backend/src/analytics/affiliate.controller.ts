@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { AffiliateService } from './affiliate.service';
 import { TrackAffiliateClickDto } from './dto/track-affiliate-click.dto';
+import { UpdateConversionDto } from './dto/update-conversion.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
@@ -53,12 +54,12 @@ export class AffiliateController {
   @UseGuards(JwtAuthGuard, AdminGuard)
   async updateConversion(
     @Param('clickId') clickId: string,
-    @Body() body: { conversionValue?: number; commission?: number },
+    @Body() dto: UpdateConversionDto,
   ) {
     const click = await this.affiliateService.updateConversion(
       clickId,
-      body.conversionValue,
-      body.commission,
+      dto.conversionValue,
+      dto.commission,
     );
 
     return {
