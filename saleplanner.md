@@ -89,7 +89,7 @@
 
 **미완료/대기 항목:**
 - [ ] **프로덕션 빌드에서 실제 광고 노출 테스트**
-- [ ] AdMob 콘솔에서 GDPR 메시지 설정 (UMP 동의 폼 활성화)
+- [x] AdMob 콘솔에서 GDPR 메시지 설정 (UMP 동의 폼 활성화) — 게시 완료 (2/28)
 - [ ] 보상형 광고 실제 보상 흐름 검증
 - [ ] 앱 오픈 광고 빈도 최적화 (현재 3분, A/B 테스트 필요)
 - [ ] eCPM 모니터링 대시보드 구축
@@ -407,16 +407,16 @@ AFFILIATE_KLOOK_ID=          # Klook Affiliate Platform
 ## 9. 즉시 액션 아이템 (체크리스트)
 
 ### 이번 주 필수 (P0)
-- [ ] AdSense 사이트 승인 상태 확인 (매일 체크)
-- [ ] AdMob 콘솔 → 개인정보 보호 및 메시지 → GDPR 메시지 생성
-- [ ] Play Console → 앱 콘텐츠 → 콘텐츠 등급(IARC) 설문지 작성
-- [ ] Play Console → 앱 콘텐츠 → 데이터 안전 섹션 작성
-- [ ] Play Console → 앱 무결성 → 앱 서명 SHA-256 복사 → assetlinks.json 교체
+- [x] AdSense 사이트 승인 상태 확인 (매일 체크) — Cloudflare WAF 예외 설정 완료, 재크롤링 대기
+- [x] AdMob 콘솔 → 개인정보 보호 및 메시지 → GDPR 메시지 생성 — 게시 완료 (2/28)
+- [x] Play Console → 앱 콘텐츠 → 콘텐츠 등급(IARC) 설문지 작성 — 2/22 완료
+- [x] Play Console → 앱 콘텐츠 → 데이터 안전 섹션 작성 — 2/22 완료
+- [x] Play Console → 앱 무결성 → 앱 서명 SHA-256 복사 → assetlinks.json 교체 — 2/28 완료
 - [ ] 프로덕션 APK 설치 → 실제 광고 노출 확인
 
 ### 다음 주 (P1)
 - [ ] Google Play 프로덕션 트랙 출시 준비 (스크린샷, 설명, 카테고리)
-- [ ] Cloudflare WAF → /ads.txt 경로 보안 규칙 예외 처리
+- [x] Cloudflare WAF → /ads.txt 경로 보안 규칙 예외 처리 — Custom rule 배포 완료 (2/28)
 - [ ] Google Search Console 사이트 등록 (웹 트래픽 모니터링)
 - [ ] AdMob 미디에이션 검토 (트래픽 규모에 따라)
 
