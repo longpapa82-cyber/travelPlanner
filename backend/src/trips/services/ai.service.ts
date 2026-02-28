@@ -55,6 +55,7 @@ const LANGUAGE_NAMES: Record<string, string> = {
 export class AIService {
   private readonly logger = new Logger(AIService.name);
   private openai: OpenAI;
+  private readonly model: string;
   private readonly openaiBreaker = new CircuitBreaker({
     name: 'OpenAI',
     failureThreshold: 5,
@@ -70,9 +71,10 @@ export class AIService {
     private timezoneService: TimezoneService,
   ) {
     const apiKey = this.configService.get<string>('OPENAI_API_KEY');
+    this.model = this.configService.get<string>('OPENAI_MODEL') || 'gpt-4o-mini';
     if (apiKey && apiKey !== '' && !apiKey.includes('your-')) {
       this.openai = new OpenAI({ apiKey });
-      this.logger.log('OpenAI service initialized');
+      this.logger.log(`OpenAI service initialized (model: ${this.model})`);
     } else {
       this.logger.warn(
         'OpenAI API key not configured - AI features will be disabled',
@@ -119,11 +121,11 @@ export class AIService {
           () =>
             withTimeout(
               this.openai.chat.completions.create({
-                model: 'gpt-4o-mini',
+                model: this.model,
                 messages: [
                   {
                     role: 'system',
-                    content: `You are an expert travel planner. Generate detailed, realistic daily itineraries in JSON format. Consider travel time, opening hours, and local customs. Activities should be practical and well-timed. IMPORTANT: All text content (title, description, location) MUST be written in ${langName}. Do NOT use English for these fields.`,
+                    content: `Expert travel planner. Return JSON daily itinerary. Consider travel time, hours, customs. All text (title, description, location) in ${langName} only.`,
                   },
                   { role: 'user', content: prompt },
                 ],
@@ -138,6 +140,12 @@ export class AIService {
           'OpenAI daily itinerary',
         ),
       );
+
+      if (completion.usage) {
+        this.logger.log(
+          `AI daily tokens — in: ${completion.usage.prompt_tokens}, out: ${completion.usage.completion_tokens}, total: ${completion.usage.total_tokens}`,
+        );
+      }
 
       const content = completion.choices[0].message.content;
       if (!content) {
@@ -373,7 +381,8 @@ Guidelines:
 
       if (templateResult && !templateResult.isStale) {
         this.logger.log(
-          `Template cache HIT for "${tripContext.destination}" ${totalDays}d — skipping AI`,
+          `Template cache HIT [${templateResult.matchType}] for "${tripContext.destination}" ${totalDays}d — skipping AI` +
+            (templateResult.similarity ? ` (similarity: ${templateResult.similarity.toFixed(3)})` : ''),
         );
         // Map template days to dated itineraries
         return templateResult.days.map((day, i) => {
@@ -398,7 +407,10 @@ Guidelines:
       );
     }
 
-    // Phase C/A: AI generation (fallback)
+    // Phase C/A: AI generation (fallback — template cache MISS)
+    this.logger.log(
+      `Template cache MISS for "${tripContext.destination}" ${totalDays}d — calling AI (model: ${this.model})`,
+    );
     let itineraries: { dayNumber: number; date: Date; activities: ActivityDto[] }[];
 
     if (totalDays <= 10) {
@@ -475,16 +487,16 @@ Guidelines:
           () =>
             withTimeout(
               this.openai.chat.completions.create({
-                model: 'gpt-4o-mini',
+                model: this.model,
                 messages: [
                   {
                     role: 'system',
-                    content: `You are an expert travel planner. Generate a complete multi-day trip itinerary in JSON format. Consider travel time, opening hours, local customs, and logical geographic flow between days. IMPORTANT: All text content (title, description, location) MUST be written in ${langName}. Do NOT use English for these fields.`,
+                    content: `Expert travel planner. Return JSON multi-day itinerary with logical geographic flow. All text (title, description, location) in ${langName} only.`,
                   },
                   { role: 'user', content: prompt },
                 ],
                 temperature: 0.7,
-                max_tokens: 4096,
+                max_tokens: 2048,
                 response_format: { type: 'json_object' },
               }),
               30_000,
@@ -495,6 +507,12 @@ Guidelines:
           'OpenAI full trip',
         ),
       );
+
+      if (completion.usage) {
+        this.logger.log(
+          `AI full-trip tokens — in: ${completion.usage.prompt_tokens}, out: ${completion.usage.completion_tokens}, total: ${completion.usage.total_tokens}`,
+        );
+      }
 
       const content = completion.choices[0].message.content;
       if (!content) {
