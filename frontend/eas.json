@@ -36,8 +36,9 @@
         "appleId": "a090723@naver.com"
       },
       "android": {
-        "track": "alpha",
-        "releaseStatus": "draft"
+        "serviceAccountKeyPath": "./google-play-service-account.json",
+        "track": "internal",
+        "releaseStatus": "completed"
       }
     }
   }
