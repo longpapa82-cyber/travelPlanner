@@ -91,11 +91,17 @@ describe('secureStorage (native)', () => {
   // ── clear ──
 
   describe('clear', () => {
-    it('should call resetGenericPassword for auth_token', async () => {
+    it('should call resetGenericPassword for all token services', async () => {
+      // Ensure mock resolves (previous test may have set mockRejectedValue)
+      (Keychain.resetGenericPassword as jest.Mock).mockResolvedValue(true);
+
       await secureStorage.clear();
 
       expect(Keychain.resetGenericPassword).toHaveBeenCalledWith({
-        service: 'auth_token',
+        service: '@travelplanner:auth_token',
+      });
+      expect(Keychain.resetGenericPassword).toHaveBeenCalledWith({
+        service: '@travelplanner:refresh_token',
       });
     });
 

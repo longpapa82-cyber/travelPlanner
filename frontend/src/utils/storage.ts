@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Keychain from 'react-native-keychain';
 
 const isWeb = Platform.OS === 'web';
@@ -12,8 +13,15 @@ const memoryStore = new Map<string, string>();
 const MEMORY_ONLY_KEYS = ['@travelplanner:auth_token'];
 const SESSION_STORAGE_KEYS = ['@travelplanner:refresh_token'];
 
-const KEYCHAIN_MAX_RETRIES = 3;
-const KEYCHAIN_RETRY_DELAY_MS = 300;
+// Native: Keychain retry with exponential backoff (react-native-keychain #594)
+const KEYCHAIN_MAX_RETRIES = 5;
+const KEYCHAIN_BASE_DELAY_MS = 200;
+
+// Keys to backup in AsyncStorage on native as fallback for Keychain failures.
+// Refresh token is one-time-use so exposure risk is minimal.
+// AsyncStorage is in app-private SQLite on Android (requires root to access).
+const ASYNC_STORAGE_BACKUP_PREFIX = '@travelplanner:backup:';
+const BACKUP_KEYS = ['@travelplanner:refresh_token'];
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -32,6 +40,12 @@ export const secureStorage = {
       }
     } else {
       await Keychain.setGenericPassword(key, value, { service: key });
+      // Backup critical tokens to AsyncStorage as Keychain fallback
+      if (BACKUP_KEYS.includes(key)) {
+        try {
+          await AsyncStorage.setItem(ASYNC_STORAGE_BACKUP_PREFIX + key, value);
+        } catch { /* best-effort backup */ }
+      }
     }
   },
 
@@ -57,22 +71,33 @@ export const secureStorage = {
       }
       return localStorage.getItem(key);
     } else {
-      // Retry up to 3 times — react-native-keychain can return false
+      // Retry with exponential backoff — react-native-keychain can return false
       // spuriously on Android after app restart (known issue #594)
+      // Delays: 200, 400, 800, 1600ms = ~3s total before giving up
       for (let attempt = 1; attempt <= KEYCHAIN_MAX_RETRIES; attempt++) {
         try {
           const credentials = await Keychain.getGenericPassword({ service: key });
           if (credentials) return credentials.password;
           // credentials === false — may be a spurious miss on Android
           if (attempt < KEYCHAIN_MAX_RETRIES) {
-            await delay(KEYCHAIN_RETRY_DELAY_MS);
+            await delay(KEYCHAIN_BASE_DELAY_MS * Math.pow(2, attempt - 1));
           }
         } catch (error) {
           console.warn(`[SecureStorage] getItem("${key}") attempt ${attempt} failed:`, error);
           if (attempt < KEYCHAIN_MAX_RETRIES) {
-            await delay(KEYCHAIN_RETRY_DELAY_MS);
+            await delay(KEYCHAIN_BASE_DELAY_MS * Math.pow(2, attempt - 1));
           }
         }
+      }
+      // Keychain exhausted — try AsyncStorage backup for critical tokens
+      if (BACKUP_KEYS.includes(key)) {
+        try {
+          const backup = await AsyncStorage.getItem(ASYNC_STORAGE_BACKUP_PREFIX + key);
+          if (backup) {
+            console.info(`[SecureStorage] Recovered "${key}" from AsyncStorage backup`);
+            return backup;
+          }
+        } catch { /* backup also failed */ }
       }
       return null;
     }
@@ -94,6 +119,12 @@ export const secureStorage = {
       } catch (error) {
         // Silent fail — best-effort removal
       }
+      // Also clear AsyncStorage backup
+      if (BACKUP_KEYS.includes(key)) {
+        try {
+          await AsyncStorage.removeItem(ASYNC_STORAGE_BACKUP_PREFIX + key);
+        } catch { /* best-effort */ }
+      }
     }
   },
 
@@ -112,11 +143,17 @@ export const secureStorage = {
       });
     } else {
       try {
-        await Keychain.resetGenericPassword({ service: 'auth_token' });
-        await Keychain.resetGenericPassword({ service: 'refresh_token' });
+        await Keychain.resetGenericPassword({ service: '@travelplanner:auth_token' });
+        await Keychain.resetGenericPassword({ service: '@travelplanner:refresh_token' });
       } catch (error) {
         // Silent fail — best-effort clear
       }
+      // Clear AsyncStorage backups
+      try {
+        await Promise.all(
+          BACKUP_KEYS.map((key) => AsyncStorage.removeItem(ASYNC_STORAGE_BACKUP_PREFIX + key)),
+        );
+      } catch { /* best-effort */ }
     }
   },
 
