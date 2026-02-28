@@ -268,6 +268,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.user);
       await setSessionFlag(true);
       trackEvent('register', { method: 'email' });
+      registerPushAfterLogin();
     } catch (error) {
       throw error;
     }

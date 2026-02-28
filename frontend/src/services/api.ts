@@ -117,8 +117,11 @@ class ApiService {
               // Verify tokens were persisted (keychain can silently fail)
               const verified = await secureStorage.verifyItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
               if (!verified) {
-                // Retry once
-                await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
+                // Retry up to 3 times with increasing delay
+                for (let i = 0; i < 3; i++) {
+                  await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
+                  if (await secureStorage.verifyItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken)) break;
+                }
               }
 
               this.isRefreshing = false;
