@@ -1,0 +1,51 @@
+{
+  "title": "Abonelik",
+  "free": {
+    "name": "Ücretsiz",
+    "description": "Temel gezi planlama özellikleri"
+  },
+  "premium": {
+    "name": "Premium",
+    "description": "Sınırsız AI + Reklamsız",
+    "price": {
+      "monthly": "Aylık",
+      "yearly": "Yıllık",
+      "yearlySaving": "%37 tasarruf",
+      "month": "ay",
+      "year": "yıl"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "Sınırsız AI gezi planlama",
+    "noAds": "Reklamsız",
+    "premiumBadge": "Premium rozeti",
+    "tripCreation": "Gezi planlama",
+    "social": "Sosyal özellikler",
+    "expenses": "Harcama yönetimi"
+  },
+  "actions": {
+    "subscribe": "Abone Ol",
+    "restore": "Satın almayı geri yükle",
+    "manage": "Aboneliği yönet",
+    "cancel": "Aboneliği iptal et"
+  },
+  "paywall": {
+    "title": "Premium'a Yükselt",
+    "subtitle": "Sınırsız AI gezi planlama ve reklamsız deneyimin keyfini çıkarın",
+    "aiLimitTitle": "AI Gezi Planı Kullanımı",
+    "aiLimitReached": "Ücretsiz AI gezi planı limitine ulaşıldı",
+    "aiUsed": "kullanıldı",
+    "compareTitle": "Planları Karşılaştır",
+    "upgradeToUnlock": "Kilidi açmak için yükseltin"
+  },
+  "status": {
+    "active": "Aktif",
+    "expired": "Süresi Doldu",
+    "expiresOn": "{{date}} tarihine kadar"
+  },
+  "menu": {
+    "subscription": "Abonelik",
+    "upgradePremium": "Premium'a Yükselt",
+    "managePlan": "Planı yönet"
+  }
+}

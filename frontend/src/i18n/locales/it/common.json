@@ -1,0 +1,103 @@
+{
+  "confirm": "OK",
+  "cancel": "Annulla",
+  "save": "Salva",
+  "delete": "Elimina",
+  "edit": "Modifica",
+  "close": "Chiudi",
+  "loading": "Caricamento...",
+  "error": "Errore",
+  "success": "Successo",
+  "retry": "Riprova",
+  "back": "Indietro",
+  "next": "Avanti",
+  "done": "Fatto",
+  "copy": "Copia",
+  "search": "Cerca",
+  "noResults": "Nessun risultato trovato",
+  "like": "Mi piace",
+  "share": "Condividi",
+  "clear": "Cancella",
+  "seeAll": "Vedi tutto →",
+  "findOnProvider": "Trova su {{name}}",
+  "offlineMode": "Modalità offline — visualizzazione dati in cache",
+  "offlinePending": "Offline — {{count}} modifica/e in sospeso",
+  "offlineSyncing": "Sincronizzazione in corso...",
+  "offlineSynced": "Tutte le modifiche sincronizzate",
+  "errorBoundary": {
+    "title": "Ci siamo un po' persi",
+    "message": "Si è verificato un errore imprevisto.\nNon preoccuparti, ti riportiamo in carreggiata!",
+    "persistentTitle": "Errori ripetuti rilevati",
+    "persistentMessage": "Questo errore continua a verificarsi.\nProva a ricaricare l'app.",
+    "retry": "Riprova",
+    "reload": "Ricarica app",
+    "goHome": "Vai alla home",
+    "errorId": "ID errore: {{id}}"
+  },
+  "tabs": {
+    "home": "Home",
+    "trips": "I miei viaggi",
+    "notifications": "Avvisi",
+    "profile": "Profilo",
+    "discover": "Esplora"
+  },
+  "notifications": {
+    "emptyTitle": "Nessuna notifica",
+    "emptyMessage": "Le nuove notifiche appariranno qui",
+    "markAllRead": "Segna tutto come letto",
+    "deleteAll": "Elimina tutto",
+    "deleteAllTitle": "Elimina notifiche",
+    "deleteAllConfirm": "Eliminare tutte le notifiche?",
+    "allMarkedRead": "Tutte le notifiche segnate come lette",
+    "allDeleted": "Tutte le notifiche eliminate",
+    "error": "Si è verificato un errore",
+    "fetchError": "Impossibile caricare le notifiche",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "justNow": "Adesso",
+    "minutesAgo": "{{count}}m fa",
+    "hoursAgo": "{{count}}h fa",
+    "daysAgo": "{{count}}g fa",
+    "prePermission": {
+      "title": "Resta aggiornato sui tuoi viaggi",
+      "description": "Ricevi promemoria di partenza, avvisi meteo e aggiornamenti importanti per non perderti nulla.",
+      "benefit1": "Promemoria di partenza",
+      "benefit2": "Avvisi giorno di partenza e itinerario",
+      "benefit3": "Notifiche cambiamenti meteo",
+      "enable": "Attiva notifiche",
+      "later": "Forse più tardi"
+    }
+  },
+  "pwa": {
+    "installTitle": "Installa come app",
+    "installMessage": "Aggiungi alla schermata home per un'esperienza più veloce",
+    "install": "Installa"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "Verifica email necessaria",
+      "message": "Controlla la tua casella di posta per verificare l'email",
+      "resend": "Reinvia",
+      "sent": "Email di verifica reinviata",
+      "error": "Invio fallito"
+    }
+  },
+  "errors": {
+    "network": "Errore di rete. Controlla la connessione.",
+    "rateLimit": "Troppe richieste. Riprova tra poco.",
+    "forbidden": "Non hai i permessi per questa azione.",
+    "notFound": "La risorsa richiesta non è stata trovata.",
+    "locked": "Account temporaneamente bloccato. Riprova più tardi.",
+    "server": "Errore del server. Riprova più tardi.",
+    "generic": "Qualcosa è andato storto. Riprova."
+  },
+  "att": {
+    "title": "Ricevi offerte di viaggio personalizzate",
+    "description": "Consenti il tracciamento per ricevere offerte e promozioni di viaggio su misura per i tuoi interessi.",
+    "benefit1": "Offerte di viaggio personalizzate",
+    "benefit2": "Raccomandazioni di destinazioni pertinenti",
+    "benefit3": "Esperienza pubblicitaria migliore",
+    "continue": "Continua",
+    "later": "Forse più tardi"
+  }
+}

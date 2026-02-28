@@ -114,7 +114,7 @@ export class UsersService {
     id: string,
     currentPassword: string,
     newPassword: string,
-    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' = 'ko',
+    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
   ): Promise<{ message: string }> {
     const user = await this.userRepository
       .createQueryBuilder('user')
@@ -187,7 +187,7 @@ export class UsersService {
 
   async verifyEmail(
     token: string,
-    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' = 'ko',
+    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
   ): Promise<User> {
     const user = await this.userRepository
       .createQueryBuilder('user')
@@ -217,7 +217,7 @@ export class UsersService {
 
   async generatePasswordResetToken(
     email: string,
-    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' = 'ko',
+    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
   ): Promise<{ token: string; user: User } | null> {
     const user = await this.userRepository.findOne({ where: { email } });
 
@@ -248,7 +248,7 @@ export class UsersService {
   async resetPassword(
     token: string,
     newPassword: string,
-    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' = 'ko',
+    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
   ): Promise<User> {
     const user = await this.userRepository
       .createQueryBuilder('user')

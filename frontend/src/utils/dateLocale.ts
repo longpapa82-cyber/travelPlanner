@@ -14,6 +14,10 @@ const LOCALE_MAP: Record<SupportedLanguage, string> = {
   ar: 'ar-SA',
   id: 'id-ID',
   hi: 'hi-IN',
+  it: 'it-IT',
+  ru: 'ru-RU',
+  tr: 'tr-TR',
+  ms: 'ms-MY',
 };
 
 export function getDateLocale(): string {

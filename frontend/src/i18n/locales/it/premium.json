@@ -1,0 +1,51 @@
+{
+  "title": "Abbonamento",
+  "free": {
+    "name": "Gratuito",
+    "description": "Funzioni base di pianificazione viaggio"
+  },
+  "premium": {
+    "name": "Premium",
+    "description": "AI illimitata + Senza pubblicità",
+    "price": {
+      "monthly": "Mensile",
+      "yearly": "Annuale",
+      "yearlySaving": "Risparmia il 37%",
+      "month": "mese",
+      "year": "anno"
+    }
+  },
+  "benefits": {
+    "unlimitedAi": "Pianificazione viaggio AI illimitata",
+    "noAds": "Senza pubblicità",
+    "premiumBadge": "Badge Premium",
+    "tripCreation": "Pianificazione viaggio",
+    "social": "Funzioni social",
+    "expenses": "Gestione spese"
+  },
+  "actions": {
+    "subscribe": "Abbonati",
+    "restore": "Ripristina acquisto",
+    "manage": "Gestisci abbonamento",
+    "cancel": "Annulla abbonamento"
+  },
+  "paywall": {
+    "title": "Passa a Premium",
+    "subtitle": "Goditi la pianificazione viaggio AI illimitata e un'esperienza senza pubblicità",
+    "aiLimitTitle": "Utilizzo piano viaggio AI",
+    "aiLimitReached": "Limite gratuito piani viaggio AI raggiunto",
+    "aiUsed": "utilizzati",
+    "compareTitle": "Confronta i piani",
+    "upgradeToUnlock": "Passa a Premium per sbloccare"
+  },
+  "status": {
+    "active": "Attivo",
+    "expired": "Scaduto",
+    "expiresOn": "Fino al {{date}}"
+  },
+  "menu": {
+    "subscription": "Abbonamento",
+    "upgradePremium": "Passa a Premium",
+    "managePlan": "Gestisci piano"
+  }
+}

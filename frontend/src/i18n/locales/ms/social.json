@@ -1,0 +1,31 @@
+{
+  "title": "Terokai",
+  "following": "Mengikuti",
+  "trending": "Trending",
+  "emptyFollowing": "Tiada catatan daripada pengembara yang diikuti",
+  "emptyFollowingMessage": "Ikuti pengembara untuk melihat perjalanan awam mereka di sini",
+  "emptyTrending": "Belum ada perjalanan awam",
+  "emptyTrendingMessage": "Perjalanan popular akan muncul di sini tidak lama lagi",
+  "tripBy": "Perjalanan oleh {{name}}",
+  "likesCount": "{{count}} suka",
+  "profile": {
+    "followers": "Pengikut",
+    "following": "Mengikuti",
+    "follow": "Ikuti",
+    "unfollow": "Nyahikuti",
+    "publicTrips": "Perjalanan Awam",
+    "noPublicTrips": "Tiada perjalanan awam"
+  },
+  "notifications": {
+    "newFollower": "{{name}} mula mengikuti anda",
+    "tripLiked": "{{name}} menyukai perjalanan anda ke {{destination}}"
+  },
+  "errors": {
+    "followFailed": "Gagal mengikuti",
+    "unfollowFailed": "Gagal menyahikuti",
+    "likeFailed": "Gagal menyukai",
+    "unlikeFailed": "Gagal menyahsuka",
+    "feedFailed": "Gagal memuatkan suapan",
+    "profileFailed": "Gagal memuatkan profil"
+  }
+}

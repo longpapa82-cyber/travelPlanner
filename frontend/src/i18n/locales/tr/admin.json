@@ -1,0 +1,55 @@
+{
+  "title": "Yönetici Paneli",
+  "menu": {
+    "users": "Kullanıcı Yönetimi",
+    "errorLogs": "Hata Kayıtları",
+    "revenue": "Gelir Paneli"
+  },
+  "dashboard": {
+    "subtitle": "Hizmet yönetim araçları"
+  },
+  "users": {
+    "title": "Kullanıcı Yönetimi",
+    "totalUsers": "Toplam Kullanıcı",
+    "todaySignups": "Bugünkü Kayıtlar",
+    "todayActive": "Bugün Aktif",
+    "weeklyActive": "Haftalık Aktif",
+    "people": "",
+    "signupTrend": "Kayıtlar (Son 30 Gün)",
+    "providerBreakdown": "Kayıt Yöntemi",
+    "memberList": "Üye Listesi",
+    "searchPlaceholder": "Ad veya e-posta ara",
+    "allProviders": "Tümü",
+    "lastLogin": "Son Giriş",
+    "signupDate": "Katılma Tarihi",
+    "trips": "Geziler",
+    "never": "Hiç",
+    "noUsers": "Kullanıcı bulunamadı",
+    "loadMore": "Daha Fazla Yükle"
+  },
+  "errors": {
+    "title": "Hata Kayıtları",
+    "todayErrors": "Bugün",
+    "weeklyErrors": "Bu Hafta",
+    "unresolved": "Çözülmemiş",
+    "affectedUsers": "Etkilenen Kullanıcılar",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "Hatalar (Son 24 Saat)",
+    "topErrors": "En Sık 10 Hata",
+    "errorList": "Hata Listesi",
+    "allSeverity": "Tümü",
+    "error": "Hata",
+    "warning": "Uyarı",
+    "fatal": "Kritik",
+    "unresolvedOnly": "Yalnızca Çözülmemiş",
+    "resolve": "Çözüldü",
+    "resolved": "Çözülmüş",
+    "screen": "Ekran",
+    "device": "Cihaz",
+    "version": "Sürüm",
+    "noErrors": "Hata bulunamadı",
+    "loadMore": "Daha Fazla Yükle",
+    "occurrences": "kez"
+  }
+}

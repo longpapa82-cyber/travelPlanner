@@ -1,0 +1,99 @@
+{
+  "activityModal": {
+    "addTitle": "Tambah Aktiviti",
+    "editTitle": "Edit Aktiviti",
+    "time": "Masa",
+    "title": "Tajuk",
+    "titlePlaceholder": "Masukkan tajuk aktiviti",
+    "location": "Lokasi",
+    "locationPlaceholder": "Masukkan lokasi",
+    "description": "Penerangan",
+    "descriptionPlaceholder": "Masukkan penerangan",
+    "type": "Jenis Aktiviti",
+    "duration": "Anggaran Tempoh (min)",
+    "durationPlaceholder": "60",
+    "cost": "Anggaran Kos",
+    "actualCost": "Perbelanjaan Sebenar",
+    "costPlaceholder": "0",
+    "cancel": "Batal",
+    "add": "Tambah",
+    "save": "Simpan",
+    "validationError": "Ralat Input",
+    "validationErrorMessage": "Sila masukkan masa, tajuk, dan lokasi",
+    "invalidTimeFormat": "Sila masukkan masa dalam format JJ:MM (cth., 09:00)",
+    "errorTitle": "Ralat",
+    "saveError": "Gagal menyimpan aktiviti",
+    "types": {
+      "meal": "Makan",
+      "sightseeing": "Lawatan",
+      "shopping": "Membeli-belah",
+      "experience": "Pengalaman",
+      "rest": "Rehat",
+      "transport": "Pengangkutan",
+      "other": "Lain-lain"
+    }
+  },
+  "shareModal": {
+    "title": "Kongsi Perjalanan",
+    "generate": "Jana Pautan Perkongsian",
+    "generateButton": "Jana Pautan",
+    "generateDescription": "Cipta pautan perkongsian untuk berkongsi pelan perjalanan anda dengan orang lain",
+    "generateError": "Gagal menjana pautan perkongsian",
+    "linkTitle": "Pautan Perkongsian",
+    "copy": "Salin Pautan",
+    "copied": "Disalin!",
+    "copiedToClipboard": "Disalin ke papan keratan",
+    "copyError": "Gagal menyalin pautan",
+    "disable": "Nyahaktifkan Perkongsian",
+    "disableConfirm": "Nyahaktifkan perkongsian? Pautan sedia ada tidak akan berfungsi lagi.",
+    "disableAction": "Nyahaktifkan",
+    "disableSuccess": "Perkongsian telah dinyahaktifkan",
+    "disableError": "Gagal menyahaktifkan perkongsian",
+    "cancel": "Batal",
+    "error": "Ralat",
+    "success": "Berjaya",
+    "info": "Sesiapa yang mempunyai pautan ini boleh melihat pelan perjalanan ini. Menyahaktifkan pautan akan membatalkan akses.",
+    "expiry": {
+      "title": "Tempoh Tamat",
+      "none": "Tiada had masa",
+      "7days": "7 hari",
+      "30days": "30 hari",
+      "90days": "90 hari"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "Kelembapan",
+    "windSpeed": "Angin",
+    "feelsLike": "Terasa seperti",
+    "timezone": "Waktu Tempatan",
+    "timeDiff": "Perbezaan Masa",
+    "noData": "Data cuaca tidak tersedia"
+  },
+  "popularDestinations": {
+    "title": "Destinasi Popular",
+    "subtitle": "Trending dalam 3 bulan terakhir",
+    "description": "Lihat destinasi paling popular yang dipilih oleh pengembara sebenar",
+    "visitors": "{{count}} pelawat",
+    "avgDuration": "Purata {{days}} hari",
+    "withTravelers": "Dengan {{count}} pengembara",
+    "popularSeason": "Musim popular:"
+  },
+  "progressIndicator": {
+    "title": "Kemajuan",
+    "status": "{{completed}} selesai / {{total}} jumlah aktiviti"
+  },
+  "destinationInsights": {
+    "header": "Berdasarkan data pengembara sebenar",
+    "avgDuration": "Purata Tempoh Perjalanan",
+    "avgTravelers": "Purata Saiz Kumpulan",
+    "popularBudget": "Bajet Popular",
+    "popularStyle": "Gaya Popular",
+    "popularSeason": "Musim Perjalanan Popular",
+    "bestNow": "Masa terbaik adalah sekarang!",
+    "topActivities": "Aktiviti teratas oleh pengembara terkini (Teratas {{count}})",
+    "footer": "Berdasarkan data pengembara sebenar dari 3 bulan terakhir",
+    "loading": "Memuatkan maklumat destinasi...",
+    "days": "{{days}} hari",
+    "people": "{{count}} orang"
+  }
+}

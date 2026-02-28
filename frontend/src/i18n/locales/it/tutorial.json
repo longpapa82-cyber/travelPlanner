@@ -1,0 +1,27 @@
+{
+  "welcome": {
+    "slide1": {
+      "title": "Piani di viaggio AI",
+      "description": "L'AI crea itinerari di viaggio personalizzati solo per te"
+    },
+    "slide2": {
+      "title": "Viaggia insieme",
+      "description": "Invita amici per pianificare il viaggio insieme"
+    },
+    "slide3": {
+      "title": "Iniziamo",
+      "description": "Crea il tuo primo viaggio e inizia una nuova avventura"
+    },
+    "skip": "Salta",
+    "createFirst": "Crea il primo viaggio",
+    "explore": "Esplora"
+  },
+  "coach": {
+    "createTrip": "Tocca qui per iniziare il tuo primo viaggio!",
+    "next": "Capito",
+    "dismiss": "Salta"
+  },
+  "settings": {
+    "resetTutorial": "Rivedi il tutorial"
+  }
+}

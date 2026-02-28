@@ -1,0 +1,99 @@
+{
+  "activityModal": {
+    "addTitle": "Etkinlik Ekle",
+    "editTitle": "Etkinliği Düzenle",
+    "time": "Saat",
+    "title": "Başlık",
+    "titlePlaceholder": "Etkinlik başlığını girin",
+    "location": "Konum",
+    "locationPlaceholder": "Konumu girin",
+    "description": "Açıklama",
+    "descriptionPlaceholder": "Açıklama girin",
+    "type": "Etkinlik Türü",
+    "duration": "Tahmini Süre (dk)",
+    "durationPlaceholder": "60",
+    "cost": "Tahmini Maliyet",
+    "actualCost": "Gerçek Harcama",
+    "costPlaceholder": "0",
+    "cancel": "İptal",
+    "add": "Ekle",
+    "save": "Kaydet",
+    "validationError": "Giriş Hatası",
+    "validationErrorMessage": "Lütfen saat, başlık ve konumu girin",
+    "invalidTimeFormat": "Lütfen saati SS:DD formatında girin (ör. 09:00)",
+    "errorTitle": "Hata",
+    "saveError": "Etkinlik kaydedilemedi",
+    "types": {
+      "meal": "Yemek",
+      "sightseeing": "Gezi",
+      "shopping": "Alışveriş",
+      "experience": "Deneyim",
+      "rest": "Dinlenme",
+      "transport": "Ulaşım",
+      "other": "Diğer"
+    }
+  },
+  "shareModal": {
+    "title": "Geziyi Paylaş",
+    "generate": "Paylaşım Bağlantısı Oluştur",
+    "generateButton": "Bağlantı Oluştur",
+    "generateDescription": "Gezi planınızı başkalarıyla paylaşmak için bir bağlantı oluşturun",
+    "generateError": "Paylaşım bağlantısı oluşturulamadı",
+    "linkTitle": "Paylaşım Bağlantısı",
+    "copy": "Bağlantıyı Kopyala",
+    "copied": "Kopyalandı!",
+    "copiedToClipboard": "Panoya kopyalandı",
+    "copyError": "Bağlantı kopyalanamadı",
+    "disable": "Paylaşımı Devre Dışı Bırak",
+    "disableConfirm": "Paylaşım devre dışı bırakılsın mı? Mevcut bağlantılar artık çalışmayacaktır.",
+    "disableAction": "Devre Dışı Bırak",
+    "disableSuccess": "Paylaşım devre dışı bırakıldı",
+    "disableError": "Paylaşım devre dışı bırakılamadı",
+    "cancel": "İptal",
+    "error": "Hata",
+    "success": "Başarılı",
+    "info": "Bu bağlantıya sahip herkes bu gezi planını görüntüleyebilir. Bağlantıyı devre dışı bırakmak erişimi iptal eder.",
+    "expiry": {
+      "title": "Süre Sonu",
+      "none": "Süresiz",
+      "7days": "7 gün",
+      "30days": "30 gün",
+      "90days": "90 gün"
+    }
+  },
+  "weatherWidget": {
+    "humidity": "Nem",
+    "windSpeed": "Rüzgar",
+    "feelsLike": "Hissedilen",
+    "timezone": "Yerel Saat",
+    "timeDiff": "Saat Farkı",
+    "noData": "Hava durumu verisi mevcut değil"
+  },
+  "popularDestinations": {
+    "title": "Popüler Destinasyonlar",
+    "subtitle": "Son 3 ayda en çok tercih edilen",
+    "description": "Gerçek gezginlerin en çok tercih ettiği destinasyonları görün",
+    "visitors": "{{count}} ziyaretçi",
+    "avgDuration": "Ort. {{days}} gün",
+    "withTravelers": "{{count}} yolcu ile",
+    "popularSeason": "Popüler sezon:"
+  },
+  "progressIndicator": {
+    "title": "İlerleme",
+    "status": "{{completed}} tamamlandı / toplam {{total}} etkinlik"
+  },
+  "destinationInsights": {
+    "header": "Gerçek gezgin verilerine dayalı",
+    "avgDuration": "Ort. Gezi Süresi",
+    "avgTravelers": "Ort. Grup Büyüklüğü",
+    "popularBudget": "Popüler Bütçe",
+    "popularStyle": "Popüler Tarz",
+    "popularSeason": "Popüler Seyahat Sezonu",
+    "bestNow": "Şimdi en iyi zamanı!",
+    "topActivities": "Son gezginlerin en çok tercih ettiği etkinlikler (İlk {{count}})",
+    "footer": "Son 3 aylık gerçek gezgin verilerine dayalı",
+    "loading": "Destinasyon bilgileri yükleniyor...",
+    "days": "{{days}} gün",
+    "people": "{{count}} kişi"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "title": "Profil",
+  "guest": "Tetamu",
+  "sections": {
+    "account": "Akaun",
+    "settings": "Tetapan",
+    "support": "Sokongan",
+    "admin": "Pentadbir"
+  },
+  "menu": {
+    "editProfile": "Edit Profil",
+    "changePassword": "Tukar Kata Laluan",
+    "twoFactor": "Pengesahan Dua Faktor",
+    "twoFactorEnabled": "Diaktifkan",
+    "twoFactorDisabled": "Dinyahaktifkan",
+    "language": "Bahasa",
+    "notifications": "Pemberitahuan",
+    "notificationsEnabled": "Diaktifkan",
+    "notificationsDisabled": "Dinyahaktifkan",
+    "darkMode": "Mod Gelap",
+    "help": "Bantuan",
+    "terms": "Terma Perkhidmatan",
+    "privacy": "Dasar Privasi",
+    "revenue": "Papan Pemuka Hasil",
+    "admin": "Panel Pentadbir"
+  },
+  "editProfile": {
+    "title": "Edit Profil",
+    "name": "Nama",
+    "namePlaceholder": "Masukkan nama anda",
+    "changePhoto": "Tukar foto profil",
+    "save": "Simpan",
+    "alerts": {
+      "nameRequired": "Sila masukkan nama anda",
+      "success": "Profil berjaya dikemas kini",
+      "failed": "Gagal mengemas kini profil",
+      "photoSuccess": "Foto profil dikemas kini",
+      "photoFailed": "Gagal mengemas kini foto profil",
+      "permissionDenied": "Kebenaran akses foto diperlukan"
+    }
+  },
+  "changePassword": {
+    "title": "Tukar Kata Laluan",
+    "current": "Kata Laluan Semasa",
+    "currentPlaceholder": "Masukkan kata laluan semasa",
+    "new": "Kata Laluan Baharu",
+    "newPlaceholder": "Masukkan kata laluan baharu (8+ aksara, huruf dan nombor)",
+    "confirm": "Sahkan Kata Laluan Baharu",
+    "confirmPlaceholder": "Masukkan semula kata laluan baharu",
+    "submit": "Tukar Kata Laluan",
+    "alerts": {
+      "allFieldsRequired": "Sila isi semua ruangan",
+      "minLength": "Kata laluan baharu mesti sekurang-kurangnya 8 aksara dengan huruf dan nombor",
+      "mismatch": "Kata laluan baharu tidak sepadan",
+      "success": "Kata laluan berjaya ditukar",
+      "failed": "Gagal menukar kata laluan"
+    }
+  },
+  "languageSelector": {
+    "title": "Pilih Bahasa",
+    "description": "Pilih bahasa pilihan anda"
+  },
+  "logout": {
+    "title": "Log Keluar",
+    "message": "Adakah anda pasti mahu log keluar?",
+    "button": "Log Keluar"
+  },
+  "deleteAccount": {
+    "title": "Padam Akaun",
+    "message": "Memadamkan akaun anda akan menghapuskan semua data secara kekal. Adakah anda pasti?",
+    "button": "Padam Akaun",
+    "passwordConfirm": "Masukkan kata laluan anda untuk mengesahkan pemadaman akaun",
+    "passwordPlaceholder": "Masukkan kata laluan",
+    "alerts": {
+      "success": "Akaun berjaya dipadamkan",
+      "failed": "Gagal memadam akaun",
+      "passwordRequired": "Sila masukkan kata laluan anda"
+    }
+  },
+  "version": "Versi",
+  "analytics": {
+    "title": "Statistik Perjalanan",
+    "totalTrips": "Jumlah Perjalanan",
+    "completedTrips": "Selesai",
+    "ongoingTrips": "Sedang Berjalan",
+    "upcomingTrips": "Akan Datang",
+    "totalDays": "Jumlah Hari",
+    "avgDuration": "Purata Tempoh",
+    "days": "hari",
+    "countriesVisited": "Negara",
+    "countries": "negara",
+    "totalSpent": "Jumlah Dibelanjakan",
+    "totalBudget": "Jumlah Bajet",
+    "topDestinations": "Destinasi Utama",
+    "times": "kali",
+    "activities": "Aktiviti",
+    "completedOf": "{{completed}} / {{total}} selesai",
+    "noData": "Belum ada data perjalanan",
+    "loading": "Memuatkan statistik..."
+  },
+  "revenue": {
+    "last30Days": "30 hari terakhir",
+    "totalClicks": "Jumlah Klik",
+    "conversions": "Penukaran",
+    "conversionRate": "Kadar Penukaran",
+    "commission": "Komisen",
+    "highlights": "Sorotan",
+    "topProvider": "Pembekal Utama",
+    "topDestination": "Destinasi Utama",
+    "totalRevenue": "Jumlah Hasil",
+    "byProvider": "Mengikut Pembekal",
+    "clicks": "klik",
+    "conv": "pnkrn",
+    "noData": "Belum ada data tersedia",
+    "adminOnly": "Akses pentadbir diperlukan",
+    "loadError": "Gagal memuatkan data"
+  }
+}

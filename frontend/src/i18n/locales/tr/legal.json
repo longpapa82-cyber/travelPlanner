@@ -1,0 +1,286 @@
+{
+  "help": {
+    "title": "Yardım",
+    "searchPlaceholder": "Yardım ara...",
+    "categories": {
+      "gettingStarted": "Başlarken",
+      "tripManagement": "Gezi Yönetimi",
+      "accountSettings": "Hesap ve Ayarlar",
+      "offlineSync": "Çevrimdışı ve Senkronizasyon",
+      "adsPartners": "Fiyatlandırma ve Reklamlar",
+      "contact": "Bize Ulaşın"
+    },
+    "gettingStarted": {
+      "signup": {
+        "q": "Nasıl kayıt olurum?",
+        "a": "E-posta adresinizle kayıt olabilir veya Google, Apple ya da Kakao hesabınızla hızlıca kayıt yapabilirsiniz. Sosyal giriş için ayrı bir şifre gerekmez."
+      },
+      "createTrip": {
+        "q": "Gezi planı nasıl oluştururum?",
+        "a": "Ana ekranda 'Yeni Gezi Oluştur' düğmesine dokunun, destinasyon ve seyahat tarihlerini girin; AI sizin için otomatik olarak kişiselleştirilmiş bir güzergah oluşturacaktır. Daha doğru öneriler için bütçe, seyahat tarzı ve ilgi alanlarınızı seçin."
+      },
+      "aiPlan": {
+        "q": "AI güzergahı nasıl çalışır?",
+        "a": "Gelişmiş AI teknolojisini kullanarak destinasyonunuzdaki popüler turistik yerleri, restoranları ve kültürel deneyimleri analiz eder, ardından ulaşım güzergahları ve zamanlamayı dikkate alarak optimize edilmiş bir program oluşturur. Oluşturulan güzergahlar serbestçe değiştirilebilir."
+      },
+      "appTour": {
+        "q": "Uygulama nasıl düzenlenmiştir?",
+        "a": "Uygulama beş ana sekmeden oluşur: Ana Sayfa (gezi listesi), Keşfet (diğer gezginleri bulma), Gezi Detayı (güzergah, harita, hava durumu, bütçe), Bildirimler ve Profil. Alt sekme çubuğunu kullanarak kolayca gezinebilirsiniz."
+      }
+    },
+    "tripManagement": {
+      "editPlan": {
+        "q": "Güzergahımı nasıl düzenlerim?",
+        "a": "Gezi detay ekranında herhangi bir etkinliğe dokunarak saatini, konumunu ve notlarını düzenleyebilirsiniz. Etkinlikleri sürükleyip bırakarak sıralayabilir veya + düğmesiyle yenilerini ekleyebilirsiniz."
+      },
+      "tripStatus": {
+        "q": "Gezi durumuna göre düzenleme kuralları farklı mıdır?",
+        "a": "• Gezi öncesi: Tüm planlar serbestçe değiştirilebilir ve eklenebilir.\n• Gezi sırasında: Geçmiş etkinlikler değiştirilemez; yalnızca gelecekteki etkinlikler düzenlenebilir.\n• Gezi sonrası: Yalnızca görüntüleme ve silme yapılabilir; değişiklik yapılamaz."
+      },
+      "mapView": {
+        "q": "Yerleri haritada nasıl görüntülerim?",
+        "a": "Gezi detay ekranında harita sekmesine geçerek planlanan tüm konumları tek bakışta görebilirsiniz. İşaretçilere dokunarak etkinlik detaylarını görüntüleyebilirsiniz."
+      },
+      "weather": {
+        "q": "Hava durumu ve saat dilimi bilgisini nerede görebilirim?",
+        "a": "Yerel hava durumu ve saat dilimi bilgileri, gezi detay ekranının üst kısmında her gün için otomatik olarak görünür. Hava durumu verileri harici hizmetlerden alınır ve gerçek zamanlı güncellenir."
+      },
+      "socialFeatures": {
+        "q": "Sosyal özellikleri nasıl kullanırım?",
+        "a": "Keşfet sekmesinde diğer gezginlerin paylaştığı planları keşfedin. Beğendiğiniz gezginleri takip edin ve gezi planlarını beğenin. Kendi gezinizi paylaşmak için gezi detay ekranındaki paylaş düğmesine dokunun."
+      },
+      "collaborators": {
+        "q": "Başkalarıyla birlikte nasıl gezi planlayabilirim?",
+        "a": "Gezi detay ekranında 'İşbirlikçiler' bölümüne gidin ve başkalarını e-posta ile davet edin. Davet edilenler 'Görüntüleyici' veya 'Düzenleyici' olarak katılabilir."
+      },
+      "linkSharing": {
+        "q": "Geziyi bağlantı ile nasıl paylaşırım?",
+        "a": "Gezi detay ekranındaki paylaş düğmesine dokunarak benzersiz bir paylaşım bağlantısı oluşturun. Bağlantıya sahip herkes gezi planınızı görüntüleyebilir. Paylaşımı istediğiniz zaman devre dışı bırakabilir ve süre sonu (7/30/90 gün) belirleyebilirsiniz."
+      },
+      "photos": {
+        "q": "Gezi fotoğraflarını nasıl yönetirim?",
+        "a": "Gezi detay ekranında kapak fotoğrafını değiştirebilir veya etkinliklere fotoğraf ekleyebilirsiniz. Yüklenen fotoğraflar depolama için otomatik olarak optimize edilir (WebP'ye dönüştürülür)."
+      },
+      "budget": {
+        "q": "Bütçe ve harcamalarımı nasıl yönetirim?",
+        "a": "Gezi oluştururken toplam bütçenizi belirleyin. Gezi detay ekranının bütçe sekmesinde harcamaları kategorilere göre (ulaşım, konaklama, yemek, turistik yerler vb.) takip edin. Günlük ortalama ve kalan bütçeyi tek bakışta görüntüleyin."
+      }
+    },
+    "accountSettings": {
+      "editProfile": {
+        "q": "Profilimi nasıl düzenlerim?",
+        "a": "Profil sekmesi → 'Profili Düzenle' bölümünden adınızı ve fotoğrafınızı değiştirebilirsiniz."
+      },
+      "changePassword": {
+        "q": "Şifremi nasıl değiştiririm?",
+        "a": "Profil sekmesi → 'Şifre Değiştir' bölümüne gidin, mevcut şifrenizi girin ve yenisini belirleyin. Sosyal giriş kullanıcılarının şifre değiştirmesine gerek yoktur."
+      },
+      "twoFactor": {
+        "q": "İki faktörlü kimlik doğrulamayı nasıl kurarım?",
+        "a": "Profil sekmesi → 'İki Faktörlü Doğrulama' bölümünden etkinleştirebilirsiniz. Google Authenticator gibi bir TOTP uygulamasıyla QR kodu tarayın ve doğrulama kodunu girin. Yedek kodlar da sağlanacaktır."
+      },
+      "notifications": {
+        "q": "Bildirimleri nasıl yönetirim?",
+        "a": "Profil sekmesi → 'Bildirim Ayarları' bölümünden anlık bildirimleri yapılandırabilirsiniz. Kalkış hatırlatmaları, gezi başlama/tamamlanma uyarıları alabilirsiniz."
+      },
+      "deleteAccount": {
+        "q": "Hesabımı nasıl silerim?",
+        "a": "Profil sekmesinin altındaki 'Hesabı Sil' düğmesine dokunun. Tüm veriler talep tarihinden itibaren 30 gün içinde kalıcı olarak silinecektir. Bu işlem geri alınamaz."
+      },
+      "gdprExport": {
+        "q": "Verilerimi nasıl dışa aktarırım?",
+        "a": "Profil → Ayarlar bölümünden 'Veri Dışa Aktar' düğmesine dokunarak tüm kişisel verilerinizi (hesap bilgileri, geziler, harcamalar, bildirimler) JSON formatında indirebilirsiniz. Bu, GDPR kapsamında veri taşınabilirliği hakkınızı güvence altına alır."
+      },
+      "darkMode": {
+        "q": "Karanlık modu nasıl etkinleştiririm?",
+        "a": "Profil sekmesindeki karanlık mod düğmesini açın. Karanlık mod, düşük ışık ortamlarında göz yorgunluğunu azaltır ve pil tasarrufu sağlar."
+      },
+      "language": {
+        "q": "Uygulama dilini nasıl değiştiririm?",
+        "a": "Profil sekmesi → 'Dil' bölümünden 17 dil arasından seçim yapabilirsiniz (Korece, İngilizce, Japonca, Çince, İspanyolca, Almanca, Fransızca, Taylandca, Vietnamca, Portekizce, Arapça, Endonezce, Hintçe, İtalyanca, Rusça, Türkçe, Malayca)."
+      }
+    },
+    "offlineSync": {
+      "offlineUse": {
+        "q": "Uygulamayı çevrimdışı kullanabilir miyim?",
+        "a": "Evet, daha önce yüklenen gezi planları internet olmadan görüntülenebilir. Çevrimdışıyken yapılan değişiklikler yeniden bağlandığınızda otomatik olarak senkronize edilir."
+      },
+      "syncStatus": {
+        "q": "Senkronizasyon durumunu nasıl kontrol ederim?",
+        "a": "Ekranın üstünde bir senkronizasyon çubuğu görünür: 'Bekliyor (N öğe)' → 'Senkronize ediliyor...' → 'Senkronize edildi'. Kararsız bağlantılarda otomatik yeniden deneme yapılır."
+      },
+      "syncError": {
+        "q": "Senkronizasyon başarısız olursa ne yapmalıyım?",
+        "a": "Ağ bağlantınızı kontrol edin ve uygulamayı yeniden başlatın. Sorun devam ederse 'Bize Ulaşın' bölümünden bizimle iletişime geçin."
+      }
+    },
+    "adsPartners": {
+      "freeService": {
+        "q": "Hizmetin kullanım ücreti var mı?",
+        "a": "MyTravel, ayda 3 AI gezi oluşturma hakkıyla ücretsiz kullanılabilir. Premium abonelik (aylık 3,99$ veya yıllık 29,99$) sınırsız AI oluşturma, reklamsız deneyim ve gelişmiş özellikler sunar. Ücretsiz kullanıcılar, hizmet devamlılığını desteklemek için reklamlar görecektir."
+      },
+      "adInfo": {
+        "q": "Reklamlar nasıl gösterilir?",
+        "a": "Gezi oluşturma sonrasında geçiş reklamları ve bazı ekranlarda banner reklamları gösterilebilir. Kişiselleştirilmiş reklamlar iOS Uygulama İzleme Şeffaflığı (ATT) üzerinden kontrol edilir."
+      },
+      "affiliates": {
+        "q": "Ortaklık programları nedir?",
+        "a": "Gezi detay ekranında uçuş, otel ve etkinlik rezervasyon bağlantıları sunuyoruz. Booking.com, Agoda, Klook ve GetYourGuide dahil güvenilir hizmetlerle ortaklık yapıyoruz."
+      },
+      "premium": {
+        "q": "Premium abonelik nedir?",
+        "a": "Premium (aylık 3,99$ veya yıllık 29,99$) sınırsız AI gezi oluşturma, reklamsız deneyim ve gelişmiş özellikler sunar. Ücretsiz kullanıcılar ayda 3 AI gezisi oluşturabilir. İstediğiniz zaman iptal edebilirsiniz; planınız fatura döneminin sonunda ücretsiz plana dönecektir."
+      },
+      "premiumCancel": {
+        "q": "Premium'u nasıl iptal ederim?",
+        "a": "App Store veya Google Play abonelik yönetiminden doğrudan iptal edin. Mevcut fatura döneminin sonuna kadar Premium özelliklerden yararlanmaya devam edersiniz. İade politikaları her uygulama mağazasının koşullarına tabidir."
+      },
+      "premiumRestore": {
+        "q": "Aboneliğimi nasıl geri yüklerim?",
+        "a": "Profil → Abonelik bölümüne gidin ve 'Satın Almayı Geri Yükle' düğmesine dokunun. Önceki aboneliğiniz otomatik olarak geri yüklenecektir. Cihaz değiştirirken aynı Apple ID veya Google hesabıyla giriş yapın."
+      }
+    },
+    "contact": {
+      "email": "E-posta Desteği",
+      "emailAddress": "longpapa82@gmail.com",
+      "emailDescription": "Yukarıdaki SSS sorununuzu çözmezse lütfen e-posta ile bize ulaşın. Cihaz bilgisi ve uygulama sürümü otomatik olarak eklenecektir.",
+      "sendEmail": "E-posta Gönder"
+    }
+  },
+  "terms": {
+    "title": "Kullanım Koşulları",
+    "effectiveDate": "Yürürlük: 1 Mart 2026",
+    "articles": {
+      "art1": {
+        "title": "Madde 1 (Amaç)",
+        "content": "Bu Kullanım Koşulları, MyTravel (\"Hizmet\") kullanımını, şirketin ve kullanıcıların haklarını, yükümlülüklerini ve sorumluluklarını düzenler."
+      },
+      "art2": {
+        "title": "Madde 2 (Tanımlar)",
+        "content": "① \"Hizmet\", MyTravel tarafından sağlanan otomatik seyahat planlama ve yönetim hizmetini ifade eder.\n② \"Üye\", bu Koşulları kabul eden ve Hizmete kayıt olan kişiyi ifade eder.\n③ \"AI Tarafından Oluşturulan İçerik\", yapay zeka kullanılarak otomatik olarak oluşturulan seyahat güzergahları ve önerileri ifade eder.\n④ \"Seyahat Verileri\", üyeler tarafından girilen destinasyonlar, programlar ve etkinlik planlarını ifade eder.\n⑤ \"Premium Abonelik\", gelişmiş özellikler sunan ücretli hizmet katmanını ifade eder."
+      },
+      "art3": {
+        "title": "Madde 3 (Hizmet Açıklaması)",
+        "content": "Hizmet şunları sağlar:\n• AI destekli otomatik seyahat planı oluşturma\n• Seyahat planı düzenleme, ekleme ve silme yönetimi\n• Yerel hava durumu ve saat dilimi bilgileri\n• Seyahat ilerleme takibi\n• Geçmiş seyahat geçmişi görüntüleme\n• Çevrimdışı güzergah erişimi ve senkronizasyon\n• Bütçe yönetimi ve harcama takibi\n• Gezi fotoğrafı yükleme ve yönetimi\n• Sosyal özellikler (gezi keşfi, takip, beğeni)\n• Gezi paylaşımı (bağlantı tabanlı paylaşım, işbirlikçi davetleri)\n• Premium abonelik (sınırsız AI, reklamsız)\n• Çoklu dil desteği (17 dil)\n• Bildirim hizmetleri"
+      },
+      "art4": {
+        "title": "Madde 4 (Hesap Kaydı)",
+        "content": "① E-posta veya sosyal hesaplar (Google, Apple, Kakao) aracılığıyla kayıt olabilirsiniz.\n② 14 yaşından küçük kullanıcılar Hizmeti kullanamazlar.\n③ Doğru bilgi sağlamanız gerekmektedir. Yanlış bilgilerden kaynaklanan sorunlardan siz sorumlusunuz.\n④ Hesabınızın güvenliğini sağlamak sizin sorumluluğunuzdadır."
+      },
+      "art5": {
+        "title": "Madde 5 (Hizmet Kullanım Kuralları)",
+        "content": "① Gezi öncesi: Planlar serbestçe değiştirilebilir ve genişletilebilir.\n② Gezi sırasında: Tamamlanan etkinlikler değiştirilemez; yalnızca gelecekteki etkinlikler düzenlenebilir.\n③ Gezi sonrası: Geçmiş yalnızca görüntülenebilir veya silinebilir, değiştirilemez.\n④ AI tarafından oluşturulan sonuçlar yalnızca referans amaçlıdır. Kullanıcılar seyahat ederken yerel koşulları doğrulamalıdır."
+      },
+      "art6": {
+        "title": "Madde 6 (AI Hizmet Koşulları)",
+        "content": "① AI tarafından oluşturulan seyahat planlarının doğruluğu, güvenliği ve uygunluğu garanti edilmez.\n② Güzergah oluşturma için veriler, Gizlilik Politikamızda açıklandığı şekilde OpenAI API aracılığıyla işlenir.\n③ Kullanıcı tarafından girilen seyahat verileri AI model eğitimi için kullanılmaz.\n④ AI hizmetleri teknik koşullar nedeniyle geçici olarak sınırlandırılabilir.\n⑤ Ücretsiz kullanıcılar aylık 3 AI gezi oluşturma ile sınırlıdır; Premium abonelerin sınırsız erişimi vardır."
+      },
+      "art7": {
+        "title": "Madde 7 (Yasak Faaliyetler)",
+        "content": "Kullanıcılar şunları yapmamalıdır:\n• Hizmetin normal işleyişine müdahale etmek\n• Diğer kullanıcıların gizliliğini ihlal etmek\n• Hizmete büyük ölçekte otomatik araçlarla erişmek\n• Reklamlara hileli tıklama yapmak veya manipüle etmek\n• Hizmeti tersine mühendislik yapmak, kopyalamak veya taklit etmek\n• Paylaşılan gezi planları aracılığıyla uygunsuz içerik paylaşmak\n• Yürürlükteki yasa ve yönetmelikleri ihlal etmek"
+      },
+      "art8": {
+        "title": "Madde 8 (Reklamlar ve Ortaklıklar)",
+        "content": "① Hizmet, Google AdSense, AdMob ve ortaklık programları aracılığıyla reklam gösterebilir.\n② Reklam içeriğinin sorumluluğu ilgili reklamverenlere aittir.\n③ Ortaklık bağlantıları üzerinden yapılan rezervasyonlarda ayrı koşullar geçerli olabilir.\n④ Premium aboneler reklam görmezler."
+      },
+      "art9": {
+        "title": "Madde 9 (Premium Abonelik)",
+        "content": "① Premium abonelik, aylık (3,99$/ay) veya yıllık (29,99$/yıl) plan olarak sunulmaktadır.\n② Premium, sınırsız AI gezi oluşturma, reklam kaldırma ve gelişmiş özellikler sunar.\n③ Abonelikler fatura tarihinde otomatik olarak yenilenir. Ücret alınmaması için yenilemeden en az 24 saat önce iptal edin.\n④ İptal işlemi Apple App Store veya Google Play Store abonelik ayarlarından yapılır.\n⑤ İptalden sonra Premium özellikler mevcut fatura döneminin sonuna kadar kullanılabilir.\n⑥ İade politikaları Apple ve Google'ın ilgili uygulama mağazası politikalarına tabidir.\n⑦ Ödemeler RevenueCat aracılığıyla işlenir. Kredi kartı bilgileri doğrudan Hizmet tarafından saklanmaz."
+      },
+      "art10": {
+        "title": "Madde 10 (Kullanıcı İçeriği ve Paylaşım)",
+        "content": "① Kullanıcı tarafından oluşturulan içeriğin (gezi planları, fotoğraflar, yorumlar) hakları kullanıcıya aittir.\n② Bir geziyi 'herkese açık' olarak ayarladığınızda veya paylaşım bağlantısı oluşturduğunuzda içerik başkaları tarafından görülebilir hale gelir.\n③ Hizmetin, kamuya açık paylaşılan içeriği hizmet işletimi için gerekli olan kapsamda kullanmak üzere münhasır olmayan bir lisansı vardır.\n④ Kullanıcılar uygunsuz veya yasa dışı içerik (şiddet, yetişkin materyali, ayrımcı içerik vb.) paylaşmamalıdır.\n⑤ Hizmet, işletme politikalarını ihlal eden içeriği önceden haber vermeksizin kaldırabilir veya gizleyebilir.\n⑥ Yüklenen fotoğraflar sunucuda optimize edilir (yeniden boyutlandırma, WebP dönüşümü). Orijinal dosyalar saklanmaz."
+      },
+      "art11": {
+        "title": "Madde 11 (Fikri Mülkiyet)",
+        "content": "① Hizmetin içerik, tasarım ve yazılım fikri mülkiyet hakları Hizmet sağlayıcısına aittir.\n② Kullanıcılar tarafından oluşturulan seyahat planlarının hakları kullanıcılara aittir."
+      },
+      "art12": {
+        "title": "Madde 12 (Sorumluluk Reddi)",
+        "content": "① AI tarafından oluşturulan seyahat planları yalnızca referans amaçlıdır. Seyahat ederken yerel koşulları doğrulayın.\n② Hava durumu ve saat dilimi bilgileri harici API'lere dayalıdır; doğruluğu garanti edilmez.\n③ Hizmet, mücbir sebep veya sistem arızaları nedeniyle oluşan kesintilerden sorumlu değildir.\n④ Hizmet, ortaklık rezervasyonlarında yalnızca aracı olarak hareket eder ve doğrudan sorumluluk taşımaz."
+      },
+      "art13": {
+        "title": "Madde 13 (Hesap Sonlandırma)",
+        "content": "① Hesabınızı istediğiniz zaman 'Hesabı Sil' özelliğini kullanarak sonlandırabilirsiniz.\n② Tüm kişisel veriler 30 gün içinde kalıcı olarak silinecektir.\n③ Yasaların gerektirdiği bilgiler belirtilen süre boyunca saklanır ve ardından imha edilir.\n④ Aktif bir Premium aboneliğiniz varsa, hesabınızı silmeden önce uygulama mağazasından iptal edin."
+      },
+      "art14": {
+        "title": "Madde 14 (Sorumluluk)",
+        "content": "Bir üye, şirketin kasıtlı veya ağır ihmalinden dolayı zarara uğrarsa, şirket yürürlükteki yasalara uygun olarak tazminat ödeyecektir."
+      },
+      "art15": {
+        "title": "Madde 15 (Koşul Değişiklikleri)",
+        "content": "① Değişiklikler yürürlüğe girmeden en az 7 gün önce uygulama içi bildirimler aracılığıyla duyurulacaktır.\n② Değişiklikleri kabul etmiyorsanız, kullanımı durdurabilir ve hesabınızı silebilirsiniz."
+      },
+      "art16": {
+        "title": "Madde 16 (Uyuşmazlık Çözümü)",
+        "content": "① Bu Koşullar Kore Cumhuriyeti yasalarına tabidir.\n② Uyuşmazlıklar Seul Merkez Bölge Mahkemesi'nin yargı yetkisine tabi olacaktır."
+      },
+      "art17": {
+        "title": "Madde 17 (Ek Hüküm)",
+        "content": "Bu Koşullar 1 Mart 2026 tarihinden itibaren yürürlüktedir."
+      }
+    }
+  },
+  "privacy": {
+    "title": "Gizlilik Politikası",
+    "effectiveDate": "Yürürlük: 1 Mart 2026",
+    "articles": {
+      "art1": {
+        "title": "1. Topladığımız Bilgiler",
+        "content": "[Zorunlu]\n• Hesap bilgileri: Ad, e-posta adresi, profil fotoğrafı\n• Sosyal giriş: Google, Apple veya Kakao'dan herkese açık profil\n\n[İsteğe bağlı]\n• Seyahat tercihleri: Bütçe düzeyi, seyahat tarzı, ilgi alanları\n• Fotoğraflar: Gezi kapak fotoğrafları, etkinlik fotoğrafları (yükleme sırasında WebP'ye dönüştürülür)\n\n[Otomatik]\n• Cihaz bilgileri: Cihaz türü, işletim sistemi, uygulama sürümü, anlık bildirim jetonu\n• Kullanım verileri: Uygulama kullanım kalıpları, reklam etkileşimleri, analiz etkinlikleri\n• Seyahat verileri: Destinasyonlar, programlar, etkinlik planları, konum koordinatları\n• Güvenlik verileri: Denetim kayıtları (giriş, şifre değişiklikleri ve diğer güvenlik olayları, IP adresleri)\n• Abonelik verileri: Abonelik katmanı, platform, son kullanma tarihi, aylık AI kullanım sayısı\n• Sosyal veriler: Takip ilişkileri, beğeniler, paylaşım jetonları\n\n[Yöntemler] Kayıt, sosyal giriş, kullanım sırasında otomatik toplama"
+      },
+      "art2": {
+        "title": "2. Bilgilerinizi Nasıl Kullanıyoruz",
+        "content": "• Hizmet sunumu: Hesap yönetimi, AI seyahat planı oluşturma, yerel bilgiler\n• AI işleme: OpenAI API aracılığıyla güzergah oluşturma (destinasyon, tarihler, tercihler gönderilir)\n• Kişiselleştirme: Seyahat tercihlerine göre önerileri optimize etme\n• Reklamcılık: Kişiselleştirilmiş reklamlar (ayrı onay ile)\n• İyileştirme: Kullanım analizi, hata düzeltme\n• Abonelik yönetimi: Premium durum doğrulaması, özellik erişim kontrolü\n• Güvenlik: Anormal erişim tespiti, denetim kayıt tutma"
+      },
+      "art3": {
+        "title": "3. Üçüncü Taraf Paylaşımı",
+        "content": "Aşağıdaki durumlar dışında kişisel bilgi paylaşmıyoruz:\n\n| Alıcı | Veri | Amaç |\n| OpenAI | Destinasyon, tarihler, tercihler | AI güzergah oluşturma |\n| Google (AdSense/AdMob) | Reklam kimliği, kullanım kalıpları | Reklam sunumu |\n| RevenueCat | Uygulama kullanıcı kimliği, abonelik bilgileri | Abonelik ödeme işleme |\n| Google Maps API | Arama sorguları, oturum jetonları | Yer arama |\n| OpenWeather API | Enlem, boylam koordinatları | Hava durumu bilgileri |\n| Sentry | Hata verileri, kullanıcı bağlamı | Hata izleme |\n| Ortaklık iş ortakları | Tıklama olayları, IP adresi, Kullanıcı Aracısı | Ortaklık hizmeti bağlantısı ve dönüşüm takibi |\n| App Store / Google Play | Satın alma verileri | Uygulama içi satın alma işleme |\n\n※ Kullanıcının açık onayı ile\n※ Yasaların gerektirdiği durumlarda"
+      },
+      "art4": {
+        "title": "4. Veri İşleme Delegasyonu",
+        "content": "| Sağlayıcı | Hizmet |\n| Bulut hizmetleri (Oracle Cloud Infrastructure) | Veri depolama ve işleme |\n| E-posta hizmeti | Kimlik doğrulama ve bildirim e-postaları |\n| RevenueCat | Abonelik ödeme yönetimi |"
+      },
+      "art5": {
+        "title": "5. Veri Saklama",
+        "content": "• Hesap silme: 30 gün içinde imha edilir\n• E-ticaret yasası: İşlem kayıtları 5 yıl saklanır\n• Telekomünikasyon yasası: Erişim kayıtları 3 ay saklanır\n• Denetim kayıtları: 30 gün saklanır ve ardından otomatik olarak silinir\n• Yasaların gerektirdiği bilgiler, gerekli süre boyunca ayrı olarak saklanır ve ardından imha edilir."
+      },
+      "art6": {
+        "title": "6. Haklarınız",
+        "content": "Aşağıdaki hakları kullanabilirsiniz:\n• Kişisel bilgilerinize erişim, düzeltme, silme veya işlemeyi askıya alma\n• Veri taşınabilirliği talep etme (Kişisel Verilerin Korunması Kanunu Madde 35-2)\n• Otomatik kararların (AI güzergah oluşturma) açıklanmasını talep etme veya reddetme\n• Hesabınızı silerek tüm verileri kalıcı olarak silme\n• Reklam izleme onayını geri çekme (cihaz ayarlarından değiştirilebilir)\n\n[Veri Dışa Aktarma Kapsamı]\nVeri dışa aktarımına dahil: Kullanıcı profili, gezi planları, harcama kayıtları, bildirim geçmişi.\nDahil olmayan: Sosyal ilişkiler (takipler), yüklenen fotoğraflar, analiz etkinlikleri, denetim kayıtları.\n\n[Nasıl kullanılır]\nUygulama: Profil → Hesabı Sil\nE-posta: longpapa82@gmail.com"
+      },
+      "art7": {
+        "title": "7. 14 Yaş Altı Çocukların Korunması",
+        "content": "Bu Hizmet, 14 yaş altı çocukların kaydını kısıtlar. Bir çocuğun verilerinin toplandığını tespit edersek, derhal sileceğiz."
+      },
+      "art8": {
+        "title": "8. Veri İmhası",
+        "content": "• Elektronik dosyalar: Kurtarılamaz yöntemlerle kalıcı olarak silinir\n• Basılı çıktılar: İmha edilir veya yakılır\n• Yüklenen fotoğraflar: Hesap silindiğinde sunucudan kalıcı olarak kaldırılır\n• Saklama süresi dolduğunda veya amaç gerçekleştiğinde derhal imha edilir."
+      },
+      "art9": {
+        "title": "9. Reklamcılık ve Davranışsal Veriler",
+        "content": "• iOS: Uygulama İzleme Şeffaflığı (ATT) aracılığıyla kişiselleştirilmiş reklamları kontrol edin.\n• Android: Ayarlar → Google → Reklamlar üzerinden reklam kimliğini sıfırlayın veya devre dışı bırakın.\n• Web: Tarayıcı ayarlarından çerezleri devre dışı bırakın (bazı özellikler sınırlanabilir).\n• Kimlik doğrulama jetonları (JWT), oturum yönetimi için güvenli depolama alanında saklanır."
+      },
+      "art10": {
+        "title": "10. Güvenlik Önlemleri",
+        "content": "• Şifre şifreleme (bcrypt, 12 tur)\n• SSL/TLS iletişim şifreleme (HSTS etkin)\n• Erişim kontrolü ve iki faktörlü kimlik doğrulama (TOTP)\n• Düzenli güvenlik denetimleri ve izleme\n• Hesap kilitleme (10 başarısız denemeden sonra 15 dakika kilitleme)\n• Hassas veri maskeleme (günlüklerde PII filtreleme)\n• Denetim kayıt tutma (güvenlik olayları 30 gün saklanır)"
+      },
+      "art11": {
+        "title": "11. Gizlilik Sorumlusu",
+        "content": "Gizlilik Sorumlusu: MyTravel Operasyon Ekibi\nE-posta: longpapa82@gmail.com"
+      },
+      "art12": {
+        "title": "12. Sınır Ötesi Veri Aktarımı",
+        "content": "Kişisel bilgileriniz hizmet işletimi için Kore dışına aktarılabilir:\n\n| Alıcı | Konum | Veri | Amaç |\n| OpenAI | ABD | Seyahat verileri | AI güzergah oluşturma |\n| Google | ABD | Reklam kimliği, kullanım kalıpları | Reklam sunumu |\n| RevenueCat | ABD | Abonelik bilgileri | Ödeme işleme |\n| Sentry | ABD | Hata verileri | Hata izleme |\n\nHer hizmet uygun veri koruma önlemlerini sürdürmektedir ve aktarımlar yürürlükteki yasalara uygun olarak kullanıcı onayı ile yapılmaktadır."
+      },
+      "art13": {
+        "title": "13. Veri İhlali Bildirimi",
+        "content": "Bir veri ihlali durumunda, etkilenen kullanıcılara derhal şu bilgiler bildirilecektir:\n• İhlal edilen kişisel bilgi kategorileri\n• İhlalin zamanı ve koşulları\n• Olası zararı en aza indirmek için önerilen eylemler\n• Müdahale önlemlerimiz ve iyileştirme prosedürlerimiz\n• Sorumlu departmanın iletişim bilgileri\n\nBildirim, e-posta, uygulama içi bildirimler veya diğer uygun yollarla yapılacaktır."
+      },
+      "art14": {
+        "title": "14. Politika Değişiklikleri",
+        "content": "Değişiklikler yürürlüğe girmeden en az 7 gün önce uygulama içi bildirimler aracılığıyla duyurulacaktır.\n\nBu politika 1 Mart 2026 tarihinden itibaren yürürlüktedir."
+      }
+    }
+  }
+}

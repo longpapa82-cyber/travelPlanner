@@ -1,0 +1,31 @@
+{
+  "title": "Обзор",
+  "following": "Подписки",
+  "trending": "Популярное",
+  "emptyFollowing": "Нет публикаций от подписок",
+  "emptyFollowingMessage": "Подпишитесь на путешественников, чтобы видеть их публичные поездки",
+  "emptyTrending": "Публичных поездок пока нет",
+  "emptyTrendingMessage": "Популярные поездки скоро появятся здесь",
+  "tripBy": "Поездка от {{name}}",
+  "likesCount": "{{count}} отметок «Нравится»",
+  "profile": {
+    "followers": "Подписчики",
+    "following": "Подписки",
+    "follow": "Подписаться",
+    "unfollow": "Отписаться",
+    "publicTrips": "Публичные поездки",
+    "noPublicTrips": "Нет публичных поездок"
+  },
+  "notifications": {
+    "newFollower": "{{name}} подписался(-ась) на вас",
+    "tripLiked": "{{name}} оценил(а) вашу поездку в {{destination}}"
+  },
+  "errors": {
+    "followFailed": "Не удалось подписаться",
+    "unfollowFailed": "Не удалось отписаться",
+    "likeFailed": "Не удалось поставить отметку",
+    "unlikeFailed": "Не удалось убрать отметку",
+    "feedFailed": "Не удалось загрузить ленту",
+    "profileFailed": "Не удалось загрузить профиль"
+  }
+}

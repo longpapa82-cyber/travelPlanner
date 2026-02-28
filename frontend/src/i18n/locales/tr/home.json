@@ -1,0 +1,60 @@
+{
+  "greeting": "Merhaba 👋",
+  "heroTitle": "{{name}}'in Gezileri",
+  "subtitle": "Bir sonraki maceranızı planlamaya hazır mısınız?",
+  "createTrip": "AI Gezi Planı Oluştur",
+  "stats": {
+    "completed": "Tamamlanan",
+    "ongoing": "Devam Eden",
+    "upcoming": "Yaklaşan"
+  },
+  "featured": {
+    "title": "Şimdi Ziyaret Edilecek Harika Yerler",
+    "subtitle": "Popüler destinasyonları keşfedin",
+    "seeAll": "Tümünü gör →"
+  },
+  "destinations": {
+    "tokyo": {
+      "name": "Tokyo",
+      "country": "Japonya",
+      "description": "Geleneğin modernlikle buluştuğu yer"
+    },
+    "osaka": {
+      "name": "Osaka",
+      "country": "Japonya",
+      "description": "Lezzetlerin ve canlı sokakların şehri"
+    },
+    "bangkok": {
+      "name": "Bangkok",
+      "country": "Tayland",
+      "description": "Altın tapınaklar ve gece pazarları"
+    },
+    "danang": {
+      "name": "Da Nang",
+      "country": "Vietnam",
+      "description": "Güzel plajlar ve harika yemekler"
+    },
+    "paris": {
+      "name": "Paris",
+      "country": "Fransa",
+      "description": "Sanat ve romantizmin şehri"
+    },
+    "singapore": {
+      "name": "Singapur",
+      "country": "Singapur",
+      "description": "Fütüristik bir şehirde gastronomi yolculuğu"
+    }
+  },
+  "quickActions": {
+    "title": "Hızlı İşlemler",
+    "myTrips": "Gezilerim",
+    "myTripsDesc": "Devam eden gezileri kontrol edin",
+    "inspiration": "İlham",
+    "inspirationDesc": "Yeni fikirler keşfedin"
+  },
+  "tip": {
+    "sectionTitle": "Seyahat İpuçları",
+    "title": "💡 Önceden Planlayın",
+    "description": "AI, yerel hava durumu, popüler noktalar ve ulaşım güzergahlarını değerlendirerek en uygun güzergahı oluşturur."
+  }
+}

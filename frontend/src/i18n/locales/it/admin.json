@@ -1,0 +1,55 @@
+{
+  "title": "Pannello Admin",
+  "menu": {
+    "users": "Gestione utenti",
+    "errorLogs": "Log errori",
+    "revenue": "Dashboard ricavi"
+  },
+  "dashboard": {
+    "subtitle": "Strumenti di gestione del servizio"
+  },
+  "users": {
+    "title": "Gestione utenti",
+    "totalUsers": "Utenti totali",
+    "todaySignups": "Registrazioni oggi",
+    "todayActive": "Attivi oggi",
+    "weeklyActive": "Attivi settimanali",
+    "people": "",
+    "signupTrend": "Registrazioni (ultimi 30 giorni)",
+    "providerBreakdown": "Metodo di registrazione",
+    "memberList": "Lista membri",
+    "searchPlaceholder": "Cerca nome o email",
+    "allProviders": "Tutti",
+    "lastLogin": "Ultimo accesso",
+    "signupDate": "Iscritto il",
+    "trips": "Viaggi",
+    "never": "Mai",
+    "noUsers": "Nessun utente trovato",
+    "loadMore": "Carica altri"
+  },
+  "errors": {
+    "title": "Log errori",
+    "todayErrors": "Oggi",
+    "weeklyErrors": "Questa settimana",
+    "unresolved": "Non risolti",
+    "affectedUsers": "Utenti interessati",
+    "count": "",
+    "people": "",
+    "hourlyTrend": "Errori (ultime 24h)",
+    "topErrors": "Top 10 errori",
+    "errorList": "Lista errori",
+    "allSeverity": "Tutti",
+    "error": "Errore",
+    "warning": "Avviso",
+    "fatal": "Fatale",
+    "unresolvedOnly": "Solo non risolti",
+    "resolve": "Risolvi",
+    "resolved": "Risolto",
+    "screen": "Schermata",
+    "device": "Dispositivo",
+    "version": "Versione",
+    "noErrors": "Nessun errore trovato",
+    "loadMore": "Carica altri",
+    "occurrences": "volte"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "title": "Profilo",
+  "guest": "Ospite",
+  "sections": {
+    "account": "Account",
+    "settings": "Impostazioni",
+    "support": "Supporto",
+    "admin": "Admin"
+  },
+  "menu": {
+    "editProfile": "Modifica profilo",
+    "changePassword": "Cambia password",
+    "twoFactor": "Autenticazione a due fattori",
+    "twoFactorEnabled": "Attiva",
+    "twoFactorDisabled": "Disattivata",
+    "language": "Lingua",
+    "notifications": "Notifiche",
+    "notificationsEnabled": "Attive",
+    "notificationsDisabled": "Disattivate",
+    "darkMode": "Modalità scura",
+    "help": "Aiuto",
+    "terms": "Termini di servizio",
+    "privacy": "Informativa sulla privacy",
+    "revenue": "Dashboard ricavi",
+    "admin": "Pannello Admin"
+  },
+  "editProfile": {
+    "title": "Modifica profilo",
+    "name": "Nome",
+    "namePlaceholder": "Inserisci il tuo nome",
+    "changePhoto": "Cambia foto profilo",
+    "save": "Salva",
+    "alerts": {
+      "nameRequired": "Inserisci il tuo nome",
+      "success": "Profilo aggiornato con successo",
+      "failed": "Aggiornamento profilo fallito",
+      "photoSuccess": "Foto profilo aggiornata",
+      "photoFailed": "Aggiornamento foto profilo fallito",
+      "permissionDenied": "Permesso di accesso alle foto necessario"
+    }
+  },
+  "changePassword": {
+    "title": "Cambia password",
+    "current": "Password attuale",
+    "currentPlaceholder": "Inserisci la password attuale",
+    "new": "Nuova password",
+    "newPlaceholder": "Inserisci nuova password (8+ caratteri, lettere e numeri)",
+    "confirm": "Conferma nuova password",
+    "confirmPlaceholder": "Reinserisci la nuova password",
+    "submit": "Cambia password",
+    "alerts": {
+      "allFieldsRequired": "Compila tutti i campi",
+      "minLength": "La nuova password deve contenere almeno 8 caratteri con lettere e numeri",
+      "mismatch": "Le nuove password non corrispondono",
+      "success": "Password cambiata con successo",
+      "failed": "Cambio password fallito"
+    }
+  },
+  "languageSelector": {
+    "title": "Seleziona lingua",
+    "description": "Scegli la tua lingua preferita"
+  },
+  "logout": {
+    "title": "Esci",
+    "message": "Vuoi davvero uscire?",
+    "button": "Esci"
+  },
+  "deleteAccount": {
+    "title": "Elimina account",
+    "message": "L'eliminazione dell'account rimuoverà permanentemente tutti i dati. Sei sicuro?",
+    "button": "Elimina account",
+    "passwordConfirm": "Inserisci la tua password per confermare l'eliminazione dell'account",
+    "passwordPlaceholder": "Inserisci la password",
+    "alerts": {
+      "success": "Account eliminato con successo",
+      "failed": "Eliminazione account fallita",
+      "passwordRequired": "Inserisci la tua password"
+    }
+  },
+  "version": "Versione",
+  "analytics": {
+    "title": "Statistiche di viaggio",
+    "totalTrips": "Viaggi totali",
+    "completedTrips": "Completati",
+    "ongoingTrips": "In corso",
+    "upcomingTrips": "In arrivo",
+    "totalDays": "Giorni totali",
+    "avgDuration": "Durata media",
+    "days": "giorni",
+    "countriesVisited": "Paesi",
+    "countries": "paesi",
+    "totalSpent": "Spesa totale",
+    "totalBudget": "Budget totale",
+    "topDestinations": "Destinazioni principali",
+    "times": "volte",
+    "activities": "Attività",
+    "completedOf": "{{completed}} / {{total}} completate",
+    "noData": "Nessun dato di viaggio ancora",
+    "loading": "Caricamento statistiche..."
+  },
+  "revenue": {
+    "last30Days": "Ultimi 30 giorni",
+    "totalClicks": "Clic totali",
+    "conversions": "Conversioni",
+    "conversionRate": "Tasso conv.",
+    "commission": "Commissione",
+    "highlights": "In evidenza",
+    "topProvider": "Fornitore principale",
+    "topDestination": "Destinazione principale",
+    "totalRevenue": "Ricavi totali",
+    "byProvider": "Per fornitore",
+    "clicks": "clic",
+    "conv": "conv",
+    "noData": "Nessun dato disponibile ancora",
+    "adminOnly": "Accesso admin necessario",
+    "loadError": "Caricamento dati fallito"
+  }
+}

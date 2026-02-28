@@ -1,0 +1,103 @@
+{
+  "confirm": "Tamam",
+  "cancel": "İptal",
+  "save": "Kaydet",
+  "delete": "Sil",
+  "edit": "Düzenle",
+  "close": "Kapat",
+  "loading": "Yükleniyor...",
+  "error": "Hata",
+  "success": "Başarılı",
+  "retry": "Tekrar Dene",
+  "back": "Geri",
+  "next": "İleri",
+  "done": "Bitti",
+  "copy": "Kopyala",
+  "search": "Ara",
+  "noResults": "Sonuç bulunamadı",
+  "like": "Beğen",
+  "share": "Paylaş",
+  "clear": "Temizle",
+  "seeAll": "Tümünü gör →",
+  "findOnProvider": "{{name}} üzerinde bul",
+  "offlineMode": "Çevrimdışı mod — önbelleğe alınmış veriler gösteriliyor",
+  "offlinePending": "Çevrimdışı — {{count}} değişiklik bekliyor",
+  "offlineSyncing": "Senkronize ediliyor...",
+  "offlineSynced": "Tüm değişiklikler senkronize edildi",
+  "errorBoundary": {
+    "title": "Biraz kaybolmuş gibiyiz",
+    "message": "Beklenmeyen bir hata oluştu.\nEndişelenmeyin, sizi doğru yola geri getireceğiz!",
+    "persistentTitle": "Tekrarlayan hatalar tespit edildi",
+    "persistentMessage": "Bu hata tekrar ediyor.\nLütfen uygulamayı yeniden yüklemeyi deneyin.",
+    "retry": "Tekrar Dene",
+    "reload": "Uygulamayı Yenile",
+    "goHome": "Ana Sayfaya Git",
+    "errorId": "Hata ID: {{id}}"
+  },
+  "tabs": {
+    "home": "Ana Sayfa",
+    "trips": "Gezilerim",
+    "notifications": "Bildirimler",
+    "profile": "Profil",
+    "discover": "Keşfet"
+  },
+  "notifications": {
+    "emptyTitle": "Bildirim yok",
+    "emptyMessage": "Yeni bildirimler burada görünecek",
+    "markAllRead": "Tümünü okundu işaretle",
+    "deleteAll": "Tümünü sil",
+    "deleteAllTitle": "Bildirimleri sil",
+    "deleteAllConfirm": "Tüm bildirimler silinsin mi?",
+    "allMarkedRead": "Tüm bildirimler okundu olarak işaretlendi",
+    "allDeleted": "Tüm bildirimler silindi",
+    "error": "Bir hata oluştu",
+    "fetchError": "Bildirimler yüklenemedi",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "justNow": "Az önce",
+    "minutesAgo": "{{count}} dk önce",
+    "hoursAgo": "{{count}} sa önce",
+    "daysAgo": "{{count}} gün önce",
+    "prePermission": {
+      "title": "Gezilerinizden haberdar olun",
+      "description": "Kalkış hatırlatmaları, hava durumu uyarıları ve önemli seyahat güncellemeleri alarak hiçbir şeyi kaçırmayın.",
+      "benefit1": "Kalkış hatırlatmaları",
+      "benefit2": "Kalkış günü ve güzergah uyarıları",
+      "benefit3": "Hava durumu değişikliği bildirimleri",
+      "enable": "Bildirimleri etkinleştir",
+      "later": "Belki sonra"
+    }
+  },
+  "pwa": {
+    "installTitle": "Uygulama olarak yükle",
+    "installMessage": "Daha hızlı bir deneyim için ana ekrana ekleyin",
+    "install": "Yükle"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "E-posta doğrulaması gerekli",
+      "message": "E-postanızı doğrulamak için gelen kutunuzu kontrol edin",
+      "resend": "Tekrar Gönder",
+      "sent": "Doğrulama e-postası tekrar gönderildi",
+      "error": "Gönderilemedi"
+    }
+  },
+  "errors": {
+    "network": "Ağ hatası. Bağlantınızı kontrol edin.",
+    "rateLimit": "Çok fazla istek. Lütfen biraz sonra tekrar deneyin.",
+    "forbidden": "Bu işlem için yetkiniz yok.",
+    "notFound": "İstenen kaynak bulunamadı.",
+    "locked": "Hesap geçici olarak kilitlendi. Daha sonra tekrar deneyin.",
+    "server": "Sunucu hatası. Daha sonra tekrar deneyin.",
+    "generic": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
+  },
+  "att": {
+    "title": "Kişiselleştirilmiş seyahat fırsatları alın",
+    "description": "İlgi alanlarınıza göre seyahat fırsatları almak için izlemeye izin verin.",
+    "benefit1": "Kişiselleştirilmiş seyahat fırsatları",
+    "benefit2": "İlgili destinasyon önerileri",
+    "benefit3": "Daha iyi reklam deneyimi",
+    "continue": "Devam Et",
+    "later": "Belki sonra"
+  }
+}

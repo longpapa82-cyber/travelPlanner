@@ -1,0 +1,103 @@
+{
+  "confirm": "OK",
+  "cancel": "Batal",
+  "save": "Simpan",
+  "delete": "Padam",
+  "edit": "Edit",
+  "close": "Tutup",
+  "loading": "Memuatkan...",
+  "error": "Ralat",
+  "success": "Berjaya",
+  "retry": "Cuba Semula",
+  "back": "Kembali",
+  "next": "Seterusnya",
+  "done": "Selesai",
+  "copy": "Salin",
+  "search": "Cari",
+  "noResults": "Tiada hasil ditemui",
+  "like": "Suka",
+  "share": "Kongsi",
+  "clear": "Kosongkan",
+  "seeAll": "Lihat semua →",
+  "findOnProvider": "Cari di {{name}}",
+  "offlineMode": "Mod luar talian — menunjukkan data cache",
+  "offlinePending": "Luar talian — {{count}} perubahan menunggu",
+  "offlineSyncing": "Menyegerakkan...",
+  "offlineSynced": "Semua perubahan disegerakkan",
+  "errorBoundary": {
+    "title": "Kami tersesat sedikit",
+    "message": "Ralat tidak dijangka berlaku.\nJangan risau, kami akan membawa anda kembali!",
+    "persistentTitle": "Ralat berulang dikesan",
+    "persistentMessage": "Ralat ini terus berlaku.\nSila cuba muat semula aplikasi.",
+    "retry": "Cuba Semula",
+    "reload": "Muat Semula Aplikasi",
+    "goHome": "Ke Laman Utama",
+    "errorId": "ID Ralat: {{id}}"
+  },
+  "tabs": {
+    "home": "Utama",
+    "trips": "Perjalanan Saya",
+    "notifications": "Pemberitahuan",
+    "profile": "Profil",
+    "discover": "Terokai"
+  },
+  "notifications": {
+    "emptyTitle": "Tiada pemberitahuan",
+    "emptyMessage": "Pemberitahuan baharu akan muncul di sini",
+    "markAllRead": "Tandai semua dibaca",
+    "deleteAll": "Padam semua",
+    "deleteAllTitle": "Padam pemberitahuan",
+    "deleteAllConfirm": "Padam semua pemberitahuan?",
+    "allMarkedRead": "Semua pemberitahuan ditandai sebagai dibaca",
+    "allDeleted": "Semua pemberitahuan dipadamkan",
+    "error": "Ralat berlaku",
+    "fetchError": "Gagal memuatkan pemberitahuan",
+    "cancel": "Batal",
+    "delete": "Padam",
+    "justNow": "Baru sahaja",
+    "minutesAgo": "{{count}} min lalu",
+    "hoursAgo": "{{count}} jam lalu",
+    "daysAgo": "{{count}} hari lalu",
+    "prePermission": {
+      "title": "Kekal dikemas kini tentang perjalanan anda",
+      "description": "Dapatkan peringatan berlepas, amaran cuaca, dan kemas kini perjalanan penting supaya anda tidak terlepas apa-apa.",
+      "benefit1": "Peringatan berlepas",
+      "benefit2": "Amaran hari berlepas & jadual perjalanan",
+      "benefit3": "Pemberitahuan perubahan cuaca",
+      "enable": "Aktifkan pemberitahuan",
+      "later": "Mungkin nanti"
+    }
+  },
+  "pwa": {
+    "installTitle": "Pasang sebagai aplikasi",
+    "installMessage": "Tambah ke skrin utama untuk pengalaman lebih pantas",
+    "install": "Pasang"
+  },
+  "emailVerification": {
+    "banner": {
+      "title": "Pengesahan e-mel diperlukan",
+      "message": "Sila semak peti masuk anda untuk mengesahkan e-mel",
+      "resend": "Hantar Semula",
+      "sent": "E-mel pengesahan dihantar semula",
+      "error": "Gagal menghantar"
+    }
+  },
+  "errors": {
+    "network": "Ralat rangkaian. Sila semak sambungan anda.",
+    "rateLimit": "Terlalu banyak permintaan. Sila cuba sebentar lagi.",
+    "forbidden": "Anda tidak mempunyai kebenaran untuk tindakan ini.",
+    "notFound": "Sumber yang diminta tidak ditemui.",
+    "locked": "Akaun dikunci sementara. Cuba lagi kemudian.",
+    "server": "Ralat pelayan. Cuba lagi kemudian.",
+    "generic": "Sesuatu tidak kena. Sila cuba semula."
+  },
+  "att": {
+    "title": "Dapatkan tawaran perjalanan peribadi",
+    "description": "Benarkan penjejakan untuk menerima tawaran perjalanan yang disesuaikan dengan minat anda.",
+    "benefit1": "Tawaran perjalanan peribadi",
+    "benefit2": "Cadangan destinasi yang berkaitan",
+    "benefit3": "Pengalaman iklan yang lebih baik",
+    "continue": "Teruskan",
+    "later": "Mungkin nanti"
+  }
+}

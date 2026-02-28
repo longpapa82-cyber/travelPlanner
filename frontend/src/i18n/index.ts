@@ -160,7 +160,55 @@ import hi_social from './locales/hi/social.json';
 import hi_premium from './locales/hi/premium.json';
 import hi_tutorial from './locales/hi/tutorial.json';
 
-export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi', 'pt', 'ar', 'id', 'hi'] as const;
+import it_common from './locales/it/common.json';
+import it_auth from './locales/it/auth.json';
+import it_home from './locales/it/home.json';
+import it_trips from './locales/it/trips.json';
+import it_profile from './locales/it/profile.json';
+import it_components from './locales/it/components.json';
+import it_legal from './locales/it/legal.json';
+import it_admin from './locales/it/admin.json';
+import it_social from './locales/it/social.json';
+import it_premium from './locales/it/premium.json';
+import it_tutorial from './locales/it/tutorial.json';
+
+import ru_common from './locales/ru/common.json';
+import ru_auth from './locales/ru/auth.json';
+import ru_home from './locales/ru/home.json';
+import ru_trips from './locales/ru/trips.json';
+import ru_profile from './locales/ru/profile.json';
+import ru_components from './locales/ru/components.json';
+import ru_legal from './locales/ru/legal.json';
+import ru_admin from './locales/ru/admin.json';
+import ru_social from './locales/ru/social.json';
+import ru_premium from './locales/ru/premium.json';
+import ru_tutorial from './locales/ru/tutorial.json';
+
+import tr_common from './locales/tr/common.json';
+import tr_auth from './locales/tr/auth.json';
+import tr_home from './locales/tr/home.json';
+import tr_trips from './locales/tr/trips.json';
+import tr_profile from './locales/tr/profile.json';
+import tr_components from './locales/tr/components.json';
+import tr_legal from './locales/tr/legal.json';
+import tr_admin from './locales/tr/admin.json';
+import tr_social from './locales/tr/social.json';
+import tr_premium from './locales/tr/premium.json';
+import tr_tutorial from './locales/tr/tutorial.json';
+
+import ms_common from './locales/ms/common.json';
+import ms_auth from './locales/ms/auth.json';
+import ms_home from './locales/ms/home.json';
+import ms_trips from './locales/ms/trips.json';
+import ms_profile from './locales/ms/profile.json';
+import ms_components from './locales/ms/components.json';
+import ms_legal from './locales/ms/legal.json';
+import ms_admin from './locales/ms/admin.json';
+import ms_social from './locales/ms/social.json';
+import ms_premium from './locales/ms/premium.json';
+import ms_tutorial from './locales/ms/tutorial.json';
+
+export const SUPPORTED_LANGUAGES = ['ko', 'en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi', 'pt', 'ar', 'id', 'hi', 'it', 'ru', 'tr', 'ms'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
@@ -177,6 +225,10 @@ export const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
   ar: 'العربية',
   id: 'Bahasa Indonesia',
   hi: 'हिन्दी',
+  it: 'Italiano',
+  ru: 'Русский',
+  tr: 'Türkçe',
+  ms: 'Bahasa Melayu',
 };
 
 export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
@@ -193,6 +245,10 @@ export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
   ar: '🇸🇦',
   id: '🇮🇩',
   hi: '🇮🇳',
+  it: '🇮🇹',
+  ru: '🇷🇺',
+  tr: '🇹🇷',
+  ms: '🇲🇾',
 };
 
 const resources = {
@@ -364,6 +420,58 @@ const resources = {
     social: hi_social,
     premium: hi_premium,
     tutorial: hi_tutorial,
+  },
+  it: {
+    common: it_common,
+    auth: it_auth,
+    home: it_home,
+    trips: it_trips,
+    profile: it_profile,
+    components: it_components,
+    legal: it_legal,
+    admin: it_admin,
+    social: it_social,
+    premium: it_premium,
+    tutorial: it_tutorial,
+  },
+  ru: {
+    common: ru_common,
+    auth: ru_auth,
+    home: ru_home,
+    trips: ru_trips,
+    profile: ru_profile,
+    components: ru_components,
+    legal: ru_legal,
+    admin: ru_admin,
+    social: ru_social,
+    premium: ru_premium,
+    tutorial: ru_tutorial,
+  },
+  tr: {
+    common: tr_common,
+    auth: tr_auth,
+    home: tr_home,
+    trips: tr_trips,
+    profile: tr_profile,
+    components: tr_components,
+    legal: tr_legal,
+    admin: tr_admin,
+    social: tr_social,
+    premium: tr_premium,
+    tutorial: tr_tutorial,
+  },
+  ms: {
+    common: ms_common,
+    auth: ms_auth,
+    home: ms_home,
+    trips: ms_trips,
+    profile: ms_profile,
+    components: ms_components,
+    legal: ms_legal,
+    admin: ms_admin,
+    social: ms_social,
+    premium: ms_premium,
+    tutorial: ms_tutorial,
   },
 };
 
