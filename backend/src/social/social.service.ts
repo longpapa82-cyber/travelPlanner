@@ -258,7 +258,8 @@ export class SocialService {
     const qb = this.tripRepository
       .createQueryBuilder('trip')
       .innerJoin(Follow, 'f', 'f."followingId" = trip."userId"')
-      .leftJoinAndSelect('trip.user', 'user')
+      .leftJoin('trip.user', 'user')
+      .addSelect(['user.id', 'user.name', 'user.profileImage'])
       .where('f."followerId" = :userId', { userId })
       .andWhere('trip."isPublic" = true')
       .orderBy('trip.createdAt', 'DESC')
@@ -286,7 +287,8 @@ export class SocialService {
 
     const qb = this.tripRepository
       .createQueryBuilder('trip')
-      .leftJoinAndSelect('trip.user', 'user')
+      .leftJoin('trip.user', 'user')
+      .addSelect(['user.id', 'user.name', 'user.profileImage'])
       .where('trip."isPublic" = true')
       .andWhere('trip."createdAt" > :since', { since: thirtyDaysAgo })
       .orderBy('trip.likesCount', 'DESC')
@@ -343,6 +345,7 @@ export class SocialService {
   async getUserProfile(viewerId: string, profileUserId: string) {
     const user = await this.userRepository.findOne({
       where: { id: profileUserId },
+      select: ['id', 'name', 'profileImage', 'followersCount', 'followingCount'],
     });
     if (!user) {
       throw new NotFoundException('User not found');

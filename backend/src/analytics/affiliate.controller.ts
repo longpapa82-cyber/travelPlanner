@@ -174,12 +174,18 @@ export class AffiliateController {
 
   /**
    * GET /api/analytics/affiliate/trip/:tripId
-   * 여행별 클릭 이력
+   * 여행별 클릭 이력 (본인 클릭만 반환)
    */
   @Get('trip/:tripId')
   @UseGuards(JwtAuthGuard)
-  async getTripClickHistory(@Param('tripId') tripId: string) {
-    const clicks = await this.affiliateService.getTripClickHistory(tripId);
+  async getTripClickHistory(
+    @Param('tripId') tripId: string,
+    @Req() req: Request & { user: { userId: string } },
+  ) {
+    const clicks = await this.affiliateService.getTripClickHistory(
+      tripId,
+      req.user.userId,
+    );
 
     return {
       success: true,

@@ -1177,11 +1177,13 @@ export class TripsService {
       if (!collab) return [];
     }
 
-    return this.collaboratorRepository.find({
-      where: { tripId },
-      relations: ['user'],
-      order: { createdAt: 'ASC' },
-    });
+    return this.collaboratorRepository
+      .createQueryBuilder('collab')
+      .leftJoin('collab.user', 'user')
+      .addSelect(['user.id', 'user.name', 'user.profileImage'])
+      .where('collab.tripId = :tripId', { tripId })
+      .orderBy('collab.createdAt', 'ASC')
+      .getMany();
   }
 
   async leaveTrip(tripId: string, userId: string): Promise<void> {
