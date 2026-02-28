@@ -53,6 +53,17 @@ export class UsersService {
     return user;
   }
 
+  async findPublicProfile(id: string): Promise<Pick<User, 'id' | 'name' | 'profileImage' | 'followersCount' | 'followingCount' | 'createdAt'>> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'name', 'profileImage', 'followersCount', 'followingCount', 'createdAt'],
+    });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return user;
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     return this.userRepository
       .createQueryBuilder('user')

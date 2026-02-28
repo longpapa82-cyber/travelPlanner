@@ -107,6 +107,6 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUserById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.findById(id);
+    return this.usersService.findPublicProfile(id);
   }
 }
