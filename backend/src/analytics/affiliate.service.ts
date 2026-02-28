@@ -230,11 +230,14 @@ export class AffiliateService {
   }
 
   /**
-   * 여행별 클릭 이력
+   * 여행별 클릭 이력 (특정 사용자의 클릭만 반환)
    */
-  async getTripClickHistory(tripId: string): Promise<AffiliateClick[]> {
+  async getTripClickHistory(
+    tripId: string,
+    userId: string,
+  ): Promise<AffiliateClick[]> {
     return await this.affiliateClickRepository.find({
-      where: { tripId },
+      where: { tripId, userId },
       order: { createdAt: 'DESC' },
     });
   }
