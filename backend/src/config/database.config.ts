@@ -28,13 +28,9 @@ export default registerAs(
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     migrations: [__dirname + '/../migrations/*{.ts,.js}'],
     synchronize:
-      process.env.DB_SYNCHRONIZE === 'true'
-        ? true
-        : process.env.NODE_ENV === 'development',
-    migrationsRun:
-      process.env.DB_SYNCHRONIZE === 'true'
-        ? false
-        : process.env.NODE_ENV === 'production',
+      process.env.NODE_ENV !== 'production' &&
+      process.env.DB_SYNCHRONIZE !== 'false',
+    migrationsRun: process.env.NODE_ENV === 'production',
     logging: process.env.NODE_ENV === 'development',
     ssl: buildSslConfig(),
     extra: {

@@ -21,6 +21,7 @@ import { VerifyTwoFactorDto, TwoFactorLoginDto } from './dto/two-factor.dto';
 import { VerifyEmailDto, ResendVerificationDto } from './dto/verify-email.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { RegisterPushTokenDto } from './dto/register-push-token.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { AppleAuthGuard } from './guards/apple-auth.guard';
@@ -251,11 +252,12 @@ export class AuthController {
   // Push notification token management
   @Post('push-token')
   @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 5 } })
   async registerPushToken(
     @CurrentUser('userId') userId: string,
-    @Body('token') token: string,
+    @Body() dto: RegisterPushTokenDto,
   ) {
-    await this.notificationsService.registerPushToken(userId, token);
+    await this.notificationsService.registerPushToken(userId, dto.token);
     return { message: 'Push token registered' };
   }
 

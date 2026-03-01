@@ -399,12 +399,9 @@ export class AuthService {
         );
       }
     } catch (error) {
-      // If it's a BadRequestException (social login), rethrow
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      this.logger.error(
-        `Failed to process forgot password: ${getErrorMessage(error)}`,
+      // Never reveal social login status — always return generic success
+      this.logger.warn(
+        `Forgot password failed: ${getErrorMessage(error)}`,
       );
     }
 
