@@ -16,6 +16,7 @@ import { usePremium } from '../contexts/PremiumContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 import { getOfferings, purchasePackage, restorePurchases } from '../services/revenueCat';
+import apiService from '../services/api';
 
 interface BenefitItem {
   icon: string;
@@ -62,7 +63,18 @@ const PaywallModal: React.FC = () => {
 
   const handlePurchase = async () => {
     if (Platform.OS === 'web') {
-      Alert.alert(t('actions.subscribe'), t('paywall.webMessage') || 'Please use the mobile app to subscribe.');
+      // Web: Stripe Checkout redirect
+      setIsPurchasing(true);
+      try {
+        const { url } = await apiService.createStripeCheckout(selectedPlan);
+        if (url && typeof window !== 'undefined') {
+          window.location.href = url;
+        }
+      } catch (error: any) {
+        Alert.alert('Error', error?.message || 'Failed to start checkout. Please try again.');
+      } finally {
+        setIsPurchasing(false);
+      }
       return;
     }
 
@@ -89,17 +101,28 @@ const PaywallModal: React.FC = () => {
   };
 
   const handleRestore = async () => {
-    if (Platform.OS === 'web') return;
-
     setIsPurchasing(true);
     try {
-      const customerInfo = await restorePurchases();
-      if (customerInfo?.entitlements?.active?.['premium']) {
-        await refreshStatus();
-        hidePaywall();
-        Alert.alert(t('actions.restore'), t('paywall.restoreSuccess') || 'Subscription restored successfully!');
+      if (Platform.OS === 'web') {
+        // Web: restore from backend DB (Stripe subscription state)
+        const result = await apiService.restoreSubscription();
+        if (result?.restored) {
+          await refreshStatus();
+          hidePaywall();
+          Alert.alert(t('actions.restore'), t('paywall.restoreSuccess') || 'Subscription restored successfully!');
+        } else {
+          Alert.alert(t('actions.restore'), t('paywall.restoreNone') || 'No active subscription found.');
+        }
       } else {
-        Alert.alert(t('actions.restore'), t('paywall.restoreNone') || 'No active subscription found.');
+        // Native: restore from RevenueCat (App Store / Play Store)
+        const customerInfo = await restorePurchases();
+        if (customerInfo?.entitlements?.active?.['premium']) {
+          await refreshStatus();
+          hidePaywall();
+          Alert.alert(t('actions.restore'), t('paywall.restoreSuccess') || 'Subscription restored successfully!');
+        } else {
+          Alert.alert(t('actions.restore'), t('paywall.restoreNone') || 'No active subscription found.');
+        }
       }
     } catch (error: any) {
       Alert.alert('Error', error?.message || 'Restore failed. Please try again.');
