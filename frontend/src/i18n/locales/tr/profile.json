@@ -5,7 +5,8 @@
     "account": "Hesap",
     "settings": "Ayarlar",
     "support": "Destek",
-    "admin": "Yönetici"
+    "admin": "Yönetici",
+    "dataPrivacy": "Veri ve Gizlilik"
   },
   "menu": {
     "editProfile": "Profili Düzenle",
@@ -76,6 +77,11 @@
       "failed": "Hesap silinemedi",
       "passwordRequired": "Lütfen şifrenizi girin"
     }
+  },
+  "exportData": {
+    "button": "Verilerimi dışa aktar",
+    "success": "Veriler başarıyla indirildi",
+    "failed": "Veri dışa aktarma başarısız"
   },
   "version": "Sürüm",
   "analytics": {

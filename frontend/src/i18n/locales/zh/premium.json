@@ -36,7 +36,10 @@
     "aiLimitReached": "免费AI旅行规划次数已用完",
     "aiUsed": "次已使用",
     "compareTitle": "方案对比",
-    "upgradeToUnlock": "升级解锁"
+    "upgradeToUnlock": "升级解锁",
+    "autoRenewNotice": "订阅将自动续订，除非在当前周期结束前至少24小时取消。",
+    "termsLink": "服务条款",
+    "privacyLink": "隐私政策"
   },
   "status": {
     "active": "活跃",

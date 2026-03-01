@@ -1,6 +1,6 @@
 {
   "title": "Perfil", "guest": "Visitante",
-  "sections": { "account": "Conta", "settings": "Configurações", "support": "Suporte", "admin": "Admin" },
+  "sections": { "account": "Conta", "settings": "Configurações", "support": "Suporte", "admin": "Admin", "dataPrivacy": "Dados e Privacidade" },
   "menu": {
     "editProfile": "Editar Perfil", "changePassword": "Alterar Senha",
     "twoFactor": "Autenticação de Dois Fatores", "twoFactorEnabled": "Ativada", "twoFactorDisabled": "Desativada",
@@ -40,6 +40,11 @@
     "passwordConfirm": "Digite sua senha para confirmar a exclusão da conta",
     "passwordPlaceholder": "Digite a senha",
     "alerts": { "success": "Conta excluída com sucesso", "failed": "Falha ao excluir conta", "passwordRequired": "Por favor, insira sua senha" }
+  },
+  "exportData": {
+    "button": "Exportar meus dados",
+    "success": "Dados baixados com sucesso",
+    "failed": "Falha ao exportar dados"
   },
   "version": "Versão",
   "analytics": {

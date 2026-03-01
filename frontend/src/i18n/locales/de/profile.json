@@ -5,7 +5,8 @@
     "account": "Konto",
     "settings": "Einstellungen",
     "support": "Support",
-    "admin": "Admin"
+    "admin": "Admin",
+    "dataPrivacy": "Daten & Datenschutz"
   },
   "menu": {
     "editProfile": "Profil bearbeiten",
@@ -76,6 +77,11 @@
       "failed": "Konto konnte nicht gelöscht werden",
       "passwordRequired": "Bitte geben Sie Ihr Passwort ein"
     }
+  },
+  "exportData": {
+    "button": "Meine Daten exportieren",
+    "success": "Daten erfolgreich heruntergeladen",
+    "failed": "Datenexport fehlgeschlagen"
   },
   "version": "Version",
   "analytics": {

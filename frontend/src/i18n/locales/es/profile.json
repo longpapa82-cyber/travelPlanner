@@ -5,7 +5,8 @@
     "account": "Cuenta",
     "settings": "Configuración",
     "support": "Soporte",
-    "admin": "Administración"
+    "admin": "Administración",
+    "dataPrivacy": "Datos y privacidad"
   },
   "menu": {
     "editProfile": "Editar perfil",
@@ -76,6 +77,11 @@
       "failed": "Error al eliminar cuenta",
       "passwordRequired": "Por favor ingresa tu contraseña"
     }
+  },
+  "exportData": {
+    "button": "Exportar mis datos",
+    "success": "Datos descargados correctamente",
+    "failed": "Error al exportar datos"
   },
   "version": "Versión",
   "analytics": {

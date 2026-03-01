@@ -36,7 +36,10 @@
     "aiLimitReached": "Limite gratuite de plans de voyage IA atteinte",
     "aiUsed": "utilisés",
     "compareTitle": "Comparer les forfaits",
-    "upgradeToUnlock": "Passez à Premium pour débloquer"
+    "upgradeToUnlock": "Passez à Premium pour débloquer",
+    "autoRenewNotice": "Les abonnements se renouvellent automatiquement sauf annulation au moins 24 heures avant la fin de la période en cours.",
+    "termsLink": "Conditions d'utilisation",
+    "privacyLink": "Politique de confidentialité"
   },
   "status": {
     "active": "Actif",

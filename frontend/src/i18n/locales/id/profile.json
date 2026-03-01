@@ -5,7 +5,8 @@
     "account": "Akun",
     "settings": "Pengaturan",
     "support": "Bantuan",
-    "admin": "Admin"
+    "admin": "Admin",
+    "dataPrivacy": "Data & Privasi"
   },
   "menu": {
     "editProfile": "Edit Profil",
@@ -76,6 +77,11 @@
       "failed": "Gagal menghapus akun",
       "passwordRequired": "Silakan masukkan kata sandi Anda"
     }
+  },
+  "exportData": {
+    "button": "Ekspor data saya",
+    "success": "Data berhasil diunduh",
+    "failed": "Gagal mengekspor data"
   },
   "version": "Versi",
   "analytics": {

@@ -36,7 +36,10 @@
     "aiLimitReached": "Had pelan perjalanan AI percuma telah dicapai",
     "aiUsed": "digunakan",
     "compareTitle": "Bandingkan Pelan",
-    "upgradeToUnlock": "Naik taraf untuk membuka kunci"
+    "upgradeToUnlock": "Naik taraf untuk membuka kunci",
+    "autoRenewNotice": "Langganan diperbaharui secara automatik melainkan dibatalkan sekurang-kurangnya 24 jam sebelum tamat tempoh semasa.",
+    "termsLink": "Syarat perkhidmatan",
+    "privacyLink": "Dasar privasi"
   },
   "status": {
     "active": "Aktif",

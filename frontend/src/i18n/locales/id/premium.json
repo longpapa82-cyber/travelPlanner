@@ -36,7 +36,10 @@
     "aiLimitReached": "Batas rencana perjalanan AI gratis tercapai",
     "aiUsed": "digunakan",
     "compareTitle": "Bandingkan Paket",
-    "upgradeToUnlock": "Upgrade untuk membuka"
+    "upgradeToUnlock": "Upgrade untuk membuka",
+    "autoRenewNotice": "Langganan diperpanjang secara otomatis kecuali dibatalkan setidaknya 24 jam sebelum akhir periode saat ini.",
+    "termsLink": "Ketentuan layanan",
+    "privacyLink": "Kebijakan privasi"
   },
   "status": {
     "active": "Aktif",

@@ -139,6 +139,7 @@ const ProfileScreen = ({ navigation }: any) => {
     }
   };
 
+  const [isExporting, setIsExporting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -182,6 +183,33 @@ const ProfileScreen = ({ navigation }: any) => {
       showToast({ type: 'error', message: error.response?.data?.message || t('deleteAccount.alerts.failed'), position: 'top' });
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleExportData = async () => {
+    setIsExporting(true);
+    try {
+      const data = await apiService.exportMyData();
+      if (Platform.OS === 'web' && typeof window !== 'undefined') {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mytravel-data-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } else {
+        const { shareAsync } = await import('expo-sharing');
+        const { writeAsStringAsync, documentDirectory } = await import('expo-file-system');
+        const filePath = `${documentDirectory}mytravel-data-${new Date().toISOString().split('T')[0]}.json`;
+        await writeAsStringAsync(filePath, JSON.stringify(data, null, 2));
+        await shareAsync(filePath, { mimeType: 'application/json' });
+      }
+      showToast({ type: 'success', message: t('exportData.success'), position: 'top' });
+    } catch (error: any) {
+      showToast({ type: 'error', message: error?.response?.data?.message || t('exportData.failed'), position: 'top' });
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -496,6 +524,33 @@ const ProfileScreen = ({ navigation }: any) => {
         </TouchableOpacity>
       </View>
 
+      {/* Data & Privacy */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('sections.dataPrivacy')}</Text>
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={handleExportData}
+          disabled={isExporting}
+          accessibilityRole="button"
+          accessibilityLabel={t('exportData.button')}
+        >
+          <Icon name="download-outline" size={24} color={theme.colors.textSecondary} />
+          <Text style={styles.menuText}>{t('exportData.button')}</Text>
+          {isExporting ? (
+            <ActivityIndicator size="small" color={theme.colors.primary} />
+          ) : (
+            <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAccount} accessibilityRole="button" accessibilityLabel={t('deleteAccount.button')}>
+          <Icon name="delete-outline" size={24} color={colors.error.main} />
+          <Text style={[styles.menuText, { color: colors.error.main }]}>{t('deleteAccount.button')}</Text>
+          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
+      </View>
+
       <View style={{ padding: theme.spacing.xl }}>
         <Button
           variant="outline"
@@ -508,10 +563,6 @@ const ProfileScreen = ({ navigation }: any) => {
           {t('logout.button')}
         </Button>
       </View>
-
-      <TouchableOpacity style={styles.deleteAccount} onPress={handleDeleteAccount}>
-        <Text style={styles.deleteAccountText}>{t('deleteAccount.button')}</Text>
-      </TouchableOpacity>
 
       <Text style={styles.version}>Version 1.0.0</Text>
 

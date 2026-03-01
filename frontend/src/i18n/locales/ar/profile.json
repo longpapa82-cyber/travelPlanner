@@ -5,7 +5,8 @@
     "account": "الحساب",
     "settings": "الإعدادات",
     "support": "الدعم",
-    "admin": "الإدارة"
+    "admin": "الإدارة",
+    "dataPrivacy": "البيانات والخصوصية"
   },
   "menu": {
     "editProfile": "تعديل الملف الشخصي",
@@ -76,6 +77,11 @@
       "failed": "فشل حذف الحساب",
       "passwordRequired": "يرجى إدخال كلمة المرور"
     }
+  },
+  "exportData": {
+    "button": "تصدير بياناتي",
+    "success": "تم تنزيل البيانات بنجاح",
+    "failed": "فشل في تصدير البيانات"
   },
   "version": "الإصدار",
   "analytics": {

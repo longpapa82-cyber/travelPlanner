@@ -36,7 +36,10 @@
     "aiLimitReached": "Kostenloses KI-Reiseplan-Limit erreicht",
     "aiUsed": "verwendet",
     "compareTitle": "Pläne vergleichen",
-    "upgradeToUnlock": "Upgraden zum Freischalten"
+    "upgradeToUnlock": "Upgraden zum Freischalten",
+    "autoRenewNotice": "Abonnements verlängern sich automatisch, sofern sie nicht mindestens 24 Stunden vor Ende des aktuellen Zeitraums gekündigt werden.",
+    "termsLink": "Nutzungsbedingungen",
+    "privacyLink": "Datenschutzrichtlinie"
   },
   "status": {
     "active": "Aktiv",
