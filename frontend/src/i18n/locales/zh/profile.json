@@ -5,7 +5,8 @@
     "account": "账号信息",
     "settings": "应用设置",
     "support": "支持",
-    "admin": "服务管理"
+    "admin": "服务管理",
+    "dataPrivacy": "数据与隐私"
   },
   "menu": {
     "editProfile": "编辑资料",
@@ -76,6 +77,11 @@
       "failed": "账号删除失败",
       "passwordRequired": "请输入密码"
     }
+  },
+  "exportData": {
+    "button": "导出我的数据",
+    "success": "数据已下载",
+    "failed": "数据导出失败"
   },
   "version": "版本",
   "analytics": {

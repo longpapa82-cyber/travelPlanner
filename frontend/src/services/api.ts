@@ -299,6 +299,11 @@ class ApiService {
     await this.api.post('/users/me/delete', { password });
   }
 
+  async exportMyData(): Promise<Record<string, any>> {
+    const response = await this.api.post('/users/me/export');
+    return response.data;
+  }
+
   // 2FA Methods
   async setupTwoFactor() {
     const response = await this.api.post('/auth/2fa/setup');

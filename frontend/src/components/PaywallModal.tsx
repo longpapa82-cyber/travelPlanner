@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Platform,
   Alert,
+  Linking,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -267,6 +268,26 @@ const PaywallModal: React.FC = () => {
                 {t('actions.restore')}
               </Text>
             </TouchableOpacity>
+
+            {/* Subscription terms & legal links */}
+            <View style={styles.legalSection}>
+              <Text style={[styles.legalText, { color: theme.colors.textSecondary }]}>
+                {t('paywall.autoRenewNotice')}
+              </Text>
+              <View style={styles.legalLinks}>
+                <TouchableOpacity onPress={() => Linking.openURL('https://mytravel-planner.com/terms.html')}>
+                  <Text style={[styles.legalLink, { color: theme.colors.primary }]}>
+                    {t('paywall.termsLink')}
+                  </Text>
+                </TouchableOpacity>
+                <Text style={[styles.legalSeparator, { color: theme.colors.textSecondary }]}> · </Text>
+                <TouchableOpacity onPress={() => Linking.openURL('https://mytravel-planner.com/privacy.html')}>
+                  <Text style={[styles.legalLink, { color: theme.colors.primary }]}>
+                    {t('paywall.privacyLink')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </ScrollView>
         </View>
       </View>
@@ -404,6 +425,28 @@ const styles = StyleSheet.create({
   restoreText: {
     fontSize: 14,
     textDecorationLine: 'underline',
+  },
+  legalSection: {
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    marginBottom: 16,
+  },
+  legalText: {
+    fontSize: 11,
+    textAlign: 'center',
+    lineHeight: 16,
+  },
+  legalLinks: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  legalLink: {
+    fontSize: 11,
+    textDecorationLine: 'underline',
+  },
+  legalSeparator: {
+    fontSize: 11,
   },
 });
 

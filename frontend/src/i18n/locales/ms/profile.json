@@ -5,7 +5,8 @@
     "account": "Akaun",
     "settings": "Tetapan",
     "support": "Sokongan",
-    "admin": "Pentadbir"
+    "admin": "Pentadbir",
+    "dataPrivacy": "Data & Privasi"
   },
   "menu": {
     "editProfile": "Edit Profil",
@@ -76,6 +77,11 @@
       "failed": "Gagal memadam akaun",
       "passwordRequired": "Sila masukkan kata laluan anda"
     }
+  },
+  "exportData": {
+    "button": "Eksport data saya",
+    "success": "Data berjaya dimuat turun",
+    "failed": "Gagal mengeksport data"
   },
   "version": "Versi",
   "analytics": {

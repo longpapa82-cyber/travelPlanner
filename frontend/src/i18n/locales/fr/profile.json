@@ -5,7 +5,8 @@
     "account": "Compte",
     "settings": "Paramètres",
     "support": "Assistance",
-    "admin": "Administration"
+    "admin": "Administration",
+    "dataPrivacy": "Données et confidentialité"
   },
   "menu": {
     "editProfile": "Modifier le profil",
@@ -76,6 +77,11 @@
       "failed": "Échec de la suppression du compte",
       "passwordRequired": "Veuillez entrer votre mot de passe"
     }
+  },
+  "exportData": {
+    "button": "Exporter mes données",
+    "success": "Données téléchargées avec succès",
+    "failed": "Échec de l'exportation des données"
   },
   "version": "Version",
   "analytics": {

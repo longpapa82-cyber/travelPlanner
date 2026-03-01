@@ -5,7 +5,8 @@
     "account": "Account",
     "settings": "Settings",
     "support": "Support",
-    "admin": "Admin"
+    "admin": "Admin",
+    "dataPrivacy": "Data & Privacy"
   },
   "menu": {
     "editProfile": "Edit Profile",
@@ -76,6 +77,11 @@
       "failed": "Failed to delete account",
       "passwordRequired": "Please enter your password"
     }
+  },
+  "exportData": {
+    "button": "Export My Data",
+    "success": "Data downloaded successfully",
+    "failed": "Failed to export data"
   },
   "version": "Version",
   "analytics": {

@@ -5,7 +5,8 @@
     "account": "계정 정보",
     "settings": "앱 설정",
     "support": "지원",
-    "admin": "서비스 관리"
+    "admin": "서비스 관리",
+    "dataPrivacy": "데이터 및 개인정보"
   },
   "menu": {
     "editProfile": "프로필 수정",
@@ -76,6 +77,11 @@
       "failed": "계정 삭제에 실패했습니다",
       "passwordRequired": "비밀번호를 입력해주세요"
     }
+  },
+  "exportData": {
+    "button": "내 데이터 내보내기",
+    "success": "데이터가 다운로드되었습니다",
+    "failed": "데이터 내보내기에 실패했습니다"
   },
   "version": "버전",
   "analytics": {

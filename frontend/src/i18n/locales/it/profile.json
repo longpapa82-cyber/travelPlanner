@@ -5,7 +5,8 @@
     "account": "Account",
     "settings": "Impostazioni",
     "support": "Supporto",
-    "admin": "Admin"
+    "admin": "Admin",
+    "dataPrivacy": "Dati e Privacy"
   },
   "menu": {
     "editProfile": "Modifica profilo",
@@ -76,6 +77,11 @@
       "failed": "Eliminazione account fallita",
       "passwordRequired": "Inserisci la tua password"
     }
+  },
+  "exportData": {
+    "button": "Esporta i miei dati",
+    "success": "Dati scaricati con successo",
+    "failed": "Esportazione dati non riuscita"
   },
   "version": "Versione",
   "analytics": {

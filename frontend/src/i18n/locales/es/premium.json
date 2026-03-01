@@ -36,7 +36,10 @@
     "aiLimitReached": "Has alcanzado el límite de planes gratuitos con IA",
     "aiUsed": "usados",
     "compareTitle": "Comparar planes",
-    "upgradeToUnlock": "Actualiza para desbloquear"
+    "upgradeToUnlock": "Actualiza para desbloquear",
+    "autoRenewNotice": "Las suscripciones se renuevan automáticamente a menos que se cancelen al menos 24 horas antes del final del período actual.",
+    "termsLink": "Términos de servicio",
+    "privacyLink": "Política de privacidad"
   },
   "status": {
     "active": "Activa",

@@ -36,7 +36,10 @@
     "aiLimitReached": "Ücretsiz AI gezi planı limitine ulaşıldı",
     "aiUsed": "kullanıldı",
     "compareTitle": "Planları Karşılaştır",
-    "upgradeToUnlock": "Kilidi açmak için yükseltin"
+    "upgradeToUnlock": "Kilidi açmak için yükseltin",
+    "autoRenewNotice": "Abonelikler, mevcut dönemin bitiminden en az 24 saat önce iptal edilmediği sürece otomatik olarak yenilenir.",
+    "termsLink": "Kullanım koşulları",
+    "privacyLink": "Gizlilik politikası"
   },
   "status": {
     "active": "Aktif",

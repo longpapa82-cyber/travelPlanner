@@ -36,7 +36,10 @@
     "aiLimitReached": "Free AI trip plan limit reached",
     "aiUsed": "used",
     "compareTitle": "Compare Plans",
-    "upgradeToUnlock": "Upgrade to unlock"
+    "upgradeToUnlock": "Upgrade to unlock",
+    "autoRenewNotice": "Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current period.",
+    "termsLink": "Terms of Service",
+    "privacyLink": "Privacy Policy"
   },
   "status": {
     "active": "Active",

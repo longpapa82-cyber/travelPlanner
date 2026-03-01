@@ -36,7 +36,10 @@
     "aiLimitReached": "無料AI旅行プランの上限に達しました",
     "aiUsed": "回使用",
     "compareTitle": "プラン比較",
-    "upgradeToUnlock": "アップグレードして解除"
+    "upgradeToUnlock": "アップグレードして解除",
+    "autoRenewNotice": "サブスクリプションは、現在の期間終了の24時間前までにキャンセルしない限り自動更新されます。",
+    "termsLink": "利用規約",
+    "privacyLink": "プライバシーポリシー"
   },
   "status": {
     "active": "有効",
