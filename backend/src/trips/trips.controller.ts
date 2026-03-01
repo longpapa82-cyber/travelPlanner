@@ -163,10 +163,10 @@ export class TripsController {
         const [hours, minutes] = (activity.time || '09:00').split(':');
         const startTime = `${dateStr}T${hours.padStart(2, '0')}${minutes.padStart(2, '0')}00`;
         const dur = activity.estimatedDuration || 60;
-        const endHour =
-          parseInt(hours) + Math.floor((parseInt(minutes) + dur) / 60);
-        const endMin = (parseInt(minutes) + dur) % 60;
-        const endTime = `${dateStr}T${String(endHour).padStart(2, '0')}${String(endMin).padStart(2, '0')}00`;
+        const startDt = new Date(parsedDate);
+        startDt.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        const endDt = new Date(startDt.getTime() + dur * 60000);
+        const endTime = endDt.toISOString().replace(/[-:]/g, '').split('.')[0];
 
         lines.push(
           'BEGIN:VEVENT',
