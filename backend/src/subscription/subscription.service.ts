@@ -287,8 +287,13 @@ export class SubscriptionService {
       metadata: { userId: user.id, plan },
     });
 
+    if (!session.url) {
+      this.logger.error(`Stripe checkout session created without URL, session: ${session.id}`);
+      throw new BadRequestException('Checkout session creation failed');
+    }
+
     this.logger.log(`Stripe checkout session created for user ${userId}, plan: ${plan}`);
-    return { url: session.url! };
+    return { url: session.url };
   }
 
   async createStripePortalSession(userId: string): Promise<{ url: string }> {
@@ -365,10 +370,17 @@ export class SubscriptionService {
       return;
     }
 
-    if (session.payment_status !== 'paid') return;
+    if (session.payment_status !== 'paid') {
+      this.logger.warn(`Stripe checkout ${session.id} payment_status=${session.payment_status}, skipping for user ${userId}`);
+      return;
+    }
 
     const subscriptionId = session.subscription as string;
-    if (!subscriptionId || !this.stripe) return;
+    if (!subscriptionId) {
+      this.logger.error(`Stripe checkout ${session.id} completed without subscription ID for user ${userId}`);
+      return;
+    }
+    if (!this.stripe) return;
 
     const subscription = await this.stripe.subscriptions.retrieve(subscriptionId, {
       expand: ['items.data'],
@@ -430,9 +442,12 @@ export class SubscriptionService {
       select: ['id'],
     });
 
-    if (user) {
-      this.logger.warn(`Stripe payment failed for user ${user.id}`);
+    if (!user) {
+      this.logger.error(`Stripe payment failed for unknown customer: ${customerId}`);
+      return;
     }
+
+    this.logger.warn(`Stripe payment failed for user ${user.id}, invoice: ${invoice.id}`);
   }
 
   // ─── Cron ────────────────────────────────────────────────

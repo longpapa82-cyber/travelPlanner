@@ -10,11 +10,13 @@ import {
   UseGuards,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { AdminService } from './admin.service';
 import { AuditService } from './audit.service';
 import { AuditAction } from './entities/audit-log.entity';
+import { CreateErrorLogDto } from './dto/create-error-log.dto';
 import { detectPlatform } from '../common/utils/platform-detector';
 
 // Admin-only endpoints
@@ -101,21 +103,19 @@ export class ErrorLogController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post()
+  @Throttle({ short: { ttl: 60000, limit: 30 } })
   createErrorLog(
     @Req() req: any,
-    @Body()
-    body: {
-      errorMessage: string;
-      stackTrace?: string;
-      screen?: string;
-      severity?: 'error' | 'warning' | 'fatal';
-      deviceOS?: string;
-      appVersion?: string;
-    },
+    @Body() dto: CreateErrorLogDto,
   ) {
     const ua = req.headers['user-agent'] as string | undefined;
     return this.adminService.createErrorLog({
-      ...body,
+      errorMessage: dto.errorMessage,
+      stackTrace: dto.stackTrace,
+      screen: dto.screen,
+      severity: dto.severity,
+      deviceOS: dto.deviceOS,
+      appVersion: dto.appVersion,
       userId: req.user?.id,
       userEmail: req.user?.email,
       platform: detectPlatform(ua),

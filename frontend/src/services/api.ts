@@ -173,12 +173,22 @@ class ApiService {
       const status = error.response?.status;
       if (status && status >= 500) {
         const url = error.config?.url || 'unknown';
+        // Don't report errors from the error-reporting endpoint itself
+        if (url.includes('/error-logs')) {
+          return Promise.reject(error);
+        }
         const key = `${status}:${url}`;
         const now = Date.now();
         const last = this.errorReportTimestamps.get(key);
 
         if (!last || now - last > 10_000) {
           this.errorReportTimestamps.set(key, now);
+          // Evict stale entries to prevent unbounded growth
+          if (this.errorReportTimestamps.size > 50) {
+            for (const [k, v] of this.errorReportTimestamps) {
+              if (now - v > 60_000) this.errorReportTimestamps.delete(k);
+            }
+          }
           this.reportError({
             errorMessage: `[API ${status}] ${error.config?.method?.toUpperCase()} ${url}`,
             stackTrace: (error.response?.data as any)?.message || error.message,

@@ -105,7 +105,7 @@ export class User {
   @Column({ type: 'varchar', length: 10, nullable: true })
   lastPlatform?: 'web' | 'ios' | 'android';
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: true, select: false })
   lastUserAgent?: string;
 
   @Column({ type: 'int', default: 0 })
@@ -134,7 +134,7 @@ export class User {
   @Column({ type: 'varchar', nullable: true })
   revenuecatAppUserId?: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, select: false })
   stripeCustomerId?: string;
 
   @Column({ type: 'int', default: 0 })

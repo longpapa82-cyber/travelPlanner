@@ -88,7 +88,7 @@ export class AuthService {
     }
 
     // Audit log: registration
-    this.auditService.log({ userId: user.id, action: AuditAction.REGISTER }).catch(() => {});
+    this.auditService.log({ userId: user.id, action: AuditAction.REGISTER }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
 
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email!);
@@ -144,7 +144,7 @@ export class AuthService {
     await this.cacheManager.del(lockKey);
 
     // Audit log: successful login
-    this.auditService.log({ userId: user.id, action: AuditAction.LOGIN }).catch(() => {});
+    this.auditService.log({ userId: user.id, action: AuditAction.LOGIN }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
 
     // Check if 2FA is enabled
     if (user.isTwoFactorEnabled) {
@@ -163,7 +163,7 @@ export class AuthService {
       lastLoginAt: new Date(),
       lastPlatform: detectPlatform(userAgent),
       lastUserAgent: userAgent?.slice(0, 500),
-    }).catch(() => {});
+    }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
 
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email!);
@@ -255,7 +255,7 @@ export class AuthService {
         await this.cacheManager.del(`refresh:${payload.jti}`);
       }
       // Audit log: logout
-      this.auditService.log({ userId: payload.sub, action: AuditAction.LOGOUT }).catch(() => {});
+      this.auditService.log({ userId: payload.sub, action: AuditAction.LOGOUT }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
     } catch {
       // Token already expired or invalid — still succeed logout
     }
@@ -337,7 +337,7 @@ export class AuthService {
       lastLoginAt: new Date(),
       lastPlatform: detectPlatform(userAgent),
       lastUserAgent: userAgent?.slice(0, 500),
-    }).catch(() => {});
+    }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
 
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email || '');
@@ -476,7 +476,7 @@ export class AuthService {
     }
 
     await this.usersService.enableTwoFactor(userId, backupCodes);
-    this.auditService.log({ userId, action: AuditAction.TWO_FACTOR_ENABLE }).catch(() => {});
+    this.auditService.log({ userId, action: AuditAction.TWO_FACTOR_ENABLE }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
 
     return { backupCodes };
   }
@@ -497,7 +497,7 @@ export class AuthService {
     }
 
     await this.usersService.disableTwoFactor(userId);
-    this.auditService.log({ userId, action: AuditAction.TWO_FACTOR_DISABLE }).catch(() => {});
+    this.auditService.log({ userId, action: AuditAction.TWO_FACTOR_DISABLE }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
     return { message: '2FA disabled' };
   }
 
@@ -594,7 +594,7 @@ export class AuthService {
       lastLoginAt: new Date(),
       lastPlatform: detectPlatform(userAgent),
       lastUserAgent: userAgent?.slice(0, 500),
-    }).catch(() => {});
+    }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
 
     const tokens = await this.generateTokens(user.id, user.email || '');
 

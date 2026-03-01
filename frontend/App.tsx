@@ -33,7 +33,10 @@ initSentry();
 initWebVitals();
 
 // Global error handlers — report uncaught errors to admin error log
+let _isReportingGlobal = false;
 function reportGlobalError(errorMessage: string, stack?: string) {
+  if (_isReportingGlobal) return;
+  _isReportingGlobal = true;
   apiService.reportError({
     errorMessage,
     stackTrace: stack,
@@ -41,10 +44,11 @@ function reportGlobalError(errorMessage: string, stack?: string) {
     severity: 'error',
     deviceOS: Platform.OS,
     appVersion: Constants.expoConfig?.version,
-  }).catch(() => {});
+  }).catch(() => {}).finally(() => { _isReportingGlobal = false; });
 }
 
 if (Platform.OS === 'web' && typeof window !== 'undefined') {
+  const prevOnError = window.onerror;
   window.onerror = (_msg, _source, _line, _col, error) => {
     if (error) {
       reportGlobalError(
@@ -52,13 +56,21 @@ if (Platform.OS === 'web' && typeof window !== 'undefined') {
         error.stack,
       );
     }
+    if (typeof prevOnError === 'function') {
+      return (prevOnError as Function).call(window, _msg, _source, _line, _col, error);
+    }
+    return false;
   };
+  const prevOnRejection = window.onunhandledrejection;
   window.onunhandledrejection = (event) => {
     const reason = event.reason;
     const msg = reason instanceof Error
       ? `${reason.name}: ${reason.message}`
       : String(reason);
     reportGlobalError(`[UnhandledRejection] ${msg}`, reason?.stack);
+    if (typeof prevOnRejection === 'function') {
+      prevOnRejection.call(window, event);
+    }
   };
 } else {
   // React Native global error handler
