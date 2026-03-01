@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "Hizmet yönetim araçları"
   },
+  "platform": {
+    "all": "Tümü",
+    "web": "Web",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "Platforma göre",
+    "activeByPlatform": "Platforma göre aktif kullanıcılar (30g)",
+    "total": "Toplam",
+    "todayActive": "Bugün",
+    "weeklyActive": "Haftalık",
+    "browser": "Tarayıcı",
+    "os": "İşletim sistemi"
+  },
+  "subscription": {
+    "title": "Abonelik geliri",
+    "activeSubscribers": "Aktif aboneler",
+    "mrr": "Aylık gelir",
+    "revenue": "Gelir",
+    "commission": "Komisyon",
+    "stripe": "Stripe (Web)",
+    "apple": "Apple (iOS)",
+    "google": "Google (Android)",
+    "commissionRate": "Komisyon oranı",
+    "noSubscribers": "Aktif abone yok"
+  },
   "users": {
     "title": "Kullanıcı Yönetimi",
     "totalUsers": "Toplam Kullanıcı",
@@ -50,6 +75,7 @@
     "version": "Sürüm",
     "noErrors": "Hata bulunamadı",
     "loadMore": "Daha Fazla Yükle",
-    "occurrences": "kez"
+    "occurrences": "kez",
+    "platform": "Platform"
   }
 }

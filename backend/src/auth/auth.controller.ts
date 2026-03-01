@@ -48,8 +48,11 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
-  async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  async login(
+    @Body() loginDto: LoginDto,
+    @Req() req: Request,
+  ) {
+    return this.authService.login(loginDto, req.headers['user-agent']);
   }
 
   @Post('refresh')
@@ -172,19 +175,23 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
   async verifyTwoFactor(
+    @Req() req: Request,
     @Body() dto: TwoFactorLoginDto,
     @Headers('authorization') auth?: string,
   ) {
     const tempToken = auth?.replace('Bearer ', '') || '';
-    return this.authService.verifyTwoFactorLogin(tempToken, dto.code);
+    return this.authService.verifyTwoFactorLogin(tempToken, dto.code, req.headers['user-agent']);
   }
 
   // OAuth code exchange — frontend sends temp code, receives JWT tokens
   @Post('oauth/exchange')
   @HttpCode(HttpStatus.OK)
   @Throttle({ short: { ttl: 60000, limit: 10 } })
-  async exchangeOAuthCode(@Body() dto: ExchangeOAuthCodeDto) {
-    return this.authService.exchangeOAuthCode(dto.code);
+  async exchangeOAuthCode(
+    @Body() dto: ExchangeOAuthCodeDto,
+    @Req() req: Request,
+  ) {
+    return this.authService.exchangeOAuthCode(dto.code, req.headers['user-agent']);
   }
 
   // Google OAuth

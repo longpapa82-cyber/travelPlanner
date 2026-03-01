@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "أدوات إدارة الخدمة"
   },
+  "platform": {
+    "all": "الكل",
+    "web": "ويب",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "حسب المنصة",
+    "activeByPlatform": "المستخدمون النشطون حسب المنصة (30 يوم)",
+    "total": "الإجمالي",
+    "todayActive": "اليوم",
+    "weeklyActive": "أسبوعي",
+    "browser": "المتصفح",
+    "os": "نظام التشغيل"
+  },
+  "subscription": {
+    "title": "إيرادات الاشتراك",
+    "activeSubscribers": "المشتركون النشطون",
+    "mrr": "الإيراد الشهري",
+    "revenue": "الإيراد",
+    "commission": "العمولة",
+    "stripe": "Stripe (ويب)",
+    "apple": "Apple (iOS)",
+    "google": "Google (Android)",
+    "commissionRate": "نسبة العمولة",
+    "noSubscribers": "لا يوجد مشتركون"
+  },
   "users": {
     "title": "إدارة المستخدمين",
     "totalUsers": "إجمالي المستخدمين",
@@ -50,6 +75,7 @@
     "version": "الإصدار",
     "noErrors": "لم يتم العثور على أخطاء",
     "loadMore": "تحميل المزيد",
-    "occurrences": "مرات"
+    "occurrences": "مرات",
+    "platform": "المنصة"
   }
 }

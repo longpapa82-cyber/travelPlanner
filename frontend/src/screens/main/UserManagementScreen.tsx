@@ -71,6 +71,12 @@ const UserManagementScreen: React.FC<Props> = () => {
 
   const styles = createStyles(theme, isDark);
 
+  const PLATFORM_ICONS: Record<string, { name: string; color: string }> = {
+    web: { name: 'web', color: '#3B82F6' },
+    ios: { name: 'apple', color: '#1D1D1F' },
+    android: { name: 'android', color: '#3DDC84' },
+  };
+
   const renderStatCards = () => {
     if (!stats) return null;
     const cards = [
@@ -87,6 +93,39 @@ const UserManagementScreen: React.FC<Props> = () => {
             <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>{c.label}</Text>
           </View>
         ))}
+      </View>
+    );
+  };
+
+  const renderPlatformCards = () => {
+    if (!stats?.platformStats) return null;
+    const platforms = ['web', 'ios', 'android'] as const;
+    return (
+      <View style={[styles.section, { backgroundColor: theme.colors.white }]}>
+        <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
+          {t('platform.byPlatform')}
+        </Text>
+        <View style={styles.platformRow}>
+          {platforms.map((p) => {
+            const data = stats.platformStats[p] || { total: 0, todayActive: 0, weeklyActive: 0 };
+            const icon = PLATFORM_ICONS[p];
+            return (
+              <View key={p} style={[styles.platformCard, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}>
+                <Icon name={icon.name as any} size={24} color={icon.color} />
+                <Text style={[styles.platformName, { color: theme.colors.text }]}>{t(`platform.${p}`)}</Text>
+                <Text style={[styles.platformTotal, { color: theme.colors.text }]}>{data.total}</Text>
+                <View style={styles.platformMeta}>
+                  <Text style={[styles.platformMetaText, { color: theme.colors.textSecondary }]}>
+                    {t('platform.todayActive')}: {data.todayActive}
+                  </Text>
+                  <Text style={[styles.platformMetaText, { color: theme.colors.textSecondary }]}>
+                    {t('platform.weeklyActive')}: {data.weeklyActive}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
       </View>
     );
   };
@@ -139,6 +178,7 @@ const UserManagementScreen: React.FC<Props> = () => {
         ListHeaderComponent={
           <>
             {renderStatCards()}
+            {renderPlatformCards()}
             {stats?.providerStats && (
               <View style={[styles.section, { backgroundColor: theme.colors.white }]}>
                 <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
@@ -238,6 +278,14 @@ const createStyles = (theme: any, isDark: boolean) =>
     userEmail: { fontSize: 12 },
     userMeta: { alignItems: 'flex-end', gap: 2 },
     metaText: { fontSize: 11 },
+    platformRow: { flexDirection: 'row', gap: 8 },
+    platformCard: {
+      flex: 1, alignItems: 'center', padding: 12, borderRadius: 10, gap: 4,
+    },
+    platformName: { fontSize: 12, fontWeight: '600' },
+    platformTotal: { fontSize: 20, fontWeight: '700' },
+    platformMeta: { gap: 2, alignItems: 'center' },
+    platformMetaText: { fontSize: 10 },
     loadMore: {
       alignItems: 'center', padding: 14, margin: 16,
       borderWidth: 1, borderRadius: 12,

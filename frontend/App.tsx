@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, Platform, View, Text, StyleSheet } from 'react-native';
 import * as Sentry from '@sentry/react-native';
+import Constants from 'expo-constants';
 import * as Font from 'expo-font';
 import { onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
@@ -25,10 +26,54 @@ import { initializeAds } from './src/utils/initAds';
 import PaywallModal from './src/components/PaywallModal';
 import { TutorialProvider } from './src/contexts/TutorialContext';
 import WelcomeModal from './src/components/tutorial/WelcomeModal';
+import apiService from './src/services/api';
 
 // Initialize Sentry before app renders
 initSentry();
 initWebVitals();
+
+// Global error handlers — report uncaught errors to admin error log
+function reportGlobalError(errorMessage: string, stack?: string) {
+  apiService.reportError({
+    errorMessage,
+    stackTrace: stack,
+    screen: 'GlobalHandler',
+    severity: 'error',
+    deviceOS: Platform.OS,
+    appVersion: Constants.expoConfig?.version,
+  }).catch(() => {});
+}
+
+if (Platform.OS === 'web' && typeof window !== 'undefined') {
+  window.onerror = (_msg, _source, _line, _col, error) => {
+    if (error) {
+      reportGlobalError(
+        `[Uncaught] ${error.name}: ${error.message}`,
+        error.stack,
+      );
+    }
+  };
+  window.onunhandledrejection = (event) => {
+    const reason = event.reason;
+    const msg = reason instanceof Error
+      ? `${reason.name}: ${reason.message}`
+      : String(reason);
+    reportGlobalError(`[UnhandledRejection] ${msg}`, reason?.stack);
+  };
+} else {
+  // React Native global error handler
+  const { ErrorUtils } = global as any;
+  if (ErrorUtils) {
+    const originalHandler = ErrorUtils.getGlobalHandler();
+    ErrorUtils.setGlobalHandler((error: Error, isFatal?: boolean) => {
+      reportGlobalError(
+        `[${isFatal ? 'Fatal' : 'Uncaught'}] ${error.name}: ${error.message}`,
+        error.stack,
+      );
+      originalHandler?.(error, isFatal);
+    });
+  }
+}
 
 // Register service worker for PWA (web only)
 if (Platform.OS === 'web' && 'serviceWorker' in navigator) {

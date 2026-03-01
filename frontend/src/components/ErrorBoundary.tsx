@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import * as Sentry from '@sentry/react-native';
+import Constants from 'expo-constants';
 import i18next from 'i18next';
 import { colors } from '../constants/theme';
+import apiService from '../services/api';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const MAX_RETRIES = 3;
@@ -46,6 +48,17 @@ class ErrorBoundary extends Component<Props, State> {
       extra: { componentStack: errorInfo.componentStack },
     });
     this.setState({ eventId: eventId ?? null });
+
+    // Report to admin error log (best-effort, never re-throws)
+    apiService.reportError({
+      errorMessage: `[ErrorBoundary] ${error.name}: ${error.message}`,
+      stackTrace: error.stack || errorInfo.componentStack || undefined,
+      screen: 'ErrorBoundary',
+      severity: 'fatal',
+      deviceOS: Platform.OS,
+      appVersion: Constants.expoConfig?.version,
+    }).catch(() => {});
+
     if (__DEV__) console.error('ErrorBoundary caught:', error, errorInfo);
   }
 

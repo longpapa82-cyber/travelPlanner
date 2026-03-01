@@ -1,4 +1,6 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
+import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import { API_URL, STORAGE_KEYS } from '../constants/config';
 import { secureStorage } from '../utils/storage';
 import { getCurrentLanguage } from '../i18n';
@@ -21,6 +23,8 @@ class ApiService {
     resolve: (token: string) => void;
     reject: (error: any) => void;
   }> = [];
+  // Debounce map: error key → last report timestamp (10s cooldown)
+  private errorReportTimestamps = new Map<string, number>();
 
   constructor() {
     this.api = axios.create({
@@ -163,6 +167,30 @@ class ApiService {
         return Promise.reject(error);
       }
     );
+
+    // 5xx error auto-reporting interceptor
+    this.api.interceptors.response.use(undefined, (error: AxiosError) => {
+      const status = error.response?.status;
+      if (status && status >= 500) {
+        const url = error.config?.url || 'unknown';
+        const key = `${status}:${url}`;
+        const now = Date.now();
+        const last = this.errorReportTimestamps.get(key);
+
+        if (!last || now - last > 10_000) {
+          this.errorReportTimestamps.set(key, now);
+          this.reportError({
+            errorMessage: `[API ${status}] ${error.config?.method?.toUpperCase()} ${url}`,
+            stackTrace: (error.response?.data as any)?.message || error.message,
+            screen: 'ApiInterceptor',
+            severity: 'error',
+            deviceOS: Platform.OS,
+            appVersion: Constants.expoConfig?.version,
+          }).catch(() => {});
+        }
+      }
+      return Promise.reject(error);
+    });
   }
 
   public getInstance(): AxiosInstance {
@@ -681,8 +709,13 @@ class ApiService {
     return response.data;
   }
 
-  async getAdminErrorLogs(params: { page?: number; limit?: number; severity?: string; resolved?: boolean }) {
+  async getAdminErrorLogs(params: { page?: number; limit?: number; severity?: string; resolved?: boolean; platform?: string }) {
     const response = await this.api.get('/admin/error-logs', { params });
+    return response.data;
+  }
+
+  async getAdminSubscriptionStats() {
+    const response = await this.api.get('/admin/revenue/subscription-stats');
     return response.data;
   }
 
