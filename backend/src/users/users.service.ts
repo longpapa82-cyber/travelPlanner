@@ -340,12 +340,12 @@ export class UsersService {
 
     // Collect expenses (via trips)
     const expenses = await this.dataSource.query(
-      `SELECT es.id, es.title, es."totalAmount", es.currency, es."splitMethod",
-              es."createdAt", t.destination as "tripDestination"
-       FROM expense_splits es
-       JOIN trips t ON es."tripId" = t.id
+      `SELECT e.id, e.description, e.amount, e.currency, e."splitMethod",
+              e."createdAt", t.destination as "tripDestination"
+       FROM expenses e
+       JOIN trips t ON e."tripId" = t.id
        WHERE t."userId" = $1
-       ORDER BY es."createdAt" DESC`,
+       ORDER BY e."createdAt" DESC`,
       [userId],
     );
 
