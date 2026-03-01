@@ -778,6 +778,16 @@ class ApiService {
     return response.data;
   }
 
+  async createStripeCheckout(plan: 'monthly' | 'yearly'): Promise<{ url: string }> {
+    const response = await this.api.post('/subscription/stripe/checkout', { plan });
+    return response.data;
+  }
+
+  async createStripePortal(): Promise<{ url: string }> {
+    const response = await this.api.post('/subscription/stripe/portal');
+    return response.data;
+  }
+
   // Places Autocomplete
   async placesAutocomplete(input: string, sessionToken?: string, language?: string) {
     const params: Record<string, string> = { input };

@@ -134,6 +134,9 @@ export class User {
   @Column({ type: 'varchar', nullable: true })
   revenuecatAppUserId?: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  stripeCustomerId?: string;
+
   @Column({ type: 'int', default: 0 })
   aiTripsUsedThisMonth: number;
 

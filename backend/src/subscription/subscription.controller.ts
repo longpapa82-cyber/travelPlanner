@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Headers,
+  Req,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -64,6 +65,38 @@ export class SubscriptionController {
     }
 
     await this.subscriptionService.handleRevenueCatEvent(dto.event);
+    return { received: true };
+  }
+
+  // ─── Stripe Web Payments ───────────────────────────────
+
+  @Post('stripe/checkout')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async createStripeCheckout(
+    @CurrentUser() user: { id: string },
+    @Body() body: { plan: 'monthly' | 'yearly' },
+  ) {
+    return this.subscriptionService.createStripeCheckoutSession(
+      user.id,
+      body.plan,
+    );
+  }
+
+  @Post('stripe/portal')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async createStripePortal(@CurrentUser() user: { id: string }) {
+    return this.subscriptionService.createStripePortalSession(user.id);
+  }
+
+  @Post('stripe/webhook')
+  @HttpCode(HttpStatus.OK)
+  async handleStripeWebhook(
+    @Req() req: { rawBody: Buffer },
+    @Headers('stripe-signature') signature: string,
+  ) {
+    await this.subscriptionService.handleStripeWebhook(req.rawBody, signature);
     return { received: true };
   }
 }

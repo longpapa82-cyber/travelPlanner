@@ -17,7 +17,9 @@ import { AppModule } from './app.module';
 initSentry();
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    rawBody: true, // Required for Stripe webhook signature verification
+  });
 
   // Limit JSON/URL-encoded body size to prevent payload-based DoS
   app.useBodyParser('json', { limit: '1mb' });
@@ -57,6 +59,7 @@ async function bootstrap() {
             'https://*.doubleclick.net',
             'https://*.adtrafficquality.google.com',
             'https://*.google.com',
+            'https://api.stripe.com',
           ],
           frameSrc: [
             "'self'",
@@ -64,6 +67,8 @@ async function bootstrap() {
             'https://tpc.googlesyndication.com',
             'https://*.doubleclick.net',
             'https://www.google.com',
+            'https://checkout.stripe.com',
+            'https://js.stripe.com',
           ],
         },
       },

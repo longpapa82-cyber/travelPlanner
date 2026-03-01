@@ -435,6 +435,10 @@ describe('AuthController (Integration)', () => {
         profileImage: mockUser.profileImage,
         isEmailVerified: false,
         isTwoFactorEnabled: false,
+        subscriptionTier: 'free' as const,
+        subscriptionExpiresAt: null as Date | null,
+        aiTripsUsedThisMonth: 0,
+        lastPlatform: null as string | null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
