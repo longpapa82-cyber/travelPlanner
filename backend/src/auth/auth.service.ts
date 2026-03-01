@@ -158,12 +158,7 @@ export class AuthService {
       return { requiresTwoFactor: true, tempToken };
     }
 
-    // Update last login timestamp + platform
-    this.usersService.update(user.id, {
-      lastLoginAt: new Date(),
-      lastPlatform: detectPlatform(userAgent),
-      lastUserAgent: userAgent?.slice(0, 500),
-    }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
+    this.updateLoginMetadata(user.id, userAgent);
 
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email!);
@@ -332,12 +327,7 @@ export class AuthService {
       });
     }
 
-    // Update last login timestamp + platform
-    this.usersService.update(user.id, {
-      lastLoginAt: new Date(),
-      lastPlatform: detectPlatform(userAgent),
-      lastUserAgent: userAgent?.slice(0, 500),
-    }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
+    this.updateLoginMetadata(user.id, userAgent);
 
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email || '');
@@ -590,11 +580,7 @@ export class AuthService {
     await this.cacheManager.del(tfaLockKey);
 
     // Update last login timestamp + platform
-    this.usersService.update(user.id, {
-      lastLoginAt: new Date(),
-      lastPlatform: detectPlatform(userAgent),
-      lastUserAgent: userAgent?.slice(0, 500),
-    }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
+    this.updateLoginMetadata(user.id, userAgent);
 
     const tokens = await this.generateTokens(user.id, user.email || '');
 
@@ -679,5 +665,13 @@ export class AuthService {
       d: 24 * 60 * 60 * 1000,
     };
     return value * (multipliers[unit] || multipliers.d);
+  }
+
+  private updateLoginMetadata(userId: string, userAgent?: string): void {
+    this.usersService.update(userId, {
+      lastLoginAt: new Date(),
+      lastPlatform: detectPlatform(userAgent),
+      lastUserAgent: userAgent?.slice(0, 500),
+    }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
   }
 }

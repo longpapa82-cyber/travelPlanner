@@ -208,7 +208,8 @@ describe('AuthController (Integration)', () => {
         .expect(200); // HttpCode(HttpStatus.OK)
 
       expect(response.body).toEqual(mockAuthResponse);
-      expect(authService.login).toHaveBeenCalledWith(loginDto);
+      expect(authService.login).toHaveBeenCalled();
+      expect(authService.login.mock.calls[0][0]).toEqual(loginDto);
       expect(authService.login).toHaveBeenCalledTimes(1);
     });
 
@@ -259,7 +260,8 @@ describe('AuthController (Integration)', () => {
         .send(loginDto)
         .expect(500); // NestJS converts unhandled exceptions to 500
 
-      expect(authService.login).toHaveBeenCalledWith(loginDto);
+      expect(authService.login).toHaveBeenCalled();
+      expect(authService.login.mock.calls[0][0]).toEqual(loginDto);
     });
 
     it('should return 200 status code for successful login (not 201)', async () => {
@@ -275,7 +277,8 @@ describe('AuthController (Integration)', () => {
         .send(loginDto)
         .expect(200); // Should be 200, not 201
 
-      expect(authService.login).toHaveBeenCalledWith(loginDto);
+      expect(authService.login).toHaveBeenCalled();
+      expect(authService.login.mock.calls[0][0]).toEqual(loginDto);
     });
   });
 
@@ -435,7 +438,7 @@ describe('AuthController (Integration)', () => {
         profileImage: mockUser.profileImage,
         isEmailVerified: false,
         isTwoFactorEnabled: false,
-        subscriptionTier: 'free' as const,
+        subscriptionTier: SubscriptionTier.FREE,
         subscriptionExpiresAt: null as Date | null,
         aiTripsUsedThisMonth: 0,
         lastPlatform: null as string | null,
@@ -546,7 +549,8 @@ describe('AuthController (Integration)', () => {
         .send(loginDto)
         .expect(200);
 
-      expect(authService.login).toHaveBeenCalledWith(loginDto);
+      expect(authService.login).toHaveBeenCalled();
+      expect(authService.login.mock.calls[0][0]).toEqual(loginDto);
     });
 
     it('should return application/json response', async () => {
@@ -576,9 +580,8 @@ describe('AuthController (Integration)', () => {
         .expect(200);
 
       expect(response.body).toEqual(mockAuthResponse);
-      expect(authService.exchangeOAuthCode).toHaveBeenCalledWith(
-        'valid-oauth-code',
-      );
+      expect(authService.exchangeOAuthCode).toHaveBeenCalled();
+      expect(authService.exchangeOAuthCode.mock.calls[0][0]).toBe('valid-oauth-code');
     });
 
     it('should return 400 when code is missing', async () => {

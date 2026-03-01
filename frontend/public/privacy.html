@@ -135,9 +135,9 @@
   <h3>서비스 이용 시 자동 수집 항목</h3>
   <ul>
     <li><strong>여행 계획 데이터</strong> — 목적지, 여행 일자, 활동 내역, 경비 기록 등 이용자가 직접 입력한 여행 관련 정보</li>
-    <li><strong>접속 로그</strong> — IP 주소, 접속 일시, 브라우저 종류, 운영체제 정보, 사용 언어 설정</li>
-    <li><strong>기기 정보</strong> — 기기 유형(모바일/데스크톱/태블릿), 화면 해상도</li>
-    <li><strong>서비스 이용 기록</strong> — 기능 사용 내역, 오류 로그, 서비스 접근 패턴</li>
+    <li><strong>접속 로그</strong> — IP 주소, 접속 일시, 브라우저 종류, 운영체제 정보, 사용 언어 설정, 접속 플랫폼(웹/iOS/Android), User-Agent 문자열</li>
+    <li><strong>기기 정보</strong> — 기기 유형(모바일/데스크톱/태블릿), 화면 해상도, 최종 접속 플랫폼</li>
+    <li><strong>서비스 이용 기록</strong> — 기능 사용 내역, 오류 로그(발생 시 사용자 식별 정보·기기 정보·오류 상세가 진단 목적으로 수집됩니다), 서비스 접근 패턴</li>
     <li><strong>사진 데이터</strong> — 여행 커버 사진, 활동 사진 (업로드 시 WebP로 변환·최적화 저장)</li>
     <li><strong>구독 데이터</strong> — 구독 유형, 구독 플랫폼(App Store/Google Play), 만료일, 월간 AI 사용 횟수</li>
     <li><strong>소셜 데이터</strong> — 팔로우 관계, 좋아요, 공유 토큰, 공개/비공개 설정</li>
@@ -201,6 +201,7 @@
       <tr><td>RevenueCat</td><td>RevenueCat Inc.</td><td>구독 결제 관리</td><td>구독 상태, 결제 이벤트 (결제 정보는 앱 스토어에서 직접 처리)</td></tr>
       <tr><td>Google Maps API</td><td>Google LLC</td><td>장소 검색</td><td>검색어, 세션 토큰</td></tr>
       <tr><td>Sentry</td><td>Functional Software Inc.</td><td>오류 모니터링</td><td>오류 데이터, 사용자 컨텍스트 (비식별)</td></tr>
+      <tr><td>Stripe</td><td>Stripe Inc.</td><td>웹 결제 처리</td><td>이메일, 결제 정보, 구독 상태 (결제 카드 정보는 Stripe에서 직접 처리)</td></tr>
       <tr><td>제휴 파트너</td><td>Booking.com, Klook 등</td><td>제휴 서비스 연결</td><td>클릭 이벤트, IP 주소, User Agent</td></tr>
     </tbody>
   </table>
