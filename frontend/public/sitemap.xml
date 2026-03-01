@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Main Pages -->
+  <url>
+    <loc>https://mytravel-planner.com/</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/landing.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/landing-en.html"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/faq</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Guides Index -->
+  <url>
+    <loc>https://mytravel-planner.com/guides/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Destination Guides -->
+  <url><loc>https://mytravel-planner.com/guides/tokyo</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/kyoto</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/osaka</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/seoul</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/bangkok</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/singapore</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/ho-chi-minh</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/kuala-lumpur</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/bali</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/paris</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/london</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/barcelona</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/rome</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/prague</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/amsterdam</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/istanbul</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/new-york</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/hawaii</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/sydney</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/dubai</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Blog Index -->
+  <url>
+    <loc>https://mytravel-planner.com/blog/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url><loc>https://mytravel-planner.com/blog/ai-travel-planning-tips</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/packing-checklist</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/budget-travel-guide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/first-solo-travel</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/travel-insurance-guide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/japan-transport-pass-guide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/europe-culture-differences</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/southeast-asia-rainy-season</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/smartphone-travel-photography</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/currency-exchange-guide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/airport-time-saving-tips</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/travel-internet-guide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/family-travel-planning</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/travel-journal-tips</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/blog/long-term-travel-guide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+</urlset>
