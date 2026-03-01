@@ -105,9 +105,9 @@ export class UsersService {
     return bcrypt.compare(password, user.passwordHash);
   }
 
-  async update(id: string, data: Partial<User>): Promise<User> {
+  async update(id: string, data: Partial<User>): Promise<Partial<User>> {
     await this.userRepository.update(id, data);
-    return this.findById(id);
+    return this.findProfileById(id);
   }
 
   async changePassword(

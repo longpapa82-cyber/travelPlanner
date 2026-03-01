@@ -13,7 +13,7 @@ export class AnalyticsController {
    */
   @Get('popular-destinations')
   async getPopularDestinations(@Query('limit') limit?: string) {
-    const limitNum = limit ? parseInt(limit, 10) : 10;
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit || '10', 10) || 10));
     return this.analyticsService.getPopularDestinations(limitNum);
   }
 
@@ -23,7 +23,7 @@ export class AnalyticsController {
    */
   @Get('travel-trends')
   async getTravelTrends(@Query('limit') limit?: string) {
-    const limitNum = limit ? parseInt(limit, 10) : 10;
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit || '10', 10) || 10));
     return this.analyticsService.getTravelTrends(limitNum);
   }
 

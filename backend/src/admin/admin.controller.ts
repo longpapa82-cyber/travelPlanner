@@ -41,8 +41,8 @@ export class AdminController {
     @Query('provider') provider?: string,
   ) {
     return this.adminService.getUsers(
-      page ? parseInt(page, 10) : 1,
-      limit ? parseInt(limit, 10) : 20,
+      Math.max(1, parseInt(page || '1', 10) || 1),
+      Math.min(100, Math.max(1, parseInt(limit || '20', 10) || 20)),
       search,
       provider,
     );
@@ -62,8 +62,8 @@ export class AdminController {
     @Query('platform') platform?: string,
   ) {
     return this.adminService.getErrorLogs(
-      page ? parseInt(page, 10) : 1,
-      limit ? parseInt(limit, 10) : 20,
+      Math.max(1, parseInt(page || '1', 10) || 1),
+      Math.min(100, Math.max(1, parseInt(limit || '20', 10) || 20)),
       severity,
       resolved !== undefined ? resolved === 'true' : undefined,
       platform,
@@ -88,8 +88,8 @@ export class AdminController {
     @Query('action') action?: string,
   ) {
     return this.auditService.getAuditLogs(
-      page ? parseInt(page, 10) : 1,
-      limit ? parseInt(limit, 10) : 50,
+      Math.max(1, parseInt(page || '1', 10) || 1),
+      Math.min(100, Math.max(1, parseInt(limit || '50', 10) || 50)),
       userId,
       action as AuditAction | undefined,
     );

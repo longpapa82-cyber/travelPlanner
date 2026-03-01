@@ -69,6 +69,10 @@ const PaywallModal: React.FC = () => {
       try {
         const { url } = await apiService.createStripeCheckout(selectedPlan);
         if (url && typeof window !== 'undefined') {
+          const parsed = new URL(url);
+          if (parsed.hostname !== 'checkout.stripe.com') {
+            throw new Error('Invalid checkout URL');
+          }
           window.location.href = url;
         } else {
           Alert.alert(t('actions.subscribe'), t('paywall.checkoutFailed') || 'Unable to start checkout. Please try again.');

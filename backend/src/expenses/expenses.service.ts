@@ -218,11 +218,17 @@ export class ExpensesService {
   ): Promise<Expense[]> {
     await this.verifyTripAccess(tripId, userId);
 
-    return this.expenseRepository.find({
-      where: { tripId },
-      relations: ['splits', 'paidBy', 'splits.user'],
-      order: { date: 'DESC', createdAt: 'DESC' },
-    });
+    return this.expenseRepository
+      .createQueryBuilder('expense')
+      .leftJoinAndSelect('expense.splits', 'split')
+      .leftJoin('expense.paidBy', 'paidBy')
+      .addSelect(['paidBy.id', 'paidBy.name', 'paidBy.profileImage'])
+      .leftJoin('split.user', 'splitUser')
+      .addSelect(['splitUser.id', 'splitUser.name', 'splitUser.profileImage'])
+      .where('expense.tripId = :tripId', { tripId })
+      .orderBy('expense.date', 'DESC')
+      .addOrderBy('expense.createdAt', 'DESC')
+      .getMany();
   }
 
   /**
@@ -235,10 +241,15 @@ export class ExpensesService {
   ): Promise<Expense> {
     await this.verifyTripAccess(tripId, userId);
 
-    const expense = await this.expenseRepository.findOne({
-      where: { id: expenseId, tripId },
-      relations: ['splits', 'paidBy', 'splits.user'],
-    });
+    const expense = await this.expenseRepository
+      .createQueryBuilder('expense')
+      .leftJoinAndSelect('expense.splits', 'split')
+      .leftJoin('expense.paidBy', 'paidBy')
+      .addSelect(['paidBy.id', 'paidBy.name', 'paidBy.profileImage'])
+      .leftJoin('split.user', 'splitUser')
+      .addSelect(['splitUser.id', 'splitUser.name', 'splitUser.profileImage'])
+      .where('expense.id = :expenseId AND expense.tripId = :tripId', { expenseId, tripId })
+      .getOne();
 
     if (!expense) {
       throw new NotFoundException('Expense not found');
@@ -346,10 +357,15 @@ export class ExpensesService {
   ): Promise<BalanceEntry[]> {
     await this.verifyTripAccess(tripId, userId);
 
-    const expenses = await this.expenseRepository.find({
-      where: { tripId },
-      relations: ['splits', 'paidBy', 'splits.user'],
-    });
+    const expenses = await this.expenseRepository
+      .createQueryBuilder('expense')
+      .leftJoinAndSelect('expense.splits', 'split')
+      .leftJoin('expense.paidBy', 'paidBy')
+      .addSelect(['paidBy.id', 'paidBy.name', 'paidBy.profileImage'])
+      .leftJoin('split.user', 'splitUser')
+      .addSelect(['splitUser.id', 'splitUser.name', 'splitUser.profileImage'])
+      .where('expense.tripId = :tripId', { tripId })
+      .getMany();
 
     // Accumulate balances per user
     const balanceMap = new Map<string, { name: string; balance: number }>();

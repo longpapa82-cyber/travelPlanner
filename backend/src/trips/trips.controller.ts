@@ -32,8 +32,10 @@ import { AddActivityDto } from './dto/add-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { ReorderActivitiesDto } from './dto/reorder-activities.dto';
 import { AddCollaboratorDto } from './dto/add-collaborator.dto';
+import { UpdateCollaboratorRoleDto } from './dto/update-collaborator-role.dto';
 import { CollaboratorRole } from './entities/collaborator.entity';
 import { QueryTripsDto } from './dto/query-trips.dto';
+import { GenerateShareLinkDto } from './dto/generate-share-link.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ImageService } from '../common/image.service';
@@ -269,12 +271,12 @@ export class TripsController {
   generateShareLink(
     @CurrentUser('userId') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() body?: { expiresInDays?: number },
+    @Body() dto: GenerateShareLinkDto,
   ) {
     return this.tripsService.generateShareToken(
       id,
       userId,
-      body?.expiresInDays,
+      dto?.expiresInDays,
     );
   }
 
@@ -310,9 +312,9 @@ export class TripsController {
     @CurrentUser('userId') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
     @Param('collabId', ParseUUIDPipe) collabId: string,
-    @Body('role') role: CollaboratorRole,
+    @Body() dto: UpdateCollaboratorRoleDto,
   ) {
-    return this.tripsService.updateCollaboratorRole(id, userId, collabId, role);
+    return this.tripsService.updateCollaboratorRole(id, userId, collabId, dto.role);
   }
 
   @Delete(':id/leave')
