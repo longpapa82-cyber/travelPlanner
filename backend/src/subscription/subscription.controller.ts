@@ -8,15 +8,18 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  BadRequestException,
   UnauthorizedException,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { SubscriptionService } from './subscription.service';
 import { RevenueCatWebhookDto } from './dto/revenuecat-webhook.dto';
+import { CreateCheckoutDto } from './dto/create-checkout.dto';
 
 @Controller('subscription')
 export class SubscriptionController {
@@ -75,11 +78,11 @@ export class SubscriptionController {
   @HttpCode(HttpStatus.OK)
   async createStripeCheckout(
     @CurrentUser() user: { id: string },
-    @Body() body: { plan: 'monthly' | 'yearly' },
+    @Body() dto: CreateCheckoutDto,
   ) {
     return this.subscriptionService.createStripeCheckoutSession(
       user.id,
-      body.plan,
+      dto.plan,
     );
   }
 
@@ -91,11 +94,15 @@ export class SubscriptionController {
   }
 
   @Post('stripe/webhook')
+  @Throttle({ short: { ttl: 60000, limit: 100 } })
   @HttpCode(HttpStatus.OK)
   async handleStripeWebhook(
     @Req() req: { rawBody: Buffer },
     @Headers('stripe-signature') signature: string,
   ) {
+    if (!req.rawBody || !signature) {
+      throw new BadRequestException('Missing payload or signature');
+    }
     await this.subscriptionService.handleStripeWebhook(req.rawBody, signature);
     return { received: true };
   }

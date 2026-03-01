@@ -69,9 +69,12 @@ const PaywallModal: React.FC = () => {
         const { url } = await apiService.createStripeCheckout(selectedPlan);
         if (url && typeof window !== 'undefined') {
           window.location.href = url;
+        } else {
+          Alert.alert(t('actions.subscribe'), t('paywall.checkoutFailed') || 'Unable to start checkout. Please try again.');
         }
       } catch (error: any) {
-        Alert.alert('Error', error?.message || 'Failed to start checkout. Please try again.');
+        const msg = error?.response?.data?.message || error?.message || 'Failed to start checkout. Please try again.';
+        Alert.alert('Error', msg);
       } finally {
         setIsPurchasing(false);
       }

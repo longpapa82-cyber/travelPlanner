@@ -1,5 +1,3 @@
-import { UAParser } from 'ua-parser-js';
-
 export type Platform = 'web' | 'ios' | 'android';
 
 /**
@@ -24,32 +22,4 @@ export function detectPlatform(ua: string | undefined): Platform {
   if (lower.includes('darwin') && !lower.includes('mac os')) return 'ios';
 
   return 'web';
-}
-
-/**
- * Parse browser info from UA string.
- */
-export function parseBrowser(ua: string | undefined): { name: string; version: string } {
-  if (!ua) return { name: 'unknown', version: '' };
-
-  const parser = new UAParser(ua);
-  const browser = parser.getBrowser();
-  return {
-    name: browser.name || 'unknown',
-    version: browser.version || '',
-  };
-}
-
-/**
- * Parse OS info from UA string.
- */
-export function parseOS(ua: string | undefined): { name: string; version: string } {
-  if (!ua) return { name: 'unknown', version: '' };
-
-  const parser = new UAParser(ua);
-  const os = parser.getOS();
-  return {
-    name: os.name || 'unknown',
-    version: os.version || '',
-  };
 }
