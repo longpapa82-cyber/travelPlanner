@@ -113,7 +113,7 @@ export default ({ config }) => ({
   extra: {
     apiUrl: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api',
     adsenseClientId: process.env.ADSENSE_CLIENT_ID || 'ca-pub-7330738950092177',
-    adsenseDefaultSlot: process.env.ADSENSE_DEFAULT_SLOT || '',
+    adsenseDefaultSlot: process.env.ADSENSE_DEFAULT_SLOT || '2397004834',
     affiliateIds: {
       booking: process.env.AFFILIATE_BOOKING_ID || '',
       expedia: process.env.AFFILIATE_EXPEDIA_ID || '',
