@@ -60,6 +60,61 @@ export class AdminService {
       .groupBy('u.provider')
       .getRawMany();
 
+    // Platform breakdown
+    const platformStatsRaw = await this.userRepository
+      .createQueryBuilder('u')
+      .select('u.lastPlatform', 'platform')
+      .addSelect('COUNT(*)', 'total')
+      .addSelect(
+        `SUM(CASE WHEN u.lastLoginAt >= :today THEN 1 ELSE 0 END)`,
+        'todayActive',
+      )
+      .addSelect(
+        `SUM(CASE WHEN u.lastLoginAt >= :weekAgo THEN 1 ELSE 0 END)`,
+        'weeklyActive',
+      )
+      .where('u.lastPlatform IS NOT NULL')
+      .setParameters({ today, weekAgo })
+      .groupBy('u.lastPlatform')
+      .getRawMany();
+
+    const platformStats: Record<string, { total: number; todayActive: number; weeklyActive: number }> = {
+      web: { total: 0, todayActive: 0, weeklyActive: 0 },
+      ios: { total: 0, todayActive: 0, weeklyActive: 0 },
+      android: { total: 0, todayActive: 0, weeklyActive: 0 },
+    };
+
+    for (const row of platformStatsRaw) {
+      if (row.platform && platformStats[row.platform]) {
+        platformStats[row.platform] = {
+          total: parseInt(row.total, 10),
+          todayActive: parseInt(row.todayActive, 10),
+          weeklyActive: parseInt(row.weeklyActive, 10),
+        };
+      }
+    }
+
+    // Daily active by platform (30 days)
+    const dailyActiveByPlatform = await this.userRepository
+      .createQueryBuilder('u')
+      .select("TO_CHAR(u.lastLoginAt, 'YYYY-MM-DD')", 'date')
+      .addSelect(
+        `SUM(CASE WHEN u.lastPlatform = 'web' THEN 1 ELSE 0 END)`,
+        'web',
+      )
+      .addSelect(
+        `SUM(CASE WHEN u.lastPlatform = 'ios' THEN 1 ELSE 0 END)`,
+        'ios',
+      )
+      .addSelect(
+        `SUM(CASE WHEN u.lastPlatform = 'android' THEN 1 ELSE 0 END)`,
+        'android',
+      )
+      .where('u.lastLoginAt >= :thirtyDaysAgo', { thirtyDaysAgo })
+      .groupBy("TO_CHAR(u.lastLoginAt, 'YYYY-MM-DD')")
+      .orderBy('date', 'ASC')
+      .getRawMany();
+
     return {
       totalUsers,
       todaySignups,
@@ -67,6 +122,8 @@ export class AdminService {
       weeklyActive,
       dailySignups,
       providerStats,
+      platformStats,
+      dailyActiveByPlatform,
     };
   }
 
@@ -115,6 +172,8 @@ export class AdminService {
     severity?: 'error' | 'warning' | 'fatal';
     deviceOS?: string;
     appVersion?: string;
+    platform?: 'web' | 'ios' | 'android';
+    userAgent?: string;
   }) {
     const log = this.errorLogRepository.create(data);
     return this.errorLogRepository.save(log);
@@ -175,6 +234,45 @@ export class AdminService {
       .orderBy('hour', 'ASC')
       .getRawMany();
 
+    // Platform breakdown
+    const platformBreakdownRaw = await this.errorLogRepository
+      .createQueryBuilder('e')
+      .select('e.platform', 'platform')
+      .addSelect('COUNT(*)', 'total')
+      .addSelect(
+        `SUM(CASE WHEN e.severity = 'fatal' THEN 1 ELSE 0 END)`,
+        'fatal',
+      )
+      .addSelect(
+        `SUM(CASE WHEN e.severity = 'error' THEN 1 ELSE 0 END)`,
+        'error',
+      )
+      .addSelect(
+        `SUM(CASE WHEN e.severity = 'warning' THEN 1 ELSE 0 END)`,
+        'warning',
+      )
+      .where('e.createdAt >= :weekAgo', { weekAgo })
+      .groupBy('e.platform')
+      .getRawMany();
+
+    const platformBreakdown: Record<string, { total: number; fatal: number; error: number; warning: number }> = {
+      web: { total: 0, fatal: 0, error: 0, warning: 0 },
+      ios: { total: 0, fatal: 0, error: 0, warning: 0 },
+      android: { total: 0, fatal: 0, error: 0, warning: 0 },
+    };
+
+    for (const row of platformBreakdownRaw) {
+      const key = row.platform || 'web';
+      if (platformBreakdown[key]) {
+        platformBreakdown[key] = {
+          total: parseInt(row.total, 10),
+          fatal: parseInt(row.fatal, 10),
+          error: parseInt(row.error, 10),
+          warning: parseInt(row.warning, 10),
+        };
+      }
+    }
+
     return {
       todayErrors,
       weeklyErrors,
@@ -182,6 +280,7 @@ export class AdminService {
       affectedUsers: parseInt(affectedUsers?.count || '0', 10),
       topErrors,
       hourlyTrend,
+      platformBreakdown,
     };
   }
 
@@ -190,6 +289,7 @@ export class AdminService {
     limit = 20,
     severity?: string,
     resolved?: boolean,
+    platform?: string,
   ) {
     const qb = this.errorLogRepository
       .createQueryBuilder('e')
@@ -203,6 +303,10 @@ export class AdminService {
       qb.andWhere('e.isResolved = :resolved', { resolved });
     }
 
+    if (platform) {
+      qb.andWhere('e.platform = :platform', { platform });
+    }
+
     const total = await qb.getCount();
     const logs = await qb
       .skip((page - 1) * limit)
@@ -210,6 +314,63 @@ export class AdminService {
       .getMany();
 
     return { logs, total, page, totalPages: Math.ceil(total / limit) };
+  }
+
+  async getSubscriptionStats() {
+    const now = new Date();
+
+    // Active subscribers by platform and tier
+    const subsRaw = await this.userRepository
+      .createQueryBuilder('u')
+      .select('u.subscriptionPlatform', 'platform')
+      .addSelect('u.subscriptionTier', 'tier')
+      .addSelect('COUNT(*)', 'count')
+      .where('u.subscriptionTier = :premium', { premium: 'premium' })
+      .andWhere('(u.subscriptionExpiresAt IS NULL OR u.subscriptionExpiresAt > :now)', { now })
+      .groupBy('u.subscriptionPlatform')
+      .addGroupBy('u.subscriptionTier')
+      .getRawMany();
+
+    // Commission rates by platform
+    const commissions: Record<string, number> = {
+      web: 0.03,      // Stripe: 2.9% + 30c ≈ 3%
+      ios: 0.15,      // Apple: 15% (small business)
+      android: 0.15,  // Google: 15% (first $1M)
+    };
+
+    const premiumPrice = 3.99; // monthly price
+
+    const byPlatform: Record<string, { active: number; revenue: number; mrr: number }> = {
+      web: { active: 0, revenue: 0, mrr: 0 },
+      ios: { active: 0, revenue: 0, mrr: 0 },
+      android: { active: 0, revenue: 0, mrr: 0 },
+    };
+
+    let totalActive = 0;
+    for (const row of subsRaw) {
+      const plat = row.platform || 'web';
+      const count = parseInt(row.count, 10);
+      totalActive += count;
+      if (byPlatform[plat]) {
+        byPlatform[plat].active = count;
+        const gross = count * premiumPrice;
+        const net = gross * (1 - (commissions[plat] || 0));
+        byPlatform[plat].revenue = Math.round(net * 100) / 100;
+        byPlatform[plat].mrr = Math.round(net * 100) / 100;
+      }
+    }
+
+    const totalRevenue = Object.values(byPlatform).reduce((sum, p) => sum + p.revenue, 0);
+
+    return {
+      total: {
+        active: totalActive,
+        revenue: Math.round(totalRevenue * 100) / 100,
+        mrr: Math.round(totalRevenue * 100) / 100,
+      },
+      byPlatform,
+      commissions,
+    };
   }
 
   async resolveErrorLog(id: string) {

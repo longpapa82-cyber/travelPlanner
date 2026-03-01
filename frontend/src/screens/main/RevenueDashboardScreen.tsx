@@ -49,12 +49,25 @@ const PROVIDER_CONFIG: Record<string, { icon: string; color: string; label: stri
   klook: { icon: 'map-marker', color: '#FF5722', label: 'Klook' },
 };
 
+interface SubscriptionStats {
+  total: { active: number; revenue: number; mrr: number };
+  byPlatform: Record<string, { active: number; revenue: number; mrr: number }>;
+  commissions: Record<string, number>;
+}
+
+const SUBSCRIPTION_PLATFORMS: Record<string, { icon: string; color: string; label: string }> = {
+  web: { icon: 'web', color: '#635BFF', label: 'Stripe (Web)' },
+  ios: { icon: 'apple', color: '#1D1D1F', label: 'Apple (iOS)' },
+  android: { icon: 'google-play', color: '#34A853', label: 'Google (Android)' },
+};
+
 const RevenueDashboardScreen = () => {
-  const { t } = useTranslation('profile');
+  const { t } = useTranslation(['profile', 'admin']);
   const { theme, isDark } = useTheme();
 
   const [summary, setSummary] = useState<Summary | null>(null);
   const [providerStats, setProviderStats] = useState<ProviderStat[]>([]);
+  const [subStats, setSubStats] = useState<SubscriptionStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -62,12 +75,14 @@ const RevenueDashboardScreen = () => {
   const fetchData = useCallback(async () => {
     try {
       setError(null);
-      const [summaryRes, statsRes] = await Promise.all([
+      const [summaryRes, statsRes, subStatsRes] = await Promise.all([
         apiService.getAffiliateSummary(30),
         apiService.getAffiliateProviderStats(),
+        apiService.getAdminSubscriptionStats().catch(() => null),
       ]);
       setSummary(summaryRes.summary || summaryRes);
       setProviderStats(statsRes.stats || []);
+      setSubStats(subStatsRes);
     } catch (err: any) {
       if (err.response?.status === 403) {
         setError(t('revenue.adminOnly'));
@@ -206,6 +221,57 @@ const RevenueDashboardScreen = () => {
               {formatCurrency(summary.totalRevenue)}
             </Text>
           </View>
+        </View>
+      )}
+
+      {/* Subscription Revenue */}
+      {subStats && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+            {t('admin:subscription.title')}
+          </Text>
+
+          {/* Total MRR card */}
+          <View style={[styles.mrrCard, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[0] }]}>
+            <Text style={[styles.mrrLabel, { color: theme.colors.textSecondary }]}>
+              {t('admin:subscription.mrr')}
+            </Text>
+            <Text style={[styles.mrrValue, { color: colors.success.main }]}>
+              {formatCurrency(subStats.total.mrr)}
+            </Text>
+            <Text style={[styles.mrrSubs, { color: theme.colors.textSecondary }]}>
+              {subStats.total.active} {t('admin:subscription.activeSubscribers')}
+            </Text>
+          </View>
+
+          {/* Platform cards */}
+          {Object.entries(SUBSCRIPTION_PLATFORMS).map(([platform, config]) => {
+            const data = subStats.byPlatform[platform] || { active: 0, revenue: 0, mrr: 0 };
+            const commRate = subStats.commissions[platform] || 0;
+            return (
+              <View key={platform} style={[styles.subPlatformCard, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[0] }]}>
+                <View style={styles.subPlatformHeader}>
+                  <View style={[styles.subPlatformIcon, { backgroundColor: `${config.color}15` }]}>
+                    <Icon name={config.icon as any} size={20} color={config.color} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.subPlatformName, { color: theme.colors.text }]}>{config.label}</Text>
+                    <Text style={[styles.subPlatformSubs, { color: theme.colors.textSecondary }]}>
+                      {data.active} {t('admin:subscription.activeSubscribers')}
+                    </Text>
+                  </View>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={[styles.subPlatformRevenue, { color: colors.success.main }]}>
+                      {formatCurrency(data.revenue)}
+                    </Text>
+                    <Text style={[styles.subPlatformComm, { color: theme.colors.textSecondary }]}>
+                      {t('admin:subscription.commissionRate')}: {(commRate * 100).toFixed(0)}%
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            );
+          })}
         </View>
       )}
 
@@ -431,6 +497,38 @@ const createStyles = (theme: any, isDark: boolean) =>
       width: 45,
       textAlign: 'right',
     },
+    mrrCard: {
+      alignItems: 'center',
+      padding: 20,
+      borderRadius: 12,
+      marginBottom: 12,
+      ...theme.shadows.sm,
+    },
+    mrrLabel: { fontSize: 13 },
+    mrrValue: { fontSize: 32, fontWeight: '700', marginVertical: 4 },
+    mrrSubs: { fontSize: 12 },
+    subPlatformCard: {
+      padding: 14,
+      borderRadius: 12,
+      marginBottom: 8,
+      ...theme.shadows.sm,
+    },
+    subPlatformHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+    },
+    subPlatformIcon: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    subPlatformName: { fontSize: 14, fontWeight: '600' },
+    subPlatformSubs: { fontSize: 11, marginTop: 2 },
+    subPlatformRevenue: { fontSize: 16, fontWeight: '700' },
+    subPlatformComm: { fontSize: 10, marginTop: 2 },
   });
 
 export default RevenueDashboardScreen;

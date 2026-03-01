@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "Alat manajemen layanan"
   },
+  "platform": {
+    "all": "Semua",
+    "web": "Web",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "Per platform",
+    "activeByPlatform": "Pengguna aktif per platform (30 hari)",
+    "total": "Total",
+    "todayActive": "Hari ini",
+    "weeklyActive": "Mingguan",
+    "browser": "Browser",
+    "os": "Sistem operasi"
+  },
+  "subscription": {
+    "title": "Pendapatan langganan",
+    "activeSubscribers": "Pelanggan aktif",
+    "mrr": "Pendapatan bulanan",
+    "revenue": "Pendapatan",
+    "commission": "Komisi",
+    "stripe": "Stripe (Web)",
+    "apple": "Apple (iOS)",
+    "google": "Google (Android)",
+    "commissionRate": "Tarif komisi",
+    "noSubscribers": "Tidak ada pelanggan aktif"
+  },
   "users": {
     "title": "Manajemen Pengguna",
     "totalUsers": "Total Pengguna",
@@ -50,6 +75,7 @@
     "version": "Versi",
     "noErrors": "Tidak ada kesalahan ditemukan",
     "loadMore": "Muat Lagi",
-    "occurrences": "kali"
+    "occurrences": "kali",
+    "platform": "Platform"
   }
 }

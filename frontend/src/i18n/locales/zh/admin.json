@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "服务管理工具"
   },
+  "platform": {
+    "all": "全部",
+    "web": "网页",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "按平台",
+    "activeByPlatform": "按平台活跃用户（30天）",
+    "total": "合计",
+    "todayActive": "今日",
+    "weeklyActive": "本周",
+    "browser": "浏览器",
+    "os": "操作系统"
+  },
+  "subscription": {
+    "title": "订阅收入",
+    "activeSubscribers": "活跃订阅者",
+    "mrr": "月经常性收入",
+    "revenue": "收入",
+    "commission": "佣金",
+    "stripe": "Stripe（网页）",
+    "apple": "Apple（iOS）",
+    "google": "Google（Android）",
+    "commissionRate": "佣金率",
+    "noSubscribers": "无活跃订阅者"
+  },
   "users": {
     "title": "用户管理",
     "totalUsers": "总用户数",
@@ -50,6 +75,7 @@
     "version": "版本",
     "noErrors": "无错误",
     "loadMore": "加载更多",
-    "occurrences": "次"
+    "occurrences": "次",
+    "platform": "平台"
   }
 }

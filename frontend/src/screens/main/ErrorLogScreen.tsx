@@ -28,6 +28,7 @@ const ErrorLogScreen: React.FC<Props> = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [severity, setSeverity] = useState('');
+  const [platformFilter, setPlatformFilter] = useState('');
   const [unresolvedOnly, setUnresolvedOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -47,6 +48,7 @@ const ErrorLogScreen: React.FC<Props> = () => {
         page: p, limit: 20,
         severity: severity || undefined,
         resolved: unresolvedOnly ? false : undefined,
+        platform: platformFilter || undefined,
       });
       setLogs(reset ? data.logs : [...logs, ...data.logs]);
       setTotalPages(data.totalPages);
@@ -55,9 +57,9 @@ const ErrorLogScreen: React.FC<Props> = () => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [severity, unresolvedOnly]);
+  }, [severity, unresolvedOnly, platformFilter]);
 
-  useEffect(() => { fetchStats(); fetchLogs(1, true); }, [severity, unresolvedOnly]);
+  useEffect(() => { fetchStats(); fetchLogs(1, true); }, [severity, unresolvedOnly, platformFilter]);
 
   const handleRefresh = useCallback(() => {
     setRefreshing(true);
@@ -100,9 +102,56 @@ const ErrorLogScreen: React.FC<Props> = () => {
     );
   };
 
+  const PLATFORM_COLORS: Record<string, string> = {
+    web: '#3B82F6',
+    ios: '#1D1D1F',
+    android: '#3DDC84',
+  };
+
+  const renderPlatformBreakdown = () => {
+    if (!stats?.platformBreakdown) return null;
+    const platforms = ['web', 'ios', 'android'] as const;
+    const total = platforms.reduce((sum, p) => sum + (stats.platformBreakdown[p]?.total || 0), 0);
+    if (total === 0) return null;
+
+    return (
+      <View style={[styles.section, { backgroundColor: theme.colors.white }]}>
+        <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
+          {t('platform.byPlatform')}
+        </Text>
+        {/* Distribution bar */}
+        <View style={styles.distributionBar}>
+          {platforms.map((p) => {
+            const count = stats.platformBreakdown[p]?.total || 0;
+            const pct = total > 0 ? (count / total) * 100 : 0;
+            if (pct === 0) return null;
+            return (
+              <View key={p} style={[styles.distributionSegment, { width: `${pct}%`, backgroundColor: PLATFORM_COLORS[p] }]} />
+            );
+          })}
+        </View>
+        <View style={styles.distributionLabels}>
+          {platforms.map((p) => {
+            const data = stats.platformBreakdown[p] || { total: 0, fatal: 0, error: 0, warning: 0 };
+            return (
+              <View key={p} style={styles.distributionLabel}>
+                <View style={[styles.distributionDot, { backgroundColor: PLATFORM_COLORS[p] }]} />
+                <Text style={[styles.distributionText, { color: theme.colors.text }]}>
+                  {t(`platform.${p}`)} {data.total}
+                </Text>
+              </View>
+            );
+          })}
+        </View>
+      </View>
+    );
+  };
+
   const renderFilters = () => {
     const severities = ['', 'error', 'warning', 'fatal'];
     const labels = [t('errors.allSeverity'), t('errors.error'), t('errors.warning'), t('errors.fatal')];
+    const platforms = ['', 'web', 'ios', 'android'];
+    const platformLabels = [t('platform.all'), t('platform.web'), t('platform.ios'), t('platform.android')];
     return (
       <View style={[styles.section, { backgroundColor: theme.colors.white }]}>
         <View style={styles.filterRow}>
@@ -121,6 +170,18 @@ const ErrorLogScreen: React.FC<Props> = () => {
           >
             <Text style={[styles.filterText, unresolvedOnly && { color: '#fff' }]}>{t('errors.unresolvedOnly')}</Text>
           </TouchableOpacity>
+        </View>
+        {/* Platform filter */}
+        <View style={[styles.filterRow, { marginTop: 8 }]}>
+          {platforms.map((p, i) => (
+            <TouchableOpacity
+              key={`plat-${p}`}
+              style={[styles.filterChip, platformFilter === p && { backgroundColor: PLATFORM_COLORS[p] || theme.colors.primary }]}
+              onPress={() => setPlatformFilter(p)}
+            >
+              <Text style={[styles.filterText, platformFilter === p && { color: '#fff' }]}>{platformLabels[i]}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
     );
@@ -189,6 +250,7 @@ const ErrorLogScreen: React.FC<Props> = () => {
             )}
             <View style={styles.logDetailRow}>
               {item.userEmail && <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>{item.userEmail}</Text>}
+              {item.platform && <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>{t('errors.platform')}: {item.platform}</Text>}
               {item.deviceOS && <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>{t('errors.device')}: {item.deviceOS}</Text>}
               {item.appVersion && <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>{t('errors.version')}: {item.appVersion}</Text>}
             </View>
@@ -223,6 +285,7 @@ const ErrorLogScreen: React.FC<Props> = () => {
         ListHeaderComponent={
           <>
             {renderStatCards()}
+            {renderPlatformBreakdown()}
             {renderTopErrors()}
             {renderFilters()}
           </>
@@ -301,6 +364,15 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
     resolveText: { color: '#fff', fontSize: 13, fontWeight: '600' },
     resolvedBadge: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+    distributionBar: {
+      flexDirection: 'row', height: 8, borderRadius: 4, overflow: 'hidden', marginBottom: 8,
+      backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200],
+    },
+    distributionSegment: { height: '100%' },
+    distributionLabels: { flexDirection: 'row', gap: 16, justifyContent: 'center' },
+    distributionLabel: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+    distributionDot: { width: 8, height: 8, borderRadius: 4 },
+    distributionText: { fontSize: 12, fontWeight: '500' },
     loadMore: {
       alignItems: 'center', padding: 14, margin: 16,
       borderWidth: 1, borderRadius: 12,

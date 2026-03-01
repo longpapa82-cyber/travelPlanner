@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "Инструменты управления сервисом"
   },
+  "platform": {
+    "all": "Все",
+    "web": "Веб",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "По платформам",
+    "activeByPlatform": "Активные пользователи по платформам (30д)",
+    "total": "Всего",
+    "todayActive": "Сегодня",
+    "weeklyActive": "За неделю",
+    "browser": "Браузер",
+    "os": "ОС"
+  },
+  "subscription": {
+    "title": "Доход от подписок",
+    "activeSubscribers": "Активные подписчики",
+    "mrr": "Ежемесячный доход",
+    "revenue": "Доход",
+    "commission": "Комиссия",
+    "stripe": "Stripe (Веб)",
+    "apple": "Apple (iOS)",
+    "google": "Google (Android)",
+    "commissionRate": "Ставка комиссии",
+    "noSubscribers": "Нет активных подписчиков"
+  },
   "users": {
     "title": "Управление пользователями",
     "totalUsers": "Всего пользователей",
@@ -50,6 +75,7 @@
     "version": "Версия",
     "noErrors": "Ошибки не найдены",
     "loadMore": "Загрузить ещё",
-    "occurrences": "раз"
+    "occurrences": "раз",
+    "platform": "Платформа"
   }
 }

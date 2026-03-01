@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "서비스 운영 관리 도구"
   },
+  "platform": {
+    "all": "전체",
+    "web": "웹",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "플랫폼별",
+    "activeByPlatform": "플랫폼별 활성 사용자 (30일)",
+    "total": "합계",
+    "todayActive": "오늘",
+    "weeklyActive": "주간",
+    "browser": "브라우저",
+    "os": "운영체제"
+  },
+  "subscription": {
+    "title": "구독 수익",
+    "activeSubscribers": "활성 구독자",
+    "mrr": "월 반복 수익",
+    "revenue": "수익",
+    "commission": "수수료",
+    "stripe": "Stripe (웹)",
+    "apple": "Apple (iOS)",
+    "google": "Google (Android)",
+    "commissionRate": "수수료율",
+    "noSubscribers": "활성 구독자 없음"
+  },
   "users": {
     "title": "이용자 현황",
     "totalUsers": "전체 회원",
@@ -48,6 +73,7 @@
     "screen": "화면",
     "device": "기기",
     "version": "버전",
+    "platform": "플랫폼",
     "noErrors": "오류가 없습니다",
     "loadMore": "더 보기",
     "occurrences": "회"

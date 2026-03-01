@@ -15,6 +15,7 @@ import { AdminGuard } from '../auth/guards/admin.guard';
 import { AdminService } from './admin.service';
 import { AuditService } from './audit.service';
 import { AuditAction } from './entities/audit-log.entity';
+import { detectPlatform } from '../common/utils/platform-detector';
 
 // Admin-only endpoints
 @Controller('admin')
@@ -56,18 +57,25 @@ export class AdminController {
     @Query('limit') limit?: string,
     @Query('severity') severity?: string,
     @Query('resolved') resolved?: string,
+    @Query('platform') platform?: string,
   ) {
     return this.adminService.getErrorLogs(
       page ? parseInt(page, 10) : 1,
       limit ? parseInt(limit, 10) : 20,
       severity,
       resolved !== undefined ? resolved === 'true' : undefined,
+      platform,
     );
   }
 
   @Patch('error-logs/:id/resolve')
   resolveErrorLog(@Param('id', ParseUUIDPipe) id: string) {
     return this.adminService.resolveErrorLog(id);
+  }
+
+  @Get('revenue/subscription-stats')
+  getSubscriptionStats() {
+    return this.adminService.getSubscriptionStats();
   }
 
   @Get('audit-logs')
@@ -105,10 +113,13 @@ export class ErrorLogController {
       appVersion?: string;
     },
   ) {
+    const ua = req.headers['user-agent'] as string | undefined;
     return this.adminService.createErrorLog({
       ...body,
       userId: req.user?.id,
       userEmail: req.user?.email,
+      platform: detectPlatform(ua),
+      userAgent: ua?.slice(0, 1000),
     });
   }
 }

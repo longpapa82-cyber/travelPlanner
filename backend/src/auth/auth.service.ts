@@ -27,6 +27,7 @@ import { t } from '../common/i18n';
 import { getErrorMessage } from '../common/types/request.types';
 import { AuditService } from '../admin/audit.service';
 import { AuditAction } from '../admin/entities/audit-log.entity';
+import { detectPlatform } from '../common/utils/platform-detector';
 
 type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms';
 
@@ -110,6 +111,7 @@ export class AuthService {
 
   async login(
     loginDto: LoginDto,
+    userAgent?: string,
   ): Promise<AuthResponse | { requiresTwoFactor: true; tempToken: string }> {
     // Check account-level lockout (Redis-based, survives restarts)
     const lockKey = `login_attempts:${loginDto.email}`;
@@ -156,8 +158,12 @@ export class AuthService {
       return { requiresTwoFactor: true, tempToken };
     }
 
-    // Update last login timestamp
-    this.usersService.update(user.id, { lastLoginAt: new Date() }).catch(() => {});
+    // Update last login timestamp + platform
+    this.usersService.update(user.id, {
+      lastLoginAt: new Date(),
+      lastPlatform: detectPlatform(userAgent),
+      lastUserAgent: userAgent?.slice(0, 500),
+    }).catch(() => {});
 
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email!);
@@ -284,7 +290,7 @@ export class AuthService {
     return code;
   }
 
-  async exchangeOAuthCode(code: string): Promise<AuthResponse> {
+  async exchangeOAuthCode(code: string, userAgent?: string): Promise<AuthResponse> {
     const data = await this.cacheManager.get<string>(`oauth:code:${code}`);
     if (!data) {
       throw new UnauthorizedException('Invalid or expired OAuth code');
@@ -294,10 +300,10 @@ export class AuthService {
     await this.cacheManager.del(`oauth:code:${code}`);
 
     const oauthUser: OAuthUserData = JSON.parse(data) as OAuthUserData;
-    return this.oauthLogin(oauthUser);
+    return this.oauthLogin(oauthUser, userAgent);
   }
 
-  async oauthLogin(oauthUser: OAuthUserData): Promise<AuthResponse> {
+  async oauthLogin(oauthUser: OAuthUserData, userAgent?: string): Promise<AuthResponse> {
     // Map uppercase provider from OAuth strategy to lowercase AuthProvider enum
     const providerMap: Record<string, AuthProvider> = {
       GOOGLE: AuthProvider.GOOGLE,
@@ -326,8 +332,12 @@ export class AuthService {
       });
     }
 
-    // Update last login timestamp
-    this.usersService.update(user.id, { lastLoginAt: new Date() }).catch(() => {});
+    // Update last login timestamp + platform
+    this.usersService.update(user.id, {
+      lastLoginAt: new Date(),
+      lastPlatform: detectPlatform(userAgent),
+      lastUserAgent: userAgent?.slice(0, 500),
+    }).catch(() => {});
 
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email || '');
@@ -496,6 +506,7 @@ export class AuthService {
   async verifyTwoFactorLogin(
     tempToken: string,
     code: string,
+    userAgent?: string,
   ): Promise<AuthResponse> {
     let payload: { sub: string; type: string; email?: string };
     try {
@@ -577,6 +588,13 @@ export class AuthService {
 
     // Success — reset 2FA attempt counter
     await this.cacheManager.del(tfaLockKey);
+
+    // Update last login timestamp + platform
+    this.usersService.update(user.id, {
+      lastLoginAt: new Date(),
+      lastPlatform: detectPlatform(userAgent),
+      lastUserAgent: userAgent?.slice(0, 500),
+    }).catch(() => {});
 
     const tokens = await this.generateTokens(user.id, user.email || '');
 

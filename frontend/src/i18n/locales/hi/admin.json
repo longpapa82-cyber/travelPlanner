@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "सेवा प्रबंधन टूल"
   },
+  "platform": {
+    "all": "सभी",
+    "web": "वेब",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "प्लेटफ़ॉर्म अनुसार",
+    "activeByPlatform": "प्लेटफ़ॉर्म अनुसार सक्रिय उपयोगकर्ता (30 दिन)",
+    "total": "कुल",
+    "todayActive": "आज",
+    "weeklyActive": "साप्ताहिक",
+    "browser": "ब्राउज़र",
+    "os": "ऑपरेटिंग सिस्टम"
+  },
+  "subscription": {
+    "title": "सदस्यता राजस्व",
+    "activeSubscribers": "सक्रिय सदस्य",
+    "mrr": "मासिक राजस्व",
+    "revenue": "राजस्व",
+    "commission": "कमीशन",
+    "stripe": "Stripe (वेब)",
+    "apple": "Apple (iOS)",
+    "google": "Google (Android)",
+    "commissionRate": "कमीशन दर",
+    "noSubscribers": "कोई सक्रिय सदस्य नहीं"
+  },
   "users": {
     "title": "उपयोगकर्ता प्रबंधन",
     "totalUsers": "कुल उपयोगकर्ता",
@@ -50,6 +75,7 @@
     "version": "संस्करण",
     "noErrors": "कोई त्रुटि नहीं मिली",
     "loadMore": "और लोड करें",
-    "occurrences": "बार"
+    "occurrences": "बार",
+    "platform": "प्लेटफ़ॉर्म"
   }
 }

@@ -9,6 +9,7 @@ import {
 @Entity('error_logs')
 @Index(['createdAt'])
 @Index(['severity'])
+@Index(['platform'])
 export class ErrorLog {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -36,6 +37,12 @@ export class ErrorLog {
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   appVersion?: string;
+
+  @Column({ type: 'varchar', length: 10, nullable: true })
+  platform?: 'web' | 'ios' | 'android';
+
+  @Column({ type: 'text', nullable: true })
+  userAgent?: string;
 
   @Column({ type: 'boolean', default: false })
   isResolved: boolean;

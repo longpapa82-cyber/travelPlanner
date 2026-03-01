@@ -102,6 +102,12 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   lastLoginAt?: Date;
 
+  @Column({ type: 'varchar', length: 10, nullable: true })
+  lastPlatform?: 'web' | 'ios' | 'android';
+
+  @Column({ type: 'text', nullable: true })
+  lastUserAgent?: string;
+
   @Column({ type: 'int', default: 0 })
   followersCount: number;
 

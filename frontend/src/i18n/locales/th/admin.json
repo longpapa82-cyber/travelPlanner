@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "เครื่องมือจัดการบริการ"
   },
+  "platform": {
+    "all": "ทั้งหมด",
+    "web": "เว็บ",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "ตามแพลตฟอร์ม",
+    "activeByPlatform": "ผู้ใช้งานตามแพลตฟอร์ม (30 วัน)",
+    "total": "รวม",
+    "todayActive": "วันนี้",
+    "weeklyActive": "รายสัปดาห์",
+    "browser": "เบราว์เซอร์",
+    "os": "ระบบปฏิบัติการ"
+  },
+  "subscription": {
+    "title": "รายได้สมาชิก",
+    "activeSubscribers": "สมาชิกที่ใช้งาน",
+    "mrr": "รายได้รายเดือน",
+    "revenue": "รายได้",
+    "commission": "ค่าคอมมิชชัน",
+    "stripe": "Stripe (เว็บ)",
+    "apple": "Apple (iOS)",
+    "google": "Google (Android)",
+    "commissionRate": "อัตราค่าคอมมิชชัน",
+    "noSubscribers": "ไม่มีสมาชิกที่ใช้งาน"
+  },
   "users": {
     "title": "จัดการผู้ใช้",
     "totalUsers": "ผู้ใช้ทั้งหมด",
@@ -50,6 +75,7 @@
     "version": "เวอร์ชัน",
     "noErrors": "ไม่พบข้อผิดพลาด",
     "loadMore": "โหลดเพิ่มเติม",
-    "occurrences": "ครั้ง"
+    "occurrences": "ครั้ง",
+    "platform": "แพลตฟอร์ม"
   }
 }

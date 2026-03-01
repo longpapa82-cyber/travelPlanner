@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "Herramientas de gestión del servicio"
   },
+  "platform": {
+    "all": "Todos",
+    "web": "Web",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "Por plataforma",
+    "activeByPlatform": "Usuarios activos por plataforma (30d)",
+    "total": "Total",
+    "todayActive": "Hoy",
+    "weeklyActive": "Semanal",
+    "browser": "Navegador",
+    "os": "SO"
+  },
+  "subscription": {
+    "title": "Ingresos por suscripción",
+    "activeSubscribers": "Suscriptores activos",
+    "mrr": "Ingresos mensuales",
+    "revenue": "Ingresos",
+    "commission": "Comisión",
+    "stripe": "Stripe (Web)",
+    "apple": "Apple (iOS)",
+    "google": "Google (Android)",
+    "commissionRate": "Tasa de comisión",
+    "noSubscribers": "Sin suscriptores activos"
+  },
   "users": {
     "title": "Gestión de usuarios",
     "totalUsers": "Total de usuarios",
@@ -50,6 +75,7 @@
     "version": "Versión",
     "noErrors": "No se encontraron errores",
     "loadMore": "Cargar más",
-    "occurrences": "veces"
+    "occurrences": "veces",
+    "platform": "Plataforma"
   }
 }

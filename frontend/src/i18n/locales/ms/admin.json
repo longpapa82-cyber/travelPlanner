@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "Alat pengurusan perkhidmatan"
   },
+  "platform": {
+    "all": "Semua",
+    "web": "Web",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "Mengikut platform",
+    "activeByPlatform": "Pengguna aktif mengikut platform (30 hari)",
+    "total": "Jumlah",
+    "todayActive": "Hari ini",
+    "weeklyActive": "Mingguan",
+    "browser": "Pelayar",
+    "os": "Sistem pengendalian"
+  },
+  "subscription": {
+    "title": "Hasil langganan",
+    "activeSubscribers": "Pelanggan aktif",
+    "mrr": "Hasil bulanan",
+    "revenue": "Hasil",
+    "commission": "Komisen",
+    "stripe": "Stripe (Web)",
+    "apple": "Apple (iOS)",
+    "google": "Google (Android)",
+    "commissionRate": "Kadar komisen",
+    "noSubscribers": "Tiada pelanggan aktif"
+  },
   "users": {
     "title": "Pengurusan Pengguna",
     "totalUsers": "Jumlah Pengguna",
@@ -50,6 +75,7 @@
     "version": "Versi",
     "noErrors": "Tiada ralat ditemui",
     "loadMore": "Muat Lagi",
-    "occurrences": "kali"
+    "occurrences": "kali",
+    "platform": "Platform"
   }
 }

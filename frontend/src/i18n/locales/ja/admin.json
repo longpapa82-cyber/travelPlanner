@@ -8,6 +8,31 @@
   "dashboard": {
     "subtitle": "サービス運用管理ツール"
   },
+  "platform": {
+    "all": "全体",
+    "web": "ウェブ",
+    "ios": "iOS",
+    "android": "Android",
+    "byPlatform": "プラットフォーム別",
+    "activeByPlatform": "プラットフォーム別アクティブユーザー（30日）",
+    "total": "合計",
+    "todayActive": "今日",
+    "weeklyActive": "週間",
+    "browser": "ブラウザ",
+    "os": "OS"
+  },
+  "subscription": {
+    "title": "サブスクリプション収益",
+    "activeSubscribers": "アクティブ購読者",
+    "mrr": "月間経常収益",
+    "revenue": "収益",
+    "commission": "手数料",
+    "stripe": "Stripe（ウェブ）",
+    "apple": "Apple（iOS）",
+    "google": "Google（Android）",
+    "commissionRate": "手数料率",
+    "noSubscribers": "アクティブ購読者なし"
+  },
   "users": {
     "title": "ユーザー管理",
     "totalUsers": "全会員",
@@ -50,6 +75,7 @@
     "version": "バージョン",
     "noErrors": "エラーはありません",
     "loadMore": "もっと見る",
-    "occurrences": "回"
+    "occurrences": "回",
+    "platform": "プラットフォーム"
   }
 }
