@@ -2,7 +2,7 @@ import { IsString, IsOptional, IsIn, MaxLength } from 'class-validator';
 
 export class CreateErrorLogDto {
   @IsString()
-  @MaxLength(1000)
+  @MaxLength(500)
   errorMessage: string;
 
   @IsOptional()

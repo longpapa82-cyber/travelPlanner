@@ -356,6 +356,12 @@ export class UsersService {
       [userId],
     );
 
+    // Fetch fields hidden by select:false for GDPR completeness
+    const fullUser = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'stripeCustomerId', 'lastPlatform', 'lastUserAgent'],
+    });
+
     return {
       exportedAt: new Date().toISOString(),
       user: {
@@ -366,6 +372,9 @@ export class UsersService {
         isEmailVerified: user.isEmailVerified,
         isTwoFactorEnabled: user.isTwoFactorEnabled,
         travelPreferences: user.travelPreferences,
+        lastPlatform: fullUser?.lastPlatform ?? null,
+        lastUserAgent: fullUser?.lastUserAgent ?? null,
+        stripeCustomerId: fullUser?.stripeCustomerId ?? null,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       },
