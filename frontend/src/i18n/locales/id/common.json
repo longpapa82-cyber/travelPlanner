@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "Instal sebagai aplikasi",
     "installMessage": "Tambahkan ke layar utama untuk pengalaman lebih cepat",
-    "install": "Instal"
+    "install": "Instal",
+    "appTitle": "Unduh aplikasi",
+    "appMessage": "Unduh aplikasi kami untuk pengalaman yang lebih baik",
+    "getApp": "Unduh"
   },
   "emailVerification": {
     "banner": {

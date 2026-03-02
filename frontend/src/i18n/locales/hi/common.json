@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "ऐप के रूप में इंस्टॉल करें",
     "installMessage": "तेज़ अनुभव के लिए होम स्क्रीन पर जोड़ें",
-    "install": "इंस्टॉल करें"
+    "install": "इंस्टॉल करें",
+    "appTitle": "ऐप डाउनलोड करें",
+    "appMessage": "बेहतर अनुभव के लिए हमारा ऐप डाउनलोड करें",
+    "getApp": "डाउनलोड"
   },
   "emailVerification": {
     "banner": {

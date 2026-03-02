@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "Installa come app",
     "installMessage": "Aggiungi alla schermata home per un'esperienza più veloce",
-    "install": "Installa"
+    "install": "Installa",
+    "appTitle": "Scarica l'app",
+    "appMessage": "Scarica la nostra app per un'esperienza migliore",
+    "getApp": "Scarica"
   },
   "emailVerification": {
     "banner": {

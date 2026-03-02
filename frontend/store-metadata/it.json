@@ -1,0 +1,13 @@
+{
+  "language": "it",
+  "name": "MyTravel - Itinerario IA",
+  "subtitle": "Pianifica viaggi intelligenti con l'IA",
+  "description": "Pianifica il viaggio perfetto con MyTravel!\n\nL'IA crea itinerari personalizzati in base alle tue preferenze. Inserisci semplicemente la destinazione, le date e il budget per ottenere un piano di viaggio ottimizzato istantaneamente.\n\nFunzionalità principali:\n- Generazione automatica di itinerari con IA\n- Modalità di pianificazione manuale\n- Informazioni meteo in tempo reale e fusi orari\n- Gestione spese con divisione dei costi\n- Modalità offline\n- Galleria fotografica di viaggio\n- Funzioni social: condividi viaggi, segui viaggiatori, metti mi piace\n- Modalità scura\n- Disponibile in 17 lingue\n\nInizia il tuo viaggio intelligente con MyTravel.",
+  "keywords": "viaggio,itinerario,pianificatore,IA,vacanza,turismo,budget,esplorare,rotta,programma",
+  "releaseNotes": "v1.0 Lancio ufficiale\n- Generazione itinerari con IA\n- 17 lingue (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Funzioni social (condivisione viaggi, follow)\n- Abbonamento premium",
+  "category": "Travel",
+  "ageRating": "4+",
+  "privacyUrl": "https://mytravel-planner.com/privacy-en",
+  "termsUrl": "https://mytravel-planner.com/terms-en",
+  "supportUrl": "https://mytravel-planner.com/help"
+}

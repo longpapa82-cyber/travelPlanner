@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "Uygulama olarak yükle",
     "installMessage": "Daha hızlı bir deneyim için ana ekrana ekleyin",
-    "install": "Yükle"
+    "install": "Yükle",
+    "appTitle": "Uygulamayı indir",
+    "appMessage": "Daha iyi bir deneyim için uygulamamızı indirin",
+    "getApp": "İndir"
   },
   "emailVerification": {
     "banner": {

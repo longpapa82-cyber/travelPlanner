@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "Als App installieren",
     "installMessage": "Zum Startbildschirm hinzufügen für schnelleren Zugriff",
-    "install": "Installieren"
+    "install": "Installieren",
+    "appTitle": "App herunterladen",
+    "appMessage": "Laden Sie unsere App für ein besseres Erlebnis herunter",
+    "getApp": "Herunterladen"
   },
   "emailVerification": {
     "banner": {

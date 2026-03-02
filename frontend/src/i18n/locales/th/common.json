@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "ติดตั้งเป็นแอป",
     "installMessage": "เพิ่มลงในหน้าจอหลักเพื่อประสบการณ์ที่เร็วขึ้น",
-    "install": "ติดตั้ง"
+    "install": "ติดตั้ง",
+    "appTitle": "ดาวน์โหลดแอป",
+    "appMessage": "ดาวน์โหลดแอปเพื่อประสบการณ์ที่ดียิ่งขึ้น",
+    "getApp": "ดาวน์โหลด"
   },
   "emailVerification": {
     "banner": {

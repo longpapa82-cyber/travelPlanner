@@ -21,14 +21,25 @@ set -euo pipefail
 #   - Docker Compose stack running on OCI
 ###############################################################################
 
+# --- Server Target ---
+# Set DEPLOY_TARGET=hetzner to deploy to Hetzner CAX21 (8GB ARM)
+# Default: oci (current 1GB micro)
+DEPLOY_TARGET="${DEPLOY_TARGET:-oci}"
+
 # --- Configuration ---
-OCI_HOST="ubuntu@150.230.251.32"
-OCI_KEY="$HOME/.ssh/travelplanner-oci"
+if [ "$DEPLOY_TARGET" = "hetzner" ]; then
+  OCI_HOST="${HETZNER_HOST:-root@HETZNER_IP_HERE}"
+  OCI_KEY="$HOME/.ssh/travelplanner-oci"
+  COMPOSE_CMD="docker compose -f docker-compose.yml -f docker-compose.hetzner.yml -f docker-compose.ssl-arm.yml"
+else
+  OCI_HOST="ubuntu@150.230.251.32"
+  OCI_KEY="$HOME/.ssh/travelplanner-oci"
+  COMPOSE_CMD="docker compose -f docker-compose.yml -f docker-compose.micro.yml -f docker-compose.ssl-micro.yml"
+fi
 REMOTE_DIR="~/travelPlanner"
 DOMAIN="mytravel-planner.com"
 SSH_CMD="ssh -i $OCI_KEY -o ConnectTimeout=10 -o ServerAliveInterval=30 $OCI_HOST"
 SCP_CMD="scp -i $OCI_KEY -o ConnectTimeout=10"
-COMPOSE_CMD="docker compose -f docker-compose.yml -f docker-compose.micro.yml -f docker-compose.ssl-micro.yml"
 STATE_FILE="deploy-state.json"
 LOG_DIR="logs"
 DEPLOY_LOG=""
