@@ -45,6 +45,7 @@ import { SlideIn } from '../../components/animation/SlideIn';
 import { Shimmer } from '../../components/animation/Shimmer';
 import PopularDestinations from '../../components/PopularDestinations';
 import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
+import AnnouncementBanner from '../../components/AnnouncementBanner';
 import apiService from '../../services/api';
 import { AdBanner } from '../../components/ads';
 import { getDestinationImageUrl, getHeroImageUrl } from '../../utils/images';
@@ -240,9 +241,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
       }
     >
-      {/* 이메일 인증 배너 비활성화 — 추후 필요 시 복원
-      <EmailVerificationBanner />
-      */}
+      {/* Announcement Banner */}
+      <AnnouncementBanner />
+
       {/* Hero Section */}
       <ImageBackground
         source={{ uri: getHeroImageUrl('travelDefault', { width: 1200 }) }}

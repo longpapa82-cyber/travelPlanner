@@ -209,7 +209,8 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const code = await this.authService.createOAuthTempCode(req.user);
-    const frontendUrl = process.env.FRONTEND_URL || 'exp://localhost:8081';
+    const frontendUrl = process.env.FRONTEND_URL ||
+      (process.env.NODE_ENV === 'production' ? 'https://mytravel-planner.com' : 'exp://localhost:8081');
     res.redirect(`${frontendUrl}/auth/callback?code=${code}`);
   }
 
@@ -227,7 +228,8 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const code = await this.authService.createOAuthTempCode(req.user);
-    const frontendUrl = process.env.FRONTEND_URL || 'exp://localhost:8081';
+    const frontendUrl = process.env.FRONTEND_URL ||
+      (process.env.NODE_ENV === 'production' ? 'https://mytravel-planner.com' : 'exp://localhost:8081');
     res.redirect(`${frontendUrl}/auth/callback?code=${code}`);
   }
 
@@ -245,7 +247,8 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const code = await this.authService.createOAuthTempCode(req.user);
-    const frontendUrl = process.env.FRONTEND_URL || 'exp://localhost:8081';
+    const frontendUrl = process.env.FRONTEND_URL ||
+      (process.env.NODE_ENV === 'production' ? 'https://mytravel-planner.com' : 'exp://localhost:8081');
     res.redirect(`${frontendUrl}/auth/callback?code=${code}`);
   }
 

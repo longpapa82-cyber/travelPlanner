@@ -19,6 +19,7 @@ export enum NotificationType {
   ACTIVITY_REMINDER = 'activity_reminder',
   NEW_FOLLOWER = 'new_follower',
   TRIP_LIKED = 'trip_liked',
+  ANNOUNCEMENT = 'announcement',
 }
 
 @Entity('notifications')

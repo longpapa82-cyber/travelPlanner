@@ -3,7 +3,8 @@
   "menu": {
     "users": "ユーザー管理",
     "errorLogs": "エラーログ",
-    "revenue": "収益ダッシュボード"
+    "revenue": "収益ダッシュボード",
+    "announcements": "お知らせ"
   },
   "dashboard": {
     "subtitle": "サービス運用管理ツール"
@@ -77,5 +78,63 @@
     "loadMore": "もっと見る",
     "occurrences": "回",
     "platform": "プラットフォーム"
+  },
+  "announcements": {
+    "title": "お知らせ",
+    "createTitle": "お知らせ作成",
+    "editTitle": "お知らせ編集",
+    "noAnnouncements": "お知らせはありません",
+    "published": "公開中",
+    "draft": "下書き",
+    "deleteConfirm": "削除確認",
+    "deleteMessage": "このお知らせを削除しますか？",
+    "delete": "削除",
+    "cancel": "キャンセル",
+    "create": "作成",
+    "update": "更新",
+    "validation": "Validation Error",
+    "titleRequired": "Please enter a title",
+    "contentRequired": "Please enter content",
+    "titleKo": "Title (Korean)",
+    "titleEn": "Title (English)",
+    "contentKo": "Content (Korean)",
+    "contentEn": "Content (English)",
+    "titlePlaceholder": "Enter title",
+    "contentPlaceholder": "Enter content",
+    "typeLabel": "Type",
+    "priorityLabel": "Priority",
+    "displayLabel": "Display Type",
+    "audienceLabel": "Target Audience",
+    "startDateLabel": "Start Date",
+    "endDateLabel": "End Date",
+    "endDatePlaceholder": "No end date",
+    "imageUrlLabel": "Image URL",
+    "actionUrlLabel": "Action URL",
+    "learnMore": "詳しく見る",
+    "dismiss": "閉じる",
+    "notFound": "お知らせが見つかりません",
+    "types": {
+      "system": "システム",
+      "feature": "新機能",
+      "important": "重要",
+      "promotional": "プロモーション"
+    },
+    "priorities": {
+      "critical": "緊急",
+      "high": "高",
+      "normal": "普通",
+      "low": "低"
+    },
+    "displays": {
+      "banner": "Banner",
+      "modal": "Modal",
+      "bottom_sheet": "Bottom Sheet",
+      "notification_only": "Notification Only"
+    },
+    "audiences": {
+      "all": "All Users",
+      "premium": "Premium",
+      "free": "Free"
+    }
   }
 }

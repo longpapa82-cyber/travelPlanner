@@ -158,12 +158,51 @@ export interface Settlement {
   amount: number;
 }
 
+// Announcement types
+export interface Announcement {
+  id: string;
+  type: 'system' | 'feature' | 'important' | 'promotional';
+  title: string;
+  content: string;
+  priority: 'critical' | 'high' | 'normal' | 'low';
+  displayType: 'banner' | 'modal' | 'bottom_sheet' | 'notification_only';
+  imageUrl?: string;
+  actionUrl?: string;
+  actionLabel?: string;
+  startDate: string;
+  endDate?: string;
+  isRead: boolean;
+  isDismissed: boolean;
+  createdAt: string;
+}
+
+export interface AnnouncementAdmin {
+  id: string;
+  type: 'system' | 'feature' | 'important' | 'promotional';
+  title: Record<string, string>;
+  content: Record<string, string>;
+  targetAudience: 'all' | 'premium' | 'free';
+  priority: 'critical' | 'high' | 'normal' | 'low';
+  displayType: 'banner' | 'modal' | 'bottom_sheet' | 'notification_only';
+  imageUrl?: string;
+  actionUrl?: string;
+  actionLabel?: Record<string, string>;
+  startDate: string;
+  endDate?: string;
+  isActive: boolean;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Navigation types
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
   VerifyEmail: { token: string };
   SharedTrip: { shareToken: string };
+  AnnouncementList: undefined;
+  AnnouncementDetail: { announcementId: string };
 };
 
 export type AuthStackParamList = {
@@ -202,6 +241,8 @@ export type ProfileStackParamList = {
   AdminDashboard: undefined;
   UserManagement: undefined;
   ErrorLog: undefined;
+  AnnouncementManagement: undefined;
+  AnnouncementForm: { announcementId?: string };
   Help: undefined;
   Terms: undefined;
   PrivacyPolicy: undefined;

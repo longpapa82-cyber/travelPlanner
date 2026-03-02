@@ -8,6 +8,8 @@ import RevenueDashboardScreen from '../screens/main/RevenueDashboardScreen';
 import AdminDashboardScreen from '../screens/main/AdminDashboardScreen';
 import UserManagementScreen from '../screens/main/UserManagementScreen';
 import ErrorLogScreen from '../screens/main/ErrorLogScreen';
+import AnnouncementManagementScreen from '../screens/main/AnnouncementManagementScreen';
+import AnnouncementFormScreen from '../screens/main/AnnouncementFormScreen';
 import HelpScreen from '../screens/main/HelpScreen';
 import TermsScreen from '../screens/main/TermsScreen';
 import PrivacyPolicyScreen from '../screens/main/PrivacyPolicyScreen';
@@ -72,6 +74,20 @@ const ProfileNavigator = () => {
         name="ErrorLog"
         component={ErrorLogScreen}
         options={{ title: tAdmin('menu.errorLogs') }}
+      />
+      <Stack.Screen
+        name="AnnouncementManagement"
+        component={AnnouncementManagementScreen}
+        options={{ title: tAdmin('menu.announcements') }}
+      />
+      <Stack.Screen
+        name="AnnouncementForm"
+        component={AnnouncementFormScreen}
+        options={({ route }) => ({
+          title: (route.params as any)?.announcementId
+            ? tAdmin('announcements.editTitle')
+            : tAdmin('announcements.createTitle'),
+        })}
       />
       <Stack.Screen
         name="Help"

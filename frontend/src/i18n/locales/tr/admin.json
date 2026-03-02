@@ -3,7 +3,8 @@
   "menu": {
     "users": "Kullanıcı Yönetimi",
     "errorLogs": "Hata Kayıtları",
-    "revenue": "Gelir Paneli"
+    "revenue": "Gelir Paneli",
+    "announcements": "Announcements"
   },
   "dashboard": {
     "subtitle": "Hizmet yönetim araçları"
@@ -77,5 +78,63 @@
     "loadMore": "Daha Fazla Yükle",
     "occurrences": "kez",
     "platform": "Platform"
+  },
+  "announcements": {
+    "title": "Announcements",
+    "createTitle": "Create Announcement",
+    "editTitle": "Edit Announcement",
+    "noAnnouncements": "No announcements",
+    "published": "Published",
+    "draft": "Draft",
+    "deleteConfirm": "Confirm Delete",
+    "deleteMessage": "Delete this announcement?",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "create": "Create",
+    "update": "Update",
+    "validation": "Validation Error",
+    "titleRequired": "Please enter a title",
+    "contentRequired": "Please enter content",
+    "titleKo": "Title (Korean)",
+    "titleEn": "Title (English)",
+    "contentKo": "Content (Korean)",
+    "contentEn": "Content (English)",
+    "titlePlaceholder": "Enter title",
+    "contentPlaceholder": "Enter content",
+    "typeLabel": "Type",
+    "priorityLabel": "Priority",
+    "displayLabel": "Display Type",
+    "audienceLabel": "Target Audience",
+    "startDateLabel": "Start Date",
+    "endDateLabel": "End Date",
+    "endDatePlaceholder": "No end date",
+    "imageUrlLabel": "Image URL",
+    "actionUrlLabel": "Action URL",
+    "learnMore": "Learn More",
+    "dismiss": "Dismiss",
+    "notFound": "Announcement not found",
+    "types": {
+      "system": "System",
+      "feature": "New Feature",
+      "important": "Important",
+      "promotional": "Promotion"
+    },
+    "priorities": {
+      "critical": "Critical",
+      "high": "High",
+      "normal": "Normal",
+      "low": "Low"
+    },
+    "displays": {
+      "banner": "Banner",
+      "modal": "Modal",
+      "bottom_sheet": "Bottom Sheet",
+      "notification_only": "Notification Only"
+    },
+    "audiences": {
+      "all": "All Users",
+      "premium": "Premium",
+      "free": "Free"
+    }
   }
 }

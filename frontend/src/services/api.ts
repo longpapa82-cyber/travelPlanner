@@ -803,6 +803,62 @@ class ApiService {
     return response.data;
   }
 
+  // ─── Announcements (Public) ─────────────────
+
+  async getAnnouncements() {
+    const response = await this.api.get('/announcements');
+    return response.data;
+  }
+
+  async getAnnouncementUnreadCount(): Promise<{ count: number }> {
+    const response = await this.api.get('/announcements/unread-count');
+    return response.data;
+  }
+
+  async markAnnouncementRead(id: string) {
+    await this.api.patch(`/announcements/${id}/read`);
+  }
+
+  async dismissAnnouncement(id: string) {
+    await this.api.patch(`/announcements/${id}/dismiss`);
+  }
+
+  // ─── Announcements (Admin) ─────────────────
+
+  async getAdminAnnouncements(params?: { page?: number; limit?: number }) {
+    const response = await this.api.get('/admin/announcements', { params });
+    return response.data;
+  }
+
+  async getAdminAnnouncement(id: string) {
+    const response = await this.api.get(`/admin/announcements/${id}`);
+    return response.data;
+  }
+
+  async createAnnouncement(data: any) {
+    const response = await this.api.post('/admin/announcements', data);
+    return response.data;
+  }
+
+  async updateAnnouncement(id: string, data: any) {
+    const response = await this.api.patch(`/admin/announcements/${id}`, data);
+    return response.data;
+  }
+
+  async deleteAnnouncement(id: string) {
+    await this.api.delete(`/admin/announcements/${id}`);
+  }
+
+  async publishAnnouncement(id: string) {
+    const response = await this.api.patch(`/admin/announcements/${id}/publish`);
+    return response.data;
+  }
+
+  async unpublishAnnouncement(id: string) {
+    const response = await this.api.patch(`/admin/announcements/${id}/unpublish`);
+    return response.data;
+  }
+
   // Places Autocomplete
   async placesAutocomplete(input: string, sessionToken?: string, language?: string) {
     const params: Record<string, string> = { input };
