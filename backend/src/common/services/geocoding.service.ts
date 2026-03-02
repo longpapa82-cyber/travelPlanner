@@ -69,11 +69,12 @@ export class GeocodingService {
    * Fallback chain: Redis cache → DB cache → LocationIQ → Google Maps
    */
   async geocode(query: string): Promise<GeocodingResult | null> {
-    if (query.length > GeocodingService.MAX_QUERY_LENGTH) {
+    const q = query.trim();
+    if (!q || q.length > GeocodingService.MAX_QUERY_LENGTH) {
       return null;
     }
 
-    const hash = this.hashQuery(query);
+    const hash = this.hashQuery(q);
     const cacheKey = `geo:${hash}`;
 
     // 1. Redis cache
@@ -106,18 +107,18 @@ export class GeocodingService {
 
     // 3. LocationIQ (free tier: 5000/day, 2 req/sec)
     if (this.locationIQKey) {
-      const result = await this.geocodeViaLocationIQ(query);
+      const result = await this.geocodeViaLocationIQ(q);
       if (result) {
-        await this.persistResult(hash, query, result);
+        await this.persistResult(hash, q, result);
         return result;
       }
     }
 
     // 4. Google Maps (paid, last resort)
     if (this.googleMapsKey) {
-      const result = await this.geocodeViaGoogleMaps(query);
+      const result = await this.geocodeViaGoogleMaps(q);
       if (result) {
-        await this.persistResult(hash, query, result);
+        await this.persistResult(hash, q, result);
         return result;
       }
     }
@@ -128,12 +129,18 @@ export class GeocodingService {
   /**
    * Geocode multiple queries, reusing cache where possible.
    * Capped at MAX_BATCH_SIZE to prevent API quota exhaustion.
+   * Queries are processed sequentially to respect the LocationIQ rate limiter
+   * (in-memory timestamp-based, not safe under concurrent Promise.all).
    */
   async geocodeBatch(
     queries: string[],
   ): Promise<(GeocodingResult | null)[]> {
     const capped = queries.slice(0, GeocodingService.MAX_BATCH_SIZE);
-    return Promise.all(capped.map((q) => this.geocode(q)));
+    const results: (GeocodingResult | null)[] = [];
+    for (const q of capped) {
+      results.push(await this.geocode(q));
+    }
+    return results;
   }
 
   private async geocodeViaLocationIQ(query: string): Promise<GeocodingResult | null> {

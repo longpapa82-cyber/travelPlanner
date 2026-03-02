@@ -2,12 +2,12 @@
   "language": "es",
   "name": "MyTravel - Itinerario IA",
   "subtitle": "Planifica viajes con inteligencia artificial",
-  "description": "¡Planifica tu viaje perfecto con MyTravel!\n\nLa IA crea itinerarios personalizados según tus preferencias. Solo ingresa tu destino, fechas y presupuesto para obtener un plan de viaje optimizado al instante.\n\nCaracterísticas principales:\n- Generación automática de itinerarios con IA\n- Modo de planificación manual\n- Información meteorológica en tiempo real y zonas horarias\n- Gestión de gastos con división de cuentas\n- Modo sin conexión\n- Galería de fotos de viaje\n- Funciones sociales: compartir viajes, seguir viajeros, dar me gusta\n- Modo oscuro\n- Disponible en 13 idiomas\n\nComienza tu viaje inteligente con MyTravel.",
+  "description": "¡Planifica tu viaje perfecto con MyTravel!\n\nLa IA crea itinerarios personalizados según tus preferencias. Solo ingresa tu destino, fechas y presupuesto para obtener un plan de viaje optimizado al instante.\n\nCaracterísticas principales:\n- Generación automática de itinerarios con IA\n- Modo de planificación manual\n- Información meteorológica en tiempo real y zonas horarias\n- Gestión de gastos con división de cuentas\n- Modo sin conexión\n- Galería de fotos de viaje\n- Funciones sociales: compartir viajes, seguir viajeros, dar me gusta\n- Modo oscuro\n- Disponible en 17 idiomas\n\nComienza tu viaje inteligente con MyTravel.",
   "keywords": "viaje,itinerario,planificador,IA,vacaciones,turismo,presupuesto,explorar,ruta,agenda",
-  "releaseNotes": "v1.0 Lanzamiento oficial\n- Generación de itinerarios con IA\n- Soporte para 13 idiomas (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI)\n- Funciones sociales (compartir viajes, seguir)\n- Opción de suscripción premium",
+  "releaseNotes": "v1.0 Lanzamiento oficial\n- Generación de itinerarios con IA\n- Soporte para 17 idiomas (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Funciones sociales (compartir viajes, seguir)\n- Opción de suscripción premium",
   "category": "Travel",
   "ageRating": "4+",
-  "privacyUrl": "https://mytravel-planner.com/privacy",
-  "termsUrl": "https://mytravel-planner.com/terms",
+  "privacyUrl": "https://mytravel-planner.com/privacy-en",
+  "termsUrl": "https://mytravel-planner.com/terms-en",
   "supportUrl": "https://mytravel-planner.com/help"
 }

@@ -2,12 +2,12 @@
   "language": "id",
   "name": "MyTravel - Itinerari AI",
   "subtitle": "Rencanakan perjalanan cerdas dengan AI",
-  "description": "Rencanakan perjalanan sempurna Anda bersama MyTravel!\n\nAI membuat itinerari yang dipersonalisasi sesuai preferensi Anda. Cukup masukkan tujuan, tanggal, dan anggaran untuk mendapatkan rencana perjalanan yang optimal secara instan.\n\nFitur utama:\n- Pembuatan itinerari otomatis dengan AI\n- Mode perencanaan manual\n- Informasi cuaca real-time dan zona waktu\n- Manajemen pengeluaran dengan pembagian biaya\n- Mode offline\n- Galeri foto perjalanan\n- Fitur sosial: bagikan perjalanan, ikuti wisatawan, suka\n- Mode gelap\n- Tersedia dalam 13 bahasa\n\nMulai perjalanan cerdas Anda bersama MyTravel.",
+  "description": "Rencanakan perjalanan sempurna Anda bersama MyTravel!\n\nAI membuat itinerari yang dipersonalisasi sesuai preferensi Anda. Cukup masukkan tujuan, tanggal, dan anggaran untuk mendapatkan rencana perjalanan yang optimal secara instan.\n\nFitur utama:\n- Pembuatan itinerari otomatis dengan AI\n- Mode perencanaan manual\n- Informasi cuaca real-time dan zona waktu\n- Manajemen pengeluaran dengan pembagian biaya\n- Mode offline\n- Galeri foto perjalanan\n- Fitur sosial: bagikan perjalanan, ikuti wisatawan, suka\n- Mode gelap\n- Tersedia dalam 17 bahasa\n\nMulai perjalanan cerdas Anda bersama MyTravel.",
   "keywords": "perjalanan,itinerari,perencana,AI,liburan,wisata,anggaran,jelajahi,rute,jadwal",
-  "releaseNotes": "v1.0 Peluncuran resmi\n- Pembuatan itinerari dengan AI\n- 13 bahasa (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI)\n- Fitur sosial (bagikan perjalanan, ikuti)\n- Langganan premium",
+  "releaseNotes": "v1.0 Peluncuran resmi\n- Pembuatan itinerari dengan AI\n- 17 bahasa (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Fitur sosial (bagikan perjalanan, ikuti)\n- Langganan premium",
   "category": "Travel",
   "ageRating": "4+",
-  "privacyUrl": "https://mytravel-planner.com/privacy",
-  "termsUrl": "https://mytravel-planner.com/terms",
+  "privacyUrl": "https://mytravel-planner.com/privacy-en",
+  "termsUrl": "https://mytravel-planner.com/terms-en",
   "supportUrl": "https://mytravel-planner.com/help"
 }

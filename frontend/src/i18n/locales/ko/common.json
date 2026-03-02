@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "앱으로 설치하기",
     "installMessage": "홈 화면에 추가하면 더 빠르게 이용할 수 있어요",
-    "install": "설치"
+    "install": "설치",
+    "appTitle": "앱 다운로드",
+    "appMessage": "앱을 설치하면 더 편리하게 이용할 수 있어요",
+    "getApp": "다운로드"
   },
   "emailVerification": {
     "banner": {

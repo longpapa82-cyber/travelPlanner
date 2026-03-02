@@ -1,0 +1,13 @@
+{
+  "language": "ms",
+  "name": "MyTravel - Jadual AI",
+  "subtitle": "Rancang perjalanan pintar dengan AI",
+  "description": "Rancang perjalanan sempurna anda bersama MyTravel!\n\nAI mencipta jadual perjalanan yang diperibadikan mengikut pilihan anda. Hanya masukkan destinasi, tarikh dan bajet untuk mendapatkan pelan perjalanan optimum serta-merta.\n\nCiri-ciri utama:\n- Penjanaan jadual perjalanan automatik dengan AI\n- Mod perancangan manual\n- Maklumat cuaca masa nyata dan zon masa\n- Pengurusan perbelanjaan dengan pembahagian kos\n- Mod luar talian\n- Galeri foto perjalanan\n- Ciri sosial: kongsi perjalanan, ikuti pelancong, suka\n- Mod gelap\n- Tersedia dalam 17 bahasa\n\nMulakan perjalanan pintar anda bersama MyTravel.",
+  "keywords": "perjalanan,jadual,perancang,AI,percutian,pelancongan,bajet,terokai,laluan,aktiviti",
+  "releaseNotes": "v1.0 Pelancaran rasmi\n- Penjanaan jadual perjalanan dengan AI\n- 17 bahasa (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Ciri sosial (kongsi perjalanan, ikuti)\n- Langganan premium",
+  "category": "Travel",
+  "ageRating": "4+",
+  "privacyUrl": "https://mytravel-planner.com/privacy-en",
+  "termsUrl": "https://mytravel-planner.com/terms-en",
+  "supportUrl": "https://mytravel-planner.com/help"
+}

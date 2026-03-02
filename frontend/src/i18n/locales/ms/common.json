@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "Pasang sebagai aplikasi",
     "installMessage": "Tambah ke skrin utama untuk pengalaman lebih pantas",
-    "install": "Pasang"
+    "install": "Pasang",
+    "appTitle": "Muat turun aplikasi",
+    "appMessage": "Muat turun aplikasi kami untuk pengalaman yang lebih baik",
+    "getApp": "Muat turun"
   },
   "emailVerification": {
     "banner": {

@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "تثبيت كتطبيق",
     "installMessage": "أضف إلى الشاشة الرئيسية لتجربة أسرع",
-    "install": "تثبيت"
+    "install": "تثبيت",
+    "appTitle": "تحميل التطبيق",
+    "appMessage": "قم بتحميل التطبيق للحصول على تجربة أفضل",
+    "getApp": "تحميل"
   },
   "emailVerification": {
     "banner": {

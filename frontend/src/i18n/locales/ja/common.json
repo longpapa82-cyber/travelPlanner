@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "アプリとしてインストール",
     "installMessage": "ホーム画面に追加すると、より快適にご利用いただけます",
-    "install": "インストール"
+    "install": "インストール",
+    "appTitle": "アプリをダウンロード",
+    "appMessage": "アプリをインストールすると、より快適にご利用いただけます",
+    "getApp": "ダウンロード"
   },
   "emailVerification": {
     "banner": {

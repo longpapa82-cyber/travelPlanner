@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "C\u00e0i \u0111\u1eb7t \u1ee9ng d\u1ee5ng",
     "installMessage": "Th\u00eam v\u00e0o m\u00e0n h\u00ecnh ch\u00ednh \u0111\u1ec3 tr\u1ea3i nghi\u1ec7m nhanh h\u01a1n",
-    "install": "C\u00e0i \u0111\u1eb7t"
+    "install": "Cài đặt",
+    "appTitle": "Tải ứng dụng",
+    "appMessage": "Tải ứng dụng để có trải nghiệm tốt hơn",
+    "getApp": "Tải xuống"
   },
   "emailVerification": {
     "banner": {

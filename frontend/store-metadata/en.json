@@ -2,12 +2,12 @@
   "language": "en",
   "name": "MyTravel - AI Itinerary",
   "subtitle": "AI-Powered Trip Planning Made Easy",
-  "description": "Plan your perfect trip with MyTravel!\n\nLet AI create personalized travel itineraries tailored to your preferences. Just enter your destination, dates, and budget — and get an optimized travel plan instantly.\n\nKey Features:\n- AI-powered custom itinerary generation\n- Manual trip planning mode\n- Real-time weather info & time zone tracking\n- Expense management with split billing\n- Offline mode support\n- Trip photo gallery\n- Social features: share trips, follow travelers, like posts\n- Dark mode support\n- Available in 13 languages\n\nStart your smart travel journey with MyTravel.",
+  "description": "Plan your perfect trip with MyTravel!\n\nLet AI create personalized travel itineraries tailored to your preferences. Just enter your destination, dates, and budget — and get an optimized travel plan instantly.\n\nKey Features:\n- AI-powered custom itinerary generation\n- Manual trip planning mode\n- Real-time weather info & time zone tracking\n- Expense management with split billing\n- Offline mode support\n- Trip photo gallery\n- Social features: share trips, follow travelers, like posts\n- Dark mode support\n- Available in 17 languages\n\nStart your smart travel journey with MyTravel.",
   "keywords": "travel,itinerary,planner,AI,trip,vacation,holiday,schedule,budget,explore",
-  "releaseNotes": "v1.0 Official Launch\n- AI-powered custom itinerary generation\n- 13 language support (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI)\n- Social features (trip sharing, follow)\n- Premium subscription option",
+  "releaseNotes": "v1.0 Official Launch\n- AI-powered custom itinerary generation\n- 17 language support (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Social features (trip sharing, follow)\n- Premium subscription option",
   "category": "Travel",
   "ageRating": "4+",
-  "privacyUrl": "https://mytravel-planner.com/privacy",
-  "termsUrl": "https://mytravel-planner.com/terms",
+  "privacyUrl": "https://mytravel-planner.com/privacy-en",
+  "termsUrl": "https://mytravel-planner.com/terms-en",
   "supportUrl": "https://mytravel-planner.com/help"
 }

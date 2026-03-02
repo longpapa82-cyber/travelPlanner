@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "安装为应用",
     "installMessage": "添加到主屏幕以获得更快的体验",
-    "install": "安装"
+    "install": "安装",
+    "appTitle": "下载应用",
+    "appMessage": "下载应用以获得更好的体验",
+    "getApp": "下载"
   },
   "emailVerification": {
     "banner": {

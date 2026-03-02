@@ -71,7 +71,10 @@
   "pwa": {
     "installTitle": "Install as app",
     "installMessage": "Add to home screen for a faster experience",
-    "install": "Install"
+    "install": "Install",
+    "appTitle": "Get the app",
+    "appMessage": "Download our app for a better experience",
+    "getApp": "Download"
   },
   "emailVerification": {
     "banner": {

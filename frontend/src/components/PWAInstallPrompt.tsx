@@ -6,6 +6,7 @@ import {
   Platform,
   TouchableOpacity,
   Animated,
+  Linking,
 } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -16,17 +17,28 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
+const PLAY_STORE_URL =
+  'https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner';
+
+function isMobileWeb(): boolean {
+  if (Platform.OS !== 'web' || typeof navigator === 'undefined') return false;
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+}
+
 export const PWAInstallPrompt: React.FC = () => {
   const { t } = useTranslation('common');
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
+  const [showMobileBanner, setShowMobileBanner] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const slideAnim = useState(() => new Animated.Value(100))[0];
+
+  const mobile = isMobileWeb();
 
   useEffect(() => {
     if (Platform.OS !== 'web') return undefined;
 
-    // Don't show if already installed or user dismissed
+    // Don't show if already installed as PWA or user dismissed
     if (window.matchMedia?.('(display-mode: standalone)').matches) return undefined;
     const wasDismissed = localStorage.getItem('pwa-install-dismissed');
     if (wasDismissed) {
@@ -34,9 +46,7 @@ export const PWAInstallPrompt: React.FC = () => {
       return undefined;
     }
 
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
+    const showBanner = () => {
       Animated.spring(slideAnim, {
         toValue: 0,
         useNativeDriver: true,
@@ -45,11 +55,36 @@ export const PWAInstallPrompt: React.FC = () => {
       }).start();
     };
 
+    // Mobile: show "Get the app" banner (no beforeinstallprompt needed)
+    if (mobile) {
+      // Small delay so it doesn't flash on load
+      const timer = setTimeout(() => {
+        setShowMobileBanner(true);
+        showBanner();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+
+    // Desktop: show PWA install prompt when browser fires beforeinstallprompt
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      showBanner();
+    };
+
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, [slideAnim]);
+  }, [slideAnim, mobile]);
 
   const handleInstall = useCallback(async () => {
+    if (mobile) {
+      // Mobile: open Play Store
+      await Linking.openURL(PLAY_STORE_URL);
+      setDismissed(true);
+      localStorage.setItem('pwa-install-dismissed', '1');
+      return;
+    }
+    // Desktop: trigger PWA install
     if (!deferredPrompt) return;
     await deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
@@ -57,7 +92,7 @@ export const PWAInstallPrompt: React.FC = () => {
       setDeferredPrompt(null);
     }
     setDismissed(true);
-  }, [deferredPrompt]);
+  }, [deferredPrompt, mobile]);
 
   const handleDismiss = useCallback(() => {
     Animated.timing(slideAnim, {
@@ -70,17 +105,28 @@ export const PWAInstallPrompt: React.FC = () => {
     });
   }, [slideAnim]);
 
-  if (Platform.OS !== 'web' || !deferredPrompt || dismissed) return null;
+  if (Platform.OS !== 'web' || dismissed) return null;
+  // Desktop needs deferredPrompt; mobile needs showMobileBanner
+  if (!mobile && !deferredPrompt) return null;
+  if (mobile && !showMobileBanner) return null;
 
   return (
     <Animated.View
       style={[styles.container, { transform: [{ translateY: slideAnim }] }]}
     >
       <View style={styles.content}>
-        <Icon name="cellphone-arrow-down" size={24} color={colors.primary[500]} />
+        <Icon
+          name={mobile ? 'google-play' : 'cellphone-arrow-down'}
+          size={24}
+          color={colors.primary[500]}
+        />
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{t('pwa.installTitle')}</Text>
-          <Text style={styles.subtitle}>{t('pwa.installMessage')}</Text>
+          <Text style={styles.title}>
+            {mobile ? t('pwa.appTitle') : t('pwa.installTitle')}
+          </Text>
+          <Text style={styles.subtitle}>
+            {mobile ? t('pwa.appMessage') : t('pwa.installMessage')}
+          </Text>
         </View>
       </View>
       <View style={styles.actions}>
@@ -88,8 +134,14 @@ export const PWAInstallPrompt: React.FC = () => {
           <Text style={styles.dismissText}>{t('close')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleInstall} style={styles.installButton}>
-          <Icon name="download" size={16} color="#fff" />
-          <Text style={styles.installText}>{t('pwa.install')}</Text>
+          <Icon
+            name={mobile ? 'download' : 'download'}
+            size={16}
+            color="#fff"
+          />
+          <Text style={styles.installText}>
+            {mobile ? t('pwa.getApp') : t('pwa.install')}
+          </Text>
         </TouchableOpacity>
       </View>
     </Animated.View>

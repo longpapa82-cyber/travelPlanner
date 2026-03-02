@@ -2,10 +2,10 @@ import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Client } from '@googlemaps/google-maps-services-js';
-import { getErrorMessage } from '../../common/types/request.types';
 import { DateTime } from 'luxon';
 import { t } from '../../common/i18n';
 import { GeocodingService } from '../../common/services/geocoding.service';
+import { AxiosError } from 'axios';
 
 interface LocationInfo {
   latitude: number;
@@ -25,6 +25,23 @@ export class TimezoneService {
   private readonly logger = new Logger(TimezoneService.name);
   private googleMapsClient: Client;
   private apiKey: string | null = null;
+
+  /**
+   * Sanitize user-controlled strings for safe logging (strip newlines/control chars, truncate).
+   */
+  private sanitizeForLog(input: string): string {
+    return input.replace(/[\r\n\t]+/g, ' ').slice(0, 100);
+  }
+
+  /**
+   * Sanitize axios/http errors to prevent API key leakage in logs.
+   */
+  private safeErrorMessage(error: unknown): string {
+    if (error instanceof AxiosError) {
+      return `${error.code || 'UNKNOWN'} ${error.response?.status || ''}`.trim();
+    }
+    return error instanceof Error ? error.message : String(error);
+  }
 
   constructor(
     private configService: ConfigService,
@@ -58,7 +75,7 @@ export class TimezoneService {
       });
 
       if (response.data.results.length === 0) {
-        this.logger.warn(`No geocoding results for: ${destination}`);
+        this.logger.warn(`No geocoding results for: ${this.sanitizeForLog(destination)}`);
         return null;
       }
 
@@ -72,7 +89,7 @@ export class TimezoneService {
       };
     } catch (error) {
       this.logger.error(
-        `Failed to geocode destination ${destination}: ${getErrorMessage(error)}`,
+        `Failed to geocode destination "${this.sanitizeForLog(destination)}": ${this.safeErrorMessage(error)}`,
       );
       return null;
     }
@@ -118,7 +135,7 @@ export class TimezoneService {
       };
     } catch (error) {
       this.logger.error(
-        `Failed to get timezone for coordinates (${latitude}, ${longitude}): ${getErrorMessage(error)}`,
+        `Failed to get timezone for coordinates (${latitude}, ${longitude}): ${this.safeErrorMessage(error)}`,
       );
       return null;
     }
@@ -192,7 +209,7 @@ export class TimezoneService {
   calculateTimeDifference(
     destinationOffset: number,
     userTimezone: string = 'UTC',
-    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' = 'ko',
+    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
   ): string {
     const userDateTime = DateTime.now().setZone(userTimezone);
     const userOffset = userDateTime.offset / 60; // Convert minutes to hours
