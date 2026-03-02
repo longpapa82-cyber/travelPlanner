@@ -3,7 +3,8 @@
   "menu": {
     "users": "이용자 현황",
     "errorLogs": "오류 로그",
-    "revenue": "수익 대시보드"
+    "revenue": "수익 대시보드",
+    "announcements": "공지사항"
   },
   "dashboard": {
     "subtitle": "서비스 운영 관리 도구"
@@ -77,5 +78,63 @@
     "noErrors": "오류가 없습니다",
     "loadMore": "더 보기",
     "occurrences": "회"
+  },
+  "announcements": {
+    "title": "공지사항",
+    "createTitle": "공지사항 작성",
+    "editTitle": "공지사항 수정",
+    "noAnnouncements": "공지사항이 없습니다",
+    "published": "게시됨",
+    "draft": "임시저장",
+    "deleteConfirm": "삭제 확인",
+    "deleteMessage": "이 공지사항을 삭제하시겠습니까?",
+    "delete": "삭제",
+    "cancel": "취소",
+    "create": "작성",
+    "update": "수정",
+    "validation": "입력 오류",
+    "titleRequired": "제목을 입력해주세요",
+    "contentRequired": "내용을 입력해주세요",
+    "titleKo": "제목 (한국어)",
+    "titleEn": "제목 (영어)",
+    "contentKo": "내용 (한국어)",
+    "contentEn": "내용 (영어)",
+    "titlePlaceholder": "제목을 입력하세요",
+    "contentPlaceholder": "내용을 입력하세요",
+    "typeLabel": "유형",
+    "priorityLabel": "우선순위",
+    "displayLabel": "표시 방식",
+    "audienceLabel": "대상",
+    "startDateLabel": "시작일",
+    "endDateLabel": "종료일",
+    "endDatePlaceholder": "미설정 시 무기한",
+    "imageUrlLabel": "이미지 URL",
+    "actionUrlLabel": "액션 URL",
+    "learnMore": "자세히 보기",
+    "dismiss": "닫기",
+    "notFound": "공지사항을 찾을 수 없습니다",
+    "types": {
+      "system": "시스템",
+      "feature": "새 기능",
+      "important": "중요",
+      "promotional": "프로모션"
+    },
+    "priorities": {
+      "critical": "긴급",
+      "high": "높음",
+      "normal": "보통",
+      "low": "낮음"
+    },
+    "displays": {
+      "banner": "배너",
+      "modal": "팝업",
+      "bottom_sheet": "하단 시트",
+      "notification_only": "알림만"
+    },
+    "audiences": {
+      "all": "전체",
+      "premium": "프리미엄",
+      "free": "무료"
+    }
   }
 }

@@ -10,6 +10,8 @@ import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
 import VerifyEmailScreen from '../screens/auth/VerifyEmailScreen';
 import SharedTripViewScreen from '../screens/trips/SharedTripViewScreen';
+import AnnouncementListScreen from '../screens/main/AnnouncementListScreen';
+import AnnouncementDetailScreen from '../screens/main/AnnouncementDetailScreen';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import PrePermissionATTModal, { shouldShowATTPrePermission } from '../components/PrePermissionATTModal';
 
@@ -26,6 +28,10 @@ const linking: LinkingOptions<RootStackParamList> = {
       SharedTrip: {
         path: 'share/:shareToken',
       },
+      AnnouncementDetail: {
+        path: 'announcements/:announcementId',
+      },
+      AnnouncementList: 'announcements',
       VerifyEmail: 'verify-email',
       Main: {
         screens: {
@@ -102,6 +108,16 @@ const RootNavigator = () => {
         )}
         <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
         <Stack.Screen name="SharedTrip" component={SharedTripViewScreen} />
+        <Stack.Screen
+          name="AnnouncementList"
+          component={AnnouncementListScreen}
+          options={{ headerShown: true, title: '' }}
+        />
+        <Stack.Screen
+          name="AnnouncementDetail"
+          component={AnnouncementDetailScreen}
+          options={{ headerShown: true, title: '' }}
+        />
       </Stack.Navigator>
 
       <PrePermissionATTModal

@@ -9,6 +9,7 @@ import TripsNavigator from './TripsNavigator';
 import NotificationsScreen from '../screens/main/NotificationsScreen';
 import ProfileNavigator from './ProfileNavigator';
 import ErrorBoundary from '../components/ErrorBoundary';
+import AnnouncementBellIcon from '../components/AnnouncementBellIcon';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors, darkColors } from '../constants/theme';
@@ -83,6 +84,7 @@ const MainNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" size={size} color={color} />
           ),
+          headerRight: () => <AnnouncementBellIcon />,
         }}
       />
       <Tab.Screen

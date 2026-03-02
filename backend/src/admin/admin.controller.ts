@@ -3,21 +3,30 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   Query,
   Param,
   Req,
+  Headers,
   UseGuards,
   ParseUUIDPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { AdminService } from './admin.service';
 import { AuditService } from './audit.service';
+import { AnnouncementService } from './announcement.service';
 import { AuditAction } from './entities/audit-log.entity';
 import { CreateErrorLogDto } from './dto/create-error-log.dto';
+import { CreateAnnouncementDto } from './dto/create-announcement.dto';
+import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
 import { detectPlatform } from '../common/utils/platform-detector';
+import { parseLang } from '../common/i18n';
 
 // Admin-only endpoints
 @Controller('admin')
@@ -26,6 +35,7 @@ export class AdminController {
   constructor(
     private readonly adminService: AdminService,
     private readonly auditService: AuditService,
+    private readonly announcementService: AnnouncementService,
   ) {}
 
   @Get('users/stats')
@@ -93,6 +103,90 @@ export class AdminController {
       userId,
       action as AuditAction | undefined,
     );
+  }
+
+  // ─── Announcements Admin CRUD ──────────────────
+
+  @Post('announcements')
+  createAnnouncement(@Body() dto: CreateAnnouncementDto) {
+    return this.announcementService.create(dto);
+  }
+
+  @Get('announcements')
+  getAnnouncements(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.announcementService.findAll(
+      Math.max(1, parseInt(page || '1', 10) || 1),
+      Math.min(100, Math.max(1, parseInt(limit || '20', 10) || 20)),
+    );
+  }
+
+  @Get('announcements/:id')
+  getAnnouncement(@Param('id', ParseUUIDPipe) id: string) {
+    return this.announcementService.findOne(id);
+  }
+
+  @Patch('announcements/:id')
+  updateAnnouncement(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateAnnouncementDto,
+  ) {
+    return this.announcementService.update(id, dto);
+  }
+
+  @Delete('announcements/:id')
+  removeAnnouncement(@Param('id', ParseUUIDPipe) id: string) {
+    return this.announcementService.remove(id);
+  }
+
+  @Patch('announcements/:id/publish')
+  publishAnnouncement(@Param('id', ParseUUIDPipe) id: string) {
+    return this.announcementService.publish(id);
+  }
+
+  @Patch('announcements/:id/unpublish')
+  unpublishAnnouncement(@Param('id', ParseUUIDPipe) id: string) {
+    return this.announcementService.unpublish(id);
+  }
+}
+
+// Public announcement endpoints (JWT only, no admin check)
+@Controller('announcements')
+@UseGuards(JwtAuthGuard)
+export class AnnouncementsPublicController {
+  constructor(private readonly announcementService: AnnouncementService) {}
+
+  @Get()
+  getActiveAnnouncements(
+    @CurrentUser('userId') userId: string,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    return this.announcementService.getActiveForUser(userId, parseLang(acceptLanguage));
+  }
+
+  @Get('unread-count')
+  getUnreadCount(@CurrentUser('userId') userId: string) {
+    return this.announcementService.getUnreadCount(userId).then(count => ({ count }));
+  }
+
+  @Patch(':id/read')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  markAsRead(
+    @CurrentUser('userId') userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.announcementService.markAsRead(userId, id);
+  }
+
+  @Patch(':id/dismiss')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  dismiss(
+    @CurrentUser('userId') userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.announcementService.dismiss(userId, id);
   }
 }
 
