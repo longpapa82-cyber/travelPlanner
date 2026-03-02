@@ -191,7 +191,7 @@ export class UsersService {
   async verifyEmail(
     token: string,
     lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
-  ): Promise<User> {
+  ): Promise<Partial<User>> {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.emailVerificationToken')
@@ -252,7 +252,7 @@ export class UsersService {
     token: string,
     newPassword: string,
     lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
-  ): Promise<User> {
+  ): Promise<Partial<User>> {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.passwordResetToken')
