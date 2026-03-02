@@ -279,13 +279,13 @@ const PaywallModal: React.FC = () => {
                 {t('paywall.autoRenewNotice')}
               </Text>
               <View style={styles.legalLinks}>
-                <TouchableOpacity onPress={() => Linking.openURL('https://mytravel-planner.com/terms.html')}>
+                <TouchableOpacity onPress={() => Linking.openURL('https://mytravel-planner.com/terms')}>
                   <Text style={[styles.legalLink, { color: theme.colors.primary }]}>
                     {t('paywall.termsLink')}
                   </Text>
                 </TouchableOpacity>
                 <Text style={[styles.legalSeparator, { color: theme.colors.textSecondary }]}> · </Text>
-                <TouchableOpacity onPress={() => Linking.openURL('https://mytravel-planner.com/privacy.html')}>
+                <TouchableOpacity onPress={() => Linking.openURL('https://mytravel-planner.com/privacy')}>
                   <Text style={[styles.legalLink, { color: theme.colors.primary }]}>
                     {t('paywall.privacyLink')}
                   </Text>

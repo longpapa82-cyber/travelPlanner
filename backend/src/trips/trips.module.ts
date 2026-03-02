@@ -23,10 +23,12 @@ import { User } from '../users/entities/user.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { SubscriptionModule } from '../subscription/subscription.module';
 import { ImageService } from '../common/image.service';
+import { GeocodingService } from '../common/services/geocoding.service';
+import { GeocodingCache } from '../common/entities/geocoding-cache.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Trip, Itinerary, ItineraryTemplate, Collaborator, User]),
+    TypeOrmModule.forFeature([Trip, Itinerary, ItineraryTemplate, Collaborator, User, GeocodingCache]),
     ConfigModule,
     NotificationsModule,
     SubscriptionModule,
@@ -43,6 +45,7 @@ import { ImageService } from '../common/image.service';
     AnalyticsService,
     TripStatusScheduler,
     ImageService,
+    GeocodingService,
   ],
   controllers: [TripsController, ShareController, AnalyticsController, TemplateController],
   exports: [TripsService, AnalyticsService, TemplateService],
