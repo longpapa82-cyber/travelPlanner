@@ -1,9 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Client } from '@googlemaps/google-maps-services-js';
 import { getErrorMessage } from '../../common/types/request.types';
 import { DateTime } from 'luxon';
 import { t } from '../../common/i18n';
+import { GeocodingService } from '../../common/services/geocoding.service';
 
 interface LocationInfo {
   latitude: number;
@@ -24,7 +26,11 @@ export class TimezoneService {
   private googleMapsClient: Client;
   private apiKey: string | null = null;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Optional() private geocodingService?: GeocodingService,
+  ) {
     const apiKey = this.configService.get<string>('GOOGLE_MAPS_API_KEY');
     if (apiKey && apiKey !== '' && !apiKey.includes('your-')) {
       this.apiKey = apiKey;
@@ -137,12 +143,24 @@ export class TimezoneService {
   }
 
   /**
-   * Geocode a list of activity locations within a destination context
+   * Geocode a list of activity locations within a destination context.
+   * Delegates to GeocodingService (Redis → DB → LocationIQ → Google fallback chain).
+   * Falls back to direct Google Maps API if GeocodingService is not available.
    */
   async geocodeActivities(
     activities: { location: string }[],
     destination: string,
   ): Promise<{ latitude: number; longitude: number }[]> {
+    // Prefer GeocodingService (multi-provider fallback chain)
+    if (this.geocodingService) {
+      const queries = activities.map((a) => `${a.location}, ${destination}`);
+      const results = await this.geocodingService.geocodeBatch(queries);
+      return results.map((r) =>
+        r ? { latitude: r.latitude, longitude: r.longitude } : { latitude: 0, longitude: 0 },
+      );
+    }
+
+    // Fallback: direct Google Maps (backward compat if GeocodingService not injected)
     if (!this.apiKey) {
       return activities.map(() => ({ latitude: 0, longitude: 0 }));
     }
@@ -163,7 +181,6 @@ export class TimezoneService {
       } catch {
         results.push({ latitude: 0, longitude: 0 });
       }
-      // Small delay to respect rate limits
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
     return results;

@@ -164,22 +164,31 @@ export class AIService {
       // Validate and format activities
       const result = this.formatActivities(activities);
 
-      // Geocode activity locations
-      try {
-        const coords = await this.timezoneService.geocodeActivities(
-          result,
-          tripContext.destination,
-        );
-        for (let i = 0; i < result.length; i++) {
-          if (coords[i] && coords[i].latitude !== 0) {
-            result[i].latitude = coords[i].latitude;
-            result[i].longitude = coords[i].longitude;
+      // Only geocode activities that lack valid AI-returned coordinates
+      const needsGeocoding = result.filter(
+        (a) => !a.latitude || !a.longitude || a.latitude === 0 || a.longitude === 0,
+      );
+      if (needsGeocoding.length > 0) {
+        try {
+          const coords = await this.timezoneService.geocodeActivities(
+            needsGeocoding,
+            tripContext.destination,
+          );
+          let ci = 0;
+          for (const activity of result) {
+            if (!activity.latitude || !activity.longitude || activity.latitude === 0 || activity.longitude === 0) {
+              if (coords[ci] && coords[ci].latitude !== 0) {
+                activity.latitude = coords[ci].latitude;
+                activity.longitude = coords[ci].longitude;
+              }
+              ci++;
+            }
           }
+        } catch (error) {
+          this.logger.warn(
+            `Geocoding failed for activities: ${getErrorMessage(error)}`,
+          );
         }
-      } catch (error) {
-        this.logger.warn(
-          `Geocoding failed for activities: ${getErrorMessage(error)}`,
-        );
       }
 
       // Cache AI response for 24 hours
@@ -320,6 +329,8 @@ Trip Details:
       "title": "Activity name",
       "description": "Detailed description including what to do and why",
       "location": "Specific location name and address",
+      "latitude": 35.7148,
+      "longitude": 139.7967,
       "estimatedDuration": 120,
       "estimatedCost": 25,
       "type": "sightseeing|food|shopping|transportation|accommodation|culture|entertainment|nature"
@@ -336,7 +347,8 @@ Guidelines:
 - Start around 08:00-09:00, end around 20:00-21:00
 - Consider meal times (breakfast, lunch, dinner)
 - Include varied activity types
-- Be specific about locations (include neighborhoods/districts)`;
+- Be specific about locations (include neighborhoods/districts)
+- Include latitude and longitude for each activity (approximate coordinates are acceptable)`;
 
     return prompt;
   }
@@ -555,18 +567,26 @@ Guidelines:
         itineraries.push({ dayNumber: i + 1, date, activities });
       }
 
-      // Geocode all activities in parallel (batch per day)
+      // Only geocode activities that lack valid AI-returned coordinates
       await Promise.allSettled(
         itineraries.map(async (it) => {
+          const needsGeocoding = it.activities.filter(
+            (a) => !a.latitude || !a.longitude || a.latitude === 0 || a.longitude === 0,
+          );
+          if (needsGeocoding.length === 0) return;
           try {
             const coords = await this.timezoneService.geocodeActivities(
-              it.activities,
+              needsGeocoding,
               tripContext.destination,
             );
-            for (let j = 0; j < it.activities.length; j++) {
-              if (coords[j] && coords[j].latitude !== 0) {
-                it.activities[j].latitude = coords[j].latitude;
-                it.activities[j].longitude = coords[j].longitude;
+            let ci = 0;
+            for (const activity of it.activities) {
+              if (!activity.latitude || !activity.longitude || activity.latitude === 0 || activity.longitude === 0) {
+                if (coords[ci] && coords[ci].latitude !== 0) {
+                  activity.latitude = coords[ci].latitude;
+                  activity.longitude = coords[ci].longitude;
+                }
+                ci++;
               }
             }
           } catch (error) {
@@ -735,6 +755,7 @@ Trip Details:
 - Consider meal times and varied activity types
 - Ensure logical geographic flow (don't zigzag across the city)
 - Each day should explore a different area/theme
+- Include latitude and longitude for each activity (approximate coordinates are acceptable)
 
 Return JSON:
 {
@@ -747,6 +768,8 @@ Return JSON:
           "title": "Activity name",
           "description": "Detailed description",
           "location": "Specific location with address",
+          "latitude": 35.7148,
+          "longitude": 139.7967,
           "estimatedDuration": 120,
           "estimatedCost": 25,
           "type": "sightseeing|food|shopping|transportation|accommodation|culture|entertainment|nature"

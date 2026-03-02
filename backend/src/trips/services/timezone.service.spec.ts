@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { TimezoneService } from './timezone.service';
+import { GeocodingService } from '../../common/services/geocoding.service';
 
 // Mock @googlemaps/google-maps-services-js
 const mockGeocode = jest.fn();
@@ -14,6 +16,8 @@ jest.mock('@googlemaps/google-maps-services-js', () => ({
 
 describe('TimezoneService', () => {
   let service: TimezoneService;
+  let cacheManager: { get: jest.Mock; set: jest.Mock };
+  let geocodingService: jest.Mocked<Partial<GeocodingService>>;
 
   const mockGeocodeResponse = {
     data: {
@@ -37,6 +41,11 @@ describe('TimezoneService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    cacheManager = { get: jest.fn().mockResolvedValue(null), set: jest.fn().mockResolvedValue(undefined) };
+    geocodingService = {
+      geocode: jest.fn(),
+      geocodeBatch: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -45,6 +54,8 @@ describe('TimezoneService', () => {
           provide: ConfigService,
           useValue: { get: jest.fn().mockReturnValue('test-maps-key') },
         },
+        { provide: CACHE_MANAGER, useValue: cacheManager },
+        { provide: GeocodingService, useValue: geocodingService },
       ],
     }).compile();
 
@@ -64,6 +75,8 @@ describe('TimezoneService', () => {
             provide: ConfigService,
             useValue: { get: jest.fn().mockReturnValue(undefined) },
           },
+          { provide: CACHE_MANAGER, useValue: cacheManager },
+          { provide: GeocodingService, useValue: geocodingService },
         ],
       }).compile();
 
@@ -186,33 +199,11 @@ describe('TimezoneService', () => {
   });
 
   describe('geocodeActivities', () => {
-    it('should return zero coordinates when API key is missing', async () => {
-      (service as any).apiKey = null;
-      const activities = [
-        { location: 'Senso-ji Temple' },
-        { location: 'Tokyo Tower' },
-      ];
-
-      const result = await service.geocodeActivities(activities, 'Tokyo');
-
-      expect(result).toEqual([
-        { latitude: 0, longitude: 0 },
-        { latitude: 0, longitude: 0 },
+    it('should delegate to GeocodingService when available', async () => {
+      geocodingService.geocodeBatch!.mockResolvedValue([
+        { latitude: 35.71, longitude: 139.79, source: 'locationiq', confidence: 0.9 },
+        { latitude: 35.66, longitude: 139.75, source: 'locationiq', confidence: 0.9 },
       ]);
-    });
-
-    it('should geocode activity locations', async () => {
-      mockGeocode
-        .mockResolvedValueOnce({
-          data: {
-            results: [{ geometry: { location: { lat: 35.71, lng: 139.79 } } }],
-          },
-        })
-        .mockResolvedValueOnce({
-          data: {
-            results: [{ geometry: { location: { lat: 35.66, lng: 139.75 } } }],
-          },
-        });
 
       const activities = [
         { location: 'Senso-ji' },
@@ -220,24 +211,66 @@ describe('TimezoneService', () => {
       ];
       const result = await service.geocodeActivities(activities, 'Tokyo');
 
+      expect(geocodingService.geocodeBatch).toHaveBeenCalledWith([
+        'Senso-ji, Tokyo',
+        'Tokyo Tower, Tokyo',
+      ]);
       expect(result[0]).toEqual({ latitude: 35.71, longitude: 139.79 });
       expect(result[1]).toEqual({ latitude: 35.66, longitude: 139.75 });
     });
 
-    it('should return zero coordinates for failed geocoding', async () => {
-      mockGeocode.mockRejectedValue(new Error('Rate limited'));
+    it('should return zero coordinates when GeocodingService returns null', async () => {
+      geocodingService.geocodeBatch!.mockResolvedValue([null]);
 
-      const activities = [{ location: 'Some Place' }];
+      const activities = [{ location: 'Unknown Spot' }];
       const result = await service.geocodeActivities(activities, 'Tokyo');
 
       expect(result[0]).toEqual({ latitude: 0, longitude: 0 });
     });
 
-    it('should return zero coordinates for empty results', async () => {
-      mockGeocode.mockResolvedValue({ data: { results: [] } });
+    it('should fall back to Google Maps when GeocodingService is not injected', async () => {
+      // Create service without GeocodingService
+      const module = await Test.createTestingModule({
+        providers: [
+          TimezoneService,
+          {
+            provide: ConfigService,
+            useValue: { get: jest.fn().mockReturnValue('test-maps-key') },
+          },
+          { provide: CACHE_MANAGER, useValue: cacheManager },
+        ],
+      }).compile();
 
-      const activities = [{ location: 'Unknown Spot' }];
-      const result = await service.geocodeActivities(activities, 'Tokyo');
+      const fallbackService = module.get<TimezoneService>(TimezoneService);
+
+      mockGeocode.mockResolvedValueOnce({
+        data: {
+          results: [{ geometry: { location: { lat: 35.71, lng: 139.79 } } }],
+        },
+      });
+
+      const activities = [{ location: 'Senso-ji' }];
+      const result = await fallbackService.geocodeActivities(activities, 'Tokyo');
+
+      expect(result[0]).toEqual({ latitude: 35.71, longitude: 139.79 });
+      expect(mockGeocode).toHaveBeenCalled();
+    });
+
+    it('should return zero coordinates when API key is missing and no GeocodingService', async () => {
+      const module = await Test.createTestingModule({
+        providers: [
+          TimezoneService,
+          {
+            provide: ConfigService,
+            useValue: { get: jest.fn().mockReturnValue(undefined) },
+          },
+          { provide: CACHE_MANAGER, useValue: cacheManager },
+        ],
+      }).compile();
+
+      const noKeyService = module.get<TimezoneService>(TimezoneService);
+      const activities = [{ location: 'Senso-ji' }];
+      const result = await noKeyService.geocodeActivities(activities, 'Tokyo');
 
       expect(result[0]).toEqual({ latitude: 0, longitude: 0 });
     });
