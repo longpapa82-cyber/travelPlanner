@@ -25,13 +25,15 @@ export class AddSubscriptionFields1739900000000 implements MigrationInterface {
         ADD COLUMN IF NOT EXISTS "subscriptionPlatform" "subscription_platform_enum",
         ADD COLUMN IF NOT EXISTS "subscriptionExpiresAt" TIMESTAMP,
         ADD COLUMN IF NOT EXISTS "revenuecatAppUserId" VARCHAR,
-        ADD COLUMN IF NOT EXISTS "aiTripsUsedThisMonth" INTEGER NOT NULL DEFAULT 0
+        ADD COLUMN IF NOT EXISTS "aiTripsUsedThisMonth" INTEGER NOT NULL DEFAULT 0,
+        ADD COLUMN IF NOT EXISTS "stripeCustomerId" VARCHAR
     `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       ALTER TABLE "users"
+        DROP COLUMN IF EXISTS "stripeCustomerId",
         DROP COLUMN IF EXISTS "aiTripsUsedThisMonth",
         DROP COLUMN IF EXISTS "revenuecatAppUserId",
         DROP COLUMN IF EXISTS "subscriptionExpiresAt",
