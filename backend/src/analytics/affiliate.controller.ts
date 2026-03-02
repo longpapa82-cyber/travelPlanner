@@ -164,7 +164,7 @@ export class AffiliateController {
   ) {
     const clicks = await this.affiliateService.getUserClickHistory(
       req.user.userId,
-      limit,
+      Math.min(100, Math.max(1, limit)),
     );
 
     return {

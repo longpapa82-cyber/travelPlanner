@@ -38,7 +38,11 @@ describe('UsersService', () => {
     const mockQueryBuilder = {
       addSelect: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
       getOne: jest.fn(),
+      update: jest.fn().mockReturnThis(),
+      set: jest.fn().mockReturnThis(),
+      execute: jest.fn().mockResolvedValue(undefined),
     };
 
     const mockRepository = {
@@ -259,7 +263,8 @@ describe('UsersService', () => {
         provider: AuthProvider.GOOGLE,
         providerId: 'google-123',
       };
-      repository.findOne.mockResolvedValue(googleUser);
+      const qb = repository.createQueryBuilder('user');
+      (qb as any).getOne.mockResolvedValue(googleUser);
 
       // Act
       const result = await service.findByProviderAndId(
@@ -268,15 +273,23 @@ describe('UsersService', () => {
       );
 
       // Assert
-      expect(repository.findOne).toHaveBeenCalledWith({
-        where: { provider: AuthProvider.GOOGLE, providerId: 'google-123' },
-      });
+      expect(repository.createQueryBuilder).toHaveBeenCalledWith('user');
+      expect((qb as any).addSelect).toHaveBeenCalledWith('user.providerId');
+      expect((qb as any).where).toHaveBeenCalledWith(
+        'user.provider = :provider',
+        { provider: AuthProvider.GOOGLE },
+      );
+      expect((qb as any).andWhere).toHaveBeenCalledWith(
+        'user.providerId = :providerId',
+        { providerId: 'google-123' },
+      );
       expect(result).toEqual(googleUser);
     });
 
     it('should return null if user not found', async () => {
       // Arrange
-      repository.findOne.mockResolvedValue(null);
+      const qb = repository.createQueryBuilder('user');
+      (qb as any).getOne.mockResolvedValue(null);
 
       // Act
       const result = await service.findByProviderAndId(
@@ -297,7 +310,8 @@ describe('UsersService', () => {
       ];
 
       for (const provider of providers) {
-        repository.findOne.mockResolvedValue({
+        const qb = repository.createQueryBuilder('user');
+        (qb as any).getOne.mockResolvedValue({
           ...mockUser,
           provider,
           providerId: `${provider.toLowerCase()}-id`,
@@ -389,9 +403,9 @@ describe('UsersService', () => {
 
       // Assert
       expect(repository.update).toHaveBeenCalledWith(userId, updateData);
-      expect(repository.findOne).toHaveBeenCalledWith({
-        where: { id: userId },
-      });
+      expect(repository.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: userId } }),
+      );
       expect(result).toEqual(updatedUser);
     });
 
