@@ -124,9 +124,11 @@ export class SubscriptionService {
     }
 
     // Find user by RevenueCat app user ID or by our user ID
-    let user = await this.userRepository.findOne({
-      where: { revenuecatAppUserId: appUserId },
-    });
+    let user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.revenuecatAppUserId')
+      .where('user.revenuecatAppUserId = :appUserId', { appUserId })
+      .getOne();
     if (!user) {
       user = await this.userRepository.findOne({
         where: { id: appUserId },

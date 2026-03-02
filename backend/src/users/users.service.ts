@@ -93,9 +93,12 @@ export class UsersService {
     provider: AuthProvider,
     providerId: string,
   ): Promise<User | null> {
-    return this.userRepository.findOne({
-      where: { provider, providerId },
-    });
+    return this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.providerId')
+      .where('user.provider = :provider', { provider })
+      .andWhere('user.providerId = :providerId', { providerId })
+      .getOne();
   }
 
   async validatePassword(user: User, password: string): Promise<boolean> {
@@ -212,7 +215,7 @@ export class UsersService {
       emailVerificationExpiry: undefined,
     });
 
-    return this.findById(user.id);
+    return this.findProfileById(user.id);
   }
 
   async generatePasswordResetToken(
@@ -271,7 +274,7 @@ export class UsersService {
       passwordResetExpiry: undefined,
     });
 
-    return this.findById(user.id);
+    return this.findProfileById(user.id);
   }
 
   // ============ Travel Preferences ============
@@ -279,9 +282,9 @@ export class UsersService {
   async updateTravelPreferences(
     userId: string,
     preferences: { budget?: string; travelStyle?: string; interests?: string[] },
-  ): Promise<User> {
+  ): Promise<Partial<User>> {
     await this.userRepository.update(userId, { travelPreferences: preferences });
-    return this.findById(userId);
+    return this.findProfileById(userId);
   }
 
   // ============ 2FA Methods ============

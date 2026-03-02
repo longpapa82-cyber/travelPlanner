@@ -26,6 +26,19 @@ describe('NotificationsService', () => {
     createQueryBuilder: jest.fn(),
   };
 
+  /** Helper: set up createQueryBuilder mock to return a single user for sendPushToUser */
+  function mockSendPushUser(user: any) {
+    const qb = {
+      addSelect: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      getOne: jest.fn().mockResolvedValue(user),
+      getMany: jest.fn().mockResolvedValue(user ? [user] : []),
+    };
+    mockUserRepo.createQueryBuilder.mockReturnValue(qb);
+    return qb;
+  }
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -62,10 +75,7 @@ describe('NotificationsService', () => {
     it('should create a notification and send push', async () => {
       mockNotificationRepo.create.mockReturnValue(mockNotification);
       mockNotificationRepo.save.mockResolvedValue(mockNotification);
-      mockUserRepo.findOne.mockResolvedValue({
-        id: 'user-1',
-        pushToken: 'ExponentPushToken[xxx]',
-      });
+      mockSendPushUser({ id: 'user-1', pushToken: 'ExponentPushToken[xxx]' });
 
       const result = await service.create(
         'user-1',
@@ -92,7 +102,7 @@ describe('NotificationsService', () => {
     it('should create notification without push when user has no token', async () => {
       mockNotificationRepo.create.mockReturnValue(mockNotification);
       mockNotificationRepo.save.mockResolvedValue(mockNotification);
-      mockUserRepo.findOne.mockResolvedValue({ id: 'user-1', pushToken: null });
+      mockSendPushUser({ id: 'user-1', pushToken: null });
 
       await service.create(
         'user-1',
@@ -108,7 +118,7 @@ describe('NotificationsService', () => {
     it('should include data in notification', async () => {
       mockNotificationRepo.create.mockReturnValue(mockNotification);
       mockNotificationRepo.save.mockResolvedValue(mockNotification);
-      mockUserRepo.findOne.mockResolvedValue({ id: 'user-1', pushToken: null });
+      mockSendPushUser({ id: 'user-1', pushToken: null });
 
       await service.create(
         'user-1',
@@ -129,6 +139,7 @@ describe('NotificationsService', () => {
   describe('createForMultipleUsers', () => {
     it('should create notifications for multiple users', async () => {
       const mockQb = {
+        addSelect: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([
@@ -157,6 +168,7 @@ describe('NotificationsService', () => {
 
     it('should skip push when no users have tokens', async () => {
       const mockQb = {
+        addSelect: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([]),
@@ -305,10 +317,7 @@ describe('NotificationsService', () => {
     it('should not throw when Expo API fails', async () => {
       mockNotificationRepo.create.mockReturnValue(mockNotification);
       mockNotificationRepo.save.mockResolvedValue(mockNotification);
-      mockUserRepo.findOne.mockResolvedValue({
-        id: 'user-1',
-        pushToken: 'token',
-      });
+      mockSendPushUser({ id: 'user-1', pushToken: 'token' });
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       // Should not throw — errors are caught internally
@@ -325,7 +334,7 @@ describe('NotificationsService', () => {
     it('should not send push when user not found', async () => {
       mockNotificationRepo.create.mockReturnValue(mockNotification);
       mockNotificationRepo.save.mockResolvedValue(mockNotification);
-      mockUserRepo.findOne.mockResolvedValue(null);
+      mockSendPushUser(null);
 
       await service.create(
         'user-1',

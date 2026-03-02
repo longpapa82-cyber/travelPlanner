@@ -123,7 +123,11 @@ export class NotificationsService {
     body: string,
     data?: Record<string, any>,
   ) {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.pushToken')
+      .where('user.id = :id', { id: userId })
+      .getOne();
     if (!user?.pushToken) return;
 
     await this.sendPushNotifications([
@@ -141,6 +145,7 @@ export class NotificationsService {
 
     const users = await this.userRepository
       .createQueryBuilder('user')
+      .addSelect('user.pushToken')
       .where('user.id IN (:...ids)', { ids: userIds })
       .andWhere('user.pushToken IS NOT NULL')
       .getMany();

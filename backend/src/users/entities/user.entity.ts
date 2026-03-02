@@ -49,7 +49,7 @@ export class User {
   })
   provider: AuthProvider;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, select: false })
   providerId?: string;
 
   @Column({ type: 'varchar', length: 100 })
@@ -89,7 +89,7 @@ export class User {
   @Column({ type: 'simple-array', nullable: true, select: false })
   twoFactorBackupCodes?: string[];
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, select: false })
   pushToken?: string;
 
   @Column({ type: 'jsonb', nullable: true })
@@ -131,7 +131,7 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   subscriptionExpiresAt?: Date;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, select: false })
   revenuecatAppUserId?: string;
 
   @Column({ type: 'varchar', nullable: true, select: false })
