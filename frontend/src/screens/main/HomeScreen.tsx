@@ -24,7 +24,7 @@ import {
   useWindowDimensions,
   Share,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -131,6 +131,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const FEATURED_DESTINATIONS = getFeaturedDestinations(t);
 
   // Tutorial: CoachMark for "Create Trip" button
+  const isFocused = useIsFocused();
   const { showCoachMark, completeCoach, navigateToCreateTrip, clearNavigateFlag } = useTutorial();
   const createTripRef = useRef<View>(null);
   const [createTripLayout, setCreateTripLayout] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
@@ -522,7 +523,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
       {/* Tutorial CoachMark */}
       <CoachMark
-        visible={showCoachMark}
+        visible={showCoachMark && isFocused}
         targetLayout={createTripLayout}
         message={tTutorial('coach.createTrip')}
         position="below"
