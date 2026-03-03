@@ -63,6 +63,9 @@ export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) 
     AsyncStorage.setItem(TUTORIAL_KEYS.WELCOME, 'true');
     if (navigate) {
       setNavigateToCreateTrip(true);
+      // User already chose to create a trip — skip the "click here to create" coach mark
+      setCoachCompleted(true);
+      AsyncStorage.setItem(TUTORIAL_KEYS.COACH, 'true');
     }
   }, []);
 
