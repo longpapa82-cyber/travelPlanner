@@ -94,6 +94,12 @@
     "server": "L\u1ed7i m\u00e1y ch\u1ee7. Vui l\u00f2ng th\u1eed l\u1ea1i sau.",
     "generic": "Đã xảy ra lỗi. Vui lòng thử lại."
   },
+  "gdpr": {
+    "message": "Trang web này sử dụng cookie để hiển thị quảng cáo được cá nhân hóa.",
+    "accept": "Chấp nhận",
+    "reject": "Từ chối",
+    "learnMore": "Tìm hiểu thêm"
+  },
   "att": {
     "title": "Nhận ưu đãi du lịch cá nhân hóa",
     "description": "Cho phép theo dõi để nhận ưu đãi và gợi ý du lịch phù hợp với sở thích của bạn.",

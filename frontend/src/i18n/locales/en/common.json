@@ -94,6 +94,12 @@
     "server": "Server error. Please try again later.",
     "generic": "Something went wrong. Please try again."
   },
+  "gdpr": {
+    "message": "This website uses cookies to serve personalized ads.",
+    "accept": "Accept",
+    "reject": "Reject",
+    "learnMore": "Learn more"
+  },
   "att": {
     "title": "Get personalized travel deals",
     "description": "Allow tracking to receive travel deals and offers tailored to your interests.",

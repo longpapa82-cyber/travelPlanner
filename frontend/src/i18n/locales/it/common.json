@@ -94,6 +94,12 @@
     "server": "Errore del server. Riprova più tardi.",
     "generic": "Qualcosa è andato storto. Riprova."
   },
+  "gdpr": {
+    "message": "Questo sito utilizza i cookie per mostrare annunci personalizzati.",
+    "accept": "Accetta",
+    "reject": "Rifiuta",
+    "learnMore": "Scopri di più"
+  },
   "att": {
     "title": "Ricevi offerte di viaggio personalizzate",
     "description": "Consenti il tracciamento per ricevere offerte e promozioni di viaggio su misura per i tuoi interessi.",

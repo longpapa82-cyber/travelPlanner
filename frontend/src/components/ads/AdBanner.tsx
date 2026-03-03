@@ -53,8 +53,8 @@ const AdBanner: React.FC<AdBannerProps> = ({
   // Premium users don't see banner ads
   if (isPremium) return null;
 
-  // Wait for consent check on native before showing ads
-  if (Platform.OS !== 'web' && !consentReady) return null;
+  // Wait for consent check before showing ads (native + web)
+  if (!consentReady) return null;
 
   if (Platform.OS === 'web') {
     const slot = adSenseSlot || DEFAULT_ADSENSE_SLOT;
