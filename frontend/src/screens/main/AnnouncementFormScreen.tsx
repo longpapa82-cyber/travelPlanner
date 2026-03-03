@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Platform,
+  Modal,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
@@ -15,8 +17,172 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import { ProfileStackParamList, AnnouncementAdmin } from '../../types';
 import apiService from '../../services/api';
+import { colors } from '../../constants/theme';
+import { getDateLocale } from '../../utils/dateLocale';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'AnnouncementForm'>;
+
+/** Inline DateTimePicker field for announcements (date + time) */
+interface DateTimeFieldProps {
+  label: string;
+  value: string; // ISO partial: YYYY-MM-DDTHH:mm or ''
+  onChange: (v: string) => void;
+  showPicker: boolean;
+  setShowPicker: (v: boolean) => void;
+  theme: any;
+  placeholder?: string;
+  clearable?: boolean;
+}
+const DateTimeField: React.FC<DateTimeFieldProps> = ({
+  label, value, onChange, showPicker, setShowPicker, theme, placeholder, clearable,
+}) => {
+  const { t } = useTranslation('common');
+  const currentDate = value ? new Date(value) : new Date();
+  // Android needs two-step: date → time
+  const [androidStep, setAndroidStep] = React.useState<'date' | 'time'>('date');
+  const [pendingDate, setPendingDate] = React.useState('');
+
+  const formatDisplay = (iso: string) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleString(getDateLocale(), {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit',
+    });
+  };
+
+  const handleNativeChange = (_: any, selected?: Date) => {
+    if (Platform.OS === 'android') setShowPicker(false);
+    if (selected) onChange(selected.toISOString().slice(0, 16));
+  };
+
+  // Web: use native datetime-local input
+  if (Platform.OS === 'web') {
+    return (
+      <View style={dtStyles.fieldGroup}>
+        <Text style={[dtStyles.label, { color: theme.colors.text }]}>{label}</Text>
+        <View style={[dtStyles.inputRow, { backgroundColor: theme.colors.white, borderColor: theme.colors.border }]}>
+          <input
+            type="datetime-local"
+            value={value}
+            onChange={(e: any) => onChange(e.target.value)}
+            placeholder={placeholder}
+            style={{
+              flex: 1, fontSize: 15, border: 'none', outline: 'none',
+              backgroundColor: 'transparent', color: theme.colors.text,
+              padding: 0, cursor: 'pointer',
+            }}
+          />
+          {clearable && value ? (
+            <TouchableOpacity onPress={() => onChange('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <Icon name="close-circle" size={20} color={theme.colors.textSecondary} />
+            </TouchableOpacity>
+          ) : (
+            <Icon name="calendar-clock" size={20} color={colors.primary[500]} />
+          )}
+        </View>
+      </View>
+    );
+  }
+
+  // Native: use @react-native-community/datetimepicker
+  const DateTimePicker = require('@react-native-community/datetimepicker').default;
+
+  const openPicker = () => {
+    setAndroidStep('date');
+    setPendingDate('');
+    setShowPicker(true);
+  };
+
+  return (
+    <View style={dtStyles.fieldGroup}>
+      <Text style={[dtStyles.label, { color: theme.colors.text }]}>{label}</Text>
+      <TouchableOpacity
+        style={[dtStyles.inputRow, { backgroundColor: theme.colors.white, borderColor: theme.colors.border }]}
+        onPress={openPicker}
+      >
+        <Text style={{ flex: 1, fontSize: 15, color: value ? theme.colors.text : theme.colors.textSecondary }}>
+          {value ? formatDisplay(value) : (placeholder || 'YYYY-MM-DD HH:mm')}
+        </Text>
+        {clearable && value ? (
+          <TouchableOpacity onPress={() => onChange('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Icon name="close-circle" size={20} color={theme.colors.textSecondary} />
+          </TouchableOpacity>
+        ) : (
+          <Icon name="calendar-clock" size={20} color={colors.primary[500]} />
+        )}
+      </TouchableOpacity>
+
+      {showPicker && Platform.OS === 'android' && androidStep === 'date' && (
+        <DateTimePicker value={currentDate} mode="date" display="default" onChange={(_: any, d?: Date) => {
+          setShowPicker(false);
+          if (d) {
+            const dateStr = d.toISOString().split('T')[0];
+            setPendingDate(dateStr);
+            setTimeout(() => {
+              setAndroidStep('time');
+              setShowPicker(true);
+            }, 300);
+          }
+        }} />
+      )}
+
+      {showPicker && Platform.OS === 'android' && androidStep === 'time' && (
+        <DateTimePicker value={currentDate} mode="time" display="default" onChange={(_: any, d?: Date) => {
+          setShowPicker(false);
+          setAndroidStep('date');
+          if (d) {
+            const hours = String(d.getHours()).padStart(2, '0');
+            const mins = String(d.getMinutes()).padStart(2, '0');
+            onChange(`${pendingDate}T${hours}:${mins}`);
+          }
+        }} />
+      )}
+
+      {showPicker && Platform.OS === 'ios' && (
+        <Modal transparent animationType="slide">
+          <View style={dtStyles.modalOverlay}>
+            <View style={[dtStyles.modalContent, { backgroundColor: theme.colors.white }]}>
+              <View style={dtStyles.modalHeader}>
+                <TouchableOpacity onPress={() => setShowPicker(false)}>
+                  <Text style={{ fontSize: 16, color: theme.colors.textSecondary }}>{t('cancel')}</Text>
+                </TouchableOpacity>
+                <Text style={{ fontSize: 16, fontWeight: '600', color: theme.colors.text }}>{label}</Text>
+                <TouchableOpacity onPress={() => setShowPicker(false)}>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: colors.primary[500] }}>{t('done')}</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={currentDate}
+                mode="datetime"
+                display="spinner"
+                onChange={handleNativeChange}
+                locale={getDateLocale()}
+                style={{ height: 200 }}
+              />
+            </View>
+          </View>
+        </Modal>
+      )}
+    </View>
+  );
+};
+
+const dtStyles = StyleSheet.create({
+  fieldGroup: { marginBottom: 16 },
+  label: { fontSize: 14, fontWeight: '600', marginBottom: 6 },
+  inputRow: {
+    flexDirection: 'row', alignItems: 'center',
+    borderWidth: 1, borderRadius: 10,
+    paddingHorizontal: 14, paddingVertical: 12, gap: 8,
+  },
+  modalOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
+  modalContent: { borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 34 },
+  modalHeader: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    padding: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#ccc',
+  },
+});
 
 const TYPES = ['system', 'feature', 'important', 'promotional'] as const;
 const PRIORITIES = ['critical', 'high', 'normal', 'low'] as const;
@@ -47,6 +213,8 @@ const AnnouncementFormScreen: React.FC<Props> = ({ navigation, route }) => {
   const [actionLabelEn, setActionLabelEn] = useState('');
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 16));
   const [endDate, setEndDate] = useState('');
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
 
   useEffect(() => {
     if (isEdit && announcementId) {
@@ -218,27 +386,25 @@ const AnnouncementFormScreen: React.FC<Props> = ({ navigation, route }) => {
         />
       </View>
 
-      <View style={styles.fieldGroup}>
-        <Text style={[styles.label, { color: theme.colors.text }]}>{t('announcements.startDateLabel')}</Text>
-        <TextInput
-          style={[styles.input, { backgroundColor: theme.colors.white, color: theme.colors.text, borderColor: theme.colors.border }]}
-          value={startDate}
-          onChangeText={setStartDate}
-          placeholder="YYYY-MM-DDTHH:mm"
-          placeholderTextColor={theme.colors.textSecondary}
-        />
-      </View>
+      <DateTimeField
+        label={t('announcements.startDateLabel')}
+        value={startDate}
+        onChange={setStartDate}
+        showPicker={showStartPicker}
+        setShowPicker={setShowStartPicker}
+        theme={theme}
+      />
 
-      <View style={styles.fieldGroup}>
-        <Text style={[styles.label, { color: theme.colors.text }]}>{t('announcements.endDateLabel')}</Text>
-        <TextInput
-          style={[styles.input, { backgroundColor: theme.colors.white, color: theme.colors.text, borderColor: theme.colors.border }]}
-          value={endDate}
-          onChangeText={setEndDate}
-          placeholder={t('announcements.endDatePlaceholder')}
-          placeholderTextColor={theme.colors.textSecondary}
-        />
-      </View>
+      <DateTimeField
+        label={t('announcements.endDateLabel')}
+        value={endDate}
+        onChange={setEndDate}
+        showPicker={showEndPicker}
+        setShowPicker={setShowEndPicker}
+        theme={theme}
+        placeholder={t('announcements.endDatePlaceholder')}
+        clearable
+      />
 
       <View style={styles.fieldGroup}>
         <Text style={[styles.label, { color: theme.colors.text }]}>{t('announcements.imageUrlLabel')}</Text>

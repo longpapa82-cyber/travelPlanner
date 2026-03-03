@@ -29,6 +29,8 @@ const SLIDES: Slide[] = [
   { id: '3', icon: 'rocket-launch', color: '#F59E0B', titleKey: 'welcome.slide3.title', descKey: 'welcome.slide3.description' },
 ];
 
+const MODAL_MAX_WIDTH = 400;
+
 const WelcomeModal: React.FC = () => {
   const { t } = useTranslation('tutorial');
   const { showWelcome, completeWelcome } = useTutorial();
@@ -36,6 +38,9 @@ const WelcomeModal: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
+
+  // Clamp slide width to modal container width (maxWidth: 400)
+  const slideWidth = Math.min(SCREEN_WIDTH - 64, MODAL_MAX_WIDTH);
 
   const handleSkip = useCallback(() => {
     completeWelcome(false);
@@ -52,17 +57,17 @@ const WelcomeModal: React.FC = () => {
   const handleNext = useCallback(() => {
     if (currentIndex < SLIDES.length - 1) {
       flatListRef.current?.scrollToOffset({
-        offset: (currentIndex + 1) * (SCREEN_WIDTH - 64),
+        offset: (currentIndex + 1) * slideWidth,
         animated: true,
       });
       setCurrentIndex(currentIndex + 1);
     }
-  }, [currentIndex, SCREEN_WIDTH]);
+  }, [currentIndex, slideWidth]);
 
   const isLastSlide = currentIndex === SLIDES.length - 1;
 
   const renderSlide = ({ item }: { item: Slide }) => (
-    <View style={[styles.slide, { width: SCREEN_WIDTH - 64 }]}>
+    <View style={[styles.slide, { width: slideWidth }]}>
       <View style={[styles.iconCircle, { backgroundColor: `${item.color}15` }]}>
         <Icon name={item.icon as any} size={48} color={item.color} />
       </View>
@@ -75,9 +80,9 @@ const WelcomeModal: React.FC = () => {
     <View style={styles.dots}>
       {SLIDES.map((_, index) => {
         const inputRange = [
-          (index - 1) * (SCREEN_WIDTH - 64),
-          index * (SCREEN_WIDTH - 64),
-          (index + 1) * (SCREEN_WIDTH - 64),
+          (index - 1) * (slideWidth),
+          index * (slideWidth),
+          (index + 1) * (slideWidth),
         ];
         const dotWidth = scrollX.interpolate({
           inputRange,
@@ -133,7 +138,7 @@ const WelcomeModal: React.FC = () => {
             )}
             onMomentumScrollEnd={(event) => {
               const index = Math.round(
-                event.nativeEvent.contentOffset.x / (SCREEN_WIDTH - 64),
+                event.nativeEvent.contentOffset.x / (slideWidth),
               );
               setCurrentIndex(index);
             }}

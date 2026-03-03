@@ -23,7 +23,7 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
       teamID: configService.get<string>('oauth.apple.teamId') || 'placeholder',
       keyID: configService.get<string>('oauth.apple.keyId') || 'placeholder',
       key: configService.get<string>('oauth.apple.privateKey') || 'placeholder-key',
-      callbackURL: configService.get<string>('oauth.apple.callbackUrl') || 'http://localhost:3000/api/auth/apple/callback',
+      callbackURL: configService.get<string>('oauth.apple.callbackUrl')!,
       scope: ['email', 'name'],
       passReqToCallback: false,
     });
