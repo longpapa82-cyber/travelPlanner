@@ -29,6 +29,8 @@ export default ({ config }) => ({
       ],
       NSUserTrackingUsageDescription:
         'This allows us to show you personalized travel deals and offers.',
+      NSPhotoLibraryUsageDescription:
+        'MyTravel needs access to your photo library to add photos to your trips.',
     },
   },
   android: {
@@ -102,6 +104,30 @@ export default ({ config }) => ({
                 NSPrivacyCollectedDataTypeLinked: true,
                 NSPrivacyCollectedDataTypeTracking: false,
                 NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeAppFunctionality'],
+              },
+              {
+                NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypeDeviceID',
+                NSPrivacyCollectedDataTypeLinked: true,
+                NSPrivacyCollectedDataTypeTracking: false,
+                NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeAppFunctionality'],
+              },
+              {
+                NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypePurchaseHistory',
+                NSPrivacyCollectedDataTypeLinked: true,
+                NSPrivacyCollectedDataTypeTracking: false,
+                NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeAppFunctionality'],
+              },
+              {
+                NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypeCrashData',
+                NSPrivacyCollectedDataTypeLinked: false,
+                NSPrivacyCollectedDataTypeTracking: false,
+                NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeAnalytics'],
+              },
+              {
+                NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypeAdvertisingData',
+                NSPrivacyCollectedDataTypeLinked: false,
+                NSPrivacyCollectedDataTypeTracking: true,
+                NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising'],
               },
             ],
             NSPrivacyTracking: false,

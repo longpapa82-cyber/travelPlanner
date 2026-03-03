@@ -192,7 +192,7 @@ describe('WeatherService', () => {
     it('should return null on API error (network)', async () => {
       cacheManager.get.mockResolvedValue(null);
       mockedAxios.get.mockRejectedValue(new Error('Network Error'));
-      mockedAxios.isAxiosError = jest.fn().mockReturnValue(false);
+      (mockedAxios as any).isAxiosError = jest.fn().mockReturnValue(false);
 
       const result = await service.getWeatherForecast(
         35.68,
@@ -210,7 +210,7 @@ describe('WeatherService', () => {
         isAxiosError: true,
       };
       mockedAxios.get.mockRejectedValue(axiosError);
-      mockedAxios.isAxiosError = jest.fn().mockReturnValue(true);
+      (mockedAxios as any).isAxiosError = jest.fn().mockReturnValue(true);
 
       const result = await service.getWeatherForecast(
         35.68,
@@ -277,7 +277,7 @@ describe('WeatherService', () => {
 
     it('should return null on API error', async () => {
       mockedAxios.get.mockRejectedValue(new Error('Timeout'));
-      mockedAxios.isAxiosError = jest.fn().mockReturnValue(false);
+      (mockedAxios as any).isAxiosError = jest.fn().mockReturnValue(false);
 
       const result = await service.getCurrentWeather(35.68, 139.76);
       expect(result).toBeNull();

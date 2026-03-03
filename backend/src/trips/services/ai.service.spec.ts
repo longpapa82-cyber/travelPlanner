@@ -223,7 +223,7 @@ describe('AIService', () => {
       openaiCreate.mockResolvedValue({
         choices: [{ message: { content: mockActivitiesResponse } }],
       });
-      timezoneService.geocodeActivities!.mockRejectedValue(
+      (timezoneService.geocodeActivities as jest.Mock).mockRejectedValue(
         new Error('Geocoding API down'),
       );
 
@@ -303,7 +303,7 @@ describe('AIService', () => {
       openaiCreate.mockResolvedValue({
         choices: [{ message: { content: mockActivitiesResponse } }],
       });
-      analyticsService.getDestinationRecommendations!.mockResolvedValue({
+      (analyticsService.getDestinationRecommendations as jest.Mock).mockResolvedValue({
         recommendedDuration: 5,
         recommendedTravelers: 2,
         bestMonths: [3, 4, 10, 11],
@@ -522,7 +522,7 @@ describe('AIService', () => {
         generatedAt: new Date(),
         isStale: false,
       };
-      templateService.findTemplate!.mockResolvedValue(mockTemplateResult);
+      (templateService.findTemplate as jest.Mock).mockResolvedValue(mockTemplateResult);
 
       const shortTrip = { ...tripContext, endDate: new Date('2025-07-02') };
       const result = await service.generateAllItineraries(shortTrip);
@@ -536,7 +536,7 @@ describe('AIService', () => {
 
     it('should call AI when template is stale and auto-save result', async () => {
       // Template found but stale → should call AI
-      templateService.findTemplate!.mockResolvedValue({
+      (templateService.findTemplate as jest.Mock).mockResolvedValue({
         days: [],
         templateId: 'tmpl-stale',
         generatedAt: new Date('2024-01-01'),
@@ -557,7 +557,7 @@ describe('AIService', () => {
     }, 15000);
 
     it('should fall back to AI when template lookup fails', async () => {
-      templateService.findTemplate!.mockRejectedValue(new Error('DB down'));
+      (templateService.findTemplate as jest.Mock).mockRejectedValue(new Error('DB down'));
       cacheManager.get.mockResolvedValue(null);
       openaiCreate.mockResolvedValue({
         choices: [{ message: { content: mockFullTripResponse(2) } }],

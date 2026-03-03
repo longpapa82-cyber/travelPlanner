@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
@@ -374,7 +374,10 @@ export class AdminService {
   }
 
   async resolveErrorLog(id: string) {
-    await this.errorLogRepository.update(id, { isResolved: true });
+    const result = await this.errorLogRepository.update(id, { isResolved: true });
+    if (result.affected === 0) {
+      throw new NotFoundException(`Error log ${id} not found`);
+    }
     return { success: true };
   }
 }
