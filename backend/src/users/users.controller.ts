@@ -11,6 +11,7 @@ import {
   UseGuards,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import type { Response } from 'express';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -46,6 +47,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 3 } })
   @Post('me/password')
   async changePassword(
     @CurrentUser('userId') userId: string,
@@ -71,6 +73,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 3 } })
   @Post('me/export')
   async exportData(
     @CurrentUser('userId') userId: string,
@@ -86,6 +89,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 2 } })
   @Post('me/delete')
   async deleteAccount(
     @CurrentUser('userId') userId: string,

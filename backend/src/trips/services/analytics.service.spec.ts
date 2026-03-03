@@ -5,6 +5,7 @@ import { Trip, TripStatus } from '../entities/trip.entity';
 
 describe('AnalyticsService', () => {
   let service: AnalyticsService;
+  let tripRepository: any;
 
   const mockRepository = {
     find: jest.fn(),

@@ -23,6 +23,14 @@ declare module '@expo/vector-icons' {
   export const MaterialIcons: ComponentType<IconProps>;
 }
 
+declare module 'expo-file-system' {
+  export const documentDirectory: string | null;
+  export const cacheDirectory: string | null;
+  export function writeAsStringAsync(fileUri: string, contents: string, options?: Record<string, any>): Promise<void>;
+  export function readAsStringAsync(fileUri: string, options?: Record<string, any>): Promise<string>;
+  export function deleteAsync(fileUri: string, options?: { idempotent?: boolean }): Promise<void>;
+}
+
 declare module 'expo-constants' {
   interface ExpoConfig {
     extra?: Record<string, any>;

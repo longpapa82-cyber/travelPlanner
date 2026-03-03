@@ -439,7 +439,7 @@ describe('AuthController (Integration)', () => {
         isEmailVerified: false,
         isTwoFactorEnabled: false,
         subscriptionTier: SubscriptionTier.FREE,
-        subscriptionExpiresAt: null as Date | null,
+        subscriptionExpiresAt: undefined,
         aiTripsUsedThisMonth: 0,
         lastPlatform: null as string | null,
         createdAt: new Date(),

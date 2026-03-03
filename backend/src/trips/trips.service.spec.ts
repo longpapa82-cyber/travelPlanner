@@ -522,8 +522,8 @@ describe('TripsService', () => {
       tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(false);
 
       await service.findAll(mockUserId, {
-        sortBy: 'destination',
-        order: 'ASC',
+        sortBy: SortBy.DESTINATION,
+        order: SortOrder.ASC,
       });
 
       expect(queryBuilder.orderBy).toHaveBeenCalledWith(

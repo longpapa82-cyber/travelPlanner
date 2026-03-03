@@ -220,7 +220,7 @@ export class ErrorLogController {
       severity: dto.severity,
       deviceOS: dto.deviceOS,
       appVersion: dto.appVersion,
-      userId: req.user?.id,
+      userId: req.user?.userId,
       userEmail: req.user?.email,
       platform: detectPlatform(ua),
       userAgent: ua?.slice(0, 1000),

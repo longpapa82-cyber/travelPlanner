@@ -50,7 +50,7 @@ const ErrorLogScreen: React.FC<Props> = () => {
         resolved: unresolvedOnly ? false : undefined,
         platform: platformFilter || undefined,
       });
-      setLogs(reset ? data.logs : [...logs, ...data.logs]);
+      setLogs(prev => reset ? data.logs : [...prev, ...data.logs]);
       setTotalPages(data.totalPages);
       setPage(p);
     } catch { /* ignore */ } finally {

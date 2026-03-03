@@ -151,7 +151,7 @@ describe('EmailService', () => {
     });
 
     it('should not throw in dev mode when mailer fails', async () => {
-      mailerService.sendMail!.mockRejectedValue(
+      (mailerService.sendMail as jest.Mock).mockRejectedValue(
         new Error('SMTP connection refused'),
       );
 
@@ -180,7 +180,7 @@ describe('EmailService', () => {
       }).compile();
 
       const prodService = module.get<EmailService>(EmailService);
-      mailerService.sendMail!.mockRejectedValue(new Error('SMTP Error'));
+      (mailerService.sendMail as jest.Mock).mockRejectedValue(new Error('SMTP Error'));
 
       await expect(
         prodService.sendVerificationEmail(
@@ -261,7 +261,7 @@ describe('EmailService', () => {
     });
 
     it('should not throw in dev mode when mailer fails', async () => {
-      mailerService.sendMail!.mockRejectedValue(new Error('SMTP Error'));
+      (mailerService.sendMail as jest.Mock).mockRejectedValue(new Error('SMTP Error'));
 
       await expect(
         service.sendPasswordResetEmail('user@example.com', 'User', 'token'),
@@ -286,7 +286,7 @@ describe('EmailService', () => {
       }).compile();
 
       const prodService = module.get<EmailService>(EmailService);
-      mailerService.sendMail!.mockRejectedValue(
+      (mailerService.sendMail as jest.Mock).mockRejectedValue(
         new Error('Connection timeout'),
       );
 

@@ -46,7 +46,7 @@ const UserManagementScreen: React.FC<Props> = () => {
       const data = await apiService.getAdminUsers({
         page: p, limit: 20, search: search || undefined, provider: provider || undefined,
       });
-      setUsers(reset ? data.users : [...users, ...data.users]);
+      setUsers(prev => reset ? data.users : [...prev, ...data.users]);
       setTotalPages(data.totalPages);
       setPage(p);
     } catch { /* ignore */ } finally {

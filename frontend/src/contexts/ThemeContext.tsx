@@ -154,6 +154,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
           background: darkColors.background.primary as typeof lightTheme.colors.background,
           surface: darkColors.background.secondary as typeof lightTheme.colors.surface,
+          card: darkColors.background.secondary as typeof lightTheme.colors.card,
           text: darkColors.text.primary as typeof lightTheme.colors.text,
           textSecondary: darkColors.text.secondary as typeof lightTheme.colors.textSecondary,
           textTertiary: darkColors.text.tertiary as typeof lightTheme.colors.textTertiary,

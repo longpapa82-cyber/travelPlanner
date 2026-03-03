@@ -200,7 +200,7 @@ describe('TimezoneService', () => {
 
   describe('geocodeActivities', () => {
     it('should delegate to GeocodingService when available', async () => {
-      geocodingService.geocodeBatch!.mockResolvedValue([
+      (geocodingService.geocodeBatch as jest.Mock).mockResolvedValue([
         { latitude: 35.71, longitude: 139.79, source: 'locationiq', confidence: 0.9 },
         { latitude: 35.66, longitude: 139.75, source: 'locationiq', confidence: 0.9 },
       ]);
@@ -220,7 +220,7 @@ describe('TimezoneService', () => {
     });
 
     it('should return zero coordinates when GeocodingService returns null', async () => {
-      geocodingService.geocodeBatch!.mockResolvedValue([null]);
+      (geocodingService.geocodeBatch as jest.Mock).mockResolvedValue([null]);
 
       const activities = [{ location: 'Unknown Spot' }];
       const result = await service.geocodeActivities(activities, 'Tokyo');
