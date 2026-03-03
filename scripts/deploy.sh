@@ -22,13 +22,13 @@ set -euo pipefail
 ###############################################################################
 
 # --- Server Target ---
-# Set DEPLOY_TARGET=hetzner to deploy to Hetzner CAX21 (8GB ARM)
-# Default: oci (current 1GB micro)
-DEPLOY_TARGET="${DEPLOY_TARGET:-oci}"
+# Default: hetzner (CAX21 8GB ARM, Helsinki)
+# Set DEPLOY_TARGET=oci to deploy to old OCI micro (1GB, Seoul) — kept as fallback
+DEPLOY_TARGET="${DEPLOY_TARGET:-hetzner}"
 
 # --- Configuration ---
 if [ "$DEPLOY_TARGET" = "hetzner" ]; then
-  OCI_HOST="${HETZNER_HOST:-root@HETZNER_IP_HERE}"
+  OCI_HOST="${HETZNER_HOST:-root@46.62.201.127}"
   OCI_KEY="$HOME/.ssh/travelplanner-oci"
   COMPOSE_CMD="docker compose -f docker-compose.yml -f docker-compose.hetzner.yml -f docker-compose.ssl-arm.yml"
 else
