@@ -94,6 +94,12 @@
     "server": "Erreur serveur. Veuillez réessayer plus tard.",
     "generic": "Quelque chose s'est mal passé. Veuillez réessayer."
   },
+  "gdpr": {
+    "message": "Ce site utilise des cookies pour diffuser des annonces personnalisées.",
+    "accept": "Accepter",
+    "reject": "Refuser",
+    "learnMore": "En savoir plus"
+  },
   "att": {
     "title": "Recevez des offres de voyage personnalisées",
     "description": "Autorisez le suivi pour recevoir des offres et recommandations de voyage adaptées à vos intérêts.",

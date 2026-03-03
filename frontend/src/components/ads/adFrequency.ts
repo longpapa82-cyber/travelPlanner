@@ -3,7 +3,7 @@
  *
  * Controls how often full-screen ads (interstitial, app-open, rewarded) are shown.
  * - Minimum 3-minute interval between any full-screen ad
- * - Maximum 5 full-screen ads per session
+ * - Maximum 3 full-screen ads per session
  * - Last-shown timestamp persisted in AsyncStorage across launches
  * - Session count is in-memory only (resets on app restart)
  */
@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = '@ad_last_fullscreen_shown';
 const MIN_INTERVAL_MS = 3 * 60 * 1000; // 3 minutes
-const MAX_SESSION_COUNT = 5;
+const MAX_SESSION_COUNT = 3;
 
 let sessionCount = 0;
 let lastShownTimestamp = 0;

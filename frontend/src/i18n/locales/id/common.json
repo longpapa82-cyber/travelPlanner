@@ -94,6 +94,12 @@
     "server": "Kesalahan server. Silakan coba lagi nanti.",
     "generic": "Terjadi kesalahan. Silakan coba lagi."
   },
+  "gdpr": {
+    "message": "Situs web ini menggunakan cookie untuk menampilkan iklan yang dipersonalisasi.",
+    "accept": "Terima",
+    "reject": "Tolak",
+    "learnMore": "Pelajari lebih lanjut"
+  },
   "att": {
     "title": "Dapatkan penawaran perjalanan yang dipersonalisasi",
     "description": "Izinkan pelacakan untuk menerima penawaran dan promo perjalanan yang disesuaikan dengan minat Anda.",

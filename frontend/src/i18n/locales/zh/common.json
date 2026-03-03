@@ -94,6 +94,12 @@
     "server": "服务器错误，请稍后再试。",
     "generic": "出了点问题，请重试。"
   },
+  "gdpr": {
+    "message": "本网站使用Cookie来提供个性化广告。",
+    "accept": "接受",
+    "reject": "拒绝",
+    "learnMore": "了解更多"
+  },
   "att": {
     "title": "获取个性化旅行优惠",
     "description": "允许跟踪以接收根据您的兴趣定制的旅行优惠和推荐。",

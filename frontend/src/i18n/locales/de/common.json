@@ -94,6 +94,12 @@
     "server": "Serverfehler. Bitte versuche es später erneut.",
     "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
   },
+  "gdpr": {
+    "message": "Diese Website verwendet Cookies, um personalisierte Werbung anzuzeigen.",
+    "accept": "Akzeptieren",
+    "reject": "Ablehnen",
+    "learnMore": "Mehr erfahren"
+  },
   "att": {
     "title": "Personalisierte Reiseangebote erhalten",
     "description": "Erlaube Tracking, um Reiseangebote und Empfehlungen zu erhalten, die auf deine Interessen zugeschnitten sind.",

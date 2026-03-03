@@ -26,6 +26,7 @@ import { initializeAds } from './src/utils/initAds';
 import PaywallModal from './src/components/PaywallModal';
 import { TutorialProvider } from './src/contexts/TutorialContext';
 import WelcomeModal from './src/components/tutorial/WelcomeModal';
+import GDPRConsentBanner from './src/components/GDPRConsentBanner';
 import apiService from './src/services/api';
 
 // Initialize Sentry before app renders
@@ -222,6 +223,7 @@ const AppContent = () => {
       <OfflineBanner />
       <RootNavigator />
       <PWAInstallPrompt />
+      <GDPRConsentBanner />
       <StatusBar style={isDark ? 'light' : 'dark'} />
     </>
   );

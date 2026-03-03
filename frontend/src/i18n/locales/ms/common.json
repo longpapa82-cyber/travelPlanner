@@ -94,6 +94,12 @@
     "server": "Ralat pelayan. Cuba lagi kemudian.",
     "generic": "Sesuatu tidak kena. Sila cuba semula."
   },
+  "gdpr": {
+    "message": "Laman web ini menggunakan kuki untuk memaparkan iklan yang diperibadikan.",
+    "accept": "Terima",
+    "reject": "Tolak",
+    "learnMore": "Ketahui lebih lanjut"
+  },
   "att": {
     "title": "Dapatkan tawaran perjalanan peribadi",
     "description": "Benarkan penjejakan untuk menerima tawaran perjalanan yang disesuaikan dengan minat anda.",

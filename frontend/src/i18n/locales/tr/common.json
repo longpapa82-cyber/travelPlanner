@@ -94,6 +94,12 @@
     "server": "Sunucu hatası. Daha sonra tekrar deneyin.",
     "generic": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
   },
+  "gdpr": {
+    "message": "Bu web sitesi kişiselleştirilmiş reklamlar sunmak için çerezleri kullanmaktadır.",
+    "accept": "Kabul Et",
+    "reject": "Reddet",
+    "learnMore": "Daha fazla bilgi"
+  },
   "att": {
     "title": "Kişiselleştirilmiş seyahat fırsatları alın",
     "description": "İlgi alanlarınıza göre seyahat fırsatları almak için izlemeye izin verin.",
