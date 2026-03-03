@@ -155,6 +155,7 @@ export class AdminController {
 // Public announcement endpoints (JWT only, no admin check)
 @Controller('announcements')
 @UseGuards(JwtAuthGuard)
+@Throttle({ short: { ttl: 60000, limit: 30 } })
 export class AnnouncementsPublicController {
   constructor(private readonly announcementService: AnnouncementService) {}
 
@@ -169,6 +170,15 @@ export class AnnouncementsPublicController {
   @Get('unread-count')
   getUnreadCount(@CurrentUser('userId') userId: string) {
     return this.announcementService.getUnreadCount(userId).then(count => ({ count }));
+  }
+
+  @Get(':id')
+  getAnnouncementDetail(
+    @CurrentUser('userId') userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    return this.announcementService.getOneForUser(userId, id, parseLang(acceptLanguage));
   }
 
   @Patch(':id/read')

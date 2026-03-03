@@ -2,10 +2,9 @@
  * AdMob SDK Initialization (Native only)
  *
  * 1. Requests Google UMP consent (GDPR) before ad initialization
- * 2. Requests ATT permission on iOS 14+ so Google respects tracking preference
+ * 2. ATT is deferred to useTrackingTransparency + PrePermissionATTModal (session >= 3)
  * 3. Initializes AdMob SDK with appropriate content rating
  */
-import { Platform } from 'react-native';
 import mobileAds, {
   AdsConsent,
   AdsConsentStatus,
@@ -31,17 +30,9 @@ export async function initializeAds(): Promise<void> {
       // UMP not configured in AdMob console yet — proceed without consent form
     }
 
-    // 2. Request ATT before SDK init so Google respects the choice (iOS only)
-    if (Platform.OS === 'ios') {
-      try {
-        const { requestTrackingPermissionsAsync } = await import(
-          'expo-tracking-transparency'
-        );
-        await requestTrackingPermissionsAsync();
-      } catch {
-        // ATT not available (older iOS or simulator) — proceed anyway
-      }
-    }
+    // 2. ATT is handled by useTrackingTransparency + PrePermissionATTModal
+    //    (deferred until session >= 3). Do NOT request here to avoid
+    //    conflicting with the deferred pattern and hurting opt-in rates.
 
     // 3. Configure and initialize AdMob
     await mobileAds().setRequestConfiguration({

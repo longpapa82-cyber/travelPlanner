@@ -4,10 +4,10 @@
   "subtitle": "Planifiez vos voyages avec l'IA",
   "description": "Planifiez votre voyage parfait avec MyTravel !\n\nL'IA crée des itinéraires personnalisés selon vos préférences. Entrez simplement votre destination, vos dates et votre budget pour obtenir un plan de voyage optimisé instantanément.\n\nFonctionnalités principales :\n- Génération automatique d'itinéraires par IA\n- Mode de planification manuelle\n- Météo en temps réel et fuseaux horaires\n- Gestion des dépenses avec partage des frais\n- Mode hors ligne\n- Galerie photos de voyage\n- Fonctions sociales : partager des voyages, suivre des voyageurs, aimer\n- Mode sombre\n- Disponible en 17 langues\n\nCommencez votre voyage intelligent avec MyTravel.",
   "keywords": "voyage,itinéraire,planificateur,IA,vacances,tourisme,budget,explorer,route,agenda",
-  "releaseNotes": "v1.0 Lancement officiel\n- Génération d'itinéraires par IA\n- 17 langues (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Fonctions sociales (partage de voyages, suivi)\n- Abonnement premium",
+  "releaseNotes": "v1.0 Lancement officiel\n- Génération d'itinéraires par IA\n- 17 langues (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Fonctions sociales (partage de voyages, suivi)\n- Gestion des dépenses avec partage des frais",
   "category": "Travel",
   "ageRating": "4+",
   "privacyUrl": "https://mytravel-planner.com/privacy-en",
   "termsUrl": "https://mytravel-planner.com/terms-en",
-  "supportUrl": "https://mytravel-planner.com/help"
+  "supportUrl": "https://mytravel-planner.com/faq"
 }

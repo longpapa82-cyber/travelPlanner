@@ -227,7 +227,7 @@ export class SocialService {
       where: { userId, tripId },
     });
     if (!existing) {
-      throw new NotFoundException('Like not found');
+      return; // Idempotent — already not liked
     }
 
     await this.tripLikeRepository.remove(existing);
