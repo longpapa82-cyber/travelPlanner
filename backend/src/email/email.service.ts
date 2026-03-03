@@ -43,10 +43,8 @@ export class EmailService {
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
   ) {
-    this.frontendUrl = this.configService.get<string>(
-      'email.frontendUrl',
-      'http://localhost:8081',
-    );
+    this.frontendUrl = this.configService.get<string>('email.frontendUrl') ||
+      (process.env.NODE_ENV === 'production' ? 'https://mytravel-planner.com' : 'http://localhost:8081');
     this.isDev = this.configService.get<string>('NODE_ENV') !== 'production';
   }
 
