@@ -100,6 +100,10 @@
     "reject": "Reject",
     "learnMore": "Learn more"
   },
+  "announcement": {
+    "readMore": "Read more",
+    "viewAll": "View all"
+  },
   "att": {
     "title": "Get personalized travel deals",
     "description": "Allow tracking to receive travel deals and offers tailored to your interests.",

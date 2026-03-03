@@ -100,6 +100,10 @@
     "reject": "Rifiuta",
     "learnMore": "Scopri di più"
   },
+  "announcement": {
+    "readMore": "Leggi di più",
+    "viewAll": "Vedi tutto"
+  },
   "att": {
     "title": "Ricevi offerte di viaggio personalizzate",
     "description": "Consenti il tracciamento per ricevere offerte e promozioni di viaggio su misura per i tuoi interessi.",

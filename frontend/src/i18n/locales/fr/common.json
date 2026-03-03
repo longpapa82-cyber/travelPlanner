@@ -100,6 +100,10 @@
     "reject": "Refuser",
     "learnMore": "En savoir plus"
   },
+  "announcement": {
+    "readMore": "En savoir plus",
+    "viewAll": "Voir tout"
+  },
   "att": {
     "title": "Recevez des offres de voyage personnalisées",
     "description": "Autorisez le suivi pour recevoir des offres et recommandations de voyage adaptées à vos intérêts.",

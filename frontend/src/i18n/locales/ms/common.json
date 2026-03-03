@@ -100,6 +100,10 @@
     "reject": "Tolak",
     "learnMore": "Ketahui lebih lanjut"
   },
+  "announcement": {
+    "readMore": "Baca lagi",
+    "viewAll": "Lihat semua"
+  },
   "att": {
     "title": "Dapatkan tawaran perjalanan peribadi",
     "description": "Benarkan penjejakan untuk menerima tawaran perjalanan yang disesuaikan dengan minat anda.",

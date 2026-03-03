@@ -100,6 +100,10 @@
     "reject": "拒绝",
     "learnMore": "了解更多"
   },
+  "announcement": {
+    "readMore": "查看详情",
+    "viewAll": "查看全部"
+  },
   "att": {
     "title": "获取个性化旅行优惠",
     "description": "允许跟踪以接收根据您的兴趣定制的旅行优惠和推荐。",

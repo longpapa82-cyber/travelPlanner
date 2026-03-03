@@ -100,6 +100,10 @@
     "reject": "Tolak",
     "learnMore": "Pelajari lebih lanjut"
   },
+  "announcement": {
+    "readMore": "Baca selengkapnya",
+    "viewAll": "Lihat semua"
+  },
   "att": {
     "title": "Dapatkan penawaran perjalanan yang dipersonalisasi",
     "description": "Izinkan pelacakan untuk menerima penawaran dan promo perjalanan yang disesuaikan dengan minat Anda.",
