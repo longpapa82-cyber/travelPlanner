@@ -4,6 +4,7 @@ import {
   IsString,
   IsDateString,
   IsBoolean,
+  IsUrl,
   MaxLength,
   registerDecorator,
   ValidationOptions,
@@ -69,12 +70,12 @@ export class CreateAnnouncementDto {
   @IsOptional()
   displayType?: AnnouncementDisplayType;
 
-  @IsString()
+  @IsUrl({ protocols: ['https'], require_protocol: true }, { message: 'imageUrl must be a valid HTTPS URL' })
   @IsOptional()
   @MaxLength(500)
   imageUrl?: string;
 
-  @IsString()
+  @IsUrl({ protocols: ['https', 'http'], require_protocol: true }, { message: 'actionUrl must be a valid HTTP/HTTPS URL' })
   @IsOptional()
   @MaxLength(500)
   actionUrl?: string;

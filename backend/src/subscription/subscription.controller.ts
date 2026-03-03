@@ -32,15 +32,15 @@ export class SubscriptionController {
 
   @Get('status')
   @UseGuards(JwtAuthGuard)
-  async getStatus(@CurrentUser() user: { id: string }) {
-    return this.subscriptionService.getSubscriptionStatus(user.id);
+  async getStatus(@CurrentUser('userId') userId: string) {
+    return this.subscriptionService.getSubscriptionStatus(userId);
   }
 
   @Post('restore')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async restore(@CurrentUser() user: { id: string }) {
-    return this.subscriptionService.restoreSubscription(user.id);
+  async restore(@CurrentUser('userId') userId: string) {
+    return this.subscriptionService.restoreSubscription(userId);
   }
 
   @Post('webhook')
@@ -77,11 +77,11 @@ export class SubscriptionController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async createStripeCheckout(
-    @CurrentUser() user: { id: string },
+    @CurrentUser('userId') userId: string,
     @Body() dto: CreateCheckoutDto,
   ) {
     return this.subscriptionService.createStripeCheckoutSession(
-      user.id,
+      userId,
       dto.plan,
     );
   }
@@ -89,8 +89,8 @@ export class SubscriptionController {
   @Post('stripe/portal')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async createStripePortal(@CurrentUser() user: { id: string }) {
-    return this.subscriptionService.createStripePortalSession(user.id);
+  async createStripePortal(@CurrentUser('userId') userId: string) {
+    return this.subscriptionService.createStripePortalSession(userId);
   }
 
   @Post('stripe/webhook')

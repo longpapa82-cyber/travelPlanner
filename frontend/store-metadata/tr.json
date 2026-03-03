@@ -4,10 +4,10 @@
   "subtitle": "Yapay zeka ile akıllı seyahat planlama",
   "description": "MyTravel ile mükemmel seyahatinizi planlayın!\n\nYapay zeka tercihlerinize göre kişiselleştirilmiş seyahat programları oluşturur. Sadece varış noktanızı, tarihlerinizi ve bütçenizi girin — anında optimize edilmiş bir seyahat planı alın.\n\nTemel özellikler:\n- AI ile otomatik seyahat programı oluşturma\n- Manuel planlama modu\n- Gerçek zamanlı hava durumu ve saat dilimleri\n- Masraf yönetimi ve hesap bölme\n- Çevrimdışı mod\n- Seyahat fotoğraf galerisi\n- Sosyal özellikler: seyahatleri paylaş, gezginleri takip et, beğen\n- Karanlık mod\n- 17 dilde kullanılabilir\n\nAkıllı seyahatinize MyTravel ile başlayın.",
   "keywords": "seyahat,program,planlayıcı,AI,tatil,turizm,bütçe,keşfet,rota,gezi",
-  "releaseNotes": "v1.0 Resmi lansman\n- AI ile seyahat programı oluşturma\n- 17 dil (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Sosyal özellikler (seyahat paylaşımı, takip)\n- Premium abonelik",
+  "releaseNotes": "v1.0 Resmi lansman\n- AI ile seyahat programı oluşturma\n- 17 dil (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Sosyal özellikler (seyahat paylaşımı, takip)\n- Masraf yönetimi ve hesap bölme",
   "category": "Travel",
   "ageRating": "4+",
   "privacyUrl": "https://mytravel-planner.com/privacy-en",
   "termsUrl": "https://mytravel-planner.com/terms-en",
-  "supportUrl": "https://mytravel-planner.com/help"
+  "supportUrl": "https://mytravel-planner.com/faq"
 }

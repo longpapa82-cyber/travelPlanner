@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -39,9 +39,7 @@ const AnnouncementDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   const loadAnnouncement = async () => {
     try {
       setIsLoading(true);
-      const announcements = await apiService.getAnnouncements();
-      const found = (Array.isArray(announcements) ? announcements : [])
-        .find((a: Announcement) => a.id === announcementId);
+      const found = await apiService.getAnnouncementDetail(announcementId);
       setAnnouncement(found || null);
 
       // Mark as read
@@ -65,8 +63,9 @@ const AnnouncementDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const handleAction = () => {
-    if (announcement?.actionUrl) {
-      Linking.openURL(announcement.actionUrl).catch(() => {});
+    const url = announcement?.actionUrl;
+    if (url && /^https?:\/\//i.test(url)) {
+      Linking.openURL(url).catch(() => {});
     }
   };
 

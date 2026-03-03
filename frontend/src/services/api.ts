@@ -810,6 +810,11 @@ class ApiService {
     return response.data;
   }
 
+  async getAnnouncementDetail(id: string) {
+    const response = await this.api.get(`/announcements/${id}`);
+    return response.data;
+  }
+
   async getAnnouncementUnreadCount(): Promise<{ count: number }> {
     const response = await this.api.get('/announcements/unread-count');
     return response.data;

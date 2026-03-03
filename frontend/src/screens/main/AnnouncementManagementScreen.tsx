@@ -44,7 +44,7 @@ const AnnouncementManagementScreen: React.FC<Props> = ({ navigation }) => {
     try {
       setIsLoading(true);
       const data = await apiService.getAdminAnnouncements({ page: p, limit: 20 });
-      setAnnouncements(p === 1 ? data.items : [...announcements, ...data.items]);
+      setAnnouncements(prev => p === 1 ? data.items : [...prev, ...data.items]);
       setTotalPages(data.totalPages);
       setPage(p);
     } catch {

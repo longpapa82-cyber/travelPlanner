@@ -141,6 +141,38 @@ export class AnnouncementService {
     }));
   }
 
+  async getOneForUser(
+    userId: string,
+    announcementId: string,
+    lang = 'en',
+  ) {
+    const a = await this.findActiveAnnouncement(announcementId);
+
+    const readRecord = await this.readRepo.findOne({
+      where: { userId, announcementId },
+      select: ['readAt', 'dismissedAt'],
+    });
+
+    return {
+      id: a.id,
+      type: a.type,
+      title: a.title[lang] || a.title['en'] || Object.values(a.title)[0] || '',
+      content: a.content[lang] || a.content['en'] || Object.values(a.content)[0] || '',
+      priority: a.priority,
+      displayType: a.displayType,
+      imageUrl: a.imageUrl,
+      actionUrl: a.actionUrl,
+      actionLabel: a.actionLabel
+        ? (a.actionLabel[lang] || a.actionLabel['en'] || Object.values(a.actionLabel)[0] || null)
+        : null,
+      startDate: a.startDate,
+      endDate: a.endDate,
+      isRead: !!readRecord?.readAt,
+      isDismissed: !!readRecord?.dismissedAt,
+      createdAt: a.createdAt,
+    };
+  }
+
   async getUnreadCount(userId: string): Promise<number> {
     const now = new Date();
     const userTier = await this.getUserTier(userId);

@@ -4,10 +4,10 @@
   "subtitle": "KI-gestützte Reiseplanung leicht gemacht",
   "description": "Planen Sie Ihre perfekte Reise mit MyTravel!\n\nKI erstellt personalisierte Reiserouten nach Ihren Vorlieben. Geben Sie einfach Ihr Reiseziel, Daten und Budget ein — und erhalten Sie sofort einen optimierten Reiseplan.\n\nHauptfunktionen:\n- KI-gestützte Reiseroutenplanung\n- Manueller Planungsmodus\n- Echtzeit-Wetterinfo & Zeitzonen\n- Reisekostenverwaltung mit Kostenaufteilung\n- Offline-Modus\n- Reise-Fotogalerie\n- Soziale Funktionen: Reisen teilen, Reisenden folgen, Likes\n- Dunkelmodus\n- Verfügbar in 17 Sprachen\n\nStarten Sie Ihre smarte Reise mit MyTravel.",
   "keywords": "Reise,Reiseplan,Planer,KI,Urlaub,Reiseplanung,Route,Budget,Entdecken,Zeitplan",
-  "releaseNotes": "v1.0 Offizieller Start\n- KI-Reiseroutengenerierung\n- 17 Sprachen (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Soziale Funktionen (Reisen teilen, Folgen)\n- Premium-Abonnement",
+  "releaseNotes": "v1.0 Offizieller Start\n- KI-Reiseroutengenerierung\n- 17 Sprachen (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- Soziale Funktionen (Reisen teilen, Folgen)\n- Reisekostenverwaltung mit Kostenaufteilung",
   "category": "Travel",
   "ageRating": "4+",
   "privacyUrl": "https://mytravel-planner.com/privacy-en",
   "termsUrl": "https://mytravel-planner.com/terms-en",
-  "supportUrl": "https://mytravel-planner.com/help"
+  "supportUrl": "https://mytravel-planner.com/faq"
 }
