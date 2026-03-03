@@ -30,6 +30,8 @@ interface CoachMarkProps {
 
 const SPOT_PADDING = 8;
 const SPOT_RADIUS = 16;
+const WEB_MAX_WIDTH = 600;
+const WEB_DESKTOP_BREAKPOINT = 768;
 
 const CoachMark: React.FC<CoachMarkProps> = ({
   visible,
@@ -59,12 +61,25 @@ const CoachMark: React.FC<CoachMarkProps> = ({
 
   const { x, y, width, height } = targetLayout;
 
-  const spotX = x - SPOT_PADDING;
+  // On web desktop, content is centered in a 600px wrapper.
+  // measureInWindow() returns viewport coords, but the tooltip should
+  // be constrained within the centered container for proper alignment.
+  const isWebDesktop = Platform.OS === 'web' && screenWidth >= WEB_DESKTOP_BREAKPOINT;
+  const containerOffset = isWebDesktop ? Math.max((screenWidth - WEB_MAX_WIDTH) / 2, 0) : 0;
+  const containerRight = isWebDesktop ? containerOffset + WEB_MAX_WIDTH : screenWidth;
+
+  // Clamp spotlight within the visible container
+  const clampedX = isWebDesktop ? Math.max(x, containerOffset) : x;
+  const clampedW = isWebDesktop ? Math.min(width, containerRight - clampedX) : width;
+
+  const spotX = clampedX - SPOT_PADDING;
   const spotY = y - SPOT_PADDING;
-  const spotW = width + SPOT_PADDING * 2;
+  const spotW = clampedW + SPOT_PADDING * 2;
   const spotH = height + SPOT_PADDING * 2;
 
-  const tooltipStyle: any = { left: 16, right: 16 };
+  const tooltipLeft = isWebDesktop ? containerOffset + 16 : 16;
+  const tooltipRight = isWebDesktop ? screenWidth - containerRight + 16 : 16;
+  const tooltipStyle: any = { left: tooltipLeft, right: tooltipRight };
   if (position === 'below') {
     tooltipStyle.top = spotY + spotH + 16;
   } else {
@@ -73,8 +88,8 @@ const CoachMark: React.FC<CoachMarkProps> = ({
   }
 
   const arrowLeft = Math.min(
-    Math.max(x + width / 2 - 24, 24),
-    screenWidth - 40,
+    Math.max(clampedX + clampedW / 2 - tooltipLeft - 24, 8),
+    (isWebDesktop ? WEB_MAX_WIDTH : screenWidth) - 56,
   );
 
   return (
