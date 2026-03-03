@@ -100,6 +100,10 @@
     "reject": "거절",
     "learnMore": "자세히 보기"
   },
+  "announcement": {
+    "readMore": "자세히 보기",
+    "viewAll": "모두 보기"
+  },
   "att": {
     "title": "맞춤형 여행 특가를 받아보세요",
     "description": "회원님께 딱 맞는 여행 특가와 할인 정보를 제공하기 위해 활동 추적 권한이 필요합니다.",

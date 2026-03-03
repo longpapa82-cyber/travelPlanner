@@ -100,6 +100,10 @@
     "reject": "Rejeitar",
     "learnMore": "Saiba mais"
   },
+  "announcement": {
+    "readMore": "Ler mais",
+    "viewAll": "Ver tudo"
+  },
   "att": {
     "title": "Receba ofertas de viagem personalizadas",
     "description": "Permita o rastreamento para receber ofertas e promoções de viagem adaptadas aos seus interesses.",

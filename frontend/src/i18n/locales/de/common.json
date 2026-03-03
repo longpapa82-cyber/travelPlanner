@@ -100,6 +100,10 @@
     "reject": "Ablehnen",
     "learnMore": "Mehr erfahren"
   },
+  "announcement": {
+    "readMore": "Mehr lesen",
+    "viewAll": "Alle anzeigen"
+  },
   "att": {
     "title": "Personalisierte Reiseangebote erhalten",
     "description": "Erlaube Tracking, um Reiseangebote und Empfehlungen zu erhalten, die auf deine Interessen zugeschnitten sind.",

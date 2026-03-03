@@ -100,6 +100,10 @@
     "reject": "Từ chối",
     "learnMore": "Tìm hiểu thêm"
   },
+  "announcement": {
+    "readMore": "Xem thêm",
+    "viewAll": "Xem tất cả"
+  },
   "att": {
     "title": "Nhận ưu đãi du lịch cá nhân hóa",
     "description": "Cho phép theo dõi để nhận ưu đãi và gợi ý du lịch phù hợp với sở thích của bạn.",

@@ -100,6 +100,10 @@
     "reject": "Reddet",
     "learnMore": "Daha fazla bilgi"
   },
+  "announcement": {
+    "readMore": "Devamını oku",
+    "viewAll": "Tümünü gör"
+  },
   "att": {
     "title": "Kişiselleştirilmiş seyahat fırsatları alın",
     "description": "İlgi alanlarınıza göre seyahat fırsatları almak için izlemeye izin verin.",
