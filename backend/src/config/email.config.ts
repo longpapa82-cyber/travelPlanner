@@ -7,5 +7,6 @@ export default registerAs('email', () => ({
   user: process.env.SMTP_USER || '',
   pass: process.env.SMTP_PASS || '',
   from: process.env.SMTP_FROM || 'noreply@travelplanner.com',
-  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:8081',
+  frontendUrl: process.env.FRONTEND_URL ||
+    (process.env.NODE_ENV === 'production' ? 'https://mytravel-planner.com' : 'http://localhost:8081'),
 }));
