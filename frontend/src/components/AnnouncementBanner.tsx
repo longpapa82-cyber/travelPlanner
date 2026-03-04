@@ -24,6 +24,9 @@ const TYPE_CONFIG: Record<string, { icon: string; gradient: [string, string] }> 
   promotional: { icon: 'gift-outline', gradient: ['#F59E0B', '#FBBF24'] },
 };
 
+const WEB_MAX_WIDTH = 600;
+const WEB_DESKTOP_BREAKPOINT = 768;
+
 const AnnouncementBanner: React.FC = () => {
   const { t } = useTranslation('common');
   const { theme } = useTheme();
@@ -35,7 +38,10 @@ const AnnouncementBanner: React.FC = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList>(null);
 
-  const cardWidth = screenWidth - 32; // 16px margin each side
+  // On web desktop, constrain card width to max-width container
+  const isWebDesktop = Platform.OS === 'web' && screenWidth >= WEB_DESKTOP_BREAKPOINT;
+  const effectiveWidth = isWebDesktop ? Math.min(screenWidth, WEB_MAX_WIDTH) : screenWidth;
+  const cardWidth = effectiveWidth - 32; // 16px margin each side
 
   useEffect(() => {
     fetchAnnouncements();

@@ -39,6 +39,7 @@ async function bootstrap() {
             'https://adservice.google.com',
             'https://www.googletagservices.com',
             'https://googleads.g.doubleclick.net',
+            'https://static.cloudflareinsights.com',
           ],
           styleSrc: [
             "'self'",
@@ -60,6 +61,7 @@ async function bootstrap() {
             'https://*.adtrafficquality.google.com',
             'https://*.google.com',
             'https://api.stripe.com',
+            'https://csi.gstatic.com',
           ],
           frameSrc: [
             "'self'",
