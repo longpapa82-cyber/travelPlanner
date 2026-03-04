@@ -44,13 +44,13 @@ import { FadeIn } from '../../components/animation/FadeIn';
 import { SlideIn } from '../../components/animation/SlideIn';
 import { Shimmer } from '../../components/animation/Shimmer';
 import PopularDestinations from '../../components/PopularDestinations';
-import EmailVerificationBanner from '../../components/feedback/EmailVerificationBanner';
 import AnnouncementBanner from '../../components/AnnouncementBanner';
 import apiService from '../../services/api';
 import { AdBanner } from '../../components/ads';
 import { getDestinationImageUrl, getHeroImageUrl } from '../../utils/images';
 import { useTutorial } from '../../contexts/TutorialContext';
 import CoachMark from '../../components/tutorial/CoachMark';
+import WelcomeModal from '../../components/tutorial/WelcomeModal';
 
 type HomeScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<MainTabParamList, 'Home'>,
@@ -521,7 +521,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       {/* Bottom Spacing */}
       <View style={{ height: 40 }} />
 
-      {/* Tutorial CoachMark */}
+      {/* Tutorial: Welcome Modal + CoachMark */}
+      <WelcomeModal />
       <CoachMark
         visible={showCoachMark && isFocused}
         targetLayout={createTripLayout}
