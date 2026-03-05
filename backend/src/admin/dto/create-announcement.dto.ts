@@ -1,7 +1,6 @@
 import {
   IsEnum,
   IsOptional,
-  IsString,
   IsDateString,
   IsBoolean,
   IsUrl,
@@ -21,7 +20,10 @@ import {
  * Custom validator for i18n Record<string, string> JSONB fields.
  * Validates: object type, max 20 language keys, key length <=10, value is string with max length.
  */
-function IsI18nRecord(maxValueLength: number, validationOptions?: ValidationOptions) {
+function IsI18nRecord(
+  maxValueLength: number,
+  validationOptions?: ValidationOptions,
+) {
   return function (object: object, propertyName: string) {
     registerDecorator({
       name: 'isI18nRecord',
@@ -30,7 +32,12 @@ function IsI18nRecord(maxValueLength: number, validationOptions?: ValidationOpti
       options: validationOptions,
       validator: {
         validate(value: any) {
-          if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
+          if (
+            typeof value !== 'object' ||
+            value === null ||
+            Array.isArray(value)
+          )
+            return false;
           const keys = Object.keys(value);
           if (keys.length === 0 || keys.length > 20) return false;
           return keys.every((key) => {
@@ -70,12 +77,18 @@ export class CreateAnnouncementDto {
   @IsOptional()
   displayType?: AnnouncementDisplayType;
 
-  @IsUrl({ protocols: ['https'], require_protocol: true }, { message: 'imageUrl must be a valid HTTPS URL' })
+  @IsUrl(
+    { protocols: ['https'], require_protocol: true },
+    { message: 'imageUrl must be a valid HTTPS URL' },
+  )
   @IsOptional()
   @MaxLength(500)
   imageUrl?: string;
 
-  @IsUrl({ protocols: ['https', 'http'], require_protocol: true }, { message: 'actionUrl must be a valid HTTP/HTTPS URL' })
+  @IsUrl(
+    { protocols: ['https', 'http'], require_protocol: true },
+    { message: 'actionUrl must be a valid HTTP/HTTPS URL' },
+  )
   @IsOptional()
   @MaxLength(500)
   actionUrl?: string;

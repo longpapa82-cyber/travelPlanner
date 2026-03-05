@@ -21,9 +21,9 @@ export function withTimeout<T>(
         clearTimeout(timer);
         resolve(result);
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         clearTimeout(timer);
-        reject(err);
+        reject(err instanceof Error ? err : new Error(String(err)));
       });
   });
 }
@@ -54,7 +54,7 @@ export async function withRetry<T>(
     }
   }
 
-  throw lastError;
+  throw lastError ?? new Error('All retries exhausted');
 }
 
 enum CircuitState {
@@ -92,7 +92,9 @@ export class CircuitBreaker {
     if (this.state === CircuitState.OPEN) {
       if (Date.now() - this.lastFailureTime >= this.resetTimeoutMs) {
         this.state = CircuitState.HALF_OPEN;
-        logger.log(`Circuit ${this.name}: HALF_OPEN — testing with probe request`);
+        logger.log(
+          `Circuit ${this.name}: HALF_OPEN — testing with probe request`,
+        );
       } else {
         throw new Error(
           `Circuit ${this.name} is OPEN — fast-fail (resets in ${Math.ceil((this.resetTimeoutMs - (Date.now() - this.lastFailureTime)) / 1000)}s)`,

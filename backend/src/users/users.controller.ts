@@ -3,7 +3,6 @@ import {
   Get,
   Patch,
   Post,
-  Delete,
   Param,
   Body,
   Headers,
@@ -21,10 +20,15 @@ import { DeleteAccountDto } from './dto/delete-account.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateTravelPreferencesDto } from './dto/update-travel-preferences.dto';
 import { t, parseLang } from '../common/i18n';
+import { AuditService } from '../admin/audit.service';
+import { AuditAction } from '../admin/entities/audit-log.entity';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly auditService: AuditService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
@@ -55,12 +59,16 @@ export class UsersController {
     @Headers('accept-language') acceptLanguage?: string,
   ) {
     const lang = parseLang(acceptLanguage);
-    return this.usersService.changePassword(
+    const result = await this.usersService.changePassword(
       userId,
       dto.currentPassword,
       dto.newPassword,
       lang,
     );
+    this.auditService
+      .log({ userId, action: AuditAction.PASSWORD_CHANGE })
+      .catch(() => {});
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -80,6 +88,9 @@ export class UsersController {
     @Res() res: Response,
   ) {
     const data = await this.usersService.exportUserData(userId);
+    this.auditService
+      .log({ userId, action: AuditAction.DATA_EXPORT })
+      .catch(() => {});
     res.setHeader('Content-Type', 'application/json');
     res.setHeader(
       'Content-Disposition',
@@ -96,6 +107,9 @@ export class UsersController {
     @Body() dto: DeleteAccountDto,
     @Headers('accept-language') acceptLanguage?: string,
   ) {
+    this.auditService
+      .log({ userId, action: AuditAction.ACCOUNT_DELETE })
+      .catch(() => {});
     await this.usersService.remove(userId, dto.password);
     return { message: t('account.deleted', parseLang(acceptLanguage)) };
   }

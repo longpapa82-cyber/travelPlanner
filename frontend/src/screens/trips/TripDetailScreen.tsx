@@ -204,6 +204,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         URL.revokeObjectURL(url);
       } else {
         const { shareAsync } = await import('expo-sharing');
+        // eslint-disable-next-line import/no-unresolved
         const { writeAsStringAsync, cacheDirectory } = await import('expo-file-system');
         const fileUri = `${cacheDirectory}${filename}`;
         await writeAsStringAsync(fileUri, data);

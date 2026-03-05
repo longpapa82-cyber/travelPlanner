@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   Res,
-  Sse,
   HttpCode,
   HttpStatus,
   Query,
@@ -26,7 +25,7 @@ import { extname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { randomBytes } from 'crypto';
 import { Throttle } from '@nestjs/throttler';
-import { Subject, Observable, map, finalize } from 'rxjs';
+import { Subject } from 'rxjs';
 import { TripsService, TripCreationProgress } from './trips.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
@@ -36,7 +35,6 @@ import { UpdateActivityDto } from './dto/update-activity.dto';
 import { ReorderActivitiesDto } from './dto/reorder-activities.dto';
 import { AddCollaboratorDto } from './dto/add-collaborator.dto';
 import { UpdateCollaboratorRoleDto } from './dto/update-collaborator-role.dto';
-import { CollaboratorRole } from './entities/collaborator.entity';
 import { QueryTripsDto } from './dto/query-trips.dto';
 import { GenerateShareLinkDto } from './dto/generate-share-link.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -101,13 +99,17 @@ export class TripsController {
     this.tripsService
       .create(userId, createTripDto, language, progress$)
       .then((trip) => {
-        res.write(`data: ${JSON.stringify({ step: 'complete', tripId: trip.id })}\n\n`);
+        res.write(
+          `data: ${JSON.stringify({ step: 'complete', tripId: trip.id })}\n\n`,
+        );
         res.end();
       })
       .catch((error) => {
         const message = error.message || 'Trip creation failed';
         const status = error.status || 500;
-        res.write(`data: ${JSON.stringify({ step: 'error', message, status })}\n\n`);
+        res.write(
+          `data: ${JSON.stringify({ step: 'error', message, status })}\n\n`,
+        );
         res.end();
       })
       .finally(() => {
@@ -151,7 +153,10 @@ export class TripsController {
   }
 
   @Get(':id')
-  findOne(@CurrentUser('userId') userId: string, @Param('id', ParseUUIDPipe) id: string) {
+  findOne(
+    @CurrentUser('userId') userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
     return this.tripsService.findOne(userId, id);
   }
 
@@ -166,7 +171,10 @@ export class TripsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@CurrentUser('userId') userId: string, @Param('id', ParseUUIDPipe) id: string) {
+  remove(
+    @CurrentUser('userId') userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
     return this.tripsService.remove(userId, id);
   }
 
@@ -186,7 +194,10 @@ export class TripsController {
   }
 
   @Post(':id/duplicate')
-  duplicate(@CurrentUser('userId') userId: string, @Param('id', ParseUUIDPipe) id: string) {
+  duplicate(
+    @CurrentUser('userId') userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
     return this.tripsService.duplicate(userId, id);
   }
 
@@ -326,11 +337,7 @@ export class TripsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: GenerateShareLinkDto,
   ) {
-    return this.tripsService.generateShareToken(
-      id,
-      userId,
-      dto?.expiresInDays,
-    );
+    return this.tripsService.generateShareToken(id, userId, dto?.expiresInDays);
   }
 
   @Delete(':id/share')
@@ -367,7 +374,12 @@ export class TripsController {
     @Param('collabId', ParseUUIDPipe) collabId: string,
     @Body() dto: UpdateCollaboratorRoleDto,
   ) {
-    return this.tripsService.updateCollaboratorRole(id, userId, collabId, dto.role);
+    return this.tripsService.updateCollaboratorRole(
+      id,
+      userId,
+      collabId,
+      dto.role,
+    );
   }
 
   @Delete(':id/leave')
@@ -421,7 +433,9 @@ export class TripsController {
       throw new BadRequestException('No image file provided');
     }
     if (!validateImageMagicBytes(file.path)) {
-      throw new BadRequestException('Invalid image file: file signature does not match an allowed image format');
+      throw new BadRequestException(
+        'Invalid image file: file signature does not match an allowed image format',
+      );
     }
     const result = await this.imageService.processUpload(file.path, {
       maxWidth: 1200,

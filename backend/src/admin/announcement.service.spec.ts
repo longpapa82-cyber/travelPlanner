@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { AnnouncementService } from './announcement.service';
-import { Announcement, AnnouncementType, AnnouncementPriority, AnnouncementDisplayType, AnnouncementTargetAudience } from './entities/announcement.entity';
+import { Announcement, AnnouncementType } from './entities/announcement.entity';
 import { AnnouncementRead } from './entities/announcement-read.entity';
 import { User } from '../users/entities/user.entity';
 
@@ -35,8 +35,14 @@ describe('AnnouncementService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AnnouncementService,
-        { provide: getRepositoryToken(Announcement), useFactory: mockAnnouncementRepo },
-        { provide: getRepositoryToken(AnnouncementRead), useFactory: mockReadRepo },
+        {
+          provide: getRepositoryToken(Announcement),
+          useFactory: mockAnnouncementRepo,
+        },
+        {
+          provide: getRepositoryToken(AnnouncementRead),
+          useFactory: mockReadRepo,
+        },
         { provide: getRepositoryToken(User), useFactory: mockUserRepo },
       ],
     }).compile();
@@ -58,7 +64,11 @@ describe('AnnouncementService', () => {
         content: { en: 'Test content', ko: '테스트 내용' },
         startDate: '2026-03-01T00:00:00Z',
       };
-      const created = { id: 'uuid-1', ...dto, startDate: new Date(dto.startDate) };
+      const created = {
+        id: 'uuid-1',
+        ...dto,
+        startDate: new Date(dto.startDate),
+      };
       announcementRepo.create.mockReturnValue(created);
       announcementRepo.save.mockResolvedValue(created);
 
@@ -80,7 +90,9 @@ describe('AnnouncementService', () => {
 
     it('should throw NotFoundException if not found', async () => {
       announcementRepo.findOne.mockResolvedValue(null);
-      await expect(service.findOne('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('nonexistent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -103,7 +115,10 @@ describe('AnnouncementService', () => {
     it('should publish an announcement', async () => {
       const announcement = { id: 'uuid-1', isPublished: false };
       announcementRepo.findOne.mockResolvedValue(announcement);
-      announcementRepo.save.mockResolvedValue({ ...announcement, isPublished: true });
+      announcementRepo.save.mockResolvedValue({
+        ...announcement,
+        isPublished: true,
+      });
 
       const result = await service.publish('uuid-1');
       expect(result.isPublished).toBe(true);
@@ -112,7 +127,10 @@ describe('AnnouncementService', () => {
     it('should unpublish an announcement', async () => {
       const announcement = { id: 'uuid-1', isPublished: true };
       announcementRepo.findOne.mockResolvedValue(announcement);
-      announcementRepo.save.mockResolvedValue({ ...announcement, isPublished: false });
+      announcementRepo.save.mockResolvedValue({
+        ...announcement,
+        isPublished: false,
+      });
 
       const result = await service.unpublish('uuid-1');
       expect(result.isPublished).toBe(false);
@@ -131,7 +149,10 @@ describe('AnnouncementService', () => {
     it('should mark announcement as read', async () => {
       announcementRepo.findOne.mockResolvedValue(activeAnnouncement);
       readRepo.findOne.mockResolvedValue(null);
-      readRepo.create.mockReturnValue({ userId: 'user-1', announcementId: 'uuid-1' });
+      readRepo.create.mockReturnValue({
+        userId: 'user-1',
+        announcementId: 'uuid-1',
+      });
       readRepo.save.mockResolvedValue({});
 
       await service.markAsRead('user-1', 'uuid-1');
@@ -148,7 +169,9 @@ describe('AnnouncementService', () => {
 
     it('should throw if announcement is not active', async () => {
       announcementRepo.findOne.mockResolvedValue(null);
-      await expect(service.markAsRead('user-1', 'uuid-1')).rejects.toThrow(NotFoundException);
+      await expect(service.markAsRead('user-1', 'uuid-1')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -188,7 +211,9 @@ describe('AnnouncementService', () => {
 
     it('should throw if announcement is not active', async () => {
       announcementRepo.findOne.mockResolvedValue(null);
-      await expect(service.dismiss('user-1', 'uuid-1')).rejects.toThrow(NotFoundException);
+      await expect(service.dismiss('user-1', 'uuid-1')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -200,7 +225,9 @@ describe('AnnouncementService', () => {
 
     it('should throw NotFoundException if not found', async () => {
       announcementRepo.delete.mockResolvedValue({ affected: 0 });
-      await expect(service.remove('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.remove('nonexistent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

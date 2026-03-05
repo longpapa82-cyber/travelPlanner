@@ -17,6 +17,21 @@ jest.mock('openai', () => {
   }));
 });
 
+// Helper to create async iterable stream mock matching OpenAI streaming API
+function mockStream(content: string) {
+  const chunks = [
+    { choices: [{ delta: { content } }], usage: null },
+    { choices: [{ delta: {} }], usage: { prompt_tokens: 100, completion_tokens: 200, total_tokens: 300 } },
+  ];
+  return {
+    [Symbol.asyncIterator]: async function* () {
+      for (const chunk of chunks) {
+        yield chunk;
+      }
+    },
+  };
+}
+
 describe('AIService', () => {
   let service: AIService;
   let cacheManager: { get: jest.Mock; set: jest.Mock };
@@ -182,9 +197,7 @@ describe('AIService', () => {
 
     it('should generate activities from OpenAI and cache the result', async () => {
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: mockActivitiesResponse } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(mockActivitiesResponse));
 
       const result = await service.generateDailyItinerary(
         tripContext,
@@ -204,9 +217,7 @@ describe('AIService', () => {
 
     it('should include geocoded coordinates in activities', async () => {
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: mockActivitiesResponse } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(mockActivitiesResponse));
 
       const result = await service.generateDailyItinerary(
         tripContext,
@@ -220,9 +231,7 @@ describe('AIService', () => {
 
     it('should handle geocoding failure gracefully', async () => {
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: mockActivitiesResponse } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(mockActivitiesResponse));
       (timezoneService.geocodeActivities as jest.Mock).mockRejectedValue(
         new Error('Geocoding API down'),
       );
@@ -240,9 +249,7 @@ describe('AIService', () => {
 
     it('should return empty array when OpenAI returns empty content', async () => {
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: null } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(''));
 
       const result = await service.generateDailyItinerary(
         tripContext,
@@ -268,9 +275,7 @@ describe('AIService', () => {
 
     it('should handle malformed JSON response', async () => {
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: 'not valid json' } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream('not valid json'));
 
       const result = await service.generateDailyItinerary(
         tripContext,
@@ -283,9 +288,7 @@ describe('AIService', () => {
 
     it('should use correct cache key including language', async () => {
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: mockActivitiesResponse } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(mockActivitiesResponse));
 
       await service.generateDailyItinerary(
         { ...tripContext, language: 'ja' },
@@ -300,10 +303,10 @@ describe('AIService', () => {
 
     it('should pass analytics recommendations to prompt builder', async () => {
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: mockActivitiesResponse } }],
-      });
-      (analyticsService.getDestinationRecommendations as jest.Mock).mockResolvedValue({
+      openaiCreate.mockResolvedValue(mockStream(mockActivitiesResponse));
+      (
+        analyticsService.getDestinationRecommendations as jest.Mock
+      ).mockResolvedValue({
         recommendedDuration: 5,
         recommendedTravelers: 2,
         bestMonths: [3, 4, 10, 11],
@@ -340,9 +343,7 @@ describe('AIService', () => {
           },
         ],
       });
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: altResponse } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(altResponse));
 
       const result = await service.generateDailyItinerary(
         tripContext,
@@ -388,9 +389,7 @@ describe('AIService', () => {
           null,
         ],
       });
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: badResponse } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(badResponse));
 
       const result = await service.generateDailyItinerary(
         tripContext,
@@ -437,9 +436,7 @@ describe('AIService', () => {
 
     it('should generate itineraries for all trip days via single prompt', async () => {
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: mockFullTripResponse(2) } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(mockFullTripResponse(2)));
 
       const shortTrip = { ...tripContext, endDate: new Date('2025-07-02') };
       const result = await service.generateAllItineraries(shortTrip);
@@ -452,9 +449,7 @@ describe('AIService', () => {
 
     it('should handle single-day trip', async () => {
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: mockFullTripResponse(1) } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(mockFullTripResponse(1)));
 
       const singleDay = {
         ...tripContext,
@@ -474,9 +469,7 @@ describe('AIService', () => {
         .mockRejectedValueOnce(new Error('Token limit exceeded'))
         .mockRejectedValueOnce(new Error('Token limit exceeded'))
         .mockRejectedValueOnce(new Error('Token limit exceeded'))
-        .mockResolvedValue({
-          choices: [{ message: { content: mockActivitiesResponse } }],
-        });
+        .mockResolvedValue(mockStream(mockActivitiesResponse));
 
       const shortTrip = { ...tripContext, endDate: new Date('2025-07-02') };
       const result = await service.generateAllItineraries(shortTrip);
@@ -522,7 +515,9 @@ describe('AIService', () => {
         generatedAt: new Date(),
         isStale: false,
       };
-      (templateService.findTemplate as jest.Mock).mockResolvedValue(mockTemplateResult);
+      (templateService.findTemplate as jest.Mock).mockResolvedValue(
+        mockTemplateResult,
+      );
 
       const shortTrip = { ...tripContext, endDate: new Date('2025-07-02') };
       const result = await service.generateAllItineraries(shortTrip);
@@ -543,9 +538,7 @@ describe('AIService', () => {
         isStale: true,
       });
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: mockFullTripResponse(2) } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(mockFullTripResponse(2)));
 
       const shortTrip = { ...tripContext, endDate: new Date('2025-07-02') };
       const result = await service.generateAllItineraries(shortTrip);
@@ -557,11 +550,11 @@ describe('AIService', () => {
     }, 15000);
 
     it('should fall back to AI when template lookup fails', async () => {
-      (templateService.findTemplate as jest.Mock).mockRejectedValue(new Error('DB down'));
+      (templateService.findTemplate as jest.Mock).mockRejectedValue(
+        new Error('DB down'),
+      );
       cacheManager.get.mockResolvedValue(null);
-      openaiCreate.mockResolvedValue({
-        choices: [{ message: { content: mockFullTripResponse(2) } }],
-      });
+      openaiCreate.mockResolvedValue(mockStream(mockFullTripResponse(2)));
 
       const shortTrip = { ...tripContext, endDate: new Date('2025-07-02') };
       const result = await service.generateAllItineraries(shortTrip);

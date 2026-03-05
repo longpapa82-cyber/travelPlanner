@@ -41,7 +41,10 @@ describe('TimezoneService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    cacheManager = { get: jest.fn().mockResolvedValue(null), set: jest.fn().mockResolvedValue(undefined) };
+    cacheManager = {
+      get: jest.fn().mockResolvedValue(null),
+      set: jest.fn().mockResolvedValue(undefined),
+    };
     geocodingService = {
       geocode: jest.fn(),
       geocodeBatch: jest.fn(),
@@ -93,14 +96,17 @@ describe('TimezoneService', () => {
     });
 
     it('should return location info for valid destination', async () => {
-      mockGeocode.mockResolvedValue(mockGeocodeResponse);
+      (geocodingService.geocode as jest.Mock).mockResolvedValue({
+        latitude: 35.6762,
+        longitude: 139.6503,
+      });
 
       const result = await service.getLocationInfo('Tokyo');
 
       expect(result).toEqual({
         latitude: 35.6762,
         longitude: 139.6503,
-        formattedAddress: 'Tokyo, Japan',
+        formattedAddress: 'Tokyo',
       });
     });
 
@@ -179,21 +185,24 @@ describe('TimezoneService', () => {
 
   describe('getDestinationTimezone', () => {
     it('should return null when geocoding fails', async () => {
-      mockGeocode.mockResolvedValue({ data: { results: [] } });
+      (geocodingService.geocode as jest.Mock).mockResolvedValue(null);
 
       const result = await service.getDestinationTimezone('Unknown Place');
       expect(result).toBeNull();
     });
 
     it('should chain geocode + timezone calls', async () => {
-      mockGeocode.mockResolvedValue(mockGeocodeResponse);
+      (geocodingService.geocode as jest.Mock).mockResolvedValue({
+        latitude: 35.6762,
+        longitude: 139.6503,
+      });
       mockTimezone.mockResolvedValue(mockTimezoneResponse);
 
       const result = await service.getDestinationTimezone('Tokyo');
 
       expect(result).toBeDefined();
       expect(result!.timezoneId).toBe('Asia/Tokyo');
-      expect(mockGeocode).toHaveBeenCalled();
+      expect(geocodingService.geocode).toHaveBeenCalled();
       expect(mockTimezone).toHaveBeenCalled();
     });
   });
@@ -201,8 +210,18 @@ describe('TimezoneService', () => {
   describe('geocodeActivities', () => {
     it('should delegate to GeocodingService when available', async () => {
       (geocodingService.geocodeBatch as jest.Mock).mockResolvedValue([
-        { latitude: 35.71, longitude: 139.79, source: 'locationiq', confidence: 0.9 },
-        { latitude: 35.66, longitude: 139.75, source: 'locationiq', confidence: 0.9 },
+        {
+          latitude: 35.71,
+          longitude: 139.79,
+          source: 'locationiq',
+          confidence: 0.9,
+        },
+        {
+          latitude: 35.66,
+          longitude: 139.75,
+          source: 'locationiq',
+          confidence: 0.9,
+        },
       ]);
 
       const activities = [
@@ -250,7 +269,10 @@ describe('TimezoneService', () => {
       });
 
       const activities = [{ location: 'Senso-ji' }];
-      const result = await fallbackService.geocodeActivities(activities, 'Tokyo');
+      const result = await fallbackService.geocodeActivities(
+        activities,
+        'Tokyo',
+      );
 
       expect(result[0]).toEqual({ latitude: 35.71, longitude: 139.79 });
       expect(mockGeocode).toHaveBeenCalled();

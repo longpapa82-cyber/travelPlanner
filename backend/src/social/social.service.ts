@@ -3,7 +3,6 @@ import {
   Logger,
   NotFoundException,
   BadRequestException,
-  ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -254,11 +253,7 @@ export class SocialService {
     return this.getTrendingFeed(userId, page, limit);
   }
 
-  private async getFollowingFeed(
-    userId: string,
-    page: number,
-    limit: number,
-  ) {
+  private async getFollowingFeed(userId: string, page: number, limit: number) {
     const qb = this.tripRepository
       .createQueryBuilder('trip')
       .innerJoin(Follow, 'f', 'f."followingId" = trip."userId"')
@@ -281,11 +276,7 @@ export class SocialService {
     return { items, total };
   }
 
-  private async getTrendingFeed(
-    userId: string,
-    page: number,
-    limit: number,
-  ) {
+  private async getTrendingFeed(userId: string, page: number, limit: number) {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -349,7 +340,13 @@ export class SocialService {
   async getUserProfile(viewerId: string, profileUserId: string) {
     const user = await this.userRepository.findOne({
       where: { id: profileUserId },
-      select: ['id', 'name', 'profileImage', 'followersCount', 'followingCount'],
+      select: [
+        'id',
+        'name',
+        'profileImage',
+        'followersCount',
+        'followingCount',
+      ],
     });
     if (!user) {
       throw new NotFoundException('User not found');
