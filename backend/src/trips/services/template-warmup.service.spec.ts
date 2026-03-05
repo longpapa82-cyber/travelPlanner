@@ -27,7 +27,9 @@ describe('TemplateWarmupService', () => {
       countByFilters: jest.fn().mockResolvedValue(0),
     };
     seedCommand = {
-      seed: jest.fn().mockResolvedValue({ generated: 5, skipped: 0, failed: 0 }),
+      seed: jest
+        .fn()
+        .mockResolvedValue({ generated: 5, skipped: 0, failed: 0 }),
       getTopDestinations: jest.fn().mockReturnValue(
         Array.from({ length: 50 }, (_, i) => ({
           destination: `City ${i}`,
@@ -50,9 +52,9 @@ describe('TemplateWarmupService', () => {
   });
 
   describe('onApplicationBootstrap', () => {
-    it('should not seed when TEMPLATE_AUTO_SEED is false', async () => {
+    it('should not seed when TEMPLATE_AUTO_SEED is false', () => {
       configService.get.mockReturnValue('false');
-      await service.onApplicationBootstrap();
+      service.onApplicationBootstrap();
       expect(seedCommand.seed).not.toHaveBeenCalled();
     });
 
@@ -61,7 +63,7 @@ describe('TemplateWarmupService', () => {
       // Mock getCoverage to avoid full execution
       templateService.countByFilters.mockResolvedValue(0);
 
-      await service.onApplicationBootstrap();
+      service.onApplicationBootstrap();
       // Warmup is fire-and-forget, give it a tick to start
       await new Promise((r) => setTimeout(r, 50));
 
@@ -139,7 +141,7 @@ describe('TemplateWarmupService', () => {
 
     it('should skip all tiers when fully covered', async () => {
       templateService.countByFilters
-        .mockResolvedValueOnce(20)  // tier1: 100%
+        .mockResolvedValueOnce(20) // tier1: 100%
         .mockResolvedValueOnce(150); // tier2: 100%
 
       await service.warmup();
@@ -151,7 +153,10 @@ describe('TemplateWarmupService', () => {
       templateService.countByFilters.mockResolvedValue(0);
       // Slow seed to ensure overlap
       seedCommand.seed.mockImplementation(
-        () => new Promise((r) => setTimeout(() => r({ generated: 1, skipped: 0, failed: 0 }), 100)),
+        () =>
+          new Promise((r) =>
+            setTimeout(() => r({ generated: 1, skipped: 0, failed: 0 }), 100),
+          ),
       );
 
       const p1 = service.warmup();
@@ -173,7 +178,11 @@ describe('TemplateWarmupService', () => {
 
     it('should track last seed result after warmup', async () => {
       templateService.countByFilters.mockResolvedValue(0);
-      seedCommand.seed.mockResolvedValue({ generated: 3, skipped: 2, failed: 0 });
+      seedCommand.seed.mockResolvedValue({
+        generated: 3,
+        skipped: 2,
+        failed: 0,
+      });
 
       await service.warmup();
 

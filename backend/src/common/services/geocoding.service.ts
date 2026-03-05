@@ -32,8 +32,10 @@ export class GeocodingService {
     @InjectRepository(GeocodingCache)
     private geocodingCacheRepo: Repository<GeocodingCache>,
   ) {
-    this.locationIQKey = this.configService.get<string>('LOCATIONIQ_API_KEY') || null;
-    this.googleMapsKey = this.configService.get<string>('GOOGLE_MAPS_API_KEY') || null;
+    this.locationIQKey =
+      this.configService.get<string>('LOCATIONIQ_API_KEY') || null;
+    this.googleMapsKey =
+      this.configService.get<string>('GOOGLE_MAPS_API_KEY') || null;
 
     if (this.locationIQKey) {
       this.logger.log('LocationIQ geocoding initialized');
@@ -44,7 +46,10 @@ export class GeocodingService {
   }
 
   private hashQuery(query: string): string {
-    return createHash('sha256').update(query.toLowerCase().trim()).digest('hex').slice(0, 32);
+    return createHash('sha256')
+      .update(query.toLowerCase().trim())
+      .digest('hex')
+      .slice(0, 32);
   }
 
   /**
@@ -85,7 +90,9 @@ export class GeocodingService {
 
     // 2. DB cache
     try {
-      const dbCached = await this.geocodingCacheRepo.findOne({ where: { queryHash: hash } });
+      const dbCached = await this.geocodingCacheRepo.findOne({
+        where: { queryHash: hash },
+      });
       if (dbCached) {
         const result: GeocodingResult = {
           latitude: dbCached.latitude,
@@ -94,7 +101,11 @@ export class GeocodingService {
           confidence: dbCached.confidence,
         };
         // Warm Redis cache from DB
-        await this.cacheManager.set(cacheKey, result, GeocodingService.REDIS_TTL);
+        await this.cacheManager.set(
+          cacheKey,
+          result,
+          GeocodingService.REDIS_TTL,
+        );
         // Increment hit count (fire-and-forget)
         this.geocodingCacheRepo
           .increment({ queryHash: hash }, 'hitCount', 1)
@@ -102,7 +113,9 @@ export class GeocodingService {
         return result;
       }
     } catch (error) {
-      this.logger.warn(`DB cache lookup failed: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.warn(
+        `DB cache lookup failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
 
     // 3. LocationIQ (free tier: 5000/day, 2 req/sec)
@@ -133,14 +146,14 @@ export class GeocodingService {
    * while respecting LocationIQ's per-request rate limiter.
    * Cache hits bypass the semaphore entirely (no rate limit needed).
    */
-  async geocodeBatch(
-    queries: string[],
-  ): Promise<(GeocodingResult | null)[]> {
+  async geocodeBatch(queries: string[]): Promise<(GeocodingResult | null)[]> {
     const capped = queries.slice(0, GeocodingService.MAX_BATCH_SIZE);
     const CONCURRENCY = 2;
 
     // Partition: check cache first (instant), then batch uncached with concurrency
-    const results: (GeocodingResult | null)[] = new Array(capped.length).fill(null);
+    const results: (GeocodingResult | null)[] = new Array(capped.length).fill(
+      null,
+    );
     const uncachedIndices: number[] = [];
 
     // Phase 1: resolve cache hits (no rate limit needed)
@@ -177,10 +190,13 @@ export class GeocodingService {
     return results;
   }
 
-  private async geocodeViaLocationIQ(query: string): Promise<GeocodingResult | null> {
+  private async geocodeViaLocationIQ(
+    query: string,
+  ): Promise<GeocodingResult | null> {
     // Rate limiting
     const now = Date.now();
-    const waitMs = GeocodingService.LOCATIONIQ_RATE_MS - (now - this.lastLocationIQCall);
+    const waitMs =
+      GeocodingService.LOCATIONIQ_RATE_MS - (now - this.lastLocationIQCall);
     if (waitMs > 0) {
       await new Promise((r) => setTimeout(r, waitMs));
     }
@@ -219,7 +235,9 @@ export class GeocodingService {
     }
   }
 
-  private async geocodeViaGoogleMaps(query: string): Promise<GeocodingResult | null> {
+  private async geocodeViaGoogleMaps(
+    query: string,
+  ): Promise<GeocodingResult | null> {
     try {
       const response = await withTimeout(
         axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
@@ -254,11 +272,11 @@ export class GeocodingService {
   /**
    * Save result to both Redis and DB.
    */
-  private async persistResult(
+  private persistResult(
     hash: string,
     query: string,
     result: GeocodingResult,
-  ): Promise<void> {
+  ): void {
     const cacheKey = `geo:${hash}`;
 
     // Redis (fire-and-forget)
@@ -281,7 +299,9 @@ export class GeocodingService {
         ['queryHash'],
       )
       .catch((err) => {
-        this.logger.warn(`DB cache persist failed: ${err instanceof Error ? err.message : String(err)}`);
+        this.logger.warn(
+          `DB cache persist failed: ${err instanceof Error ? err.message : String(err)}`,
+        );
       });
   }
 }

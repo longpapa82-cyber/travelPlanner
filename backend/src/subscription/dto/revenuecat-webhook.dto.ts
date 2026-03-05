@@ -1,11 +1,10 @@
-import { IsString, IsOptional, IsObject, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsObject,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
-
-class RevenueCatSubscriberInfo {
-  @IsString()
-  @IsOptional()
-  original_app_user_id?: string;
-}
 
 class RevenueCatEvent {
   @IsString()

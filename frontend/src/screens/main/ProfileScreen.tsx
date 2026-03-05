@@ -200,6 +200,7 @@ const ProfileScreen = ({ navigation }: any) => {
         URL.revokeObjectURL(url);
       } else {
         const { shareAsync } = await import('expo-sharing');
+        // eslint-disable-next-line import/no-unresolved
         const { writeAsStringAsync, documentDirectory } = await import('expo-file-system');
         const filePath = `${documentDirectory}mytravel-data-${new Date().toISOString().split('T')[0]}.json`;
         await writeAsStringAsync(filePath, JSON.stringify(data, null, 2));

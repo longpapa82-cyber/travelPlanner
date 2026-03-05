@@ -86,13 +86,18 @@ describe('TripsService', () => {
     localTime: '2024-06-01T12:00:00',
   };
 
-  const mockWeatherInfo = {
+  const mockWeatherData = {
     temperature: 22,
     condition: 'Sunny',
     humidity: 60,
     windSpeed: 10,
     icon: '01d',
   };
+  const mockWeatherMap = new Map<number, any>([
+    [1, mockWeatherData],
+    [2, mockWeatherData],
+    [3, mockWeatherData],
+  ]);
 
   const mockAIItineraries = [
     {
@@ -177,7 +182,7 @@ describe('TripsService', () => {
         {
           provide: WeatherService,
           useValue: {
-            getWeatherForecast: jest.fn(),
+            getWeatherForDateRange: jest.fn(),
           },
         },
         {
@@ -198,7 +203,9 @@ describe('TripsService', () => {
         {
           provide: SubscriptionService,
           useValue: {
-            checkAiTripLimit: jest.fn().mockResolvedValue({ allowed: true, remaining: 3 }),
+            checkAiTripLimit: jest
+              .fn()
+              .mockResolvedValue({ allowed: true, remaining: 3 }),
             incrementAiTripCount: jest.fn().mockResolvedValue(undefined),
           },
         },
@@ -249,7 +256,7 @@ describe('TripsService', () => {
       timezoneService.getLocationInfo.mockResolvedValue(mockLocationInfo);
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
-      weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
+      weatherService.getWeatherForDateRange.mockResolvedValue(mockWeatherMap);
       itineraryRepository.create.mockImplementation(
         (data) => data as Itinerary,
       );
@@ -283,7 +290,7 @@ describe('TripsService', () => {
       timezoneService.getLocationInfo.mockResolvedValue(mockLocationInfo);
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
-      weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
+      weatherService.getWeatherForDateRange.mockResolvedValue(mockWeatherMap);
       itineraryRepository.create.mockImplementation(
         (data) => data as Itinerary,
       );
@@ -316,7 +323,7 @@ describe('TripsService', () => {
       timezoneService.getLocationInfo.mockResolvedValue(mockLocationInfo);
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
-      weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
+      weatherService.getWeatherForDateRange.mockResolvedValue(mockWeatherMap);
       itineraryRepository.create.mockImplementation(
         (data) => data as Itinerary,
       );
@@ -344,7 +351,7 @@ describe('TripsService', () => {
       aiService.generateAllItineraries.mockRejectedValue(
         new Error('AI service unavailable'),
       );
-      weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
+      weatherService.getWeatherForDateRange.mockResolvedValue(mockWeatherMap);
       itineraryRepository.create.mockImplementation(
         (data) => data as Itinerary,
       );
@@ -393,7 +400,7 @@ describe('TripsService', () => {
       timezoneService.getLocationInfo.mockResolvedValue(mockLocationInfo);
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
-      weatherService.getWeatherForecast.mockRejectedValue(
+      weatherService.getWeatherForDateRange.mockRejectedValue(
         new Error('Weather API error'),
       );
       itineraryRepository.create.mockImplementation(
@@ -408,7 +415,7 @@ describe('TripsService', () => {
       const result = await service.create(mockUserId, createTripDto);
 
       expect(result).toBeDefined();
-      expect(weatherService.getWeatherForecast).toHaveBeenCalled();
+      expect(weatherService.getWeatherForDateRange).toHaveBeenCalled();
     });
   });
 
@@ -552,7 +559,10 @@ describe('TripsService', () => {
         .mockReturnValue(queryBuilder);
       tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(false);
 
-      await service.findAll(mockUserId, { sortBy: SortBy.CREATED_AT, order: SortOrder.DESC });
+      await service.findAll(mockUserId, {
+        sortBy: SortBy.CREATED_AT,
+        order: SortOrder.DESC,
+      });
 
       expect(queryBuilder.orderBy).toHaveBeenCalledWith(
         'trip.createdAt',
@@ -1047,7 +1057,7 @@ describe('TripsService', () => {
       timezoneService.getLocationInfo.mockResolvedValue(mockLocationInfo);
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
-      weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
+      weatherService.getWeatherForDateRange.mockResolvedValue(mockWeatherMap);
       itineraryRepository.create.mockImplementation(
         (data) => data as Itinerary,
       );
@@ -1074,7 +1084,7 @@ describe('TripsService', () => {
       timezoneService.getLocationInfo.mockResolvedValue(mockLocationInfo);
       timezoneService.getTimezoneInfo.mockResolvedValue(mockTimezoneInfo);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
-      weatherService.getWeatherForecast.mockResolvedValue(null);
+      weatherService.getWeatherForDateRange.mockResolvedValue(new Map());
       itineraryRepository.create.mockImplementation(
         (data) => data as Itinerary,
       );
@@ -1100,7 +1110,7 @@ describe('TripsService', () => {
       timezoneService.getLocationInfo.mockResolvedValue(mockLocationInfo);
       timezoneService.getTimezoneInfo.mockResolvedValue(null);
       aiService.generateAllItineraries.mockResolvedValue(mockAIItineraries);
-      weatherService.getWeatherForecast.mockResolvedValue(mockWeatherInfo);
+      weatherService.getWeatherForDateRange.mockResolvedValue(mockWeatherMap);
       itineraryRepository.create.mockImplementation(
         (data) => data as Itinerary,
       );

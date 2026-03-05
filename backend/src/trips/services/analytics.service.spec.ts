@@ -5,7 +5,7 @@ import { Trip, TripStatus } from '../entities/trip.entity';
 
 describe('AnalyticsService', () => {
   let service: AnalyticsService;
-  let tripRepository: any;
+  let _tripRepository: any;
 
   const mockRepository = {
     find: jest.fn(),
@@ -23,7 +23,7 @@ describe('AnalyticsService', () => {
     }).compile();
 
     service = module.get<AnalyticsService>(AnalyticsService);
-    tripRepository = module.get(getRepositoryToken(Trip));
+    _tripRepository = module.get(getRepositoryToken(Trip));
     jest.clearAllMocks();
   });
 

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  OnApplicationBootstrap,
-} from '@nestjs/common';
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TemplateService } from './template.service';
 import { SeedTemplatesCommand } from '../commands/seed-templates.command';
@@ -21,8 +17,16 @@ const PRIORITY_TIERS = {
   tier1: {
     label: 'High-priority (top 10 × 2 durations × ko)',
     destinations: [
-      'Tokyo', 'Seoul', 'Osaka', 'Bangkok', 'Paris',
-      'London', 'Rome', 'Jeju', 'Bali', 'New York',
+      'Tokyo',
+      'Seoul',
+      'Osaka',
+      'Bangkok',
+      'Paris',
+      'London',
+      'Rome',
+      'Jeju',
+      'Bali',
+      'New York',
     ],
     durations: [3, 5],
     languages: ['ko'],
@@ -30,8 +34,16 @@ const PRIORITY_TIERS = {
   tier2: {
     label: 'Medium-priority (top 10 × all durations × all langs)',
     destinations: [
-      'Tokyo', 'Seoul', 'Osaka', 'Bangkok', 'Paris',
-      'London', 'Rome', 'Jeju', 'Bali', 'New York',
+      'Tokyo',
+      'Seoul',
+      'Osaka',
+      'Bangkok',
+      'Paris',
+      'London',
+      'Rome',
+      'Jeju',
+      'Bali',
+      'New York',
     ],
     durations: [2, 3, 4, 5, 7],
     languages: ['ko', 'en', 'ja'],
@@ -62,16 +74,24 @@ export class TemplateWarmupService implements OnApplicationBootstrap {
     private readonly seedCommand: SeedTemplatesCommand,
   ) {}
 
-  async onApplicationBootstrap(): Promise<void> {
-    const autoSeed = this.configService.get<string>('TEMPLATE_AUTO_SEED', 'false');
+  onApplicationBootstrap(): void {
+    const autoSeed = this.configService.get<string>(
+      'TEMPLATE_AUTO_SEED',
+      'false',
+    );
     if (autoSeed !== 'true') {
-      this.logger.log('Auto-seed disabled (set TEMPLATE_AUTO_SEED=true to enable)');
+      this.logger.log(
+        'Auto-seed disabled (set TEMPLATE_AUTO_SEED=true to enable)',
+      );
       return;
     }
 
     // Run coverage check, then seed in background (non-blocking)
     this.warmup().catch((err) =>
-      this.logger.error('Warmup failed', err instanceof Error ? err.stack : String(err)),
+      this.logger.error(
+        'Warmup failed',
+        err instanceof Error ? err.stack : String(err),
+      ),
     );
   }
 
@@ -91,8 +111,8 @@ export class TemplateWarmupService implements OnApplicationBootstrap {
       const coverage = await this.getCoverage();
       this.logger.log(
         `Template cache coverage: ${coverage.cachedCount}/${coverage.totalExpected} ` +
-        `(${coverage.coveragePercent}%) — ` +
-        `Tier1: ${coverage.tier1Percent}%, Tier2: ${coverage.tier2Percent}%`,
+          `(${coverage.coveragePercent}%) — ` +
+          `Tier1: ${coverage.tier1Percent}%, Tier2: ${coverage.tier2Percent}%`,
       );
 
       // Determine which tier to seed
@@ -104,7 +124,11 @@ export class TemplateWarmupService implements OnApplicationBootstrap {
           languages: PRIORITY_TIERS.tier1.languages,
           skipExisting: true,
         });
-        this.lastSeedResult = { tier: 'tier1', ...result, completedAt: new Date() };
+        this.lastSeedResult = {
+          tier: 'tier1',
+          ...result,
+          completedAt: new Date(),
+        };
         this.logger.log(
           `Tier 1 complete: ${result.generated} generated, ${result.skipped} skipped, ${result.failed} failed`,
         );
@@ -118,7 +142,11 @@ export class TemplateWarmupService implements OnApplicationBootstrap {
           languages: PRIORITY_TIERS.tier2.languages,
           skipExisting: true,
         });
-        this.lastSeedResult = { tier: 'tier2', ...result, completedAt: new Date() };
+        this.lastSeedResult = {
+          tier: 'tier2',
+          ...result,
+          completedAt: new Date(),
+        };
         this.logger.log(
           `Tier 2 complete: ${result.generated} generated, ${result.skipped} skipped, ${result.failed} failed`,
         );
@@ -168,13 +196,16 @@ export class TemplateWarmupService implements OnApplicationBootstrap {
     return {
       cachedCount,
       totalExpected: tier3Total,
-      coveragePercent: tier3Total > 0 ? Math.round((cachedCount / tier3Total) * 100) : 0,
+      coveragePercent:
+        tier3Total > 0 ? Math.round((cachedCount / tier3Total) * 100) : 0,
       tier1Cached,
       tier1Total,
-      tier1Percent: tier1Total > 0 ? Math.round((tier1Cached / tier1Total) * 100) : 0,
+      tier1Percent:
+        tier1Total > 0 ? Math.round((tier1Cached / tier1Total) * 100) : 0,
       tier2Cached,
       tier2Total,
-      tier2Percent: tier2Total > 0 ? Math.round((tier2Cached / tier2Total) * 100) : 0,
+      tier2Percent:
+        tier2Total > 0 ? Math.round((tier2Cached / tier2Total) * 100) : 0,
       tier3Total,
     };
   }

@@ -80,6 +80,7 @@ describe('AppController', () => {
 
     it('should return 503 during shutdown', async () => {
       // Dynamically override the shutdown flag
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const lifecycle = require('./common/lifecycle.service');
       const original = lifecycle.isShuttingDown;
       lifecycle.isShuttingDown = true;

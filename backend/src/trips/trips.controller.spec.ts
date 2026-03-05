@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  INestApplication,
+  ValidationPipe,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import request from 'supertest';
 import { TripsController } from './trips.controller';
 import { TripsService } from './trips.service';
@@ -16,7 +21,7 @@ const MOCK_TRIP_ID = '00000000-0000-4000-a000-000000000010';
 const MOCK_TRIP_ID_2 = '00000000-0000-4000-a000-000000000011';
 const MOCK_TRIP_ID_3 = '00000000-0000-4000-a000-000000000012';
 const MOCK_ITINERARY_ID = '00000000-0000-4000-a000-000000000020';
-const MOCK_COLLAB_ID = '00000000-0000-4000-a000-000000000030';
+const _MOCK_COLLAB_ID = '00000000-0000-4000-a000-000000000030';
 
 describe('TripsController (Integration)', () => {
   let app: INestApplication;
@@ -387,7 +392,10 @@ describe('TripsController (Integration)', () => {
         .expect(200);
 
       expect(response.body).toEqual(jsonify(mockTrip));
-      expect(tripsService.findOne).toHaveBeenCalledWith(mockUserId, MOCK_TRIP_ID);
+      expect(tripsService.findOne).toHaveBeenCalledWith(
+        mockUserId,
+        MOCK_TRIP_ID,
+      );
       expect(tripsService.findOne).toHaveBeenCalledTimes(1);
     });
 
@@ -402,7 +410,7 @@ describe('TripsController (Integration)', () => {
 
     it('should return 404 when trip not found', async () => {
       tripsService.findOne.mockRejectedValue(
-        new (require('@nestjs/common').NotFoundException)('Trip not found'),
+        new NotFoundException('Trip not found'),
       );
 
       await request(app.getHttpServer())
@@ -418,7 +426,7 @@ describe('TripsController (Integration)', () => {
 
     it("should return 403 when trying to access another user's trip", async () => {
       tripsService.findOne.mockRejectedValue(
-        new (require('@nestjs/common').ForbiddenException)('Forbidden'),
+        new ForbiddenException('Forbidden'),
       );
 
       await request(app.getHttpServer())
@@ -474,7 +482,7 @@ describe('TripsController (Integration)', () => {
 
     it('should return 403 when trying to update completed trip', async () => {
       tripsService.update.mockRejectedValue(
-        new (require('@nestjs/common').ForbiddenException)('Cannot modify completed trips'),
+        new ForbiddenException('Cannot modify completed trips'),
       );
 
       const updateDto = {
@@ -527,13 +535,16 @@ describe('TripsController (Integration)', () => {
         .set('Authorization', 'Bearer mock-token')
         .expect(204);
 
-      expect(tripsService.remove).toHaveBeenCalledWith(mockUserId, MOCK_TRIP_ID);
+      expect(tripsService.remove).toHaveBeenCalledWith(
+        mockUserId,
+        MOCK_TRIP_ID,
+      );
       expect(tripsService.remove).toHaveBeenCalledTimes(1);
     });
 
     it('should return 404 when trying to delete non-existent trip', async () => {
       tripsService.remove.mockRejectedValue(
-        new (require('@nestjs/common').NotFoundException)('Trip not found'),
+        new NotFoundException('Trip not found'),
       );
 
       await request(app.getHttpServer())
@@ -613,7 +624,9 @@ describe('TripsController (Integration)', () => {
       tripsService.addActivity.mockResolvedValue(updatedItinerary as any);
 
       const response = await request(app.getHttpServer())
-        .post(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities`)
+        .post(
+          `/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities`,
+        )
         .set('Authorization', 'Bearer mock-token')
         .send(addActivityDto)
         .expect(201);
@@ -633,7 +646,9 @@ describe('TripsController (Integration)', () => {
       };
 
       await request(app.getHttpServer())
-        .post(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities`)
+        .post(
+          `/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities`,
+        )
         .set('Authorization', 'Bearer mock-token')
         .send(invalidDto)
         .expect(400);
@@ -653,7 +668,9 @@ describe('TripsController (Integration)', () => {
       tripsService.updateActivity.mockResolvedValue(updatedItinerary as any);
 
       const response = await request(app.getHttpServer())
-        .patch(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/0`)
+        .patch(
+          `/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/0`,
+        )
         .set('Authorization', 'Bearer mock-token')
         .send(updateActivityDto)
         .expect(200);
@@ -670,7 +687,7 @@ describe('TripsController (Integration)', () => {
 
     it('should return 403 when trying to modify past activity in ongoing trip', async () => {
       tripsService.updateActivity.mockRejectedValue(
-        new (require('@nestjs/common').ForbiddenException)('Cannot modify past activities'),
+        new ForbiddenException('Cannot modify past activities'),
       );
 
       const updateDto = {
@@ -678,7 +695,9 @@ describe('TripsController (Integration)', () => {
       };
 
       await request(app.getHttpServer())
-        .patch(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/0`)
+        .patch(
+          `/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/0`,
+        )
         .set('Authorization', 'Bearer mock-token')
         .send(updateDto)
         .expect(403);
@@ -697,7 +716,9 @@ describe('TripsController (Integration)', () => {
       tripsService.deleteActivity.mockResolvedValue(updatedItinerary as any);
 
       const response = await request(app.getHttpServer())
-        .delete(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/0`)
+        .delete(
+          `/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/0`,
+        )
         .set('Authorization', 'Bearer mock-token')
         .expect(200);
 
@@ -712,11 +733,13 @@ describe('TripsController (Integration)', () => {
 
     it('should return 404 when activity index is invalid', async () => {
       tripsService.deleteActivity.mockRejectedValue(
-        new (require('@nestjs/common').NotFoundException)('Activity not found at the specified index'),
+        new NotFoundException('Activity not found at the specified index'),
       );
 
       await request(app.getHttpServer())
-        .delete(`/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/999`)
+        .delete(
+          `/trips/${MOCK_TRIP_ID}/itineraries/${MOCK_ITINERARY_ID}/activities/999`,
+        )
         .set('Authorization', 'Bearer mock-token')
         .expect(404);
 
@@ -891,7 +914,9 @@ describe('TripsController (Integration)', () => {
 
       // Test multiple endpoints
       await request(testApp.getHttpServer()).get('/trips').expect(403);
-      await request(testApp.getHttpServer()).get(`/trips/${MOCK_TRIP_ID}`).expect(403);
+      await request(testApp.getHttpServer())
+        .get(`/trips/${MOCK_TRIP_ID}`)
+        .expect(403);
       await request(testApp.getHttpServer())
         .post('/trips')
         .send({})

@@ -121,7 +121,7 @@ export class TemplateController {
    */
   @Post('warmup')
   @HttpCode(HttpStatus.OK)
-  async triggerWarmup() {
+  triggerWarmup() {
     const status = this.warmupService.getStatus();
     if (status.seedInProgress) {
       return { message: 'Seed already in progress', ...status };

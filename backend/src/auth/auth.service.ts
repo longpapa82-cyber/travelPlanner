@@ -29,7 +29,24 @@ import { AuditService } from '../admin/audit.service';
 import { AuditAction } from '../admin/entities/audit-log.entity';
 import { detectPlatform } from '../common/utils/platform-detector';
 
-type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms';
+type SupportedLang =
+  | 'ko'
+  | 'en'
+  | 'ja'
+  | 'zh'
+  | 'es'
+  | 'de'
+  | 'fr'
+  | 'th'
+  | 'vi'
+  | 'pt'
+  | 'ar'
+  | 'id'
+  | 'hi'
+  | 'it'
+  | 'ru'
+  | 'tr'
+  | 'ms';
 
 export interface OAuthUserData {
   providerId: string;
@@ -88,7 +105,11 @@ export class AuthService {
     }
 
     // Audit log: registration
-    this.auditService.log({ userId: user.id, action: AuditAction.REGISTER }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
+    this.auditService
+      .log({ userId: user.id, action: AuditAction.REGISTER })
+      .catch((err) => {
+        this.logger.warn(`Failed to update login metadata: ${err.message}`);
+      });
 
     // Generate JWT tokens
     const tokens = await this.generateTokens(user.id, user.email!);
@@ -116,7 +137,11 @@ export class AuthService {
     // Check account-level lockout (Redis-based, survives restarts)
     const lockKey = `login_attempts:${loginDto.email}`;
     const attempts = await this.cacheManager.get<number>(lockKey);
-    if (attempts !== null && attempts !== undefined && attempts >= this.LOGIN_MAX_ATTEMPTS) {
+    if (
+      attempts !== null &&
+      attempts !== undefined &&
+      attempts >= this.LOGIN_MAX_ATTEMPTS
+    ) {
       throw new HttpException(
         'Account temporarily locked due to too many failed login attempts. Try again in 15 minutes.',
         HttpStatus.LOCKED,
@@ -127,6 +152,9 @@ export class AuthService {
     const user = await this.usersService.findByEmail(loginDto.email);
     if (!user) {
       await this.incrementLoginAttempts(lockKey);
+      this.auditService
+        .log({ action: AuditAction.LOGIN_FAILED, metadata: { reason: 'user_not_found' } })
+        .catch(() => {});
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -137,6 +165,9 @@ export class AuthService {
     );
     if (!isPasswordValid) {
       await this.incrementLoginAttempts(lockKey);
+      this.auditService
+        .log({ userId: user.id, action: AuditAction.LOGIN_FAILED, metadata: { reason: 'invalid_password' } })
+        .catch(() => {});
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -144,7 +175,11 @@ export class AuthService {
     await this.cacheManager.del(lockKey);
 
     // Audit log: successful login
-    this.auditService.log({ userId: user.id, action: AuditAction.LOGIN }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
+    this.auditService
+      .log({ userId: user.id, action: AuditAction.LOGIN })
+      .catch((err) => {
+        this.logger.warn(`Failed to update login metadata: ${err.message}`);
+      });
 
     // Check if 2FA is enabled
     if (user.isTwoFactorEnabled) {
@@ -180,7 +215,9 @@ export class AuthService {
     const current = (await this.cacheManager.get<number>(lockKey)) || 0;
     await this.cacheManager.set(lockKey, current + 1, this.LOGIN_LOCKOUT_TTL);
     if (current + 1 >= this.LOGIN_MAX_ATTEMPTS) {
-      this.logger.warn(`Account locked: ${lockKey} — ${this.LOGIN_MAX_ATTEMPTS} failed attempts`);
+      this.logger.warn(
+        `Account locked: ${lockKey.replace(/:[^:]+$/, ':***')} — ${this.LOGIN_MAX_ATTEMPTS} failed attempts`,
+      );
     }
   }
 
@@ -195,9 +232,7 @@ export class AuthService {
 
       // Check if refresh token has been revoked (rotation check)
       if (payload.jti) {
-        const stored = await this.cacheManager.get(
-          `refresh:${payload.jti}`,
-        );
+        const stored = await this.cacheManager.get(`refresh:${payload.jti}`);
         if (!stored) {
           // Token was already used or revoked — possible token theft
           this.logger.warn(
@@ -210,7 +245,9 @@ export class AuthService {
       }
 
       // Reject refresh if account was deleted
-      const isDeleted = await this.cacheManager.get(`deleted_user:${payload.sub}`);
+      const isDeleted = await this.cacheManager.get(
+        `deleted_user:${payload.sub}`,
+      );
       if (isDeleted) {
         throw new UnauthorizedException('Account has been deleted');
       }
@@ -250,7 +287,11 @@ export class AuthService {
         await this.cacheManager.del(`refresh:${payload.jti}`);
       }
       // Audit log: logout
-      this.auditService.log({ userId: payload.sub, action: AuditAction.LOGOUT }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
+      this.auditService
+        .log({ userId: payload.sub, action: AuditAction.LOGOUT })
+        .catch((err) => {
+          this.logger.warn(`Failed to update login metadata: ${err.message}`);
+        });
     } catch {
       // Token already expired or invalid — still succeed logout
     }
@@ -285,7 +326,10 @@ export class AuthService {
     return code;
   }
 
-  async exchangeOAuthCode(code: string, userAgent?: string): Promise<AuthResponse> {
+  async exchangeOAuthCode(
+    code: string,
+    userAgent?: string,
+  ): Promise<AuthResponse> {
     const data = await this.cacheManager.get<string>(`oauth:code:${code}`);
     if (!data) {
       throw new UnauthorizedException('Invalid or expired OAuth code');
@@ -298,7 +342,10 @@ export class AuthService {
     return this.oauthLogin(oauthUser, userAgent);
   }
 
-  async oauthLogin(oauthUser: OAuthUserData, userAgent?: string): Promise<AuthResponse> {
+  async oauthLogin(
+    oauthUser: OAuthUserData,
+    userAgent?: string,
+  ): Promise<AuthResponse> {
     // Map uppercase provider from OAuth strategy to lowercase AuthProvider enum
     const providerMap: Record<string, AuthProvider> = {
       GOOGLE: AuthProvider.GOOGLE,
@@ -400,9 +447,7 @@ export class AuthService {
       }
     } catch (error) {
       // Never reveal social login status — always return generic success
-      this.logger.warn(
-        `Forgot password failed: ${getErrorMessage(error)}`,
-      );
+      this.logger.warn(`Forgot password failed: ${getErrorMessage(error)}`);
     }
 
     // Always return success to prevent email enumeration
@@ -414,7 +459,12 @@ export class AuthService {
     newPassword: string,
     lang: SupportedLang = 'ko',
   ): Promise<{ message: string }> {
-    await this.usersService.resetPassword(token, newPassword, lang);
+    const user = await this.usersService.resetPassword(token, newPassword, lang);
+    if (user?.id) {
+      this.auditService
+        .log({ userId: user.id, action: AuditAction.PASSWORD_RESET })
+        .catch(() => {});
+    }
     return { message: t('password.reset.success', lang) };
   }
 
@@ -463,7 +513,11 @@ export class AuthService {
     }
 
     await this.usersService.enableTwoFactor(userId, backupCodes);
-    this.auditService.log({ userId, action: AuditAction.TWO_FACTOR_ENABLE }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
+    this.auditService
+      .log({ userId, action: AuditAction.TWO_FACTOR_ENABLE })
+      .catch((err) => {
+        this.logger.warn(`Failed to update login metadata: ${err.message}`);
+      });
 
     return { backupCodes };
   }
@@ -484,7 +538,11 @@ export class AuthService {
     }
 
     await this.usersService.disableTwoFactor(userId);
-    this.auditService.log({ userId, action: AuditAction.TWO_FACTOR_DISABLE }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
+    this.auditService
+      .log({ userId, action: AuditAction.TWO_FACTOR_DISABLE })
+      .catch((err) => {
+        this.logger.warn(`Failed to update login metadata: ${err.message}`);
+      });
     return { message: '2FA disabled' };
   }
 
@@ -511,7 +569,11 @@ export class AuthService {
     // Check 2FA attempt lockout
     const tfaLockKey = `2fa_attempts:${payload.sub}`;
     const tfaAttempts = await this.cacheManager.get<number>(tfaLockKey);
-    if (tfaAttempts !== null && tfaAttempts !== undefined && tfaAttempts >= this.TFA_MAX_ATTEMPTS) {
+    if (
+      tfaAttempts !== null &&
+      tfaAttempts !== undefined &&
+      tfaAttempts >= this.TFA_MAX_ATTEMPTS
+    ) {
       throw new HttpException(
         '2FA verification temporarily locked. Try again in 15 minutes.',
         HttpStatus.LOCKED,
@@ -539,7 +601,11 @@ export class AuthService {
       // Check backup code attempt lockout (separate from TOTP)
       const backupLockKey = `2fa_backup_attempts:${payload.sub}`;
       const backupAttempts = await this.cacheManager.get<number>(backupLockKey);
-      if (backupAttempts !== null && backupAttempts !== undefined && backupAttempts >= 3) {
+      if (
+        backupAttempts !== null &&
+        backupAttempts !== undefined &&
+        backupAttempts >= 3
+      ) {
         throw new HttpException(
           'Backup code verification temporarily locked. Try again in 15 minutes.',
           HttpStatus.LOCKED,
@@ -561,15 +627,24 @@ export class AuthService {
         );
       } else {
         // Track failed backup code attempts separately
-        const currentBackup = (await this.cacheManager.get<number>(backupLockKey)) || 0;
-        await this.cacheManager.set(backupLockKey, currentBackup + 1, this.LOGIN_LOCKOUT_TTL);
+        const currentBackup =
+          (await this.cacheManager.get<number>(backupLockKey)) || 0;
+        await this.cacheManager.set(
+          backupLockKey,
+          currentBackup + 1,
+          this.LOGIN_LOCKOUT_TTL,
+        );
       }
     }
 
     if (!isValid) {
       // Track failed TOTP attempts
       const current = (await this.cacheManager.get<number>(tfaLockKey)) || 0;
-      await this.cacheManager.set(tfaLockKey, current + 1, this.LOGIN_LOCKOUT_TTL);
+      await this.cacheManager.set(
+        tfaLockKey,
+        current + 1,
+        this.LOGIN_LOCKOUT_TTL,
+      );
       throw new UnauthorizedException('Invalid 2FA code');
     }
 
@@ -665,10 +740,14 @@ export class AuthService {
   }
 
   private updateLoginMetadata(userId: string, userAgent?: string): void {
-    this.usersService.update(userId, {
-      lastLoginAt: new Date(),
-      lastPlatform: detectPlatform(userAgent),
-      lastUserAgent: userAgent?.slice(0, 500),
-    }).catch((err) => { this.logger.warn(`Failed to update login metadata: ${err.message}`); });
+    this.usersService
+      .update(userId, {
+        lastLoginAt: new Date(),
+        lastPlatform: detectPlatform(userAgent),
+        lastUserAgent: userAgent?.slice(0, 500),
+      })
+      .catch((err) => {
+        this.logger.warn(`Failed to update login metadata: ${err.message}`);
+      });
   }
 }

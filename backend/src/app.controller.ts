@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, IsNull, MoreThan, Not } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Trip } from './trips/entities/trip.entity';
 import { AppService } from './app.service';
@@ -77,9 +77,9 @@ export class AppController {
       .where('trip.isPublic = :isPublic', { isPublic: true })
       .andWhere('trip.shareToken IS NOT NULL')
       .andWhere('trip.shareExpiresAt > :now', { now: new Date() })
-      .andWhere("trip.destination NOT LIKE :testKo", { testKo: '%테스트%' })
-      .andWhere("trip.destination NOT LIKE :testEn", { testEn: '%test%' })
-      .andWhere("trip.description NOT LIKE :descTest", { descTest: '%테스트%' })
+      .andWhere('trip.destination NOT LIKE :testKo', { testKo: '%테스트%' })
+      .andWhere('trip.destination NOT LIKE :testEn', { testEn: '%test%' })
+      .andWhere('trip.description NOT LIKE :descTest', { descTest: '%테스트%' })
       .select(['trip.shareToken', 'trip.updatedAt', 'trip.destination'])
       .take(1000)
       .getMany();
@@ -120,21 +120,81 @@ export class AppController {
       { loc: '/guides/dubai', changefreq: 'monthly', priority: '0.85' },
       // Blog
       { loc: '/blog', changefreq: 'weekly', priority: '0.8' },
-      { loc: '/blog/ai-travel-planning-tips', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/packing-checklist', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/budget-travel-guide', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/first-solo-travel', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/travel-insurance-guide', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/japan-transport-pass-guide', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/europe-culture-differences', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/southeast-asia-rainy-season', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/smartphone-travel-photography', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/currency-exchange-guide', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/airport-time-saving-tips', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/travel-internet-guide', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/family-travel-planning', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/travel-journal-tips', changefreq: 'monthly', priority: '0.75' },
-      { loc: '/blog/long-term-travel-guide', changefreq: 'monthly', priority: '0.75' },
+      {
+        loc: '/blog/ai-travel-planning-tips',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/packing-checklist',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/budget-travel-guide',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/first-solo-travel',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/travel-insurance-guide',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/japan-transport-pass-guide',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/europe-culture-differences',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/southeast-asia-rainy-season',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/smartphone-travel-photography',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/currency-exchange-guide',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/airport-time-saving-tips',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/travel-internet-guide',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/family-travel-planning',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/travel-journal-tips',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
+      {
+        loc: '/blog/long-term-travel-guide',
+        changefreq: 'monthly',
+        priority: '0.75',
+      },
     ];
 
     const staticEntries = staticUrls

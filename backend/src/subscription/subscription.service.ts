@@ -2,7 +2,6 @@ import {
   Injectable,
   Logger,
   Inject,
-  ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,9 +18,11 @@ import {
 
 const AI_TRIPS_FREE_LIMIT_DEFAULT = 3;
 const PREMIUM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-const ADMIN_EMAILS: string[] = (process.env.ADMIN_EMAILS || 'a090723@naver.com,longpapa82@gmail.com')
+const ADMIN_EMAILS: string[] = (
+  process.env.ADMIN_EMAILS || 'a090723@naver.com,longpapa82@gmail.com'
+)
   .split(',')
-  .map(e => e.trim())
+  .map((e) => e.trim())
   .filter(Boolean);
 
 @Injectable()
@@ -203,9 +204,7 @@ export class SubscriptionService {
 
         // Invalidate cache
         await this.cacheManager.del(`premium:${user.id}`);
-        this.logger.log(
-          `User ${user.id} downgraded to FREE (${eventType})`,
-        );
+        this.logger.log(`User ${user.id} downgraded to FREE (${eventType})`);
         break;
       }
 
@@ -270,7 +269,9 @@ export class SubscriptionService {
         : this.configService.get<string>('STRIPE_PRICE_YEARLY');
 
     if (!priceId) {
-      throw new BadRequestException(`Stripe price not configured for ${plan} plan`);
+      throw new BadRequestException(
+        `Stripe price not configured for ${plan} plan`,
+      );
     }
 
     const user = await this.userRepository.findOne({
@@ -289,10 +290,14 @@ export class SubscriptionService {
         metadata: { userId: user.id },
       });
       customerId = customer.id;
-      await this.userRepository.update(user.id, { stripeCustomerId: customerId });
+      await this.userRepository.update(user.id, {
+        stripeCustomerId: customerId,
+      });
     }
 
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'https://mytravel-planner.com';
+    const frontendUrl =
+      this.configService.get<string>('FRONTEND_URL') ||
+      'https://mytravel-planner.com';
 
     const session = await this.stripe.checkout.sessions.create({
       customer: customerId,
@@ -304,11 +309,15 @@ export class SubscriptionService {
     });
 
     if (!session.url) {
-      this.logger.error(`Stripe checkout session created without URL, session: ${session.id}`);
+      this.logger.error(
+        `Stripe checkout session created without URL, session: ${session.id}`,
+      );
       throw new BadRequestException('Checkout session creation failed');
     }
 
-    this.logger.log(`Stripe checkout session created for user ${userId}, plan: ${plan}`);
+    this.logger.log(
+      `Stripe checkout session created for user ${userId}, plan: ${plan}`,
+    );
     return { url: session.url };
   }
 
@@ -326,7 +335,9 @@ export class SubscriptionService {
       throw new BadRequestException('No Stripe customer found');
     }
 
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'https://mytravel-planner.com';
+    const frontendUrl =
+      this.configService.get<string>('FRONTEND_URL') ||
+      'https://mytravel-planner.com';
 
     const session = await this.stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
@@ -341,7 +352,9 @@ export class SubscriptionService {
       throw new BadRequestException('Stripe is not configured');
     }
 
-    const webhookSecret = this.configService.get<string>('STRIPE_WEBHOOK_SECRET');
+    const webhookSecret = this.configService.get<string>(
+      'STRIPE_WEBHOOK_SECRET',
+    );
     if (!webhookSecret) {
       this.logger.error('STRIPE_WEBHOOK_SECRET not configured');
       throw new BadRequestException('Webhook not configured');
@@ -349,9 +362,15 @@ export class SubscriptionService {
 
     let event: Stripe.Event;
     try {
-      event = this.stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+      event = this.stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        webhookSecret,
+      );
     } catch (err: any) {
-      this.logger.warn(`Stripe webhook signature verification failed: ${err.message}`);
+      this.logger.warn(
+        `Stripe webhook signature verification failed: ${err.message}`,
+      );
       throw new BadRequestException('Invalid webhook signature');
     }
 
@@ -359,18 +378,18 @@ export class SubscriptionService {
 
     switch (event.type) {
       case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session;
+        const session = event.data.object;
         await this.handleStripeCheckoutCompleted(session);
         break;
       }
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
-        const subscription = event.data.object as Stripe.Subscription;
+        const subscription = event.data.object;
         await this.handleStripeSubscriptionChange(subscription);
         break;
       }
       case 'invoice.payment_failed': {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object;
         await this.handleStripePaymentFailed(invoice);
         break;
       }
@@ -379,7 +398,9 @@ export class SubscriptionService {
     }
   }
 
-  private async handleStripeCheckoutCompleted(session: Stripe.Checkout.Session): Promise<void> {
+  private async handleStripeCheckoutCompleted(
+    session: Stripe.Checkout.Session,
+  ): Promise<void> {
     const userId = session.metadata?.userId;
     if (!userId) {
       this.logger.warn('Stripe checkout session without userId metadata');
@@ -387,20 +408,27 @@ export class SubscriptionService {
     }
 
     if (session.payment_status !== 'paid') {
-      this.logger.warn(`Stripe checkout ${session.id} payment_status=${session.payment_status}, skipping for user ${userId}`);
+      this.logger.warn(
+        `Stripe checkout ${session.id} payment_status=${session.payment_status}, skipping for user ${userId}`,
+      );
       return;
     }
 
     const subscriptionId = session.subscription as string;
     if (!subscriptionId) {
-      this.logger.error(`Stripe checkout ${session.id} completed without subscription ID for user ${userId}`);
+      this.logger.error(
+        `Stripe checkout ${session.id} completed without subscription ID for user ${userId}`,
+      );
       return;
     }
     if (!this.stripe) return;
 
-    const subscription = await this.stripe.subscriptions.retrieve(subscriptionId, {
-      expand: ['items.data'],
-    });
+    const subscription = await this.stripe.subscriptions.retrieve(
+      subscriptionId,
+      {
+        expand: ['items.data'],
+      },
+    );
     const periodEnd = subscription.items.data[0]?.current_period_end;
     const expiresAt = periodEnd
       ? new Date(periodEnd * 1000)
@@ -417,7 +445,9 @@ export class SubscriptionService {
     this.logger.log(`User ${userId} upgraded to PREMIUM via Stripe`);
   }
 
-  private async handleStripeSubscriptionChange(subscription: Stripe.Subscription): Promise<void> {
+  private async handleStripeSubscriptionChange(
+    subscription: Stripe.Subscription,
+  ): Promise<void> {
     const customerId = subscription.customer as string;
     const user = await this.userRepository.findOne({
       where: { stripeCustomerId: customerId },
@@ -425,11 +455,16 @@ export class SubscriptionService {
     });
 
     if (!user) {
-      this.logger.warn(`Stripe subscription event for unknown customer: ${customerId}`);
+      this.logger.warn(
+        `Stripe subscription event for unknown customer: ${customerId}`,
+      );
       return;
     }
 
-    if (subscription.status === 'active' || subscription.status === 'trialing') {
+    if (
+      subscription.status === 'active' ||
+      subscription.status === 'trialing'
+    ) {
       const periodEnd = subscription.items?.data?.[0]?.current_period_end;
       const expiresAt = periodEnd
         ? new Date(periodEnd * 1000)
@@ -439,7 +474,11 @@ export class SubscriptionService {
         subscriptionPlatform: SubscriptionPlatform.WEB,
         subscriptionExpiresAt: expiresAt,
       });
-      await this.cacheManager.set(`premium:${user.id}`, 'true', PREMIUM_CACHE_TTL);
+      await this.cacheManager.set(
+        `premium:${user.id}`,
+        'true',
+        PREMIUM_CACHE_TTL,
+      );
       this.logger.log(`User ${user.id} Stripe subscription renewed`);
     } else {
       // canceled, incomplete, past_due, unpaid
@@ -447,11 +486,15 @@ export class SubscriptionService {
         subscriptionTier: SubscriptionTier.FREE,
       });
       await this.cacheManager.del(`premium:${user.id}`);
-      this.logger.log(`User ${user.id} Stripe subscription ended (${subscription.status})`);
+      this.logger.log(
+        `User ${user.id} Stripe subscription ended (${subscription.status})`,
+      );
     }
   }
 
-  private async handleStripePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
+  private async handleStripePaymentFailed(
+    invoice: Stripe.Invoice,
+  ): Promise<void> {
     const customerId = invoice.customer as string;
     const user = await this.userRepository.findOne({
       where: { stripeCustomerId: customerId },
@@ -459,11 +502,15 @@ export class SubscriptionService {
     });
 
     if (!user) {
-      this.logger.error(`Stripe payment failed for unknown customer: ${customerId}`);
+      this.logger.error(
+        `Stripe payment failed for unknown customer: ${customerId}`,
+      );
       return;
     }
 
-    this.logger.warn(`Stripe payment failed for user ${user.id}, invoice: ${invoice.id}`);
+    this.logger.warn(
+      `Stripe payment failed for user ${user.id}, invoice: ${invoice.id}`,
+    );
   }
 
   // ─── Cron ────────────────────────────────────────────────

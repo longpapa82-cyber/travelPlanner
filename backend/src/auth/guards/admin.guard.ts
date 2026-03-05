@@ -5,9 +5,9 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 
-const ADMIN_EMAILS: string[] = (process.env.ADMIN_EMAILS || 'a090723@naver.com,longpapa82@gmail.com')
+const ADMIN_EMAILS: string[] = (process.env.ADMIN_EMAILS || '')
   .split(',')
-  .map(e => e.trim())
+  .map((e) => e.trim())
   .filter(Boolean);
 
 @Injectable()
