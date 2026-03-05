@@ -21,7 +21,14 @@ const KEYCHAIN_BASE_DELAY_MS = 200;
 // Refresh token is one-time-use so exposure risk is minimal.
 // AsyncStorage is in app-private SQLite on Android (requires root to access).
 const ASYNC_STORAGE_BACKUP_PREFIX = '@travelplanner:backup:';
-const BACKUP_KEYS = ['@travelplanner:refresh_token'];
+const BACKUP_KEYS = [
+  '@travelplanner:auth_token',
+  '@travelplanner:refresh_token',
+];
+
+// Native in-memory cache — avoids slow Keychain reads on every API request.
+// Populated on setItem, checked first on getItem. Cleared on removeItem/clear.
+const nativeMemoryCache = new Map<string, string>();
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -39,6 +46,7 @@ export const secureStorage = {
         localStorage.setItem(key, value);
       }
     } else {
+      nativeMemoryCache.set(key, value);
       await Keychain.setGenericPassword(key, value, { service: key });
       // Backup critical tokens to AsyncStorage as Keychain fallback
       if (BACKUP_KEYS.includes(key)) {
@@ -71,13 +79,31 @@ export const secureStorage = {
       }
       return localStorage.getItem(key);
     } else {
-      // Retry with exponential backoff — react-native-keychain can return false
-      // spuriously on Android after app restart (known issue #594)
+      // 1. In-memory cache — instant (populated by setItem during this session)
+      const cached = nativeMemoryCache.get(key);
+      if (cached) return cached;
+
+      // 2. AsyncStorage backup — fast (~5ms), survives cold start
+      if (BACKUP_KEYS.includes(key)) {
+        try {
+          const backup = await AsyncStorage.getItem(ASYNC_STORAGE_BACKUP_PREFIX + key);
+          if (backup) {
+            nativeMemoryCache.set(key, backup);
+            return backup;
+          }
+        } catch { /* backup read failed */ }
+      }
+
+      // 3. Keychain with exponential backoff — last resort
+      // react-native-keychain can return false spuriously on Android cold start (#594)
       // Delays: 200, 400, 800, 1600ms = ~3s total before giving up
       for (let attempt = 1; attempt <= KEYCHAIN_MAX_RETRIES; attempt++) {
         try {
           const credentials = await Keychain.getGenericPassword({ service: key });
-          if (credentials) return credentials.password;
+          if (credentials) {
+            nativeMemoryCache.set(key, credentials.password);
+            return credentials.password;
+          }
           // credentials === false — may be a spurious miss on Android
           if (attempt < KEYCHAIN_MAX_RETRIES) {
             await delay(KEYCHAIN_BASE_DELAY_MS * Math.pow(2, attempt - 1));
@@ -88,16 +114,6 @@ export const secureStorage = {
             await delay(KEYCHAIN_BASE_DELAY_MS * Math.pow(2, attempt - 1));
           }
         }
-      }
-      // Keychain exhausted — try AsyncStorage backup for critical tokens
-      if (BACKUP_KEYS.includes(key)) {
-        try {
-          const backup = await AsyncStorage.getItem(ASYNC_STORAGE_BACKUP_PREFIX + key);
-          if (backup) {
-            console.info(`[SecureStorage] Recovered "${key}" from AsyncStorage backup`);
-            return backup;
-          }
-        } catch { /* backup also failed */ }
       }
       return null;
     }
@@ -114,6 +130,7 @@ export const secureStorage = {
         localStorage.removeItem(key);
       }
     } else {
+      nativeMemoryCache.delete(key);
       try {
         await Keychain.resetGenericPassword({ service: key });
       } catch (error) {
@@ -142,6 +159,7 @@ export const secureStorage = {
         }
       });
     } else {
+      nativeMemoryCache.clear();
       try {
         await Keychain.resetGenericPassword({ service: '@travelplanner:auth_token' });
         await Keychain.resetGenericPassword({ service: '@travelplanner:refresh_token' });

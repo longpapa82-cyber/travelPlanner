@@ -268,6 +268,22 @@ class ApiService {
     }
   }
 
+  /** Fetch profile with an explicit token, bypassing the request interceptor's storage read. */
+  async getProfileWithToken(token: string) {
+    try {
+      const response = await this.api.get('/auth/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = response.data;
+      offlineCache.set('profile', data).catch(() => {});
+      return data;
+    } catch (error) {
+      const cached = await offlineCache.get('profile');
+      if (cached) return cached;
+      throw error;
+    }
+  }
+
   async refreshToken(refreshToken: string) {
     const response = await this.api.post('/auth/refresh', { refreshToken });
     return response.data;
