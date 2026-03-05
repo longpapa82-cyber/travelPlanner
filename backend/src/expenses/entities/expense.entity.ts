@@ -56,7 +56,11 @@ export class Expense {
   @Column({ type: 'varchar', length: 3, default: 'USD' })
   currency: string;
 
-  @Column({ type: 'enum', enum: ExpenseCategory, default: ExpenseCategory.OTHER })
+  @Column({
+    type: 'enum',
+    enum: ExpenseCategory,
+    default: ExpenseCategory.OTHER,
+  })
   category: ExpenseCategory;
 
   @Column({ type: 'enum', enum: SplitMethod, default: SplitMethod.EQUAL })

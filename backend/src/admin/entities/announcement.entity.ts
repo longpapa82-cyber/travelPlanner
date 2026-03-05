@@ -40,7 +40,11 @@ export class Announcement {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'enum', enum: AnnouncementType, default: AnnouncementType.SYSTEM })
+  @Column({
+    type: 'enum',
+    enum: AnnouncementType,
+    default: AnnouncementType.SYSTEM,
+  })
   type: AnnouncementType;
 
   @Column({ type: 'jsonb' })
@@ -49,13 +53,25 @@ export class Announcement {
   @Column({ type: 'jsonb' })
   content: Record<string, string>;
 
-  @Column({ type: 'enum', enum: AnnouncementTargetAudience, default: AnnouncementTargetAudience.ALL })
+  @Column({
+    type: 'enum',
+    enum: AnnouncementTargetAudience,
+    default: AnnouncementTargetAudience.ALL,
+  })
   targetAudience: AnnouncementTargetAudience;
 
-  @Column({ type: 'enum', enum: AnnouncementPriority, default: AnnouncementPriority.NORMAL })
+  @Column({
+    type: 'enum',
+    enum: AnnouncementPriority,
+    default: AnnouncementPriority.NORMAL,
+  })
   priority: AnnouncementPriority;
 
-  @Column({ type: 'enum', enum: AnnouncementDisplayType, default: AnnouncementDisplayType.BANNER })
+  @Column({
+    type: 'enum',
+    enum: AnnouncementDisplayType,
+    default: AnnouncementDisplayType.BANNER,
+  })
   displayType: AnnouncementDisplayType;
 
   @Column({ type: 'varchar', length: 500, nullable: true })

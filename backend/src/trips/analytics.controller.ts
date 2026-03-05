@@ -1,4 +1,10 @@
-import { Controller, Get, Query, UseGuards, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { AnalyticsService } from './services/analytics.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -16,7 +22,10 @@ export class AnalyticsController {
   @UseGuards(JwtAuthGuard)
   @Throttle({ short: { ttl: 60000, limit: 30 } })
   async getPopularDestinations(@Query('limit') limit?: string) {
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit || '10', 10) || 10));
+    const limitNum = Math.min(
+      100,
+      Math.max(1, parseInt(limit || '10', 10) || 10),
+    );
     return this.analyticsService.getPopularDestinations(limitNum);
   }
 
@@ -27,7 +36,10 @@ export class AnalyticsController {
   @Get('travel-trends')
   @UseGuards(JwtAuthGuard, AdminGuard)
   async getTravelTrends(@Query('limit') limit?: string) {
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit || '10', 10) || 10));
+    const limitNum = Math.min(
+      100,
+      Math.max(1, parseInt(limit || '10', 10) || 10),
+    );
     return this.analyticsService.getTravelTrends(limitNum);
   }
 

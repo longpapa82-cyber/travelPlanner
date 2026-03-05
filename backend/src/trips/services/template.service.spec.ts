@@ -18,7 +18,10 @@ describe('TemplateService', () => {
     query: jest.Mock;
     createQueryBuilder: jest.Mock;
   };
-  let embeddingService: { buildEmbeddingText: jest.Mock; generateEmbedding: jest.Mock };
+  let embeddingService: {
+    buildEmbeddingText: jest.Mock;
+    generateEmbedding: jest.Mock;
+  };
 
   const mockTemplate = (): Partial<ItineraryTemplate> => ({
     id: 'tmpl-1',
@@ -34,8 +37,16 @@ describe('TemplateService', () => {
       {
         dayNumber: 1,
         activities: [
-          { title: 'Senso-ji Temple', location: 'Asakusa', time: '09:00' } as Activity,
-          { title: 'Shibuya Crossing', location: 'Shibuya', time: '14:00' } as Activity,
+          {
+            title: 'Senso-ji Temple',
+            location: 'Asakusa',
+            time: '09:00',
+          } as Activity,
+          {
+            title: 'Shibuya Crossing',
+            location: 'Shibuya',
+            time: '14:00',
+          } as Activity,
         ],
       },
     ],
@@ -86,7 +97,9 @@ describe('TemplateService', () => {
         { title: 'Lunch', location: 'Shinjuku' },
       ] as Activity[];
 
-      expect(service.calculateModificationRatio(activities, activities)).toBe(0);
+      expect(service.calculateModificationRatio(activities, activities)).toBe(
+        0,
+      );
     });
 
     it('should return 1 for completely different activities', () => {
@@ -136,7 +149,10 @@ describe('TemplateService', () => {
     });
 
     it('should flag empty days', () => {
-      const template = { ...mockTemplate(), days: [] } as unknown as ItineraryTemplate;
+      const template = {
+        ...mockTemplate(),
+        days: [],
+      } as unknown as ItineraryTemplate;
       const issues = service.validateTemplate(template);
       expect(issues).toContain('No days in template');
     });
@@ -185,7 +201,12 @@ describe('TemplateService', () => {
           {
             dayNumber: 1,
             activities: [
-              { title: 'Visit', location: 'X', time: '10:00', estimatedCost: -5 },
+              {
+                title: 'Visit',
+                location: 'X',
+                time: '10:00',
+                estimatedCost: -5,
+              },
             ],
           },
         ],
@@ -201,7 +222,12 @@ describe('TemplateService', () => {
           {
             dayNumber: 1,
             activities: [
-              { title: 'Visit', location: 'X', time: '10:00', estimatedDuration: 800 },
+              {
+                title: 'Visit',
+                location: 'X',
+                time: '10:00',
+                estimatedDuration: 800,
+              },
             ],
           },
         ],
@@ -248,7 +274,9 @@ describe('TemplateService', () => {
     it('should not throw on error', async () => {
       repo.increment.mockRejectedValue(new Error('DB error'));
 
-      await expect(service.recordUserModification('tmpl-1')).resolves.toBeUndefined();
+      await expect(
+        service.recordUserModification('tmpl-1'),
+      ).resolves.toBeUndefined();
     });
   });
 
@@ -274,12 +302,18 @@ describe('TemplateService', () => {
         .mockResolvedValueOnce(15); // staleCount
 
       repo.query
-        .mockResolvedValueOnce([{ withEmbeddings: '80', withoutEmbeddings: '20' }]) // embedding stats
-        .mockResolvedValueOnce([{ averageQuality: '0.72', lowQualityCount: '8' }]) // quality stats
-        .mockResolvedValueOnce([ // top destinations
+        .mockResolvedValueOnce([
+          { withEmbeddings: '80', withoutEmbeddings: '20' },
+        ]) // embedding stats
+        .mockResolvedValueOnce([
+          { averageQuality: '0.72', lowQualityCount: '8' },
+        ]) // quality stats
+        .mockResolvedValueOnce([
+          // top destinations
           { destination: 'Tokyo', count: 50, avgQuality: 0.85 },
         ])
-        .mockResolvedValueOnce([ // refresh queue
+        .mockResolvedValueOnce([
+          // refresh queue
           {
             id: 'tmpl-1',
             destination: 'Tokyo',
@@ -305,7 +339,9 @@ describe('TemplateService', () => {
     it('should handle empty database', async () => {
       repo.count.mockResolvedValue(0);
       repo.query
-        .mockResolvedValueOnce([{ withEmbeddings: '0', withoutEmbeddings: '0' }])
+        .mockResolvedValueOnce([
+          { withEmbeddings: '0', withoutEmbeddings: '0' },
+        ])
         .mockResolvedValueOnce([{ averageQuality: null, lowQualityCount: '0' }])
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce([]);

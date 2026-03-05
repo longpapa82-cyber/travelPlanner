@@ -43,7 +43,10 @@ describe('GeocodingService', () => {
           },
         },
         { provide: CACHE_MANAGER, useValue: cacheManager },
-        { provide: getRepositoryToken(GeocodingCache), useValue: geocodingRepo },
+        {
+          provide: getRepositoryToken(GeocodingCache),
+          useValue: geocodingRepo,
+        },
       ],
     }).compile();
 
@@ -56,7 +59,12 @@ describe('GeocodingService', () => {
 
   describe('geocode', () => {
     it('should return cached result from Redis', async () => {
-      const cached = { latitude: 35.71, longitude: 139.79, source: 'google', confidence: 1.0 };
+      const cached = {
+        latitude: 35.71,
+        longitude: 139.79,
+        source: 'google',
+        confidence: 1.0,
+      };
       cacheManager.get.mockResolvedValue(cached);
 
       const result = await service.geocode('Senso-ji, Tokyo');
@@ -157,7 +165,12 @@ describe('GeocodingService', () => {
 
   describe('geocodeBatch', () => {
     it('should geocode multiple queries', async () => {
-      const cached = { latitude: 35.71, longitude: 139.79, source: 'google', confidence: 1.0 };
+      const cached = {
+        latitude: 35.71,
+        longitude: 139.79,
+        source: 'google',
+        confidence: 1.0,
+      };
       cacheManager.get
         .mockResolvedValueOnce(cached)
         .mockResolvedValueOnce(null);
@@ -186,7 +199,10 @@ describe('GeocodingService', () => {
             useValue: { get: jest.fn().mockReturnValue(undefined) },
           },
           { provide: CACHE_MANAGER, useValue: cacheManager },
-          { provide: getRepositoryToken(GeocodingCache), useValue: geocodingRepo },
+          {
+            provide: getRepositoryToken(GeocodingCache),
+            useValue: geocodingRepo,
+          },
         ],
       }).compile();
 

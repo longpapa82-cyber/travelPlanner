@@ -1,4 +1,21 @@
-type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms';
+type SupportedLang =
+  | 'ko'
+  | 'en'
+  | 'ja'
+  | 'zh'
+  | 'es'
+  | 'de'
+  | 'fr'
+  | 'th'
+  | 'vi'
+  | 'pt'
+  | 'ar'
+  | 'id'
+  | 'hi'
+  | 'it'
+  | 'ru'
+  | 'tr'
+  | 'ms';
 
 const translations: Record<string, Record<SupportedLang, string>> = {
   'password.enterBoth': {
@@ -443,7 +460,24 @@ const translations: Record<string, Record<SupportedLang, string>> = {
 export function parseLang(acceptLanguage?: string): SupportedLang {
   if (!acceptLanguage) return 'ko';
   const lang = acceptLanguage.split(',')[0].split('-')[0].toLowerCase();
-  const supported: SupportedLang[] = ['en', 'ja', 'zh', 'es', 'de', 'fr', 'th', 'vi', 'pt', 'ar', 'id', 'hi', 'it', 'ru', 'tr', 'ms'];
+  const supported: SupportedLang[] = [
+    'en',
+    'ja',
+    'zh',
+    'es',
+    'de',
+    'fr',
+    'th',
+    'vi',
+    'pt',
+    'ar',
+    'id',
+    'hi',
+    'it',
+    'ru',
+    'tr',
+    'ms',
+  ];
   return (supported.find((l) => l === lang) as SupportedLang) ?? 'ko';
 }
 

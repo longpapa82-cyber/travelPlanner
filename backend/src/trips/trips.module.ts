@@ -28,7 +28,14 @@ import { GeocodingCache } from '../common/entities/geocoding-cache.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Trip, Itinerary, ItineraryTemplate, Collaborator, User, GeocodingCache]),
+    TypeOrmModule.forFeature([
+      Trip,
+      Itinerary,
+      ItineraryTemplate,
+      Collaborator,
+      User,
+      GeocodingCache,
+    ]),
     ConfigModule,
     NotificationsModule,
     SubscriptionModule,
@@ -47,7 +54,12 @@ import { GeocodingCache } from '../common/entities/geocoding-cache.entity';
     ImageService,
     GeocodingService,
   ],
-  controllers: [TripsController, ShareController, AnalyticsController, TemplateController],
+  controllers: [
+    TripsController,
+    ShareController,
+    AnalyticsController,
+    TemplateController,
+  ],
   exports: [TripsService, AnalyticsService, TemplateService],
 })
 export class TripsModule {}

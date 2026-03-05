@@ -9,11 +9,28 @@ import { AnnouncementRead } from './entities/announcement-read.entity';
 import { AdminService } from './admin.service';
 import { AuditService } from './audit.service';
 import { AnnouncementService } from './announcement.service';
-import { AdminController, AnnouncementsPublicController, ErrorLogController } from './admin.controller';
+import {
+  AdminController,
+  AnnouncementsPublicController,
+  ErrorLogController,
+} from './admin.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Trip, ErrorLog, AuditLog, Announcement, AnnouncementRead])],
-  controllers: [AdminController, AnnouncementsPublicController, ErrorLogController],
+  imports: [
+    TypeOrmModule.forFeature([
+      User,
+      Trip,
+      ErrorLog,
+      AuditLog,
+      Announcement,
+      AnnouncementRead,
+    ]),
+  ],
+  controllers: [
+    AdminController,
+    AnnouncementsPublicController,
+    ErrorLogController,
+  ],
   providers: [AdminService, AuditService, AnnouncementService],
   exports: [AdminService, AuditService, AnnouncementService],
 })

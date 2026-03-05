@@ -16,13 +16,16 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
   ) {
-    const clientID = configService.get<string>('oauth.apple.clientId') || 'placeholder';
+    const clientID =
+      configService.get<string>('oauth.apple.clientId') || 'placeholder';
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- passport-apple Strategy constructor is untyped
     super({
       clientID,
       teamID: configService.get<string>('oauth.apple.teamId') || 'placeholder',
       keyID: configService.get<string>('oauth.apple.keyId') || 'placeholder',
-      key: configService.get<string>('oauth.apple.privateKey') || 'placeholder-key',
+      key:
+        configService.get<string>('oauth.apple.privateKey') ||
+        'placeholder-key',
       callbackURL: configService.get<string>('oauth.apple.callbackUrl')!,
       scope: ['email', 'name'],
       passReqToCallback: false,

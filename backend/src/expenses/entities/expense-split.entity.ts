@@ -17,7 +17,9 @@ export class ExpenseSplit {
   @Column('uuid')
   expenseId: string;
 
-  @ManyToOne(() => Expense, (expense) => expense.splits, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Expense, (expense) => expense.splits, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'expenseId' })
   expense: Expense;
 

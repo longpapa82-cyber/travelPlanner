@@ -81,7 +81,10 @@ export class AdminService {
       .groupBy('u.lastPlatform')
       .getRawMany();
 
-    const platformStats: Record<string, { total: number; todayActive: number; weeklyActive: number }> = {
+    const platformStats: Record<
+      string,
+      { total: number; todayActive: number; weeklyActive: number }
+    > = {
       web: { total: 0, todayActive: 0, weeklyActive: 0 },
       ios: { total: 0, todayActive: 0, weeklyActive: 0 },
       android: { total: 0, todayActive: 0, weeklyActive: 0 },
@@ -258,7 +261,10 @@ export class AdminService {
       .groupBy('e.platform')
       .getRawMany();
 
-    const platformBreakdown: Record<string, { total: number; fatal: number; error: number; warning: number }> = {
+    const platformBreakdown: Record<
+      string,
+      { total: number; fatal: number; error: number; warning: number }
+    > = {
       web: { total: 0, fatal: 0, error: 0, warning: 0 },
       ios: { total: 0, fatal: 0, error: 0, warning: 0 },
       android: { total: 0, fatal: 0, error: 0, warning: 0 },
@@ -329,21 +335,27 @@ export class AdminService {
       .addSelect('u.subscriptionTier', 'tier')
       .addSelect('COUNT(*)', 'count')
       .where('u.subscriptionTier = :premium', { premium: 'premium' })
-      .andWhere('(u.subscriptionExpiresAt IS NULL OR u.subscriptionExpiresAt > :now)', { now })
+      .andWhere(
+        '(u.subscriptionExpiresAt IS NULL OR u.subscriptionExpiresAt > :now)',
+        { now },
+      )
       .groupBy('u.subscriptionPlatform')
       .addGroupBy('u.subscriptionTier')
       .getRawMany();
 
     // Commission rates by platform
     const commissions: Record<string, number> = {
-      web: 0.03,      // Stripe: 2.9% + 30c ≈ 3%
-      ios: 0.15,      // Apple: 15% (small business)
-      android: 0.15,  // Google: 15% (first $1M)
+      web: 0.03, // Stripe: 2.9% + 30c ≈ 3%
+      ios: 0.15, // Apple: 15% (small business)
+      android: 0.15, // Google: 15% (first $1M)
     };
 
     const premiumPrice = 3.99; // monthly price
 
-    const byPlatform: Record<string, { active: number; revenue: number; mrr: number }> = {
+    const byPlatform: Record<
+      string,
+      { active: number; revenue: number; mrr: number }
+    > = {
       web: { active: 0, revenue: 0, mrr: 0 },
       ios: { active: 0, revenue: 0, mrr: 0 },
       android: { active: 0, revenue: 0, mrr: 0 },
@@ -363,7 +375,10 @@ export class AdminService {
       }
     }
 
-    const totalRevenue = Object.values(byPlatform).reduce((sum, p) => sum + p.revenue, 0);
+    const totalRevenue = Object.values(byPlatform).reduce(
+      (sum, p) => sum + p.revenue,
+      0,
+    );
 
     return {
       total: {
@@ -377,7 +392,9 @@ export class AdminService {
   }
 
   async resolveErrorLog(id: string) {
-    const result = await this.errorLogRepository.update(id, { isResolved: true });
+    const result = await this.errorLogRepository.update(id, {
+      isResolved: true,
+    });
     if (result.affected === 0) {
       throw new NotFoundException(`Error log ${id} not found`);
     }
@@ -394,15 +411,19 @@ export class AdminService {
       .groupBy('t.aiStatus')
       .getRawMany<{ status: string; count: number }>();
 
-    const counts: Record<string, number> = { none: 0, success: 0, failed: 0, skipped: 0 };
+    const counts: Record<string, number> = {
+      none: 0,
+      success: 0,
+      failed: 0,
+      skipped: 0,
+    };
     for (const r of results) {
       counts[r.status] = r.count;
     }
 
     const aiAttempted = counts.success + counts.failed;
-    const successRate = aiAttempted > 0
-      ? Math.round((counts.success / aiAttempted) * 100)
-      : 100;
+    const successRate =
+      aiAttempted > 0 ? Math.round((counts.success / aiAttempted) * 100) : 100;
 
     return {
       total: counts.none + counts.success + counts.failed + counts.skipped,

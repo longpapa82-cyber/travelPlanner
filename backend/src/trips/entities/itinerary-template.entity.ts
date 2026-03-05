@@ -15,7 +15,16 @@ import { Activity } from './itinerary.entity';
  * Lookup key: destination (normalized) + durationDays + travelStyle + budgetLevel + language
  */
 @Entity('itinerary_templates')
-@Index(['destinationNormalized', 'durationDays', 'travelStyle', 'budgetLevel', 'language'], { unique: true })
+@Index(
+  [
+    'destinationNormalized',
+    'durationDays',
+    'travelStyle',
+    'budgetLevel',
+    'language',
+  ],
+  { unique: true },
+)
 @Index(['destinationNormalized', 'durationDays'])
 @Index(['popularity'])
 @Index(['lastVerifiedAt'])

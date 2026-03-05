@@ -3,7 +3,24 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { getErrorMessage } from '../common/types/request.types';
 
-type SupportedLang = 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms';
+type SupportedLang =
+  | 'ko'
+  | 'en'
+  | 'ja'
+  | 'zh'
+  | 'es'
+  | 'de'
+  | 'fr'
+  | 'th'
+  | 'vi'
+  | 'pt'
+  | 'ar'
+  | 'id'
+  | 'hi'
+  | 'it'
+  | 'ru'
+  | 'tr'
+  | 'ms';
 type EmailTemplateLang = 'ko' | 'en' | 'ja';
 
 const EMAIL_TEMPLATE_FALLBACK: Record<SupportedLang, EmailTemplateLang> = {
@@ -29,7 +46,10 @@ const EMAIL_TEMPLATE_FALLBACK: Record<SupportedLang, EmailTemplateLang> = {
 function maskEmail(email: string): string {
   const [local, domain] = email.split('@');
   if (!domain) return '***';
-  const masked = local.length <= 2 ? '*'.repeat(local.length) : local[0] + '*'.repeat(local.length - 2) + local[local.length - 1];
+  const masked =
+    local.length <= 2
+      ? '*'.repeat(local.length)
+      : local[0] + '*'.repeat(local.length - 2) + local[local.length - 1];
   return `${masked}@${domain}`;
 }
 
@@ -43,8 +63,11 @@ export class EmailService {
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
   ) {
-    this.frontendUrl = this.configService.get<string>('email.frontendUrl') ||
-      (process.env.NODE_ENV === 'production' ? 'https://mytravel-planner.com' : 'http://localhost:8081');
+    this.frontendUrl =
+      this.configService.get<string>('email.frontendUrl') ||
+      (process.env.NODE_ENV === 'production'
+        ? 'https://mytravel-planner.com'
+        : 'http://localhost:8081');
     this.isDev = this.configService.get<string>('NODE_ENV') !== 'production';
   }
 

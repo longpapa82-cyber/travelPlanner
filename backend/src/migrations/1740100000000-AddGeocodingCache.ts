@@ -24,7 +24,9 @@ export class AddGeocodingCache1740100000000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP INDEX IF EXISTS "IDX_geocoding_cache_hitCount"`);
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "IDX_geocoding_cache_hitCount"`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "geocoding_cache"`);
   }
 }

@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThanOrEqual } from 'typeorm';
-import { Announcement, AnnouncementTargetAudience } from './entities/announcement.entity';
+import {
+  Announcement,
+  AnnouncementTargetAudience,
+} from './entities/announcement.entity';
 import { AnnouncementRead } from './entities/announcement-read.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateAnnouncementDto } from './dto/create-announcement.dto';
@@ -56,17 +59,23 @@ export class AnnouncementService {
     const announcement = await this.findOne(id);
     Object.assign(announcement, {
       ...dto,
-      startDate: dto.startDate ? new Date(dto.startDate) : announcement.startDate,
-      endDate: dto.endDate !== undefined
-        ? (dto.endDate ? new Date(dto.endDate) : null)
-        : announcement.endDate,
+      startDate: dto.startDate
+        ? new Date(dto.startDate)
+        : announcement.startDate,
+      endDate:
+        dto.endDate !== undefined
+          ? dto.endDate
+            ? new Date(dto.endDate)
+            : null
+          : announcement.endDate,
     });
     return this.announcementRepo.save(announcement);
   }
 
   async remove(id: string): Promise<void> {
     const result = await this.announcementRepo.delete(id);
-    if (result.affected === 0) throw new NotFoundException('Announcement not found');
+    if (result.affected === 0)
+      throw new NotFoundException('Announcement not found');
   }
 
   async publish(id: string): Promise<Announcement> {
@@ -83,10 +92,7 @@ export class AnnouncementService {
 
   // ─── Public (User-facing) ─────────────────────
 
-  async getActiveForUser(
-    userId: string,
-    lang = 'en',
-  ) {
+  async getActiveForUser(userId: string, lang = 'en') {
     const now = new Date();
     const userTier = await this.getUserTier(userId);
 
@@ -100,11 +106,17 @@ export class AnnouncementService {
     // Filter by audience
     if (userTier === 'premium') {
       qb.andWhere('a.targetAudience IN (:...audiences)', {
-        audiences: [AnnouncementTargetAudience.ALL, AnnouncementTargetAudience.PREMIUM],
+        audiences: [
+          AnnouncementTargetAudience.ALL,
+          AnnouncementTargetAudience.PREMIUM,
+        ],
       });
     } else {
       qb.andWhere('a.targetAudience IN (:...audiences)', {
-        audiences: [AnnouncementTargetAudience.ALL, AnnouncementTargetAudience.FREE],
+        audiences: [
+          AnnouncementTargetAudience.ALL,
+          AnnouncementTargetAudience.FREE,
+        ],
       });
     }
 
@@ -119,19 +131,23 @@ export class AnnouncementService {
       where: { userId },
       select: ['announcementId', 'readAt', 'dismissedAt'],
     });
-    const readMap = new Map(readRecords.map(r => [r.announcementId, r]));
+    const readMap = new Map(readRecords.map((r) => [r.announcementId, r]));
 
-    return announcements.map(a => ({
+    return announcements.map((a) => ({
       id: a.id,
       type: a.type,
       title: a.title[lang] || a.title['en'] || Object.values(a.title)[0] || '',
-      content: a.content[lang] || a.content['en'] || Object.values(a.content)[0] || '',
+      content:
+        a.content[lang] || a.content['en'] || Object.values(a.content)[0] || '',
       priority: a.priority,
       displayType: a.displayType,
       imageUrl: a.imageUrl,
       actionUrl: a.actionUrl,
       actionLabel: a.actionLabel
-        ? (a.actionLabel[lang] || a.actionLabel['en'] || Object.values(a.actionLabel)[0] || null)
+        ? a.actionLabel[lang] ||
+          a.actionLabel['en'] ||
+          Object.values(a.actionLabel)[0] ||
+          null
         : null,
       startDate: a.startDate,
       endDate: a.endDate,
@@ -141,11 +157,7 @@ export class AnnouncementService {
     }));
   }
 
-  async getOneForUser(
-    userId: string,
-    announcementId: string,
-    lang = 'en',
-  ) {
+  async getOneForUser(userId: string, announcementId: string, lang = 'en') {
     const a = await this.findActiveAnnouncement(announcementId);
 
     const readRecord = await this.readRepo.findOne({
@@ -157,13 +169,17 @@ export class AnnouncementService {
       id: a.id,
       type: a.type,
       title: a.title[lang] || a.title['en'] || Object.values(a.title)[0] || '',
-      content: a.content[lang] || a.content['en'] || Object.values(a.content)[0] || '',
+      content:
+        a.content[lang] || a.content['en'] || Object.values(a.content)[0] || '',
       priority: a.priority,
       displayType: a.displayType,
       imageUrl: a.imageUrl,
       actionUrl: a.actionUrl,
       actionLabel: a.actionLabel
-        ? (a.actionLabel[lang] || a.actionLabel['en'] || Object.values(a.actionLabel)[0] || null)
+        ? a.actionLabel[lang] ||
+          a.actionLabel['en'] ||
+          Object.values(a.actionLabel)[0] ||
+          null
         : null,
       startDate: a.startDate,
       endDate: a.endDate,
@@ -186,16 +202,22 @@ export class AnnouncementService {
 
     if (userTier === 'premium') {
       qb.andWhere('a.targetAudience IN (:...audiences)', {
-        audiences: [AnnouncementTargetAudience.ALL, AnnouncementTargetAudience.PREMIUM],
+        audiences: [
+          AnnouncementTargetAudience.ALL,
+          AnnouncementTargetAudience.PREMIUM,
+        ],
       });
     } else {
       qb.andWhere('a.targetAudience IN (:...audiences)', {
-        audiences: [AnnouncementTargetAudience.ALL, AnnouncementTargetAudience.FREE],
+        audiences: [
+          AnnouncementTargetAudience.ALL,
+          AnnouncementTargetAudience.FREE,
+        ],
       });
     }
 
     // Exclude read announcements
-    qb.andWhere(qb2 => {
+    qb.andWhere((qb2) => {
       const subQuery = qb2
         .subQuery()
         .select('ar.announcementId')
@@ -203,8 +225,7 @@ export class AnnouncementService {
         .where('ar.userId = :userId')
         .getQuery();
       return `a.id NOT IN ${subQuery}`;
-    })
-    .setParameter('userId', userId);
+    }).setParameter('userId', userId);
 
     return qb.getCount();
   }
@@ -238,9 +259,7 @@ export class AnnouncementService {
       return;
     }
 
-    await this.readRepo.save(
-      this.readRepo.create({ userId, announcementId }),
-    );
+    await this.readRepo.save(this.readRepo.create({ userId, announcementId }));
   }
 
   async dismiss(userId: string, announcementId: string): Promise<void> {

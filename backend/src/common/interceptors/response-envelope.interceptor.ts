@@ -35,7 +35,9 @@ export class ResponseEnvelopeInterceptor<T> implements NestInterceptor<
       .getRequest<{ headers: Record<string, string | string[] | undefined> }>();
     const requestId = request.headers['x-request-id'] as string | undefined;
 
-    const response = context.switchToHttp().getResponse<{ headersSent: boolean }>();
+    const response = context
+      .switchToHttp()
+      .getResponse<{ headersSent: boolean }>();
 
     return next.handle().pipe(
       map((data: T) => {

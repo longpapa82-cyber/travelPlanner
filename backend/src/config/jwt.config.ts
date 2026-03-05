@@ -14,7 +14,9 @@ export default registerAs('jwt', () => {
   }
 
   if (!isProd && !process.env.JWT_SECRET) {
-    logger.warn('Using dev fallback JWT_SECRET — set JWT_SECRET env var for production');
+    logger.warn(
+      'Using dev fallback JWT_SECRET — set JWT_SECRET env var for production',
+    );
   }
 
   return {

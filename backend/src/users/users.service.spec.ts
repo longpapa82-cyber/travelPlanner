@@ -5,7 +5,12 @@ import { Repository, DataSource } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
-import { User, AuthProvider, UserRole, SubscriptionTier } from './entities/user.entity';
+import {
+  User,
+  AuthProvider,
+  UserRole,
+  SubscriptionTier,
+} from './entities/user.entity';
 
 // Mock bcrypt
 jest.mock('bcrypt');
@@ -464,7 +469,9 @@ describe('UsersService', () => {
       repository.findOne.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(service.remove('non-existent-id')).rejects.toThrow(NotFoundException);
+      await expect(service.remove('non-existent-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TravelPlanner - Play Store Screenshots Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #111;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 30px;
+  justify-content: center;
+  font-family: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+}
+
+.screenshot {
+  width: 1080px;
+  height: 1920px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+}
+
+.bg-1 { background: linear-gradient(165deg, #1E3A8A 0%, #3B82F6 50%, #60A5FA 100%); }
+.bg-2 { background: linear-gradient(165deg, #1E40AF 0%, #6366F1 50%, #818CF8 100%); }
+.bg-3 { background: linear-gradient(165deg, #0E7490 0%, #0891B2 40%, #22D3EE 100%); }
+.bg-4 { background: linear-gradient(165deg, #065F46 0%, #059669 50%, #34D399 100%); }
+.bg-5 { background: linear-gradient(165deg, #5B21B6 0%, #7C3AED 40%, #A78BFA 100%); }
+
+.marketing {
+  padding: 80px 70px 30px;
+  text-align: center;
+  color: #fff;
+  z-index: 2;
+}
+.marketing h1 {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.15);
+  letter-spacing: -0.5px;
+}
+.marketing p {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.4;
+  opacity: 0.9;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.1);
+}
+
+.phone-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 30px 0 0;
+  z-index: 2;
+  min-height: 0;
+}
+.phone {
+  width: 580px;
+  height: 1180px;
+  background: #1a1a2e;
+  border-radius: 56px;
+  padding: 14px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.35), 0 0 0 2px rgba(255,255,255,0.08);
+  position: relative;
+}
+.phone-notch {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 34px;
+  background: #1a1a2e;
+  border-radius: 0 0 20px 20px;
+  z-index: 10;
+}
+.phone-camera {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: #2a2a3e;
+  border-radius: 50%;
+  z-index: 11;
+}
+.screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 42px;
+  overflow: hidden;
+  background: #f5f7fa;
+  position: relative;
+}
+
+.deco-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.08;
+  background: #fff;
+}
+
+.page-label {
+  display: none;
+}
+
+/* Status bar */
+.status-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+.status-icons { display: flex; gap: 6px; align-items: center; font-size: 13px; }
+
+.app-header {
+  background: #3B82F6;
+  color: #fff;
+  padding: 14px 24px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.tab-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-top: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+.tab-item.active { color: #3B82F6; }
+.tab-icon { font-size: 22px; }
+
+/* Screen 1: Onboarding */
+.onboarding-screen {
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  text-align: center;
+  padding: 0 40px 40px;
+}
+.onboarding-icon {
+  width: 160px;
+  height: 160px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  margin-bottom: 40px;
+}
+.onboarding-title { font-size: 42px; font-weight: 800; margin-bottom: 16px; }
+.onboarding-subtitle { font-size: 20px; opacity: 0.85; line-height: 1.5; }
+.onboarding-dots { display: flex; gap: 10px; margin-top: 120px; }
+.dot { width: 28px; height: 8px; background: #fff; border-radius: 4px; }
+.dot.inactive { width: 8px; opacity: 0.4; }
+.onboarding-nav {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 40px;
+  align-items: center;
+}
+.skip-btn { font-size: 18px; opacity: 0.7; }
+.next-btn {
+  background: #fff;
+  color: #2563EB;
+  border-radius: 30px;
+  padding: 14px 36px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Screen 2: Home */
+.home-screen { height: 100%; background: #f5f7fa; }
+.home-hero { height: 300px; position: relative; overflow: hidden; }
+.home-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #8B9DAF 0%, #A4B5C4 50%, #C4D0DA 100%);
+}
+.home-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 30px;
+  color: #fff;
+}
+.home-greeting { font-size: 16px; opacity: 0.9; margin-bottom: 4px; }
+.home-name { font-size: 34px; font-weight: 800; margin-bottom: 8px; line-height: 1.1; }
+.home-question { font-size: 16px; opacity: 0.85; }
+.home-cta {
+  background: #3B82F6;
+  color: #fff;
+  border-radius: 30px;
+  padding: 16px 24px;
+  margin: 0 30px;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+.stats-row { display: flex; gap: 12px; padding: 24px; }
+.stat-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.stat-icon { font-size: 24px; margin-bottom: 6px; }
+.stat-number { font-size: 32px; font-weight: 800; color: #1e293b; }
+.stat-label { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+.section-header { padding: 8px 24px 12px; display: flex; align-items: center; gap: 8px; }
+.section-title { font-size: 20px; font-weight: 700; color: #1e293b; }
+.section-subtitle { font-size: 13px; color: #94a3b8; padding: 0 24px 12px; }
+.dest-cards { display: flex; gap: 12px; padding: 0 24px; overflow: hidden; }
+.dest-card {
+  min-width: 170px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.dest-name { font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+.dest-info { font-size: 12px; color: #94a3b8; }
+.dest-rank {
+  width: 28px; height: 28px;
+  background: #3B82F6; color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  float: right;
+}
+
+/* Screen 3: Create */
+.create-screen { height: 100%; background: #f5f7fa; }
+.create-hero { height: 220px; position: relative; overflow: hidden; }
+.create-hero-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #87CEEB 0%, #B0C4DE 50%, #DEB887 100%);
+}
+.create-hero-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 24px 30px; color: #fff;
+}
+.create-title { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+.create-subtitle { font-size: 15px; opacity: 0.85; line-height: 1.4; }
+.method-section { padding: 24px; }
+.method-label { font-size: 16px; color: #64748b; margin-bottom: 14px; }
+.method-cards { display: flex; gap: 14px; }
+.method-card {
+  flex: 1; background: #fff; border-radius: 20px;
+  padding: 24px 16px; text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.method-card.selected { border: 2.5px solid #3B82F6; background: #EFF6FF; }
+.method-card-icon { font-size: 32px; margin-bottom: 10px; }
+.method-card-title { font-size: 17px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+.method-card-desc { font-size: 12px; color: #94a3b8; line-height: 1.4; }
+.dest-section { padding: 0 24px 16px; }
+.dest-label { font-size: 16px; color: #64748b; margin-bottom: 14px; }
+.dest-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  padding: 10px 20px; border-radius: 24px;
+  background: #e2e8f0; font-size: 15px; font-weight: 500; color: #475569;
+}
+.chip.selected { background: #3B82F6; color: #fff; }
+.search-box {
+  margin: 8px 24px 0;
+  background: #fff; border-radius: 16px;
+  padding: 16px 20px;
+  color: #94a3b8; font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* Screen 4: Itinerary */
+.itinerary-screen { height: 100%; background: #f5f7fa; }
+.itin-header { height: 260px; position: relative; overflow: hidden; }
+.itin-header-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 30%, #FFA07A 100%);
+}
+.itin-header-content {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 20px 24px; color: #fff;
+  background: linear-gradient(transparent, rgba(0,0,0,0.5));
+}
+.itin-toolbar {
+  position: absolute; top: 50px; left: 0; right: 0;
+  padding: 0 20px; display: flex; justify-content: space-between;
+  color: #fff; font-size: 24px;
+}
+.itin-city { font-size: 36px; font-weight: 800; }
+.itin-meta { display: flex; gap: 16px; font-size: 14px; margin-top: 6px; opacity: 0.9; }
+.itin-day-badge {
+  background: rgba(255,255,255,0.25);
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 13px; font-weight: 600; margin-top: 10px; display: inline-block;
+}
+.day-tabs { display: flex; gap: 10px; padding: 18px 24px 12px; overflow: hidden; }
+.day-tab {
+  padding: 10px 22px; border-radius: 20px;
+  background: #e2e8f0; font-size: 14px; font-weight: 600; color: #64748b;
+  white-space: nowrap;
+}
+.day-tab.active { background: #3B82F6; color: #fff; }
+.activity-list { padding: 0 24px; }
+.activity-card {
+  background: #fff; border-radius: 16px;
+  padding: 20px; margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-left: 4px solid #3B82F6;
+}
+.activity-time {
+  font-size: 18px; font-weight: 700; color: #3B82F6;
+  margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
+}
+.activity-tag {
+  font-size: 11px; background: #EFF6FF; color: #3B82F6;
+  padding: 3px 10px; border-radius: 10px; font-weight: 600;
+  margin-left: auto;
+}
+.activity-title { font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+.activity-status {
+  font-size: 11px; background: #DCFCE7; color: #16a34a;
+  padding: 3px 10px; border-radius: 10px; font-weight: 600;
+  display: inline-block; margin-bottom: 6px;
+}
+.activity-location { font-size: 13px; color: #64748b; margin-bottom: 6px; }
+.activity-desc { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+.activity-footer { display: flex; gap: 16px; margin-top: 10px; font-size: 13px; color: #94a3b8; }
+
+/* Screen 5: Features */
+.features-screen { height: 100%; background: #f5f7fa; }
+.features-phone-content { display: flex; flex-direction: column; height: 100%; }
+.features-header {
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+  padding: 60px 30px 40px; color: #fff; text-align: center;
+}
+.features-app-icon {
+  width: 80px; height: 80px;
+  background: rgba(255,255,255,0.2); border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px; margin: 0 auto 16px;
+}
+.features-app-name { font-size: 28px; font-weight: 800; }
+.features-app-tagline { font-size: 14px; opacity: 0.85; margin-top: 6px; }
+.features-grid { padding: 24px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+.feature-item {
+  background: #fff; border-radius: 20px;
+  padding: 22px 20px; display: flex; align-items: center; gap: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.feature-icon-box {
+  width: 56px; height: 56px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; flex-shrink: 0;
+}
+.fi-blue { background: #EFF6FF; }
+.fi-green { background: #ECFDF5; }
+.fi-purple { background: #F5F3FF; }
+.fi-orange { background: #FFF7ED; }
+.fi-pink { background: #FFF1F2; }
+.feature-text { flex: 1; }
+.feature-title { font-size: 17px; font-weight: 700; color: #1e293b; margin-bottom: 3px; }
+.feature-desc { font-size: 13px; color: #94a3b8; line-height: 1.4; }
+</style>
+</head>
+<body>
+<!-- ===== EN-1: Onboarding ===== -->
+<div class="screenshot bg-1" id="en-1">
+  <div class="page-label">en-1</div>
+  <div class="deco-circle" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;bottom:200px;left:-80px;"></div>
+  <div class="marketing">
+    <h1>Plan Your Perfect<br>Trip with AI</h1>
+    <p>Just pick a destination and let AI build your ideal itinerary</p>
+  </div>
+  <div class="phone-wrapper">
+    <div class="phone"><div class="phone-notch"><div class="phone-camera"></div></div>
+      <div class="screen">
+        <div class="onboarding-screen">
+          <div class="status-bar"><span>4:51</span><span class="status-icons">74%</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div class="onboarding-icon">&#9992;</div>
+            <div class="onboarding-title">AI Travel Planner</div>
+            <div class="onboarding-subtitle">Just pick a destination and AI creates your perfect itinerary automatically</div>
+          </div>
+          <div class="onboarding-dots"><div class="dot"></div><div class="dot inactive"></div><div class="dot inactive"></div></div>
+          <div class="onboarding-nav"><span class="skip-btn">Skip</span><span class="next-btn">Next &rarr;</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EN-2: Home ===== -->
+<div class="screenshot bg-2" id="en-2">
+  <div class="page-label">en-2</div>
+  <div class="deco-circle" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;bottom:200px;left:-80px;"></div>
+  <div class="marketing">
+    <h1>All Your Trips<br>at a Glance</h1>
+    <p>Track completed, ongoing, and upcoming adventures</p>
+  </div>
+  <div class="phone-wrapper">
+    <div class="phone"><div class="phone-notch"><div class="phone-camera"></div></div>
+      <div class="screen">
+        <div class="home-screen">
+          <div class="app-header" style="padding-top:44px;">Home</div>
+          <div class="home-hero">
+            <div class="home-hero-bg"></div>
+            <div class="home-hero-overlay">
+              <div class="home-greeting">Hello &#128075;</div>
+              <div class="home-name">Traveler's<br>Journey</div>
+              <div class="home-question">Ready to plan your next adventure?</div>
+            </div>
+          </div>
+          <div class="home-cta">&#10024; Create AI Trip Plan</div>
+          <div class="stats-row">
+            <div class="stat-card"><div class="stat-icon">&#9992;</div><div class="stat-number">5</div><div class="stat-label">Completed</div></div>
+            <div class="stat-card"><div class="stat-icon">&#128205;</div><div class="stat-number">3</div><div class="stat-label">In Progress</div></div>
+            <div class="stat-card"><div class="stat-icon">&#128197;</div><div class="stat-number">2</div><div class="stat-label">Upcoming</div></div>
+          </div>
+          <div class="section-header"><span style="font-size:20px">&#128200;</span><span class="section-title">Trending Destinations</span></div>
+          <div class="section-subtitle">See where other travelers are heading</div>
+          <div class="dest-cards">
+            <div class="dest-card"><div class="dest-rank">1</div><div class="dest-name">Tokyo</div><div class="dest-info">&#128101; 142 travelers</div></div>
+            <div class="dest-card"><div class="dest-rank">2</div><div class="dest-name">Paris</div><div class="dest-info">&#128101; 128 travelers</div></div>
+          </div>
+          <div class="tab-bar">
+            <div class="tab-item active"><span class="tab-icon">&#127968;</span><span>Home</span></div>
+            <div class="tab-item"><span class="tab-icon">&#129517;</span><span>Discover</span></div>
+            <div class="tab-item"><span class="tab-icon">&#129523;</span><span>My Trips</span></div>
+            <div class="tab-item"><span class="tab-icon">&#128276;</span><span>Alerts</span></div>
+            <div class="tab-item"><span class="tab-icon">&#128100;</span><span>Profile</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EN-3: Create Trip ===== -->
+<div class="screenshot bg-3" id="en-3">
+  <div class="page-label">en-3</div>
+  <div class="deco-circle" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;bottom:200px;left:-80px;"></div>
+  <div class="marketing">
+    <h1>Create Trips<br>in Seconds</h1>
+    <p>AI generates a complete day-by-day itinerary for you</p>
+  </div>
+  <div class="phone-wrapper">
+    <div class="phone"><div class="phone-notch"><div class="phone-camera"></div></div>
+      <div class="screen">
+        <div class="create-screen">
+          <div class="app-header" style="padding-top:44px;">Create New Trip</div>
+          <div class="create-hero">
+            <div class="create-hero-bg"></div>
+            <div class="create-hero-overlay">
+              <div style="font-size:18px;margin-bottom:6px;">&larr;</div>
+              <div class="create-title">Ready for a<br>new adventure?</div>
+              <div class="create-subtitle">Just pick a destination and AI creates your perfect itinerary</div>
+            </div>
+          </div>
+          <div class="method-section">
+            <div class="method-label">&#128161; Planning Method</div>
+            <div class="method-cards">
+              <div class="method-card selected"><div class="method-card-icon">&#129302;</div><div class="method-card-title">AI Auto</div><div class="method-card-desc">AI creates optimal schedule automatically</div></div>
+              <div class="method-card"><div class="method-card-icon">&#9999;</div><div class="method-card-title">Manual</div><div class="method-card-desc">Create blank days and fill them yourself</div></div>
+            </div>
+          </div>
+          <div class="dest-section">
+            <div class="dest-label">&#128205; Where to?</div>
+            <div class="dest-chips">
+              <div class="chip selected">&#128508; Tokyo</div>
+              <div class="chip">&#9961; Osaka</div>
+              <div class="chip">&#128509; NYC</div>
+              <div class="chip">&#128725; Bangkok</div>
+              <div class="chip">&#127905; London</div>
+              <div class="chip">&#127958; Barcelona</div>
+            </div>
+          </div>
+          <div class="search-box">&#128269; Tokyo</div>
+          <div class="tab-bar">
+            <div class="tab-item"><span class="tab-icon">&#127968;</span><span>Home</span></div>
+            <div class="tab-item"><span class="tab-icon">&#129517;</span><span>Discover</span></div>
+            <div class="tab-item active"><span class="tab-icon">&#129523;</span><span>My Trips</span></div>
+            <div class="tab-item"><span class="tab-icon">&#128276;</span><span>Alerts</span></div>
+            <div class="tab-item"><span class="tab-icon">&#128100;</span><span>Profile</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EN-4: Itinerary ===== -->
+<div class="screenshot bg-4" id="en-4">
+  <div class="page-label">en-4</div>
+  <div class="deco-circle" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;bottom:200px;left:-80px;"></div>
+  <div class="marketing">
+    <h1>Detailed Day-by-Day<br>Itinerary</h1>
+    <p>Every activity with time, location, and budget info</p>
+  </div>
+  <div class="phone-wrapper">
+    <div class="phone"><div class="phone-notch"><div class="phone-camera"></div></div>
+      <div class="screen">
+        <div class="itinerary-screen">
+          <div class="itin-header">
+            <div class="itin-header-bg"></div>
+            <div class="itin-toolbar"><span>&larr;</span><span style="display:flex;gap:16px;">&#9999; &#128203; &#128204; &#128247; &#128279;</span></div>
+            <div class="itin-header-content">
+              <div class="itin-city">Tokyo</div>
+              <div class="itin-meta"><span>&#128197; Feb 22 &ndash; Feb 28</span><span>&#128197; 7 days</span><span>&#128101; 9</span></div>
+              <div class="itin-day-badge">Day 1/7 &middot; Progress 0%</div>
+            </div>
+          </div>
+          <div class="day-tabs">
+            <div class="day-tab">All</div><div class="day-tab active">Day 1</div><div class="day-tab">Day 2</div><div class="day-tab">Day 3</div><div class="day-tab">Day 4</div>
+          </div>
+          <div class="activity-list">
+            <div class="activity-card">
+              <div class="activity-time">&#128344; 09:00 <span class="activity-tag">accommodation</span></div>
+              <div class="activity-title">Arrive &amp; Check-in</div>
+              <div class="activity-status">In Progress</div>
+              <div class="activity-location">&#128205; The Ritz-Carlton Tokyo, Minato</div>
+              <div class="activity-desc">Arrive at airport and transfer to hotel. Check in, settle your luggage, and prepare for the journey ahead.</div>
+              <div class="activity-footer">&#9201; 120 min &middot; &#128176; &yen;5,000</div>
+            </div>
+            <div class="activity-card">
+              <div class="activity-time">&#128346; 11:00 <span class="activity-tag">sightseeing</span></div>
+              <div class="activity-title">Asakusa Temple Tour</div>
+              <div class="activity-status">In Progress</div>
+              <div class="activity-location">&#128205; Senso-ji, Taito, Tokyo 2-3-1</div>
+              <div class="activity-desc">Visit the iconic Senso-ji Temple, Tokyo's oldest shrine. Explore Nakamise Street for souvenirs.</div>
+              <div class="activity-footer">&#9201; 90 min &middot; &#128176; &yen;500</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EN-5: Features ===== -->
+<div class="screenshot bg-5" id="en-5">
+  <div class="page-label">en-5</div>
+  <div class="deco-circle" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;bottom:200px;left:-80px;"></div>
+  <div class="marketing">
+    <h1>Travel Smarter,<br>Together</h1>
+    <p>17 languages &middot; Share trips &middot; Real-time collaboration</p>
+  </div>
+  <div class="phone-wrapper">
+    <div class="phone"><div class="phone-notch"><div class="phone-camera"></div></div>
+      <div class="screen">
+        <div class="features-screen">
+          <div class="features-phone-content">
+            <div class="features-header">
+              <div class="status-bar"><span>4:53</span><span class="status-icons">74%</span></div>
+              <div class="features-app-icon">&#9992;</div>
+              <div class="features-app-name">My Travel Planner</div>
+              <div class="features-app-tagline">Your AI-powered travel companion</div>
+            </div>
+            <div class="features-grid">
+              <div class="feature-item"><div class="feature-icon-box fi-blue">&#129302;</div><div class="feature-text"><div class="feature-title">AI Trip Planning</div><div class="feature-desc">Complete itineraries generated in seconds</div></div></div>
+              <div class="feature-item"><div class="feature-icon-box fi-green">&#127757;</div><div class="feature-text"><div class="feature-title">17 Languages</div><div class="feature-desc">Available worldwide in your language</div></div></div>
+              <div class="feature-item"><div class="feature-icon-box fi-purple">&#128101;</div><div class="feature-text"><div class="feature-title">Share &amp; Collaborate</div><div class="feature-desc">Plan trips together with friends and family</div></div></div>
+              <div class="feature-item"><div class="feature-icon-box fi-orange">&#128202;</div><div class="feature-text"><div class="feature-title">Budget Tracking</div><div class="feature-desc">Track expenses with cost estimates per activity</div></div></div>
+              <div class="feature-item"><div class="feature-icon-box fi-pink">&#128197;</div><div class="feature-text"><div class="feature-title">Smart Scheduling</div><div class="feature-desc">Time, location, and transit optimized plans</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== JA-1: Onboarding ===== -->
+<div class="screenshot bg-1" id="ja-1">
+  <div class="page-label">ja-1</div>
+  <div class="deco-circle" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;bottom:200px;left:-80px;"></div>
+  <div class="marketing">
+    <h1>AIで理想の<br>旅行プランを作成</h1>
+    <p>目的地を選ぶだけで、最適な旅程を自動作成</p>
+  </div>
+  <div class="phone-wrapper">
+    <div class="phone"><div class="phone-notch"><div class="phone-camera"></div></div>
+      <div class="screen">
+        <div class="onboarding-screen">
+          <div class="status-bar"><span>4:51</span><span class="status-icons">74%</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div class="onboarding-icon">&#9992;</div>
+            <div class="onboarding-title">AI旅行プランナー</div>
+            <div class="onboarding-subtitle">目的地を選ぶだけで、AIが最適な旅行プランを自動で作成します</div>
+          </div>
+          <div class="onboarding-dots"><div class="dot"></div><div class="dot inactive"></div><div class="dot inactive"></div></div>
+          <div class="onboarding-nav"><span class="skip-btn">スキップ</span><span class="next-btn">次へ &rarr;</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== JA-2: Home ===== -->
+<div class="screenshot bg-2" id="ja-2">
+  <div class="page-label">ja-2</div>
+  <div class="deco-circle" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;bottom:200px;left:-80px;"></div>
+  <div class="marketing">
+    <h1>すべての旅行を<br>一目で管理</h1>
+    <p>完了・進行中・予定の旅行をまとめて確認</p>
+  </div>
+  <div class="phone-wrapper">
+    <div class="phone"><div class="phone-notch"><div class="phone-camera"></div></div>
+      <div class="screen">
+        <div class="home-screen">
+          <div class="app-header" style="padding-top:44px;">ホーム</div>
+          <div class="home-hero">
+            <div class="home-hero-bg"></div>
+            <div class="home-hero-overlay">
+              <div class="home-greeting">こんにちは &#128075;</div>
+              <div class="home-name">トラベラーの<br>旅行</div>
+              <div class="home-question">次の冒険を計画しませんか？</div>
+            </div>
+          </div>
+          <div class="home-cta">&#10024; AI旅行プランを作成</div>
+          <div class="stats-row">
+            <div class="stat-card"><div class="stat-icon">&#9992;</div><div class="stat-number">5</div><div class="stat-label">完了</div></div>
+            <div class="stat-card"><div class="stat-icon">&#128205;</div><div class="stat-number">3</div><div class="stat-label">進行中</div></div>
+            <div class="stat-card"><div class="stat-icon">&#128197;</div><div class="stat-number">2</div><div class="stat-label">予定</div></div>
+          </div>
+          <div class="section-header"><span style="font-size:20px">&#128200;</span><span class="section-title">人気の旅行先</span></div>
+          <div class="section-subtitle">他の旅行者が注目している目的地をチェック</div>
+          <div class="dest-cards">
+            <div class="dest-card"><div class="dest-rank">1</div><div class="dest-name">東京</div><div class="dest-info">&#128101; 142人が訪問</div></div>
+            <div class="dest-card"><div class="dest-rank">2</div><div class="dest-name">パリ</div><div class="dest-info">&#128101; 128人が訪問</div></div>
+          </div>
+          <div class="tab-bar">
+            <div class="tab-item active"><span class="tab-icon">&#127968;</span><span>ホーム</span></div>
+            <div class="tab-item"><span class="tab-icon">&#129517;</span><span>探索</span></div>
+            <div class="tab-item"><span class="tab-icon">&#129523;</span><span>マイ旅行</span></div>
+            <div class="tab-item"><span class="tab-icon">&#128276;</span><span>通知</span></div>
+            <div class="tab-item"><span class="tab-icon">&#128100;</span><span>プロフィール</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== JA-3: Create Trip ===== -->
+<div class="screenshot bg-3" id="ja-3">
+  <div class="page-label">ja-3</div>
+  <div class="deco-circle" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;bottom:200px;left:-80px;"></div>
+  <div class="marketing">
+    <h1>数秒で旅行<br>プランを作成</h1>
+    <p>AIが日別の最適な旅程を自動で生成します</p>
+  </div>
+  <div class="phone-wrapper">
+    <div class="phone"><div class="phone-notch"><div class="phone-camera"></div></div>
+      <div class="screen">
+        <div class="create-screen">
+          <div class="app-header" style="padding-top:44px;">新しい旅行を作成</div>
+          <div class="create-hero">
+            <div class="create-hero-bg"></div>
+            <div class="create-hero-overlay">
+              <div style="font-size:18px;margin-bottom:6px;">&larr;</div>
+              <div class="create-title">新しい冒険に<br>出かけませんか？</div>
+              <div class="create-subtitle">目的地を選ぶだけで、AIが最適な旅行プランを作成します</div>
+            </div>
+          </div>
+          <div class="method-section">
+            <div class="method-label">&#128161; 計画方法</div>
+            <div class="method-cards">
+              <div class="method-card selected"><div class="method-card-icon">&#129302;</div><div class="method-card-title">AI自動生成</div><div class="method-card-desc">AIが最適なスケジュールを自動作成</div></div>
+              <div class="method-card"><div class="method-card-icon">&#9999;</div><div class="method-card-title">手動作成</div><div class="method-card-desc">日程を作成して自分で入力</div></div>
+            </div>
+          </div>
+          <div class="dest-section">
+            <div class="dest-label">&#128205; どこへ行きますか？</div>
+            <div class="dest-chips">
+              <div class="chip selected">&#128508; 東京</div>
+              <div class="chip">&#9961; 大阪</div>
+              <div class="chip">&#128509; ニューヨーク</div>
+              <div class="chip">&#128725; バンコク</div>
+              <div class="chip">&#127905; ロンドン</div>
+              <div class="chip">&#127958; バルセロナ</div>
+            </div>
+          </div>
+          <div class="search-box">&#128269; 東京</div>
+          <div class="tab-bar">
+            <div class="tab-item"><span class="tab-icon">&#127968;</span><span>ホーム</span></div>
+            <div class="tab-item"><span class="tab-icon">&#129517;</span><span>探索</span></div>
+            <div class="tab-item active"><span class="tab-icon">&#129523;</span><span>マイ旅行</span></div>
+            <div class="tab-item"><span class="tab-icon">&#128276;</span><span>通知</span></div>
+            <div class="tab-item"><span class="tab-icon">&#128100;</span><span>プロフィール</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== JA-4: Itinerary ===== -->
+<div class="screenshot bg-4" id="ja-4">
+  <div class="page-label">ja-4</div>
+  <div class="deco-circle" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;bottom:200px;left:-80px;"></div>
+  <div class="marketing">
+    <h1>詳細な日別<br>スケジュール</h1>
+    <p>時間・場所・予算まで、すべてを詳細に表示</p>
+  </div>
+  <div class="phone-wrapper">
+    <div class="phone"><div class="phone-notch"><div class="phone-camera"></div></div>
+      <div class="screen">
+        <div class="itinerary-screen">
+          <div class="itin-header">
+            <div class="itin-header-bg"></div>
+            <div class="itin-toolbar"><span>&larr;</span><span style="display:flex;gap:16px;">&#9999; &#128203; &#128204; &#128247; &#128279;</span></div>
+            <div class="itin-header-content">
+              <div class="itin-city">東京</div>
+              <div class="itin-meta"><span>&#128197; 2月22日〜2月28日</span><span>&#128197; 7日間</span><span>&#128101; 9名</span></div>
+              <div class="itin-day-badge">Day 1/7 &middot; 進行率 0%</div>
+            </div>
+          </div>
+          <div class="day-tabs">
+            <div class="day-tab">全体</div><div class="day-tab active">1日目</div><div class="day-tab">2日目</div><div class="day-tab">3日目</div><div class="day-tab">4日目</div>
+          </div>
+          <div class="activity-list">
+            <div class="activity-card">
+              <div class="activity-time">&#128344; 09:00 <span class="activity-tag">宿泊</span></div>
+              <div class="activity-title">東京到着＆チェックイン</div>
+              <div class="activity-status">進行中</div>
+              <div class="activity-location">&#128205; ザ・リッツ・カールトン東京、港区</div>
+              <div class="activity-desc">空港に到着後、ホテルへ移動します。チェックインして荷物を整理し、旅の準備をしましょう。</div>
+              <div class="activity-footer">&#9201; 120分 &middot; &#128176; &yen;5,000</div>
+            </div>
+            <div class="activity-card">
+              <div class="activity-time">&#128346; 11:00 <span class="activity-tag">観光</span></div>
+              <div class="activity-title">浅草寺観光</div>
+              <div class="activity-status">進行中</div>
+              <div class="activity-location">&#128205; 浅草寺、台東区浅草 2-3-1</div>
+              <div class="activity-desc">東京最古の浅草寺を訪問。仲見世通りで買い物も楽しめます。</div>
+              <div class="activity-footer">&#9201; 90分 &middot; &#128176; &yen;500</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== JA-5: Features ===== -->
+<div class="screenshot bg-5" id="ja-5">
+  <div class="page-label">ja-5</div>
+  <div class="deco-circle" style="width:400px;height:400px;top:-100px;right:-100px;"></div>
+  <div class="deco-circle" style="width:300px;height:300px;bottom:200px;left:-80px;"></div>
+  <div class="marketing">
+    <h1>もっとスマートに<br>旅をしよう</h1>
+    <p>17言語対応 &middot; 旅行共有 &middot; リアルタイム共同編集</p>
+  </div>
+  <div class="phone-wrapper">
+    <div class="phone"><div class="phone-notch"><div class="phone-camera"></div></div>
+      <div class="screen">
+        <div class="features-screen">
+          <div class="features-phone-content">
+            <div class="features-header">
+              <div class="status-bar"><span>4:53</span><span class="status-icons">74%</span></div>
+              <div class="features-app-icon">&#9992;</div>
+              <div class="features-app-name">My Travel Planner</div>
+              <div class="features-app-tagline">AIパワード旅行コンパニオン</div>
+            </div>
+            <div class="features-grid">
+              <div class="feature-item"><div class="feature-icon-box fi-blue">&#129302;</div><div class="feature-text"><div class="feature-title">AI旅行プランニング</div><div class="feature-desc">数秒で完全な旅程を自動生成</div></div></div>
+              <div class="feature-item"><div class="feature-icon-box fi-green">&#127757;</div><div class="feature-text"><div class="feature-title">17言語対応</div><div class="feature-desc">お好みの言語で世界中で利用可能</div></div></div>
+              <div class="feature-item"><div class="feature-icon-box fi-purple">&#128101;</div><div class="feature-text"><div class="feature-title">共有＆コラボ</div><div class="feature-desc">友人や家族と一緒に旅行を計画</div></div></div>
+              <div class="feature-item"><div class="feature-icon-box fi-orange">&#128202;</div><div class="feature-text"><div class="feature-title">予算管理</div><div class="feature-desc">アクティビティごとの費用を追跡</div></div></div>
+              <div class="feature-item"><div class="feature-icon-box fi-pink">&#128197;</div><div class="feature-text"><div class="feature-title">スマート日程管理</div><div class="feature-desc">時間・場所・移動を最適化したプラン</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

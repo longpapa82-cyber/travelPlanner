@@ -80,12 +80,20 @@ export class AddAnnouncementsSystem1740200000000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP INDEX IF EXISTS "IDX_announcement_reads_userId"`);
-    await queryRunner.query(`DROP INDEX IF EXISTS "IDX_announcements_active_published_dates"`);
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "IDX_announcement_reads_userId"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "IDX_announcements_active_published_dates"`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "announcement_reads"`);
     await queryRunner.query(`DROP TABLE IF EXISTS "announcements"`);
-    await queryRunner.query(`DROP TYPE IF EXISTS "announcement_target_audience_enum"`);
-    await queryRunner.query(`DROP TYPE IF EXISTS "announcement_display_type_enum"`);
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "announcement_target_audience_enum"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "announcement_display_type_enum"`,
+    );
     await queryRunner.query(`DROP TYPE IF EXISTS "announcement_priority_enum"`);
     await queryRunner.query(`DROP TYPE IF EXISTS "announcement_type_enum"`);
   }

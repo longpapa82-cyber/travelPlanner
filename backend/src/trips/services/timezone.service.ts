@@ -72,7 +72,9 @@ export class TimezoneService {
             formattedAddress: destination,
           };
         }
-        this.logger.warn(`No geocoding results via GeocodingService for: ${this.sanitizeForLog(destination)}`);
+        this.logger.warn(
+          `No geocoding results via GeocodingService for: ${this.sanitizeForLog(destination)}`,
+        );
         return null;
       } catch (error) {
         this.logger.warn(
@@ -96,7 +98,9 @@ export class TimezoneService {
       });
 
       if (response.data.results.length === 0) {
-        this.logger.warn(`No geocoding results for: ${this.sanitizeForLog(destination)}`);
+        this.logger.warn(
+          `No geocoding results for: ${this.sanitizeForLog(destination)}`,
+        );
         return null;
       }
 
@@ -130,7 +134,12 @@ export class TimezoneService {
     const cacheKey = `tz:${latitude.toFixed(2)}:${longitude.toFixed(2)}`;
 
     // Check cache (timezone data is very stable — 30 day TTL)
-    const cached = await this.cacheManager.get<{ timeZoneId: string; timeZoneName: string; rawOffset: number; dstOffset: number }>(cacheKey);
+    const cached = await this.cacheManager.get<{
+      timeZoneId: string;
+      timeZoneName: string;
+      rawOffset: number;
+      dstOffset: number;
+    }>(cacheKey);
     if (cached) {
       this.logger.debug(`Timezone cache hit: ${cacheKey}`);
       const targetTimestamp = timestamp || new Date();
@@ -221,7 +230,9 @@ export class TimezoneService {
       const queries = activities.map((a) => `${a.location}, ${destination}`);
       const results = await this.geocodingService.geocodeBatch(queries);
       return results.map((r) =>
-        r ? { latitude: r.latitude, longitude: r.longitude } : { latitude: 0, longitude: 0 },
+        r
+          ? { latitude: r.latitude, longitude: r.longitude }
+          : { latitude: 0, longitude: 0 },
       );
     }
 
@@ -257,7 +268,24 @@ export class TimezoneService {
   calculateTimeDifference(
     destinationOffset: number,
     userTimezone: string = 'UTC',
-    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
+    lang:
+      | 'ko'
+      | 'en'
+      | 'ja'
+      | 'zh'
+      | 'es'
+      | 'de'
+      | 'fr'
+      | 'th'
+      | 'vi'
+      | 'pt'
+      | 'ar'
+      | 'id'
+      | 'hi'
+      | 'it'
+      | 'ru'
+      | 'tr'
+      | 'ms' = 'ko',
   ): string {
     const userDateTime = DateTime.now().setZone(userTimezone);
     const userOffset = userDateTime.offset / 60; // Convert minutes to hours
