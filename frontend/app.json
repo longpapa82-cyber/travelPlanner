@@ -4,7 +4,7 @@
     "slug": "travel-planner",
     "version": "1.0.0",
     "android": {
-      "versionCode": 10
+      "versionCode": 11
     }
   }
 }

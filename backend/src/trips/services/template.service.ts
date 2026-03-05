@@ -56,7 +56,9 @@ export class TemplateService {
    * Find a matching template. Tries exact match first, then relaxed match.
    * Returns null if no suitable template exists.
    */
-  async findTemplate(params: TemplateLookupParams): Promise<TemplateResult | null> {
+  async findTemplate(
+    params: TemplateLookupParams,
+  ): Promise<TemplateResult | null> {
     const normalized = this.normalize(params.destination);
     const style = params.travelStyle || 'default';
     const budget = params.budgetLevel || 'default';
@@ -129,7 +131,8 @@ export class TemplateService {
         language: params.language,
       });
 
-      const queryEmbedding = await this.embeddingService.generateEmbedding(text);
+      const queryEmbedding =
+        await this.embeddingService.generateEmbedding(text);
       if (!queryEmbedding) {
         return null;
       }
@@ -162,7 +165,9 @@ export class TemplateService {
       }
 
       // Load the full entity
-      const template = await this.templateRepo.findOne({ where: { id: row.id } });
+      const template = await this.templateRepo.findOne({
+        where: { id: row.id },
+      });
       if (!template) return null;
 
       this.logger.log(
@@ -235,7 +240,10 @@ export class TemplateService {
     days: Array<{ dayNumber: number; activities: ActivityDto[] }>,
   ): Promise<void> {
     // Skip saving if there are no meaningful activities
-    const totalActivities = days.reduce((sum, d) => sum + d.activities.length, 0);
+    const totalActivities = days.reduce(
+      (sum, d) => sum + d.activities.length,
+      0,
+    );
     if (totalActivities === 0) {
       return;
     }
@@ -260,7 +268,10 @@ export class TemplateService {
 
       if (existing) {
         // Update existing template
-        existing.days = days as Array<{ dayNumber: number; activities: Activity[] }>;
+        existing.days = days as Array<{
+          dayNumber: number;
+          activities: Activity[];
+        }>;
         existing.generatedAt = now;
         existing.lastVerifiedAt = now;
         existing.metadata = {
@@ -364,9 +375,15 @@ export class TemplateService {
    */
   async recordUserModification(templateId: string): Promise<void> {
     try {
-      await this.templateRepo.increment({ id: templateId }, 'userModifiedCount', 1);
+      await this.templateRepo.increment(
+        { id: templateId },
+        'userModifiedCount',
+        1,
+      );
       // Recompute quality score
-      const template = await this.templateRepo.findOne({ where: { id: templateId } });
+      const template = await this.templateRepo.findOne({
+        where: { id: templateId },
+      });
       if (template && template.servedCount > 0) {
         const score = Math.max(
           0,
@@ -391,12 +408,16 @@ export class TemplateService {
     originalActivities: Activity[],
     userActivities: Activity[],
   ): number {
-    if (originalActivities.length === 0 && userActivities.length === 0) return 0;
-    if (originalActivities.length === 0 || userActivities.length === 0) return 1;
+    if (originalActivities.length === 0 && userActivities.length === 0)
+      return 0;
+    if (originalActivities.length === 0 || userActivities.length === 0)
+      return 1;
 
     // Count how many original titles survive in the user version
     const originalTitles = new Set(originalActivities.map((a) => a.title));
-    const surviving = userActivities.filter((a) => originalTitles.has(a.title)).length;
+    const surviving = userActivities.filter((a) =>
+      originalTitles.has(a.title),
+    ).length;
     const maxLen = Math.max(originalActivities.length, userActivities.length);
 
     return 1 - surviving / maxLen;
@@ -424,22 +445,30 @@ export class TemplateService {
           issues.push(`Day ${day.dayNumber}: activity missing title`);
         }
         if (!activity.location) {
-          issues.push(`Day ${day.dayNumber}: "${activity.title}" missing location`);
+          issues.push(
+            `Day ${day.dayNumber}: "${activity.title}" missing location`,
+          );
         }
         if (!activity.time || !/^\d{2}:\d{2}$/.test(activity.time)) {
-          issues.push(`Day ${day.dayNumber}: "${activity.title}" invalid time format`);
+          issues.push(
+            `Day ${day.dayNumber}: "${activity.title}" invalid time format`,
+          );
         }
         if (
           activity.estimatedDuration !== undefined &&
           (activity.estimatedDuration <= 0 || activity.estimatedDuration > 720)
         ) {
-          issues.push(`Day ${day.dayNumber}: "${activity.title}" unreasonable duration`);
+          issues.push(
+            `Day ${day.dayNumber}: "${activity.title}" unreasonable duration`,
+          );
         }
         if (
           activity.estimatedCost !== undefined &&
           activity.estimatedCost < 0
         ) {
-          issues.push(`Day ${day.dayNumber}: "${activity.title}" negative cost`);
+          issues.push(
+            `Day ${day.dayNumber}: "${activity.title}" negative cost`,
+          );
         }
       }
     }
@@ -458,7 +487,11 @@ export class TemplateService {
     averageQuality: number | null;
     lowQualityCount: number;
     matchTypeDistribution: Record<string, number>;
-    topDestinations: Array<{ destination: string; count: number; avgQuality: number }>;
+    topDestinations: Array<{
+      destination: string;
+      count: number;
+      avgQuality: number;
+    }>;
     refreshQueue: Array<{
       id: string;
       destination: string;
@@ -612,13 +645,14 @@ export class TemplateService {
    * Processes in batches to avoid overwhelming the API.
    */
   async backfillEmbeddings(batchSize = 20): Promise<number> {
-    const templatesWithoutEmbedding: ItineraryTemplate[] = await this.templateRepo.query(
-      `SELECT id, destination, country, "durationDays", "travelStyle", "budgetLevel", language
+    const templatesWithoutEmbedding: ItineraryTemplate[] =
+      await this.templateRepo.query(
+        `SELECT id, destination, country, "durationDays", "travelStyle", "budgetLevel", language
        FROM itinerary_templates WHERE embedding IS NULL
        ORDER BY popularity DESC
        LIMIT $1`,
-      [batchSize],
-    );
+        [batchSize],
+      );
 
     if (templatesWithoutEmbedding.length === 0) {
       return 0;
@@ -635,7 +669,8 @@ export class TemplateService {
       }),
     );
 
-    const embeddings = await this.embeddingService.generateEmbeddingsBatch(texts);
+    const embeddings =
+      await this.embeddingService.generateEmbeddingsBatch(texts);
 
     let updated = 0;
     for (let i = 0; i < templatesWithoutEmbedding.length; i++) {
@@ -674,7 +709,12 @@ export class TemplateService {
    * Used by the warmup cron to pre-generate templates for popular routes.
    */
   async getPopularDestinations(limit = 20): Promise<
-    Array<{ destination: string; country?: string; city?: string; tripCount: number }>
+    Array<{
+      destination: string;
+      country?: string;
+      city?: string;
+      tripCount: number;
+    }>
   > {
     try {
       const results = await this.templateRepo.query(
@@ -703,7 +743,13 @@ export class TemplateService {
     durations = [3, 5, 7],
     languages = ['ko', 'en'],
   ): Promise<
-    Array<{ destination: string; country?: string; city?: string; durationDays: number; language: string }>
+    Array<{
+      destination: string;
+      country?: string;
+      city?: string;
+      durationDays: number;
+      language: string;
+    }>
   > {
     const popular = await this.getPopularDestinations(topN);
     const queue: Array<{
@@ -729,7 +775,8 @@ export class TemplateService {
 
           if (
             !existing ||
-            Date.now() - new Date(existing.lastVerifiedAt).getTime() > this.STALE_THRESHOLD_MS
+            Date.now() - new Date(existing.lastVerifiedAt).getTime() >
+              this.STALE_THRESHOLD_MS
           ) {
             queue.push({
               destination: dest.destination,

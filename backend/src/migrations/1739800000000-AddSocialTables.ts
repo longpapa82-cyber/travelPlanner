@@ -71,8 +71,14 @@ export class AddSocialTables1739800000000 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP TABLE IF EXISTS "trip_likes"`);
     await queryRunner.query(`DROP TABLE IF EXISTS "follows"`);
-    await queryRunner.query(`ALTER TABLE "users" DROP COLUMN IF EXISTS "followersCount"`);
-    await queryRunner.query(`ALTER TABLE "users" DROP COLUMN IF EXISTS "followingCount"`);
-    await queryRunner.query(`ALTER TABLE "trips" DROP COLUMN IF EXISTS "likesCount"`);
+    await queryRunner.query(
+      `ALTER TABLE "users" DROP COLUMN IF EXISTS "followersCount"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "users" DROP COLUMN IF EXISTS "followingCount"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "trips" DROP COLUMN IF EXISTS "likesCount"`,
+    );
   }
 }

@@ -18,7 +18,10 @@ describe('EmbeddingService', () => {
   let embeddingsCreate: jest.Mock;
 
   beforeEach(async () => {
-    cacheManager = { get: jest.fn(), set: jest.fn().mockResolvedValue(undefined) };
+    cacheManager = {
+      get: jest.fn(),
+      set: jest.fn().mockResolvedValue(undefined),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

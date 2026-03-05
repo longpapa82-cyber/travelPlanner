@@ -226,7 +226,9 @@ export class TripStatusScheduler {
     try {
       const refreshed = await this.aiService.refreshStaleTemplates();
       if (refreshed > 0) {
-        this.logger.log(`Template refresh completed: ${refreshed} templates updated`);
+        this.logger.log(
+          `Template refresh completed: ${refreshed} templates updated`,
+        );
       }
     } catch (error) {
       this.logger.error(

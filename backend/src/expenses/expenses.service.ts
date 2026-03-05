@@ -70,9 +70,7 @@ export class ExpensesService {
       .getRawOne();
 
     if (!collaborator) {
-      throw new ForbiddenException(
-        'You do not have access to this trip',
-      );
+      throw new ForbiddenException('You do not have access to this trip');
     }
 
     return trip;
@@ -126,10 +124,7 @@ export class ExpensesService {
     await this.verifyTripAccess(tripId, userId);
 
     // Validate all referenced users are trip participants
-    const allUserIds = [
-      dto.paidByUserId,
-      ...dto.splits.map((s) => s.userId),
-    ];
+    const allUserIds = [dto.paidByUserId, ...dto.splits.map((s) => s.userId)];
     const uniqueUserIds = [...new Set(allUserIds)];
     await this.verifyTripParticipants(tripId, uniqueUserIds);
 
@@ -212,10 +207,7 @@ export class ExpensesService {
   /**
    * Find all expenses for a trip
    */
-  async findAll(
-    tripId: string,
-    userId: string,
-  ): Promise<Expense[]> {
+  async findAll(tripId: string, userId: string): Promise<Expense[]> {
     await this.verifyTripAccess(tripId, userId);
 
     return this.expenseRepository
@@ -248,7 +240,10 @@ export class ExpensesService {
       .addSelect(['paidBy.id', 'paidBy.name', 'paidBy.profileImage'])
       .leftJoin('split.user', 'splitUser')
       .addSelect(['splitUser.id', 'splitUser.name', 'splitUser.profileImage'])
-      .where('expense.id = :expenseId AND expense.tripId = :tripId', { expenseId, tripId })
+      .where('expense.id = :expenseId AND expense.tripId = :tripId', {
+        expenseId,
+        tripId,
+      })
       .getOne();
 
     if (!expense) {
@@ -280,11 +275,14 @@ export class ExpensesService {
 
     // If splits or amount are being updated, recalculate
     if (dto.splits || dto.amount !== undefined) {
-      const newAmount = dto.amount !== undefined ? dto.amount : Number(expense.amount);
-      const newSplits = dto.splits || expense.splits.map((s) => ({
-        userId: s.userId,
-        amount: Number(s.amount),
-      }));
+      const newAmount =
+        dto.amount !== undefined ? dto.amount : Number(expense.amount);
+      const newSplits =
+        dto.splits ||
+        expense.splits.map((s) => ({
+          userId: s.userId,
+          amount: Number(s.amount),
+        }));
       const newMethod = dto.splitMethod || expense.splitMethod;
 
       // Validate participants
@@ -299,7 +297,11 @@ export class ExpensesService {
       await this.expenseSplitRepository.delete({ expenseId });
 
       // Calculate new splits
-      const splitEntries = this.calculateSplits(newAmount, newSplits, newMethod);
+      const splitEntries = this.calculateSplits(
+        newAmount,
+        newSplits,
+        newMethod,
+      );
 
       // Create new splits
       const newSplitEntities = splitEntries.map((entry) =>
@@ -351,10 +353,7 @@ export class ExpensesService {
    * Get balance summary for all participants in a trip.
    * Positive balance = others owe you, Negative balance = you owe others.
    */
-  async getBalances(
-    tripId: string,
-    userId: string,
-  ): Promise<BalanceEntry[]> {
+  async getBalances(tripId: string, userId: string): Promise<BalanceEntry[]> {
     await this.verifyTripAccess(tripId, userId);
 
     const expenses = await this.expenseRepository

@@ -8,10 +8,7 @@ import { AnalyticsService } from './analytics.service';
 import { TemplateService } from './template.service';
 import { TimezoneService } from './timezone.service';
 import { getErrorMessage } from '../../common/types/request.types';
-import {
-  withRetry,
-  CircuitBreaker,
-} from '../../common/utils/resilience';
+import { withRetry, CircuitBreaker } from '../../common/utils/resilience';
 
 interface RawAiActivity {
   time?: string;
@@ -85,7 +82,8 @@ export class AIService {
     private timezoneService: TimezoneService,
   ) {
     const apiKey = this.configService.get<string>('OPENAI_API_KEY');
-    this.model = this.configService.get<string>('OPENAI_MODEL') || 'gpt-4o-mini';
+    this.model =
+      this.configService.get<string>('OPENAI_MODEL') || 'gpt-4o-mini';
     if (apiKey && apiKey !== '' && !apiKey.includes('your-')) {
       this.openai = new OpenAI({ apiKey });
       this.logger.log(`OpenAI service initialized (model: ${this.model})`);
@@ -132,11 +130,12 @@ export class AIService {
       const langName = LANGUAGE_NAMES[tripContext.language || 'ko'] || 'Korean';
       const content = await this.openaiBreaker.run(() =>
         withRetry(
-          () => this.streamCompletion(
-            `Expert travel planner. Return JSON daily itinerary. Consider travel time, hours, customs. All text (title, description, location) in ${langName} only.`,
-            prompt,
-            { maxTokens: 4096, label: 'daily itinerary' },
-          ),
+          () =>
+            this.streamCompletion(
+              `Expert travel planner. Return JSON daily itinerary. Consider travel time, hours, customs. All text (title, description, location) in ${langName} only.`,
+              prompt,
+              { maxTokens: 4096, label: 'daily itinerary' },
+            ),
           2,
           1000,
           'OpenAI daily itinerary',
@@ -160,7 +159,8 @@ export class AIService {
 
       // Only geocode activities that lack valid AI-returned coordinates
       const needsGeocoding = result.filter(
-        (a) => !a.latitude || !a.longitude || a.latitude === 0 || a.longitude === 0,
+        (a) =>
+          !a.latitude || !a.longitude || a.latitude === 0 || a.longitude === 0,
       );
       if (needsGeocoding.length > 0) {
         try {
@@ -170,7 +170,12 @@ export class AIService {
           );
           let ci = 0;
           for (const activity of result) {
-            if (!activity.latitude || !activity.longitude || activity.latitude === 0 || activity.longitude === 0) {
+            if (
+              !activity.latitude ||
+              !activity.longitude ||
+              activity.latitude === 0 ||
+              activity.longitude === 0
+            ) {
               if (coords[ci] && coords[ci].latitude !== 0) {
                 activity.latitude = coords[ci].latitude;
                 activity.longitude = coords[ci].longitude;
@@ -301,7 +306,8 @@ Trip Details:
 - Consider jet lag: keep the first day relaxed.
 - Include a suggested arrival/transfer activity (e.g., "Airport to hotel") as the first item around 10:00-12:00.`;
       } else {
-        prompt += '\n\nThis is the first day - include arrival and settling in.';
+        prompt +=
+          '\n\nThis is the first day - include arrival and settling in.';
       }
     } else if (dayNumber === totalDays) {
       const isInternational = !!context.country;
@@ -364,7 +370,9 @@ Return JSON:
       if (templateResult && !templateResult.isStale) {
         this.logger.log(
           `Template cache HIT [${templateResult.matchType}] for "${tripContext.destination}" ${totalDays}d — skipping AI` +
-            (templateResult.similarity ? ` (similarity: ${templateResult.similarity.toFixed(3)})` : ''),
+            (templateResult.similarity
+              ? ` (similarity: ${templateResult.similarity.toFixed(3)})`
+              : ''),
         );
         // Map template days to dated itineraries
         return templateResult.days.map((day, i) => {
@@ -393,12 +401,22 @@ Return JSON:
     this.logger.log(
       `Template cache MISS for "${tripContext.destination}" ${totalDays}d — calling AI (model: ${this.model})`,
     );
-    let itineraries: { dayNumber: number; date: Date; activities: ActivityDto[] }[];
+    let itineraries: {
+      dayNumber: number;
+      date: Date;
+      activities: ActivityDto[];
+    }[];
 
     if (totalDays <= 10) {
-      itineraries = await this.generateFullTripItinerary(tripContext, totalDays);
+      itineraries = await this.generateFullTripItinerary(
+        tripContext,
+        totalDays,
+      );
     } else {
-      itineraries = await this.generateParallelItineraries(tripContext, totalDays);
+      itineraries = await this.generateParallelItineraries(
+        tripContext,
+        totalDays,
+      );
     }
 
     // Auto-save AI result as template for future reuse (fire-and-forget)
@@ -443,9 +461,10 @@ Return JSON:
     const startStr = tripContext.startDate.toISOString().split('T')[0];
     const endStr = tripContext.endDate.toISOString().split('T')[0];
     const cacheKey = `ai:fulltrip:${tripContext.destination}:${startStr}:${endStr}:${tripContext.preferences?.travelStyle || 'default'}:${lang}`;
-    const cached = await this.cacheManager.get<
-      { dayNumber: number; date: Date; activities: ActivityDto[] }[]
-    >(cacheKey);
+    const cached =
+      await this.cacheManager.get<
+        { dayNumber: number; date: Date; activities: ActivityDto[] }[]
+      >(cacheKey);
     if (cached) {
       this.logger.debug(`Cache hit for full trip itinerary: ${cacheKey}`);
       return cached;
@@ -469,11 +488,12 @@ Return JSON:
 
       const content = await this.openaiBreaker.run(() =>
         withRetry(
-          () => this.streamCompletion(
-            `Expert travel planner. Return JSON multi-day itinerary with logical geographic flow. All text (title, description, location) in ${langName} only.`,
-            prompt,
-            { maxTokens, label: `full ${totalDays}d trip` },
-          ),
+          () =>
+            this.streamCompletion(
+              `Expert travel planner. Return JSON multi-day itinerary with logical geographic flow. All text (title, description, location) in ${langName} only.`,
+              prompt,
+              { maxTokens, label: `full ${totalDays}d trip` },
+            ),
           2,
           1000,
           'OpenAI full trip',
@@ -523,7 +543,11 @@ Return JSON:
       await Promise.allSettled(
         itineraries.map(async (it) => {
           const needsGeocoding = it.activities.filter(
-            (a) => !a.latitude || !a.longitude || a.latitude === 0 || a.longitude === 0,
+            (a) =>
+              !a.latitude ||
+              !a.longitude ||
+              a.latitude === 0 ||
+              a.longitude === 0,
           );
           if (needsGeocoding.length === 0) return;
           try {
@@ -533,7 +557,12 @@ Return JSON:
             );
             let ci = 0;
             for (const activity of it.activities) {
-              if (!activity.latitude || !activity.longitude || activity.latitude === 0 || activity.longitude === 0) {
+              if (
+                !activity.latitude ||
+                !activity.longitude ||
+                activity.latitude === 0 ||
+                activity.longitude === 0
+              ) {
                 if (coords[ci] && coords[ci].latitude !== 0) {
                   activity.latitude = coords[ci].latitude;
                   activity.longitude = coords[ci].longitude;
@@ -602,9 +631,7 @@ Return JSON:
         if (result.status === 'fulfilled') {
           itineraries.push(result.value);
         } else {
-          this.logger.warn(
-            `Parallel day generation failed: ${result.reason}`,
-          );
+          this.logger.warn(`Parallel day generation failed: ${result.reason}`);
         }
       }
     }
@@ -613,7 +640,11 @@ Return JSON:
     itineraries.sort((a, b) => a.dayNumber - b.dayNumber);
 
     // Fill missing days with empty itineraries
-    const result: { dayNumber: number; date: Date; activities: ActivityDto[] }[] = [];
+    const result: {
+      dayNumber: number;
+      date: Date;
+      activities: ActivityDto[];
+    }[] = [];
     for (let i = 0; i < totalDays; i++) {
       const existing = itineraries.find((it) => it.dayNumber === i + 1);
       if (existing) {
@@ -730,7 +761,11 @@ Return JSON:
     });
 
     let content = '';
-    let usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number } | null = null;
+    let usage: {
+      prompt_tokens: number;
+      completion_tokens: number;
+      total_tokens: number;
+    } | null = null;
 
     for await (const chunk of stream) {
       const delta = chunk.choices[0]?.delta?.content;
@@ -785,22 +820,40 @@ Return JSON:
           country: template.country,
           city: template.city,
           startDate: new Date(),
-          endDate: new Date(Date.now() + (template.durationDays - 1) * 86400000),
+          endDate: new Date(
+            Date.now() + (template.durationDays - 1) * 86400000,
+          ),
           numberOfTravelers: 2,
           preferences: {
-            budget: template.budgetLevel !== 'default' ? template.budgetLevel : undefined,
-            travelStyle: template.travelStyle !== 'default' ? template.travelStyle : undefined,
+            budget:
+              template.budgetLevel !== 'default'
+                ? template.budgetLevel
+                : undefined,
+            travelStyle:
+              template.travelStyle !== 'default'
+                ? template.travelStyle
+                : undefined,
           },
           language: template.language,
         };
 
         const totalDays = template.durationDays;
-        let itineraries: { dayNumber: number; date: Date; activities: ActivityDto[] }[];
+        let itineraries: {
+          dayNumber: number;
+          date: Date;
+          activities: ActivityDto[];
+        }[];
 
         if (totalDays <= 10) {
-          itineraries = await this.generateFullTripItinerary(tripContext, totalDays);
+          itineraries = await this.generateFullTripItinerary(
+            tripContext,
+            totalDays,
+          );
         } else {
-          itineraries = await this.generateParallelItineraries(tripContext, totalDays);
+          itineraries = await this.generateParallelItineraries(
+            tripContext,
+            totalDays,
+          );
         }
 
         // Update template with fresh data
@@ -821,7 +874,9 @@ Return JSON:
             })),
           );
           refreshed++;
-          this.logger.log(`Refreshed stale template: "${template.destination}" ${template.durationDays}d`);
+          this.logger.log(
+            `Refreshed stale template: "${template.destination}" ${template.durationDays}d`,
+          );
         }
       } catch (error) {
         this.logger.warn(
@@ -830,7 +885,9 @@ Return JSON:
       }
     }
 
-    this.logger.log(`Refreshed ${refreshed}/${staleTemplates.length} stale templates`);
+    this.logger.log(
+      `Refreshed ${refreshed}/${staleTemplates.length} stale templates`,
+    );
     return refreshed;
   }
 
@@ -844,9 +901,15 @@ Return JSON:
     if (!this.openai) return;
 
     try {
-      const queue = await this.templateService.getWarmupQueue(20, [3, 5, 7], ['ko', 'en']);
+      const queue = await this.templateService.getWarmupQueue(
+        20,
+        [3, 5, 7],
+        ['ko', 'en'],
+      );
       if (queue.length === 0) {
-        this.logger.log('Template warmup: all popular destinations already covered');
+        this.logger.log(
+          'Template warmup: all popular destinations already covered',
+        );
         return;
       }
 
@@ -901,7 +964,9 @@ Return JSON:
         `Template warmup: generated ${generated}/${batch.length} templates (${queue.length - batch.length} remaining)`,
       );
     } catch (error) {
-      this.logger.warn(`Template warmup cron failed: ${getErrorMessage(error)}`);
+      this.logger.warn(
+        `Template warmup cron failed: ${getErrorMessage(error)}`,
+      );
     }
   }
 }

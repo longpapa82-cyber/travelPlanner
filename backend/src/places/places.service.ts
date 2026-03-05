@@ -23,7 +23,9 @@ export class PlacesService {
       this.apiKey = key;
       this.logger.log('Places service initialized');
     } else {
-      this.logger.warn('Google Maps API key not configured — Places autocomplete disabled');
+      this.logger.warn(
+        'Google Maps API key not configured — Places autocomplete disabled',
+      );
     }
   }
 
@@ -66,7 +68,9 @@ export class PlacesService {
       );
 
       if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
-        this.logger.warn(`Places API status: ${data.status} — ${data.error_message || ''}`);
+        this.logger.warn(
+          `Places API status: ${data.status} — ${data.error_message || ''}`,
+        );
         return { predictions: [], available: true };
       }
 

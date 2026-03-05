@@ -151,9 +151,7 @@ export class TripsService {
     };
 
     // Helper: create empty day-card itineraries with weather/timezone
-    const createEmptyItineraries = async (
-      weatherMap: Map<number, any>,
-    ) => {
+    const createEmptyItineraries = async (weatherMap: Map<number, any>) => {
       const itineraries: Itinerary[] = [];
       for (let i = 0; i < numberOfDays; i++) {
         const date = new Date(startDate);
@@ -257,7 +255,10 @@ export class TripsService {
         );
 
         await this.tripRepository.update(savedTrip.id, { aiStatus: 'failed' });
-        progress$?.next({ step: 'error', message: 'AI generation failed, creating empty itineraries' });
+        progress$?.next({
+          step: 'error',
+          message: 'AI generation failed, creating empty itineraries',
+        });
 
         // Fallback: Create empty itineraries with weather
         const weatherMap = await fetchWeatherMap();
@@ -292,7 +293,12 @@ export class TripsService {
     const queryBuilder = this.tripRepository
       .createQueryBuilder('trip')
       .leftJoinAndSelect('trip.itineraries', 'itinerary')
-      .leftJoin('collaborators', 'collab', 'collab.tripId = trip.id AND collab.userId = :collabUserId', { collabUserId: userId })
+      .leftJoin(
+        'collaborators',
+        'collab',
+        'collab.tripId = trip.id AND collab.userId = :collabUserId',
+        { collabUserId: userId },
+      )
       .where('(trip.userId = :userId OR collab.id IS NOT NULL)', { userId });
 
     // Search filter (destination or description)
@@ -436,7 +442,9 @@ export class TripsService {
         where: { tripId: id, userId },
       });
       if (!collab || collab.role !== CollaboratorRole.EDITOR) {
-        throw new ForbiddenException('Only the trip owner or editors can modify this trip');
+        throw new ForbiddenException(
+          'Only the trip owner or editors can modify this trip',
+        );
       }
     }
 
@@ -627,7 +635,9 @@ export class TripsService {
       where: { tripId: trip.id, userId },
     });
     if (!collab || collab.role !== CollaboratorRole.EDITOR) {
-      throw new ForbiddenException('Only the trip owner or editors can modify this trip');
+      throw new ForbiddenException(
+        'Only the trip owner or editors can modify this trip',
+      );
     }
   }
 

@@ -14,7 +14,10 @@ export default registerAs('oauth', () => ({
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackUrl: resolveCallbackUrl(process.env.GOOGLE_CALLBACK_URL, '/api/auth/google/callback'),
+    callbackUrl: resolveCallbackUrl(
+      process.env.GOOGLE_CALLBACK_URL,
+      '/api/auth/google/callback',
+    ),
   },
   apple: {
     clientId: process.env.APPLE_CLIENT_ID,
@@ -25,11 +28,17 @@ export default registerAs('oauth', () => ({
       existsSync(process.env.APPLE_PRIVATE_KEY_PATH)
         ? readFileSync(process.env.APPLE_PRIVATE_KEY_PATH, 'utf8')
         : process.env.APPLE_PRIVATE_KEY || '',
-    callbackUrl: resolveCallbackUrl(process.env.APPLE_CALLBACK_URL, '/api/auth/apple/callback'),
+    callbackUrl: resolveCallbackUrl(
+      process.env.APPLE_CALLBACK_URL,
+      '/api/auth/apple/callback',
+    ),
   },
   kakao: {
     clientId: process.env.KAKAO_CLIENT_ID,
     clientSecret: process.env.KAKAO_CLIENT_SECRET,
-    callbackUrl: resolveCallbackUrl(process.env.KAKAO_CALLBACK_URL, '/api/auth/kakao/callback'),
+    callbackUrl: resolveCallbackUrl(
+      process.env.KAKAO_CALLBACK_URL,
+      '/api/auth/kakao/callback',
+    ),
   },
 }));

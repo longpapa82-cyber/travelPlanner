@@ -57,11 +57,22 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { id },
       select: [
-        'id', 'email', 'name', 'provider', 'profileImage', 'role',
-        'isEmailVerified', 'isTwoFactorEnabled',
-        'subscriptionTier', 'subscriptionExpiresAt', 'aiTripsUsedThisMonth',
-        'travelPreferences', 'followersCount', 'followingCount',
-        'createdAt', 'updatedAt',
+        'id',
+        'email',
+        'name',
+        'provider',
+        'profileImage',
+        'role',
+        'isEmailVerified',
+        'isTwoFactorEnabled',
+        'subscriptionTier',
+        'subscriptionExpiresAt',
+        'aiTripsUsedThisMonth',
+        'travelPreferences',
+        'followersCount',
+        'followingCount',
+        'createdAt',
+        'updatedAt',
       ],
     });
     if (!user) {
@@ -70,10 +81,29 @@ export class UsersService {
     return user;
   }
 
-  async findPublicProfile(id: string): Promise<Pick<User, 'id' | 'name' | 'profileImage' | 'followersCount' | 'followingCount' | 'createdAt'>> {
+  async findPublicProfile(
+    id: string,
+  ): Promise<
+    Pick<
+      User,
+      | 'id'
+      | 'name'
+      | 'profileImage'
+      | 'followersCount'
+      | 'followingCount'
+      | 'createdAt'
+    >
+  > {
     const user = await this.userRepository.findOne({
       where: { id },
-      select: ['id', 'name', 'profileImage', 'followersCount', 'followingCount', 'createdAt'],
+      select: [
+        'id',
+        'name',
+        'profileImage',
+        'followersCount',
+        'followingCount',
+        'createdAt',
+      ],
     });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -117,7 +147,24 @@ export class UsersService {
     id: string,
     currentPassword: string,
     newPassword: string,
-    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
+    lang:
+      | 'ko'
+      | 'en'
+      | 'ja'
+      | 'zh'
+      | 'es'
+      | 'de'
+      | 'fr'
+      | 'th'
+      | 'vi'
+      | 'pt'
+      | 'ar'
+      | 'id'
+      | 'hi'
+      | 'it'
+      | 'ru'
+      | 'tr'
+      | 'ms' = 'ko',
   ): Promise<{ message: string }> {
     const user = await this.userRepository
       .createQueryBuilder('user')
@@ -168,7 +215,11 @@ export class UsersService {
     await this.userRepository.delete(id);
 
     // Blacklist deleted user for 30 days so refresh tokens cannot mint new access tokens
-    await this.cacheManager.set(`deleted_user:${id}`, '1', 30 * 24 * 60 * 60 * 1000);
+    await this.cacheManager.set(
+      `deleted_user:${id}`,
+      '1',
+      30 * 24 * 60 * 60 * 1000,
+    );
   }
 
   async generateEmailVerificationToken(userId: string): Promise<string> {
@@ -190,7 +241,24 @@ export class UsersService {
 
   async verifyEmail(
     token: string,
-    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
+    lang:
+      | 'ko'
+      | 'en'
+      | 'ja'
+      | 'zh'
+      | 'es'
+      | 'de'
+      | 'fr'
+      | 'th'
+      | 'vi'
+      | 'pt'
+      | 'ar'
+      | 'id'
+      | 'hi'
+      | 'it'
+      | 'ru'
+      | 'tr'
+      | 'ms' = 'ko',
   ): Promise<Partial<User>> {
     const user = await this.userRepository
       .createQueryBuilder('user')
@@ -220,7 +288,24 @@ export class UsersService {
 
   async generatePasswordResetToken(
     email: string,
-    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
+    lang:
+      | 'ko'
+      | 'en'
+      | 'ja'
+      | 'zh'
+      | 'es'
+      | 'de'
+      | 'fr'
+      | 'th'
+      | 'vi'
+      | 'pt'
+      | 'ar'
+      | 'id'
+      | 'hi'
+      | 'it'
+      | 'ru'
+      | 'tr'
+      | 'ms' = 'ko',
   ): Promise<{ token: string; user: User } | null> {
     const user = await this.userRepository.findOne({ where: { email } });
 
@@ -251,7 +336,24 @@ export class UsersService {
   async resetPassword(
     token: string,
     newPassword: string,
-    lang: 'ko' | 'en' | 'ja' | 'zh' | 'es' | 'de' | 'fr' | 'th' | 'vi' | 'pt' | 'ar' | 'id' | 'hi' | 'it' | 'ru' | 'tr' | 'ms' = 'ko',
+    lang:
+      | 'ko'
+      | 'en'
+      | 'ja'
+      | 'zh'
+      | 'es'
+      | 'de'
+      | 'fr'
+      | 'th'
+      | 'vi'
+      | 'pt'
+      | 'ar'
+      | 'id'
+      | 'hi'
+      | 'it'
+      | 'ru'
+      | 'tr'
+      | 'ms' = 'ko',
   ): Promise<Partial<User>> {
     const user = await this.userRepository
       .createQueryBuilder('user')
@@ -281,9 +383,15 @@ export class UsersService {
 
   async updateTravelPreferences(
     userId: string,
-    preferences: { budget?: string; travelStyle?: string; interests?: string[] },
+    preferences: {
+      budget?: string;
+      travelStyle?: string;
+      interests?: string[];
+    },
   ): Promise<Partial<User>> {
-    await this.userRepository.update(userId, { travelPreferences: preferences });
+    await this.userRepository.update(userId, {
+      travelPreferences: preferences,
+    });
     return this.findProfileById(userId);
   }
 

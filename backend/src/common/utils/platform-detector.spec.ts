@@ -26,21 +26,21 @@ describe('detectPlatform', () => {
   });
 
   it('returns "android" for Expo Android', () => {
-    expect(
-      detectPlatform('Expo/2.32.13 CFNetwork/1568.100.1 Android/14'),
-    ).toBe('android');
+    expect(detectPlatform('Expo/2.32.13 CFNetwork/1568.100.1 Android/14')).toBe(
+      'android',
+    );
   });
 
   it('returns "ios" for Expo iPhone', () => {
-    expect(
-      detectPlatform('Expo/2.32.13 CFNetwork/1568.100.1 iPhone'),
-    ).toBe('ios');
+    expect(detectPlatform('Expo/2.32.13 CFNetwork/1568.100.1 iPhone')).toBe(
+      'ios',
+    );
   });
 
   it('returns "ios" for Expo iPad', () => {
-    expect(
-      detectPlatform('Expo/2.32.13 CFNetwork/1568.100.1 iPad'),
-    ).toBe('ios');
+    expect(detectPlatform('Expo/2.32.13 CFNetwork/1568.100.1 iPad')).toBe(
+      'ios',
+    );
   });
 
   it('returns "ios" for ambiguous Expo UA (no platform marker)', () => {
@@ -48,14 +48,14 @@ describe('detectPlatform', () => {
   });
 
   it('returns "android" for React Native Android', () => {
-    expect(
-      detectPlatform('react-native Android/13'),
-    ).toBe('android');
+    expect(detectPlatform('react-native Android/13')).toBe('android');
   });
 
   it('returns "android" for Dalvik UA', () => {
     expect(
-      detectPlatform('Dalvik/2.1.0 (Linux; U; Android 14; Pixel 7 Build/UQ1A.240205.002)'),
+      detectPlatform(
+        'Dalvik/2.1.0 (Linux; U; Android 14; Pixel 7 Build/UQ1A.240205.002)',
+      ),
     ).toBe('android');
   });
 
@@ -64,9 +64,7 @@ describe('detectPlatform', () => {
   });
 
   it('returns "ios" for Darwin non-Mac UA', () => {
-    expect(
-      detectPlatform('CFNetwork/1485 Darwin/23.1.0'),
-    ).toBe('ios');
+    expect(detectPlatform('CFNetwork/1485 Darwin/23.1.0')).toBe('ios');
   });
 
   it('returns "web" for Darwin with Mac OS (desktop Safari)', () => {

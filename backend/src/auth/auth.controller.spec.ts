@@ -581,7 +581,9 @@ describe('AuthController (Integration)', () => {
 
       expect(response.body).toEqual(mockAuthResponse);
       expect(authService.exchangeOAuthCode).toHaveBeenCalled();
-      expect(authService.exchangeOAuthCode.mock.calls[0][0]).toBe('valid-oauth-code');
+      expect(authService.exchangeOAuthCode.mock.calls[0][0]).toBe(
+        'valid-oauth-code',
+      );
     });
 
     it('should return 400 when code is missing', async () => {

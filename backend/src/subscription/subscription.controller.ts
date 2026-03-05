@@ -55,10 +55,14 @@ export class SubscriptionController {
     );
     if (!webhookSecret) {
       if (process.env.NODE_ENV === 'production') {
-        this.logger.error('REVENUECAT_WEBHOOK_SECRET not configured in production');
+        this.logger.error(
+          'REVENUECAT_WEBHOOK_SECRET not configured in production',
+        );
         throw new InternalServerErrorException('Webhook not configured');
       }
-      this.logger.warn('RevenueCat webhook: no secret configured, skipping auth');
+      this.logger.warn(
+        'RevenueCat webhook: no secret configured, skipping auth',
+      );
     } else {
       const expectedAuth = `Bearer ${webhookSecret}`;
       if (authHeader !== expectedAuth) {

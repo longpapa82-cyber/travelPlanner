@@ -66,7 +66,9 @@ export class AuditService {
     });
 
     if (result.affected && result.affected > 0) {
-      this.logger.log(`Cleaned up ${result.affected} audit logs older than 30 days`);
+      this.logger.log(
+        `Cleaned up ${result.affected} audit logs older than 30 days`,
+      );
     }
   }
 }

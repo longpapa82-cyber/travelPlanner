@@ -108,8 +108,13 @@ async function bootstrap() {
   });
 
   // Enable CORS — fail-fast in production if not configured
-  const corsOrigin = process.env.CORS_ORIGIN?.split(',').map(s => s.trim()).filter(Boolean);
-  if ((!corsOrigin || corsOrigin.length === 0) && process.env.NODE_ENV === 'production') {
+  const corsOrigin = process.env.CORS_ORIGIN?.split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (
+    (!corsOrigin || corsOrigin.length === 0) &&
+    process.env.NODE_ENV === 'production'
+  ) {
     throw new Error('CORS_ORIGIN must be set in production environment');
   }
   app.enableCors({
@@ -120,7 +125,12 @@ async function bootstrap() {
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language', 'X-Request-ID'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept-Language',
+      'X-Request-ID',
+    ],
   });
 
   // Graceful shutdown — drain connections on SIGTERM/SIGINT

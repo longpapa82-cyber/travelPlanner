@@ -22,15 +22,31 @@ const TOP_DESTINATIONS = [
 
   // Europe
   { destination: 'Paris, France', country: 'France', city: 'Paris' },
-  { destination: 'London, United Kingdom', country: 'United Kingdom', city: 'London' },
+  {
+    destination: 'London, United Kingdom',
+    country: 'United Kingdom',
+    city: 'London',
+  },
   { destination: 'Rome, Italy', country: 'Italy', city: 'Rome' },
   { destination: 'Barcelona, Spain', country: 'Spain', city: 'Barcelona' },
-  { destination: 'Amsterdam, Netherlands', country: 'Netherlands', city: 'Amsterdam' },
-  { destination: 'Prague, Czech Republic', country: 'Czech Republic', city: 'Prague' },
+  {
+    destination: 'Amsterdam, Netherlands',
+    country: 'Netherlands',
+    city: 'Amsterdam',
+  },
+  {
+    destination: 'Prague, Czech Republic',
+    country: 'Czech Republic',
+    city: 'Prague',
+  },
   { destination: 'Istanbul, Turkey', country: 'Turkey', city: 'Istanbul' },
   { destination: 'Vienna, Austria', country: 'Austria', city: 'Vienna' },
   { destination: 'Berlin, Germany', country: 'Germany', city: 'Berlin' },
-  { destination: 'Zurich, Switzerland', country: 'Switzerland', city: 'Zurich' },
+  {
+    destination: 'Zurich, Switzerland',
+    country: 'Switzerland',
+    city: 'Zurich',
+  },
 
   // Americas
   { destination: 'New York, USA', country: 'USA', city: 'New York' },
@@ -40,37 +56,73 @@ const TOP_DESTINATIONS = [
   { destination: 'San Francisco, USA', country: 'USA', city: 'San Francisco' },
   { destination: 'Las Vegas, USA', country: 'USA', city: 'Las Vegas' },
   { destination: 'Miami, USA', country: 'USA', city: 'Miami' },
-  { destination: 'Buenos Aires, Argentina', country: 'Argentina', city: 'Buenos Aires' },
+  {
+    destination: 'Buenos Aires, Argentina',
+    country: 'Argentina',
+    city: 'Buenos Aires',
+  },
   { destination: 'Lima, Peru', country: 'Peru', city: 'Lima' },
   { destination: 'Vancouver, Canada', country: 'Canada', city: 'Vancouver' },
 
   // Oceania
   { destination: 'Sydney, Australia', country: 'Australia', city: 'Sydney' },
-  { destination: 'Melbourne, Australia', country: 'Australia', city: 'Melbourne' },
-  { destination: 'Auckland, New Zealand', country: 'New Zealand', city: 'Auckland' },
+  {
+    destination: 'Melbourne, Australia',
+    country: 'Australia',
+    city: 'Melbourne',
+  },
+  {
+    destination: 'Auckland, New Zealand',
+    country: 'New Zealand',
+    city: 'Auckland',
+  },
 
   // Middle East & Africa
   { destination: 'Dubai, UAE', country: 'UAE', city: 'Dubai' },
   { destination: 'Cairo, Egypt', country: 'Egypt', city: 'Cairo' },
   { destination: 'Marrakech, Morocco', country: 'Morocco', city: 'Marrakech' },
-  { destination: 'Cape Town, South Africa', country: 'South Africa', city: 'Cape Town' },
+  {
+    destination: 'Cape Town, South Africa',
+    country: 'South Africa',
+    city: 'Cape Town',
+  },
 
   // South Korea — popular domestic destinations
   { destination: 'Busan, South Korea', country: 'South Korea', city: 'Busan' },
   { destination: 'Jeju, South Korea', country: 'South Korea', city: 'Jeju' },
-  { destination: 'Gyeongju, South Korea', country: 'South Korea', city: 'Gyeongju' },
-  { destination: 'Gangneung, South Korea', country: 'South Korea', city: 'Gangneung' },
+  {
+    destination: 'Gyeongju, South Korea',
+    country: 'South Korea',
+    city: 'Gyeongju',
+  },
+  {
+    destination: 'Gangneung, South Korea',
+    country: 'South Korea',
+    city: 'Gangneung',
+  },
   { destination: 'Yeosu, South Korea', country: 'South Korea', city: 'Yeosu' },
 
   // Additional popular
   { destination: 'Fukuoka, Japan', country: 'Japan', city: 'Fukuoka' },
   { destination: 'Da Nang, Vietnam', country: 'Vietnam', city: 'Da Nang' },
   { destination: 'Phuket, Thailand', country: 'Thailand', city: 'Phuket' },
-  { destination: 'Kuala Lumpur, Malaysia', country: 'Malaysia', city: 'Kuala Lumpur' },
-  { destination: 'Manila, Philippines', country: 'Philippines', city: 'Manila' },
+  {
+    destination: 'Kuala Lumpur, Malaysia',
+    country: 'Malaysia',
+    city: 'Kuala Lumpur',
+  },
+  {
+    destination: 'Manila, Philippines',
+    country: 'Philippines',
+    city: 'Manila',
+  },
   { destination: 'Florence, Italy', country: 'Italy', city: 'Florence' },
   { destination: 'Lisbon, Portugal', country: 'Portugal', city: 'Lisbon' },
-  { destination: 'Edinburgh, United Kingdom', country: 'United Kingdom', city: 'Edinburgh' },
+  {
+    destination: 'Edinburgh, United Kingdom',
+    country: 'United Kingdom',
+    city: 'Edinburgh',
+  },
 ];
 
 /** Common durations to pre-generate for each destination */
@@ -106,7 +158,8 @@ export class SeedTemplatesCommand {
     const destinations = options?.destinations
       ? TOP_DESTINATIONS.filter((d) =>
           options.destinations!.some(
-            (name) => d.city.toLowerCase() === name.toLowerCase() ||
+            (name) =>
+              d.city.toLowerCase() === name.toLowerCase() ||
               d.destination.toLowerCase().includes(name.toLowerCase()),
           ),
         )
@@ -157,12 +210,15 @@ export class SeedTemplatesCommand {
             };
 
             // Generate via AI (this also auto-saves via the template integration)
-            const itineraries = await this.aiService.generateAllItineraries(tripContext);
+            const itineraries =
+              await this.aiService.generateAllItineraries(tripContext);
 
             if (itineraries.some((it) => it.activities.length > 0)) {
               generated++;
             } else {
-              this.logger.warn(`Empty result for "${dest.destination}" ${duration}d [${lang}]`);
+              this.logger.warn(
+                `Empty result for "${dest.destination}" ${duration}d [${lang}]`,
+              );
               failed++;
             }
 

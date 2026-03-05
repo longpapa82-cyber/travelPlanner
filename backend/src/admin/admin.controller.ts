@@ -169,12 +169,17 @@ export class AnnouncementsPublicController {
     @CurrentUser('userId') userId: string,
     @Headers('accept-language') acceptLanguage?: string,
   ) {
-    return this.announcementService.getActiveForUser(userId, parseLang(acceptLanguage));
+    return this.announcementService.getActiveForUser(
+      userId,
+      parseLang(acceptLanguage),
+    );
   }
 
   @Get('unread-count')
   getUnreadCount(@CurrentUser('userId') userId: string) {
-    return this.announcementService.getUnreadCount(userId).then(count => ({ count }));
+    return this.announcementService
+      .getUnreadCount(userId)
+      .then((count) => ({ count }));
   }
 
   @Get(':id')
@@ -183,7 +188,11 @@ export class AnnouncementsPublicController {
     @Param('id', ParseUUIDPipe) id: string,
     @Headers('accept-language') acceptLanguage?: string,
   ) {
-    return this.announcementService.getOneForUser(userId, id, parseLang(acceptLanguage));
+    return this.announcementService.getOneForUser(
+      userId,
+      id,
+      parseLang(acceptLanguage),
+    );
   }
 
   @Patch(':id/read')
@@ -213,10 +222,7 @@ export class ErrorLogController {
 
   @Post()
   @Throttle({ short: { ttl: 60000, limit: 30 } })
-  createErrorLog(
-    @Req() req: any,
-    @Body() dto: CreateErrorLogDto,
-  ) {
+  createErrorLog(@Req() req: any, @Body() dto: CreateErrorLogDto) {
     const ua = req.headers['user-agent'] as string | undefined;
     return this.adminService.createErrorLog({
       errorMessage: dto.errorMessage,

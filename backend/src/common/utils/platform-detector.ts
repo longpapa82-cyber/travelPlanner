@@ -12,7 +12,12 @@ export function detectPlatform(ua: string | undefined): Platform {
   // React Native / Expo apps include these markers
   if (lower.includes('expo') || lower.includes('react-native')) {
     if (lower.includes('android')) return 'android';
-    if (lower.includes('ios') || lower.includes('iphone') || lower.includes('ipad')) return 'ios';
+    if (
+      lower.includes('ios') ||
+      lower.includes('iphone') ||
+      lower.includes('ipad')
+    )
+      return 'ios';
     // Default to iOS for ambiguous Expo UAs (more common in production)
     return 'ios';
   }
