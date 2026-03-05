@@ -60,7 +60,9 @@
     },
     "aiInfo": {
       "title": "Génération automatique par IA",
-      "description": "L'IA créera le plan de voyage optimal en fonction de votre destination et de votre calendrier"
+      "description": "L'IA créera le plan de voyage optimal en fonction de votre destination et de votre calendrier",
+      "remaining": "{{remaining}}/{{total}} générations IA restantes ce mois",
+      "limitReached": "Limite mensuelle IA ({{total}}) atteinte. Utilisez la création manuelle."
     },
     "rewardedAd": {
       "label": "Regarder une pub pour des infos voyage détaillées"

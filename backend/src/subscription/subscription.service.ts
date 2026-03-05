@@ -19,6 +19,10 @@ import {
 
 const AI_TRIPS_FREE_LIMIT_DEFAULT = 3;
 const PREMIUM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const ADMIN_EMAILS: string[] = (process.env.ADMIN_EMAILS || 'a090723@naver.com,longpapa82@gmail.com')
+  .split(',')
+  .map(e => e.trim())
+  .filter(Boolean);
 
 @Injectable()
 export class SubscriptionService {
@@ -53,6 +57,7 @@ export class SubscriptionService {
       where: { id: userId },
       select: [
         'id',
+        'email',
         'subscriptionTier',
         'subscriptionPlatform',
         'subscriptionExpiresAt',
@@ -90,6 +95,15 @@ export class SubscriptionService {
     allowed: boolean;
     remaining: number;
   }> {
+    // Admin users are exempt from AI trip limits
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'email'],
+    });
+    if (user?.email && ADMIN_EMAILS.includes(user.email)) {
+      return { allowed: true, remaining: -1 };
+    }
+
     const status = await this.getSubscriptionStatus(userId);
 
     if (status.isPremium) {

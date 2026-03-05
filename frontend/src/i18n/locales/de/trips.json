@@ -60,7 +60,9 @@
     },
     "aiInfo": {
       "title": "KI-Automatische Erstellung",
-      "description": "KI erstellt den optimalen Reiseplan basierend auf Ihrem Ziel und Zeitplan"
+      "description": "KI erstellt den optimalen Reiseplan basierend auf Ihrem Ziel und Zeitplan",
+      "remaining": "{{remaining}}/{{total}} KI-Generierungen diesen Monat übrig",
+      "limitReached": "Monatliches KI-Limit ({{total}}) erreicht. Verwenden Sie die manuelle Erstellung."
     },
     "rewardedAd": {
       "label": "Werbung ansehen für detaillierte Reise-Einblicke"

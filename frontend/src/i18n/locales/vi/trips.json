@@ -60,7 +60,9 @@
     },
     "aiInfo": {
       "title": "AI t\u1ef1 \u0111\u1ed9ng l\u1eadp k\u1ebf ho\u1ea1ch",
-      "description": "AI s\u1ebd t\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch t\u1ed1i \u01b0u d\u1ef1a tr\u00ean \u0111i\u1ec3m \u0111\u1ebfn v\u00e0 l\u1ecbch tr\u00ecnh c\u1ee7a b\u1ea1n"
+      "description": "AI s\u1ebd t\u1ea1o k\u1ebf ho\u1ea1ch du l\u1ecbch t\u1ed1i \u01b0u d\u1ef1a tr\u00ean \u0111i\u1ec3m \u0111\u1ebfn v\u00e0 l\u1ecbch tr\u00ecnh c\u1ee7a b\u1ea1n",
+      "remaining": "C\u00f2n {{remaining}}/{{total}} l\u01b0\u1ee3t t\u1ea1o AI trong th\u00e1ng",
+      "limitReached": "\u0110\u00e3 \u0111\u1ea1t gi\u1edbi h\u1ea1n AI th\u00e1ng ({{total}}). H\u00e3y s\u1eed d\u1ee5ng t\u1ea1o th\u1ee7 c\u00f4ng."
     },
     "rewardedAd": {
       "label": "Xem qu\u1ea3ng c\u00e1o \u0111\u1ec3 nh\u1eadn th\u00f4ng tin chi ti\u1ebft v\u1ec1 chuy\u1ebfn \u0111i"

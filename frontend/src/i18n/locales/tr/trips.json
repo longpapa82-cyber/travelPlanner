@@ -60,7 +60,9 @@
     },
     "aiInfo": {
       "title": "AI Otomatik Oluşturma",
-      "description": "AI, destinasyon ve programınıza göre en uygun gezi planını oluşturacak"
+      "description": "AI, destinasyon ve programınıza göre en uygun gezi planını oluşturacak",
+      "remaining": "Bu ay {{remaining}}/{{total}} AI oluşturma hakkı kaldı",
+      "limitReached": "Aylık AI limiti ({{total}}) doldu. Manuel oluşturmayı kullanın."
     },
     "rewardedAd": {
       "label": "Ayrıntılı seyahat bilgileri için reklam izleyin"

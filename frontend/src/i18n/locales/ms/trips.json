@@ -60,7 +60,9 @@
     },
     "aiInfo": {
       "title": "Penjanaan Automatik AI",
-      "description": "AI akan mencipta pelan perjalanan optimum berdasarkan destinasi dan jadual anda"
+      "description": "AI akan mencipta pelan perjalanan optimum berdasarkan destinasi dan jadual anda",
+      "remaining": "{{remaining}}/{{total}} penjanaan AI berbaki bulan ini",
+      "limitReached": "Had AI bulanan ({{total}}) dicapai. Gunakan penciptaan manual."
     },
     "rewardedAd": {
       "label": "Tonton iklan untuk maklumat perjalanan terperinci"

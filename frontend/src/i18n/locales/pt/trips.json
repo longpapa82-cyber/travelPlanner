@@ -41,7 +41,9 @@
     },
     "aiInfo": {
       "title": "Geração Automática por IA",
-      "description": "A IA criará o plano de viagem ideal com base no seu destino e cronograma"
+      "description": "A IA criará o plano de viagem ideal com base no seu destino e cronograma",
+      "remaining": "{{remaining}}/{{total}} gerações IA restantes este mês",
+      "limitReached": "Limite mensal de IA ({{total}}) atingido. Use a criação manual."
     },
     "rewardedAd": { "label": "Assista ao anúncio para obter informações detalhadas de viagem" },
     "submit": "Criar Plano de Viagem",
