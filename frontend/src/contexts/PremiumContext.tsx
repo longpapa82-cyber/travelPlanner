@@ -6,6 +6,7 @@ import { initRevenueCat, logIn, logOut as rcLogOut } from '../services/revenueCa
 import { PREMIUM_ENABLED } from '../constants/config';
 
 const AI_TRIPS_FREE_LIMIT = 3;
+const ADMIN_EMAILS = ['a090723@naver.com', 'longpapa82@gmail.com'];
 
 interface PremiumContextType {
   isPremium: boolean;
@@ -56,10 +57,11 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     return true;
   }, [user?.subscriptionTier, user?.subscriptionExpiresAt]);
 
+  const isAdmin = !!(user?.email && ADMIN_EMAILS.includes(user.email));
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
-  const aiTripsLimit = isPremium ? -1 : AI_TRIPS_FREE_LIMIT;
-  const aiTripsRemaining = isPremium ? -1 : Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed);
-  const isAiLimitReached = !isPremium && aiTripsRemaining <= 0;
+  const aiTripsLimit = (isPremium || isAdmin) ? -1 : AI_TRIPS_FREE_LIMIT;
+  const aiTripsRemaining = (isPremium || isAdmin) ? -1 : Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed);
+  const isAiLimitReached = !isPremium && !isAdmin && aiTripsRemaining <= 0;
 
   const showPaywall = useCallback(() => {
     if (!PREMIUM_ENABLED) return; // Subscription disabled until business registration
