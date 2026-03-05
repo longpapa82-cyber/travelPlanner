@@ -4,10 +4,18 @@
     "users": "Gestión de usuarios",
     "errorLogs": "Registros de errores",
     "revenue": "Panel de ingresos",
-    "announcements": "Announcements"
+    "announcements": "Anuncios"
   },
   "dashboard": {
     "subtitle": "Herramientas de gestión del servicio"
+  },
+  "aiMetrics": {
+    "title": "Generación IA",
+    "totalTrips": "{{count}} viajes en total",
+    "success": "Éxito",
+    "failed": "Fallido",
+    "skipped": "Omitido",
+    "manual": "Manual"
   },
   "platform": {
     "all": "Todos",

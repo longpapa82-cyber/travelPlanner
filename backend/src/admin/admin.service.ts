@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
+import { Trip } from '../trips/entities/trip.entity';
 import { ErrorLog } from './entities/error-log.entity';
 
 @Injectable()
@@ -9,6 +10,8 @@ export class AdminService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Trip)
+    private readonly tripRepository: Repository<Trip>,
     @InjectRepository(ErrorLog)
     private readonly errorLogRepository: Repository<ErrorLog>,
   ) {}
@@ -379,5 +382,35 @@ export class AdminService {
       throw new NotFoundException(`Error log ${id} not found`);
     }
     return { success: true };
+  }
+
+  // ─── AI Metrics ──────────────────────────────
+
+  async getAiMetrics() {
+    const results = await this.tripRepository
+      .createQueryBuilder('t')
+      .select('t.aiStatus', 'status')
+      .addSelect('COUNT(*)::int', 'count')
+      .groupBy('t.aiStatus')
+      .getRawMany<{ status: string; count: number }>();
+
+    const counts: Record<string, number> = { none: 0, success: 0, failed: 0, skipped: 0 };
+    for (const r of results) {
+      counts[r.status] = r.count;
+    }
+
+    const aiAttempted = counts.success + counts.failed;
+    const successRate = aiAttempted > 0
+      ? Math.round((counts.success / aiAttempted) * 100)
+      : 100;
+
+    return {
+      total: counts.none + counts.success + counts.failed + counts.skipped,
+      success: counts.success,
+      failed: counts.failed,
+      skipped: counts.skipped,
+      manual: counts.none,
+      successRate,
+    };
   }
 }

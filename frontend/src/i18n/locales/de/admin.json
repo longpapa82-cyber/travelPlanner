@@ -4,10 +4,18 @@
     "users": "Benutzerverwaltung",
     "errorLogs": "Fehlerprotokolle",
     "revenue": "Umsatz-Dashboard",
-    "announcements": "Announcements"
+    "announcements": "Ankündigungen"
   },
   "dashboard": {
     "subtitle": "Service-Verwaltungstools"
+  },
+  "aiMetrics": {
+    "title": "KI-Generierung",
+    "totalTrips": "{{count}} Reisen gesamt",
+    "success": "Erfolg",
+    "failed": "Fehlgeschlagen",
+    "skipped": "Übersprungen",
+    "manual": "Manuell"
   },
   "platform": {
     "all": "Alle",

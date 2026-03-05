@@ -24,9 +24,6 @@ const TYPE_CONFIG: Record<string, { icon: string; gradient: [string, string] }> 
   promotional: { icon: 'gift-outline', gradient: ['#F59E0B', '#FBBF24'] },
 };
 
-const WEB_MAX_WIDTH = 600;
-const WEB_DESKTOP_BREAKPOINT = 768;
-
 const AnnouncementBanner: React.FC = () => {
   const { t } = useTranslation('common');
   const { theme } = useTheme();
@@ -38,10 +35,9 @@ const AnnouncementBanner: React.FC = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList>(null);
 
-  // On web desktop, constrain card width to max-width container
-  const isWebDesktop = Platform.OS === 'web' && screenWidth >= WEB_DESKTOP_BREAKPOINT;
-  const effectiveWidth = isWebDesktop ? Math.min(screenWidth, WEB_MAX_WIDTH) : screenWidth;
-  const cardWidth = effectiveWidth - 32; // 16px margin each side
+  // Measure actual container width via onLayout for responsive sizing
+  const [containerWidth, setContainerWidth] = useState(screenWidth);
+  const cardWidth = containerWidth - 32; // 16px margin each side (marginHorizontal: 16)
 
   useEffect(() => {
     fetchAnnouncements();
@@ -64,12 +60,12 @@ const AnnouncementBanner: React.FC = () => {
             toValue: 0,
             tension: 60,
             friction: 12,
-            useNativeDriver: true,
+            useNativeDriver: Platform.OS !== 'web',
           }),
           Animated.timing(fadeAnim, {
             toValue: 1,
             duration: 400,
-            useNativeDriver: true,
+            useNativeDriver: Platform.OS !== 'web',
           }),
         ]).start();
       }
@@ -91,7 +87,7 @@ const AnnouncementBanner: React.FC = () => {
         Animated.timing(fadeAnim, {
           toValue: 0,
           duration: 200,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }).start();
       }
       return next;
@@ -170,6 +166,7 @@ const AnnouncementBanner: React.FC = () => {
           transform: [{ translateY: slideAnim }],
         },
       ]}
+      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width + 32)}
     >
       {announcements.length === 1 ? (
         renderCard({ item: announcements[0] })

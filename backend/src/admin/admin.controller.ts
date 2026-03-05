@@ -90,6 +90,11 @@ export class AdminController {
     return this.adminService.getSubscriptionStats();
   }
 
+  @Get('ai-metrics')
+  getAiMetrics() {
+    return this.adminService.getAiMetrics();
+  }
+
   @Get('audit-logs')
   getAuditLogs(
     @Query('page') page?: string,

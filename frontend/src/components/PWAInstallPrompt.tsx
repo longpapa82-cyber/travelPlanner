@@ -49,7 +49,7 @@ export const PWAInstallPrompt: React.FC = () => {
     const showBanner = () => {
       Animated.spring(slideAnim, {
         toValue: 0,
-        useNativeDriver: true,
+        useNativeDriver: false,
         tension: 50,
         friction: 9,
       }).start();
@@ -98,7 +98,7 @@ export const PWAInstallPrompt: React.FC = () => {
     Animated.timing(slideAnim, {
       toValue: 100,
       duration: 200,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(() => {
       setDismissed(true);
       localStorage.setItem('pwa-install-dismissed', '1');

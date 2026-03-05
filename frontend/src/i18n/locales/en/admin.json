@@ -9,6 +9,14 @@
   "dashboard": {
     "subtitle": "Service management tools"
   },
+  "aiMetrics": {
+    "title": "AI Generation",
+    "totalTrips": "{{count}} total trips",
+    "success": "Success",
+    "failed": "Failed",
+    "skipped": "Skipped",
+    "manual": "Manual"
+  },
   "platform": {
     "all": "All",
     "web": "Web",

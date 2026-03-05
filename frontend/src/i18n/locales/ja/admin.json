@@ -9,6 +9,14 @@
   "dashboard": {
     "subtitle": "サービス運用管理ツール"
   },
+  "aiMetrics": {
+    "title": "AI生成",
+    "totalTrips": "合計{{count}}件",
+    "success": "成功",
+    "failed": "失敗",
+    "skipped": "スキップ",
+    "manual": "手動"
+  },
   "platform": {
     "all": "全体",
     "web": "ウェブ",

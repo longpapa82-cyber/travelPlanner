@@ -4,10 +4,18 @@
     "users": "उपयोगकर्ता प्रबंधन",
     "errorLogs": "त्रुटि लॉग",
     "revenue": "राजस्व डैशबोर्ड",
-    "announcements": "Announcements"
+    "announcements": "घोषणाएं"
   },
   "dashboard": {
     "subtitle": "सेवा प्रबंधन टूल"
+  },
+  "aiMetrics": {
+    "title": "AI निर्माण",
+    "totalTrips": "कुल {{count}} यात्राएं",
+    "success": "सफल",
+    "failed": "विफल",
+    "skipped": "छोड़ा गया",
+    "manual": "मैनुअल"
   },
   "platform": {
     "all": "सभी",

@@ -99,6 +99,7 @@ export interface Trip {
   shareToken?: string;
   isPublic?: boolean;
   coverImage?: string;
+  aiStatus?: 'none' | 'success' | 'failed' | 'skipped';
   shareExpiresAt?: string;
   itineraries: Itinerary[];
   createdAt: string;

@@ -414,6 +414,21 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
         )}
 
+        {/* AI Failed Banner */}
+        {trip.aiStatus === 'failed' && (
+          <View style={[styles.completedBanner, { backgroundColor: isDark ? '#3B2E1A' : '#FFF7ED' }]}>
+            <Icon name="robot-off" size={20} color="#F59E0B" />
+            <View style={styles.completedBannerTextContainer}>
+              <Text style={[styles.completedBannerTitle, { color: theme.colors.text }]}>
+                {t('detail.aiFailedWarning', { defaultValue: 'AI 일정 생성 실패' })}
+              </Text>
+              <Text style={[styles.completedBannerMessage, { color: theme.colors.textSecondary }]}>
+                {t('detail.aiFailedMessage', { defaultValue: 'AI가 일정을 생성하지 못했습니다. 수동으로 활동을 추가해주세요.' })}
+              </Text>
+            </View>
+          </View>
+        )}
+
         {/* Hero Section */}
         <TripHero
           trip={trip}
