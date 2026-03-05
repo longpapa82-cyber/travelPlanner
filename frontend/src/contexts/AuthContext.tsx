@@ -155,7 +155,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           const response = await apiService.refreshToken(refreshToken);
           await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
           await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
-          const profile = await apiService.getProfile();
+          // Use token directly to bypass request interceptor's Keychain re-read
+          const profile = await apiService.getProfileWithToken(response.accessToken);
           setUser(profile);
           setSessionFlag(true);
           registerPushAfterLogin();
