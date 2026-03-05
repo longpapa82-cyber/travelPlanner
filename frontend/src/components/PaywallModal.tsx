@@ -436,9 +436,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   legalText: {
-    fontSize: 11,
+    fontSize: 12,
     textAlign: 'center',
-    lineHeight: 16,
+    lineHeight: 17,
   },
   legalLinks: {
     flexDirection: 'row',
@@ -446,11 +446,11 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   legalLink: {
-    fontSize: 11,
+    fontSize: 12,
     textDecorationLine: 'underline',
   },
   legalSeparator: {
-    fontSize: 11,
+    fontSize: 12,
   },
 });
 

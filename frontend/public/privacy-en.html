@@ -140,6 +140,7 @@
     <li><strong>Travel plan data</strong> — Destinations, travel dates, activity details, expense records, and other travel-related information directly entered by the user</li>
     <li><strong>Access logs</strong> — IP address, access time, browser type, operating system, language settings, access platform (web/iOS/Android), User-Agent string</li>
     <li><strong>Device information</strong> — Device type (mobile/desktop/tablet), screen resolution, last access platform</li>
+    <li><strong>Mobile advertising identifier</strong> — Google Advertising ID (GAID, Android) or IDFA (iOS) may be collected by the Google AdMob SDK for personalized advertising purposes. You can reset your advertising ID or opt out of personalized ads in your device settings.</li>
     <li><strong>Service usage records</strong> — Feature usage history, error logs (when errors occur, user identification information, device information, and error details are collected for diagnostic purposes), service access patterns</li>
     <li><strong>Photo data</strong> — Travel cover photos, activity photos (converted and optimized to WebP format upon upload)</li>
     <li><strong>Subscription data</strong> — Subscription type, subscription platform (App Store/Google Play), expiration date, monthly AI usage count</li>
@@ -157,7 +158,7 @@
     <li><strong>Notification services</strong> — Travel itinerary reminders, service announcements, email verification</li>
     <li><strong>Service improvement</strong> — Usage statistics analysis, service quality enhancement, bug fixes and stability improvements</li>
     <li><strong>Customer support</strong> — Inquiry reception and processing, complaint resolution, usage guidance</li>
-    <li><strong>Advertising</strong> — Personalized advertising through Google AdSense and similar services (personal information is not directly provided to advertisers)</li>
+    <li><strong>Advertising</strong> — Personalized advertising through Google AdSense (web) and Google AdMob (mobile app) (personal information is not directly provided to advertisers)</li>
   </ul>
 
   <h2>3. Retention and Disposal of Personal Information</h2>
@@ -197,7 +198,8 @@
     </thead>
     <tbody>
       <tr><td>Google Analytics</td><td>Google LLC</td><td>Usage statistics analysis</td><td>Cookies, access logs, usage patterns (de-identified)</td></tr>
-      <tr><td>Google AdSense</td><td>Google LLC</td><td>Ad placement</td><td>Cookies, ad interaction data</td></tr>
+      <tr><td>Google AdSense</td><td>Google LLC</td><td>Web ad placement</td><td>Cookies, ad interaction data</td></tr>
+      <tr><td>Google AdMob</td><td>Google LLC</td><td>Mobile app ad placement</td><td>Advertising identifier (GAID/IDFA), ad interaction data</td></tr>
       <tr><td>OpenAI API</td><td>OpenAI Inc.</td><td>AI travel plan generation</td><td>Travel destination, dates (not personally identifiable)</td></tr>
       <tr><td>OpenWeatherMap</td><td>OpenWeather Ltd.</td><td>Weather information</td><td>Location information (city name)</td></tr>
       <tr><td>Google OAuth</td><td>Google LLC</td><td>Social login</td><td>Email, name, profile (with consent)</td></tr>

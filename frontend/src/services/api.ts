@@ -61,10 +61,12 @@ class ApiService {
     this.api.interceptors.request.use(
       async (config) => {
         try {
-          const token = await secureStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-
-          if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+          // Skip if Authorization is already explicitly set (e.g. getProfileWithToken)
+          if (!config.headers.Authorization) {
+            const token = await secureStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+            if (token) {
+              config.headers.Authorization = `Bearer ${token}`;
+            }
           }
           config.headers['Accept-Language'] = getCurrentLanguage();
         } catch (error) {

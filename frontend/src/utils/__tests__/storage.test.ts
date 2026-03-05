@@ -4,8 +4,10 @@ import { secureStorage } from '../storage';
 // Platform.OS defaults to 'ios' in jest-expo, so secureStorage uses native (Keychain) path
 
 describe('secureStorage (native)', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    // Clear module-level nativeMemoryCache to prevent cross-test leakage
+    await secureStorage.clear();
   });
 
   // ── setItem ──
