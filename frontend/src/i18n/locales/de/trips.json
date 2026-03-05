@@ -71,7 +71,13 @@
       "analyzing": "Reiseziel wird analysiert",
       "planning": "Reiseplan wird erstellt",
       "weather": "Wetter wird geprüft",
-      "finalizing": "Plan wird finalisiert"
+      "finalizing": "Plan wird finalisiert",
+      "cancel": "Abbrechen",
+      "cancelled": "Reiseerstellung abgebrochen",
+      "takingLong": "Die KI-Generierung dauert länger als üblich...",
+      "cancelAndManual": "Möchten Sie abbrechen und Aktivitäten manuell hinzufügen?",
+      "keepWaiting": "Weiter warten",
+      "cancelCreate": "Abbrechen & manuell"
     },
     "preferences": {
       "title": "Reisestil",
@@ -121,7 +127,8 @@
       "dataList": "Ihr Reiseziel, Reisedaten, Anzahl der Reisenden und Präferenzen werden an die KI gesendet.",
       "accept": "Zustimmen und fortfahren",
       "cancel": "Abbrechen"
-    }
+    },
+    "aiFallbackWarning": "KI-Reiseplanerstellung fehlgeschlagen. Bitte Aktivitäten manuell hinzufügen."
   },
   "list": {
     "title": "Meine Reisen",
@@ -234,6 +241,9 @@
     "emptyItinerary": "Noch kein Reiseplan erstellt",
     "emptyItineraryMessage": "Fügen Sie Aktivitäten zu Ihrer Reise hinzu",
     "addActivity": "Aktivität hinzufügen",
+    "aiFailedWarning": "KI-Generierung fehlgeschlagen",
+    "aiFailedMessage": "Die KI konnte die Reiseroute nicht erstellen. Bitte fügen Sie Aktivitäten manuell hinzu.",
+    "locationMissing": "Standort unbestätigt",
     "affiliateSection": "Hotels & Aktivitäten buchen",
     "affiliateSubtitle": "Die besten Unterkünfte und Erlebnisse in {{destination}} buchen",
     "affiliateAccom": "Unterkünfte",

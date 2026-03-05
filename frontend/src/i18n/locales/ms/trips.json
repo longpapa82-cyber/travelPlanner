@@ -71,7 +71,13 @@
       "analyzing": "Menganalisis destinasi",
       "planning": "Mencipta jadual perjalanan",
       "weather": "Menyemak maklumat cuaca",
-      "finalizing": "Memuktamadkan pelan anda"
+      "finalizing": "Memuktamadkan pelan anda",
+      "cancel": "Batal",
+      "cancelled": "Penciptaan perjalanan dibatalkan",
+      "takingLong": "Penjanaan AI mengambil masa lebih lama daripada biasa...",
+      "cancelAndManual": "Adakah anda mahu membatalkan dan menambah aktiviti secara manual?",
+      "keepWaiting": "Terus menunggu",
+      "cancelCreate": "Batal & cipta manual"
     },
     "preferences": {
       "title": "Gaya Perjalanan",
@@ -121,7 +127,8 @@
       "dataList": "Destinasi, tarikh perjalanan, bilangan pengembara, dan pilihan anda akan dihantar kepada AI.",
       "accept": "Saya Setuju & Teruskan",
       "cancel": "Batal"
-    }
+    },
+    "aiFallbackWarning": "Penjanaan jadual perjalanan AI gagal. Sila tambah aktiviti secara manual."
   },
   "list": {
     "title": "Perjalanan Saya",
@@ -234,6 +241,9 @@
     "emptyItinerary": "Belum ada jadual perjalanan dicipta",
     "emptyItineraryMessage": "Tambah aktiviti ke perjalanan anda",
     "addActivity": "Tambah Aktiviti",
+    "aiFailedWarning": "Penjanaan AI Gagal",
+    "aiFailedMessage": "AI tidak dapat menjana jadual perjalanan. Sila tambah aktiviti secara manual.",
+    "locationMissing": "Lokasi belum disahkan",
     "affiliateSection": "Tempah Hotel & Aktiviti",
     "affiliateSubtitle": "Tempah penginapan dan pengalaman terbaik di {{destination}}",
     "affiliateAccom": "Penginapan",

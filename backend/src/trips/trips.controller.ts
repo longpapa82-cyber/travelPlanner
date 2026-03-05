@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Res,
+  Sse,
   HttpCode,
   HttpStatus,
   Query,
@@ -16,6 +17,7 @@ import {
   UploadedFile,
   BadRequestException,
   ParseUUIDPipe,
+  MessageEvent,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -24,7 +26,8 @@ import { extname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { randomBytes } from 'crypto';
 import { Throttle } from '@nestjs/throttler';
-import { TripsService } from './trips.service';
+import { Subject, Observable, map, finalize } from 'rxjs';
+import { TripsService, TripCreationProgress } from './trips.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { UpdateItineraryDto } from './dto/update-itinerary.dto';
@@ -67,6 +70,56 @@ export class TripsController {
   ) {
     const language = acceptLanguage || 'ko';
     return this.tripsService.create(userId, createTripDto, language);
+  }
+
+  @Post('create-stream')
+  @Throttle({ short: { ttl: 60000, limit: 5 } })
+  createWithProgress(
+    @CurrentUser('userId') userId: string,
+    @Headers('accept-language') acceptLanguage: string | undefined,
+    @Body() createTripDto: CreateTripDto,
+    @Res() res: Response,
+  ) {
+    const language = acceptLanguage || 'ko';
+    const progress$ = new Subject<TripCreationProgress>();
+
+    // Set SSE headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.flushHeaders();
+
+    // Stream progress events to client
+    const subscription = progress$.subscribe({
+      next: (event) => {
+        res.write(`data: ${JSON.stringify(event)}\n\n`);
+      },
+    });
+
+    // Start trip creation with progress tracking
+    this.tripsService
+      .create(userId, createTripDto, language, progress$)
+      .then((trip) => {
+        res.write(`data: ${JSON.stringify({ step: 'complete', tripId: trip.id })}\n\n`);
+        res.end();
+      })
+      .catch((error) => {
+        const message = error.message || 'Trip creation failed';
+        const status = error.status || 500;
+        res.write(`data: ${JSON.stringify({ step: 'error', message, status })}\n\n`);
+        res.end();
+      })
+      .finally(() => {
+        subscription.unsubscribe();
+        progress$.complete();
+      });
+
+    // Handle client disconnect
+    res.on('close', () => {
+      subscription.unsubscribe();
+      progress$.complete();
+    });
   }
 
   @Get()

@@ -61,6 +61,27 @@ export class TimezoneService {
   }
 
   async getLocationInfo(destination: string): Promise<LocationInfo | null> {
+    // Prefer GeocodingService (Redis → DB → LocationIQ free → Google fallback)
+    if (this.geocodingService) {
+      try {
+        const result = await this.geocodingService.geocode(destination);
+        if (result) {
+          return {
+            latitude: result.latitude,
+            longitude: result.longitude,
+            formattedAddress: destination,
+          };
+        }
+        this.logger.warn(`No geocoding results via GeocodingService for: ${this.sanitizeForLog(destination)}`);
+        return null;
+      } catch (error) {
+        this.logger.warn(
+          `GeocodingService failed for "${this.sanitizeForLog(destination)}": ${this.safeErrorMessage(error)}, falling back to Google Maps`,
+        );
+      }
+    }
+
+    // Fallback: direct Google Maps API (backward compat if GeocodingService not injected)
     if (!this.apiKey) {
       this.logger.warn('Google Maps API not configured');
       return null;
@@ -105,6 +126,26 @@ export class TimezoneService {
       return null;
     }
 
+    // Redis cache: round coordinates to 2 decimals (~1.1km precision, same city)
+    const cacheKey = `tz:${latitude.toFixed(2)}:${longitude.toFixed(2)}`;
+
+    // Check cache (timezone data is very stable — 30 day TTL)
+    const cached = await this.cacheManager.get<{ timeZoneId: string; timeZoneName: string; rawOffset: number; dstOffset: number }>(cacheKey);
+    if (cached) {
+      this.logger.debug(`Timezone cache hit: ${cacheKey}`);
+      const targetTimestamp = timestamp || new Date();
+      const totalOffset = cached.rawOffset + cached.dstOffset;
+      const localDateTime = DateTime.fromJSDate(targetTimestamp, {
+        zone: cached.timeZoneId,
+      });
+      return {
+        timezone: cached.timeZoneName,
+        timezoneId: cached.timeZoneId,
+        timezoneOffset: totalOffset / 3600,
+        localTime: localDateTime.toISO() ?? '',
+      };
+    }
+
     try {
       const targetTimestamp = timestamp || new Date();
       const unixTimestamp = Math.floor(targetTimestamp.getTime() / 1000);
@@ -118,6 +159,13 @@ export class TimezoneService {
       });
 
       const { timeZoneId, timeZoneName, rawOffset, dstOffset } = response.data;
+
+      // Cache timezone data for 30 days (timezones rarely change)
+      await this.cacheManager.set(
+        cacheKey,
+        { timeZoneId, timeZoneName, rawOffset, dstOffset },
+        30 * 24 * 60 * 60 * 1000,
+      );
 
       // Calculate total offset in seconds
       const totalOffset = rawOffset + dstOffset;

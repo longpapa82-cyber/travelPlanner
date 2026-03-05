@@ -48,7 +48,13 @@
     "generating": "A IA está criando seu plano de viagem...",
     "progress": {
       "analyzing": "Analisando destino", "planning": "Criando itinerário",
-      "weather": "Verificando informações climáticas", "finalizing": "Finalizando seu plano"
+      "weather": "Verificando informações climáticas", "finalizing": "Finalizando seu plano",
+      "cancel": "Cancelar",
+      "cancelled": "Criação da viagem cancelada",
+      "takingLong": "A geração por IA está demorando mais do que o normal...",
+      "cancelAndManual": "Deseja cancelar e adicionar atividades manualmente?",
+      "keepWaiting": "Continuar esperando",
+      "cancelCreate": "Cancelar e criar manual"
     },
     "preferences": {
       "title": "Estilo de Viagem",
@@ -77,7 +83,8 @@
       "dataList": "Seu destino, datas de viagem, número de viajantes e preferências serão enviados para a IA.",
       "accept": "Concordo e Continuar",
       "cancel": "Cancelar"
-    }
+    },
+    "aiFallbackWarning": "Falha na geração do itinerário por IA. Adicione atividades manualmente."
   },
   "list": {
     "title": "Minhas Viagens",
@@ -129,6 +136,9 @@
     "durationMinutes": "{{minutes}} min", "estimatedCost": "${{cost}}",
     "dayLabel": "Dia {{day}}", "emptyItinerary": "Nenhum itinerário criado ainda",
     "emptyItineraryMessage": "Adicione atividades à sua viagem", "addActivity": "Adicionar Atividade",
+    "aiFailedWarning": "Falha na geração IA",
+    "aiFailedMessage": "A IA não conseguiu gerar o itinerário. Adicione atividades manualmente.",
+    "locationMissing": "Localização não verificada",
     "affiliateSection": "Reserve Hotéis e Atividades",
     "affiliateSubtitle": "Reserve as melhores estadias e experiências em {{destination}}",
     "affiliateAccom": "Hospedagens", "affiliateExperience": "Passeios e Atividades",

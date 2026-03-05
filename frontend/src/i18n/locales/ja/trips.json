@@ -71,7 +71,13 @@
       "analyzing": "目的地を分析中",
       "planning": "旅程を作成中",
       "weather": "天気情報を確認中",
-      "finalizing": "旅行プランを完成中"
+      "finalizing": "旅行プランを完成中",
+      "cancel": "キャンセル",
+      "cancelled": "旅行の作成がキャンセルされました",
+      "takingLong": "AI生成が通常より時間がかかっています...",
+      "cancelAndManual": "キャンセルして手動でアクティビティを追加しますか？",
+      "keepWaiting": "待ち続ける",
+      "cancelCreate": "キャンセルして手動作成"
     },
     "preferences": {
       "title": "旅行スタイル",
@@ -121,7 +127,8 @@
       "dataList": "目的地、旅行日程、人数、好みの情報がAIに送信されます。",
       "accept": "同意して続ける",
       "cancel": "キャンセル"
-    }
+    },
+    "aiFallbackWarning": "AI旅程の生成に失敗しました。手動でアクティビティを追加してください。"
   },
   "list": {
     "title": "旅行一覧",
@@ -240,6 +247,9 @@
     "emptyItinerary": "まだ旅程が作成されていません",
     "emptyItineraryMessage": "旅程にアクティビティを追加しましょう",
     "addActivity": "アクティビティを追加",
+    "aiFailedWarning": "AI生成失敗",
+    "aiFailedMessage": "AIが旅程を生成できませんでした。手動でアクティビティを追加してください。",
+    "locationMissing": "位置未確認",
     "affiliateSection": "宿泊＆アクティビティ予約",
     "affiliateSubtitle": "{{destination}}の最高の宿泊施設と体験を予約",
     "affiliateAccom": "宿泊予約",

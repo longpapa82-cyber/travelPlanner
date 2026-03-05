@@ -71,7 +71,13 @@
       "analyzing": "\u0110ang ph\u00e2n t\u00edch \u0111i\u1ec3m \u0111\u1ebfn",
       "planning": "\u0110ang t\u1ea1o l\u1ecbch tr\u00ecnh",
       "weather": "\u0110ang ki\u1ec3m tra th\u00f4ng tin th\u1eddi ti\u1ebft",
-      "finalizing": "\u0110ang ho\u00e0n thi\u1ec7n k\u1ebf ho\u1ea1ch"
+      "finalizing": "\u0110ang ho\u00e0n thi\u1ec7n k\u1ebf ho\u1ea1ch",
+      "cancel": "H\u1ee7y",
+      "cancelled": "\u0110\u00e3 h\u1ee7y t\u1ea1o chuy\u1ebfn \u0111i",
+      "takingLong": "AI \u0111ang m\u1ea5t nhi\u1ec1u th\u1eddi gian h\u01a1n b\u00ecnh th\u01b0\u1eddng...",
+      "cancelAndManual": "B\u1ea1n c\u00f3 mu\u1ed1n h\u1ee7y v\u00e0 th\u00eam ho\u1ea1t \u0111\u1ed9ng th\u1ee7 c\u00f4ng kh\u00f4ng?",
+      "keepWaiting": "Ti\u1ebfp t\u1ee5c ch\u1edd",
+      "cancelCreate": "H\u1ee7y & t\u1ea1o th\u1ee7 c\u00f4ng"
     },
     "preferences": {
       "title": "Phong c\u00e1ch du l\u1ecbch",
@@ -121,7 +127,8 @@
       "dataList": "Điểm đến, ngày du lịch, số lượng du khách và sở thích của bạn sẽ được gửi đến AI.",
       "accept": "Đồng ý và tiếp tục",
       "cancel": "Hủy"
-    }
+    },
+    "aiFallbackWarning": "Tạo lịch trình bằng AI thất bại. Vui lòng thêm hoạt động thủ công."
   },
   "list": {
     "title": "Chuy\u1ebfn \u0111i c\u1ee7a t\u00f4i",
@@ -234,6 +241,9 @@
     "emptyItinerary": "Ch\u01b0a c\u00f3 l\u1ecbch tr\u00ecnh",
     "emptyItineraryMessage": "Th\u00eam ho\u1ea1t \u0111\u1ed9ng v\u00e0o chuy\u1ebfn \u0111i c\u1ee7a b\u1ea1n",
     "addActivity": "Th\u00eam ho\u1ea1t \u0111\u1ed9ng",
+    "aiFailedWarning": "T\u1ea1o AI th\u1ea5t b\u1ea1i",
+    "aiFailedMessage": "AI kh\u00f4ng th\u1ec3 t\u1ea1o l\u1ecbch tr\u00ecnh. Vui l\u00f2ng th\u00eam ho\u1ea1t \u0111\u1ed9ng th\u1ee7 c\u00f4ng.",
+    "locationMissing": "V\u1ecb tr\u00ed ch\u01b0a x\u00e1c nh\u1eadn",
     "affiliateSection": "\u0110\u1eb7t kh\u00e1ch s\u1ea1n & ho\u1ea1t \u0111\u1ed9ng",
     "affiliateSubtitle": "\u0110\u1eb7t ch\u1ed7 \u1edf v\u00e0 tr\u1ea3i nghi\u1ec7m t\u1ed1t nh\u1ea5t t\u1ea1i {{destination}}",
     "affiliateAccom": "\u0110\u1eb7t ch\u1ed7 \u1edf",

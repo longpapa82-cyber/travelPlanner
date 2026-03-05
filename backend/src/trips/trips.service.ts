@@ -27,6 +27,21 @@ import { SubscriptionService } from '../subscription/subscription.service';
 import { updateItinerariesCompletionStatus } from './helpers/trip-progress.helper';
 import { QueryTripsDto, SortBy, SortOrder } from './dto/query-trips.dto';
 import { getErrorMessage } from '../common/types/request.types';
+import { Subject } from 'rxjs';
+
+export type TripCreationStep =
+  | 'validating'
+  | 'weather'
+  | 'ai_generating'
+  | 'geocoding'
+  | 'saving'
+  | 'complete'
+  | 'error';
+
+export interface TripCreationProgress {
+  step: TripCreationStep;
+  message?: string;
+}
 
 @Injectable()
 export class TripsService {
@@ -51,6 +66,7 @@ export class TripsService {
     userId: string,
     createTripDto: CreateTripDto,
     language: string = 'ko',
+    progress$?: Subject<TripCreationProgress>,
   ): Promise<Trip> {
     // Calculate number of days
     const startDate = new Date(createTripDto.startDate);
@@ -73,6 +89,8 @@ export class TripsService {
     this.logger.log(
       `Creating trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode`,
     );
+
+    progress$?.next({ step: 'validating' });
 
     // Get location information for timezone and weather
     let timezoneInfo: {
@@ -112,46 +130,24 @@ export class TripsService {
       );
     }
 
-    // Helper: fetch weather for all days in parallel
+    // Helper: fetch weather for all days in a single API call
     const fetchWeatherMap = async () => {
-      const weatherMap = new Map<
-        number,
-        {
-          temperature: number;
-          condition: string;
-          humidity: number;
-          windSpeed: number;
-          precipitation?: number;
-          icon?: string;
-        }
-      >();
-      if (locationInfo) {
-        const weatherResults = await Promise.allSettled(
-          Array.from({ length: numberOfDays }, (_, i) => {
-            const date = new Date(startDate);
-            date.setDate(date.getDate() + i);
-            return this.weatherService
-              .getWeatherForecast(
-                locationInfo.latitude,
-                locationInfo.longitude,
-                date,
-              )
-              .then((w) => ({ day: i + 1, weather: w }))
-              .catch((error) => {
-                this.logger.warn(
-                  `Failed to get weather for day ${i + 1}: ${getErrorMessage(error)}`,
-                );
-                return { day: i + 1, weather: null };
-              });
-          }),
-        );
-        for (const r of weatherResults) {
-          if (r.status === 'fulfilled' && r.value.weather) {
-            weatherMap.set(r.value.day, r.value.weather);
-          }
-        }
+      if (!locationInfo) {
+        return new Map<number, any>();
       }
-      return weatherMap;
+      try {
+        return await this.weatherService.getWeatherForDateRange(
+          locationInfo.latitude,
+          locationInfo.longitude,
+          startDate,
+          endDate,
+        );
+      } catch (error) {
+        this.logger.warn(
+          `Failed to get weather range: ${getErrorMessage(error)}`,
+        );
+        return new Map<number, any>();
+      }
     };
 
     // Helper: create empty day-card itineraries with weather/timezone
@@ -180,6 +176,7 @@ export class TripsService {
 
     if (isManualMode) {
       // Manual mode: skip AI, create empty day cards with weather/timezone
+      progress$?.next({ step: 'weather' });
       const weatherMap = await fetchWeatherMap();
       const itineraries = await createEmptyItineraries(weatherMap);
       this.logger.log(
@@ -198,9 +195,7 @@ export class TripsService {
 
         // Mark trip so frontend knows AI was skipped due to limit
         await this.tripRepository.update(savedTrip.id, {
-          description: savedTrip.description
-            ? `${savedTrip.description}`
-            : undefined,
+          aiStatus: 'skipped',
         });
 
         throw new ForbiddenException(
@@ -213,6 +208,7 @@ export class TripsService {
 
       // AI mode: generate itineraries with AI + weather in parallel
       try {
+        progress$?.next({ step: 'ai_generating' });
         const aiPromise = this.aiService.generateAllItineraries({
           destination: createTripDto.destination,
           country: createTripDto.country,
@@ -225,12 +221,14 @@ export class TripsService {
         });
 
         // Fetch weather in parallel while AI generates
+        progress$?.next({ step: 'weather' });
         const weatherMap = await fetchWeatherMap();
 
         // Wait for AI generation to complete
         const aiItineraries = await aiPromise;
 
         // Combine AI results with weather data
+        progress$?.next({ step: 'saving' });
         const itineraries: Itinerary[] = [];
         for (const aiItinerary of aiItineraries) {
           const itinerary = this.itineraryRepository.create({
@@ -246,6 +244,7 @@ export class TripsService {
         }
 
         await this.itineraryRepository.save(itineraries);
+        await this.tripRepository.update(savedTrip.id, { aiStatus: 'success' });
         this.logger.log(
           `Successfully generated ${itineraries.length} AI itineraries with weather data for trip ${savedTrip.id}`,
         );
@@ -257,6 +256,9 @@ export class TripsService {
           `Falling back to empty itineraries for trip ${savedTrip.id}`,
         );
 
+        await this.tripRepository.update(savedTrip.id, { aiStatus: 'failed' });
+        progress$?.next({ step: 'error', message: 'AI generation failed, creating empty itineraries' });
+
         // Fallback: Create empty itineraries with weather
         const weatherMap = await fetchWeatherMap();
         await createEmptyItineraries(weatherMap);
@@ -264,6 +266,7 @@ export class TripsService {
     }
 
     // Return trip with itineraries
+    progress$?.next({ step: 'complete' });
     return this.findOne(userId, savedTrip.id);
   }
 

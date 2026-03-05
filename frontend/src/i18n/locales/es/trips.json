@@ -71,7 +71,13 @@
       "analyzing": "Analizando destino",
       "planning": "Creando itinerario",
       "weather": "Verificando clima",
-      "finalizing": "Finalizando tu plan"
+      "finalizing": "Finalizando tu plan",
+      "cancel": "Cancelar",
+      "cancelled": "Creación de viaje cancelada",
+      "takingLong": "La generación de IA está tardando más de lo habitual...",
+      "cancelAndManual": "¿Desea cancelar y agregar actividades manualmente?",
+      "keepWaiting": "Seguir esperando",
+      "cancelCreate": "Cancelar e ir manual"
     },
     "preferences": {
       "title": "Estilo de viaje",
@@ -121,7 +127,8 @@
       "dataList": "Su destino, fechas de viaje, número de viajeros y preferencias se enviarán a la IA.",
       "accept": "Acepto y continuar",
       "cancel": "Cancelar"
-    }
+    },
+    "aiFallbackWarning": "La generación del itinerario por IA falló. Añade actividades manualmente."
   },
   "list": {
     "title": "Mis viajes",
@@ -234,6 +241,9 @@
     "emptyItinerary": "Aún no hay itinerario",
     "emptyItineraryMessage": "Añade actividades a tu viaje",
     "addActivity": "Añadir actividad",
+    "aiFailedWarning": "Fallo en generación IA",
+    "aiFailedMessage": "La IA no pudo generar el itinerario. Añade actividades manualmente.",
+    "locationMissing": "Ubicación no verificada",
     "affiliateSection": "Reservar hoteles y actividades",
     "affiliateSubtitle": "Reserva las mejores estancias y experiencias en {{destination}}",
     "affiliateAccom": "Alojamiento",

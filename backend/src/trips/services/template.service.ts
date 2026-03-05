@@ -670,6 +670,86 @@ export class TemplateService {
   }
 
   /**
+   * Get the top N popular destinations from real trip data.
+   * Used by the warmup cron to pre-generate templates for popular routes.
+   */
+  async getPopularDestinations(limit = 20): Promise<
+    Array<{ destination: string; country?: string; city?: string; tripCount: number }>
+  > {
+    try {
+      const results = await this.templateRepo.query(
+        `SELECT destination, country, city, COUNT(*)::int AS "tripCount"
+         FROM trips
+         GROUP BY destination, country, city
+         ORDER BY "tripCount" DESC
+         LIMIT $1`,
+        [limit],
+      );
+      return results;
+    } catch (error) {
+      this.logger.warn(
+        `Failed to query popular destinations: ${error instanceof Error ? error.message : String(error)}`,
+      );
+      return [];
+    }
+  }
+
+  /**
+   * Get destinations that need template pre-generation.
+   * Returns popular destinations missing templates for standard durations (3/5/7 days).
+   */
+  async getWarmupQueue(
+    topN = 20,
+    durations = [3, 5, 7],
+    languages = ['ko', 'en'],
+  ): Promise<
+    Array<{ destination: string; country?: string; city?: string; durationDays: number; language: string }>
+  > {
+    const popular = await this.getPopularDestinations(topN);
+    const queue: Array<{
+      destination: string;
+      country?: string;
+      city?: string;
+      durationDays: number;
+      language: string;
+    }> = [];
+
+    for (const dest of popular) {
+      const normalized = this.normalize(dest.destination);
+      for (const duration of durations) {
+        for (const lang of languages) {
+          // Check if template already exists and is fresh
+          const existing = await this.templateRepo.findOne({
+            where: {
+              destinationNormalized: normalized,
+              durationDays: duration,
+              language: lang,
+            },
+          });
+
+          if (
+            !existing ||
+            Date.now() - new Date(existing.lastVerifiedAt).getTime() > this.STALE_THRESHOLD_MS
+          ) {
+            queue.push({
+              destination: dest.destination,
+              country: dest.country,
+              city: dest.city,
+              durationDays: duration,
+              language: lang,
+            });
+          }
+        }
+      }
+    }
+
+    this.logger.log(
+      `Warmup queue: ${queue.length} templates needed for top ${popular.length} destinations`,
+    );
+    return queue;
+  }
+
+  /**
    * Cron: Every day at 4 AM, backfill embeddings for templates missing them.
    */
   @Cron('0 4 * * *')

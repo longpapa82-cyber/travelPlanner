@@ -127,19 +127,53 @@ export class GeocodingService {
   }
 
   /**
-   * Geocode multiple queries, reusing cache where possible.
+   * Geocode multiple queries with controlled concurrency.
    * Capped at MAX_BATCH_SIZE to prevent API quota exhaustion.
-   * Queries are processed sequentially to respect the LocationIQ rate limiter
-   * (in-memory timestamp-based, not safe under concurrent Promise.all).
+   * Uses a semaphore (max 2 concurrent) to overlap network latency
+   * while respecting LocationIQ's per-request rate limiter.
+   * Cache hits bypass the semaphore entirely (no rate limit needed).
    */
   async geocodeBatch(
     queries: string[],
   ): Promise<(GeocodingResult | null)[]> {
     const capped = queries.slice(0, GeocodingService.MAX_BATCH_SIZE);
-    const results: (GeocodingResult | null)[] = [];
-    for (const q of capped) {
-      results.push(await this.geocode(q));
+    const CONCURRENCY = 2;
+
+    // Partition: check cache first (instant), then batch uncached with concurrency
+    const results: (GeocodingResult | null)[] = new Array(capped.length).fill(null);
+    const uncachedIndices: number[] = [];
+
+    // Phase 1: resolve cache hits (no rate limit needed)
+    for (let i = 0; i < capped.length; i++) {
+      const q = capped[i].trim();
+      if (!q || q.length > GeocodingService.MAX_QUERY_LENGTH) continue;
+      const hash = this.hashQuery(q);
+      const cacheKey = `geo:${hash}`;
+      const cached = await this.cacheManager.get<GeocodingResult>(cacheKey);
+      if (cached) {
+        results[i] = cached;
+      } else {
+        uncachedIndices.push(i);
+      }
     }
+
+    if (uncachedIndices.length === 0) return results;
+
+    // Phase 2: process uncached queries with controlled concurrency
+    let cursor = 0;
+    const processNext = async (): Promise<void> => {
+      while (cursor < uncachedIndices.length) {
+        const idx = uncachedIndices[cursor++];
+        results[idx] = await this.geocode(capped[idx]);
+      }
+    };
+
+    const workers = Array.from(
+      { length: Math.min(CONCURRENCY, uncachedIndices.length) },
+      () => processNext(),
+    );
+    await Promise.allSettled(workers);
+
     return results;
   }
 

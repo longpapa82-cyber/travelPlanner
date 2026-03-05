@@ -71,7 +71,13 @@
       "analyzing": "Destinasyon analiz ediliyor",
       "planning": "Güzergah oluşturuluyor",
       "weather": "Hava durumu bilgisi kontrol ediliyor",
-      "finalizing": "Planınız tamamlanıyor"
+      "finalizing": "Planınız tamamlanıyor",
+      "cancel": "İptal",
+      "cancelled": "Gezi oluşturma iptal edildi",
+      "takingLong": "AI oluşturma normalden daha uzun sürüyor...",
+      "cancelAndManual": "İptal edip etkinlikleri manuel olarak eklemek ister misiniz?",
+      "keepWaiting": "Beklemeye devam et",
+      "cancelCreate": "İptal et ve manuel oluştur"
     },
     "preferences": {
       "title": "Seyahat Tarzı",
@@ -121,7 +127,8 @@
       "dataList": "Destinasyon, seyahat tarihleri, yolcu sayısı ve tercihleriniz AI'ya gönderilecektir.",
       "accept": "Kabul Ediyorum ve Devam Et",
       "cancel": "İptal"
-    }
+    },
+    "aiFallbackWarning": "AI güzergah oluşturma başarısız. Lütfen etkinlikleri manuel ekleyin."
   },
   "list": {
     "title": "Gezilerim",
@@ -234,6 +241,9 @@
     "emptyItinerary": "Henüz güzergah oluşturulmadı",
     "emptyItineraryMessage": "Gezinize etkinlik ekleyin",
     "addActivity": "Etkinlik Ekle",
+    "aiFailedWarning": "AI Oluşturma Başarısız",
+    "aiFailedMessage": "AI güzergahı oluşturamadı. Lütfen etkinlikleri manuel ekleyin.",
+    "locationMissing": "Konum doğrulanmadı",
     "affiliateSection": "Otel ve Etkinlik Rezervasyonu",
     "affiliateSubtitle": "{{destination}} için en iyi konaklama ve deneyimleri rezerve edin",
     "affiliateAccom": "Konaklama",
