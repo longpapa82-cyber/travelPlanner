@@ -13,6 +13,7 @@ interface PremiumContextType {
   aiTripsRemaining: number;
   aiTripsUsed: number;
   aiTripsLimit: number;
+  isAiLimitReached: boolean;
   expiresAt?: string;
   isPaywallVisible: boolean;
   showPaywall: () => void;
@@ -58,6 +59,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
   const aiTripsLimit = isPremium ? -1 : AI_TRIPS_FREE_LIMIT;
   const aiTripsRemaining = isPremium ? -1 : Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed);
+  const isAiLimitReached = !isPremium && aiTripsRemaining <= 0;
 
   const showPaywall = useCallback(() => {
     if (!PREMIUM_ENABLED) return; // Subscription disabled until business registration
@@ -78,12 +80,13 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     aiTripsRemaining,
     aiTripsUsed,
     aiTripsLimit,
+    isAiLimitReached,
     expiresAt: user?.subscriptionExpiresAt,
     isPaywallVisible,
     showPaywall,
     hidePaywall,
     refreshStatus,
-  }), [isPremium, aiTripsRemaining, aiTripsUsed, aiTripsLimit, user?.subscriptionExpiresAt, isPaywallVisible, showPaywall, hidePaywall, refreshStatus]);
+  }), [isPremium, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, isPaywallVisible, showPaywall, hidePaywall, refreshStatus]);
 
   return (
     <PremiumContext.Provider value={value}>

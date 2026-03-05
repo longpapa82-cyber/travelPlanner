@@ -199,7 +199,7 @@ export class TripsService {
         });
 
         throw new ForbiddenException(
-          'AI trip generation limit reached. Upgrade to Premium for unlimited AI trips.',
+          'Monthly AI generation limit (3) reached. Try manual creation or wait until next month.',
         );
       }
 

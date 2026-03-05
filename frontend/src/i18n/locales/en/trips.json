@@ -60,7 +60,9 @@
     },
     "aiInfo": {
       "title": "AI Auto-Generation",
-      "description": "AI will create the optimal travel plan based on your destination and schedule"
+      "description": "AI will create the optimal travel plan based on your destination and schedule",
+      "remaining": "{{remaining}}/{{total}} AI generations left this month",
+      "limitReached": "Monthly AI limit ({{total}}) reached. Use manual creation."
     },
     "rewardedAd": {
       "label": "Watch ad for detailed travel insights"

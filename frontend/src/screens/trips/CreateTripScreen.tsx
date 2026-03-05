@@ -46,7 +46,6 @@ import DatePickerField from '../../components/core/DatePicker';
 import DestinationInsights from '../../components/DestinationInsights';
 import { useInterstitialAd, useRewardedAd } from '../../components/ads';
 import { usePremium } from '../../contexts/PremiumContext';
-import { PREMIUM_ENABLED } from '../../constants/config';
 import { getHeroImageUrl } from '../../utils/images';
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
@@ -106,7 +105,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { scheduleTripReminders } = useNotifications();
   const { t } = useTranslation('trips');
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
-  const { isPremium, aiTripsRemaining, showPaywall } = usePremium();
+  const { isPremium, aiTripsRemaining, aiTripsLimit, isAiLimitReached } = usePremium();
   const { show: showRewarded, isLoaded: isRewardedLoaded } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
   const [showAiConsent, setShowAiConsent] = useState(false);
@@ -118,6 +117,13 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       if (val === 'true') setAiConsentGiven(true);
     }).catch(() => {});
   }, []);
+
+  // Auto-switch to manual mode when AI limit is reached
+  useEffect(() => {
+    if (isAiLimitReached && planningMode === 'ai') {
+      setPlanningMode('manual');
+    }
+  }, [isAiLimitReached]);
 
   const doCreateTripRef = useRef<(() => Promise<void>) | null>(null);
 
@@ -238,9 +244,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     }
     setFieldErrors({});
 
-    // Check AI trip limit for free users before starting (only when subscription is enabled)
-    if (PREMIUM_ENABLED && planningMode === 'ai' && !isPremium && aiTripsRemaining <= 0) {
-      showPaywall();
+    // Check AI trip limit for free users before starting
+    if (planningMode === 'ai' && isAiLimitReached) {
+      showToast({
+        type: 'warning',
+        message: t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 }),
+        position: 'top',
+        duration: 4000,
+      });
       return;
     }
 
@@ -511,13 +522,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                       ? theme.colors.primary
                       : theme.colors.border,
                     borderWidth: planningMode === 'ai' ? 2 : 1,
+                    opacity: isAiLimitReached ? 0.5 : 1,
                   },
                 ]}
-                onPress={() => setPlanningMode('ai')}
-                disabled={isLoading}
+                onPress={() => !isAiLimitReached && setPlanningMode('ai')}
+                disabled={isLoading || isAiLimitReached}
                 accessibilityRole="button"
                 accessibilityLabel={t('create.mode.ai')}
-                accessibilityState={{ selected: planningMode === 'ai' }}
+                accessibilityState={{ selected: planningMode === 'ai', disabled: isAiLimitReached }}
               >
                 <Icon
                   name="robot"
@@ -542,6 +554,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 >
                   {t('create.mode.aiDesc')}
                 </Text>
+                {isAiLimitReached && (
+                  <Text style={[styles.modeCardDesc, { color: colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600', fontSize: 11 }]}>
+                    {t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 })}
+                  </Text>
+                )}
               </TouchableOpacity>
 
               {/* Manual Mode Card */}
@@ -1166,9 +1183,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>
                 {t('create.aiInfo.description')}
               </Text>
-              {PREMIUM_ENABLED && !isPremium && (
+              {!isPremium && (
                 <Text style={[styles.infoText, { color: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600' }]}>
-                  {t('create.aiInfo.remaining', { count: aiTripsRemaining, total: 3 })}
+                  {aiTripsRemaining > 0
+                    ? t('create.aiInfo.remaining', { remaining: aiTripsRemaining, total: aiTripsLimit > 0 ? aiTripsLimit : 3 })
+                    : t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 })}
                 </Text>
               )}
             </View>

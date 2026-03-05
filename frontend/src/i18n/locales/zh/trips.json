@@ -60,7 +60,9 @@
     },
     "aiInfo": {
       "title": "AI自动生成",
-      "description": "AI将根据您的目的地和行程为您制定最优旅行计划"
+      "description": "AI将根据您的目的地和行程为您制定最优旅行计划",
+      "remaining": "本月AI自动生成 剩余{{remaining}}/{{total}}次",
+      "limitReached": "本月AI额度({{total}}次)已用完。请使用手动创建。"
     },
     "rewardedAd": {
       "label": "观看广告获取详细旅行攻略"

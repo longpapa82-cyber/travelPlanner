@@ -60,7 +60,9 @@
     },
     "aiInfo": {
       "title": "Pembuatan Otomatis AI",
-      "description": "AI akan membuat rencana perjalanan optimal berdasarkan tujuan dan jadwal Anda"
+      "description": "AI akan membuat rencana perjalanan optimal berdasarkan tujuan dan jadwal Anda",
+      "remaining": "{{remaining}}/{{total}} pembuatan AI tersisa bulan ini",
+      "limitReached": "Batas AI bulanan ({{total}}) tercapai. Gunakan pembuatan manual."
     },
     "rewardedAd": {
       "label": "Tonton iklan untuk wawasan perjalanan detail"
