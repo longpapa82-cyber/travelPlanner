@@ -1,6 +1,7 @@
 import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { Cron } from '@nestjs/schedule';
 import OpenAI from 'openai';
 import { ActivityDto } from '../dto/update-itinerary.dto';
 import { AnalyticsService } from './analytics.service';
@@ -8,7 +9,6 @@ import { TemplateService } from './template.service';
 import { TimezoneService } from './timezone.service';
 import { getErrorMessage } from '../../common/types/request.types';
 import {
-  withTimeout,
   withRetry,
   CircuitBreaker,
 } from '../../common/utils/resilience';
@@ -130,38 +130,18 @@ export class AIService {
       );
 
       const langName = LANGUAGE_NAMES[tripContext.language || 'ko'] || 'Korean';
-      const completion = await this.openaiBreaker.run(() =>
+      const content = await this.openaiBreaker.run(() =>
         withRetry(
-          () =>
-            withTimeout(
-              this.openai.chat.completions.create({
-                model: this.model,
-                messages: [
-                  {
-                    role: 'system',
-                    content: `Expert travel planner. Return JSON daily itinerary. Consider travel time, hours, customs. All text (title, description, location) in ${langName} only.`,
-                  },
-                  { role: 'user', content: prompt },
-                ],
-                temperature: 0.7,
-                response_format: { type: 'json_object' },
-              }),
-              30_000,
-              'OpenAI daily itinerary',
-            ),
+          () => this.streamCompletion(
+            `Expert travel planner. Return JSON daily itinerary. Consider travel time, hours, customs. All text (title, description, location) in ${langName} only.`,
+            prompt,
+            { maxTokens: 4096, label: 'daily itinerary' },
+          ),
           2,
           1000,
           'OpenAI daily itinerary',
         ),
       );
-
-      if (completion.usage) {
-        this.logger.log(
-          `AI daily tokens — in: ${completion.usage.prompt_tokens}, out: ${completion.usage.completion_tokens}, total: ${completion.usage.total_tokens}`,
-        );
-      }
-
-      const content = completion.choices[0].message.content;
       if (!content) {
         this.logger.warn('OpenAI returned empty content');
         return [];
@@ -335,34 +315,10 @@ Trip Details:
       }
     }
 
-    prompt += `\n\nReturn JSON with this structure:
-{
-  "activities": [
-    {
-      "time": "09:00",
-      "title": "Activity name",
-      "description": "Detailed description including what to do and why",
-      "location": "Specific location name and address",
-      "latitude": 35.7148,
-      "longitude": 139.7967,
-      "estimatedDuration": 120,
-      "estimatedCost": 25,
-      "type": "sightseeing|food|shopping|transportation|accommodation|culture|entertainment|nature"
-    }
-  ]
-}
+    prompt += `\n\nRules: 4-6 activities, 24h format (HH:MM), realistic travel time, include meals, varied types, specific locations with lat/lng.
 
-Guidelines:
-- Create 4-6 activities per day
-- Use 24-hour time format (HH:MM)
-- Include realistic travel time between locations
-- estimatedDuration in minutes
-- estimatedCost in USD
-- Start around 08:00-09:00, end around 20:00-21:00
-- Consider meal times (breakfast, lunch, dinner)
-- Include varied activity types
-- Be specific about locations (include neighborhoods/districts)
-- Include latitude and longitude for each activity (approximate coordinates are acceptable)`;
+Return JSON:
+{"activities":[{"time":"09:00","title":"...","description":"...","location":"...","latitude":0.0,"longitude":0.0,"estimatedDuration":120,"estimatedCost":25,"type":"sightseeing|food|shopping|transportation|accommodation|culture|entertainment|nature"}]}`;
 
     return prompt;
   }
@@ -508,39 +464,21 @@ Guidelines:
       );
 
       const langName = LANGUAGE_NAMES[lang] || 'Korean';
-      const completion = await this.openaiBreaker.run(() =>
+      // Dynamic max_tokens based on trip duration
+      const maxTokens = totalDays <= 3 ? 4096 : totalDays <= 7 ? 8192 : 12288;
+
+      const content = await this.openaiBreaker.run(() =>
         withRetry(
-          () =>
-            withTimeout(
-              this.openai.chat.completions.create({
-                model: this.model,
-                messages: [
-                  {
-                    role: 'system',
-                    content: `Expert travel planner. Return JSON multi-day itinerary with logical geographic flow. All text (title, description, location) in ${langName} only.`,
-                  },
-                  { role: 'user', content: prompt },
-                ],
-                temperature: 0.7,
-                max_tokens: 8192,
-                response_format: { type: 'json_object' },
-              }),
-              30_000,
-              'OpenAI full trip',
-            ),
+          () => this.streamCompletion(
+            `Expert travel planner. Return JSON multi-day itinerary with logical geographic flow. All text (title, description, location) in ${langName} only.`,
+            prompt,
+            { maxTokens, label: `full ${totalDays}d trip` },
+          ),
           2,
           1000,
           'OpenAI full trip',
         ),
       );
-
-      if (completion.usage) {
-        this.logger.log(
-          `AI full-trip tokens — in: ${completion.usage.prompt_tokens}, out: ${completion.usage.completion_tokens}, total: ${completion.usage.total_tokens}`,
-        );
-      }
-
-      const content = completion.choices[0].message.content;
       if (!content) {
         this.logger.warn('OpenAI returned empty content for full trip');
         return this.buildEmptyItineraries(tripContext, totalDays);
@@ -758,42 +696,60 @@ Trip Details:
       }
     }
 
-    prompt += `\n\nIMPORTANT Guidelines:
-- Day 1: Include arrival and settling in
-- Day ${totalDays}: Include departure preparations
-- 4-6 activities per day
-- Use 24-hour time format (HH:MM)
-- Include realistic travel time between locations
-- estimatedDuration in minutes, estimatedCost in USD
-- Start around 08:00-09:00, end around 20:00-21:00
-- Consider meal times and varied activity types
-- Ensure logical geographic flow (don't zigzag across the city)
-- Each day should explore a different area/theme
-- Include latitude and longitude for each activity (approximate coordinates are acceptable)
+    prompt += `\n\nRules: Day 1=arrival, Day ${totalDays}=departure. 4-6 activities/day, 24h format, geographic flow, different area/theme per day. Include lat/lng.
 
 Return JSON:
-{
-  "days": [
-    {
-      "day": 1,
-      "activities": [
-        {
-          "time": "09:00",
-          "title": "Activity name",
-          "description": "Detailed description",
-          "location": "Specific location with address",
-          "latitude": 35.7148,
-          "longitude": 139.7967,
-          "estimatedDuration": 120,
-          "estimatedCost": 25,
-          "type": "sightseeing|food|shopping|transportation|accommodation|culture|entertainment|nature"
-        }
-      ]
-    }
-  ]
-}`;
+{"days":[{"day":1,"activities":[{"time":"09:00","title":"...","description":"...","location":"...","latitude":0.0,"longitude":0.0,"estimatedDuration":120,"estimatedCost":25,"type":"sightseeing|food|shopping|transportation|accommodation|culture|entertainment|nature"}]}]}`;
 
     return prompt;
+  }
+
+  /**
+   * Stream an OpenAI chat completion, accumulate chunks, and return the final content.
+   * Uses streaming for lower TTFB while ensuring JSON completeness.
+   */
+  private async streamCompletion(
+    systemPrompt: string,
+    userPrompt: string,
+    opts: { maxTokens?: number; label?: string } = {},
+  ): Promise<string | null> {
+    const { maxTokens = 8192, label = 'completion' } = opts;
+    const startTime = Date.now();
+
+    const stream = await this.openai.chat.completions.create({
+      model: this.model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: 0.7,
+      max_tokens: maxTokens,
+      response_format: { type: 'json_object' },
+      stream: true,
+      stream_options: { include_usage: true },
+    });
+
+    let content = '';
+    let usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number } | null = null;
+
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta?.content;
+      if (delta) {
+        content += delta;
+      }
+      if (chunk.usage) {
+        usage = chunk.usage;
+      }
+    }
+
+    const elapsed = Date.now() - startTime;
+    if (usage) {
+      this.logger.log(
+        `AI ${label} tokens — in: ${usage.prompt_tokens}, out: ${usage.completion_tokens}, total: ${usage.total_tokens} (${elapsed}ms, streamed)`,
+      );
+    }
+
+    return content || null;
   }
 
   private buildEmptyItineraries(
@@ -876,5 +832,76 @@ Return JSON:
 
     this.logger.log(`Refreshed ${refreshed}/${staleTemplates.length} stale templates`);
     return refreshed;
+  }
+
+  /**
+   * Cron: Every Sunday at 2 AM, pre-generate templates for top 20 popular destinations.
+   * Covers 3/5/7-day variants in ko and en languages.
+   * This dramatically increases template cache hit rate for common searches.
+   */
+  @Cron('0 2 * * 0') // Every Sunday at 2 AM
+  async handleTemplateWarmup(): Promise<void> {
+    if (!this.openai) return;
+
+    try {
+      const queue = await this.templateService.getWarmupQueue(20, [3, 5, 7], ['ko', 'en']);
+      if (queue.length === 0) {
+        this.logger.log('Template warmup: all popular destinations already covered');
+        return;
+      }
+
+      // Process max 10 per run to avoid API overload
+      const batch = queue.slice(0, 10);
+      let generated = 0;
+
+      for (const item of batch) {
+        try {
+          const tripContext: TripContext = {
+            destination: item.destination,
+            country: item.country,
+            city: item.city,
+            startDate: new Date(),
+            endDate: new Date(Date.now() + (item.durationDays - 1) * 86400000),
+            numberOfTravelers: 2,
+            language: item.language,
+          };
+
+          const itineraries = await this.generateFullTripItinerary(
+            tripContext,
+            item.durationDays,
+          );
+
+          if (itineraries.some((it) => it.activities.length > 0)) {
+            await this.templateService.saveFromAI(
+              {
+                destination: item.destination,
+                country: item.country,
+                city: item.city,
+                durationDays: item.durationDays,
+                language: item.language,
+              },
+              itineraries.map((it) => ({
+                dayNumber: it.dayNumber,
+                activities: it.activities,
+              })),
+            );
+            generated++;
+          }
+
+          // Rate limit: wait 2s between AI calls
+          await new Promise((r) => setTimeout(r, 2000));
+        } catch (error) {
+          this.logger.warn(
+            `Warmup failed for "${item.destination}" ${item.durationDays}d/${item.language}: ${getErrorMessage(error)}`,
+          );
+        }
+      }
+
+      this.logger.log(
+        `Template warmup: generated ${generated}/${batch.length} templates (${queue.length - batch.length} remaining)`,
+      );
+    } catch (error) {
+      this.logger.warn(`Template warmup cron failed: ${getErrorMessage(error)}`);
+    }
   }
 }

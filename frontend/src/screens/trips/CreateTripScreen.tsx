@@ -119,12 +119,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     }).catch(() => {});
   }, []);
 
+  const doCreateTripRef = useRef<(() => Promise<void>) | null>(null);
+
   const handleAiConsentAccept = useCallback(async () => {
     setAiConsentGiven(true);
     setShowAiConsent(false);
     await AsyncStorage.setItem('@travelplanner:ai_consent', 'true').catch(() => {});
-    // Resume trip creation after consent
-    doCreateTrip();
+    // Resume trip creation after consent (use ref to avoid stale closure)
+    doCreateTripRef.current?.();
   }, []);
 
   const POPULAR_DESTINATIONS = getPopularDestinations(t);
@@ -251,32 +253,60 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     doCreateTrip();
   };
 
+  // Map SSE step names to UI step indices
+  const STEP_MAP: Record<string, number> = {
+    validating: 0,
+    weather: 1,
+    ai_generating: 2,
+    geocoding: 2,
+    saving: 3,
+    complete: 3,
+  };
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const timeoutWarningRef = useRef<NodeJS.Timeout | null>(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  const handleCancelCreation = useCallback(() => {
+    abortControllerRef.current?.abort();
+    setShowCancelConfirm(false);
+    setIsLoading(false);
+    setGenerationStep(0);
+    if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
+  }, []);
+
   const doCreateTrip = async () => {
     setIsLoading(true);
     setGenerationStep(0);
     progressAnim.setValue(0);
 
-    // Only animate progress steps for AI mode
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    // Timeout warnings for AI mode
     if (planningMode === 'ai') {
-      const steps = [0, 1, 2, 3];
-      let stepIndex = 0;
       Animated.timing(progressAnim, {
-        toValue: 0.2,
+        toValue: 0.1,
         duration: 400,
         useNativeDriver: false,
       }).start();
 
-      stepTimerRef.current = setInterval(() => {
-        stepIndex++;
-        if (stepIndex < steps.length) {
-          setGenerationStep(stepIndex);
-          Animated.timing(progressAnim, {
-            toValue: (stepIndex + 1) / (steps.length + 1),
-            duration: 600,
-            useNativeDriver: false,
-          }).start();
-        }
-      }, 2000);
+      // 60s warning toast
+      timeoutWarningRef.current = setTimeout(() => {
+        if (abortController.signal.aborted) return;
+        showToast({
+          type: 'warning',
+          message: t('create.progress.takingLong', { defaultValue: 'AI generation is taking longer than usual...' }),
+          position: 'top',
+          duration: 5000,
+        });
+
+        // 120s cancel confirmation
+        timeoutWarningRef.current = setTimeout(() => {
+          if (abortController.signal.aborted) return;
+          setShowCancelConfirm(true);
+        }, 60000);
+      }, 60000);
     }
 
     try {
@@ -286,22 +316,36 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       if (prefStyle) preferences.travelStyle = prefStyle;
       if (prefInterests.length > 0) preferences.interests = prefInterests;
 
+      const validBudget = budgetNum && Number.isFinite(budgetNum) && budgetNum > 0;
       const tripData = {
         destination: destination.trim(),
         startDate,
         endDate,
         numberOfTravelers,
         description: description.trim() || undefined,
-        totalBudget: budgetNum && budgetNum > 0 ? budgetNum : undefined,
-        budgetCurrency: budgetNum && budgetNum > 0 ? budgetCurrency : undefined,
+        totalBudget: validBudget ? budgetNum : undefined,
+        budgetCurrency: validBudget ? budgetCurrency : undefined,
         preferences: Object.keys(preferences).length > 0 ? preferences : undefined,
         planningMode,
       };
 
-      const trip = await apiService.createTrip(tripData);
+      // Use SSE progress streaming for real-time step updates
+      const trip = await apiService.createTripWithProgress(
+        tripData,
+        (step: string) => {
+          const stepIndex = STEP_MAP[step] ?? 0;
+          setGenerationStep(stepIndex);
+          const progress = (stepIndex + 1) / 5;
+          Animated.timing(progressAnim, {
+            toValue: progress,
+            duration: 400,
+            useNativeDriver: false,
+          }).start();
+        },
+        abortController.signal,
+      );
 
       // Complete the progress bar
-      if (stepTimerRef.current) clearInterval(stepTimerRef.current);
       Animated.timing(progressAnim, {
         toValue: 1,
         duration: 300,
@@ -317,12 +361,22 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         apiService.updateTravelPreferences(preferences).catch(() => {});
       }
 
-      showToast({
-        type: 'success',
-        message: t('create.generating'),
-        position: 'top',
-        duration: 2000,
-      });
+      // Show AI failure warning if AI generation failed
+      if (trip.aiStatus === 'failed') {
+        showToast({
+          type: 'warning',
+          message: t('create.aiFallbackWarning', { defaultValue: 'AI 일정 생성에 실패했습니다. 수동으로 활동을 추가해주세요.' }),
+          position: 'top',
+          duration: 4000,
+        });
+      } else {
+        showToast({
+          type: 'success',
+          message: t('create.generating'),
+          position: 'top',
+          duration: 2000,
+        });
+      }
 
       // Show interstitial ad after trip creation (skip for premium), then navigate
       setTimeout(async () => {
@@ -332,6 +386,15 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         navigation.navigate('TripDetail', { tripId: trip.id });
       }, 500);
     } catch (error: any) {
+      if (error.name === 'AbortError') {
+        showToast({
+          type: 'info',
+          message: t('create.progress.cancelled', { defaultValue: 'Trip creation cancelled' }),
+          position: 'top',
+          duration: 3000,
+        });
+        return;
+      }
       const message = error.response?.data?.message || t('create.alerts.createFailed');
 
       showToast({
@@ -341,11 +404,16 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         duration: 4000,
       });
     } finally {
-      if (stepTimerRef.current) clearInterval(stepTimerRef.current);
+      if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
+      abortControllerRef.current = null;
       setIsLoading(false);
       setGenerationStep(0);
+      setShowCancelConfirm(false);
     }
   };
+
+  // Keep ref in sync so handleAiConsentAccept always calls latest doCreateTrip
+  doCreateTripRef.current = doCreateTrip;
 
   const formatDateForDisplay = (dateString: string): string => {
     if (!dateString) return '';
@@ -1126,8 +1194,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <View style={styles.progressSteps}>
                 {[
                   { icon: 'map-search-outline', text: t('create.progress.analyzing') },
-                  { icon: 'calendar-edit', text: t('create.progress.planning') },
                   { icon: 'weather-partly-cloudy', text: t('create.progress.weather') },
+                  { icon: 'calendar-edit', text: t('create.progress.planning') },
                   { icon: 'check-circle-outline', text: t('create.progress.finalizing') },
                 ].map((step, idx) => (
                   <View
@@ -1161,8 +1229,55 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   </View>
                 ))}
               </View>
+              <TouchableOpacity
+                style={[styles.cancelButton, { borderColor: theme.colors.textSecondary }]}
+                onPress={handleCancelCreation}
+              >
+                <Icon name="close" size={16} color={theme.colors.textSecondary} />
+                <Text style={[styles.cancelButtonText, { color: theme.colors.textSecondary }]}>
+                  {t('create.progress.cancel', { defaultValue: 'Cancel' })}
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
+
+          {/* Cancel Confirmation Modal (timeout) */}
+          <Modal
+            visible={showCancelConfirm}
+            transparent
+            animationType="fade"
+            onRequestClose={() => setShowCancelConfirm(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={[styles.modalContent, { backgroundColor: theme.colors.surface }]}>
+                <Icon name="clock-alert-outline" size={40} color={theme.colors.primary} />
+                <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
+                  {t('create.progress.takingLong', { defaultValue: 'AI generation is taking longer than usual...' })}
+                </Text>
+                <Text style={[styles.modalBody, { color: theme.colors.textSecondary }]}>
+                  {t('create.progress.cancelAndManual', { defaultValue: 'Would you like to cancel and add activities manually?' })}
+                </Text>
+                <View style={styles.modalActions}>
+                  <TouchableOpacity
+                    style={[styles.modalSecondaryButton, { borderColor: theme.colors.border }]}
+                    onPress={() => setShowCancelConfirm(false)}
+                  >
+                    <Text style={[styles.modalButtonText, { color: theme.colors.text }]}>
+                      {t('create.progress.keepWaiting', { defaultValue: 'Keep waiting' })}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.modalPrimaryButton, { backgroundColor: theme.colors.primary }]}
+                    onPress={handleCancelCreation}
+                  >
+                    <Text style={[styles.modalButtonText, { color: '#FFFFFF' }]}>
+                      {t('create.progress.cancelCreate', { defaultValue: 'Cancel & go manual' })}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
 
           {/* Create Button */}
           <View style={styles.createButtonWrapper}>
@@ -1192,7 +1307,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         onRequestClose={() => setShowAiConsent(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: theme.colors.surface }]}>
+          <View style={[styles.modalContent, { backgroundColor: theme.colors.surface }]} accessibilityViewIsModal={true}>
             <Icon name="robot" size={40} color={theme.colors.primary} />
             <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
               {t('create.aiConsent.title')}
@@ -1494,6 +1609,22 @@ const createStyles = (theme: any, isDark: boolean) =>
     progressStepText: {
       fontSize: 14,
     },
+    cancelButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 6,
+      marginTop: 12,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 8,
+      borderWidth: 1,
+      alignSelf: 'center',
+    },
+    cancelButtonText: {
+      fontSize: 14,
+      fontWeight: '500',
+    },
     rewardedAdButton: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -1553,6 +1684,24 @@ const createStyles = (theme: any, isDark: boolean) =>
       color: colors.neutral[0],
       fontSize: 16,
       fontWeight: '700',
+    },
+    modalActions: {
+      flexDirection: 'row',
+      gap: 12,
+      marginTop: 16,
+    },
+    modalSecondaryButton: {
+      flex: 1,
+      paddingVertical: 12,
+      borderRadius: 10,
+      borderWidth: 1,
+      alignItems: 'center',
+    },
+    modalPrimaryButton: {
+      flex: 1,
+      paddingVertical: 12,
+      borderRadius: 10,
+      alignItems: 'center',
     },
     modalCancelButton: {
       paddingVertical: 8,

@@ -71,7 +71,13 @@
       "analyzing": "Analyzing destination",
       "planning": "Creating itinerary",
       "weather": "Checking weather info",
-      "finalizing": "Finalizing your plan"
+      "finalizing": "Finalizing your plan",
+      "cancel": "Cancel",
+      "cancelled": "Trip creation cancelled",
+      "takingLong": "AI generation is taking longer than usual...",
+      "cancelAndManual": "Would you like to cancel and add activities manually?",
+      "keepWaiting": "Keep waiting",
+      "cancelCreate": "Cancel & go manual"
     },
     "preferences": {
       "title": "Travel Style",
@@ -121,7 +127,8 @@
       "dataList": "Your destination, travel dates, number of travelers, and preferences will be sent to AI.",
       "accept": "I Agree & Continue",
       "cancel": "Cancel"
-    }
+    },
+    "aiFallbackWarning": "AI itinerary generation failed. Please add activities manually."
   },
   "list": {
     "title": "My Trips",
@@ -240,6 +247,9 @@
     "emptyItinerary": "No itinerary created yet",
     "emptyItineraryMessage": "Add activities to your trip",
     "addActivity": "Add Activity",
+    "aiFailedWarning": "AI Generation Failed",
+    "aiFailedMessage": "AI couldn't generate the itinerary. Please add activities manually.",
+    "locationMissing": "Location unverified",
     "affiliateSection": "Book Hotels & Activities",
     "affiliateSubtitle": "Book the best stays and experiences in {{destination}}",
     "affiliateAccom": "Accommodations",

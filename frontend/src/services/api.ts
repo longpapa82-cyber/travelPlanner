@@ -340,6 +340,92 @@ class ApiService {
     return response.data;
   }
 
+  /**
+   * Create trip with SSE progress streaming.
+   * Falls back to regular createTrip if SSE fails.
+   */
+  async createTripWithProgress(
+    data: any,
+    onProgress?: (step: string, message?: string) => void,
+    signal?: AbortSignal,
+  ): Promise<any> {
+    try {
+      const token = await secureStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+      const lang = getCurrentLanguage();
+
+      const response = await fetch(`${API_URL}/trips/create-stream`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/event-stream',
+          'Accept-Language': lang,
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(data),
+        signal,
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        let errorMessage = 'Trip creation failed';
+        try {
+          const parsed = JSON.parse(errorBody);
+          errorMessage = parsed.message || errorMessage;
+        } catch {}
+        const error: any = new Error(errorMessage);
+        error.response = { status: response.status, data: { message: errorMessage } };
+        throw error;
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        // No streaming support — fallback to regular API
+        return this.createTrip(data);
+      }
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let result: any = null;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const dataLine = line.replace(/^data: /, '').trim();
+          if (!dataLine) continue;
+
+          try {
+            const event = JSON.parse(dataLine);
+            if (event.step === 'complete' && event.tripId) {
+              // Fetch the full trip data
+              result = await this.getTripById(event.tripId);
+            } else if (event.step === 'error') {
+              const error: any = new Error(event.message || 'Trip creation failed');
+              error.response = { status: event.status || 500, data: { message: event.message } };
+              throw error;
+            } else {
+              onProgress?.(event.step, event.message);
+            }
+          } catch (e: any) {
+            if (e.response) throw e; // Re-throw structured errors
+          }
+        }
+      }
+
+      return result;
+    } catch (error: any) {
+      if (error.name === 'AbortError') throw error;
+      if (error.response) throw error;
+      // Fallback to regular createTrip on any SSE infrastructure failure
+      return this.createTrip(data);
+    }
+  }
+
   async getTrips(params?: {
     search?: string;
     status?: 'upcoming' | 'ongoing' | 'completed';
@@ -731,6 +817,11 @@ class ApiService {
 
   async getAdminSubscriptionStats() {
     const response = await this.api.get('/admin/revenue/subscription-stats');
+    return response.data;
+  }
+
+  async getAdminAiMetrics() {
+    const response = await this.api.get('/admin/ai-metrics');
     return response.data;
   }
 

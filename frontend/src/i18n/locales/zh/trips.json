@@ -71,7 +71,13 @@
       "analyzing": "分析目的地",
       "planning": "制定行程",
       "weather": "查询天气信息",
-      "finalizing": "完善您的计划"
+      "finalizing": "完善您的计划",
+      "cancel": "取消",
+      "cancelled": "行程创建已取消",
+      "takingLong": "AI生成比平时花费更长时间...",
+      "cancelAndManual": "是否取消并手动添加活动？",
+      "keepWaiting": "继续等待",
+      "cancelCreate": "取消并手动创建"
     },
     "preferences": {
       "title": "旅行风格",
@@ -121,7 +127,8 @@
       "dataList": "您的目的地、旅行日期、旅客人数和偏好将发送给AI。",
       "accept": "同意并继续",
       "cancel": "取消"
-    }
+    },
+    "aiFallbackWarning": "AI行程生成失败。请手动添加活动。"
   },
   "list": {
     "title": "我的旅行",
@@ -234,6 +241,9 @@
     "emptyItinerary": "暂无行程",
     "emptyItineraryMessage": "为您的旅行添加活动",
     "addActivity": "添加活动",
+    "aiFailedWarning": "AI生成失败",
+    "aiFailedMessage": "AI无法生成行程。请手动添加活动。",
+    "locationMissing": "位置未确认",
     "affiliateSection": "预订酒店和活动",
     "affiliateSubtitle": "在{{destination}}预订最佳住宿和体验",
     "affiliateAccom": "住宿预订",
