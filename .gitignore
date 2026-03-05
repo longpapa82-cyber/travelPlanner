@@ -38,6 +38,8 @@ coverage/
 test-results/
 test-screenshots/
 frontend/test-results/
+playwright-report/
+tests/.auth/
 
 # Temporary files
 tmp/
