@@ -80,6 +80,9 @@ export class Trip {
   @Column({ type: 'varchar', nullable: true })
   coverImage?: string;
 
+  @Column({ type: 'varchar', length: 20, default: 'none' })
+  aiStatus: string;
+
   @Column({ type: 'boolean', default: false })
   isPublic: boolean;
 

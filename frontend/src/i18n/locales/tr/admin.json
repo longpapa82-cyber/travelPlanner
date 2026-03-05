@@ -4,10 +4,18 @@
     "users": "Kullanıcı Yönetimi",
     "errorLogs": "Hata Kayıtları",
     "revenue": "Gelir Paneli",
-    "announcements": "Announcements"
+    "announcements": "Duyurular"
   },
   "dashboard": {
     "subtitle": "Hizmet yönetim araçları"
+  },
+  "aiMetrics": {
+    "title": "AI Oluşturma",
+    "totalTrips": "Toplam {{count}} gezi",
+    "success": "Başarılı",
+    "failed": "Başarısız",
+    "skipped": "Atlandı",
+    "manual": "Manuel"
   },
   "platform": {
     "all": "Tümü",

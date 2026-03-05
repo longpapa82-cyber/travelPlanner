@@ -4,10 +4,18 @@
     "users": "Управление пользователями",
     "errorLogs": "Журнал ошибок",
     "revenue": "Панель доходов",
-    "announcements": "Announcements"
+    "announcements": "Объявления"
   },
   "dashboard": {
     "subtitle": "Инструменты управления сервисом"
+  },
+  "aiMetrics": {
+    "title": "Генерация ИИ",
+    "totalTrips": "Всего {{count}} поездок",
+    "success": "Успех",
+    "failed": "Ошибка",
+    "skipped": "Пропущено",
+    "manual": "Вручную"
   },
   "platform": {
     "all": "Все",

@@ -4,10 +4,18 @@
     "users": "用户管理",
     "errorLogs": "错误日志",
     "revenue": "收益仪表盘",
-    "announcements": "Announcements"
+    "announcements": "公告"
   },
   "dashboard": {
     "subtitle": "服务管理工具"
+  },
+  "aiMetrics": {
+    "title": "AI生成",
+    "totalTrips": "共{{count}}次",
+    "success": "成功",
+    "failed": "失败",
+    "skipped": "跳过",
+    "manual": "手动"
   },
   "platform": {
     "all": "全部",

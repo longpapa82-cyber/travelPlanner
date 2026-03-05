@@ -59,6 +59,7 @@ async function bootstrap() {
             'https://*.googlesyndication.com',
             'https://*.doubleclick.net',
             'https://*.adtrafficquality.google.com',
+            'https://ep1.adtrafficquality.google.com',
             'https://*.google.com',
             'https://api.stripe.com',
             'https://csi.gstatic.com',

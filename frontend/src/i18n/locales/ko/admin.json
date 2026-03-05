@@ -9,6 +9,14 @@
   "dashboard": {
     "subtitle": "서비스 운영 관리 도구"
   },
+  "aiMetrics": {
+    "title": "AI 일정 생성",
+    "totalTrips": "총 {{count}}건",
+    "success": "성공",
+    "failed": "실패",
+    "skipped": "건너뜀",
+    "manual": "수동"
+  },
   "platform": {
     "all": "전체",
     "web": "웹",

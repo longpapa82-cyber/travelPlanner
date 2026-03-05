@@ -206,6 +206,14 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
             >
               {activity.location}
             </Text>
+            {activity.location && (!activity.latitude || activity.latitude === 0) && (
+              <View style={[styles.locationMissingBadge, { backgroundColor: isDark ? colors.neutral[700] : colors.neutral[200] }]}>
+                <Icon name="map-marker-question" size={10} color={colors.neutral[500]} />
+                <Text style={[styles.locationMissingText, { color: colors.neutral[500] }]}>
+                  {t('detail.locationMissing', { defaultValue: '위치 미확인' })}
+                </Text>
+              </View>
+            )}
           </View>
 
           {activity.description && (
@@ -374,6 +382,19 @@ const createStyles = (theme: any, isDark: boolean) =>
       fontSize: 14,
       flex: 1,
       flexShrink: 1,
+    },
+    locationMissingBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 2,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
+      marginLeft: 4,
+    },
+    locationMissingText: {
+      fontSize: 10,
+      fontWeight: '500',
     },
     activityDescription: {
       fontSize: 14,

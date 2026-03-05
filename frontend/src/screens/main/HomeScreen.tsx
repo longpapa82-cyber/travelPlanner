@@ -234,7 +234,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
-  return (
+  const scrollContent = (
     <ScrollView
       style={styles.container}
       showsVerticalScrollIndicator={false}
@@ -533,6 +533,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       />
     </ScrollView>
   );
+
+  return scrollContent;
 };
 
 const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({

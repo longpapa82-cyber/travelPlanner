@@ -102,13 +102,15 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   useEffect(() => {
     checkPermission();
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(() => {
-      // notification received while app is open — no-op for now
-    });
+    if (Platform.OS !== 'web') {
+      notificationListener.current = Notifications.addNotificationReceivedListener(() => {
+        // notification received while app is open — no-op for now
+      });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-      setLastNotificationResponse(response);
-    });
+      responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
+        setLastNotificationResponse(response);
+      });
+    }
 
     return () => {
       if (notificationListener.current) {
