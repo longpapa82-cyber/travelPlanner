@@ -54,13 +54,13 @@ const PaywallModal: React.FC = () => {
     const Paddle = (window as any).Paddle;
     if (!Paddle) return;
     try {
-      const env = process.env.EXPO_PUBLIC_PADDLE_ENVIRONMENT || 'sandbox';
-      if (env === 'sandbox') {
-        Paddle.Environment.set('sandbox');
-      }
       const token = process.env.EXPO_PUBLIC_PADDLE_CLIENT_TOKEN;
       if (token) {
-        Paddle.Setup({ token });
+        const env = process.env.EXPO_PUBLIC_PADDLE_ENVIRONMENT || 'sandbox';
+        Paddle.Initialize({
+          token,
+          environment: env === 'sandbox' ? 'sandbox' : undefined,
+        });
         paddleInitialized.current = true;
       }
     } catch (err) {
