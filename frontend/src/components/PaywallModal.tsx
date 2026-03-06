@@ -54,33 +54,57 @@ const PaywallModal: React.FC = () => {
 
     const initPaddle = () => {
       const Paddle = (window as any).Paddle;
-      if (!Paddle) return;
+      if (!Paddle) {
+        console.warn('[PADDLE-DEBUG] Paddle global not found after script load');
+        return;
+      }
       try {
         const token = process.env.EXPO_PUBLIC_PADDLE_CLIENT_TOKEN;
-        if (token) {
-          const env = process.env.EXPO_PUBLIC_PADDLE_ENVIRONMENT || 'sandbox';
-          if (env === 'sandbox') {
-            Paddle.Environment.set('sandbox');
-          }
-          Paddle.Initialize({ token });
-          paddleInitialized.current = true;
+        const env = process.env.EXPO_PUBLIC_PADDLE_ENVIRONMENT || 'sandbox';
+        console.log('[PADDLE-DEBUG] Init start — token:', token ? `${token.substring(0, 10)}...` : 'MISSING', '| env:', env);
+
+        if (!token) {
+          console.error('[PADDLE-DEBUG] EXPO_PUBLIC_PADDLE_CLIENT_TOKEN is empty!');
+          return;
         }
+
+        if (env === 'sandbox') {
+          Paddle.Environment.set('sandbox');
+          console.log('[PADDLE-DEBUG] Environment set to sandbox');
+        }
+
+        Paddle.Initialize({
+          token,
+          eventCallback: (event: any) => {
+            console.log('[PADDLE-DEBUG] Event:', event.name, JSON.stringify(event.data || event, null, 2));
+          },
+        });
+        paddleInitialized.current = true;
+        console.log('[PADDLE-DEBUG] Initialize() succeeded');
       } catch (err) {
-        console.warn('Paddle init failed:', err);
+        console.error('[PADDLE-DEBUG] Init failed:', err);
       }
     };
 
     // If Paddle.js already loaded
     if ((window as any).Paddle) {
+      console.log('[PADDLE-DEBUG] Paddle.js already loaded');
       initPaddle();
       return;
     }
 
     // Dynamically load Paddle.js
+    console.log('[PADDLE-DEBUG] Loading Paddle.js dynamically...');
     const script = document.createElement('script');
     script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
     script.async = true;
-    script.onload = initPaddle;
+    script.onload = () => {
+      console.log('[PADDLE-DEBUG] Paddle.js script loaded');
+      initPaddle();
+    };
+    script.onerror = (e) => {
+      console.error('[PADDLE-DEBUG] Failed to load Paddle.js:', e);
+    };
     document.head.appendChild(script);
   }, []);
 
@@ -107,16 +131,38 @@ const PaywallModal: React.FC = () => {
       // Web: Paddle Overlay Checkout
       setIsPurchasing(true);
       try {
-        const { priceId } = await apiService.getPaddleCheckoutConfig(selectedPlan);
+        console.log('[PADDLE-DEBUG] handlePurchase — selectedPlan:', selectedPlan);
+        console.log('[PADDLE-DEBUG] handlePurchase — user:', user?.id, user?.email);
+        console.log('[PADDLE-DEBUG] handlePurchase — paddleInitialized:', paddleInitialized.current);
+
+        const result = await apiService.getPaddleCheckoutConfig(selectedPlan);
+        console.log('[PADDLE-DEBUG] Backend response:', JSON.stringify(result));
+        const { priceId } = result;
+        console.log('[PADDLE-DEBUG] priceId:', priceId);
+
         const Paddle = (window as any).Paddle;
-        if (!Paddle || !paddleInitialized.current) {
+        if (!Paddle) {
+          console.error('[PADDLE-DEBUG] Paddle global is undefined');
           throw new Error('Paddle SDK not loaded. Please refresh the page.');
         }
-        Paddle.Checkout.open({
+        if (!paddleInitialized.current) {
+          console.error('[PADDLE-DEBUG] Paddle not initialized');
+          throw new Error('Paddle SDK not initialized. Please refresh the page.');
+        }
+
+        const checkoutConfig: any = {
           items: [{ priceId, quantity: 1 }],
-          customData: { userId: user?.id },
-        });
+        };
+        // Only add customData if userId is available and as string
+        if (user?.id) {
+          checkoutConfig.customData = { userId: String(user.id) };
+        }
+
+        console.log('[PADDLE-DEBUG] Checkout.open() config:', JSON.stringify(checkoutConfig));
+        Paddle.Checkout.open(checkoutConfig);
+        console.log('[PADDLE-DEBUG] Checkout.open() called successfully');
       } catch (error: any) {
+        console.error('[PADDLE-DEBUG] handlePurchase error:', error);
         const msg = error?.response?.data?.message || error?.message || 'Failed to start checkout. Please try again.';
         Alert.alert('Error', msg);
       } finally {
