@@ -57,10 +57,10 @@ const PaywallModal: React.FC = () => {
       const token = process.env.EXPO_PUBLIC_PADDLE_CLIENT_TOKEN;
       if (token) {
         const env = process.env.EXPO_PUBLIC_PADDLE_ENVIRONMENT || 'sandbox';
-        Paddle.Initialize({
-          token,
-          environment: env === 'sandbox' ? 'sandbox' : undefined,
-        });
+        if (env === 'sandbox') {
+          Paddle.Environment.set('sandbox');
+        }
+        Paddle.Initialize({ token });
         paddleInitialized.current = true;
       }
     } catch (err) {

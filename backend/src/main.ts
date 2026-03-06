@@ -46,6 +46,7 @@ async function bootstrap() {
             "'self'",
             "'unsafe-inline'",
             'https://fonts.googleapis.com',
+            'https://*.paddle.com',
           ],
           imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
           fontSrc: ["'self'", 'https://fonts.gstatic.com'],
