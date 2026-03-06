@@ -470,7 +470,7 @@ export class UsersService {
     // Fetch fields hidden by select:false for GDPR completeness
     const fullUser = await this.userRepository.findOne({
       where: { id: userId },
-      select: ['id', 'stripeCustomerId', 'lastPlatform', 'lastUserAgent'],
+      select: ['id', 'paddleCustomerId', 'lastPlatform', 'lastUserAgent'],
     });
 
     return {
@@ -485,7 +485,7 @@ export class UsersService {
         travelPreferences: user.travelPreferences,
         lastPlatform: fullUser?.lastPlatform ?? null,
         lastUserAgent: fullUser?.lastUserAgent ?? null,
-        stripeCustomerId: fullUser?.stripeCustomerId ?? null,
+        paddleCustomerId: fullUser?.paddleCustomerId ?? null,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       },

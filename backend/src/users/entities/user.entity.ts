@@ -135,7 +135,7 @@ export class User {
   revenuecatAppUserId?: string;
 
   @Column({ type: 'varchar', nullable: true, select: false })
-  stripeCustomerId?: string;
+  paddleCustomerId?: string;
 
   @Column({ type: 'int', default: 0 })
   aiTripsUsedThisMonth: number;

@@ -75,39 +75,32 @@ export class SubscriptionController {
     return { received: true };
   }
 
-  // ─── Stripe Web Payments ───────────────────────────────
+  // ─── Paddle Web Payments ───────────────────────────────
 
-  @Post('stripe/checkout')
+  @Post('paddle/checkout-config')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async createStripeCheckout(
+  async getPaddleCheckoutConfig(
     @CurrentUser('userId') userId: string,
     @Body() dto: CreateCheckoutDto,
   ) {
-    return this.subscriptionService.createStripeCheckoutSession(
-      userId,
-      dto.plan,
-    );
+    return this.subscriptionService.getPaddleCheckoutConfig(userId, dto.plan);
   }
 
-  @Post('stripe/portal')
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(HttpStatus.OK)
-  async createStripePortal(@CurrentUser('userId') userId: string) {
-    return this.subscriptionService.createStripePortalSession(userId);
-  }
-
-  @Post('stripe/webhook')
+  @Post('paddle/webhook')
   @Throttle({ short: { ttl: 60000, limit: 100 } })
   @HttpCode(HttpStatus.OK)
-  async handleStripeWebhook(
+  async handlePaddleWebhook(
     @Req() req: { rawBody: Buffer },
-    @Headers('stripe-signature') signature: string,
+    @Headers('paddle-signature') signature: string,
   ) {
     if (!req.rawBody || !signature) {
       throw new BadRequestException('Missing payload or signature');
     }
-    await this.subscriptionService.handleStripeWebhook(req.rawBody, signature);
+    await this.subscriptionService.handlePaddleWebhook(
+      req.rawBody.toString('utf-8'),
+      signature,
+    );
     return { received: true };
   }
 }

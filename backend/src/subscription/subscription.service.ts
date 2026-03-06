@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { ConfigService } from '@nestjs/config';
-import Stripe from 'stripe';
+import { Paddle, Environment, EventName } from '@paddle/paddle-node-sdk';
 import {
   User,
   SubscriptionTier,
@@ -29,7 +29,7 @@ const ADMIN_EMAILS: string[] = (
 export class SubscriptionService {
   private readonly logger = new Logger(SubscriptionService.name);
   private readonly aiTripsFreeLimit: number;
-  private readonly stripe: Stripe | null;
+  private readonly paddle: Paddle | null;
 
   constructor(
     @InjectRepository(User)
@@ -43,13 +43,18 @@ export class SubscriptionService {
       10,
     );
 
-    const stripeKey = this.configService.get<string>('STRIPE_SECRET_KEY');
-    this.stripe = stripeKey
-      ? new Stripe(stripeKey, { apiVersion: '2026-02-25.clover' })
+    const paddleKey = this.configService.get<string>('PADDLE_API_KEY');
+    this.paddle = paddleKey
+      ? new Paddle(paddleKey, {
+          environment:
+            this.configService.get<string>('NODE_ENV') === 'production'
+              ? Environment.production
+              : Environment.sandbox,
+        })
       : null;
 
-    if (!this.stripe) {
-      this.logger.warn('Stripe not configured — web payments disabled');
+    if (!this.paddle) {
+      this.logger.warn('Paddle not configured — web payments disabled');
     }
   }
 
@@ -253,221 +258,159 @@ export class SubscriptionService {
     );
   }
 
-  // ─── Stripe Integration ───────────────────────────────────
+  // ─── Paddle Integration ──────────────────────────────────
 
-  async createStripeCheckoutSession(
+  async getPaddleCheckoutConfig(
     userId: string,
     plan: 'monthly' | 'yearly',
-  ): Promise<{ url: string }> {
-    if (!this.stripe) {
-      throw new BadRequestException('Stripe is not configured');
+  ): Promise<{ priceId: string }> {
+    if (!this.paddle) {
+      throw new BadRequestException('Paddle is not configured');
     }
 
     const priceId =
       plan === 'monthly'
-        ? this.configService.get<string>('STRIPE_PRICE_MONTHLY')
-        : this.configService.get<string>('STRIPE_PRICE_YEARLY');
+        ? this.configService.get<string>('PADDLE_PRICE_MONTHLY')
+        : this.configService.get<string>('PADDLE_PRICE_YEARLY');
 
     if (!priceId) {
       throw new BadRequestException(
-        `Stripe price not configured for ${plan} plan`,
+        `Paddle price not configured for ${plan} plan`,
       );
     }
 
+    // Verify user exists
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      select: ['id', 'email', 'stripeCustomerId'],
+      select: ['id'],
     });
     if (!user) {
       throw new BadRequestException('User not found');
     }
 
-    // Reuse or create Stripe customer
-    let customerId = user.stripeCustomerId;
-    if (!customerId) {
-      const customer = await this.stripe.customers.create({
-        email: user.email || undefined,
-        metadata: { userId: user.id },
-      });
-      customerId = customer.id;
-      await this.userRepository.update(user.id, {
-        stripeCustomerId: customerId,
-      });
-    }
-
-    const frontendUrl =
-      this.configService.get<string>('FRONTEND_URL') ||
-      'https://mytravel-planner.com';
-
-    const session = await this.stripe.checkout.sessions.create({
-      customer: customerId,
-      mode: 'subscription',
-      line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${frontendUrl}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${frontendUrl}/subscription/cancel`,
-      metadata: { userId: user.id, plan },
-    });
-
-    if (!session.url) {
-      this.logger.error(
-        `Stripe checkout session created without URL, session: ${session.id}`,
-      );
-      throw new BadRequestException('Checkout session creation failed');
-    }
-
     this.logger.log(
-      `Stripe checkout session created for user ${userId}, plan: ${plan}`,
+      `Paddle checkout config requested for user ${userId}, plan: ${plan}`,
     );
-    return { url: session.url };
+    return { priceId };
   }
 
-  async createStripePortalSession(userId: string): Promise<{ url: string }> {
-    if (!this.stripe) {
-      throw new BadRequestException('Stripe is not configured');
-    }
-
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      select: ['id', 'stripeCustomerId'],
-    });
-
-    if (!user?.stripeCustomerId) {
-      throw new BadRequestException('No Stripe customer found');
-    }
-
-    const frontendUrl =
-      this.configService.get<string>('FRONTEND_URL') ||
-      'https://mytravel-planner.com';
-
-    const session = await this.stripe.billingPortal.sessions.create({
-      customer: user.stripeCustomerId,
-      return_url: `${frontendUrl}/settings`,
-    });
-
-    return { url: session.url };
-  }
-
-  async handleStripeWebhook(payload: Buffer, signature: string): Promise<void> {
-    if (!this.stripe) {
-      throw new BadRequestException('Stripe is not configured');
+  async handlePaddleWebhook(rawBody: string, signature: string): Promise<void> {
+    if (!this.paddle) {
+      throw new BadRequestException('Paddle is not configured');
     }
 
     const webhookSecret = this.configService.get<string>(
-      'STRIPE_WEBHOOK_SECRET',
+      'PADDLE_WEBHOOK_SECRET',
     );
     if (!webhookSecret) {
-      this.logger.error('STRIPE_WEBHOOK_SECRET not configured');
+      this.logger.error('PADDLE_WEBHOOK_SECRET not configured');
       throw new BadRequestException('Webhook not configured');
     }
 
-    let event: Stripe.Event;
+    let event: any;
     try {
-      event = this.stripe.webhooks.constructEvent(
-        payload,
-        signature,
-        webhookSecret,
-      );
+      event = this.paddle.webhooks.unmarshal(rawBody, webhookSecret, signature);
     } catch (err: any) {
       this.logger.warn(
-        `Stripe webhook signature verification failed: ${err.message}`,
+        `Paddle webhook signature verification failed: ${err.message}`,
       );
       throw new BadRequestException('Invalid webhook signature');
     }
 
-    this.logger.log(`Stripe webhook received: ${event.type}`);
+    this.logger.log(`Paddle webhook received: ${event.eventType}`);
 
-    switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object;
-        await this.handleStripeCheckoutCompleted(session);
+    switch (event.eventType) {
+      case EventName.SubscriptionActivated:
+      case EventName.TransactionCompleted: {
+        await this.handlePaddleSubscriptionActivated(event.data);
         break;
       }
-      case 'customer.subscription.updated':
-      case 'customer.subscription.deleted': {
-        const subscription = event.data.object;
-        await this.handleStripeSubscriptionChange(subscription);
+      case EventName.SubscriptionUpdated: {
+        await this.handlePaddleSubscriptionUpdated(event.data);
         break;
       }
-      case 'invoice.payment_failed': {
-        const invoice = event.data.object;
-        await this.handleStripePaymentFailed(invoice);
+      case EventName.SubscriptionCanceled:
+      case EventName.SubscriptionPastDue: {
+        await this.handlePaddleSubscriptionEnded(event.data, event.eventType);
         break;
       }
       default:
-        this.logger.log(`Unhandled Stripe event: ${event.type}`);
+        this.logger.log(`Unhandled Paddle event: ${event.eventType}`);
     }
   }
 
-  private async handleStripeCheckoutCompleted(
-    session: Stripe.Checkout.Session,
-  ): Promise<void> {
-    const userId = session.metadata?.userId;
+  private async handlePaddleSubscriptionActivated(data: any): Promise<void> {
+    const userId = data.customData?.userId;
     if (!userId) {
-      this.logger.warn('Stripe checkout session without userId metadata');
+      this.logger.warn('Paddle event without userId in customData');
       return;
     }
 
-    if (session.payment_status !== 'paid') {
-      this.logger.warn(
-        `Stripe checkout ${session.id} payment_status=${session.payment_status}, skipping for user ${userId}`,
-      );
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id'],
+    });
+    if (!user) {
+      this.logger.warn(`Paddle event for unknown user: ${userId}`);
       return;
     }
 
-    const subscriptionId = session.subscription as string;
-    if (!subscriptionId) {
-      this.logger.error(
-        `Stripe checkout ${session.id} completed without subscription ID for user ${userId}`,
-      );
-      return;
-    }
-    if (!this.stripe) return;
-
-    const subscription = await this.stripe.subscriptions.retrieve(
-      subscriptionId,
-      {
-        expand: ['items.data'],
-      },
-    );
-    const periodEnd = subscription.items.data[0]?.current_period_end;
-    const expiresAt = periodEnd
-      ? new Date(periodEnd * 1000)
+    const nextBilledAt = data.nextBilledAt || data.next_billed_at;
+    const expiresAt = nextBilledAt
+      ? new Date(nextBilledAt)
       : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-    await this.userRepository.update(userId, {
+    const paddleCustomerId = data.customerId || data.customer_id || null;
+
+    await this.userRepository.update(user.id, {
       subscriptionTier: SubscriptionTier.PREMIUM,
       subscriptionPlatform: SubscriptionPlatform.WEB,
       subscriptionExpiresAt: expiresAt,
-      stripeCustomerId: session.customer as string,
+      ...(paddleCustomerId && { paddleCustomerId }),
     });
 
-    await this.cacheManager.set(`premium:${userId}`, 'true', PREMIUM_CACHE_TTL);
-    this.logger.log(`User ${userId} upgraded to PREMIUM via Stripe`);
+    await this.cacheManager.set(
+      `premium:${user.id}`,
+      'true',
+      PREMIUM_CACHE_TTL,
+    );
+    this.logger.log(`User ${user.id} upgraded to PREMIUM via Paddle`);
   }
 
-  private async handleStripeSubscriptionChange(
-    subscription: Stripe.Subscription,
-  ): Promise<void> {
-    const customerId = subscription.customer as string;
-    const user = await this.userRepository.findOne({
-      where: { stripeCustomerId: customerId },
-      select: ['id'],
-    });
+  private async handlePaddleSubscriptionUpdated(data: any): Promise<void> {
+    const userId = data.customData?.userId;
+    const paddleCustomerId = data.customerId || data.customer_id;
+
+    // Try to find user by customData.userId first, then by paddleCustomerId
+    let user: User | null = null;
+    if (userId) {
+      user = await this.userRepository.findOne({
+        where: { id: userId },
+        select: ['id'],
+      });
+    }
+    if (!user && paddleCustomerId) {
+      user = await this.userRepository
+        .createQueryBuilder('user')
+        .addSelect('user.paddleCustomerId')
+        .where('user.paddleCustomerId = :paddleCustomerId', {
+          paddleCustomerId,
+        })
+        .getOne();
+    }
 
     if (!user) {
       this.logger.warn(
-        `Stripe subscription event for unknown customer: ${customerId}`,
+        `Paddle subscription.updated for unknown user/customer: ${userId || paddleCustomerId}`,
       );
       return;
     }
 
-    if (
-      subscription.status === 'active' ||
-      subscription.status === 'trialing'
-    ) {
-      const periodEnd = subscription.items?.data?.[0]?.current_period_end;
-      const expiresAt = periodEnd
-        ? new Date(periodEnd * 1000)
+    const status = data.status;
+    if (status === 'active' || status === 'trialing') {
+      const nextBilledAt = data.nextBilledAt || data.next_billed_at;
+      const expiresAt = nextBilledAt
+        ? new Date(nextBilledAt)
         : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
       await this.userRepository.update(user.id, {
         subscriptionTier: SubscriptionTier.PREMIUM,
@@ -479,37 +422,53 @@ export class SubscriptionService {
         'true',
         PREMIUM_CACHE_TTL,
       );
-      this.logger.log(`User ${user.id} Stripe subscription renewed`);
+      this.logger.log(`User ${user.id} Paddle subscription renewed`);
     } else {
-      // canceled, incomplete, past_due, unpaid
       await this.userRepository.update(user.id, {
         subscriptionTier: SubscriptionTier.FREE,
       });
       await this.cacheManager.del(`premium:${user.id}`);
-      this.logger.log(
-        `User ${user.id} Stripe subscription ended (${subscription.status})`,
-      );
+      this.logger.log(`User ${user.id} Paddle subscription ended (${status})`);
     }
   }
 
-  private async handleStripePaymentFailed(
-    invoice: Stripe.Invoice,
+  private async handlePaddleSubscriptionEnded(
+    data: any,
+    eventType: string,
   ): Promise<void> {
-    const customerId = invoice.customer as string;
-    const user = await this.userRepository.findOne({
-      where: { stripeCustomerId: customerId },
-      select: ['id'],
-    });
+    const userId = data.customData?.userId;
+    const paddleCustomerId = data.customerId || data.customer_id;
+
+    let user: User | null = null;
+    if (userId) {
+      user = await this.userRepository.findOne({
+        where: { id: userId },
+        select: ['id'],
+      });
+    }
+    if (!user && paddleCustomerId) {
+      user = await this.userRepository
+        .createQueryBuilder('user')
+        .addSelect('user.paddleCustomerId')
+        .where('user.paddleCustomerId = :paddleCustomerId', {
+          paddleCustomerId,
+        })
+        .getOne();
+    }
 
     if (!user) {
-      this.logger.error(
-        `Stripe payment failed for unknown customer: ${customerId}`,
+      this.logger.warn(
+        `Paddle ${eventType} for unknown user/customer: ${userId || paddleCustomerId}`,
       );
       return;
     }
 
-    this.logger.warn(
-      `Stripe payment failed for user ${user.id}, invoice: ${invoice.id}`,
+    await this.userRepository.update(user.id, {
+      subscriptionTier: SubscriptionTier.FREE,
+    });
+    await this.cacheManager.del(`premium:${user.id}`);
+    this.logger.log(
+      `User ${user.id} downgraded to FREE via Paddle (${eventType})`,
     );
   }
 
