@@ -47,25 +47,41 @@ const PaywallModal: React.FC = () => {
   const offeringsLoaded = useRef(false);
   const paddleInitialized = useRef(false);
 
-  // Initialize Paddle SDK on web
+  // Load and initialize Paddle SDK on web
   useEffect(() => {
     if (Platform.OS !== 'web' || paddleInitialized.current) return;
     if (typeof window === 'undefined') return;
-    const Paddle = (window as any).Paddle;
-    if (!Paddle) return;
-    try {
-      const token = process.env.EXPO_PUBLIC_PADDLE_CLIENT_TOKEN;
-      if (token) {
-        const env = process.env.EXPO_PUBLIC_PADDLE_ENVIRONMENT || 'sandbox';
-        if (env === 'sandbox') {
-          Paddle.Environment.set('sandbox');
+
+    const initPaddle = () => {
+      const Paddle = (window as any).Paddle;
+      if (!Paddle) return;
+      try {
+        const token = process.env.EXPO_PUBLIC_PADDLE_CLIENT_TOKEN;
+        if (token) {
+          const env = process.env.EXPO_PUBLIC_PADDLE_ENVIRONMENT || 'sandbox';
+          if (env === 'sandbox') {
+            Paddle.Environment.set('sandbox');
+          }
+          Paddle.Initialize({ token });
+          paddleInitialized.current = true;
         }
-        Paddle.Initialize({ token });
-        paddleInitialized.current = true;
+      } catch (err) {
+        console.warn('Paddle init failed:', err);
       }
-    } catch (err) {
-      console.warn('Paddle init failed:', err);
+    };
+
+    // If Paddle.js already loaded
+    if ((window as any).Paddle) {
+      initPaddle();
+      return;
     }
+
+    // Dynamically load Paddle.js
+    const script = document.createElement('script');
+    script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
+    script.async = true;
+    script.onload = initPaddle;
+    document.head.appendChild(script);
   }, []);
 
   // Load RevenueCat offerings when paywall becomes visible
@@ -93,12 +109,11 @@ const PaywallModal: React.FC = () => {
       try {
         const { priceId } = await apiService.getPaddleCheckoutConfig(selectedPlan);
         const Paddle = (window as any).Paddle;
-        if (!Paddle) {
-          throw new Error('Paddle SDK not loaded');
+        if (!Paddle || !paddleInitialized.current) {
+          throw new Error('Paddle SDK not loaded. Please refresh the page.');
         }
         Paddle.Checkout.open({
           items: [{ priceId, quantity: 1 }],
-          customer: { email: user?.email || undefined },
           customData: { userId: user?.id },
         });
       } catch (error: any) {
