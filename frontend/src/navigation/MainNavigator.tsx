@@ -107,6 +107,12 @@ const MainNavigator = () => {
             <Icon name="bag-suitcase" size={size} color={color} />
           ),
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('Trips', { screen: 'TripList' });
+          },
+        })}
       />
       <Tab.Screen
         name="Notifications"

@@ -73,7 +73,7 @@ export const getActivityStatus = (
       return 'ongoing';
     }
 
-    return 'ongoing';
+    return 'completed';
   }
 
   return 'upcoming';
