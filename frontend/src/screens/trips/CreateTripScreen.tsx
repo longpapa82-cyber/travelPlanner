@@ -363,6 +363,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         useNativeDriver: false,
       }).start();
 
+      // Refresh subscription status so AI remaining count updates
+      refreshStatus();
+
       // Schedule trip reminder notifications
       scheduleTripReminders(trip).catch(() => {});
       trackEvent('trip_created', { destination: destination.trim() });
@@ -406,7 +409,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         });
         return;
       }
-      const message = error.response?.data?.message || t('create.alerts.createFailed');
+      const serverMsg = error.response?.data?.message || '';
+      // Map backend English error to i18n message
+      const message = serverMsg.includes('AI generation limit')
+        ? t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 })
+        : serverMsg || t('create.alerts.createFailed');
 
       // Refresh subscription status so AI remaining count is accurate
       refreshStatus();
