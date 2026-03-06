@@ -309,7 +309,7 @@ export class SubscriptionService {
 
     let event: any;
     try {
-      event = this.paddle.webhooks.unmarshal(rawBody, webhookSecret, signature);
+      event = await this.paddle.webhooks.unmarshal(rawBody, webhookSecret, signature);
     } catch (err: any) {
       this.logger.warn(
         `Paddle webhook signature verification failed: ${err.message}`,
