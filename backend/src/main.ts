@@ -18,7 +18,7 @@ initSentry();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    rawBody: true, // Required for Stripe webhook signature verification
+    rawBody: true, // Required for Paddle webhook signature verification
   });
 
   // Limit JSON/URL-encoded body size to prevent payload-based DoS
@@ -61,7 +61,10 @@ async function bootstrap() {
             'https://*.adtrafficquality.google.com',
             'https://ep1.adtrafficquality.google.com',
             'https://*.google.com',
-            'https://api.stripe.com',
+            'https://cdn.paddle.com',
+            'https://checkout.paddle.com',
+            'https://sandbox-cdn.paddle.com',
+            'https://sandbox-checkout.paddle.com',
             'https://csi.gstatic.com',
           ],
           frameSrc: [
@@ -70,8 +73,10 @@ async function bootstrap() {
             'https://tpc.googlesyndication.com',
             'https://*.doubleclick.net',
             'https://www.google.com',
-            'https://checkout.stripe.com',
-            'https://js.stripe.com',
+            'https://cdn.paddle.com',
+            'https://checkout.paddle.com',
+            'https://sandbox-cdn.paddle.com',
+            'https://sandbox-checkout.paddle.com',
           ],
         },
       },

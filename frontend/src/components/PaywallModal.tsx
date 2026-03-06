@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useAuth } from '../contexts/AuthContext';
 import { usePremium } from '../contexts/PremiumContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
@@ -37,12 +38,35 @@ const BENEFITS: BenefitItem[] = [
 
 const PaywallModal: React.FC = () => {
   const { t } = useTranslation('premium');
+  const { user } = useAuth();
   const { isPaywallVisible, hidePaywall, refreshStatus } = usePremium();
   const { theme, isDark } = useTheme();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [packages, setPackages] = useState<{ monthly: any; yearly: any }>({ monthly: null, yearly: null });
   const offeringsLoaded = useRef(false);
+  const paddleInitialized = useRef(false);
+
+  // Initialize Paddle SDK on web
+  useEffect(() => {
+    if (Platform.OS !== 'web' || paddleInitialized.current) return;
+    if (typeof window === 'undefined') return;
+    const Paddle = (window as any).Paddle;
+    if (!Paddle) return;
+    try {
+      const env = process.env.EXPO_PUBLIC_PADDLE_ENVIRONMENT || 'sandbox';
+      if (env === 'sandbox') {
+        Paddle.Environment.set('sandbox');
+      }
+      const token = process.env.EXPO_PUBLIC_PADDLE_CLIENT_TOKEN;
+      if (token) {
+        Paddle.Setup({ token });
+        paddleInitialized.current = true;
+      }
+    } catch (err) {
+      console.warn('Paddle init failed:', err);
+    }
+  }, []);
 
   // Load RevenueCat offerings when paywall becomes visible
   useEffect(() => {
@@ -64,19 +88,19 @@ const PaywallModal: React.FC = () => {
 
   const handlePurchase = async () => {
     if (Platform.OS === 'web') {
-      // Web: Stripe Checkout redirect
+      // Web: Paddle Overlay Checkout
       setIsPurchasing(true);
       try {
-        const { url } = await apiService.createStripeCheckout(selectedPlan);
-        if (url && typeof window !== 'undefined') {
-          const parsed = new URL(url);
-          if (parsed.hostname !== 'checkout.stripe.com') {
-            throw new Error('Invalid checkout URL');
-          }
-          window.location.href = url;
-        } else {
-          Alert.alert(t('actions.subscribe'), t('paywall.checkoutFailed') || 'Unable to start checkout. Please try again.');
+        const { priceId } = await apiService.getPaddleCheckoutConfig(selectedPlan);
+        const Paddle = (window as any).Paddle;
+        if (!Paddle) {
+          throw new Error('Paddle SDK not loaded');
         }
+        Paddle.Checkout.open({
+          items: [{ priceId, quantity: 1 }],
+          customer: { email: user?.email || undefined },
+          customData: { userId: user?.id },
+        });
       } catch (error: any) {
         const msg = error?.response?.data?.message || error?.message || 'Failed to start checkout. Please try again.';
         Alert.alert('Error', msg);
@@ -112,7 +136,7 @@ const PaywallModal: React.FC = () => {
     setIsPurchasing(true);
     try {
       if (Platform.OS === 'web') {
-        // Web: restore from backend DB (Stripe subscription state)
+        // Web: restore from backend DB (Paddle subscription state)
         const result = await apiService.restoreSubscription();
         if (result?.restored) {
           await refreshStatus();
