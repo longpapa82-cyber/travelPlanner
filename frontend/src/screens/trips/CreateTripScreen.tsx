@@ -105,7 +105,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { scheduleTripReminders } = useNotifications();
   const { t } = useTranslation('trips');
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
-  const { isPremium, aiTripsRemaining, aiTripsLimit, isAiLimitReached } = usePremium();
+  const { isPremium, aiTripsRemaining, aiTripsLimit, isAiLimitReached, refreshStatus } = usePremium();
   const { show: showRewarded, isLoaded: isRewardedLoaded } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
   const [showAiConsent, setShowAiConsent] = useState(false);
@@ -407,6 +407,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         return;
       }
       const message = error.response?.data?.message || t('create.alerts.createFailed');
+
+      // Refresh subscription status so AI remaining count is accurate
+      refreshStatus();
 
       showToast({
         type: 'error',
