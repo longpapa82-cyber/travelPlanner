@@ -4,7 +4,62 @@
     "slug": "travel-planner",
     "version": "1.0.0",
     "android": {
-      "versionCode": 12
+      "versionCode": 13,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#4A90D9"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.longpapa82.travelplanner",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "travelplanner"
+            },
+            {
+              "scheme": "https",
+              "host": "mytravel-planner.com",
+              "pathPrefix": "/auth"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ],
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ]
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/6834aeb3-58dd-4d9d-a3a3-19824beb9e62"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.travelplanner.app",
+      "buildNumber": "1",
+      "usesAppleSignIn": true,
+      "associatedDomains": [
+        "applinks:mytravel-planner.com"
+      ],
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "travelplanner"
+            ]
+          }
+        ],
+        "NSUserTrackingUsageDescription": "This allows us to show you personalized travel deals and offers.",
+        "NSPhotoLibraryUsageDescription": "MyTravel needs access to your photo library to add photos to your trips."
+      }
     }
   }
 }
