@@ -213,12 +213,7 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const code = await this.authService.createOAuthTempCode(req.user);
-    const frontendUrl =
-      process.env.FRONTEND_URL ||
-      (process.env.NODE_ENV === 'production'
-        ? 'https://mytravel-planner.com'
-        : 'exp://localhost:8081');
-    res.redirect(`${frontendUrl}/auth/callback?code=${code}`);
+    res.redirect(this.buildOAuthRedirectUrl(req.query?.state as string, code));
   }
 
   // Apple OAuth
@@ -235,12 +230,7 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const code = await this.authService.createOAuthTempCode(req.user);
-    const frontendUrl =
-      process.env.FRONTEND_URL ||
-      (process.env.NODE_ENV === 'production'
-        ? 'https://mytravel-planner.com'
-        : 'exp://localhost:8081');
-    res.redirect(`${frontendUrl}/auth/callback?code=${code}`);
+    res.redirect(this.buildOAuthRedirectUrl(req.query?.state as string, code));
   }
 
   // Kakao OAuth
@@ -257,12 +247,28 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const code = await this.authService.createOAuthTempCode(req.user);
+    res.redirect(this.buildOAuthRedirectUrl(req.query?.state as string, code));
+  }
+
+  /**
+   * Builds the OAuth redirect URL based on the originating platform.
+   * Mobile apps get the custom scheme so WebBrowser.openAuthSessionAsync dismisses.
+   * Web gets the HTTPS frontend URL.
+   */
+  private buildOAuthRedirectUrl(
+    platform: string | undefined,
+    code: string,
+  ): string {
+    if (platform === 'ios' || platform === 'android') {
+      const scheme = process.env.APP_SCHEME || 'travelplanner';
+      return `${scheme}:///auth/callback?code=${code}`;
+    }
     const frontendUrl =
       process.env.FRONTEND_URL ||
       (process.env.NODE_ENV === 'production'
         ? 'https://mytravel-planner.com'
-        : 'exp://localhost:8081');
-    res.redirect(`${frontendUrl}/auth/callback?code=${code}`);
+        : 'http://localhost:8081');
+    return `${frontendUrl}/auth/callback?code=${code}`;
   }
 
   // Push notification token management
