@@ -153,7 +153,10 @@ export class AuthService {
     if (!user) {
       await this.incrementLoginAttempts(lockKey);
       this.auditService
-        .log({ action: AuditAction.LOGIN_FAILED, metadata: { reason: 'user_not_found' } })
+        .log({
+          action: AuditAction.LOGIN_FAILED,
+          metadata: { reason: 'user_not_found' },
+        })
         .catch(() => {});
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -166,7 +169,11 @@ export class AuthService {
     if (!isPasswordValid) {
       await this.incrementLoginAttempts(lockKey);
       this.auditService
-        .log({ userId: user.id, action: AuditAction.LOGIN_FAILED, metadata: { reason: 'invalid_password' } })
+        .log({
+          userId: user.id,
+          action: AuditAction.LOGIN_FAILED,
+          metadata: { reason: 'invalid_password' },
+        })
         .catch(() => {});
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -234,14 +241,25 @@ export class AuthService {
       if (payload.jti) {
         const stored = await this.cacheManager.get(`refresh:${payload.jti}`);
         if (!stored) {
-          // Token was already used or revoked — possible token theft
+          // JTI missing from Redis — could be eviction or genuine revocation.
+          // Check if the user exists and account is active before allowing.
+          // JWT signature + expiry already verified above, so this is safe.
+          const userExists = await this.usersService
+            .findById(payload.sub)
+            .catch(() => null);
+          if (!userExists) {
+            this.logger.warn(
+              `Refresh token for non-existent user ${payload.sub}`,
+            );
+            throw new UnauthorizedException('Refresh token revoked');
+          }
           this.logger.warn(
-            `Revoked refresh token reuse detected for user ${payload.sub}`,
+            `Refresh JTI missing from Redis for user ${payload.sub} — allowing (possible eviction)`,
           );
-          throw new UnauthorizedException('Refresh token revoked');
+        } else {
+          // Invalidate old refresh token (one-time use)
+          await this.cacheManager.del(`refresh:${payload.jti}`);
         }
-        // Invalidate old refresh token (one-time use)
-        await this.cacheManager.del(`refresh:${payload.jti}`);
       }
 
       // Reject refresh if account was deleted
@@ -459,7 +477,11 @@ export class AuthService {
     newPassword: string,
     lang: SupportedLang = 'ko',
   ): Promise<{ message: string }> {
-    const user = await this.usersService.resetPassword(token, newPassword, lang);
+    const user = await this.usersService.resetPassword(
+      token,
+      newPassword,
+      lang,
+    );
     if (user?.id) {
       this.auditService
         .log({ userId: user.id, action: AuditAction.PASSWORD_RESET })

@@ -147,16 +147,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       }
 
-      // Access token missing or expired — try silent refresh
+      // Access token missing or expired — try refresh via getProfile().
+      // Delegates to the interceptor's 401 auto-refresh, which serializes
+      // concurrent refresh attempts through its isRefreshing lock.
       const refreshToken = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
 
       if (refreshToken) {
         try {
-          const response = await apiService.refreshToken(refreshToken);
-          await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
-          await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
-          // Use token directly to bypass request interceptor's Keychain re-read
-          const profile = await apiService.getProfileWithToken(response.accessToken);
+          // getProfile() will trigger the interceptor's auto-refresh on 401,
+          // which handles token storage and retry atomically.
+          const profile = await apiService.getProfile();
           setUser(profile);
           setSessionFlag(true);
           registerPushAfterLogin();
