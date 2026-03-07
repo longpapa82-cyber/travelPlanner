@@ -39,16 +39,31 @@
     "upgradeToUnlock": "Naik taraf untuk membuka kunci",
     "autoRenewNotice": "Langganan diperbaharui secara automatik melainkan dibatalkan sekurang-kurangnya 24 jam sebelum tamat tempoh semasa.",
     "termsLink": "Syarat perkhidmatan",
-    "privacyLink": "Dasar privasi"
+    "privacyLink": "Dasar privasi",
+    "restoreSuccess": "Langganan berjaya dipulihkan!",
+    "restoreNone": "Tiada langganan aktif ditemui."
   },
   "status": {
     "active": "Aktif",
     "expired": "Tamat Tempoh",
     "expiresOn": "Sehingga {{date}}"
   },
+  "promo": {
+    "title": "Buka Kunci Premium",
+    "subtitle": "AI Tanpa Had · Tanpa Iklan · Lencana PRO",
+    "cta": "Cuba Premium",
+    "aiWarning": "{{remaining}} perjalanan AI tinggal bulan ini",
+    "aiLimitHit": "Anda telah menggunakan semua perjalanan AI percuma bulan ini",
+    "cancelAnytime": "Batalkan bila-bila masa"
+  },
+  "context": {
+    "aiLimit": "Anda telah menggunakan semua perjalanan AI percuma",
+    "aiLimitSubtitle": "Naik taraf untuk pelan perjalanan AI tanpa had"
+  },
   "menu": {
     "subscription": "Langganan",
     "upgradePremium": "Naik Taraf ke Premium",
-    "managePlan": "Urus pelan"
+    "managePlan": "Urus pelan",
+    "aiRemaining": "AI: {{remaining}}/{{total}} baki"
   }
 }

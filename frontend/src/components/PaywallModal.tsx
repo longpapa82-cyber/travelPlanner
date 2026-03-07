@@ -39,7 +39,7 @@ const BENEFITS: BenefitItem[] = [
 const PaywallModal: React.FC = () => {
   const { t } = useTranslation('premium');
   const { user } = useAuth();
-  const { isPaywallVisible, hidePaywall, refreshStatus } = usePremium();
+  const { isPaywallVisible, paywallContext, hidePaywall, refreshStatus, isPremium, aiTripsUsed, aiTripsRemaining } = usePremium();
   const { theme, isDark } = useTheme();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -189,7 +189,7 @@ const PaywallModal: React.FC = () => {
         <View style={[styles.container, { backgroundColor: isDark ? colors.neutral[900] : '#FFF' }]}>
           {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={hidePaywall} style={styles.closeButton}>
+            <TouchableOpacity onPress={hidePaywall} style={styles.closeButton} accessibilityRole="button" accessibilityLabel={t('promo.dismiss', { defaultValue: 'Close' })}>
               <Icon name="close" size={24} color={theme.colors.textSecondary} />
             </TouchableOpacity>
           </View>
@@ -198,14 +198,33 @@ const PaywallModal: React.FC = () => {
             {/* Hero */}
             <View style={styles.hero}>
               <View style={styles.crownCircle}>
-                <Icon name="crown" size={40} color="#F59E0B" />
+                <Icon
+                  name={paywallContext === 'ai_limit' ? 'robot' : 'crown'}
+                  size={40}
+                  color="#F59E0B"
+                />
               </View>
               <Text style={[styles.title, { color: theme.colors.text }]}>
-                {t('paywall.title')}
+                {paywallContext === 'ai_limit'
+                  ? t('context.aiLimit')
+                  : t('paywall.title')}
               </Text>
               <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-                {t('paywall.subtitle')}
+                {paywallContext === 'ai_limit'
+                  ? t('context.aiLimitSubtitle')
+                  : t('paywall.subtitle')}
               </Text>
+              {/* AI usage indicator for free users */}
+              {!isPremium && paywallContext === 'ai_limit' && (
+                <View style={styles.aiUsageIndicator}>
+                  <Icon name="lightning-bolt" size={16} color="#F59E0B" />
+                  <Text style={[styles.aiUsageText, { color: theme.colors.textSecondary }]}>
+                    {aiTripsRemaining <= 0
+                      ? t('promo.aiLimitHit')
+                      : t('promo.aiWarning', { remaining: aiTripsRemaining })}
+                  </Text>
+                </View>
+              )}
             </View>
 
             {/* Benefits */}
@@ -291,21 +310,30 @@ const PaywallModal: React.FC = () => {
               onPress={handlePurchase}
               disabled={isPurchasing}
               activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel={t('promo.cta')}
             >
               {isPurchasing ? (
                 <ActivityIndicator color="#FFF" />
               ) : (
                 <Text style={styles.subscribeButtonText}>
-                  {t('actions.subscribe')}
+                  {t('promo.cta')}
                 </Text>
               )}
             </TouchableOpacity>
+
+            {/* Cancel anytime reassurance */}
+            <Text style={[styles.cancelAnytime, { color: theme.colors.textSecondary }]}>
+              {t('promo.cancelAnytime')}
+            </Text>
 
             {/* Restore */}
             <TouchableOpacity
               style={styles.restoreButton}
               onPress={handleRestore}
               disabled={isPurchasing}
+              accessibilityRole="button"
+              accessibilityLabel={t('actions.restore')}
             >
               <Text style={[styles.restoreText, { color: theme.colors.textSecondary }]}>
                 {t('actions.restore')}
@@ -445,11 +473,30 @@ const styles = StyleSheet.create({
   planPer: {
     fontSize: 13,
   },
+  aiUsageIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 12,
+    backgroundColor: '#FFF8E1',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  aiUsageText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
   subscribeButton: {
     backgroundColor: '#F59E0B',
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
+    marginBottom: 4,
+  },
+  cancelAnytime: {
+    textAlign: 'center',
+    fontSize: 13,
     marginBottom: 12,
   },
   subscribeButtonDisabled: {

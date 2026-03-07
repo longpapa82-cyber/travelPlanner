@@ -39,16 +39,31 @@
     "upgradeToUnlock": "قم بالترقية لفتح الميزة",
     "autoRenewNotice": "يتم تجديد الاشتراكات تلقائيًا ما لم يتم إلغاؤها قبل 24 ساعة على الأقل من نهاية الفترة الحالية.",
     "termsLink": "شروط الخدمة",
-    "privacyLink": "سياسة الخصوصية"
+    "privacyLink": "سياسة الخصوصية",
+    "restoreSuccess": "تم استعادة الاشتراك بنجاح!",
+    "restoreNone": "لم يتم العثور على اشتراك نشط."
   },
   "status": {
     "active": "نشط",
     "expired": "منتهي الصلاحية",
     "expiresOn": "حتى {{date}}"
   },
+  "promo": {
+    "title": "فتح Premium",
+    "subtitle": "ذكاء اصطناعي غير محدود · بدون إعلانات · شارة PRO",
+    "cta": "جرّب Premium",
+    "aiWarning": "{{remaining}} رحلة(رحلات) AI متبقية هذا الشهر",
+    "aiLimitHit": "لقد استخدمت جميع رحلات AI المجانية هذا الشهر",
+    "cancelAnytime": "إلغاء في أي وقت"
+  },
+  "context": {
+    "aiLimit": "لقد استخدمت جميع رحلات AI المجانية",
+    "aiLimitSubtitle": "قم بالترقية لإنشاء خطط سفر AI غير محدودة"
+  },
   "menu": {
     "subscription": "الاشتراك",
     "upgradePremium": "الترقية إلى Premium",
-    "managePlan": "إدارة الخطة"
+    "managePlan": "إدارة الخطة",
+    "aiRemaining": "AI: {{remaining}}/{{total}} متبقي"
   }
 }

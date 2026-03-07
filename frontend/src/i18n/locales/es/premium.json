@@ -39,16 +39,31 @@
     "upgradeToUnlock": "Actualiza para desbloquear",
     "autoRenewNotice": "Las suscripciones se renuevan automáticamente a menos que se cancelen al menos 24 horas antes del final del período actual.",
     "termsLink": "Términos de servicio",
-    "privacyLink": "Política de privacidad"
+    "privacyLink": "Política de privacidad",
+    "restoreSuccess": "Suscripción restaurada con éxito.",
+    "restoreNone": "No se encontró suscripción activa."
   },
   "status": {
     "active": "Activa",
     "expired": "Expirada",
     "expiresOn": "Hasta {{date}}"
   },
+  "promo": {
+    "title": "Desbloquear Premium",
+    "subtitle": "IA ilimitada · Sin anuncios · Insignia PRO",
+    "cta": "Probar Premium",
+    "aiWarning": "{{remaining}} viaje(s) con IA restante(s) este mes",
+    "aiLimitHit": "Has usado todos los viajes gratuitos con IA este mes",
+    "cancelAnytime": "Cancela en cualquier momento"
+  },
+  "context": {
+    "aiLimit": "Has usado todos los viajes gratuitos con IA",
+    "aiLimitSubtitle": "Actualiza para crear planes de viaje con IA ilimitados"
+  },
   "menu": {
     "subscription": "Suscripción",
     "upgradePremium": "Actualizar a Premium",
-    "managePlan": "Gestionar plan"
+    "managePlan": "Gestionar plan",
+    "aiRemaining": "AI: {{remaining}}/{{total}} restantes"
   }
 }

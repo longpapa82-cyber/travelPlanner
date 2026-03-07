@@ -26,6 +26,8 @@ const SubscriptionScreen = () => {
       Linking.openURL('https://apps.apple.com/account/subscriptions');
     } else if (Platform.OS === 'android') {
       Linking.openURL('https://play.google.com/store/account/subscriptions');
+    } else {
+      Linking.openURL('https://mytravel-planner.com/api/subscription/paddle/portal');
     }
   };
 
@@ -37,33 +39,54 @@ const SubscriptionScreen = () => {
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       {/* Current Plan Card */}
-      <View style={[styles.planCard, {
-        backgroundColor: isPremium ? '#F59E0B' : (isDark ? colors.neutral[800] : '#FFF'),
-        borderColor: isPremium ? '#F59E0B' : theme.colors.border,
-      }]}>
-        <View style={styles.planHeader}>
-          {isPremium ? (
+      {isPremium ? (
+        <View style={[styles.planCard, {
+          backgroundColor: '#F59E0B',
+          borderColor: '#F59E0B',
+        }]}>
+          <View style={styles.planHeader}>
             <Icon name="crown" size={32} color="#FFF" />
-          ) : (
-            <Icon name="account-circle" size={32} color={theme.colors.primary} />
-          )}
-          <View style={styles.planInfo}>
-            <Text style={[styles.planName, { color: isPremium ? '#FFF' : theme.colors.text }]}>
-              {isPremium ? t('premium.name') : t('free.name')}
-            </Text>
-            <Text style={[styles.planDesc, { color: isPremium ? '#FFFFFFCC' : theme.colors.textSecondary }]}>
-              {isPremium ? t('premium.description') : t('free.description')}
-            </Text>
+            <View style={styles.planInfo}>
+              <Text style={[styles.planName, { color: '#FFF' }]}>
+                {t('premium.name')}
+              </Text>
+              <Text style={[styles.planDesc, { color: '#FFFFFFCC' }]}>
+                {t('premium.description')}
+              </Text>
+            </View>
+            <PremiumBadge size="medium" />
           </View>
-          {isPremium && <PremiumBadge size="medium" />}
+          {expiresAt && (
+            <Text style={[styles.expiresText, { color: '#FFFFFFAA' }]}>
+              {t('status.expiresOn', { date: formatDate(expiresAt) })}
+            </Text>
+          )}
         </View>
-
-        {isPremium && expiresAt && (
-          <Text style={[styles.expiresText, { color: '#FFFFFFAA' }]}>
-            {t('status.expiresOn', { date: formatDate(expiresAt) })}
-          </Text>
-        )}
-      </View>
+      ) : (
+        <TouchableOpacity
+          style={[styles.planCard, styles.upgradeCard, { backgroundColor: isDark ? '#78350F' : '#FFFBEB' }]}
+          onPress={() => showPaywall()}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel={t('promo.title')}
+        >
+          <View style={styles.planHeader}>
+            <View style={styles.upgradeCrownCircle}>
+              <Icon name="crown" size={28} color="#F59E0B" />
+            </View>
+            <View style={styles.planInfo}>
+              <Text style={[styles.planName, { color: isDark ? '#FDE68A' : '#92400E' }]}>
+                {t('promo.title')}
+              </Text>
+              <Text style={[styles.planDesc, { color: isDark ? '#FCD34D' : '#B45309' }]}>
+                {t('promo.subtitle')}
+              </Text>
+            </View>
+            <Icon name="chevron-right" size={24} color={isDark ? '#FBBF24' : '#D97706'} />
+          </View>
+          <Text style={[styles.cancelAnytimeText, { color: isDark ? '#FCD34D' : '#B45309' }]}>{t('promo.cancelAnytime')}</Text>
+        </TouchableOpacity>
+      )}
 
       {/* AI Trip Usage */}
       {!isPremium && (
@@ -96,51 +119,55 @@ const SubscriptionScreen = () => {
           {t('paywall.compareTitle')}
         </Text>
 
+        {/* Column headers */}
+        <View style={[styles.compareRow, { borderBottomColor: theme.colors.border }]}>
+          <Text style={[styles.compareFeature, { color: 'transparent' }]}>-</Text>
+          <Text style={[styles.compareHeader, { color: theme.colors.textSecondary }]}>Free</Text>
+          <Text style={[styles.compareHeader, { color: '#F59E0B' }]}>Pro</Text>
+        </View>
+
         {[
-          { feature: t('benefits.tripCreation'), free: true, premium: true },
-          { feature: t('benefits.social'), free: true, premium: true },
-          { feature: t('benefits.expenses'), free: true, premium: true },
-          { feature: t('benefits.unlimitedAi'), free: false, premium: true },
-          { feature: t('benefits.noAds'), free: false, premium: true },
-          { feature: t('benefits.premiumBadge'), free: false, premium: true },
+          { feature: t('benefits.tripCreation'), freeLabel: '\u2713', premiumLabel: '\u2713', freeOk: true },
+          { feature: t('benefits.social'), freeLabel: '\u2713', premiumLabel: '\u2713', freeOk: true },
+          { feature: t('benefits.expenses'), freeLabel: '\u2713', premiumLabel: '\u2713', freeOk: true },
+          { feature: t('benefits.unlimitedAi'), freeLabel: '3/mo', premiumLabel: '\u221E', freeOk: false },
+          { feature: t('benefits.noAds'), freeLabel: '\u2717', premiumLabel: '\u2713', freeOk: false },
+          { feature: t('benefits.premiumBadge'), freeLabel: '\u2717', premiumLabel: '\u2713', freeOk: false },
         ].map((row, idx) => (
           <View
             key={idx}
             style={[styles.compareRow, { borderBottomColor: theme.colors.border }]}
           >
             <Text style={[styles.compareFeature, { color: theme.colors.text }]}>{row.feature}</Text>
-            <Icon
-              name={row.free ? 'check-circle' : 'close-circle'}
-              size={20}
-              color={row.free ? (colors.success?.main || '#22C55E') : (colors.neutral[400])}
-              style={styles.compareIcon}
-            />
-            <Icon
-              name={row.premium ? 'check-circle' : 'close-circle'}
-              size={20}
-              color={row.premium ? '#F59E0B' : (colors.neutral[400])}
-              style={styles.compareIcon}
-            />
+            <Text style={[styles.compareValue, { color: row.freeOk ? (colors.success?.main || '#22C55E') : colors.neutral[400] }]}>
+              {row.freeLabel}
+            </Text>
+            <Text style={[styles.compareValue, { color: '#F59E0B', fontWeight: '700' }]}>
+              {row.premiumLabel}
+            </Text>
           </View>
         ))}
 
-        {/* Column headers */}
-        <View style={[styles.compareRow, { borderBottomWidth: 0, paddingTop: 0 }]}>
-          <Text style={[styles.compareFeature, { color: 'transparent' }]}>-</Text>
-          <Text style={[styles.compareHeader, { color: theme.colors.textSecondary }]}>Free</Text>
-          <Text style={[styles.compareHeader, { color: '#F59E0B' }]}>Pro</Text>
-        </View>
+        {/* Yearly savings note */}
+        {!isPremium && (
+          <View style={[styles.savingsRow, { backgroundColor: isDark ? '#78350F' : '#FFFBEB' }]}>
+            <Icon name="tag-outline" size={16} color="#F59E0B" />
+            <Text style={[styles.savingsText, { color: isDark ? '#FDE68A' : '#92400E' }]}>
+              $29.99/yr = ~$2.50/mo
+            </Text>
+          </View>
+        )}
       </View>
 
       {/* Actions */}
       <View style={styles.actions}>
         {!isPremium && (
-          <Button variant="primary" fullWidth onPress={showPaywall} style={{ backgroundColor: '#F59E0B' }}>
-            {t('actions.subscribe')}
+          <Button variant="primary" fullWidth onPress={() => showPaywall()} style={{ backgroundColor: '#F59E0B' }}>
+            {t('promo.cta')}
           </Button>
         )}
 
-        {isPremium && Platform.OS !== 'web' && (
+        {isPremium && (
           <Button variant="outline" fullWidth onPress={openManageSubscription}>
             {t('actions.manage')}
           </Button>
@@ -216,15 +243,46 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
   },
-  compareIcon: {
+  compareValue: {
     width: 50,
     textAlign: 'center',
+    fontSize: 14,
   },
   compareHeader: {
     width: 50,
     textAlign: 'center',
     fontSize: 12,
     fontWeight: '700',
+  },
+  upgradeCard: {
+    borderColor: '#F59E0B',
+    borderWidth: 2,
+  },
+  upgradeCrownCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(245,158,11,0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cancelAnytimeText: {
+    fontSize: 12,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  savingsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  savingsText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
   actions: {
     padding: 16,

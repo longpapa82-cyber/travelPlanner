@@ -39,16 +39,31 @@
     "upgradeToUnlock": "อัปเกรดเพื่อปลดล็อก",
     "autoRenewNotice": "การสมัครสมาชิกจะต่ออายุโดยอัตโนมัติ เว้นแต่จะยกเลิกอย่างน้อย 24 ชั่วโมงก่อนสิ้นสุดรอบปัจจุบัน",
     "termsLink": "ข้อกำหนดการใช้งาน",
-    "privacyLink": "นโยบายความเป็นส่วนตัว"
+    "privacyLink": "นโยบายความเป็นส่วนตัว",
+    "restoreSuccess": "กู้คืนการสมัครสมาชิกสำเร็จ!",
+    "restoreNone": "ไม่พบการสมัครสมาชิกที่ใช้งานอยู่"
   },
   "status": {
     "active": "ใช้งานอยู่",
     "expired": "หมดอายุ",
     "expiresOn": "ถึง {{date}}"
   },
+  "promo": {
+    "title": "ปลดล็อกพรีเมียม",
+    "subtitle": "AI ไม่จำกัด · ไม่มีโฆษณา · ตรา PRO",
+    "cta": "ลองพรีเมียม",
+    "aiWarning": "เหลือ {{remaining}} ทริป AI เดือนนี้",
+    "aiLimitHit": "คุณใช้ทริป AI ฟรีหมดแล้วเดือนนี้",
+    "cancelAnytime": "ยกเลิกได้ทุกเมื่อ"
+  },
+  "context": {
+    "aiLimit": "คุณใช้ทริป AI ฟรีหมดแล้ว",
+    "aiLimitSubtitle": "อัปเกรดเพื่อสร้างแผนทริป AI ไม่จำกัด"
+  },
   "menu": {
     "subscription": "การสมัครสมาชิก",
     "upgradePremium": "อัปเกรดเป็นพรีเมียม",
-    "managePlan": "จัดการแผน"
+    "managePlan": "จัดการแผน",
+    "aiRemaining": "AI: {{remaining}}/{{total}} เหลือ"
   }
 }

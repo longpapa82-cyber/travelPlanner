@@ -39,16 +39,31 @@
     "upgradeToUnlock": "Kilidi açmak için yükseltin",
     "autoRenewNotice": "Abonelikler, mevcut dönemin bitiminden en az 24 saat önce iptal edilmediği sürece otomatik olarak yenilenir.",
     "termsLink": "Kullanım koşulları",
-    "privacyLink": "Gizlilik politikası"
+    "privacyLink": "Gizlilik politikası",
+    "restoreSuccess": "Abonelik başarıyla geri yüklendi!",
+    "restoreNone": "Aktif abonelik bulunamadı."
   },
   "status": {
     "active": "Aktif",
     "expired": "Süresi Doldu",
     "expiresOn": "{{date}} tarihine kadar"
   },
+  "promo": {
+    "title": "Premium'ı Aç",
+    "subtitle": "Sınırsız AI · Reklamsız · PRO Rozeti",
+    "cta": "Premium'ı Dene",
+    "aiWarning": "Bu ay {{remaining}} AI gezi hakkı kaldı",
+    "aiLimitHit": "Bu ay tüm ücretsiz AI gezi haklarını kullandınız",
+    "cancelAnytime": "İstediğiniz zaman iptal edin"
+  },
+  "context": {
+    "aiLimit": "Tüm ücretsiz AI gezi haklarını kullandınız",
+    "aiLimitSubtitle": "Sınırsız AI gezi planları için yükseltin"
+  },
   "menu": {
     "subscription": "Abonelik",
     "upgradePremium": "Premium'a Yükselt",
-    "managePlan": "Planı yönet"
+    "managePlan": "Planı yönet",
+    "aiRemaining": "AI: {{remaining}}/{{total}} kalan"
   }
 }

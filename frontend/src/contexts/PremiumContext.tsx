@@ -8,6 +8,8 @@ import { PREMIUM_ENABLED } from '../constants/config';
 const AI_TRIPS_FREE_LIMIT = 3;
 const ADMIN_EMAILS = ['a090723@naver.com', 'longpapa82@gmail.com'];
 
+export type PaywallContext = 'ai_limit' | 'general';
+
 interface PremiumContextType {
   isPremium: boolean;
   subscriptionTier: 'free' | 'premium';
@@ -17,7 +19,8 @@ interface PremiumContextType {
   isAiLimitReached: boolean;
   expiresAt?: string;
   isPaywallVisible: boolean;
-  showPaywall: () => void;
+  paywallContext: PaywallContext;
+  showPaywall: (context?: PaywallContext) => void;
   hidePaywall: () => void;
   refreshStatus: () => Promise<void>;
 }
@@ -39,6 +42,7 @@ interface PremiumProviderProps {
 export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) => {
   const { user, refreshUser } = useAuth();
   const [isPaywallVisible, setIsPaywallVisible] = useState(false);
+  const [paywallContext, setPaywallContext] = useState<PaywallContext>('general');
 
   // Initialize RevenueCat on native platforms when user is available
   useEffect(() => {
@@ -63,8 +67,9 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const aiTripsRemaining = (isPremium || isAdmin) ? -1 : Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed);
   const isAiLimitReached = !isPremium && !isAdmin && aiTripsRemaining <= 0;
 
-  const showPaywall = useCallback(() => {
-    if (!PREMIUM_ENABLED) return; // Subscription disabled until business registration
+  const showPaywall = useCallback((context: PaywallContext = 'general') => {
+    if (!PREMIUM_ENABLED) return;
+    setPaywallContext(context);
     setIsPaywallVisible(true);
   }, []);
 
@@ -85,10 +90,11 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     isAiLimitReached,
     expiresAt: user?.subscriptionExpiresAt,
     isPaywallVisible,
+    paywallContext,
     showPaywall,
     hidePaywall,
     refreshStatus,
-  }), [isPremium, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, isPaywallVisible, showPaywall, hidePaywall, refreshStatus]);
+  }), [isPremium, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus]);
 
   return (
     <PremiumContext.Provider value={value}>

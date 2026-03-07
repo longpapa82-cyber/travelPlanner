@@ -45,6 +45,7 @@ import { SlideIn } from '../../components/animation/SlideIn';
 import { Shimmer } from '../../components/animation/Shimmer';
 import PopularDestinations from '../../components/PopularDestinations';
 import AnnouncementBanner from '../../components/AnnouncementBanner';
+import PremiumPromoBanner from '../../components/PremiumPromoBanner';
 import apiService from '../../services/api';
 import { AdBanner } from '../../components/ads';
 import { getDestinationImageUrl, getHeroImageUrl } from '../../utils/images';
@@ -495,6 +496,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         </Section>
       </SlideIn>
+
+      {/* Premium Promo Banner — free users only */}
+      <PremiumPromoBanner />
 
       {/* Travel Tips */}
       <FadeIn duration={600} delay={600}>
