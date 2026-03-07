@@ -20,12 +20,14 @@
     "staging": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api"
+        "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api",
+        "REVENUECAT_ANDROID_KEY": "goog_BeyiIKXfhmqtbtzaEGMRICChtQd"
       }
     },
     "production": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api"
+        "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api",
+        "REVENUECAT_ANDROID_KEY": "goog_BeyiIKXfhmqtbtzaEGMRICChtQd"
       },
       "autoIncrement": true
     }
