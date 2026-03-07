@@ -1,43 +1,16 @@
-import {
-  IsString,
-  IsOptional,
-  IsObject,
-  ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsOptional, IsObject } from 'class-validator';
 
-class RevenueCatEvent {
-  @IsString()
-  type: string;
-
-  @IsString()
-  @IsOptional()
-  app_user_id?: string;
-
-  @IsString()
-  @IsOptional()
-  product_id?: string;
-
-  @IsString()
-  @IsOptional()
-  store?: string;
-
-  @IsString()
-  @IsOptional()
-  expiration_at_ms?: string;
-
-  @IsString()
-  @IsOptional()
-  environment?: string;
-}
-
+/**
+ * RevenueCat webhook DTO.
+ * The event object is kept loosely typed because RevenueCat sends many
+ * additional properties that evolve over time.  Strict whitelist validation
+ * would reject unknown fields and break the webhook.
+ */
 export class RevenueCatWebhookDto {
   @IsString()
   @IsOptional()
   api_version?: string;
 
   @IsObject()
-  @ValidateNested()
-  @Type(() => RevenueCatEvent)
-  event: RevenueCatEvent;
+  event: Record<string, any>;
 }
