@@ -130,13 +130,7 @@ export class SubscriptionService {
     );
   }
 
-  async handleRevenueCatEvent(event: {
-    type: string;
-    app_user_id?: string;
-    product_id?: string;
-    store?: string;
-    expiration_at_ms?: string;
-  }): Promise<void> {
+  async handleRevenueCatEvent(event: Record<string, any>): Promise<void> {
     const appUserId = event.app_user_id;
     if (!appUserId) {
       this.logger.warn('RevenueCat event without app_user_id, skipping');
