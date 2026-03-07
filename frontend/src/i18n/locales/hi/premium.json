@@ -39,16 +39,31 @@
     "upgradeToUnlock": "अनलॉक करने के लिए अपग्रेड करें",
     "autoRenewNotice": "सदस्यता स्वचालित रूप से नवीनीकृत होती है जब तक कि वर्तमान अवधि समाप्त होने से कम से कम 24 घंटे पहले रद्द न की जाए।",
     "termsLink": "सेवा की शर्तें",
-    "privacyLink": "गोपनीयता नीति"
+    "privacyLink": "गोपनीयता नीति",
+    "restoreSuccess": "सदस्यता सफलतापूर्वक पुनर्स्थापित!",
+    "restoreNone": "कोई सक्रिय सदस्यता नहीं मिली।"
   },
   "status": {
     "active": "सक्रिय",
     "expired": "समाप्त",
     "expiresOn": "{{date}} तक"
   },
+  "promo": {
+    "title": "Premium अनलॉक करें",
+    "subtitle": "असीमित AI · विज्ञापन-मुक्त · PRO बैज",
+    "cta": "Premium आज़माएं",
+    "aiWarning": "इस महीने {{remaining}} AI यात्रा(एं) शेष",
+    "aiLimitHit": "इस महीने सभी मुफ्त AI यात्राएं उपयोग हो चुकी हैं",
+    "cancelAnytime": "कभी भी रद्द करें"
+  },
+  "context": {
+    "aiLimit": "सभी मुफ्त AI यात्राएं उपयोग हो चुकी हैं",
+    "aiLimitSubtitle": "असीमित AI यात्रा योजनाएं बनाने के लिए अपग्रेड करें"
+  },
   "menu": {
     "subscription": "सदस्यता",
     "upgradePremium": "Premium में अपग्रेड करें",
-    "managePlan": "योजना प्रबंधित करें"
+    "managePlan": "योजना प्रबंधित करें",
+    "aiRemaining": "AI: {{remaining}}/{{total}} शेष"
   }
 }

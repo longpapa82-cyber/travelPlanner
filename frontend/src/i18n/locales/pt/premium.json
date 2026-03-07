@@ -16,8 +16,22 @@
     "aiUsed": "usados", "compareTitle": "Comparar Planos", "upgradeToUnlock": "Faça upgrade para desbloquear",
     "autoRenewNotice": "As assinaturas são renovadas automaticamente, a menos que sejam canceladas pelo menos 24 horas antes do final do período atual.",
     "termsLink": "Termos de serviço",
-    "privacyLink": "Política de privacidade"
+    "privacyLink": "Política de privacidade",
+    "restoreSuccess": "Assinatura restaurada com sucesso!",
+    "restoreNone": "Nenhuma assinatura ativa encontrada."
   },
   "status": { "active": "Ativo", "expired": "Expirado", "expiresOn": "Até {{date}}" },
-  "menu": { "subscription": "Assinatura", "upgradePremium": "Upgrade para Premium", "managePlan": "Gerenciar plano" }
+  "promo": {
+    "title": "Desbloquear Premium",
+    "subtitle": "IA Ilimitada · Sem Anúncios · Selo PRO",
+    "cta": "Experimentar Premium",
+    "aiWarning": "{{remaining}} viagem(ns) IA restante(s) este mês",
+    "aiLimitHit": "Você usou todas as viagens IA gratuitas este mês",
+    "cancelAnytime": "Cancele a qualquer momento"
+  },
+  "context": {
+    "aiLimit": "Você usou todas as viagens IA gratuitas",
+    "aiLimitSubtitle": "Faça upgrade para criar planos de viagem IA ilimitados"
+  },
+  "menu": { "subscription": "Assinatura", "upgradePremium": "Upgrade para Premium", "managePlan": "Gerenciar plano", "aiRemaining": "AI: {{remaining}}/{{total}} restantes" }
 }

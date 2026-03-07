@@ -105,7 +105,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { scheduleTripReminders } = useNotifications();
   const { t } = useTranslation('trips');
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
-  const { isPremium, aiTripsRemaining, aiTripsLimit, isAiLimitReached, refreshStatus } = usePremium();
+  const { isPremium, aiTripsRemaining, aiTripsLimit, isAiLimitReached, refreshStatus, showPaywall } = usePremium();
   const { show: showRewarded, isLoaded: isRewardedLoaded } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
   const [showAiConsent, setShowAiConsent] = useState(false);
@@ -244,14 +244,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     }
     setFieldErrors({});
 
-    // Check AI trip limit for free users before starting
+    // Check AI trip limit for free users — show paywall instead of toast
     if (planningMode === 'ai' && isAiLimitReached) {
-      showToast({
-        type: 'warning',
-        message: t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 }),
-        position: 'top',
-        duration: 4000,
-      });
+      showPaywall('ai_limit');
       return;
     }
 
@@ -365,6 +360,17 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Refresh subscription status so AI remaining count updates
       refreshStatus();
+
+      // Show pre-warning when user has 1 AI trip left after this one
+      if (!isPremium && aiTripsRemaining === 2) {
+        // After this trip, only 1 remains
+        showToast({
+          type: 'info',
+          message: t('create.aiInfo.remaining', { remaining: 1, total: aiTripsLimit > 0 ? aiTripsLimit : 3 }),
+          position: 'top',
+          duration: 4000,
+        });
+      }
 
       // Schedule trip reminder notifications
       scheduleTripReminders(trip).catch(() => {});

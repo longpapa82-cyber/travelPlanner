@@ -38,7 +38,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
-  const { isPremium } = usePremium();
+  const { isPremium, showPaywall, aiTripsRemaining, aiTripsUsed } = usePremium();
   const { t: tPremium } = useTranslation('premium');
   const { t: tTutorial } = useTranslation('tutorial');
   const { resetTutorial } = useTutorial();
@@ -438,16 +438,25 @@ const ProfileScreen = ({ navigation }: any) => {
         {PREMIUM_ENABLED && (
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => navigation.navigate('Subscription')}
+            onPress={() => isPremium ? navigation.navigate('Subscription') : showPaywall('general')}
             accessibilityRole="button"
             accessibilityLabel={tPremium('menu.subscription')}
           >
             <Icon name="crown" size={24} color="#F59E0B" />
-            <Text style={styles.menuText}>{tPremium('menu.subscription')}</Text>
+            <View style={{ flex: 1, marginLeft: theme.spacing.md }}>
+              <Text style={[styles.menuText, { marginLeft: 0 }]}>{tPremium('menu.subscription')}</Text>
+              {!isPremium && (
+                <Text style={{ fontSize: 12, color: theme.colors.textSecondary, marginTop: 2 }}>
+                  {tPremium('menu.aiRemaining', { remaining: aiTripsRemaining >= 0 ? aiTripsRemaining : '\u221E', total: 3 })}
+                </Text>
+              )}
+            </View>
             {isPremium ? (
               <PremiumBadge size="small" />
             ) : (
-              <Text style={[styles.menuValue, { color: '#F59E0B' }]}>{tPremium('free.name')}</Text>
+              <View style={styles.upgradeBadge}>
+                <Text style={styles.upgradeBadgeText}>Upgrade</Text>
+              </View>
             )}
             <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
           </TouchableOpacity>
@@ -784,6 +793,20 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     ...theme.typography.body,
     color: theme.colors.textSecondary,
     marginRight: theme.spacing.xs,
+  },
+  upgradeBadge: {
+    backgroundColor: '#FEF3C7',
+    borderWidth: 1,
+    borderColor: '#F59E0B',
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    marginRight: 4,
+  },
+  upgradeBadgeText: {
+    color: '#D97706',
+    fontSize: 12,
+    fontWeight: '700',
   },
   logoutButton: {
     flexDirection: 'row',

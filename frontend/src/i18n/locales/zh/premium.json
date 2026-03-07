@@ -39,16 +39,31 @@
     "upgradeToUnlock": "升级解锁",
     "autoRenewNotice": "订阅将自动续订，除非在当前周期结束前至少24小时取消。",
     "termsLink": "服务条款",
-    "privacyLink": "隐私政策"
+    "privacyLink": "隐私政策",
+    "restoreSuccess": "订阅已恢复！",
+    "restoreNone": "未找到有效订阅。"
   },
   "status": {
     "active": "活跃",
     "expired": "已过期",
     "expiresOn": "有效期至{{date}}"
   },
+  "promo": {
+    "title": "解锁高级版",
+    "subtitle": "无限AI · 无广告 · PRO徽章",
+    "cta": "试用高级版",
+    "aiWarning": "本月剩余{{remaining}}次AI旅行",
+    "aiLimitHit": "本月免费AI旅行已全部用完",
+    "cancelAnytime": "随时可取消"
+  },
+  "context": {
+    "aiLimit": "免费AI旅行已全部用完",
+    "aiLimitSubtitle": "升级以创建无限AI旅行计划"
+  },
   "menu": {
     "subscription": "订阅",
     "upgradePremium": "升级高级版",
-    "managePlan": "管理方案"
+    "managePlan": "管理方案",
+    "aiRemaining": "AI: {{remaining}}/{{total}}次剩余"
   }
 }

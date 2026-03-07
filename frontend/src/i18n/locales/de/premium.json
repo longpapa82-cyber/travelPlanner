@@ -39,16 +39,31 @@
     "upgradeToUnlock": "Upgraden zum Freischalten",
     "autoRenewNotice": "Abonnements verlängern sich automatisch, sofern sie nicht mindestens 24 Stunden vor Ende des aktuellen Zeitraums gekündigt werden.",
     "termsLink": "Nutzungsbedingungen",
-    "privacyLink": "Datenschutzrichtlinie"
+    "privacyLink": "Datenschutzrichtlinie",
+    "restoreSuccess": "Abonnement erfolgreich wiederhergestellt!",
+    "restoreNone": "Kein aktives Abonnement gefunden."
   },
   "status": {
     "active": "Aktiv",
     "expired": "Abgelaufen",
     "expiresOn": "Bis {{date}}"
   },
+  "promo": {
+    "title": "Premium freischalten",
+    "subtitle": "Unbegrenzte KI · Keine Werbung · PRO-Abzeichen",
+    "cta": "Premium testen",
+    "aiWarning": "{{remaining}} KI-Reise(n) diesen Monat übrig",
+    "aiLimitHit": "Sie haben alle kostenlosen KI-Reisen diesen Monat aufgebraucht",
+    "cancelAnytime": "Jederzeit kündbar"
+  },
+  "context": {
+    "aiLimit": "Alle kostenlosen KI-Reisen aufgebraucht",
+    "aiLimitSubtitle": "Upgraden Sie für unbegrenzte KI-Reisepläne"
+  },
   "menu": {
     "subscription": "Abonnement",
     "upgradePremium": "Auf Premium upgraden",
-    "managePlan": "Plan verwalten"
+    "managePlan": "Plan verwalten",
+    "aiRemaining": "AI: {{remaining}}/{{total}} übrig"
   }
 }

@@ -39,16 +39,31 @@
     "upgradeToUnlock": "Passez à Premium pour débloquer",
     "autoRenewNotice": "Les abonnements se renouvellent automatiquement sauf annulation au moins 24 heures avant la fin de la période en cours.",
     "termsLink": "Conditions d'utilisation",
-    "privacyLink": "Politique de confidentialité"
+    "privacyLink": "Politique de confidentialité",
+    "restoreSuccess": "Abonnement restauré avec succès !",
+    "restoreNone": "Aucun abonnement actif trouvé."
   },
   "status": {
     "active": "Actif",
     "expired": "Expiré",
     "expiresOn": "Jusqu'au {{date}}"
   },
+  "promo": {
+    "title": "Débloquer Premium",
+    "subtitle": "IA illimitée · Sans pub · Badge PRO",
+    "cta": "Essayer Premium",
+    "aiWarning": "{{remaining}} voyage(s) IA restant(s) ce mois",
+    "aiLimitHit": "Vous avez utilisé tous vos voyages IA gratuits ce mois",
+    "cancelAnytime": "Annulation possible à tout moment"
+  },
+  "context": {
+    "aiLimit": "Vous avez utilisé tous vos voyages IA gratuits",
+    "aiLimitSubtitle": "Passez à Premium pour des plans de voyage IA illimités"
+  },
   "menu": {
     "subscription": "Abonnement",
     "upgradePremium": "Passer à Premium",
-    "managePlan": "Gérer le forfait"
+    "managePlan": "Gérer le forfait",
+    "aiRemaining": "AI : {{remaining}}/{{total}} restants"
   }
 }

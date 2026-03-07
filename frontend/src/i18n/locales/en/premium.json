@@ -39,16 +39,31 @@
     "upgradeToUnlock": "Upgrade to unlock",
     "autoRenewNotice": "Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current period.",
     "termsLink": "Terms of Service",
-    "privacyLink": "Privacy Policy"
+    "privacyLink": "Privacy Policy",
+    "restoreSuccess": "Subscription restored successfully!",
+    "restoreNone": "No active subscription found."
   },
   "status": {
     "active": "Active",
     "expired": "Expired",
     "expiresOn": "Until {{date}}"
   },
+  "promo": {
+    "title": "Unlock Premium",
+    "subtitle": "Unlimited AI · No Ads · PRO Badge",
+    "cta": "Try Premium",
+    "aiWarning": "{{remaining}} AI trip(s) left this month",
+    "aiLimitHit": "You've used all free AI trips this month",
+    "cancelAnytime": "Cancel anytime"
+  },
+  "context": {
+    "aiLimit": "You've used all free AI trips",
+    "aiLimitSubtitle": "Upgrade to create unlimited AI trip plans"
+  },
   "menu": {
     "subscription": "Subscription",
     "upgradePremium": "Upgrade to Premium",
-    "managePlan": "Manage plan"
+    "managePlan": "Manage plan",
+    "aiRemaining": "AI: {{remaining}}/{{total}} remaining"
   }
 }

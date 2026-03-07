@@ -39,16 +39,31 @@
     "upgradeToUnlock": "Upgrade untuk membuka",
     "autoRenewNotice": "Langganan diperpanjang secara otomatis kecuali dibatalkan setidaknya 24 jam sebelum akhir periode saat ini.",
     "termsLink": "Ketentuan layanan",
-    "privacyLink": "Kebijakan privasi"
+    "privacyLink": "Kebijakan privasi",
+    "restoreSuccess": "Langganan berhasil dipulihkan!",
+    "restoreNone": "Tidak ditemukan langganan aktif."
   },
   "status": {
     "active": "Aktif",
     "expired": "Kedaluwarsa",
     "expiresOn": "Hingga {{date}}"
   },
+  "promo": {
+    "title": "Buka Premium",
+    "subtitle": "AI Tanpa Batas · Tanpa Iklan · Lencana PRO",
+    "cta": "Coba Premium",
+    "aiWarning": "{{remaining}} perjalanan AI tersisa bulan ini",
+    "aiLimitHit": "Anda telah menggunakan semua perjalanan AI gratis bulan ini",
+    "cancelAnytime": "Batalkan kapan saja"
+  },
+  "context": {
+    "aiLimit": "Anda telah menggunakan semua perjalanan AI gratis",
+    "aiLimitSubtitle": "Upgrade untuk membuat rencana perjalanan AI tanpa batas"
+  },
   "menu": {
     "subscription": "Langganan",
     "upgradePremium": "Upgrade ke Premium",
-    "managePlan": "Kelola paket"
+    "managePlan": "Kelola paket",
+    "aiRemaining": "AI: {{remaining}}/{{total}} tersisa"
   }
 }

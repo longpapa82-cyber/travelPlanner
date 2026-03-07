@@ -39,16 +39,31 @@
     "upgradeToUnlock": "アップグレードして解除",
     "autoRenewNotice": "サブスクリプションは、現在の期間終了の24時間前までにキャンセルしない限り自動更新されます。",
     "termsLink": "利用規約",
-    "privacyLink": "プライバシーポリシー"
+    "privacyLink": "プライバシーポリシー",
+    "restoreSuccess": "サブスクリプションが復元されました！",
+    "restoreNone": "有効なサブスクリプションが見つかりません。"
   },
   "status": {
     "active": "有効",
     "expired": "期限切れ",
     "expiresOn": "{{date}}まで"
   },
+  "promo": {
+    "title": "プレミアムを解除",
+    "subtitle": "無制限AI · 広告なし · PROバッジ",
+    "cta": "プレミアムを試す",
+    "aiWarning": "今月のAI旅行プラン残り{{remaining}}回",
+    "aiLimitHit": "今月の無料AI旅行プランをすべて使い切りました",
+    "cancelAnytime": "いつでもキャンセル可能"
+  },
+  "context": {
+    "aiLimit": "無料AI旅行プランをすべて使い切りました",
+    "aiLimitSubtitle": "アップグレードして無制限のAI旅行プランを作成しましょう"
+  },
   "menu": {
     "subscription": "サブスクリプション",
     "upgradePremium": "プレミアムにアップグレード",
-    "managePlan": "プラン管理"
+    "managePlan": "プラン管理",
+    "aiRemaining": "AI: {{remaining}}/{{total}}回残り"
   }
 }

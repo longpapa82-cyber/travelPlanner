@@ -39,16 +39,31 @@
     "upgradeToUnlock": "Passa a Premium per sbloccare",
     "autoRenewNotice": "Gli abbonamenti si rinnovano automaticamente a meno che non vengano annullati almeno 24 ore prima della fine del periodo corrente.",
     "termsLink": "Termini di servizio",
-    "privacyLink": "Informativa sulla privacy"
+    "privacyLink": "Informativa sulla privacy",
+    "restoreSuccess": "Abbonamento ripristinato con successo!",
+    "restoreNone": "Nessun abbonamento attivo trovato."
   },
   "status": {
     "active": "Attivo",
     "expired": "Scaduto",
     "expiresOn": "Fino al {{date}}"
   },
+  "promo": {
+    "title": "Sblocca Premium",
+    "subtitle": "AI illimitata · Senza pubblicità · Badge PRO",
+    "cta": "Prova Premium",
+    "aiWarning": "{{remaining}} viaggio/i AI rimasto/i questo mese",
+    "aiLimitHit": "Hai esaurito tutti i viaggi AI gratuiti questo mese",
+    "cancelAnytime": "Annulla in qualsiasi momento"
+  },
+  "context": {
+    "aiLimit": "Hai esaurito tutti i viaggi AI gratuiti",
+    "aiLimitSubtitle": "Effettua l'upgrade per piani di viaggio AI illimitati"
+  },
   "menu": {
     "subscription": "Abbonamento",
     "upgradePremium": "Passa a Premium",
-    "managePlan": "Gestisci piano"
+    "managePlan": "Gestisci piano",
+    "aiRemaining": "AI: {{remaining}}/{{total}} rimanenti"
   }
 }
