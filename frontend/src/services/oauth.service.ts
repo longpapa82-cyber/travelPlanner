@@ -17,7 +17,7 @@ export interface OAuthResult {
 /**
  * Initiates OAuth flow with the specified provider.
  * On web: full-page redirect (handled by WebOAuthCallbackHandler in App.tsx).
- * On mobile: Expo WebBrowser popup.
+ * On mobile: Expo WebBrowser popup that returns to the app via custom scheme.
  */
 export async function signInWithOAuth(
   provider: OAuthProvider
@@ -26,8 +26,9 @@ export async function signInWithOAuth(
     // Generate CSRF state parameter
     const state = Crypto.randomUUID();
 
-    // Build OAuth URL with state
-    const authUrl = `${API_URL}/auth/${provider}?state=${state}`;
+    // Build OAuth URL — include platform so the backend callback
+    // redirects to the app's custom scheme instead of the web URL.
+    const authUrl = `${API_URL}/auth/${provider}?platform=${Platform.OS}`;
 
     // Web: redirect the current page. The callback is handled by
     // WebOAuthCallbackHandler in App.tsx when the page reloads at /auth/callback.
@@ -38,11 +39,20 @@ export async function signInWithOAuth(
       return new Promise(() => {});
     }
 
-    // Mobile: use Expo's WebBrowser
-    const result = await WebBrowser.openAuthSessionAsync(
-      authUrl,
-      makeRedirectUri()
-    );
+    // Android: warm up the browser for faster Custom Tab launch
+    if (Platform.OS === 'android') {
+      await WebBrowser.warmUpAsync();
+    }
+
+    // Mobile: use Expo's WebBrowser — the redirect URI tells the browser
+    // which URL scheme to watch for to auto-dismiss.
+    const redirectUri = makeRedirectUri();
+    const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
+
+    // Android: clean up browser connection
+    if (Platform.OS === 'android') {
+      await WebBrowser.coolDownAsync();
+    }
 
     if (result.type === 'success' && result.url) {
       const callbackResult = parseOAuthCallback(result.url, state);
@@ -71,7 +81,7 @@ function makeRedirectUri(): string {
     return `${scheme}://${host}:${port}/auth/callback`;
   }
 
-  // Mobile production: Use app scheme
+  // Mobile production: Use app scheme (travelplanner:///auth/callback)
   return Linking.createURL('/auth/callback');
 }
 
