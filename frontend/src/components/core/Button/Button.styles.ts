@@ -35,6 +35,8 @@ export const getVariantStyles = (variant: ButtonVariant, isDark: boolean): { con
         backgroundColor: 'transparent',
         borderWidth: 2,
         borderColor: colors.primary[500],
+        shadowOpacity: 0,
+        elevation: 0,
       },
       text: {
         color: colors.primary[500],
@@ -44,6 +46,8 @@ export const getVariantStyles = (variant: ButtonVariant, isDark: boolean): { con
       container: {
         backgroundColor: 'transparent',
         borderWidth: 0,
+        shadowOpacity: 0,
+        elevation: 0,
       },
       text: {
         color: colors.primary[500],
