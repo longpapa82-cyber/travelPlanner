@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, Platform, View, Text, StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
 import * as Font from 'expo-font';
@@ -274,27 +275,29 @@ function App() {
   }
 
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <AuthProvider>
-            <PremiumProvider>
-              <TutorialProvider>
-                <NotificationProvider>
-                  <ToastProvider>
-                    <ConfirmDialogProvider>
-                      <AppContent />
-                      <PaywallModal />
-                      <WelcomeModal />
-                    </ConfirmDialogProvider>
-                  </ToastProvider>
-                </NotificationProvider>
-              </TutorialProvider>
-            </PremiumProvider>
-          </AuthProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+    <SafeAreaProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider>
+            <AuthProvider>
+              <PremiumProvider>
+                <TutorialProvider>
+                  <NotificationProvider>
+                    <ToastProvider>
+                      <ConfirmDialogProvider>
+                        <AppContent />
+                        <PaywallModal />
+                        <WelcomeModal />
+                      </ConfirmDialogProvider>
+                    </ToastProvider>
+                  </NotificationProvider>
+                </TutorialProvider>
+              </PremiumProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </SafeAreaProvider>
   );
 }
 

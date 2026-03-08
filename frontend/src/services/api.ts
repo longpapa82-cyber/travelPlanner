@@ -256,6 +256,11 @@ class ApiService {
     return response.data;
   }
 
+  async exchangeGoogleIdToken(idToken: string) {
+    const response = await this.api.post('/auth/google/token', { idToken });
+    return response.data;
+  }
+
   // User Methods
   async getProfile() {
     try {

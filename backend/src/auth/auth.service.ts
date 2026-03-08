@@ -14,6 +14,7 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { randomUUID, randomBytes } from 'crypto';
 import { generateSecret, generateURI, verifySync } from 'otplib';
 import * as QRCode from 'qrcode';
+import { OAuth2Client } from 'google-auth-library';
 import { UsersService } from '../users/users.service';
 import { AuthProvider } from '../users/entities/user.entity';
 import { EmailService } from '../email/email.service';
@@ -408,6 +409,39 @@ export class AuthService {
       },
       ...tokens,
     };
+  }
+
+  async verifyGoogleIdToken(
+    idToken: string,
+    userAgent?: string,
+  ): Promise<AuthResponse> {
+    const clientId = this.configService.get<string>('oauth.google.clientId');
+    const client = new OAuth2Client(clientId);
+
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken,
+        audience: clientId,
+      });
+      const payload = ticket.getPayload();
+      if (!payload || !payload.sub) {
+        throw new UnauthorizedException('Invalid Google ID token');
+      }
+
+      const oauthUser: OAuthUserData = {
+        providerId: payload.sub,
+        email: payload.email,
+        name: payload.name || payload.email || 'Google User',
+        profileImage: payload.picture,
+        provider: 'GOOGLE',
+      };
+
+      return this.oauthLogin(oauthUser, userAgent);
+    } catch (error) {
+      if (error instanceof UnauthorizedException) throw error;
+      this.logger.error(`Google ID token verification failed: ${getErrorMessage(error)}`);
+      throw new UnauthorizedException('Invalid Google ID token');
+    }
   }
 
   async verifyEmail(
