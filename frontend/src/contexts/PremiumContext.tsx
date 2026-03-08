@@ -17,6 +17,7 @@ interface PremiumContextType {
   aiTripsUsed: number;
   aiTripsLimit: number;
   isAiLimitReached: boolean;
+  isAdmin: boolean;
   expiresAt?: string;
   isPaywallVisible: boolean;
   paywallContext: PaywallContext;
@@ -83,6 +84,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
 
   const value = useMemo<PremiumContextType>(() => ({
     isPremium,
+    isAdmin,
     subscriptionTier: isPremium ? 'premium' : 'free',
     aiTripsRemaining,
     aiTripsUsed,
@@ -94,7 +96,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     showPaywall,
     hidePaywall,
     refreshStatus,
-  }), [isPremium, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus]);
+  }), [isPremium, isAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus]);
 
   return (
     <PremiumContext.Provider value={value}>

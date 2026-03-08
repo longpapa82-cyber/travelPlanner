@@ -22,7 +22,7 @@ const ADMIN_EMAILS: string[] = (
   process.env.ADMIN_EMAILS || 'a090723@naver.com,longpapa82@gmail.com'
 )
   .split(',')
-  .map((e) => e.trim())
+  .map((e) => e.trim().toLowerCase())
   .filter(Boolean);
 
 @Injectable()
@@ -106,7 +106,7 @@ export class SubscriptionService {
       where: { id: userId },
       select: ['id', 'email'],
     });
-    if (user?.email && ADMIN_EMAILS.includes(user.email)) {
+    if (user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
       return { allowed: true, remaining: -1 };
     }
 
