@@ -239,7 +239,7 @@
       },
       "art4": {
         "title": "4. Delegasi Pemrosesan Data",
-        "content": "| Penyedia | Layanan |\n| Layanan cloud (AWS dll.) | Penyimpanan dan pemrosesan data |\n| Layanan email | Email autentikasi dan notifikasi |"
+        "content": "| Penyedia | Layanan |\n| Layanan cloud (Hetzner Cloud, Helsinki, Finlandia) | Penyimpanan dan pemrosesan data |\n| Layanan email | Email autentikasi dan notifikasi |\n| RevenueCat | Manajemen pembayaran langganan |"
       },
       "art5": {
         "title": "5. Retensi Data",

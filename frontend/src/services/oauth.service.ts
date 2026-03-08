@@ -28,7 +28,7 @@ export async function signInWithOAuth(
 
     // Build OAuth URL — include platform so the backend callback
     // redirects to the app's custom scheme instead of the web URL.
-    const authUrl = `${API_URL}/auth/${provider}?platform=${Platform.OS}`;
+    const authUrl = `${API_URL}/auth/${provider}?platform=${Platform.OS}&state=${state}`;
 
     // Web: redirect the current page. The callback is handled by
     // WebOAuthCallbackHandler in App.tsx when the page reloads at /auth/callback.

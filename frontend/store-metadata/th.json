@@ -6,7 +6,7 @@
   "keywords": "เที่ยว,แผนเที่ยว,วางแผน,AI,ท่องเที่ยว,ทริป,งบประมาณ,ตารางเที่ยว,เดินทาง,สำรวจ",
   "releaseNotes": "v1.0 เปิดตัวอย่างเป็นทางการ\n- สร้างแผนเที่ยวด้วย AI\n- รองรับ 17 ภาษา (KO/EN/JA/ZH/ES/DE/FR/TH/VI/PT/AR/ID/HI/IT/RU/TR/MS)\n- ฟีเจอร์โซเชียล (แชร์ทริป, ติดตาม)\n- จัดการค่าใช้จ่ายพร้อมหารค่าใช้จ่าย",
   "category": "Travel",
-  "ageRating": "4+",
+  "ageRating": "14+",
   "privacyUrl": "https://mytravel-planner.com/privacy-en",
   "termsUrl": "https://mytravel-planner.com/terms-en",
   "supportUrl": "https://mytravel-planner.com/faq"

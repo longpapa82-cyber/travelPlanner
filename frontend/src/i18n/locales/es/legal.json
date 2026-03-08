@@ -239,7 +239,7 @@
       },
       "art4": {
         "title": "4. Delegación del procesamiento de datos",
-        "content": "| Proveedor | Servicio |\n| Servicios en la nube (AWS, etc.) | Almacenamiento y procesamiento de datos |\n| Servicio de correo | Correos de autenticación y notificación |"
+        "content": "| Proveedor | Servicio |\n| Servicios en la nube (Hetzner Cloud, Helsinki, Finlandia) | Almacenamiento y procesamiento de datos |\n| Servicio de correo | Correos de autenticación y notificación |\n| RevenueCat | Gestión de pagos de suscripción |"
       },
       "art5": {
         "title": "5. Retención de datos",

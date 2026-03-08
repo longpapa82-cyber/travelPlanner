@@ -239,7 +239,7 @@
       },
       "art4": {
         "title": "4. Ủy thác xử lý dữ liệu",
-        "content": "| Nhà cung cấp | Dịch vụ |\n| Dịch vụ đám mây (AWS, v.v.) | Lưu trữ và xử lý dữ liệu |\n| Dịch vụ email | Email xác thực và thông báo |"
+        "content": "| Nhà cung cấp | Dịch vụ |\n| Dịch vụ đám mây (Hetzner Cloud, Helsinki, Phần Lan) | Lưu trữ và xử lý dữ liệu |\n| Dịch vụ email | Email xác thực và thông báo |\n| RevenueCat | Quản lý thanh toán đăng ký |"
       },
       "art5": {
         "title": "5. Lưu giữ dữ liệu",

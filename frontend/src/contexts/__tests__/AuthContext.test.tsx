@@ -10,6 +10,7 @@ import {
   signInWithApple,
   signInWithKakao,
 } from '../../services/oauth.service';
+import { nativeGoogleSignIn } from '../../services/googleNativeSignIn';
 
 // ── Mocks ──
 
@@ -21,8 +22,10 @@ jest.mock('../../services/api', () => ({
     getProfile: jest.fn(),
     verifyTwoFactor: jest.fn(),
     exchangeOAuthCode: jest.fn(),
+    exchangeGoogleIdToken: jest.fn(),
     removePushToken: jest.fn(),
     setOnAuthExpired: jest.fn(),
+    logout: jest.fn(),
   },
 }));
 
@@ -49,6 +52,10 @@ jest.mock('../../services/oauth.service', () => ({
   signInWithGoogle: jest.fn(),
   signInWithApple: jest.fn(),
   signInWithKakao: jest.fn(),
+}));
+
+jest.mock('../../services/googleNativeSignIn', () => ({
+  nativeGoogleSignIn: jest.fn(),
 }));
 
 // ── Helpers ──
@@ -281,7 +288,9 @@ describe('AuthContext', () => {
     });
 
     it('should login with Google', async () => {
-      (signInWithGoogle as jest.Mock).mockResolvedValue(oauthResult);
+      // On non-web platforms, loginWithGoogle uses nativeGoogleSignIn + exchangeGoogleIdToken
+      (nativeGoogleSignIn as jest.Mock).mockResolvedValue('mock-id-token');
+      (apiService.exchangeGoogleIdToken as jest.Mock).mockResolvedValue(mockAuthResponse);
 
       const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -293,10 +302,10 @@ describe('AuthContext', () => {
         await result.current.loginWithGoogle();
       });
 
-      expect(signInWithGoogle).toHaveBeenCalled();
-      expect(apiService.exchangeOAuthCode).toHaveBeenCalledWith('oauth-code-abc');
+      expect(nativeGoogleSignIn).toHaveBeenCalled();
+      expect(apiService.exchangeGoogleIdToken).toHaveBeenCalledWith('mock-id-token');
       expect(result.current.user).toEqual(mockUser);
-      expect(trackEvent).toHaveBeenCalledWith('login', { method: 'google' });
+      expect(trackEvent).toHaveBeenCalledWith('login', { method: 'google_native' });
     });
 
     it('should login with Apple', async () => {
@@ -333,8 +342,9 @@ describe('AuthContext', () => {
       expect(trackEvent).toHaveBeenCalledWith('login', { method: 'kakao' });
     });
 
-    it('should throw when OAuth returns null', async () => {
-      (signInWithGoogle as jest.Mock).mockResolvedValue(null);
+    it('should throw when Google native returns null (cancelled)', async () => {
+      // On non-web platforms, nativeGoogleSignIn returning null means user cancelled
+      (nativeGoogleSignIn as jest.Mock).mockResolvedValue(null);
 
       const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -346,7 +356,7 @@ describe('AuthContext', () => {
         act(async () => {
           await result.current.loginWithGoogle();
         }),
-      ).rejects.toThrow('OAuth authentication failed');
+      ).rejects.toThrow('Google Sign-In cancelled');
     });
   });
 

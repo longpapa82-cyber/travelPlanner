@@ -239,7 +239,7 @@
       },
       "art4": {
         "title": "4. Delegasi Pemprosesan Data",
-        "content": "| Pembekal | Perkhidmatan |\n| Perkhidmatan awan (Oracle Cloud Infrastructure) | Penyimpanan dan pemprosesan data |\n| Perkhidmatan e-mel | E-mel pengesahan dan pemberitahuan |\n| RevenueCat | Pengurusan pembayaran langganan |"
+        "content": "| Pembekal | Perkhidmatan |\n| Perkhidmatan awan (Hetzner Cloud, Helsinki, Finland) | Penyimpanan dan pemprosesan data |\n| Perkhidmatan e-mel | E-mel pengesahan dan pemberitahuan |\n| RevenueCat | Pengurusan pembayaran langganan |"
       },
       "art5": {
         "title": "5. Penyimpanan Data",

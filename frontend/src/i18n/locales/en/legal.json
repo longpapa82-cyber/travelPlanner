@@ -239,7 +239,7 @@
       },
       "art4": {
         "title": "4. Data Processing Delegation",
-        "content": "| Provider | Service |\n| Cloud services (Oracle Cloud Infrastructure) | Data storage and processing |\n| Email service | Authentication and notification emails |\n| RevenueCat | Subscription payment management |"
+        "content": "| Provider | Service |\n| Cloud services (Hetzner Cloud, Helsinki, Finland) | Data storage and processing |\n| Email service | Authentication and notification emails |\n| RevenueCat | Subscription payment management |"
       },
       "art5": {
         "title": "5. Data Retention",

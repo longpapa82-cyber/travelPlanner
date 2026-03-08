@@ -464,7 +464,8 @@ export class AuthService {
     }
 
     if (user.isEmailVerified) {
-      throw new BadRequestException(t('email.already.verified', lang));
+      // Don't reveal verification status - return same success message
+      return { message: t('email.verification.sent', lang) };
     }
 
     const token = await this.usersService.generateEmailVerificationToken(

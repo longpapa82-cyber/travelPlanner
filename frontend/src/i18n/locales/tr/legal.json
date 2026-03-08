@@ -239,7 +239,7 @@
       },
       "art4": {
         "title": "4. Veri İşleme Delegasyonu",
-        "content": "| Sağlayıcı | Hizmet |\n| Bulut hizmetleri (Oracle Cloud Infrastructure) | Veri depolama ve işleme |\n| E-posta hizmeti | Kimlik doğrulama ve bildirim e-postaları |\n| RevenueCat | Abonelik ödeme yönetimi |"
+        "content": "| Sağlayıcı | Hizmet |\n| Bulut hizmetleri (Hetzner Cloud, Helsinki, Finlandiya) | Veri depolama ve işleme |\n| E-posta hizmeti | Kimlik doğrulama ve bildirim e-postaları |\n| RevenueCat | Abonelik ödeme yönetimi |"
       },
       "art5": {
         "title": "5. Veri Saklama",

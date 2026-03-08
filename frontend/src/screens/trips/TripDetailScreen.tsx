@@ -42,7 +42,7 @@ import { TripMapView } from '../../components/TripMapView';
 import { BudgetSummary } from '../../components/BudgetSummary';
 import TripPhotoGallery from '../../components/TripPhotoGallery';
 import { AdBanner } from '../../components/ads';
-import AffiliateLink from '../../components/ads/AffiliateLink';
+import AffiliateLink, { hasAffiliateProvider } from '../../components/ads/AffiliateLink';
 import { getDestinationImageUrl } from '../../utils/images';
 import TripHero from './TripHero';
 import ItineraryDayCard from './ItineraryDayCard';
@@ -524,8 +524,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           {/* Budget Summary */}
           {activeTab === 'itinerary' && <BudgetSummary trip={trip} />}
 
-          {/* Affiliate Links — Accommodations */}
-          {activeTab === 'itinerary' && (
+          {/* Affiliate Links — Accommodations (hidden when no affiliate IDs configured) */}
+          {activeTab === 'itinerary' && hasAffiliateProvider('booking', 'expedia') && (
             <Animated.View
               style={[
                 styles.affiliateSection,
@@ -551,8 +551,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             </Animated.View>
           )}
 
-          {/* Affiliate Links — Experiences & Tours */}
-          {activeTab === 'itinerary' && (
+          {/* Affiliate Links — Experiences & Tours (hidden when no affiliate IDs configured) */}
+          {activeTab === 'itinerary' && hasAffiliateProvider('viator', 'klook') && (
             <Animated.View
               style={[
                 styles.affiliateSection,

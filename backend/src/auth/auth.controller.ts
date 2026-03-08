@@ -18,6 +18,7 @@ import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ExchangeOAuthCodeDto } from './dto/exchange-oauth-code.dto';
 import { VerifyTwoFactorDto, TwoFactorLoginDto } from './dto/two-factor.dto';
+import { GoogleIdTokenDto } from './dto/google-id-token.dto';
 import { VerifyEmailDto, ResendVerificationDto } from './dto/verify-email.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
@@ -204,7 +205,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Throttle({ short: { ttl: 60000, limit: 10 } })
   async googleIdTokenLogin(
-    @Body() body: { idToken: string },
+    @Body() body: GoogleIdTokenDto,
     @Req() req: Request,
   ) {
     return this.authService.verifyGoogleIdToken(
