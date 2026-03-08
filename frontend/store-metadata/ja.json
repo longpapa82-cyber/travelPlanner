@@ -6,7 +6,7 @@
   "keywords": "旅行,旅程,プランナー,AI,旅行計画,海外旅行,一人旅,観光,予算,スケジュール",
   "releaseNotes": "v1.0 正式リリース\n- AIカスタム旅程生成\n- 17言語対応（韓/英/日/中/西/独/仏/泰/越/葡/アラビア/インドネシア/ヒンディー/伊/露/トルコ/マレー）\n- ソーシャル機能（旅行共有、フォロー）\n- 旅費管理・割り勘機能",
   "category": "Travel",
-  "ageRating": "4+",
+  "ageRating": "14+",
   "privacyUrl": "https://mytravel-planner.com/privacy-en",
   "termsUrl": "https://mytravel-planner.com/terms-en",
   "supportUrl": "https://mytravel-planner.com/faq"

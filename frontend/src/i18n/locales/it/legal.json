@@ -239,7 +239,7 @@
       },
       "art4": {
         "title": "4. Delega dell'elaborazione dati",
-        "content": "| Fornitore | Servizio |\n| Servizi cloud (Oracle Cloud Infrastructure) | Archiviazione ed elaborazione dati |\n| Servizio email | Email di autenticazione e notifica |\n| RevenueCat | Gestione pagamenti abbonamento |"
+        "content": "| Fornitore | Servizio |\n| Servizi cloud (Hetzner Cloud, Helsinki, Finlandia) | Archiviazione ed elaborazione dati |\n| Servizio email | Email di autenticazione e notifica |\n| RevenueCat | Gestione pagamenti abbonamento |"
       },
       "art5": {
         "title": "5. Conservazione dei dati",

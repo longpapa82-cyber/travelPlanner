@@ -239,7 +239,7 @@
       },
       "art4": {
         "title": "제4조 (개인정보 처리 위탁)",
-        "content": "| 위탁 업체 | 위탁 업무 |\n| 클라우드 서비스 (Oracle Cloud Infrastructure) | 데이터 저장 및 처리 |\n| 이메일 발송 서비스 | 인증 메일, 알림 발송 |\n| RevenueCat | 구독 결제 관리 |"
+        "content": "| 위탁 업체 | 위탁 업무 |\n| 클라우드 서비스 (Hetzner Cloud, 헬싱키, 핀란드) | 데이터 저장 및 처리 |\n| 이메일 발송 서비스 | 인증 메일, 알림 발송 |\n| RevenueCat | 구독 결제 관리 |"
       },
       "art5": {
         "title": "제5조 (보유 및 이용 기간)",

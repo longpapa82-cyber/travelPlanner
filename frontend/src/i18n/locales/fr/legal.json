@@ -239,7 +239,7 @@
       },
       "art4": {
         "title": "4. Délégation du traitement des données",
-        "content": "| Fournisseur | Service |\n| Services cloud (AWS, etc.) | Stockage et traitement des données |\n| Service de messagerie | E-mails d'authentification et de notification |"
+        "content": "| Fournisseur | Service |\n| Services cloud (Hetzner Cloud, Helsinki, Finlande) | Stockage et traitement des données |\n| Service de messagerie | E-mails d'authentification et de notification |\n| RevenueCat | Gestion des paiements d'abonnement |"
       },
       "art5": {
         "title": "5. Conservation des données",

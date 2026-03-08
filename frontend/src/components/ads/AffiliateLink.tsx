@@ -149,6 +149,11 @@ const AffiliateLink: React.FC<AffiliateLinkProps> = ({
   const { t } = useTranslation('common');
   const config = AFFILIATE_CONFIG[provider];
 
+  // Hide if no affiliate ID is configured for this provider
+  if (!config.affiliateId) {
+    return null;
+  }
+
   /**
    * Build affiliate URL with parameters
    */
@@ -309,5 +314,8 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
 });
+
+export const hasAffiliateProvider = (...providers: AffiliateProvider[]): boolean =>
+  providers.some((p) => !!AFFILIATE_CONFIG[p]?.affiliateId);
 
 export default AffiliateLink;

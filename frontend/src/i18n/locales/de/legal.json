@@ -239,7 +239,7 @@
       },
       "art4": {
         "title": "4. Datenverarbeitungsdelegation",
-        "content": "| Anbieter | Service |\n| Cloud-Services (AWS etc.) | Datenspeicherung und -verarbeitung |\n| E-Mail-Service | Authentifizierungs- und Benachrichtigungs-E-Mails |"
+        "content": "| Anbieter | Service |\n| Cloud-Services (Hetzner Cloud, Helsinki, Finnland) | Datenspeicherung und -verarbeitung |\n| E-Mail-Service | Authentifizierungs- und Benachrichtigungs-E-Mails |\n| RevenueCat | Abonnement-Zahlungsverwaltung |"
       },
       "art5": {
         "title": "5. Datenspeicherung",
