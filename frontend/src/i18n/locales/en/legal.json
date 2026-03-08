@@ -97,7 +97,7 @@
       },
       "language": {
         "q": "How do I change the app language?",
-        "a": "Go to Profile tab → 'Language' and choose from 13 languages (Korean, English, Japanese, Chinese, Spanish, German, French, Thai, Vietnamese, Portuguese, Arabic, Indonesian, Hindi)."
+        "a": "Go to Profile tab → 'Language' and choose from 17 languages (Korean, English, Japanese, Chinese, Spanish, German, French, Thai, Vietnamese, Portuguese, Arabic, Indonesian, Hindi, Italian, Russian, Turkish, Malay)."
       }
     },
     "offlineSync": {
@@ -161,7 +161,7 @@
       },
       "art3": {
         "title": "Article 3 (Service Description)",
-        "content": "The Service provides:\n• AI-powered automatic travel plan generation\n• Travel plan editing, adding, and deletion management\n• Local weather and time zone information\n• Travel progress tracking\n• Past travel history viewing\n• Offline itinerary access and sync\n• Budget management and expense tracking\n• Trip photo upload and management\n• Social features (trip discovery, follow, likes)\n• Trip sharing (link-based sharing, collaborator invitations)\n• Premium subscription (unlimited AI, ad-free)\n• Multi-language support (13 languages)\n• Notification services"
+        "content": "The Service provides:\n• AI-powered automatic travel plan generation\n• Travel plan editing, adding, and deletion management\n• Local weather and time zone information\n• Travel progress tracking\n• Past travel history viewing\n• Offline itinerary access and sync\n• Budget management and expense tracking\n• Trip photo upload and management\n• Social features (trip discovery, follow, likes)\n• Trip sharing (link-based sharing, collaborator invitations)\n• Premium subscription (unlimited AI, ad-free)\n• Multi-language support (17 languages)\n• Notification services"
       },
       "art4": {
         "title": "Article 4 (Account Registration)",
