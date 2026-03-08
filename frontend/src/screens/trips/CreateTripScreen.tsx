@@ -105,7 +105,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { scheduleTripReminders } = useNotifications();
   const { t } = useTranslation('trips');
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
-  const { isPremium, aiTripsRemaining, aiTripsLimit, isAiLimitReached, refreshStatus, showPaywall } = usePremium();
+  const { isPremium, isAdmin, aiTripsRemaining, aiTripsLimit, isAiLimitReached, refreshStatus, showPaywall } = usePremium();
   const { show: showRewarded, isLoaded: isRewardedLoaded } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
   const [showAiConsent, setShowAiConsent] = useState(false);
@@ -400,7 +400,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Show interstitial ad after trip creation (skip for premium), then navigate
       setTimeout(async () => {
-        if (!isPremium && isAdLoaded) {
+        if (!isPremium && !isAdmin && isAdLoaded) {
           await showInterstitial();
         }
         navigation.navigate('TripDetail', { tripId: trip.id });
