@@ -76,7 +76,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { confirm } = useConfirm();
   const { t } = useTranslation('trips');
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
-  const { isPremium } = usePremium();
+  const { isPremium, isAdmin } = usePremium();
 
   // Derive translated arrays from META constants
   const destinations = DESTINATION_META.map((d) => ({ ...d, name: t(d.key) }));
@@ -228,7 +228,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       });
 
       setTimeout(async () => {
-        if (!isPremium && isAdLoaded) {
+        if (!isPremium && !isAdmin && isAdLoaded) {
           await showInterstitial();
         }
         navigation.navigate('TripDetail', { tripId });
