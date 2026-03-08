@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, useRef, ReactNode } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import { AppState, AppStateStatus, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User, AuthResponse } from '../types';
 import { STORAGE_KEYS } from '../constants/config';
@@ -8,11 +8,12 @@ import { secureStorage } from '../utils/storage';
 import { offlineCache } from '../services/offlineCache';
 import { trackEvent, flushEvents } from '../services/eventTracker';
 import {
-  signInWithGoogle,
+  signInWithGoogle as signInWithGoogleWeb,
   signInWithApple,
   signInWithKakao,
   OAuthResult,
 } from '../services/oauth.service';
+import { nativeGoogleSignIn } from '../services/googleNativeSignIn';
 
 export class TwoFactorRequiredError extends Error {
   tempToken: string;
@@ -293,8 +294,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const loginWithGoogle = async () => {
+    // Native mobile: use Google Sign-In SDK (no browser)
+    if (Platform.OS !== 'web') {
+      try {
+        const idToken = await nativeGoogleSignIn();
+        if (!idToken) throw new Error('Google Sign-In cancelled');
+
+        const authResponse: AuthResponse = await apiService.exchangeGoogleIdToken(idToken);
+        await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, authResponse.accessToken);
+        await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authResponse.refreshToken);
+        setUser(authResponse.user);
+        await setSessionFlag(true);
+        registerPushAfterLogin();
+        trackEvent('login', { method: 'google_native' });
+        return;
+      } catch (error) {
+        throw error;
+      }
+    }
+    // Web: use OAuth redirect flow
     try {
-      const result = await signInWithGoogle();
+      const result = await signInWithGoogleWeb();
       await handleOAuthResult(result);
       trackEvent('login', { method: 'google' });
     } catch (error) {

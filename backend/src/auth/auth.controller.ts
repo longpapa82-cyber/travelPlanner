@@ -199,6 +199,20 @@ export class AuthController {
     );
   }
 
+  // Google native Sign-In — mobile app sends ID token directly
+  @Post('google/token')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ short: { ttl: 60000, limit: 10 } })
+  async googleIdTokenLogin(
+    @Body() body: { idToken: string },
+    @Req() req: Request,
+  ) {
+    return this.authService.verifyGoogleIdToken(
+      body.idToken,
+      req.headers['user-agent'],
+    );
+  }
+
   // Google OAuth
   @Get('google')
   @UseGuards(GoogleAuthGuard)

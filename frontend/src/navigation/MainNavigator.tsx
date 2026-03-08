@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
+import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { MainTabParamList } from '../types';
 import HomeScreen from '../screens/main/HomeScreen';
@@ -37,6 +39,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainNavigator = () => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('common');
+  const insets = useSafeAreaInsets();
   const [unreadCount, setUnreadCount] = useState(0);
 
   useFocusEffect(
@@ -64,8 +67,8 @@ const MainNavigator = () => {
           backgroundColor: isDark ? darkColors.background.secondary : colors.neutral[0],
           borderTopWidth: 1,
           borderTopColor: isDark ? darkColors.border.light : colors.neutral[200],
-          paddingBottom: 5,
-          height: 60,
+          paddingBottom: Platform.OS === 'android' ? Math.max(insets.bottom, 5) : 5,
+          height: 60 + (Platform.OS === 'android' ? Math.max(insets.bottom, 0) : 0),
         },
         headerStyle: {
           backgroundColor: theme.colors.primary,
