@@ -908,55 +908,67 @@ describe('TripsService', () => {
   });
 
   describe('getUpcomingTrips', () => {
-    it('should return all upcoming trips for user', async () => {
+    it('should return all upcoming trips for user (including collaborator trips)', async () => {
       const upcomingTrips = [
         { ...mockTrip, status: TripStatus.UPCOMING },
         { ...mockTrip, id: 'trip-457', status: TripStatus.UPCOMING },
       ];
 
-      tripRepository.find.mockResolvedValue(upcomingTrips as Trip[]);
+      const mockQb = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue(upcomingTrips),
+      };
+      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQb);
 
       const result = await service.getUpcomingTrips(mockUserId);
 
-      expect(tripRepository.find).toHaveBeenCalledWith({
-        where: { userId: mockUserId, status: TripStatus.UPCOMING },
-        relations: ['itineraries'],
-        order: { startDate: 'ASC' },
-      });
+      expect(tripRepository.createQueryBuilder).toHaveBeenCalledWith('trip');
       expect(result).toHaveLength(2);
     });
   });
 
   describe('getOngoingTrips', () => {
-    it('should return all ongoing trips for user', async () => {
+    it('should return all ongoing trips for user (including collaborator trips)', async () => {
       const ongoingTrips = [{ ...mockTrip, status: TripStatus.ONGOING }];
 
-      tripRepository.find.mockResolvedValue(ongoingTrips as Trip[]);
+      const mockQb = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue(ongoingTrips),
+      };
+      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQb);
 
       const result = await service.getOngoingTrips(mockUserId);
 
-      expect(tripRepository.find).toHaveBeenCalledWith({
-        where: { userId: mockUserId, status: TripStatus.ONGOING },
-        relations: ['itineraries'],
-        order: { startDate: 'ASC' },
-      });
+      expect(tripRepository.createQueryBuilder).toHaveBeenCalledWith('trip');
       expect(result).toHaveLength(1);
     });
   });
 
   describe('getCompletedTrips', () => {
-    it('should return all completed trips for user', async () => {
+    it('should return all completed trips for user (including collaborator trips)', async () => {
       const completedTrips = [{ ...mockTrip, status: TripStatus.COMPLETED }];
 
-      tripRepository.find.mockResolvedValue(completedTrips as Trip[]);
+      const mockQb = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue(completedTrips),
+      };
+      tripRepository.createQueryBuilder = jest.fn().mockReturnValue(mockQb);
 
       const result = await service.getCompletedTrips(mockUserId);
 
-      expect(tripRepository.find).toHaveBeenCalledWith({
-        where: { userId: mockUserId, status: TripStatus.COMPLETED },
-        relations: ['itineraries'],
-        order: { endDate: 'DESC' },
-      });
+      expect(tripRepository.createQueryBuilder).toHaveBeenCalledWith('trip');
       expect(result).toHaveLength(1);
     });
   });

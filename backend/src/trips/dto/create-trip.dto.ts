@@ -9,10 +9,39 @@ import {
   Max,
   IsObject,
   MaxLength,
+  ValidateNested,
+  IsArray,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsAfterDate } from '../../common/validators/is-after-date.validator';
 import { stripHtml } from '../../common/utils/sanitize';
+
+class TripPreferencesDto {
+  @IsString()
+  @IsOptional()
+  @MaxLength(50)
+  @Transform(stripHtml)
+  budget?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(50)
+  @Transform(stripHtml)
+  travelStyle?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @MaxLength(100, { each: true })
+  @IsOptional()
+  @Transform(({ value }) =>
+    Array.isArray(value)
+      ? value.map((v: string) =>
+          typeof v === 'string' ? v.replace(/<[^>]*>/g, '') : v,
+        )
+      : value,
+  )
+  interests?: string[];
+}
 
 export class CreateTripDto {
   @IsString()
@@ -54,12 +83,10 @@ export class CreateTripDto {
   numberOfTravelers?: number;
 
   @IsObject()
+  @ValidateNested()
+  @Type(() => TripPreferencesDto)
   @IsOptional()
-  preferences?: {
-    budget?: string;
-    travelStyle?: string;
-    interests?: string[];
-  };
+  preferences?: TripPreferencesDto;
 
   @IsNumber()
   @Min(1)
