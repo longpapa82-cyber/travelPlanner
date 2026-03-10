@@ -21,7 +21,10 @@ jest.mock('openai', () => {
 function mockStream(content: string) {
   const chunks = [
     { choices: [{ delta: { content } }], usage: null },
-    { choices: [{ delta: {} }], usage: { prompt_tokens: 100, completion_tokens: 200, total_tokens: 300 } },
+    {
+      choices: [{ delta: {} }],
+      usage: { prompt_tokens: 100, completion_tokens: 200, total_tokens: 300 },
+    },
   ];
   return {
     [Symbol.asyncIterator]: async function* () {

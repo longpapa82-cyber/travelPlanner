@@ -74,10 +74,12 @@ export class AuthService {
     registerDto: RegisterDto,
     lang: SupportedLang = 'ko',
   ): Promise<AuthResponse> {
-    // Check if user already exists
+    // Check if user already exists — return generic error to prevent email enumeration
     const existingUser = await this.usersService.findByEmail(registerDto.email);
     if (existingUser) {
-      throw new ConflictException('Email already registered');
+      throw new BadRequestException(
+        'Registration failed. Please check your information and try again.',
+      );
     }
 
     // Create new user

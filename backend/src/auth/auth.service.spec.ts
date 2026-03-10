@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { UnauthorizedException, ConflictException } from '@nestjs/common';
+import { UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
@@ -147,16 +147,16 @@ describe('AuthService', () => {
       });
     });
 
-    it('should throw ConflictException if email already exists', async () => {
+    it('should throw BadRequestException if email already exists', async () => {
       // Arrange
       usersService.findByEmail.mockResolvedValue(mockUser as any);
 
       // Act & Assert
       await expect(service.register(registerDto)).rejects.toThrow(
-        ConflictException,
+        BadRequestException,
       );
       await expect(service.register(registerDto)).rejects.toThrow(
-        'Email already registered',
+        'Registration failed. Please check your information and try again.',
       );
       expect(usersService.create).not.toHaveBeenCalled();
     });

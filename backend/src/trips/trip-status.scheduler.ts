@@ -181,9 +181,9 @@ export class TripStatusScheduler {
         await this.notificationsService.create(
           trip.userId,
           NotificationType.TRIP_DEPARTURE,
-          '✈️ 내일 출발!',
-          `${trip.destination} 여행이 내일 시작됩니다. 준비되셨나요?`,
-          { tripId: trip.id },
+          'Departing Tomorrow!',
+          `Your trip to ${trip.destination} starts tomorrow. Are you ready?`,
+          { tripId: trip.id, destination: trip.destination },
         );
       }
 

@@ -76,6 +76,18 @@ export class TripsService {
         (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
       ) + 1;
 
+    const isManualMode = createTripDto.planningMode === 'manual';
+
+    // Check AI trip limit BEFORE creating trip to avoid orphan records
+    if (!isManualMode) {
+      const aiLimit = await this.subscriptionService.checkAiTripLimit(userId);
+      if (!aiLimit.allowed) {
+        throw new ForbiddenException(
+          'Monthly AI generation limit (3) reached. Try manual creation or wait until next month.',
+        );
+      }
+    }
+
     // Create trip
     const trip = this.tripRepository.create({
       userId,
@@ -85,7 +97,6 @@ export class TripsService {
 
     const savedTrip = await this.tripRepository.save(trip);
 
-    const isManualMode = createTripDto.planningMode === 'manual';
     this.logger.log(
       `Creating trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode`,
     );
@@ -181,27 +192,7 @@ export class TripsService {
         `Created ${itineraries.length} empty itineraries (manual mode) for trip ${savedTrip.id}`,
       );
     } else {
-      // AI mode: check free-tier limit before generating
-      const aiLimit = await this.subscriptionService.checkAiTripLimit(userId);
-      if (!aiLimit.allowed) {
-        // Fallback to empty itineraries instead of failing the trip creation
-        this.logger.log(
-          `AI trip limit reached for user ${userId}. Creating empty itineraries.`,
-        );
-        const weatherMap = await fetchWeatherMap();
-        await createEmptyItineraries(weatherMap);
-
-        // Mark trip so frontend knows AI was skipped due to limit
-        await this.tripRepository.update(savedTrip.id, {
-          aiStatus: 'skipped',
-        });
-
-        throw new ForbiddenException(
-          'Monthly AI generation limit (3) reached. Try manual creation or wait until next month.',
-        );
-      }
-
-      // Increment AI trip count before generation
+      // Increment AI trip count before generation (limit already checked above)
       await this.subscriptionService.incrementAiTripCount(userId);
 
       // AI mode: generate itineraries with AI + weather in parallel
@@ -494,8 +485,8 @@ export class TripsService {
       endDate: newEnd,
       numberOfTravelers: original.numberOfTravelers,
       description: original.description
-        ? `${original.description} (복제)`
-        : `${original.destination} 여행 (복제)`,
+        ? `${original.description} (copy)`
+        : `${original.destination} (copy)`,
       status: TripStatus.UPCOMING,
     });
 
@@ -579,36 +570,42 @@ export class TripsService {
   }
 
   async getUpcomingTrips(userId: string): Promise<Trip[]> {
-    return this.tripRepository.find({
-      where: {
-        userId,
-        status: TripStatus.UPCOMING,
-      },
-      relations: ['itineraries'],
-      order: { startDate: 'ASC' },
+    return this.findTripsByStatus(userId, TripStatus.UPCOMING, {
+      startDate: 'ASC',
     });
   }
 
   async getOngoingTrips(userId: string): Promise<Trip[]> {
-    return this.tripRepository.find({
-      where: {
-        userId,
-        status: TripStatus.ONGOING,
-      },
-      relations: ['itineraries'],
-      order: { startDate: 'ASC' },
+    return this.findTripsByStatus(userId, TripStatus.ONGOING, {
+      startDate: 'ASC',
     });
   }
 
   async getCompletedTrips(userId: string): Promise<Trip[]> {
-    return this.tripRepository.find({
-      where: {
-        userId,
-        status: TripStatus.COMPLETED,
-      },
-      relations: ['itineraries'],
-      order: { endDate: 'DESC' },
+    return this.findTripsByStatus(userId, TripStatus.COMPLETED, {
+      endDate: 'DESC',
     });
+  }
+
+  private async findTripsByStatus(
+    userId: string,
+    status: TripStatus,
+    orderBy: Record<string, 'ASC' | 'DESC'>,
+  ): Promise<Trip[]> {
+    const [orderColumn, orderDirection] = Object.entries(orderBy)[0];
+    return this.tripRepository
+      .createQueryBuilder('trip')
+      .leftJoinAndSelect('trip.itineraries', 'itinerary')
+      .leftJoin(
+        'collaborators',
+        'collab',
+        'collab.tripId = trip.id AND collab.userId = :collabUserId',
+        { collabUserId: userId },
+      )
+      .where('(trip.userId = :userId OR collab.id IS NOT NULL)', { userId })
+      .andWhere('trip.status = :status', { status })
+      .orderBy(`trip.${orderColumn}`, orderDirection)
+      .getMany();
   }
 
   // ============================================
@@ -1148,9 +1145,9 @@ export class TripsService {
       .create(
         targetUser.id,
         NotificationType.COLLABORATOR_INVITE,
-        '🤝 여행 초대',
-        `${trip.destination} 여행에 초대되었습니다`,
-        { tripId },
+        'Trip Invite',
+        `You've been invited to ${trip.destination}`,
+        { tripId, destination: trip.destination },
       )
       .catch((err) =>
         this.logger.warn('Failed to send collaborator notification', err),

@@ -461,6 +461,7 @@ export function parseLang(acceptLanguage?: string): SupportedLang {
   if (!acceptLanguage) return 'ko';
   const lang = acceptLanguage.split(',')[0].split('-')[0].toLowerCase();
   const supported: SupportedLang[] = [
+    'ko',
     'en',
     'ja',
     'zh',
