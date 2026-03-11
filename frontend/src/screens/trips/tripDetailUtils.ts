@@ -25,6 +25,7 @@ export const formatDateShort = (dateString: string) => {
 
 export const getActivityIcon = (type: string) => {
   const iconMap: { [key: string]: string } = {
+    // Korean keys (legacy data)
     식사: 'silverware-fork-knife',
     관광: 'camera',
     쇼핑: 'shopping',
@@ -32,12 +33,22 @@ export const getActivityIcon = (type: string) => {
     휴식: 'coffee',
     이동: 'car',
     숙소: 'bed',
+    // English keys (AI-generated data)
+    food: 'silverware-fork-knife',
+    sightseeing: 'camera',
+    shopping: 'shopping',
+    culture: 'ticket',
+    entertainment: 'ticket',
+    nature: 'tree',
+    transportation: 'car',
+    accommodation: 'bed',
   };
   return iconMap[type] || 'map-marker';
 };
 
 export const getActivityColor = (type: string, themePrimary: string) => {
   const colorMap: { [key: string]: string } = {
+    // Korean keys (legacy data)
     식사: colors.warning.main,
     관광: colors.travel.ocean,
     쇼핑: colors.error.main,
@@ -45,8 +56,44 @@ export const getActivityColor = (type: string, themePrimary: string) => {
     휴식: colors.travel.relax,
     이동: colors.neutral[500],
     숙소: colors.travel.night,
+    // English keys (AI-generated data)
+    food: colors.warning.main,
+    sightseeing: colors.travel.ocean,
+    shopping: colors.error.main,
+    culture: colors.success.main,
+    entertainment: colors.success.main,
+    nature: colors.success.main,
+    transportation: colors.neutral[500],
+    accommodation: colors.travel.night,
   };
   return colorMap[type] || themePrimary;
+};
+
+/**
+ * Map raw activity type keys (from AI or legacy data) to i18n keys
+ * under trips:detail.activityTypes.*
+ */
+export const getActivityTypeI18nKey = (type: string): string => {
+  const keyMap: { [key: string]: string } = {
+    // English keys from AI
+    food: 'meal',
+    sightseeing: 'sightseeing',
+    shopping: 'shopping',
+    culture: 'experience',
+    entertainment: 'experience',
+    nature: 'sightseeing',
+    transportation: 'transport',
+    accommodation: 'accommodation',
+    // Korean keys (legacy) → map to same i18n keys
+    '식사': 'meal',
+    '관광': 'sightseeing',
+    '쇼핑': 'shopping',
+    '체험': 'experience',
+    '휴식': 'rest',
+    '이동': 'transport',
+    '숙소': 'accommodation',
+  };
+  return keyMap[type] || 'other';
 };
 
 export type ActivityStatus = 'completed' | 'ongoing' | 'upcoming';

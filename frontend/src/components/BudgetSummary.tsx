@@ -13,7 +13,7 @@ interface Props {
 type TabKey = 'overview' | 'category' | 'daily';
 
 const CATEGORY_ICONS: Record<string, string> = {
-  // English keys
+  // English keys (i18n / manual)
   meal: 'silverware-fork-knife',
   sightseeing: 'binoculars',
   shopping: 'shopping',
@@ -22,6 +22,12 @@ const CATEGORY_ICONS: Record<string, string> = {
   transport: 'bus',
   accommodation: 'bed',
   other: 'dots-horizontal',
+  // English keys (AI-generated data)
+  food: 'silverware-fork-knife',
+  culture: 'star',
+  entertainment: 'star',
+  nature: 'tree',
+  transportation: 'bus',
   // Korean keys (backend data values)
   식사: 'silverware-fork-knife',
   관광: 'binoculars',
@@ -33,7 +39,7 @@ const CATEGORY_ICONS: Record<string, string> = {
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  // English keys
+  // English keys (i18n / manual)
   meal: '#F59E0B',
   sightseeing: '#3B82F6',
   shopping: '#EC4899',
@@ -42,6 +48,12 @@ const CATEGORY_COLORS: Record<string, string> = {
   transport: '#6366F1',
   accommodation: '#EF4444',
   other: '#6B7280',
+  // English keys (AI-generated data)
+  food: '#F59E0B',
+  culture: '#8B5CF6',
+  entertainment: '#8B5CF6',
+  nature: '#10B981',
+  transportation: '#6366F1',
   // Korean keys (backend data values)
   식사: '#F59E0B',
   관광: '#3B82F6',

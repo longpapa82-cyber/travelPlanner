@@ -25,7 +25,7 @@ const SubscriptionScreen = () => {
     if (Platform.OS === 'ios') {
       Linking.openURL('https://apps.apple.com/account/subscriptions');
     } else if (Platform.OS === 'android') {
-      Linking.openURL('https://play.google.com/store/account/subscriptions');
+      Linking.openURL('https://play.google.com/store/account/subscriptions?package=com.longpapa82.travelplanner');
     } else {
       Linking.openURL('https://mytravel-planner.com/api/subscription/paddle/portal');
     }

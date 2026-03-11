@@ -39,7 +39,7 @@ const BENEFITS: BenefitItem[] = [
 const PaywallModal: React.FC = () => {
   const { t } = useTranslation('premium');
   const { user } = useAuth();
-  const { isPaywallVisible, paywallContext, hidePaywall, refreshStatus, isPremium, aiTripsUsed, aiTripsRemaining } = usePremium();
+  const { isPaywallVisible, paywallContext, hidePaywall, refreshStatus, isPremium, aiTripsUsed, aiTripsRemaining, markPremium } = usePremium();
   const { theme, isDark } = useTheme();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -135,6 +135,8 @@ const PaywallModal: React.FC = () => {
     try {
       const customerInfo = await purchasePackage(pkg);
       if (customerInfo) {
+        // Immediately mark premium locally so ads hide before backend syncs
+        markPremium();
         // Purchase successful — refresh user profile from backend
         await refreshStatus();
         hidePaywall();
@@ -154,6 +156,7 @@ const PaywallModal: React.FC = () => {
         // Web: restore from backend DB (Paddle subscription state)
         const result = await apiService.restoreSubscription();
         if (result?.restored) {
+          markPremium();
           await refreshStatus();
           hidePaywall();
           Alert.alert(t('actions.restore'), t('paywall.restoreSuccess') || 'Subscription restored successfully!');
@@ -164,6 +167,7 @@ const PaywallModal: React.FC = () => {
         // Native: restore from RevenueCat (App Store / Play Store)
         const customerInfo = await restorePurchases();
         if (customerInfo?.entitlements?.active?.['premium']) {
+          markPremium();
           await refreshStatus();
           hidePaywall();
           Alert.alert(t('actions.restore'), t('paywall.restoreSuccess') || 'Subscription restored successfully!');

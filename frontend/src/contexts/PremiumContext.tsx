@@ -24,6 +24,10 @@ interface PremiumContextType {
   showPaywall: (context?: PaywallContext) => void;
   hidePaywall: () => void;
   refreshStatus: () => Promise<void>;
+  /** Mark premium locally after purchase (before backend webhook syncs) */
+  markPremium: () => void;
+  /** Mark logout in progress to suppress ads during transition */
+  markLoggingOut: () => void;
 }
 
 const PremiumContext = createContext<PremiumContextType | undefined>(undefined);
@@ -44,6 +48,10 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const { user, refreshUser } = useAuth();
   const [isPaywallVisible, setIsPaywallVisible] = useState(false);
   const [paywallContext, setPaywallContext] = useState<PaywallContext>('general');
+  // Local premium override: set immediately after purchase, before backend syncs
+  const [localPremiumOverride, setLocalPremiumOverride] = useState(false);
+  // Track logout state to suppress ads during transition
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Initialize RevenueCat on native platforms when user is available
   useEffect(() => {
@@ -55,12 +63,24 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     });
   }, [user?.id]);
 
+  // Clear local premium override and logout state when user changes
+  useEffect(() => {
+    if (!user) {
+      setLocalPremiumOverride(false);
+      setIsLoggingOut(false);
+    }
+  }, [user]);
+
   const isPremium = useMemo(() => {
+    // During logout, maintain premium to prevent ad flash
+    if (isLoggingOut) return true;
+    // Local override from recent purchase (before backend webhook arrives)
+    if (localPremiumOverride) return true;
     if (!user?.subscriptionTier) return false;
     if (user.subscriptionTier !== 'premium') return false;
     if (user.subscriptionExpiresAt && new Date(user.subscriptionExpiresAt) < new Date()) return false;
     return true;
-  }, [user?.subscriptionTier, user?.subscriptionExpiresAt]);
+  }, [user?.subscriptionTier, user?.subscriptionExpiresAt, localPremiumOverride, isLoggingOut]);
 
   const isAdmin = !!(user?.email && ADMIN_EMAILS.includes(user.email));
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
@@ -82,6 +102,14 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     await refreshUser();
   }, [refreshUser]);
 
+  const markPremium = useCallback(() => {
+    setLocalPremiumOverride(true);
+  }, []);
+
+  const markLoggingOut = useCallback(() => {
+    setIsLoggingOut(true);
+  }, []);
+
   const value = useMemo<PremiumContextType>(() => ({
     isPremium,
     isAdmin,
@@ -96,7 +124,9 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     showPaywall,
     hidePaywall,
     refreshStatus,
-  }), [isPremium, isAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus]);
+    markPremium,
+    markLoggingOut,
+  }), [isPremium, isAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
 
   return (
     <PremiumContext.Provider value={value}>
