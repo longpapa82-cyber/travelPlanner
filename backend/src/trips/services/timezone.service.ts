@@ -5,6 +5,7 @@ import { Client } from '@googlemaps/google-maps-services-js';
 import { DateTime } from 'luxon';
 import { t } from '../../common/i18n';
 import { GeocodingService } from '../../common/services/geocoding.service';
+import { ApiUsageService } from '../../admin/api-usage.service';
 import { AxiosError } from 'axios';
 
 interface LocationInfo {
@@ -47,6 +48,7 @@ export class TimezoneService {
     private configService: ConfigService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @Optional() private geocodingService?: GeocodingService,
+    @Optional() private apiUsageService?: ApiUsageService,
   ) {
     const apiKey = this.configService.get<string>('GOOGLE_MAPS_API_KEY');
     if (apiKey && apiKey !== '' && !apiKey.includes('your-')) {
@@ -175,6 +177,14 @@ export class TimezoneService {
         { timeZoneId, timeZoneName, rawOffset, dstOffset },
         30 * 24 * 60 * 60 * 1000,
       );
+      // Fire-and-forget: log API usage
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'google_timezone',
+          feature: 'timezone',
+          status: 'success',
+        })
+        .catch(() => {});
 
       // Calculate total offset in seconds
       const totalOffset = rawOffset + dstOffset;
@@ -194,6 +204,15 @@ export class TimezoneService {
       this.logger.error(
         `Failed to get timezone for coordinates (${latitude}, ${longitude}): ${this.safeErrorMessage(error)}`,
       );
+      // Fire-and-forget: log error
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'google_timezone',
+          feature: 'timezone',
+          status: 'error',
+          errorCode: this.safeErrorMessage(error).slice(0, 100),
+        })
+        .catch(() => {});
       return null;
     }
   }

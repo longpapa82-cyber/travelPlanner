@@ -10,6 +10,7 @@ import UserManagementScreen from '../screens/main/UserManagementScreen';
 import ErrorLogScreen from '../screens/main/ErrorLogScreen';
 import AnnouncementManagementScreen from '../screens/main/AnnouncementManagementScreen';
 import AnnouncementFormScreen from '../screens/main/AnnouncementFormScreen';
+import ApiUsageDashboardScreen from '../screens/main/ApiUsageDashboardScreen';
 import HelpScreen from '../screens/main/HelpScreen';
 import TermsScreen from '../screens/main/TermsScreen';
 import PrivacyPolicyScreen from '../screens/main/PrivacyPolicyScreen';
@@ -79,6 +80,11 @@ const ProfileNavigator = () => {
         name="AnnouncementManagement"
         component={AnnouncementManagementScreen}
         options={{ title: tAdmin('menu.announcements') }}
+      />
+      <Stack.Screen
+        name="ApiUsageDashboard"
+        component={ApiUsageDashboardScreen}
+        options={{ title: 'API Usage' }}
       />
       <Stack.Screen
         name="AnnouncementForm"

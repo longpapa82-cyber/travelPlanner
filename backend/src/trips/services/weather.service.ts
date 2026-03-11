@@ -1,4 +1,4 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
+import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import {
   withRetry,
   CircuitBreaker,
 } from '../../common/utils/resilience';
+import { ApiUsageService } from '../../admin/api-usage.service';
 
 interface WeatherData {
   temperature: number;
@@ -48,6 +49,7 @@ export class WeatherService {
   constructor(
     private configService: ConfigService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Optional() private apiUsageService?: ApiUsageService,
   ) {
     const apiKey = this.configService.get<string>('OPENWEATHER_API_KEY');
     if (apiKey && apiKey !== '' && !apiKey.includes('your-')) {
@@ -141,6 +143,14 @@ export class WeatherService {
 
       // Cache for 30 minutes
       await this.cacheManager.set(cacheKey, result, 1800000);
+      // Fire-and-forget: log API usage
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'openweather',
+          feature: 'weather',
+          status: 'success',
+        })
+        .catch(() => {});
       return result;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -152,6 +162,15 @@ export class WeatherService {
           `Failed to get weather forecast: ${error instanceof Error ? error.message : 'Unknown error'}`,
         );
       }
+      // Fire-and-forget: log error
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'openweather',
+          feature: 'weather',
+          status: 'error',
+          errorCode: error instanceof Error ? error.message.slice(0, 100) : 'Unknown',
+        })
+        .catch(() => {});
       return null;
     }
   }
@@ -326,6 +345,14 @@ export class WeatherService {
       this.logger.log(
         `Weather range: fetched ${uncachedDays.length} days in 1 API call (${forecastableDays} forecastable of ${totalDays} total)`,
       );
+      // Fire-and-forget: log API usage (single API call for the range)
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'openweather',
+          feature: 'weather',
+          status: 'success',
+        })
+        .catch(() => {});
     } catch (error) {
       if (axios.isAxiosError(error)) {
         this.logger.error(
@@ -336,6 +363,15 @@ export class WeatherService {
           `Failed to get weather range: ${error instanceof Error ? error.message : 'Unknown error'}`,
         );
       }
+      // Fire-and-forget: log error
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'openweather',
+          feature: 'weather',
+          status: 'error',
+          errorCode: error instanceof Error ? error.message.slice(0, 100) : 'Unknown',
+        })
+        .catch(() => {});
     }
 
     return result;

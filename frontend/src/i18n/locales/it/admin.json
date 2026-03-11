@@ -4,7 +4,8 @@
     "users": "Gestione utenti",
     "errorLogs": "Log errori",
     "revenue": "Dashboard ricavi",
-    "announcements": "Annunci"
+    "announcements": "Annunci",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "Strumenti di gestione del servizio"

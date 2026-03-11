@@ -4,7 +4,8 @@
     "users": "ユーザー管理",
     "errorLogs": "エラーログ",
     "revenue": "収益ダッシュボード",
-    "announcements": "お知らせ"
+    "announcements": "お知らせ",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "サービス運用管理ツール"

@@ -4,7 +4,8 @@
     "users": "User Management",
     "errorLogs": "Error Logs",
     "revenue": "Revenue Dashboard",
-    "announcements": "Announcements"
+    "announcements": "Announcements",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "Service management tools"

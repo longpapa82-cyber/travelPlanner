@@ -4,7 +4,8 @@
     "users": "จัดการผู้ใช้",
     "errorLogs": "บันทึกข้อผิดพลาด",
     "revenue": "แดชบอร์ดรายได้",
-    "announcements": "ประกาศ"
+    "announcements": "ประกาศ",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "เครื่องมือจัดการบริการ"

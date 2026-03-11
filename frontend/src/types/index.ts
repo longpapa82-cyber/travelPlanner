@@ -244,6 +244,7 @@ export type ProfileStackParamList = {
   ErrorLog: undefined;
   AnnouncementManagement: undefined;
   AnnouncementForm: { announcementId?: string };
+  ApiUsageDashboard: undefined;
   Help: undefined;
   Terms: undefined;
   PrivacyPolicy: undefined;
