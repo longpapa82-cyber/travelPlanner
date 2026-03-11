@@ -168,7 +168,7 @@ export class WeatherService {
           provider: 'openweather',
           feature: 'weather',
           status: 'error',
-          errorCode: error instanceof Error ? error.message.slice(0, 100) : 'Unknown',
+          errorCode: axios.isAxiosError(error) ? `HTTP ${error.response?.status || 'unknown'}` : (error instanceof Error ? error.message.slice(0, 100) : 'Unknown'),
         })
         .catch(() => {});
       return null;
@@ -369,7 +369,7 @@ export class WeatherService {
           provider: 'openweather',
           feature: 'weather',
           status: 'error',
-          errorCode: error instanceof Error ? error.message.slice(0, 100) : 'Unknown',
+          errorCode: axios.isAxiosError(error) ? `HTTP ${error.response?.status || 'unknown'}` : (error instanceof Error ? error.message.slice(0, 100) : 'Unknown'),
         })
         .catch(() => {});
     }
