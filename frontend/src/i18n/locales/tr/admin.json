@@ -4,7 +4,8 @@
     "users": "Kullanıcı Yönetimi",
     "errorLogs": "Hata Kayıtları",
     "revenue": "Gelir Paneli",
-    "announcements": "Duyurular"
+    "announcements": "Duyurular",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "Hizmet yönetim araçları"

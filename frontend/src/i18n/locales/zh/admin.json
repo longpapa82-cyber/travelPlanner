@@ -4,7 +4,8 @@
     "users": "用户管理",
     "errorLogs": "错误日志",
     "revenue": "收益仪表盘",
-    "announcements": "公告"
+    "announcements": "公告",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "服务管理工具"

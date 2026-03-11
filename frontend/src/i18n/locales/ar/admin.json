@@ -4,7 +4,8 @@
     "users": "إدارة المستخدمين",
     "errorLogs": "سجلات الأخطاء",
     "revenue": "لوحة الإيرادات",
-    "announcements": "الإعلانات"
+    "announcements": "الإعلانات",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "أدوات إدارة الخدمة"

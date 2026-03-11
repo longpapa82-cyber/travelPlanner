@@ -4,7 +4,8 @@
     "users": "이용자 현황",
     "errorLogs": "오류 로그",
     "revenue": "수익 대시보드",
-    "announcements": "공지사항"
+    "announcements": "공지사항",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "서비스 운영 관리 도구"

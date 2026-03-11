@@ -23,6 +23,7 @@ const MENU_ITEMS = [
   { key: 'users', icon: 'account-group', screen: 'UserManagement' as const, color: '#3B82F6' },
   { key: 'errorLogs', icon: 'bug-outline', screen: 'ErrorLog' as const, color: '#EF4444' },
   { key: 'revenue', icon: 'chart-line', screen: 'RevenueDashboard' as const, color: '#10B981' },
+  { key: 'apiUsage', icon: 'chart-bar', screen: 'ApiUsageDashboard' as const, color: '#8B5CF6' },
   { key: 'announcements', icon: 'bullhorn-outline', screen: 'AnnouncementManagement' as const, color: '#F59E0B' },
 ] as const;
 

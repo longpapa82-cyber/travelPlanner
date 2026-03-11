@@ -8,16 +8,24 @@ import {
 import { BaseExceptionFilter } from '@nestjs/core';
 import { Request, Response } from 'express';
 import * as Sentry from '@sentry/nestjs';
+import { DataSource } from 'typeorm';
+import { ErrorLog } from '../../admin/entities/error-log.entity';
 
 /**
  * Global exception filter that:
  * - Converts unhandled exceptions to consistent JSON responses
  * - Reports 5xx errors and unknown exceptions to Sentry
+ * - Persists 5xx errors to ErrorLog table for admin dashboard
  * - Logs all errors with request context
  */
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
+  private dataSource?: DataSource;
+
+  setDataSource(ds: DataSource): void {
+    this.dataSource = ds;
+  }
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -61,6 +69,34 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         }`,
         exception instanceof Error ? exception.stack : undefined,
       );
+    }
+
+    // Persist 5xx errors to ErrorLog (fire-and-forget)
+    if (status >= 500 && this.dataSource?.isInitialized) {
+      const errorMessage =
+        exception instanceof Error
+          ? exception.message
+          : typeof message === 'string'
+            ? message
+            : Array.isArray(message)
+              ? message.join('; ')
+              : 'Unknown error';
+
+      this.dataSource
+        .getRepository(ErrorLog)
+        .save({
+          errorMessage: errorMessage.slice(0, 500),
+          stackTrace:
+            exception instanceof Error ? exception.stack : undefined,
+          severity: status === 500 ? 'fatal' : 'error',
+          platform: 'web',
+          screen: `${request.method} ${request.url}`.slice(0, 200),
+          userAgent: request.headers['user-agent']?.slice(0, 500),
+          isResolved: false,
+        })
+        .catch((err) => {
+          this.logger.warn(`Failed to persist error log: ${err.message}`);
+        });
     }
 
     // Don't override if response already sent

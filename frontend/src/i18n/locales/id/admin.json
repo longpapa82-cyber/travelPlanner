@@ -4,7 +4,8 @@
     "users": "Manajemen Pengguna",
     "errorLogs": "Log Kesalahan",
     "revenue": "Dasbor Pendapatan",
-    "announcements": "Pengumuman"
+    "announcements": "Pengumuman",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "Alat manajemen layanan"

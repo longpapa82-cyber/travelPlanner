@@ -1,4 +1,4 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
+import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import axios, { AxiosError } from 'axios';
 import { createHash } from 'crypto';
 import { GeocodingCache } from '../entities/geocoding-cache.entity';
 import { withTimeout } from '../utils/resilience';
+import { ApiUsageService } from '../../admin/api-usage.service';
 
 export interface GeocodingResult {
   latitude: number;
@@ -31,6 +32,7 @@ export class GeocodingService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectRepository(GeocodingCache)
     private geocodingCacheRepo: Repository<GeocodingCache>,
+    @Optional() private apiUsageService?: ApiUsageService,
   ) {
     this.locationIQKey =
       this.configService.get<string>('LOCATIONIQ_API_KEY') || null;
@@ -217,8 +219,18 @@ export class GeocodingService {
         'LocationIQ geocode',
       );
 
+      const latencyMs = Date.now() - this.lastLocationIQCall;
       if (response.data && response.data.length > 0) {
         const { lat, lon } = response.data[0];
+        // Fire-and-forget: log API usage
+        this.apiUsageService
+          ?.logApiUsage({
+            provider: 'locationiq',
+            feature: 'geocoding',
+            status: 'success',
+            latencyMs,
+          })
+          .catch(() => {});
         return {
           latitude: parseFloat(lat),
           longitude: parseFloat(lon),
@@ -231,6 +243,15 @@ export class GeocodingService {
       this.logger.warn(
         `LocationIQ geocoding failed for "${this.sanitizeForLog(query)}": ${this.safeErrorMessage(error)}`,
       );
+      // Fire-and-forget: log error
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'locationiq',
+          feature: 'geocoding',
+          status: 'error',
+          errorCode: this.safeErrorMessage(error).slice(0, 100),
+        })
+        .catch(() => {});
       return null;
     }
   }

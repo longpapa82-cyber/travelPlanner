@@ -7,6 +7,7 @@ import { ActivityDto } from '../dto/update-itinerary.dto';
 import { AnalyticsService } from './analytics.service';
 import { TemplateService } from './template.service';
 import { TimezoneService } from './timezone.service';
+import { ApiUsageService } from '../../admin/api-usage.service';
 import { getErrorMessage } from '../../common/types/request.types';
 import { withRetry, CircuitBreaker } from '../../common/utils/resilience';
 
@@ -80,6 +81,7 @@ export class AIService {
     private analyticsService: AnalyticsService,
     private templateService: TemplateService,
     private timezoneService: TimezoneService,
+    private apiUsageService: ApiUsageService,
   ) {
     const apiKey = this.configService.get<string>('OPENAI_API_KEY');
     this.model =
@@ -197,6 +199,16 @@ export class AIService {
       this.logger.error(
         `Failed to generate itinerary for day ${dayNumber}: ${getErrorMessage(error)}`,
       );
+      // Fire-and-forget: log error for dashboard
+      this.apiUsageService
+        .logApiUsage({
+          provider: 'openai',
+          feature: 'ai_trip',
+          status: 'error',
+          errorCode: getErrorMessage(error).slice(0, 100),
+          latencyMs: 0,
+        })
+        .catch(() => {});
       return [];
     }
   }
@@ -782,6 +794,22 @@ Return JSON:
       this.logger.log(
         `AI ${label} tokens — in: ${usage.prompt_tokens}, out: ${usage.completion_tokens}, total: ${usage.total_tokens} (${elapsed}ms, streamed)`,
       );
+      // Fire-and-forget: log API usage for dashboard
+      // gpt-4o-mini pricing: $0.15/1M input, $0.60/1M output
+      const costUsd =
+        (usage.prompt_tokens * 0.15) / 1_000_000 +
+        (usage.completion_tokens * 0.60) / 1_000_000;
+      this.apiUsageService
+        .logApiUsage({
+          provider: 'openai',
+          feature: 'ai_trip',
+          status: 'success',
+          inputTokens: usage.prompt_tokens,
+          outputTokens: usage.completion_tokens,
+          costUsd,
+          latencyMs: elapsed,
+        })
+        .catch(() => {});
     }
 
     return content || null;

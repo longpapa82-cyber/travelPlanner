@@ -22,6 +22,7 @@ import { TripStatusScheduler } from './trip-status.scheduler';
 import { User } from '../users/entities/user.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { SubscriptionModule } from '../subscription/subscription.module';
+import { ApiUsageModule } from '../admin/api-usage.module';
 import { ImageService } from '../common/image.service';
 import { GeocodingService } from '../common/services/geocoding.service';
 import { GeocodingCache } from '../common/entities/geocoding-cache.entity';
@@ -39,6 +40,7 @@ import { GeocodingCache } from '../common/entities/geocoding-cache.entity';
     ConfigModule,
     NotificationsModule,
     SubscriptionModule,
+    ApiUsageModule,
   ],
   providers: [
     TripsService,

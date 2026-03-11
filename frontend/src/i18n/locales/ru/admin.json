@@ -4,7 +4,8 @@
     "users": "Управление пользователями",
     "errorLogs": "Журнал ошибок",
     "revenue": "Панель доходов",
-    "announcements": "Объявления"
+    "announcements": "Объявления",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "Инструменты управления сервисом"

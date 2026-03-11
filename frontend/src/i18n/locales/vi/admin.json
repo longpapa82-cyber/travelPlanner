@@ -4,7 +4,8 @@
     "users": "Quản lý người dùng",
     "errorLogs": "Nhật ký lỗi",
     "revenue": "Bảng doanh thu",
-    "announcements": "Thông báo"
+    "announcements": "Thông báo",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "Công cụ quản lý dịch vụ"

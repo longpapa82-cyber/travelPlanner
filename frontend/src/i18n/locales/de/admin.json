@@ -4,7 +4,8 @@
     "users": "Benutzerverwaltung",
     "errorLogs": "Fehlerprotokolle",
     "revenue": "Umsatz-Dashboard",
-    "announcements": "Ankündigungen"
+    "announcements": "Ankündigungen",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "Service-Verwaltungstools"

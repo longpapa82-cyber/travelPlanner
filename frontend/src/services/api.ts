@@ -853,6 +853,21 @@ class ApiService {
     return response.data;
   }
 
+  async getAdminApiUsageSummary() {
+    const response = await this.api.get('/admin/api-usage/summary');
+    return response.data;
+  }
+
+  async getAdminApiUsageDaily(from: string, to: string) {
+    const response = await this.api.get('/admin/api-usage/daily', { params: { from, to } });
+    return response.data;
+  }
+
+  async getAdminApiUsageMonthly(year: number) {
+    const response = await this.api.get('/admin/api-usage/monthly', { params: { year } });
+    return response.data;
+  }
+
   async reportError(data: { errorMessage: string; stackTrace?: string; screen?: string; severity?: string; deviceOS?: string; appVersion?: string }) {
     const response = await this.api.post('/error-logs', data);
     return response.data;

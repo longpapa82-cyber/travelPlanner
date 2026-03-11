@@ -21,6 +21,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { AdminService } from './admin.service';
 import { AuditService } from './audit.service';
 import { AnnouncementService } from './announcement.service';
+import { ApiUsageService } from './api-usage.service';
 import { AuditAction } from './entities/audit-log.entity';
 import { CreateErrorLogDto } from './dto/create-error-log.dto';
 import { CreateAnnouncementDto } from './dto/create-announcement.dto';
@@ -36,6 +37,7 @@ export class AdminController {
     private readonly adminService: AdminService,
     private readonly auditService: AuditService,
     private readonly announcementService: AnnouncementService,
+    private readonly apiUsageService: ApiUsageService,
   ) {}
 
   @Get('users/stats')
@@ -108,6 +110,29 @@ export class AdminController {
       userId,
       action as AuditAction | undefined,
     );
+  }
+
+  // ─── API Usage Dashboard ──────────────────
+
+  @Get('api-usage/summary')
+  getApiUsageSummary() {
+    return this.apiUsageService.getApiUsageSummary();
+  }
+
+  @Get('api-usage/daily')
+  getApiUsageDaily(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ) {
+    const fromDate = from ? new Date(from) : (() => { const d = new Date(); d.setDate(d.getDate() - 7); return d; })();
+    const toDate = to ? new Date(to + 'T23:59:59.999Z') : new Date();
+    return this.apiUsageService.getApiUsageDaily(fromDate, toDate);
+  }
+
+  @Get('api-usage/monthly')
+  getApiUsageMonthly(@Query('year') year?: string) {
+    const y = parseInt(year || String(new Date().getFullYear()), 10);
+    return this.apiUsageService.getApiUsageMonthly(y);
   }
 
   // ─── Announcements Admin CRUD ──────────────────

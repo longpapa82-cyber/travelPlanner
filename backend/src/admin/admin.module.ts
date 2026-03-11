@@ -9,6 +9,7 @@ import { AnnouncementRead } from './entities/announcement-read.entity';
 import { AdminService } from './admin.service';
 import { AuditService } from './audit.service';
 import { AnnouncementService } from './announcement.service';
+import { ApiUsageModule } from './api-usage.module';
 import {
   AdminController,
   AnnouncementsPublicController,
@@ -25,6 +26,7 @@ import {
       Announcement,
       AnnouncementRead,
     ]),
+    ApiUsageModule,
   ],
   controllers: [
     AdminController,

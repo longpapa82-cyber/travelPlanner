@@ -137,8 +137,12 @@ async function bootstrap() {
   // Graceful shutdown — drain connections on SIGTERM/SIGINT
   app.enableShutdownHooks();
 
-  // Global exception filter (consistent error responses + Sentry reporting)
-  app.useGlobalFilters(new AllExceptionsFilter(app.getHttpAdapter()));
+  // Global exception filter (consistent error responses + Sentry reporting + ErrorLog persistence)
+  const exceptionFilter = new AllExceptionsFilter(app.getHttpAdapter());
+  const { DataSource } = await import('typeorm');
+  const dataSource = app.get(DataSource);
+  exceptionFilter.setDataSource(dataSource);
+  app.useGlobalFilters(exceptionFilter);
 
   // Global response envelope interceptor
   app.useGlobalInterceptors(new ResponseEnvelopeInterceptor());

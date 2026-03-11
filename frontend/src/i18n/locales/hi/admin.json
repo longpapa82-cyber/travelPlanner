@@ -4,7 +4,8 @@
     "users": "उपयोगकर्ता प्रबंधन",
     "errorLogs": "त्रुटि लॉग",
     "revenue": "राजस्व डैशबोर्ड",
-    "announcements": "घोषणाएं"
+    "announcements": "घोषणाएं",
+    "apiUsage": "API Usage"
   },
   "dashboard": {
     "subtitle": "सेवा प्रबंधन टूल"
