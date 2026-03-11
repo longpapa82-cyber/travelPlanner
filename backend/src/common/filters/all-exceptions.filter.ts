@@ -22,6 +22,9 @@ import { ErrorLog } from '../../admin/entities/error-log.entity';
 export class AllExceptionsFilter extends BaseExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
   private dataSource?: DataSource;
+  private errorLogCount = 0;
+  private errorLogWindowStart = Date.now();
+  private static readonly MAX_ERROR_LOGS_PER_MINUTE = 100;
 
   setDataSource(ds: DataSource): void {
     this.dataSource = ds;
@@ -71,8 +74,14 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       );
     }
 
-    // Persist 5xx errors to ErrorLog (fire-and-forget)
-    if (status >= 500 && this.dataSource?.isInitialized) {
+    // Persist 5xx errors to ErrorLog (fire-and-forget, rate-limited)
+    const now = Date.now();
+    if (now - this.errorLogWindowStart > 60_000) {
+      this.errorLogCount = 0;
+      this.errorLogWindowStart = now;
+    }
+    if (status >= 500 && this.dataSource?.isInitialized && this.errorLogCount < AllExceptionsFilter.MAX_ERROR_LOGS_PER_MINUTE) {
+      this.errorLogCount++;
       const errorMessage =
         exception instanceof Error
           ? exception.message
@@ -88,9 +97,9 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
           errorMessage: errorMessage.slice(0, 500),
           stackTrace:
             exception instanceof Error ? exception.stack : undefined,
-          severity: status === 500 ? 'fatal' : 'error',
+          severity: status >= 500 ? 'error' : 'warning',
           platform: 'web',
-          screen: `${request.method} ${request.url}`.slice(0, 200),
+          screen: `${request.method} ${request.path}`.slice(0, 200),
           userAgent: request.headers['user-agent']?.slice(0, 500),
           isResolved: false,
         })

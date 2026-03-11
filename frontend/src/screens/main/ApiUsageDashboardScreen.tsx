@@ -85,8 +85,11 @@ const ApiUsageDashboardScreen: React.FC<Props> = () => {
       ]);
       setSummary(summaryData);
       setDailyData(daily);
-    } catch {
-      // silent
+    } catch (err: any) {
+      if (err?.response?.status === 403) {
+        setSummary(null);
+        setDailyData([]);
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -109,8 +112,8 @@ const ApiUsageDashboardScreen: React.FC<Props> = () => {
   };
 
   const formatDate = (dateStr: string): string => {
-    const d = new Date(dateStr);
-    return `${d.getMonth() + 1}/${d.getDate()}`;
+    const parts = dateStr.split('-');
+    return `${parseInt(parts[1])}/${parseInt(parts[2])}`;
   };
 
   const getChangePercent = (): string | null => {

@@ -156,7 +156,7 @@ const RevenueDashboardScreen = () => {
       <View style={[styles.admobInfoCard, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[0] }]}>
         <Icon name="information-outline" size={18} color={theme.colors.primary} />
         <Text style={[styles.admobInfoText, { color: theme.colors.textSecondary }]}>
-          AdMob 광고 수익은 AdMob 대시보드에서 확인하세요
+          {t('admin:admobDashboardNote', { defaultValue: 'AdMob 광고 수익은 AdMob 대시보드에서 확인하세요' })}
         </Text>
       </View>
 

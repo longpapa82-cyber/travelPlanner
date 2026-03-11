@@ -52,7 +52,7 @@ export class ApiUsageService {
       const record = this.apiUsageRepo.create();
       record.provider = data.provider;
       record.feature = data.feature;
-      record.status = data.status || 'success';
+      record.status = data.status ?? 'success';
       record.inputTokens = data.inputTokens ?? null as any;
       record.outputTokens = data.outputTokens ?? null as any;
       record.costUsd = data.costUsd ?? 0;
