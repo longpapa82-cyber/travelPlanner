@@ -23,6 +23,7 @@ import {
   getActivityIcon,
   getActivityColor,
   getActivityStatus,
+  getActivityTypeI18nKey,
   ActivityStatus,
 } from './tripDetailUtils';
 
@@ -141,7 +142,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
 
             <View style={styles.activityHeaderRight}>
               <View style={[styles.activityTypeBadge, { backgroundColor: `${activityColor}20` }]}>
-                <Text numberOfLines={1} style={[styles.activityTypeText, { color: activityColor }]}>{activity.type}</Text>
+                <Text numberOfLines={1} style={[styles.activityTypeText, { color: activityColor }]}>{t(`detail.activityTypes.${getActivityTypeI18nKey(activity.type)}`)}</Text>
               </View>
               {canModify && (
                 <View style={styles.activityActions}>

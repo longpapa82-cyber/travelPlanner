@@ -38,7 +38,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
-  const { isPremium, showPaywall, aiTripsRemaining, aiTripsUsed } = usePremium();
+  const { isPremium, showPaywall, aiTripsRemaining, aiTripsUsed, markLoggingOut } = usePremium();
   const { t: tPremium } = useTranslation('premium');
   const { t: tTutorial } = useTranslation('tutorial');
   const { resetTutorial } = useTutorial();
@@ -90,7 +90,10 @@ const ProfileScreen = ({ navigation }: any) => {
       confirmText: tCommon('confirm'),
       cancelText: tCommon('cancel'),
     });
-    if (ok) logout();
+    if (ok) {
+      markLoggingOut(); // Suppress ads during logout transition
+      logout();
+    }
   };
 
   const handleSaveProfile = async () => {
@@ -161,6 +164,7 @@ const ProfileScreen = ({ navigation }: any) => {
     if (!ok) return;
     try {
       await apiService.deleteAccount();
+      markLoggingOut();
       await logout();
       showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
     } catch (error: any) {
@@ -177,6 +181,7 @@ const ProfileScreen = ({ navigation }: any) => {
     try {
       await apiService.deleteAccount(deletePassword);
       setShowDeleteConfirm(false);
+      markLoggingOut();
       await logout();
       showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
     } catch (error: any) {
