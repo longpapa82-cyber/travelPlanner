@@ -96,8 +96,11 @@ export function isActivityCompleted(
   const now = new Date();
   if (tripTimezoneOffset != null) {
     // 현지 시간으로 변환
-    const localOffset = now.getTimezoneOffset(); // 현재 로컬 오프셋 (분)
-    now.setMinutes(now.getMinutes() + localOffset + tripTimezoneOffset);
+    // tripTimezoneOffset is stored in hours (e.g., 9 for KST, 5.5 for IST)
+    // getTimezoneOffset() returns minutes with inverted sign
+    const localOffset = now.getTimezoneOffset(); // 현재 로컬 오프셋 (분, UTC+9 → -540)
+    const destOffsetMinutes = tripTimezoneOffset * 60; // hours → minutes
+    now.setMinutes(now.getMinutes() + localOffset + destOffsetMinutes);
   }
 
   // 활동 완료 시간이 지났는지 확인

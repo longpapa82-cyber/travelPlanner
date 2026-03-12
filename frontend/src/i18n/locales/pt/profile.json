@@ -7,7 +7,7 @@
     "language": "Idioma", "notifications": "Notificações",
     "notificationsEnabled": "Ativadas", "notificationsDisabled": "Desativadas",
     "darkMode": "Modo Escuro", "help": "Ajuda", "terms": "Termos de Serviço",
-    "privacy": "Política de Privacidade", "revenue": "Painel de Receitas", "admin": "Painel Admin"
+    "privacy": "Política de Privacidade", "licenses": "Licenças de código aberto", "revenue": "Painel de Receitas", "admin": "Painel Admin"
   },
   "editProfile": {
     "title": "Editar Perfil", "name": "Nome", "namePlaceholder": "Digite seu nome",

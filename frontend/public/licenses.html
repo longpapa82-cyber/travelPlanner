@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Source Licenses — MyTravel</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a2e; line-height: 1.6; }
+    .container { max-width: 700px; margin: 0 auto; padding: 24px 16px 60px; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+    .summary { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .summary h2 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+    .summary ul { list-style: none; }
+    .summary li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
+    .summary li:last-child { border-bottom: none; }
+    .count { font-weight: 600; color: #3b82f6; }
+    .section { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .section h2 { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #1a1a2e; }
+    .pkg { padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
+    .pkg:last-child { border-bottom: none; }
+    .pkg-name { font-weight: 600; font-size: 14px; }
+    .pkg-license { font-size: 12px; color: #6b7280; }
+    .pkg a { color: #3b82f6; text-decoration: none; font-size: 12px; }
+    .pkg a:hover { text-decoration: underline; }
+    .notice { background: #eff6ff; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #1e40af; margin-bottom: 24px; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #0f172a; color: #e2e8f0; }
+      .summary, .section { background: #1e293b; box-shadow: none; }
+      .summary li { border-color: #334155; }
+      .pkg { border-color: #334155; }
+      .notice { background: #1e3a5f; color: #93c5fd; }
+      h1 { color: #f1f5f9; }
+      .subtitle { color: #94a3b8; }
+      .section h2 { color: #f1f5f9; }
+      .pkg-license { color: #94a3b8; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Open Source Licenses</h1>
+    <p class="subtitle">MyTravel uses the following open source software</p>
+
+    <div class="notice">
+      This application is built with open source software. We are grateful to the developers and communities who contribute to these projects. Full license texts are available in each package's repository.
+    </div>
+
+    <div class="summary">
+      <h2>License Summary</h2>
+      <ul>
+        <li><span>MIT</span><span class="count">889 packages</span></li>
+        <li><span>ISC</span><span class="count">39 packages</span></li>
+        <li><span>Apache-2.0</span><span class="count">31 packages</span></li>
+        <li><span>BSD-3-Clause</span><span class="count">26 packages</span></li>
+        <li><span>BSD-2-Clause</span><span class="count">17 packages</span></li>
+        <li><span>Other (BlueOak, MPL, Unlicense, etc.)</span><span class="count">20 packages</span></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Core Framework</h2>
+      <div class="pkg">
+        <div class="pkg-name">React Native</div>
+        <div class="pkg-license">MIT License &mdash; Meta Platforms, Inc.</div>
+        <a href="https://github.com/facebook/react-native" target="_blank" rel="noopener">github.com/facebook/react-native</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">React</div>
+        <div class="pkg-license">MIT License &mdash; Meta Platforms, Inc.</div>
+        <a href="https://github.com/facebook/react" target="_blank" rel="noopener">github.com/facebook/react</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">Expo</div>
+        <div class="pkg-license">MIT License &mdash; 650 Industries, Inc.</div>
+        <a href="https://github.com/expo/expo" target="_blank" rel="noopener">github.com/expo/expo</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">NestJS</div>
+        <div class="pkg-license">MIT License &mdash; Kamil Myśliwiec</div>
+        <a href="https://github.com/nestjs/nest" target="_blank" rel="noopener">github.com/nestjs/nest</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">TypeORM</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/typeorm/typeorm" target="_blank" rel="noopener">github.com/typeorm/typeorm</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>UI & Navigation</h2>
+      <div class="pkg">
+        <div class="pkg-name">React Navigation</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/react-navigation/react-navigation" target="_blank" rel="noopener">github.com/react-navigation/react-navigation</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">React Native Paper</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/callstack/react-native-paper" target="_blank" rel="noopener">github.com/callstack/react-native-paper</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">@expo/vector-icons</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/expo/vector-icons" target="_blank" rel="noopener">github.com/expo/vector-icons</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">React Native Maps</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/react-native-maps/react-native-maps" target="_blank" rel="noopener">github.com/react-native-maps/react-native-maps</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Data & Networking</h2>
+      <div class="pkg">
+        <div class="pkg-name">Axios</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/axios/axios" target="_blank" rel="noopener">github.com/axios/axios</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">@tanstack/react-query</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/TanStack/query" target="_blank" rel="noopener">github.com/TanStack/query</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">i18next / react-i18next</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/i18next/react-i18next" target="_blank" rel="noopener">github.com/i18next/react-i18next</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Authentication & Payments</h2>
+      <div class="pkg">
+        <div class="pkg-name">react-native-purchases (RevenueCat)</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/RevenueCat/react-native-purchases" target="_blank" rel="noopener">github.com/RevenueCat/react-native-purchases</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">@paddle/paddle-js</div>
+        <div class="pkg-license">Apache-2.0 License</div>
+        <a href="https://github.com/PaddleHQ/paddle-js" target="_blank" rel="noopener">github.com/PaddleHQ/paddle-js</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">@react-native-google-signin/google-signin</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/react-native-google-signin/google-signin" target="_blank" rel="noopener">github.com/react-native-google-signin/google-signin</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">Passport.js</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/jaredhanson/passport" target="_blank" rel="noopener">github.com/jaredhanson/passport</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Monitoring & Analytics</h2>
+      <div class="pkg">
+        <div class="pkg-name">@sentry/react-native</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/getsentry/sentry-react-native" target="_blank" rel="noopener">github.com/getsentry/sentry-react-native</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">@sentry/nestjs</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/getsentry/sentry-javascript" target="_blank" rel="noopener">github.com/getsentry/sentry-javascript</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Utilities</h2>
+      <div class="pkg">
+        <div class="pkg-name">Luxon</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/moment/luxon" target="_blank" rel="noopener">github.com/moment/luxon</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">sanitize-html</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/apostrophecms/sanitize-html" target="_blank" rel="noopener">github.com/apostrophecms/sanitize-html</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">class-validator / class-transformer</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/typestack/class-validator" target="_blank" rel="noopener">github.com/typestack/class-validator</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">bcrypt</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/kelektiv/node.bcrypt.js" target="_blank" rel="noopener">github.com/kelektiv/node.bcrypt.js</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-name">QRCode</div>
+        <div class="pkg-license">MIT License</div>
+        <a href="https://github.com/soldair/node-qrcode" target="_blank" rel="noopener">github.com/soldair/node-qrcode</a>
+      </div>
+    </div>
+
+    <p style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 24px;">
+      &copy; 2024-2026 AI Soft. All rights reserved.<br>
+      For questions about licensing, contact support@mytravel-planner.com
+    </p>
+  </div>
+</body>
+</html>
