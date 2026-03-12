@@ -11,7 +11,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { randomUUID, randomBytes } from 'crypto';
+import { randomUUID, randomBytes, createHash } from 'crypto';
 import { generateSecret, generateURI, verifySync } from 'otplib';
 import * as QRCode from 'qrcode';
 import { OAuth2Client } from 'google-auth-library';
@@ -244,21 +244,12 @@ export class AuthService {
       if (payload.jti) {
         const stored = await this.cacheManager.get(`refresh:${payload.jti}`);
         if (!stored) {
-          // JTI missing from Redis — could be eviction or genuine revocation.
-          // Check if the user exists and account is active before allowing.
-          // JWT signature + expiry already verified above, so this is safe.
-          const userExists = await this.usersService
-            .findById(payload.sub)
-            .catch(() => null);
-          if (!userExists) {
-            this.logger.warn(
-              `Refresh token for non-existent user ${payload.sub}`,
-            );
-            throw new UnauthorizedException('Refresh token revoked');
-          }
+          // JTI not found in Redis — either revoked or evicted.
+          // Reject to prevent replay attacks with previously-used tokens.
           this.logger.warn(
-            `Refresh JTI missing from Redis for user ${payload.sub} — allowing (possible eviction)`,
+            `Refresh JTI ${payload.jti} not found in Redis for user ${payload.sub} — rejecting`,
           );
+          throw new UnauthorizedException('Refresh token revoked');
         } else {
           // Invalidate old refresh token (one-time use)
           await this.cacheManager.del(`refresh:${payload.jti}`);
@@ -566,19 +557,24 @@ export class AuthService {
     }
 
     // Generate backup codes using CSPRNG
-    const backupCodes: string[] = [];
+    const plainBackupCodes: string[] = [];
     for (let i = 0; i < 8; i++) {
-      backupCodes.push(randomBytes(5).toString('hex').toUpperCase());
+      plainBackupCodes.push(randomBytes(5).toString('hex').toUpperCase());
     }
 
-    await this.usersService.enableTwoFactor(userId, backupCodes);
+    // Store hashed codes (SHA-256 + userId as salt) to protect against DB leaks
+    const hashedCodes = plainBackupCodes.map((code) =>
+      this.hashBackupCode(code, userId),
+    );
+
+    await this.usersService.enableTwoFactor(userId, hashedCodes);
     this.auditService
       .log({ userId, action: AuditAction.TWO_FACTOR_ENABLE })
       .catch((err) => {
         this.logger.warn(`Failed to update login metadata: ${err.message}`);
       });
 
-    return { backupCodes };
+    return { backupCodes: plainBackupCodes };
   }
 
   async disableTwoFactor(userId: string, code: string) {
@@ -671,8 +667,8 @@ export class AuthService {
         );
       }
 
-      const codeUpper = code.toUpperCase();
-      const idx = user.twoFactorBackupCodes.indexOf(codeUpper);
+      const codeHash = this.hashBackupCode(code.toUpperCase(), user.id);
+      const idx = user.twoFactorBackupCodes.indexOf(codeHash);
       if (idx !== -1) {
         isValid = true;
         usedBackupCode = true;
@@ -745,15 +741,26 @@ export class AuthService {
       throw new UnauthorizedException('Invalid 2FA code');
     }
 
-    const backupCodes: string[] = [];
+    const plainBackupCodes: string[] = [];
     for (let i = 0; i < 8; i++) {
-      backupCodes.push(randomBytes(5).toString('hex').toUpperCase());
+      plainBackupCodes.push(randomBytes(5).toString('hex').toUpperCase());
     }
 
-    await this.usersService.updateBackupCodes(userId, backupCodes);
+    // Store hashed codes
+    const hashedCodes = plainBackupCodes.map((code) =>
+      this.hashBackupCode(code, userId),
+    );
+
+    await this.usersService.updateBackupCodes(userId, hashedCodes);
     this.logger.log(`Backup codes regenerated for user ${userId}`);
 
-    return { backupCodes };
+    return { backupCodes: plainBackupCodes };
+  }
+
+  private hashBackupCode(code: string, userId: string): string {
+    return createHash('sha256')
+      .update(code + userId)
+      .digest('hex');
   }
 
   private async generateTokens(userId: string, email: string) {

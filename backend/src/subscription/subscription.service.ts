@@ -144,9 +144,15 @@ export class SubscriptionService {
       .where('user.revenuecatAppUserId = :appUserId', { appUserId })
       .getOne();
     if (!user) {
-      user = await this.userRepository.findOne({
-        where: { id: appUserId },
-      });
+      // appUserId might be our UUID user ID; guard against invalid UUID format
+      // which would cause a PostgreSQL cast error
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (uuidRegex.test(appUserId)) {
+        user = await this.userRepository.findOne({
+          where: { id: appUserId },
+        });
+      }
     }
 
     if (!user) {
@@ -194,7 +200,41 @@ export class SubscriptionService {
         break;
       }
 
-      case 'CANCELLATION':
+      case 'CANCELLATION': {
+        // CANCELLATION means auto-renew was turned off, but the current period
+        // is still valid.  Keep PREMIUM until expiration_at_ms, then EXPIRATION
+        // event will fire.  Only update the expiry so isUserPremium() naturally
+        // downgrades once the period ends.
+        const cancelExpiresAt = event.expiration_at_ms
+          ? new Date(parseInt(event.expiration_at_ms, 10))
+          : null;
+        if (cancelExpiresAt && cancelExpiresAt > new Date()) {
+          await this.userRepository.update(user.id, {
+            subscriptionExpiresAt: cancelExpiresAt,
+          });
+          // Keep cache valid only until expiry
+          const remainingMs = cancelExpiresAt.getTime() - Date.now();
+          await this.cacheManager.set(
+            `premium:${user.id}`,
+            'true',
+            Math.min(remainingMs, PREMIUM_CACHE_TTL),
+          );
+          this.logger.log(
+            `User ${user.id} CANCELLATION — premium until ${cancelExpiresAt.toISOString()}`,
+          );
+        } else {
+          // No future expiry or already past — downgrade immediately
+          await this.userRepository.update(user.id, {
+            subscriptionTier: SubscriptionTier.FREE,
+          });
+          await this.cacheManager.del(`premium:${user.id}`);
+          this.logger.log(
+            `User ${user.id} downgraded to FREE (CANCELLATION, no remaining period)`,
+          );
+        }
+        break;
+      }
+
       case 'EXPIRATION':
       case 'BILLING_ISSUE': {
         await this.userRepository.update(user.id, {

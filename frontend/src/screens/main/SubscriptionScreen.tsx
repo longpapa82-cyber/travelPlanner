@@ -21,13 +21,15 @@ const SubscriptionScreen = () => {
   const { isPremium, subscriptionTier, expiresAt, aiTripsUsed, aiTripsRemaining, showPaywall } = usePremium();
   const { theme, isDark } = useTheme();
 
-  const openManageSubscription = () => {
+  const openManageSubscription = async () => {
     if (Platform.OS === 'ios') {
       Linking.openURL('https://apps.apple.com/account/subscriptions');
     } else if (Platform.OS === 'android') {
       Linking.openURL('https://play.google.com/store/account/subscriptions?package=com.longpapa82.travelplanner');
     } else {
-      Linking.openURL('https://mytravel-planner.com/api/subscription/paddle/portal');
+      // Web subscriptions are managed via Paddle customer portal.
+      // Paddle sends management links via email; open the main site as fallback.
+      Linking.openURL('https://mytravel-planner.com/subscription');
     }
   };
 
