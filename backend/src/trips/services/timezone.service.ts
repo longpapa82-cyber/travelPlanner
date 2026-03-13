@@ -153,8 +153,8 @@ export class TimezoneService {
       return null;
     }
 
-    // Redis cache: round coordinates to 2 decimals (~1.1km precision, same city)
-    const cacheKey = `tz:${latitude.toFixed(2)}:${longitude.toFixed(2)}`;
+    // Redis cache: round coordinates to 1 decimal (~11km precision, same timezone zone)
+    const cacheKey = `tz:${latitude.toFixed(1)}:${longitude.toFixed(1)}`;
 
     // Check cache (timezone data is very stable — 30 day TTL)
     const cached = await this.cacheManager.get<{

@@ -141,8 +141,8 @@ export class WeatherService {
         icon: closestForecast.weather[0].icon,
       };
 
-      // Cache for 30 minutes
-      await this.cacheManager.set(cacheKey, result, 1800000);
+      // Cache for 6 hours (weather forecasts are stable enough)
+      await this.cacheManager.set(cacheKey, result, 6 * 60 * 60 * 1000);
       // Fire-and-forget: log API usage
       this.apiUsageService
         ?.logApiUsage({
@@ -334,10 +334,10 @@ export class WeatherService {
           icon: closestForecast.weather[0].icon,
         };
 
-        // Cache each day individually (30 min TTL)
+        // Cache each day individually (6 hour TTL)
         const dateStr = date.toISOString().split('T')[0];
         const cacheKey = `weather:${latitude.toFixed(2)}:${longitude.toFixed(2)}:${dateStr}`;
-        await this.cacheManager.set(cacheKey, weatherData, 1800000);
+        await this.cacheManager.set(cacheKey, weatherData, 6 * 60 * 60 * 1000);
 
         result.set(dayIndex + 1, weatherData);
       }

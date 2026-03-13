@@ -23,6 +23,8 @@ export class GeocodingService {
   private static readonly LOCATIONIQ_RATE_MS = 500; // 2 req/sec
   private static readonly MAX_BATCH_SIZE = 30;
   private static readonly MAX_QUERY_LENGTH = 500;
+  private static readonly LOCATIONIQ_DAILY_LIMIT = 5000;
+  private static readonly LOCATIONIQ_WARN_THRESHOLD = 4500;
   private lastLocationIQCall = 0;
   private readonly locationIQKey: string | null;
   private readonly googleMapsKey: string | null;
@@ -192,9 +194,46 @@ export class GeocodingService {
     return results;
   }
 
+  /**
+   * Check and increment the daily LocationIQ usage counter.
+   * Returns false if daily limit is reached (skip to Google fallback).
+   */
+  private async checkLocationIQDailyLimit(): Promise<boolean> {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const counterKey = `geocoding:locationiq:daily:${today}`;
+      const countStr = await this.cacheManager.get<string>(counterKey);
+      const count = countStr ? parseInt(String(countStr), 10) : 0;
+
+      if (count >= GeocodingService.LOCATIONIQ_DAILY_LIMIT) {
+        this.logger.warn(
+          `LocationIQ daily limit reached (${count}/${GeocodingService.LOCATIONIQ_DAILY_LIMIT}), using Google Maps fallback`,
+        );
+        return false;
+      }
+
+      if (count >= GeocodingService.LOCATIONIQ_WARN_THRESHOLD) {
+        this.logger.warn(
+          `LocationIQ daily usage high: ${count}/${GeocodingService.LOCATIONIQ_DAILY_LIMIT}`,
+        );
+      }
+
+      // Increment counter (TTL: 25 hours to cover timezone differences)
+      await this.cacheManager.set(counterKey, String(count + 1), 25 * 60 * 60 * 1000);
+      return true;
+    } catch {
+      // On counter failure, allow the call (fail-open)
+      return true;
+    }
+  }
+
   private async geocodeViaLocationIQ(
     query: string,
   ): Promise<GeocodingResult | null> {
+    // Check daily limit before making the call
+    const allowed = await this.checkLocationIQDailyLimit();
+    if (!allowed) return null;
+
     // Rate limiting
     const now = Date.now();
     const waitMs =
