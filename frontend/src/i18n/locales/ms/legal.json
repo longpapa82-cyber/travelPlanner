@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "Bagaimana cara mendaftar?",
-        "a": "Anda boleh mendaftar dengan e-mel atau mendaftar dengan cepat menggunakan akaun Google, Apple, atau Kakao. Log masuk sosial tidak memerlukan kata laluan berasingan."
+        "a": "Anda boleh mendaftar dengan e-mel atau dengan cepat menggunakan akaun Google atau Kakao. Log masuk Apple juga tersedia di iOS. Log masuk sosial tidak memerlukan kata laluan berasingan."
       },
       "createTrip": {
         "q": "Bagaimana cara membuat pelan perjalanan?",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Terma Perkhidmatan",
-    "effectiveDate": "Berkuat kuasa: 1 Mac 2026",
+    "effectiveDate": "Berkuat kuasa: 13 Mac 2026",
     "articles": {
       "art1": {
         "title": "Perkara 1 (Tujuan)",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "Dasar Privasi",
-    "effectiveDate": "Berkuat kuasa: 1 Mac 2026",
+    "effectiveDate": "Berkuat kuasa: 13 Mac 2026",
     "articles": {
       "art1": {
         "title": "1. Maklumat Yang Kami Kumpul",

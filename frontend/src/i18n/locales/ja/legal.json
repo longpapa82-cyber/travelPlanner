@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "会員登録はどうすればいいですか？",
-        "a": "メールで直接登録するか、Google・Apple・Kakaoアカウントで簡単に登録できます。ソーシャルログインはパスワード不要ですぐにご利用いただけます。"
+        "a": "メールで直接登録するか、Google・Kakaoアカウントで簡単に登録できます。iOSではAppleログインも利用できます。ソーシャルログインは別途パスワード不要です。"
       },
       "createTrip": {
         "q": "旅行計画はどう作りますか？",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "利用規約",
-    "effectiveDate": "施行日: 2025年3月1日",
+    "effectiveDate": "施行日: 2026年3月13日",
     "articles": {
       "art1": {
         "title": "第1条（目的）",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "プライバシーポリシー",
-    "effectiveDate": "施行日: 2025年3月1日",
+    "effectiveDate": "施行日: 2026年3月13日",
     "articles": {
       "art1": {
         "title": "1. 収集する個人情報",

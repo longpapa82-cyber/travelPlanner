@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "Comment m'inscrire ?",
-        "a": "Vous pouvez vous inscrire avec votre e-mail ou vous enregistrer rapidement via votre compte Google, Apple ou Kakao. La connexion via un réseau social ne nécessite pas de mot de passe séparé."
+        "a": "Vous pouvez vous inscrire par e-mail ou rapidement avec un compte Google ou Kakao. La connexion Apple est aussi disponible sur iOS. La connexion sociale ne nécessite pas de mot de passe séparé."
       },
       "createTrip": {
         "q": "Comment créer un plan de voyage ?",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Conditions d'utilisation",
-    "effectiveDate": "En vigueur à compter du : 1er mars 2025",
+    "effectiveDate": "En vigueur à compter du : 13 mars 2026",
     "articles": {
       "art1": {
         "title": "Article 1 (Objet)",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "Politique de confidentialité",
-    "effectiveDate": "En vigueur à compter du : 1er mars 2025",
+    "effectiveDate": "En vigueur à compter du : 13 mars 2026",
     "articles": {
       "art1": {
         "title": "1. Informations que nous collectons",

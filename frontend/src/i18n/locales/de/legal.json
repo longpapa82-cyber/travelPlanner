@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "Wie registriere ich mich?",
-        "a": "Sie können sich per E-Mail oder schnell über Google, Apple oder Kakao registrieren. Bei Social Login ist kein separates Passwort erforderlich."
+        "a": "Sie können sich mit Ihrer E-Mail registrieren oder schnell mit Google- oder Kakao-Konten anmelden. Auf iOS ist auch die Apple-Anmeldung verfügbar. Soziale Anmeldung erfordert kein separates Passwort."
       },
       "createTrip": {
         "q": "Wie erstelle ich einen Reiseplan?",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Nutzungsbedingungen",
-    "effectiveDate": "Gültig ab: 1. März 2025",
+    "effectiveDate": "Gültig ab: 13. März 2026",
     "articles": {
       "art1": {
         "title": "Artikel 1 (Zweck)",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "Datenschutzrichtlinie",
-    "effectiveDate": "Gültig ab: 1. März 2025",
+    "effectiveDate": "Gültig ab: 13. März 2026",
     "articles": {
       "art1": {
         "title": "1. Erhobene Informationen",

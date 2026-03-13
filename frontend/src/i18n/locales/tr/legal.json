@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "Nasıl kayıt olurum?",
-        "a": "E-posta adresinizle kayıt olabilir veya Google, Apple ya da Kakao hesabınızla hızlıca kayıt yapabilirsiniz. Sosyal giriş için ayrı bir şifre gerekmez."
+        "a": "E-posta ile kaydolabilir veya Google ya da Kakao hesaplarıyla hızlıca kayıt olabilirsiniz. iOS'ta Apple ile giriş de mevcuttur. Sosyal giriş ayrı bir şifre gerektirmez."
       },
       "createTrip": {
         "q": "Gezi planı nasıl oluştururum?",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Kullanım Koşulları",
-    "effectiveDate": "Yürürlük: 1 Mart 2026",
+    "effectiveDate": "Yürürlük: 13 Mart 2026",
     "articles": {
       "art1": {
         "title": "Madde 1 (Amaç)",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "Gizlilik Politikası",
-    "effectiveDate": "Yürürlük: 1 Mart 2026",
+    "effectiveDate": "Yürürlük: 13 Mart 2026",
     "articles": {
       "art1": {
         "title": "1. Topladığımız Bilgiler",

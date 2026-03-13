@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "Bagaimana cara mendaftar?",
-        "a": "Anda dapat mendaftar dengan email atau mendaftar cepat menggunakan akun Google, Apple, atau Kakao. Login sosial tidak memerlukan kata sandi terpisah."
+        "a": "Anda dapat mendaftar dengan email atau dengan cepat menggunakan akun Google atau Kakao. Login Apple juga tersedia di iOS. Login sosial tidak memerlukan kata sandi terpisah."
       },
       "createTrip": {
         "q": "Bagaimana cara membuat rencana perjalanan?",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Ketentuan Layanan",
-    "effectiveDate": "Berlaku: 1 Maret 2025",
+    "effectiveDate": "Berlaku: 13 Maret 2026",
     "articles": {
       "art1": {
         "title": "Pasal 1 (Tujuan)",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "Kebijakan Privasi",
-    "effectiveDate": "Berlaku: 1 Maret 2025",
+    "effectiveDate": "Berlaku: 13 Maret 2026",
     "articles": {
       "art1": {
         "title": "1. Informasi yang Kami Kumpulkan",

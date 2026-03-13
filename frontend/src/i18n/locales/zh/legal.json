@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "如何注册？",
-        "a": "您可以使用邮箱注册，也可以通过Google、Apple或Kakao账号快速注册。社交登录无需单独设置密码。"
+        "a": "您可以使用邮箱注册，或使用Google、Kakao账号快速注册。iOS上还支持Apple登录。社交登录无需额外密码。"
       },
       "createTrip": {
         "q": "如何创建旅行计划？",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "服务条款",
-    "effectiveDate": "生效日期：2025年3月1日",
+    "effectiveDate": "生效日期：2026年3月13日",
     "articles": {
       "art1": {
         "title": "第一条（目的）",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "隐私政策",
-    "effectiveDate": "生效日期：2025年3月1日",
+    "effectiveDate": "生效日期：2026年3月13日",
     "articles": {
       "art1": {
         "title": "第一条（收集的个人信息）",

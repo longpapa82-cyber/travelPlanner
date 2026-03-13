@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "Como faço para me cadastrar?",
-        "a": "Você pode se cadastrar com seu e-mail ou rapidamente usando contas do Google, Apple ou Kakao. O login social não requer uma senha separada."
+        "a": "Você pode se cadastrar com e-mail ou rapidamente com contas Google ou Kakao. No iOS, o login com Apple também está disponível. O login social não requer senha separada."
       },
       "createTrip": {
         "q": "Como faço para criar um plano de viagem?",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Termos de Serviço",
-    "effectiveDate": "Vigência: 1 de março de 2025",
+    "effectiveDate": "Vigência: 13 de março de 2026",
     "articles": {
       "art1": {
         "title": "Artigo 1 (Objetivo)",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "Política de Privacidade",
-    "effectiveDate": "Vigência: 1 de março de 2025",
+    "effectiveDate": "Vigência: 13 de março de 2026",
     "articles": {
       "art1": {
         "title": "1. Informações que Coletamos",

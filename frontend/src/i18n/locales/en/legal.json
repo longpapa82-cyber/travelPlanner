@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "How do I sign up?",
-        "a": "You can sign up with your email or quickly register using Google, Apple, or Kakao accounts. Social login doesn't require a separate password."
+        "a": "You can sign up with your email or quickly register using Google or Kakao accounts. Apple Sign-In is also available on iOS. Social login doesn't require a separate password."
       },
       "createTrip": {
         "q": "How do I create a trip plan?",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Terms of Service",
-    "effectiveDate": "Effective: March 1, 2026",
+    "effectiveDate": "Effective: March 13, 2026",
     "articles": {
       "art1": {
         "title": "Article 1 (Purpose)",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "effectiveDate": "Effective: March 1, 2026",
+    "effectiveDate": "Effective: March 13, 2026",
     "articles": {
       "art1": {
         "title": "1. Information We Collect",
