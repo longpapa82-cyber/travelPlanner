@@ -5,6 +5,7 @@ import { AIService } from './ai.service';
 import { AnalyticsService } from './analytics.service';
 import { TemplateService } from './template.service';
 import { TimezoneService } from './timezone.service';
+import { ApiUsageService } from '../../admin/api-usage.service';
 
 // Mock OpenAI
 jest.mock('openai', () => {
@@ -110,6 +111,7 @@ describe('AIService', () => {
         { provide: AnalyticsService, useValue: analyticsService },
         { provide: TemplateService, useValue: templateService },
         { provide: TimezoneService, useValue: timezoneService },
+        { provide: ApiUsageService, useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) } },
       ],
     }).compile();
 
@@ -136,6 +138,7 @@ describe('AIService', () => {
           { provide: AnalyticsService, useValue: analyticsService },
           { provide: TemplateService, useValue: templateService },
           { provide: TimezoneService, useValue: timezoneService },
+          { provide: ApiUsageService, useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) } },
         ],
       }).compile();
 
@@ -155,6 +158,7 @@ describe('AIService', () => {
           { provide: AnalyticsService, useValue: analyticsService },
           { provide: TemplateService, useValue: templateService },
           { provide: TimezoneService, useValue: timezoneService },
+          { provide: ApiUsageService, useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) } },
         ],
       }).compile();
 
