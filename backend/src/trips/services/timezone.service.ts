@@ -91,6 +91,7 @@ export class TimezoneService {
       return null;
     }
 
+    const startTime = Date.now();
     try {
       const response = await this.googleMapsClient.geocode({
         params: {
@@ -109,6 +110,17 @@ export class TimezoneService {
       const result = response.data.results[0];
       const location = result.geometry.location;
 
+      // Google Maps Geocoding: $5/1000 requests
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'google_maps',
+          feature: 'geocoding',
+          status: 'success',
+          costUsd: 0.005,
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
+
       return {
         latitude: location.lat,
         longitude: location.lng,
@@ -118,6 +130,15 @@ export class TimezoneService {
       this.logger.error(
         `Failed to geocode destination "${this.sanitizeForLog(destination)}": ${this.safeErrorMessage(error)}`,
       );
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'google_maps',
+          feature: 'geocoding',
+          status: 'error',
+          errorCode: this.safeErrorMessage(error).slice(0, 100),
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
       return null;
     }
   }
