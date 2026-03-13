@@ -61,21 +61,52 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 - **대시보드**: vendors.paddle.com
 - **계정 생성**: 2026-03-10
-- **사업자 인증**: 제출 완료, Step 3 Identity checks 검토 중 (~3/14 예상)
+- **사업자 인증**: 제출 완료, Step 1~2 완료, Step 3 Identity checks 검토 중, Step 4 Final review 대기 (~3/14~15 예상)
 - **비즈니스명**: AI Soft (에이아이소프트)
 - **도메인**: mytravel-planner.com
 - **프로덕션 env 교체**: 인증 완료 후 진행 (API Key, Webhook Secret, Price IDs, Client Token)
 
-## Admin Enhancement Plan (2026-03-11~)
+## Play Store 앱 서명 키 SHA-256
 
-### 1. API 사용량 대시보드 (신규)
+- **앱 서명 키 SHA-256**: `E7:06:3F:BE:01:C4:47:BF:7C:50:01:79:48:49:7F:72:AB:51:76:B0:27:85:DB:84:C9:01:CE:7A:91:E8:70:7A`
+- **assetlinks.json**: 등록 완료 ✅ (App Links 검증 정상)
+
+## QA 마스터 플랜 (2026-03-12~16)
+
+- **계획 문서**: `docs/qa-master-plan.md`
+- **4-Layer QA**: Playwright E2E (38+5 spec) + Auto-QA + Security-QA + Publish-QA
+- **Go/No-Go 기준**: P0 0건, P1 0건, 테스트 ≥95%, Play 정책 10/10 PASS
+
+## Admin Enhancement (2026-03-11, 완료)
+
+### 1. API 사용량 대시보드 ✅
 - **엔티티**: ApiUsage (provider, feature, status, tokens, costUsd, latencyMs)
-- **로깅 대상**: ai.service.ts(OpenAI), geocoding.service.ts(LocationIQ), weather(OpenWeather), timezone(Google)
+- **로깅**: ai.service(OpenAI), geocoding(LocationIQ), weather(OpenWeather), timezone(Google) — fire-and-forget
 - **API**: GET /admin/api-usage/{summary,daily,monthly}
-- **UI**: 요약카드 + 비용도넛 + 일별라인차트 + 상세테이블
+- **UI**: ApiUsageDashboardScreen (View-based 차트, 17개 언어)
+- **마이그레이션**: `1740500000000-AddApiUsageTable.ts` (프로덕션 synchronize:false 대응)
 
-### 2. 오류 로그 강화
-- AllExceptionsFilter에서 5xx → ErrorLog DB 자동 기록 (기존: 프론트 ErrorBoundary만)
+### 2. 오류 로그 강화 ✅
+- AllExceptionsFilter → 5xx ErrorLog DB 자동 기록 (rate limit 100/min, request.path 사용)
 
-### 3. 수익 대시보드 수정
-- 제휴사 영역 숨김 (제휴 계약 없음), 구독 MRR 가격 수정, AdMob 외부 대시보드 안내
+### 3. 수익 대시보드 수정 ✅
+- 제휴사 영역 제거, AdMob 외부 대시보드 안내 (i18n 17개 언어)
+
+## QA Day 2 결과 (2026-03-13, 완료)
+
+### Security-QA Layer 3~4 ✅
+- SQL Injection, XSS, CSRF, Rate Limiting, CORS, IDOR, Mass Assignment, Webhook 검증 — 전항목 PASS
+
+### Auto-QA Category C~D ✅
+- **P0 fix**: timezoneOffset hours→minutes 변환 버그 (trip-progress.helper.ts)
+- 나머지 항목 PASS
+
+### Publish-QA Category 3~5 ✅
+- **OSS 라이선스**: licenses.html 생성 + ProfileScreen 메뉴 추가 (17개 언어)
+- **CCPA**: privacy-en.html Section 11 "California Residents" 추가
+- **effectiveDate**: 17개 언어 모두 2026-03-13으로 통일
+- **Apple 로그인**: iOS 전용 명시 (legal.json 17개 언어 + 스토어 설명 ko/en/ja)
+
+### 결제 프로필 변경 요청
+- 결제 프로필 ID: 9519-2519-9017
+- 개인→비즈니스 유형 변경 티켓 제출 (Play Console, ~2영업일)

@@ -218,6 +218,15 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     }, [])
   );
 
+  // Clean up search debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     if (!isLoading) {
       Animated.parallel([

@@ -144,12 +144,13 @@
       "all": "All Users",
       "premium": "Premium",
       "free": "Free"
-    ,
-  "admobDashboardNote": "Consultez les revenus publicitaires AdMob dans le tableau de bord AdMob"
-}
-  ,
-  "admobDashboardNote": "Consultez les revenus publicitaires AdMob dans le tableau de bord AdMob"
-}
-,
+    },
+    "loadFailed": "Failed to load announcement",
+    "saveFailed": "Failed to save announcement",
+    "deleteFailed": "Failed to delete announcement",
+    "updateFailed": "Failed to update announcement",
+    "titlePlaceholderEn": "Enter title (English)",
+    "contentPlaceholderEn": "Enter content (English)"
+  },
   "admobDashboardNote": "Consultez les revenus publicitaires AdMob dans le tableau de bord AdMob"
 }

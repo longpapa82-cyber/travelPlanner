@@ -165,7 +165,7 @@ export class EmailService {
 
       if (this.isDev && result?.message) {
         this.logger.debug(
-          `[DEV] Password reset email for ${email}:\n` + `  URL: ${resetUrl}`,
+          `[DEV] Password reset email for ${maskEmail(email)} (token: ${token.slice(0, 8)}...)`,
         );
       }
 
@@ -175,7 +175,7 @@ export class EmailService {
         `Failed to send password reset email to ${maskEmail(email)}: ${getErrorMessage(error)}`,
       );
       if (!this.isDev) throw error;
-      this.logger.warn(`[DEV] Email send failed but reset URL: ${resetUrl}`);
+      this.logger.warn(`[DEV] Email send failed for ${maskEmail(email)} (token: ${token.slice(0, 8)}...)`);
     }
   }
 }

@@ -70,7 +70,7 @@ const AnnouncementManagementScreen: React.FC<Props> = ({ navigation }) => {
               await apiService.deleteAnnouncement(id);
               fetchAnnouncements(1);
             } catch {
-              Alert.alert('Error', 'Failed to delete announcement');
+              Alert.alert(t('announcements.validation'), t('announcements.deleteFailed'));
             }
           },
         },
@@ -87,7 +87,7 @@ const AnnouncementManagementScreen: React.FC<Props> = ({ navigation }) => {
       }
       fetchAnnouncements(1);
     } catch {
-      Alert.alert('Error', 'Failed to update announcement');
+      Alert.alert(t('announcements.validation'), t('announcements.updateFailed'));
     }
   };
 

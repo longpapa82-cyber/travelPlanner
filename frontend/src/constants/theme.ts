@@ -503,7 +503,7 @@ export const theme = {
     surface: colors.neutral[0],
     card: colors.neutral[0],
     text: colors.neutral[700],
-    textSecondary: colors.neutral[400],
+    textSecondary: colors.neutral[500],
     textTertiary: colors.neutral[500],
     white: colors.neutral[0],
 

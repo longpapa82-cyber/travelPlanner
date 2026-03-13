@@ -1,8 +1,11 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import * as Localization from 'expo-localization';
+import { I18nManager, Platform } from 'react-native';
 import { secureStorage } from '../utils/storage';
 import { STORAGE_KEYS } from '../constants/config';
+
+const RTL_LANGUAGES: readonly string[] = ['ar'] as const;
 
 import ko_common from './locales/ko/common.json';
 import ko_auth from './locales/ko/auth.json';
@@ -496,6 +499,12 @@ export async function initI18n(): Promise<void> {
 
   const language = (savedLang as SupportedLanguage) || detectDeviceLanguage();
 
+  const isRTL = RTL_LANGUAGES.includes(language);
+  if (I18nManager.isRTL !== isRTL) {
+    I18nManager.allowRTL(isRTL);
+    I18nManager.forceRTL(isRTL);
+  }
+
   await i18n.use(initReactI18next).init({
     resources,
     lng: language,
@@ -512,6 +521,11 @@ export async function initI18n(): Promise<void> {
 }
 
 export async function changeLanguage(lang: SupportedLanguage): Promise<void> {
+  const isRTL = RTL_LANGUAGES.includes(lang);
+  if (I18nManager.isRTL !== isRTL) {
+    I18nManager.allowRTL(isRTL);
+    I18nManager.forceRTL(isRTL);
+  }
   await i18n.changeLanguage(lang);
   await secureStorage.setItem(STORAGE_KEYS.LANGUAGE, lang);
 }

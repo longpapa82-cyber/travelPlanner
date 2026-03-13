@@ -442,6 +442,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   // Keep ref in sync so handleAiConsentAccept always calls latest doCreateTrip
   doCreateTripRef.current = doCreateTrip;
 
+  // Clean up timers and abort controller on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
   const formatDateForDisplay = (dateString: string): string => {
     if (!dateString) return '';
     const date = new Date(dateString);
