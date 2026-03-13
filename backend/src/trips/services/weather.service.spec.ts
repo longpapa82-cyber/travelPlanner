@@ -145,7 +145,7 @@ describe('WeatherService', () => {
       expect(cacheManager.set).toHaveBeenCalledWith(
         expect.stringContaining('weather:35.68:139.76'),
         result,
-        1800000,
+        6 * 60 * 60 * 1000,
       );
     });
 
