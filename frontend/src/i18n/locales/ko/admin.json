@@ -144,12 +144,13 @@
       "all": "전체",
       "premium": "프리미엄",
       "free": "무료"
-    ,
-  "admobDashboardNote": "AdMob 광고 수익은 AdMob 대시보드에서 확인하세요"
-}
-  ,
-  "admobDashboardNote": "AdMob 광고 수익은 AdMob 대시보드에서 확인하세요"
-}
-,
+    },
+    "loadFailed": "공지사항을 불러오지 못했습니다",
+    "saveFailed": "공지사항을 저장하지 못했습니다",
+    "deleteFailed": "공지사항을 삭제하지 못했습니다",
+    "updateFailed": "공지사항을 수정하지 못했습니다",
+    "titlePlaceholderEn": "제목 입력 (영어)",
+    "contentPlaceholderEn": "내용 입력 (영어)"
+  },
   "admobDashboardNote": "AdMob 광고 수익은 AdMob 대시보드에서 확인하세요"
 }

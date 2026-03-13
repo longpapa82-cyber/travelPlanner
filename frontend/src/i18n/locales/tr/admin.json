@@ -144,12 +144,13 @@
       "all": "All Users",
       "premium": "Premium",
       "free": "Free"
-    ,
-  "admobDashboardNote": "AdMob reklam gelirlerini AdMob panelinde kontrol edin"
-}
-  ,
-  "admobDashboardNote": "AdMob reklam gelirlerini AdMob panelinde kontrol edin"
-}
-,
+    },
+    "loadFailed": "Failed to load announcement",
+    "saveFailed": "Failed to save announcement",
+    "deleteFailed": "Failed to delete announcement",
+    "updateFailed": "Failed to update announcement",
+    "titlePlaceholderEn": "Enter title (English)",
+    "contentPlaceholderEn": "Enter content (English)"
+  },
   "admobDashboardNote": "AdMob reklam gelirlerini AdMob panelinde kontrol edin"
 }

@@ -63,3 +63,6 @@ frontend/web-build/
 *.cert
 secrets/
 uploads/oracleCloudKey/
+
+# Database backups
+backups/

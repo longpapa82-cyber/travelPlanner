@@ -241,7 +241,7 @@ const AnnouncementFormScreen: React.FC<Props> = ({ navigation, route }) => {
       setStartDate(data.startDate ? new Date(data.startDate).toISOString().slice(0, 16) : '');
       setEndDate(data.endDate ? new Date(data.endDate).toISOString().slice(0, 16) : '');
     } catch {
-      Alert.alert('Error', 'Failed to load announcement');
+      Alert.alert(t('announcements.validation'), t('announcements.loadFailed'));
       navigation.goBack();
     } finally {
       setIsLoading(false);
@@ -283,7 +283,7 @@ const AnnouncementFormScreen: React.FC<Props> = ({ navigation, route }) => {
       }
       navigation.goBack();
     } catch {
-      Alert.alert('Error', 'Failed to save announcement');
+      Alert.alert(t('announcements.validation'), t('announcements.saveFailed'));
     } finally {
       setIsSaving(false);
     }
@@ -355,7 +355,7 @@ const AnnouncementFormScreen: React.FC<Props> = ({ navigation, route }) => {
           style={[styles.input, { backgroundColor: theme.colors.white, color: theme.colors.text, borderColor: theme.colors.border }]}
           value={titleEn}
           onChangeText={setTitleEn}
-          placeholder="Title (English)"
+          placeholder={t('announcements.titlePlaceholderEn')}
           placeholderTextColor={theme.colors.textSecondary}
         />
       </View>
@@ -379,7 +379,7 @@ const AnnouncementFormScreen: React.FC<Props> = ({ navigation, route }) => {
           style={[styles.input, styles.textArea, { backgroundColor: theme.colors.white, color: theme.colors.text, borderColor: theme.colors.border }]}
           value={contentEn}
           onChangeText={setContentEn}
-          placeholder="Content (English)"
+          placeholder={t('announcements.contentPlaceholderEn')}
           placeholderTextColor={theme.colors.textSecondary}
           multiline
           numberOfLines={4}
