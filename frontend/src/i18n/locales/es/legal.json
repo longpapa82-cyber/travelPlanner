@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "¿Cómo me registro?",
-        "a": "Puedes registrarte con tu correo electrónico o rápidamente con tu cuenta de Google, Apple o Kakao. El inicio de sesión social no requiere contraseña adicional."
+        "a": "Puedes registrarte con tu correo electrónico o rápidamente con cuentas de Google o Kakao. En iOS también está disponible el inicio de sesión con Apple. El inicio de sesión social no requiere contraseña adicional."
       },
       "createTrip": {
         "q": "¿Cómo creo un plan de viaje?",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Términos de servicio",
-    "effectiveDate": "Vigente desde: 1 de marzo de 2025",
+    "effectiveDate": "Vigente desde: 13 de marzo de 2026",
     "articles": {
       "art1": {
         "title": "Artículo 1 (Propósito)",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "Política de privacidad",
-    "effectiveDate": "Vigente desde: 1 de marzo de 2025",
+    "effectiveDate": "Vigente desde: 13 de marzo de 2026",
     "articles": {
       "art1": {
         "title": "1. Información que recopilamos",

@@ -13,7 +13,7 @@
     "gettingStarted": {
       "signup": {
         "q": "Làm sao để đăng ký?",
-        "a": "Bạn có thể đăng ký bằng email hoặc nhanh chóng đăng ký qua tài khoản Google, Apple hoặc Kakao. Đăng nhập qua mạng xã hội không cần mật khẩu riêng."
+        "a": "Bạn có thể đăng ký bằng email hoặc nhanh chóng bằng tài khoản Google hoặc Kakao. Đăng nhập Apple cũng có sẵn trên iOS. Đăng nhập mạng xã hội không cần mật khẩu riêng."
       },
       "createTrip": {
         "q": "Làm sao để tạo kế hoạch du lịch?",
@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Điều khoản dịch vụ",
-    "effectiveDate": "Có hiệu lực: 01 tháng 3, 2025",
+    "effectiveDate": "Có hiệu lực: 13 tháng 3, 2026",
     "articles": {
       "art1": {
         "title": "Điều 1 (Mục đích)",
@@ -223,7 +223,7 @@
   },
   "privacy": {
     "title": "Chính sách quyền riêng tư",
-    "effectiveDate": "Có hiệu lực: 01 tháng 3, 2025",
+    "effectiveDate": "Có hiệu lực: 13 tháng 3, 2026",
     "articles": {
       "art1": {
         "title": "1. Thông tin chúng tôi thu thập",
