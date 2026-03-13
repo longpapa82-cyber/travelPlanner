@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { getErrorMessage } from '../common/types/request.types';
+import { ApiUsageService } from '../admin/api-usage.service';
 
 type SupportedLang =
   | 'ko'
@@ -62,6 +63,7 @@ export class EmailService {
   constructor(
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
+    @Optional() private readonly apiUsageService?: ApiUsageService,
   ) {
     this.frontendUrl =
       this.configService.get<string>('email.frontendUrl') ||
@@ -99,6 +101,7 @@ export class EmailService {
     };
     const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
 
+    const startTime = Date.now();
     try {
       const result = (await this.mailerService.sendMail({
         to: email,
@@ -114,11 +117,28 @@ export class EmailService {
         );
       }
 
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'email',
+          feature: 'email',
+          status: 'success',
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
       this.logger.log(`Verification email sent to ${maskEmail(email)}`);
     } catch (error) {
       this.logger.error(
         `Failed to send verification email to ${maskEmail(email)}: ${getErrorMessage(error)}`,
       );
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'email',
+          feature: 'email',
+          status: 'error',
+          errorCode: getErrorMessage(error).slice(0, 100),
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
       if (!this.isDev) throw error;
       // In dev, log the URL so the developer can still verify
       this.logger.warn(
@@ -155,6 +175,7 @@ export class EmailService {
     };
     const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
 
+    const startTime = Date.now();
     try {
       const result = (await this.mailerService.sendMail({
         to: email,
@@ -169,11 +190,28 @@ export class EmailService {
         );
       }
 
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'email',
+          feature: 'email',
+          status: 'success',
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
       this.logger.log(`Password reset email sent to ${maskEmail(email)}`);
     } catch (error) {
       this.logger.error(
         `Failed to send password reset email to ${maskEmail(email)}: ${getErrorMessage(error)}`,
       );
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'email',
+          feature: 'email',
+          status: 'error',
+          errorCode: getErrorMessage(error).slice(0, 100),
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
       if (!this.isDev) throw error;
       this.logger.warn(`[DEV] Email send failed for ${maskEmail(email)} (token: ${token.slice(0, 8)}...)`);
     }

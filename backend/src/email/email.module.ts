@@ -4,11 +4,13 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { EmailService } from './email.service';
+import { ApiUsageModule } from '../admin/api-usage.module';
 
 const logger = new Logger('EmailModule');
 
 @Module({
   imports: [
+    ApiUsageModule,
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

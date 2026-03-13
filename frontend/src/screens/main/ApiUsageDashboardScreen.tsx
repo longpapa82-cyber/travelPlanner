@@ -34,19 +34,25 @@ interface DailyUsage {
 
 const PROVIDER_COLORS: Record<string, string> = {
   openai: '#10A37F',
+  openai_embedding: '#059669',
   locationiq: '#3B82F6',
+  google_maps: '#4285F4',
   openweather: '#F59E0B',
   google_timezone: '#EF4444',
+  email: '#8B5CF6',
 };
 
 const PROVIDER_LABELS: Record<string, string> = {
   openai: 'OpenAI',
+  openai_embedding: 'Embedding',
   locationiq: 'LocationIQ',
+  google_maps: 'Google Maps',
   openweather: 'OpenWeather',
   google_timezone: 'Google TZ',
+  email: 'Email',
 };
 
-const PROVIDERS = ['openai', 'locationiq', 'openweather', 'google_timezone'];
+const PROVIDERS = ['openai', 'openai_embedding', 'locationiq', 'google_maps', 'openweather', 'google_timezone', 'email'];
 
 type PeriodKey = '7d' | '30d' | 'mtd';
 

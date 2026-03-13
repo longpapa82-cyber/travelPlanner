@@ -259,6 +259,7 @@ export class GeocodingService {
   private async geocodeViaGoogleMaps(
     query: string,
   ): Promise<GeocodingResult | null> {
+    const startTime = Date.now();
     try {
       const response = await withTimeout(
         axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
@@ -272,8 +273,19 @@ export class GeocodingService {
         'Google Maps geocode',
       );
 
+      const latencyMs = Date.now() - startTime;
       if (response.data?.results?.length > 0) {
         const loc = response.data.results[0].geometry.location;
+        // Google Maps Geocoding: $5/1000 requests
+        this.apiUsageService
+          ?.logApiUsage({
+            provider: 'google_maps',
+            feature: 'geocoding',
+            status: 'success',
+            costUsd: 0.005,
+            latencyMs,
+          })
+          .catch(() => {});
         return {
           latitude: loc.lat,
           longitude: loc.lng,
@@ -286,6 +298,15 @@ export class GeocodingService {
       this.logger.warn(
         `Google Maps geocoding failed for "${this.sanitizeForLog(query)}": ${this.safeErrorMessage(error)}`,
       );
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'google_maps',
+          feature: 'geocoding',
+          status: 'error',
+          errorCode: this.safeErrorMessage(error).slice(0, 100),
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
       return null;
     }
   }

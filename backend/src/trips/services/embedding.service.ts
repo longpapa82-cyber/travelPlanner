@@ -1,8 +1,9 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
+import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import OpenAI from 'openai';
 import { getErrorMessage } from '../../common/types/request.types';
+import { ApiUsageService } from '../../admin/api-usage.service';
 
 /** Dimension of text-embedding-3-small vectors */
 export const EMBEDDING_DIMENSIONS = 1536;
@@ -15,6 +16,7 @@ export class EmbeddingService {
   constructor(
     private configService: ConfigService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Optional() private apiUsageService?: ApiUsageService,
   ) {
     const apiKey = this.configService.get<string>('OPENAI_API_KEY');
     if (apiKey && apiKey !== '' && !apiKey.includes('your-')) {
@@ -67,6 +69,7 @@ export class EmbeddingService {
       return cached;
     }
 
+    const startTime = Date.now();
     try {
       const response = await this.openai.embeddings.create({
         model: 'text-embedding-3-small',
@@ -74,6 +77,19 @@ export class EmbeddingService {
       });
 
       const embedding = response.data[0].embedding;
+      const inputTokens = response.usage?.total_tokens ?? text.length / 4;
+      // text-embedding-3-small: $0.02/1M tokens
+      const costUsd = (inputTokens * 0.02) / 1_000_000;
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'openai_embedding',
+          feature: 'embedding',
+          status: 'success',
+          inputTokens,
+          costUsd,
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
 
       // Cache for 7 days
       await this.cacheManager.set(cacheKey, embedding, 7 * 24 * 60 * 60 * 1000);
@@ -82,6 +98,15 @@ export class EmbeddingService {
       this.logger.error(
         `Embedding generation failed: ${getErrorMessage(error)}`,
       );
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'openai_embedding',
+          feature: 'embedding',
+          status: 'error',
+          errorCode: getErrorMessage(error).slice(0, 100),
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
       return null;
     }
   }
@@ -95,11 +120,25 @@ export class EmbeddingService {
       return texts.map(() => null);
     }
 
+    const startTime = Date.now();
     try {
       const response = await this.openai.embeddings.create({
         model: 'text-embedding-3-small',
         input: texts,
       });
+
+      const inputTokens = response.usage?.total_tokens ?? texts.join('').length / 4;
+      const costUsd = (inputTokens * 0.02) / 1_000_000;
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'openai_embedding',
+          feature: 'embedding',
+          status: 'success',
+          inputTokens,
+          costUsd,
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
 
       const results: (number[] | null)[] = texts.map(() => null);
       for (const item of response.data) {
@@ -115,6 +154,15 @@ export class EmbeddingService {
       this.logger.error(
         `Batch embedding generation failed: ${getErrorMessage(error)}`,
       );
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'openai_embedding',
+          feature: 'embedding',
+          status: 'error',
+          errorCode: getErrorMessage(error).slice(0, 100),
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
       return texts.map(() => null);
     }
   }
