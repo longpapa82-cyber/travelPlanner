@@ -118,6 +118,13 @@ export class AppController {
       { loc: '/guides/hawaii', changefreq: 'monthly', priority: '0.85' },
       { loc: '/guides/sydney', changefreq: 'monthly', priority: '0.85' },
       { loc: '/guides/dubai', changefreq: 'monthly', priority: '0.85' },
+      // English Guides
+      { loc: '/guides/index-en', changefreq: 'weekly', priority: '0.9' },
+      { loc: '/guides/tokyo-en', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/osaka-en', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/seoul-en', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/bangkok-en', changefreq: 'monthly', priority: '0.85' },
+      { loc: '/guides/paris-en', changefreq: 'monthly', priority: '0.85' },
       // Blog
       { loc: '/blog', changefreq: 'weekly', priority: '0.8' },
       {
