@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-03-05T12:03:24.413Z",
+  "lastUpdated": "2026-03-15T04:45:59.435Z",
   "activeFeatures": [
     "api.ts",
     "trips",
@@ -53,7 +53,14 @@
     "weather.service.ts",
     "template-warmup.service.ts",
     "template-warmup.service.spec.ts",
-    "guards"
+    "guards",
+    "oauth.service.ts",
+    "googleNativeSignIn.ts",
+    "Button",
+    "tests",
+    "smoke",
+    "filters",
+    "embedding.service.ts"
   ],
   "primaryFeature": "api.ts",
   "features": {
@@ -66,7 +73,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-22T12:19:58.705Z",
-        "lastUpdated": "2026-03-05T08:26:42.813Z"
+        "lastUpdated": "2026-03-11T13:14:42.239Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/services/api.ts"
     },
@@ -79,9 +86,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-22T12:20:07.968Z",
-        "lastUpdated": "2026-03-05T11:59:03.331Z"
+        "lastUpdated": "2026-03-13T07:11:57.971Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/trips/trips.service.spec.ts"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/screens/trips/CreateTripScreen.tsx"
     },
     "frontend": {
       "phase": "do",
@@ -92,9 +99,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-22T12:20:40.456Z",
-        "lastUpdated": "2026-03-05T08:27:58.095Z"
+        "lastUpdated": "2026-03-15T04:45:59.435Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/components/PaywallModal.tsx"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/app.config.js"
     },
     "Modal": {
       "phase": "do",
@@ -170,9 +177,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-22T12:38:17.563Z",
-        "lastUpdated": "2026-03-05T11:42:16.181Z"
+        "lastUpdated": "2026-03-13T08:46:36.790Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/screens/main/ProfileScreen.tsx"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/screens/main/ApiUsageDashboardScreen.tsx"
     },
     "eventTracker.ts": {
       "phase": "do",
@@ -196,9 +203,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-23T12:57:32.998Z",
-        "lastUpdated": "2026-03-02T14:26:06.985Z"
+        "lastUpdated": "2026-03-11T13:15:53.905Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/navigation/RootNavigator.tsx"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/navigation/ProfileNavigator.tsx"
     },
     "auth": {
       "phase": "do",
@@ -209,7 +216,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-23T12:57:58.158Z",
-        "lastUpdated": "2026-03-05T12:02:03.207Z"
+        "lastUpdated": "2026-03-12T12:52:40.038Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/auth/auth.service.ts"
     },
@@ -222,9 +229,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-24T04:20:12.265Z",
-        "lastUpdated": "2026-03-05T11:41:54.420Z"
+        "lastUpdated": "2026-03-14T13:37:48.392Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/app.controller.spec.ts"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/app.controller.ts"
     },
     "contexts": {
       "phase": "do",
@@ -235,9 +242,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-24T06:04:51.253Z",
-        "lastUpdated": "2026-03-05T08:09:51.459Z"
+        "lastUpdated": "2026-03-11T10:55:21.310Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/contexts/AuthContext.tsx"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/contexts/PremiumContext.tsx"
     },
     "admin": {
       "phase": "do",
@@ -248,9 +255,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-24T08:11:13.372Z",
-        "lastUpdated": "2026-03-05T11:40:33.108Z"
+        "lastUpdated": "2026-03-11T13:26:29.199Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/admin/announcement.service.spec.ts"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/admin/api-usage.service.ts"
     },
     "legal": {
       "phase": "do",
@@ -300,9 +307,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-27T01:12:43.548Z",
-        "lastUpdated": "2026-03-05T12:03:08.809Z"
+        "lastUpdated": "2026-03-05T13:42:14.501Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/users/users.module.ts"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/users/users.service.ts"
     },
     "scripts": {
       "phase": "do",
@@ -326,9 +333,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-27T11:08:09.017Z",
-        "lastUpdated": "2026-02-27T11:08:09.017Z"
+        "lastUpdated": "2026-03-12T13:46:35.133Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/tests/helpers/constants.ts"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/trips/helpers/trip-progress.helper.ts"
     },
     "email": {
       "phase": "do",
@@ -339,9 +346,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-27T11:32:41.198Z",
-        "lastUpdated": "2026-03-03T13:48:31.756Z"
+        "lastUpdated": "2026-03-13T08:46:25.034Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/email/email.service.spec.ts"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/email/email.service.ts"
     },
     "social": {
       "phase": "do",
@@ -378,9 +385,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-28T08:24:25.581Z",
-        "lastUpdated": "2026-03-05T08:26:40.929Z"
+        "lastUpdated": "2026-03-08T09:27:26.973Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/utils/__tests__/storage.test.ts"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/contexts/__tests__/AuthContext.test.tsx"
     },
     "ai.service.ts": {
       "phase": "do",
@@ -391,7 +398,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-28T09:04:58.477Z",
-        "lastUpdated": "2026-03-05T04:30:38.311Z"
+        "lastUpdated": "2026-03-11T13:13:18.713Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/trips/services/ai.service.ts"
     },
@@ -404,7 +411,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-28T09:07:26.042Z",
-        "lastUpdated": "2026-03-05T04:30:03.136Z"
+        "lastUpdated": "2026-03-13T09:04:09.378Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/trips/services/template.service.ts"
     },
@@ -430,7 +437,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-28T09:44:48.991Z",
-        "lastUpdated": "2026-02-28T13:07:57.601Z"
+        "lastUpdated": "2026-03-13T07:11:03.515Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/i18n/index.ts"
     },
@@ -443,9 +450,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-28T10:04:16.580Z",
-        "lastUpdated": "2026-03-05T12:01:03.200Z"
+        "lastUpdated": "2026-03-13T07:09:55.866Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/auth/dto/login.dto.ts"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/users/dto/update-travel-preferences.dto.ts"
     },
     "entities": {
       "phase": "do",
@@ -456,9 +463,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-01T01:19:11.225Z",
-        "lastUpdated": "2026-03-04T12:23:52.899Z"
+        "lastUpdated": "2026-03-13T08:44:33.367Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/trips/entities/trip.entity.ts"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/admin/entities/api-usage.entity.ts"
     },
     "Screen": {
       "phase": "do",
@@ -482,7 +489,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-01T02:01:36.015Z",
-        "lastUpdated": "2026-03-05T11:40:38.893Z"
+        "lastUpdated": "2026-03-12T12:38:53.747Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/subscription/subscription.service.ts"
     },
@@ -495,9 +502,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-01T03:39:24.082Z",
-        "lastUpdated": "2026-03-04T12:23:58.338Z"
+        "lastUpdated": "2026-03-11T13:40:46.279Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/migrations/1740300000000-AddAiStatusToTrip.ts"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/migrations/1740500000000-AddApiUsageTable.ts"
     },
     "expenses": {
       "phase": "do",
@@ -534,7 +541,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-02T06:49:57.477Z",
-        "lastUpdated": "2026-03-05T04:24:00.585Z"
+        "lastUpdated": "2026-03-13T09:03:25.500Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/trips/services/timezone.service.ts"
     },
@@ -547,7 +554,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-02T06:52:31.050Z",
-        "lastUpdated": "2026-03-05T12:00:11.018Z"
+        "lastUpdated": "2026-03-13T09:04:01.153Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/common/services/geocoding.service.ts"
     },
@@ -612,9 +619,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-03T07:49:06.976Z",
-        "lastUpdated": "2026-03-03T07:49:57.616Z"
+        "lastUpdated": "2026-03-08T09:23:46.657Z"
       },
-      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/components/ads/AdBanner.tsx"
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/components/ads/AffiliateLink.tsx"
     },
     "strategies": {
       "phase": "do",
@@ -638,7 +645,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-03T13:48:18.131Z",
-        "lastUpdated": "2026-03-03T13:48:18.131Z"
+        "lastUpdated": "2026-03-13T07:10:55.802Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/constants/theme.ts"
     },
@@ -651,7 +658,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-03T13:48:33.565Z",
-        "lastUpdated": "2026-03-05T11:57:47.914Z"
+        "lastUpdated": "2026-03-13T08:19:51.138Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/trips/services/ai.service.spec.ts"
     },
@@ -677,7 +684,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-03T13:48:48.513Z",
-        "lastUpdated": "2026-03-03T13:49:06.090Z"
+        "lastUpdated": "2026-03-13T09:05:34.801Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/trips/services/weather.service.spec.ts"
     },
@@ -690,7 +697,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-05T04:23:06.204Z",
-        "lastUpdated": "2026-03-05T04:23:06.204Z"
+        "lastUpdated": "2026-03-13T09:04:21.635Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/trips/services/weather.service.ts"
     },
@@ -729,9 +736,100 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-05T12:01:05.654Z",
-        "lastUpdated": "2026-03-05T12:01:05.654Z"
+        "lastUpdated": "2026-03-08T10:48:06.146Z"
       },
       "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/auth/guards/admin.guard.ts"
+    },
+    "oauth.service.ts": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-07T10:22:04.733Z",
+        "lastUpdated": "2026-03-08T09:26:53.295Z"
+      },
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/services/oauth.service.ts"
+    },
+    "googleNativeSignIn.ts": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-08T07:39:47.633Z",
+        "lastUpdated": "2026-03-08T07:39:47.633Z"
+      },
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/services/googleNativeSignIn.ts"
+    },
+    "Button": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-08T08:23:55.331Z",
+        "lastUpdated": "2026-03-08T08:23:55.331Z"
+      },
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/frontend/src/components/core/Button/Button.styles.ts"
+    },
+    "tests": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T12:00:03.695Z",
+        "lastUpdated": "2026-03-10T12:00:03.695Z"
+      },
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/tests/playwright.smoke.config.ts"
+    },
+    "smoke": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T12:00:16.744Z",
+        "lastUpdated": "2026-03-10T12:03:00.991Z"
+      },
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/tests/e2e/smoke/gdpr.spec.ts"
+    },
+    "filters": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-11T13:11:44.965Z",
+        "lastUpdated": "2026-03-11T13:26:46.806Z"
+      },
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/common/filters/all-exceptions.filter.ts"
+    },
+    "embedding.service.ts": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-13T08:44:53.404Z",
+        "lastUpdated": "2026-03-13T08:45:18.461Z"
+      },
+      "lastFile": "/Users/hoonjaepark/projects/travelPlanner/backend/src/trips/services/embedding.service.ts"
     }
   },
   "pipeline": {
@@ -742,7 +840,7 @@
   "session": {
     "startedAt": "2026-02-22T12:10:11.243Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-03-05T12:03:24.413Z"
+    "lastActivity": "2026-03-15T04:45:59.435Z"
   },
   "history": [
     {
@@ -5632,6 +5730,1728 @@
     {
       "timestamp": "2026-03-05T12:03:24.413Z",
       "feature": "timezone.service.spec.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:11:16.411Z",
+      "feature": "constants",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:42:07.151Z",
+      "feature": "entities",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:42:10.872Z",
+      "feature": "users",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:42:14.501Z",
+      "feature": "users",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:42:20.380Z",
+      "feature": "migrations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:42:48.099Z",
+      "feature": "subscription",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:43:35.141Z",
+      "feature": "subscription",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:43:58.215Z",
+      "feature": "subscription",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:44:07.644Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:44:13.585Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:44:17.726Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:44:55.379Z",
+      "feature": "api.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:45:01.201Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:45:28.432Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:45:38.079Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:45:42.732Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:46:03.811Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-05T13:46:18.241Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T09:34:17.918Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T09:34:24.297Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T09:43:11.253Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T09:43:23.767Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T09:59:58.759Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T10:00:00.817Z",
+      "feature": "navigation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T10:07:30.869Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T10:07:40.289Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T10:15:22.571Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T10:24:35.033Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T10:24:45.022Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T10:44:30.120Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T10:44:46.251Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T12:40:10.538Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T12:40:18.636Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T12:51:26.023Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T12:51:41.473Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T13:03:59.201Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T13:04:14.893Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-06T13:07:43.235Z",
+      "feature": "subscription",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:38:25.017Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:38:28.934Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:38:33.838Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:38:40.615Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:38:48.990Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:38:57.718Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:39:04.736Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:39:10.386Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:39:42.811Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:39:52.251Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:39:57.183Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:40:07.437Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:40:14.275Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:40:27.885Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:40:45.059Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:41:01.994Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:41:07.777Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:41:16.138Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:41:23.764Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:41:35.629Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:41:40.786Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:43:41.075Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:43:45.777Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:55:14.580Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T04:55:19.762Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:00:53.744Z",
+      "feature": "guards",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:01:01.660Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:01:06.304Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:01:08.591Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:01:10.474Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:01:15.930Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:01:17.534Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:01:27.428Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:01:30.110Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:01:31.644Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:02:40.220Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T05:02:42.908Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T06:40:11.782Z",
+      "feature": "dto",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T06:40:39.062Z",
+      "feature": "subscription",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T08:39:36.280Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T08:39:48.619Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T08:39:54.785Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T08:40:01.542Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T08:40:05.242Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T08:40:09.245Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T08:40:26.548Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T10:21:16.307Z",
+      "feature": "guards",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T10:21:17.852Z",
+      "feature": "guards",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T10:21:19.023Z",
+      "feature": "guards",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T10:21:25.966Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T10:21:31.510Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T10:21:36.880Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T10:21:44.405Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-07T10:22:04.733Z",
+      "feature": "oauth.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:36:44.084Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:36:50.907Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:36:58.255Z",
+      "feature": "navigation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:37:03.099Z",
+      "feature": "navigation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:37:09.465Z",
+      "feature": "navigation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:38:00.234Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:38:08.211Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:38:17.137Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:38:38.161Z",
+      "feature": "api.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:38:52.020Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:38:57.423Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:39:07.028Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:39:47.633Z",
+      "feature": "googleNativeSignIn.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T07:39:52.524Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T08:23:55.331Z",
+      "feature": "Button",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:23:37.726Z",
+      "feature": "ads",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:23:46.657Z",
+      "feature": "ads",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:23:56.103Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:24:01.932Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:24:06.648Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:26:53.295Z",
+      "feature": "oauth.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:26:58.482Z",
+      "feature": "__tests__",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:27:03.736Z",
+      "feature": "__tests__",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:27:09.869Z",
+      "feature": "__tests__",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:27:18.935Z",
+      "feature": "__tests__",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:27:26.973Z",
+      "feature": "__tests__",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:30:01.037Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:30:25.117Z",
+      "feature": "dto",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:30:30.040Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T09:30:40.400Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:47:54.867Z",
+      "feature": "guards",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:48:06.146Z",
+      "feature": "guards",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:48:11.893Z",
+      "feature": "subscription",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:48:16.173Z",
+      "feature": "subscription",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:48:57.659Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:49:03.269Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:49:08.447Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:49:13.911Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:49:19.843Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:54:40.803Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-08T10:54:43.965Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:03.695Z",
+      "feature": "tests",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:16.744Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:18.961Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:24.789Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:27.066Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:32.145Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:35.636Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:41.942Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:47.564Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:56.245Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:00:59.794Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:01:25.834Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:01:52.060Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:03:00.991Z",
+      "feature": "smoke",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:06:11.879Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:06:17.632Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:06:29.942Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:06:39.479Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:06:58.715Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:07:07.369Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:07:16.691Z",
+      "feature": "dto",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:07:21.870Z",
+      "feature": "dto",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:07:27.331Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:08:29.962Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:08:47.010Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:10:05.161Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:10:10.447Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T12:10:31.123Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:54:44.787Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:54:49.778Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:55:03.682Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:55:14.438Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:55:21.310Z",
+      "feature": "contexts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:55:26.259Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:55:34.437Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:55:38.397Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:55:43.795Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:56:04.845Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:56:11.772Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:56:19.449Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:56:22.952Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:56:53.221Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:57:15.084Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:57:19.269Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:57:24.454Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T10:57:45.487Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:11:41.856Z",
+      "feature": "entities",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:11:44.965Z",
+      "feature": "filters",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:02.917Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:11.826Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:14.489Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:18.141Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:27.353Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:27.714Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:32.249Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:36.247Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:43.102Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:47.324Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:49.007Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:50.930Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:12:58.792Z",
+      "feature": "ai.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:02.989Z",
+      "feature": "ai.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:08.938Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:12.268Z",
+      "feature": "ai.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:18.713Z",
+      "feature": "ai.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:24.833Z",
+      "feature": "geocoding.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:29.275Z",
+      "feature": "geocoding.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:30.313Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:37.588Z",
+      "feature": "geocoding.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:40.260Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:43.595Z",
+      "feature": "weather.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:47.198Z",
+      "feature": "weather.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:13:59.086Z",
+      "feature": "weather.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:14:02.241Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:14:08.058Z",
+      "feature": "weather.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:14:13.851Z",
+      "feature": "timezone.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:14:17.501Z",
+      "feature": "timezone.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:14:19.007Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:14:24.255Z",
+      "feature": "timezone.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:14:28.525Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:14:29.496Z",
+      "feature": "timezone.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:14:42.239Z",
+      "feature": "api.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:15:36.607Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:15:41.636Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:15:49.779Z",
+      "feature": "navigation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:15:53.905Z",
+      "feature": "navigation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:16:01.081Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:16:47.968Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:26:22.867Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:26:24.141Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:26:27.567Z",
+      "feature": "filters",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:26:29.199Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:26:31.748Z",
+      "feature": "weather.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:26:34.096Z",
+      "feature": "weather.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:26:34.860Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:26:41.958Z",
+      "feature": "filters",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:26:46.806Z",
+      "feature": "filters",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T13:40:46.279Z",
+      "feature": "migrations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T12:37:41.374Z",
+      "feature": "subscription",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T12:38:15.453Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T12:38:29.089Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T12:38:53.747Z",
+      "feature": "subscription",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T12:52:09.870Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T12:52:18.543Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T12:52:23.798Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T12:52:34.805Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T12:52:40.038Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T13:46:35.133Z",
+      "feature": "helpers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-12T13:52:40.368Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:09:52.254Z",
+      "feature": "dto",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:09:55.866Z",
+      "feature": "dto",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:09:58.057Z",
+      "feature": "email",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:09:59.074Z",
+      "feature": "email",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:10:55.802Z",
+      "feature": "constants",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:00.667Z",
+      "feature": "i18n",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:02.035Z",
+      "feature": "i18n",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:03.515Z",
+      "feature": "i18n",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:12.084Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:14.952Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:19.739Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:23.350Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:26.192Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:30.195Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:40.432Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T07:11:57.971Z",
+      "feature": "trips",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:11:36.397Z",
+      "feature": "ai.service.spec.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:11:37.856Z",
+      "feature": "ai.service.spec.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:19:31.757Z",
+      "feature": "ai.service.spec.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:19:45.892Z",
+      "feature": "ai.service.spec.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:19:51.138Z",
+      "feature": "ai.service.spec.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:44:33.367Z",
+      "feature": "entities",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:44:53.404Z",
+      "feature": "embedding.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:44:57.134Z",
+      "feature": "embedding.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:45:07.076Z",
+      "feature": "embedding.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:45:18.461Z",
+      "feature": "embedding.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:45:30.135Z",
+      "feature": "geocoding.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:45:43.816Z",
+      "feature": "timezone.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:45:49.465Z",
+      "feature": "email",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:45:53.705Z",
+      "feature": "email",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:46:01.650Z",
+      "feature": "email",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:46:05.591Z",
+      "feature": "email",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:46:16.693Z",
+      "feature": "email",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:46:25.034Z",
+      "feature": "email",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T08:46:36.790Z",
+      "feature": "main",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T09:03:25.500Z",
+      "feature": "timezone.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T09:03:43.688Z",
+      "feature": "geocoding.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T09:04:01.153Z",
+      "feature": "geocoding.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T09:04:09.378Z",
+      "feature": "template.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T09:04:15.604Z",
+      "feature": "weather.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T09:04:21.635Z",
+      "feature": "weather.service.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-13T09:05:34.801Z",
+      "feature": "weather.service.spec.ts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-14T13:37:48.392Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-15T04:45:54.043Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-15T04:45:59.435Z",
+      "feature": "frontend",
       "phase": "do",
       "action": "updated"
     }
