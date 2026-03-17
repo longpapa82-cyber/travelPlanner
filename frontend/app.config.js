@@ -74,11 +74,15 @@ export default ({ config }) => ({
       {
         androidAppId: process.env.ADMOB_ANDROID_APP_ID || 'ca-app-pub-7330738950092177~5475101490',
         iosAppId: process.env.ADMOB_IOS_APP_ID || 'ca-app-pub-7330738950092177~7468498577',
+        delayAppMeasurementInit: true,
       },
     ],
     [
       'expo-build-properties',
       {
+        android: {
+          extraProguardRules: '-keep class com.google.android.gms.internal.consent_sdk.** { *; }',
+        },
         ios: {
           privacyManifests: {
             NSPrivacyAccessedAPITypes: [
