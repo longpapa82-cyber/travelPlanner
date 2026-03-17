@@ -81,9 +81,10 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 ### 1. API 사용량 대시보드 ✅
 - **엔티티**: ApiUsage (provider, feature, status, tokens, costUsd, latencyMs)
-- **로깅**: ai.service(OpenAI), geocoding(LocationIQ), weather(OpenWeather), timezone(Google) — fire-and-forget
+- **프로바이더**: openai, openai_embedding, locationiq, google_maps, openweather, google_timezone, email (7개)
+- **로깅**: ai.service(OpenAI), embedding.service(OpenAI Embedding), geocoding(LocationIQ+Google Maps), weather(OpenWeather), timezone(Google), email(Nodemailer) — fire-and-forget
 - **API**: GET /admin/api-usage/{summary,daily,monthly}
-- **UI**: ApiUsageDashboardScreen (View-based 차트, 17개 언어)
+- **UI**: ApiUsageDashboardScreen (View-based 차트, 17개 언어, 7개 프로바이더 색상 구분)
 - **마이그레이션**: `1740500000000-AddApiUsageTable.ts` (프로덕션 synchronize:false 대응)
 
 ### 2. 오류 로그 강화 ✅
@@ -110,3 +111,86 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 ### 결제 프로필 변경 요청
 - 결제 프로필 ID: 9519-2519-9017
 - 개인→비즈니스 유형 변경 티켓 제출 (Play Console, ~2영업일)
+
+## QA Day 3 결과 (2026-03-13, 완료)
+
+### Security-QA Layer 5~6 ✅
+- **P1 fix**: Stored XSS 방지 — update-profile.dto, update-travel-preferences.dto에 stripHtml 추가
+- **P2 fix**: 비밀번호 리셋 토큰 DEV 로그 마스킹, backups/ .gitignore 추가
+
+### Auto-QA Category E~F ✅
+- **P1 fix**: admin.json 17개 언어 구조 수정 + 누락 키 6개 추가
+- **P1 fix**: AnnouncementFormScreen/ManagementScreen 하드코딩 문자열 i18n 변환
+- **P1 fix**: TripListScreen/CreateTripScreen useEffect cleanup (메모리 누수 방지)
+
+### Publish-QA Category 6~7 ✅
+- **P1 fix**: WCAG AA 색상 대비 — textSecondary neutral[400]→neutral[500] (4.6:1)
+- **P1 fix**: RTL 지원 — Arabic I18nManager.forceRTL()
+- **P1 fix**: eas.json submit track "internal"→"production"
+
+## QA Day 4 결과 (2026-03-13, 완료)
+
+### 회귀 테스트 ✅
+- Frontend TypeScript: PASS (0 errors)
+- Backend TypeScript: PASS (0 errors)
+- Frontend Jest: 200/200 PASS
+- Backend Jest: 397/397 PASS (ai.service.spec.ts ApiUsageService mock 수정)
+
+### 스모크 테스트 ✅
+- 프로덕션 18개 엔드포인트 검증: 15 PASS / 3 FAIL
+- CSP 헤더: API 엔드포인트에서 정상 확인 (스모크 테스트 오탐)
+- /api/trips/popular 401, nonexistent.html 200: 의도된 SPA 동작
+- **실질 이슈: 0건**
+
+### 배포 이력
+- 22차 (`7c88619`) — ai.service.spec.ts 테스트 수정
+
+## API Usage 로깅 감사 & 비용 최적화 (2026-03-13, 완료)
+
+### API Usage 누락 감사 ✅
+- **발견된 4개 누락 API**: OpenAI Embedding, Google Maps (geocoding 폴백), Google Maps (timezone 폴백), Email
+- **수정**: embedding.service.ts, geocoding.service.ts, timezone.service.ts, email.service.ts에 fire-and-forget 로깅 추가
+- **프로바이더 7개**: openai, openai_embedding, locationiq, google_maps, openweather, google_timezone, email
+- 23차 (`f9b5ad1`) 배포 완료
+
+### 비용 최적화 ✅
+| 최적화 | 변경 전 | 변경 후 | 효과 |
+|--------|---------|---------|------|
+| 날씨 캐시 TTL | 30분 | 6시간 | OpenWeather 호출 12배 감소 |
+| 타임존 좌표 반올림 | toFixed(2) ~1.1km | toFixed(1) ~11km | Google Timezone 캐시 히트율 향상 |
+| 템플릿 만료 기준 | 30일 | 90일 | 재사용 가능 템플릿 3배 증가 |
+| 벡터 유사도 임계값 | 0.75 | 0.70 | 유사 템플릿 매칭 확률 증가 |
+| LocationIQ 일일 한도 | 무제한 | 5,000건 (경고 4,500건) | 무료 한도 초과 방지 |
+
+- **비용 절감**: 1만 건 기준 $32.93 → $13.45 (약 59% 절감)
+- 24차 (`ebf7ba3`) 배포 완료
+- **배포 후 QA**: 프로덕션 12개 항목 검증 완료 ✅
+
+## EAS Build & 비공개 테스트 제출 (2026-03-13)
+
+- **빌드**: EAS production profile, versionCode 19
+- **AAB**: https://expo.dev/artifacts/eas/cVWZQom1YYRHUJHyWYM4k6.aab
+- **제출**: Play Console에서 직접 업로드 (alpha 트랙)
+- **서비스 계정 권한 이슈**: 자동 제출 실패 — 앱 출시 권한 없음 (수동 업로드로 해결)
+- **eas.json submit track**: `production` → `alpha` 변경 (비공개 테스트용)
+
+## Go/No-Go 판정 (2026-03-13)
+
+### 판정: Conditional Go ✅
+- P0 이슈: **0건** (Go 조건 충족)
+- P1 이슈: **0건** (Go 조건 충족)
+- P2 이슈: ~3건 (수정 계획 있음, ≤10건 Go 조건 충족)
+- 테스트 통과율: **597/597 = 100%** (≥95% Go 조건 충족)
+- 보안 취약점: **P0/P1 0건** (Layer 1-6 완료)
+- Play 정책: **10/10 PASS**
+- 법적 문서: 전체 유효 (privacy/terms/CCPA/GDPR)
+- 결제 플로우: IAP 테스트 구매 성공
+
+### 외부 대기 항목
+1. ⏳ Paddle 프로덕션 인증 (~3/14-15) → env 교체 후 최종 빌드
+2. ⏳ 결제 프로필 유형 변경 (개인→비즈니스, ~2영업일)
+
+### 출시 순서 (Paddle 인증 완료 후)
+1. Paddle 프로덕션 env 교체 (API Key, Webhook Secret, Price IDs, Client Token)
+2. 최종 EAS Build (production profile)
+3. Play Store 프로덕션 제출 (단계적 출시 1% → 10% → 100%)
