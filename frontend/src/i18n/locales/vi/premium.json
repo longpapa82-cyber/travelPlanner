@@ -37,9 +37,9 @@
     "aiUsed": "đã sử dụng",
     "compareTitle": "So sánh gói",
     "upgradeToUnlock": "Nâng cấp để mở khóa",
-    "autoRenewNotice": "\u0110\u0103ng k\u00fd s\u1ebd t\u1ef1 \u0111\u1ed9ng gia h\u1ea1n tr\u1eeb khi b\u1ea1n h\u1ee7y \u00edt nh\u1ea5t 24 gi\u1edd tr\u01b0\u1edbc khi k\u1ebft th\u00fac k\u1ef3 hi\u1ec7n t\u1ea1i.",
-    "termsLink": "\u0110i\u1ec1u kho\u1ea3n d\u1ecbch v\u1ee5",
-    "privacyLink": "Ch\u00ednh s\u00e1ch b\u1ea3o m\u1eadt",
+    "autoRenewNotice": "Đăng ký sẽ tự động gia hạn trừ khi bạn hủy ít nhất 24 giờ trước khi kết thúc kỳ hiện tại.",
+    "termsLink": "Điều khoản dịch vụ",
+    "privacyLink": "Chính sách bảo mật",
     "restoreSuccess": "Khôi phục đăng ký thành công!",
     "restoreNone": "Không tìm thấy đăng ký hoạt động."
   },
@@ -65,5 +65,12 @@
     "upgradePremium": "Nâng cấp Cao cấp",
     "managePlan": "Quản lý gói",
     "aiRemaining": "AI: {{remaining}}/{{total}} còn lại"
+  },
+  "errors": {
+    "title": "Lỗi",
+    "subscriptionNotLoaded": "Không thể tải gói đăng ký. Vui lòng thử lại.",
+    "purchaseFailed": "Mua hàng thất bại. Vui lòng thử lại.",
+    "restoreFailed": "Khôi phục thất bại. Vui lòng thử lại.",
+    "checkoutFailed": "Không thể bắt đầu thanh toán. Vui lòng thử lại."
   }
 }

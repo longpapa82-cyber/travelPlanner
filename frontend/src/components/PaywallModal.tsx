@@ -117,8 +117,8 @@ const PaywallModal: React.FC = () => {
           customData: { userId: String(user?.id || '') },
         });
       } catch (error: any) {
-        const msg = error?.response?.data?.message || error?.message || 'Failed to start checkout. Please try again.';
-        Alert.alert('Error', msg);
+        const msg = error?.response?.data?.message || error?.message || t('premium.errors.checkoutFailed');
+        Alert.alert(t('premium.errors.title'), msg);
       } finally {
         setIsPurchasing(false);
       }
@@ -127,7 +127,7 @@ const PaywallModal: React.FC = () => {
 
     const pkg = selectedPlan === 'monthly' ? packages.monthly : packages.yearly;
     if (!pkg) {
-      Alert.alert('Error', 'Subscription packages not loaded. Please try again.');
+      Alert.alert(t('premium.errors.title'), t('premium.errors.subscriptionNotLoaded'));
       return;
     }
 
@@ -143,7 +143,7 @@ const PaywallModal: React.FC = () => {
       }
       // null = user cancelled, do nothing
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Purchase failed. Please try again.');
+      Alert.alert(t('premium.errors.title'), error?.message || t('premium.errors.purchaseFailed'));
     } finally {
       setIsPurchasing(false);
     }
@@ -176,7 +176,7 @@ const PaywallModal: React.FC = () => {
         }
       }
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Restore failed. Please try again.');
+      Alert.alert(t('premium.errors.title'), error?.message || t('premium.errors.restoreFailed'));
     } finally {
       setIsPurchasing(false);
     }

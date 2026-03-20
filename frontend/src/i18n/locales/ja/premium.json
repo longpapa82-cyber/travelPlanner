@@ -65,5 +65,12 @@
     "upgradePremium": "プレミアムにアップグレード",
     "managePlan": "プラン管理",
     "aiRemaining": "AI: {{remaining}}/{{total}}回残り"
+  },
+  "errors": {
+    "title": "エラー",
+    "subscriptionNotLoaded": "サブスクリプションパッケージを読み込めませんでした。もう一度お試しください。",
+    "purchaseFailed": "購入に失敗しました。もう一度お試しください。",
+    "restoreFailed": "復元に失敗しました。もう一度お試しください。",
+    "checkoutFailed": "チェックアウトの開始に失敗しました。もう一度お試しください。"
   }
 }

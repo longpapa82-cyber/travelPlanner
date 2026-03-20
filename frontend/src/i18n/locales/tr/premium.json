@@ -65,5 +65,12 @@
     "upgradePremium": "Premium'a Yükselt",
     "managePlan": "Planı yönet",
     "aiRemaining": "AI: {{remaining}}/{{total}} kalan"
+  },
+  "errors": {
+    "title": "Hata",
+    "subscriptionNotLoaded": "Abonelik paketleri yüklenemedi. Lütfen tekrar deneyin.",
+    "purchaseFailed": "Satın alma başarısız oldu. Lütfen tekrar deneyin.",
+    "restoreFailed": "Geri yükleme başarısız oldu. Lütfen tekrar deneyin.",
+    "checkoutFailed": "Ödeme başlatılamadı. Lütfen tekrar deneyin."
   }
 }

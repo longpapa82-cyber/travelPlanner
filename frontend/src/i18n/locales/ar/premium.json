@@ -65,5 +65,12 @@
     "upgradePremium": "الترقية إلى Premium",
     "managePlan": "إدارة الخطة",
     "aiRemaining": "AI: {{remaining}}/{{total}} متبقي"
+  },
+  "errors": {
+    "title": "خطأ",
+    "subscriptionNotLoaded": "تعذر تحميل حزم الاشتراك. يرجى المحاولة مرة أخرى.",
+    "purchaseFailed": "فشلت عملية الشراء. يرجى المحاولة مرة أخرى.",
+    "restoreFailed": "فشلت عملية الاستعادة. يرجى المحاولة مرة أخرى.",
+    "checkoutFailed": "فشل بدء عملية الدفع. يرجى المحاولة مرة أخرى."
   }
 }

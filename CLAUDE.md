@@ -174,6 +174,44 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **서비스 계정 권한 이슈**: 자동 제출 실패 — 앱 출시 권한 없음 (수동 업로드로 해결)
 - **eas.json submit track**: `production` → `alpha` 변경 (비공개 테스트용)
 
+## SNS 로그인 설정 현황 (2026-03-20, 검증 완료 ✅)
+
+### Google OAuth ✅ **프로덕션 게시 완료**
+- **Client ID**: `48805541090-n13jgirv7mqcg6qu4bpfa854oinle6j3.apps.googleusercontent.com`
+- **게시 상태**: 프로덕션 ✅ (2026-03-20 게시 완료)
+- **사용자 한도**: 무제한
+- **Android OAuth**: Upload Key + Play Signing Key 등록 완료 ✅
+- **Redirect URI**: `https://mytravel-planner.com/api/auth/google/callback` ✅
+- **수집 정보**: email, profile (자동 제공)
+
+### Kakao OAuth ✅ **설정 완료 (이메일 포함)**
+- **Client ID**: `91c9b16550779b270207bfe44648c2dc`
+- **카카오 로그인**: ON ✅
+- **Redirect URI**: `https://mytravel-planner.com/api/auth/kakao/callback` ✅
+- **플랫폼**: Web (`https://mytravel-planner.com`) ✅
+- **수집 정보**:
+  - **이메일 (필수 동의)** ✅ (2026-03-20 추가)
+  - 닉네임 (필수 동의) ✅
+  - 프로필 사진 (선택 동의) ✅
+- **비즈니스 인증**: 미인증 (이메일 수집은 인증 없이 가능)
+
+### Apple Sign-In ⏸️ **Phase 2로 연기**
+- **상태**: 프로덕션 미설정 (iOS 출시 전까지 보류)
+- **진행 시점**: Android 출시 및 안정화 이후 (2-4주 후)
+- **설정 항목**: Services ID, Private Key, backend 환경 변수 (Phase 2에서 진행)
+
+### Phase 2 개선 사항 (향후)
+- [ ] Kakao 비즈니스 인증 ("비즈 앱 전환") - 선택사항
+- [ ] Kakao 웹훅 설정 (계정 상태 변경, 연결 해제) - 권장
+- [ ] Apple Sign-In 설정 (iOS 출시 시) - 필수
+
+### 상세 가이드
+- 📄 **체크리스트**: `docs/sns-login-launch-checklist.md`
+- 📄 **Google 게시 가이드**: `docs/google-oauth-publish-guide.md`
+- 📄 **Kakao 검증 가이드**: `docs/kakao-oauth-verification-guide.md`
+
+---
+
 ## Go/No-Go 판정 (2026-03-13)
 
 ### 판정: Conditional Go ✅
@@ -186,11 +224,47 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - 법적 문서: 전체 유효 (privacy/terms/CCPA/GDPR)
 - 결제 플로우: IAP 테스트 구매 성공
 
-### 외부 대기 항목
-1. ⏳ Paddle 프로덕션 인증 (~3/14-15) → env 교체 후 최종 빌드
-2. ⏳ 결제 프로필 유형 변경 (개인→비즈니스, ~2영업일)
+### 외부 대기 항목 (2026-03-20 확인)
+1. ⏳ **Paddle 프로덕션 인증** (진행 중, 완료 시기 미정)
+   - 현재 단계: Step 3 - Identity checks
+   - 조치: No action required (Paddle 팀 검토 중)
+   - **결론**: Android 출시는 Paddle 없이 진행 (RevenueCat만 사용)
+2. ⏳ 결제 프로필 유형 변경 (개인→비즈니스, ~2영업일) - 확인 필요
 
-### 출시 순서 (Paddle 인증 완료 후)
-1. Paddle 프로덕션 env 교체 (API Key, Webhook Secret, Price IDs, Client Token)
-2. 최종 EAS Build (production profile)
-3. Play Store 프로덕션 제출 (단계적 출시 1% → 10% → 100%)
+### Android 출시 순서 (Phase 1 - Paddle 제외)
+
+**즉시 조치 (2026-03-20)**:
+1. **SNS 로그인 검증** ✅ (완료)
+   - [x] Google OAuth 동의 화면 프로덕션 게시
+   - [x] Kakao Redirect URI 등록 확인
+   - [x] Kakao 이메일 필수 동의 추가
+   - 📄 상세 가이드: `docs/sns-login-launch-checklist.md`
+
+2. **Android 최종 빌드** ✅ (완료, 2026-03-20)
+   - [x] EAS production profile, versionCode 20
+   - [x] Build ID: 9253ae73-3dbd-4f6e-86f0-b61dfc4e07eb
+   - [x] AAB: https://expo.dev/artifacts/eas/j51kNY26PZYD9DksHaHbnH.aab
+   - [x] Build Time: 23m 18s (Finished at 17:55 KST)
+   - [x] RevenueCat (Google Play IAP)만 사용
+   - [ ] Play Store 프로덕션 제출 (단계적 출시 1% → 10% → 100%) - 다음 단계
+   - 📄 실행 로그: `docs/android-production-launch-log.md`
+
+3. **Paddle 추가** (Phase 2, 인증 완료 후)
+   - Production credentials 획득
+   - backend/.env.production 업데이트
+   - 앱 업데이트 (Web 결제 추가)
+
+### iOS 출시 순서 (Phase 2 - Android 안정화 이후)
+
+**2-4주 후 진행 예정**:
+1. **Apple Sign-In 설정**
+   - Apple Developer Console: Services ID 생성
+   - Private Key (.p8) 다운로드 및 저장
+   - backend/.env.production에 Apple 환경 변수 추가
+   - backend/secrets/ 디렉토리 설정
+
+2. **iOS 빌드 및 테스트**
+   - Apple Sign-In E2E 테스트
+   - App Store 제출 준비
+
+**Note**: Apple은 Android 출시 및 안정화 이후 진행 (현재 프로덕션 미설정 상태)

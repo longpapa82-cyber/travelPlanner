@@ -65,5 +65,12 @@
     "upgradePremium": "Auf Premium upgraden",
     "managePlan": "Plan verwalten",
     "aiRemaining": "AI: {{remaining}}/{{total}} übrig"
+  },
+  "errors": {
+    "title": "Fehler",
+    "subscriptionNotLoaded": "Abonnementpakete konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+    "purchaseFailed": "Kauf fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "restoreFailed": "Wiederherstellung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "checkoutFailed": "Checkout konnte nicht gestartet werden. Bitte versuchen Sie es erneut."
   }
 }

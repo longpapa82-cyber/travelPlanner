@@ -65,5 +65,12 @@
     "upgradePremium": "Premium में अपग्रेड करें",
     "managePlan": "योजना प्रबंधित करें",
     "aiRemaining": "AI: {{remaining}}/{{total}} शेष"
+  },
+  "errors": {
+    "title": "त्रुटि",
+    "subscriptionNotLoaded": "सदस्यता पैकेज लोड नहीं हो सके। कृपया फिर से प्रयास करें।",
+    "purchaseFailed": "खरीदारी विफल हुई। कृपया फिर से प्रयास करें।",
+    "restoreFailed": "पुनर्स्थापना विफल हुई। कृपया फिर से प्रयास करें।",
+    "checkoutFailed": "चेकआउट शुरू करने में विफल। कृपया फिर से प्रयास करें।"
   }
 }

@@ -65,5 +65,12 @@
     "upgradePremium": "อัปเกรดเป็นพรีเมียม",
     "managePlan": "จัดการแผน",
     "aiRemaining": "AI: {{remaining}}/{{total}} เหลือ"
+  },
+  "errors": {
+    "title": "ข้อผิดพลาด",
+    "subscriptionNotLoaded": "ไม่สามารถโหลดแพ็กเกจการสมัครสมาชิกได้ กรุณาลองอีกครั้ง",
+    "purchaseFailed": "การซื้อล้มเหลว กรุณาลองอีกครั้ง",
+    "restoreFailed": "การกู้คืนล้มเหลว กรุณาลองอีกครั้ง",
+    "checkoutFailed": "ไม่สามารถเริ่มการชำระเงินได้ กรุณาลองอีกครั้ง"
   }
 }

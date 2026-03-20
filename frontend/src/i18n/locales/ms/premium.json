@@ -65,5 +65,12 @@
     "upgradePremium": "Naik Taraf ke Premium",
     "managePlan": "Urus pelan",
     "aiRemaining": "AI: {{remaining}}/{{total}} baki"
+  },
+  "errors": {
+    "title": "Ralat",
+    "subscriptionNotLoaded": "Pakej langganan tidak dapat dimuatkan. Sila cuba lagi.",
+    "purchaseFailed": "Pembelian gagal. Sila cuba lagi.",
+    "restoreFailed": "Pemulihan gagal. Sila cuba lagi.",
+    "checkoutFailed": "Gagal memulakan pembayaran. Sila cuba lagi."
   }
 }

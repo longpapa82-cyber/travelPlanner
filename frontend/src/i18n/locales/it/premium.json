@@ -65,5 +65,12 @@
     "upgradePremium": "Passa a Premium",
     "managePlan": "Gestisci piano",
     "aiRemaining": "AI: {{remaining}}/{{total}} rimanenti"
+  },
+  "errors": {
+    "title": "Errore",
+    "subscriptionNotLoaded": "Impossibile caricare i pacchetti di abbonamento. Si prega di riprovare.",
+    "purchaseFailed": "Acquisto fallito. Si prega di riprovare.",
+    "restoreFailed": "Ripristino fallito. Si prega di riprovare.",
+    "checkoutFailed": "Impossibile avviare il checkout. Si prega di riprovare."
   }
 }

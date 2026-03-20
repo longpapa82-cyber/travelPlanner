@@ -1,26 +1,53 @@
 {
   "title": "Assinatura",
-  "free": { "name": "Gratuito", "description": "Recursos básicos de planejamento de viagem" },
+  "free": {
+    "name": "Gratuito",
+    "description": "Recursos básicos de planejamento de viagem"
+  },
   "premium": {
-    "name": "Premium", "description": "IA Ilimitada + Sem Anúncios",
-    "price": { "monthly": "Mensal", "yearly": "Anual", "yearlySaving": "Economize 37%", "month": "mês", "year": "ano" }
+    "name": "Premium",
+    "description": "IA Ilimitada + Sem Anúncios",
+    "price": {
+      "monthly": "Mensal",
+      "yearly": "Anual",
+      "yearlySaving": "Economize 37%",
+      "month": "mês",
+      "year": "ano"
+    }
   },
   "benefits": {
-    "unlimitedAi": "Planejamento de viagem com IA ilimitado", "noAds": "Sem anúncios", "premiumBadge": "Selo Premium",
-    "tripCreation": "Planejamento de viagem", "social": "Recursos sociais", "expenses": "Gerenciamento de despesas"
+    "unlimitedAi": "Planejamento de viagem com IA ilimitado",
+    "noAds": "Sem anúncios",
+    "premiumBadge": "Selo Premium",
+    "tripCreation": "Planejamento de viagem",
+    "social": "Recursos sociais",
+    "expenses": "Gerenciamento de despesas"
   },
-  "actions": { "subscribe": "Assinar", "restore": "Restaurar compra", "manage": "Gerenciar assinatura", "cancel": "Cancelar assinatura" },
+  "actions": {
+    "subscribe": "Assinar",
+    "restore": "Restaurar compra",
+    "manage": "Gerenciar assinatura",
+    "cancel": "Cancelar assinatura"
+  },
   "paywall": {
-    "title": "Upgrade para Premium", "subtitle": "Aproveite o planejamento de viagem com IA ilimitado e uma experiência sem anúncios",
-    "aiLimitTitle": "Uso do Plano de Viagem com IA", "aiLimitReached": "Limite gratuito de planos de viagem com IA atingido",
-    "aiUsed": "usados", "compareTitle": "Comparar Planos", "upgradeToUnlock": "Faça upgrade para desbloquear",
+    "title": "Upgrade para Premium",
+    "subtitle": "Aproveite o planejamento de viagem com IA ilimitado e uma experiência sem anúncios",
+    "aiLimitTitle": "Uso do Plano de Viagem com IA",
+    "aiLimitReached": "Limite gratuito de planos de viagem com IA atingido",
+    "aiUsed": "usados",
+    "compareTitle": "Comparar Planos",
+    "upgradeToUnlock": "Faça upgrade para desbloquear",
     "autoRenewNotice": "As assinaturas são renovadas automaticamente, a menos que sejam canceladas pelo menos 24 horas antes do final do período atual.",
     "termsLink": "Termos de serviço",
     "privacyLink": "Política de privacidade",
     "restoreSuccess": "Assinatura restaurada com sucesso!",
     "restoreNone": "Nenhuma assinatura ativa encontrada."
   },
-  "status": { "active": "Ativo", "expired": "Expirado", "expiresOn": "Até {{date}}" },
+  "status": {
+    "active": "Ativo",
+    "expired": "Expirado",
+    "expiresOn": "Até {{date}}"
+  },
   "promo": {
     "title": "Desbloquear Premium",
     "subtitle": "IA Ilimitada · Sem Anúncios · Selo PRO",
@@ -33,5 +60,17 @@
     "aiLimit": "Você usou todas as viagens IA gratuitas",
     "aiLimitSubtitle": "Faça upgrade para criar planos de viagem IA ilimitados"
   },
-  "menu": { "subscription": "Assinatura", "upgradePremium": "Upgrade para Premium", "managePlan": "Gerenciar plano", "aiRemaining": "AI: {{remaining}}/{{total}} restantes" }
+  "menu": {
+    "subscription": "Assinatura",
+    "upgradePremium": "Upgrade para Premium",
+    "managePlan": "Gerenciar plano",
+    "aiRemaining": "AI: {{remaining}}/{{total}} restantes"
+  },
+  "errors": {
+    "title": "Erro",
+    "subscriptionNotLoaded": "Não foi possível carregar os pacotes de assinatura. Por favor, tente novamente.",
+    "purchaseFailed": "A compra falhou. Por favor, tente novamente.",
+    "restoreFailed": "A restauração falhou. Por favor, tente novamente.",
+    "checkoutFailed": "Falha ao iniciar o checkout. Por favor, tente novamente."
+  }
 }

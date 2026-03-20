@@ -65,5 +65,12 @@
     "upgradePremium": "Upgrade ke Premium",
     "managePlan": "Kelola paket",
     "aiRemaining": "AI: {{remaining}}/{{total}} tersisa"
+  },
+  "errors": {
+    "title": "Kesalahan",
+    "subscriptionNotLoaded": "Paket langganan tidak dapat dimuat. Silakan coba lagi.",
+    "purchaseFailed": "Pembelian gagal. Silakan coba lagi.",
+    "restoreFailed": "Pemulihan gagal. Silakan coba lagi.",
+    "checkoutFailed": "Gagal memulai checkout. Silakan coba lagi."
   }
 }

@@ -65,5 +65,12 @@
     "upgradePremium": "Upgrade to Premium",
     "managePlan": "Manage plan",
     "aiRemaining": "AI: {{remaining}}/{{total}} remaining"
+  },
+  "errors": {
+    "title": "Error",
+    "subscriptionNotLoaded": "Subscription packages not loaded. Please try again.",
+    "purchaseFailed": "Purchase failed. Please try again.",
+    "restoreFailed": "Restore failed. Please try again.",
+    "checkoutFailed": "Failed to start checkout. Please try again."
   }
 }

@@ -65,5 +65,12 @@
     "upgradePremium": "프리미엄 업그레이드",
     "managePlan": "플랜 관리",
     "aiRemaining": "AI: {{remaining}}/{{total}}회 남음"
+  },
+  "errors": {
+    "title": "오류",
+    "subscriptionNotLoaded": "구독 패키지를 불러올 수 없습니다. 다시 시도해주세요.",
+    "purchaseFailed": "구매에 실패했습니다. 다시 시도해주세요.",
+    "restoreFailed": "복원에 실패했습니다. 다시 시도해주세요.",
+    "checkoutFailed": "결제 시작에 실패했습니다. 다시 시도해주세요."
   }
 }

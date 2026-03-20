@@ -84,7 +84,7 @@ const ProfileNavigator = () => {
       <Stack.Screen
         name="ApiUsageDashboard"
         component={ApiUsageDashboardScreen}
-        options={{ title: 'API Usage' }}
+        options={{ title: tAdmin('menu.apiUsage') }}
       />
       <Stack.Screen
         name="AnnouncementForm"

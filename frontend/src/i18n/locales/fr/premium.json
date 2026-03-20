@@ -65,5 +65,12 @@
     "upgradePremium": "Passer à Premium",
     "managePlan": "Gérer le forfait",
     "aiRemaining": "AI : {{remaining}}/{{total}} restants"
+  },
+  "errors": {
+    "title": "Erreur",
+    "subscriptionNotLoaded": "Impossible de charger les forfaits d'abonnement. Veuillez réessayer.",
+    "purchaseFailed": "L'achat a échoué. Veuillez réessayer.",
+    "restoreFailed": "La restauration a échoué. Veuillez réessayer.",
+    "checkoutFailed": "Impossible de démarrer le paiement. Veuillez réessayer."
   }
 }

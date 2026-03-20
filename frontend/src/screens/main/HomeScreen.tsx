@@ -146,13 +146,14 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     if (showCoachMark && createTripRef.current) {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         createTripRef.current?.measureInWindow((x, y, width, height) => {
           if (width > 0 && height > 0) {
             setCreateTripLayout({ x, y, width, height });
           }
         });
       }, 500);
+      return () => clearTimeout(timeout);
     }
   }, [showCoachMark]);
 

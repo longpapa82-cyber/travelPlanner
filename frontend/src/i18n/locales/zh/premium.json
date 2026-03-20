@@ -65,5 +65,12 @@
     "upgradePremium": "升级高级版",
     "managePlan": "管理方案",
     "aiRemaining": "AI: {{remaining}}/{{total}}次剩余"
+  },
+  "errors": {
+    "title": "错误",
+    "subscriptionNotLoaded": "无法加载订阅套餐。请重试。",
+    "purchaseFailed": "购买失败。请重试。",
+    "restoreFailed": "恢复失败。请重试。",
+    "checkoutFailed": "无法开始结账。请重试。"
   }
 }

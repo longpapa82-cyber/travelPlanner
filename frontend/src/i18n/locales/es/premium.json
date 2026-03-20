@@ -65,5 +65,12 @@
     "upgradePremium": "Actualizar a Premium",
     "managePlan": "Gestionar plan",
     "aiRemaining": "AI: {{remaining}}/{{total}} restantes"
+  },
+  "errors": {
+    "title": "Error",
+    "subscriptionNotLoaded": "No se pudieron cargar los paquetes de suscripción. Por favor, inténtelo de nuevo.",
+    "purchaseFailed": "La compra falló. Por favor, inténtelo de nuevo.",
+    "restoreFailed": "La restauración falló. Por favor, inténtelo de nuevo.",
+    "checkoutFailed": "No se pudo iniciar el proceso de pago. Por favor, inténtelo de nuevo."
   }
 }
