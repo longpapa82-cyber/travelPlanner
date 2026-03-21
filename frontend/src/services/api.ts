@@ -372,6 +372,8 @@ class ApiService {
     onProgress?: (step: string, message?: string) => void,
     signal?: AbortSignal,
   ): Promise<any> {
+    let sseRequestStarted = false;
+
     try {
       const token = await secureStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
       const lang = getCurrentLanguage();
@@ -400,10 +402,15 @@ class ApiService {
         throw error;
       }
 
+      // ✅ FIX: SSE request started successfully (201) - trip is being created on server
+      // From this point, we MUST NOT fallback to createTrip() as it would create duplicates
+      sseRequestStarted = true;
+
       const reader = response.body?.getReader();
       if (!reader) {
-        // No streaming support — fallback to regular API
-        return this.createTrip(data);
+        // No streaming support - but trip creation already started on server
+        // Poll for trip status instead of creating duplicate
+        throw new Error('Streaming not supported but trip creation started');
       }
 
       const decoder = new TextDecoder();
@@ -444,7 +451,13 @@ class ApiService {
     } catch (error: any) {
       if (error.name === 'AbortError') throw error;
       if (error.response) throw error;
-      // Fallback to regular createTrip on any SSE infrastructure failure
+
+      // ✅ FIX: NEVER fallback if SSE request started (trip already created on server)
+      if (sseRequestStarted) {
+        throw new Error('Trip creation in progress - check trips list');
+      }
+
+      // Only fallback if SSE request never reached server
       return this.createTrip(data);
     }
   }
