@@ -92,7 +92,11 @@ export class TripsService {
         // Lock user row to prevent concurrent quota checks
         const user = await queryRunner.manager
           .createQueryBuilder()
-          .select('users')
+          .select([
+            'users.id',
+            'users.aiTripsUsedThisMonth',
+            'users.subscriptionTier',
+          ])
           .from('users', 'users')
           .where('users.id = :userId', { userId })
           .setLock('pessimistic_write') // SELECT FOR UPDATE
@@ -107,8 +111,10 @@ export class TripsService {
           10,
         );
 
+        const currentCount = user.users_aiTripsUsedThisMonth || 0;
+
         // Check if user has reached limit
-        if (user.aiTripsUsedThisMonth >= aiTripsFreeLimit) {
+        if (currentCount >= aiTripsFreeLimit) {
           throw new ForbiddenException(
             `Monthly AI generation limit (${aiTripsFreeLimit}) reached. Try manual creation or wait until next month.`,
           );
@@ -123,7 +129,7 @@ export class TripsService {
           .execute();
 
         this.logger.log(
-          `Incremented AI trip quota for user ${userId}: ${user.aiTripsUsedThisMonth} -> ${user.aiTripsUsedThisMonth + 1}`,
+          `Incremented AI trip quota for user ${userId}: ${currentCount} -> ${currentCount + 1}`,
         );
       }
 
