@@ -420,11 +420,44 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         });
         return;
       }
+
+      // Check if trip was created but stream interrupted
+      if (error.tripCreated) {
+        // Log error to backend for admin visibility
+        apiService.logError({
+          errorMessage: error.message || 'SSE stream interrupted after trip creation',
+          screen: 'CreateTripScreen',
+          severity: 'warning',
+        }).catch(() => {});
+
+        showToast({
+          type: 'warning',
+          message: t('create.alerts.streamInterrupted', {
+            defaultValue: 'Trip created but connection interrupted. Please check your trips list.'
+          }),
+          position: 'top',
+          duration: 5000,
+        });
+        // Navigate to trips list after short delay
+        setTimeout(() => {
+          navigation.navigate('TripList');
+        }, 2000);
+        return;
+      }
+
       const serverMsg = error.response?.data?.message || '';
       // Map backend English error to i18n message
       const message = serverMsg.includes('AI generation limit')
         ? t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 })
         : serverMsg || t('create.alerts.createFailed');
+
+      // Log error to backend for admin visibility
+      apiService.logError({
+        errorMessage: error.message || message,
+        screen: 'CreateTripScreen',
+        severity: 'error',
+        stackTrace: error.stack,
+      }).catch(() => {});
 
       // Refresh subscription status so AI remaining count is accurate
       refreshStatus();

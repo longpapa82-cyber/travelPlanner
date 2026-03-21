@@ -452,9 +452,31 @@ class ApiService {
       if (error.name === 'AbortError') throw error;
       if (error.response) throw error;
 
-      // ✅ FIX: NEVER fallback if SSE request started (trip already created on server)
+      // ✅ FIX: If SSE request started (trip created), try to fetch the created trip
       if (sseRequestStarted) {
-        throw new Error('Trip creation in progress - check trips list');
+        try {
+          // Trip was created on server but stream failed - try to get the latest trip
+          const trips = await this.getTrips({ sortBy: 'createdAt', order: 'DESC', limit: 1 });
+          if (trips?.data && trips.data.length > 0) {
+            const latestTrip = trips.data[0];
+            // Check if trip was created very recently (within last 10 seconds)
+            const tripCreatedAt = new Date(latestTrip.createdAt).getTime();
+            const now = Date.now();
+            if (now - tripCreatedAt < 10000) {
+              // This is likely the trip we just created
+              return latestTrip;
+            }
+          }
+          // Could not find the created trip - throw error with helpful message
+          const streamError: any = new Error('Trip created but stream interrupted - please check your trips list');
+          streamError.tripCreated = true; // Flag to help UI show better message
+          throw streamError;
+        } catch (fetchError) {
+          // Failed to fetch trips - throw original stream error
+          const streamError: any = new Error('Trip creation in progress - check trips list');
+          streamError.tripCreated = true;
+          throw streamError;
+        }
       }
 
       // Only fallback if SSE request never reached server
