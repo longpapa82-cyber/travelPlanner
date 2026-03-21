@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { TripsService } from './trips.service';
 import { Trip, TripStatus } from './entities/trip.entity';
@@ -207,6 +207,35 @@ describe('TripsService', () => {
               .fn()
               .mockResolvedValue({ allowed: true, remaining: 3 }),
             incrementAiTripCount: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: DataSource,
+          useValue: {
+            createQueryRunner: jest.fn().mockReturnValue({
+              connect: jest.fn(),
+              startTransaction: jest.fn(),
+              commitTransaction: jest.fn(),
+              rollbackTransaction: jest.fn(),
+              release: jest.fn(),
+              manager: {
+                create: jest.fn(),
+                save: jest.fn(),
+                createQueryBuilder: jest.fn().mockReturnValue({
+                  select: jest.fn().mockReturnThis(),
+                  from: jest.fn().mockReturnThis(),
+                  where: jest.fn().mockReturnThis(),
+                  setLock: jest.fn().mockReturnThis(),
+                  getRawOne: jest.fn().mockResolvedValue({
+                    id: 'test-user-id',
+                    aiTripsUsedThisMonth: 0,
+                  }),
+                  update: jest.fn().mockReturnThis(),
+                  set: jest.fn().mockReturnThis(),
+                  execute: jest.fn().mockResolvedValue({ affected: 1 }),
+                }),
+              },
+            }),
           },
         },
       ],

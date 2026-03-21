@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { randomBytes } from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { Trip, TripStatus } from './entities/trip.entity';
 import { Itinerary } from './entities/itinerary.entity';
 import { Collaborator, CollaboratorRole } from './entities/collaborator.entity';
@@ -60,6 +60,7 @@ export class TripsService {
     private readonly tripStatusScheduler: TripStatusScheduler,
     private readonly notificationsService: NotificationsService,
     private readonly subscriptionService: SubscriptionService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(
@@ -78,24 +79,79 @@ export class TripsService {
 
     const isManualMode = createTripDto.planningMode === 'manual';
 
-    // Check AI trip limit BEFORE creating trip to avoid orphan records
-    if (!isManualMode) {
-      const aiLimit = await this.subscriptionService.checkAiTripLimit(userId);
-      if (!aiLimit.allowed) {
-        throw new ForbiddenException(
-          'Monthly AI generation limit (3) reached. Try manual creation or wait until next month.',
+    // ✅ FIX: Use transaction to atomically check+increment quota, then create trip
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    let savedTrip: Trip;
+
+    try {
+      // Check AI trip limit with row-level locking (prevents race conditions)
+      if (!isManualMode) {
+        // Lock user row to prevent concurrent quota checks
+        const user = await queryRunner.manager
+          .createQueryBuilder()
+          .select('users')
+          .from('users', 'users')
+          .where('users.id = :userId', { userId })
+          .setLock('pessimistic_write') // SELECT FOR UPDATE
+          .getRawOne();
+
+        if (!user) {
+          throw new NotFoundException('User not found');
+        }
+
+        const aiTripsFreeLimit = parseInt(
+          process.env.AI_TRIPS_FREE_LIMIT || '3',
+          10,
+        );
+
+        // Check if user has reached limit
+        if (user.aiTripsUsedThisMonth >= aiTripsFreeLimit) {
+          throw new ForbiddenException(
+            `Monthly AI generation limit (${aiTripsFreeLimit}) reached. Try manual creation or wait until next month.`,
+          );
+        }
+
+        // ✅ CRITICAL: Increment quota BEFORE creating trip (inside transaction)
+        await queryRunner.manager
+          .createQueryBuilder()
+          .update('users')
+          .set({ aiTripsUsedThisMonth: () => 'aiTripsUsedThisMonth + 1' })
+          .where('id = :userId', { userId })
+          .execute();
+
+        this.logger.log(
+          `Incremented AI trip quota for user ${userId}: ${user.aiTripsUsedThisMonth} -> ${user.aiTripsUsedThisMonth + 1}`,
         );
       }
+
+      // Create trip (after quota check and increment)
+      const trip = queryRunner.manager.create(Trip, {
+        userId,
+        ...createTripDto,
+        numberOfTravelers: createTripDto.numberOfTravelers || 1,
+      });
+
+      savedTrip = await queryRunner.manager.save(trip);
+
+      // Commit transaction (quota + trip creation are now atomic)
+      await queryRunner.commitTransaction();
+
+      this.logger.log(
+        `Successfully created trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode (transaction committed)`,
+      );
+    } catch (error) {
+      // Rollback on any error (quota increment is also rolled back)
+      await queryRunner.rollbackTransaction();
+      this.logger.error(
+        `Failed to create trip, transaction rolled back: ${getErrorMessage(error)}`,
+      );
+      throw error;
+    } finally {
+      await queryRunner.release();
     }
-
-    // Create trip
-    const trip = this.tripRepository.create({
-      userId,
-      ...createTripDto,
-      numberOfTravelers: createTripDto.numberOfTravelers || 1,
-    });
-
-    const savedTrip = await this.tripRepository.save(trip);
 
     this.logger.log(
       `Creating trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode`,
@@ -192,9 +248,7 @@ export class TripsService {
         `Created ${itineraries.length} empty itineraries (manual mode) for trip ${savedTrip.id}`,
       );
     } else {
-      // Increment AI trip count before generation (limit already checked above)
-      await this.subscriptionService.incrementAiTripCount(userId);
-
+      // ✅ Note: AI trip count already incremented in transaction above
       // AI mode: generate itineraries with AI + weather in parallel
       try {
         progress$?.next({ step: 'ai_generating' });

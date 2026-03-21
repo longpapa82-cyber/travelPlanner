@@ -224,6 +224,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const handleCreateTrip = async () => {
+    // ✅ FIX: Prevent duplicate requests from double-tap
+    if (isLoading) {
+      return; // Block concurrent calls
+    }
+
     // Inline validation
     const errors: { destination?: string; dates?: string } = {};
     if (!destination.trim()) {
