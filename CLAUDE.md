@@ -166,6 +166,60 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - 24차 (`ebf7ba3`) 배포 완료
 - **배포 후 QA**: 프로덕션 12개 항목 검증 완료 ✅
 
+## 🔴 CRITICAL: 중복 여행 생성 버그 수정 (2026-03-21, 완료 ✅)
+
+### 버그 발견 및 수정 과정
+**4가지 버그 발견** (상세: `docs/deployment-log-2026-03-21.md`):
+
+1. **버그 #1: 프론트엔드 더블탭** (Phase 1)
+   - 위치: `frontend/src/screens/trips/CreateTripScreen.tsx:227`
+   - 원인: `handleCreateTrip()`에 `isLoading` 체크 없음
+   - 수정: 즉시 가드 추가 (`if (isLoading) return;`)
+
+2. **버그 #2: 백엔드 SELECT 쿼리** (Phase 8)
+   - 위치: `backend/src/trips/trips.service.ts:93-117`
+   - 원인: `.select('users')`가 컬럼값 미반환 → `user.aiTripsUsedThisMonth` = undefined
+   - 수정: 명시적 컬럼 선택 + `currentCount` 변수 사용
+   - 배포: 25-2차 (`a80c4faf`) — 백엔드 프로덕션 재배포 완료
+
+3. **버그 #3: 프론트엔드 SSE Fallback** ⭐ **(중복 생성 근본 원인)**
+   - 위치: `frontend/src/services/api.ts:370-463`
+   - 원인: SSE 성공(201) 후 스트림 중단 시 catch 블록에서 무조건 `this.createTrip()` fallback → 중복 생성
+   - 로그: POST /api/trips/create-stream (289ms) + POST /api/trips (39ms) - 2개 API 호출 확인
+   - 수정: `sseRequestStarted` 플래그 추가, SSE 시작 후 fallback 절대 금지
+   - 배포: 26차 (`8a5f164c`)
+
+4. **버그 #4: SSE 스트림 중단 + 에러 로깅 없음** ⭐ **(사용자 보고)**
+   - 위치: `frontend/src/services/api.ts`, `CreateTripScreen.tsx`
+   - 현상: 여행 생성됨 → 스트림 중단 → "실패" 토스트 → 에러 로깅 없음
+   - 수정:
+     - `api.ts`: SSE 중단 시 최근 여행 조회 (10초 이내), tripCreated 플래그
+     - `CreateTripScreen.tsx`: 모든 에러에 `apiService.logError()` 추가
+     - 사용자에게 정확한 메시지: "Trip created but connection interrupted"
+   - 배포: 27차 (`231e0503`)
+
+### 배포 이력
+- 25차 (`a795c4ad`) — 트랜잭션 + SELECT FOR UPDATE
+- 25-2차 (`a80c4faf`) — SELECT 쿼리 컬럼 명시
+- 26차 (`8a5f164c`) — SSE fallback 제거
+- 26-2차 (`d7386a01`) — versionCode 25 빌드
+  - Build ID: 785c6503-4889-467a-a0e4-811418be712a
+  - AAB: https://expo.dev/artifacts/eas/fS343itu3BYqKrfq9KbfnQ.aab
+- 27차 (`231e0503`) — SSE 스트림 중단 처리 + 에러 로깅
+- 27-2차 (예정) — versionCode 26 빌드
+
+### 현재 상태
+- ✅ 백엔드 프로덕션 배포 완료 (25-2차)
+- ✅ 프론트엔드 SSE 중단 처리 완료 (27차)
+- 🔄 versionCode 26 빌드 준비 중
+- ⏳ Play Console 업로드 대기
+
+### 핵심 교훈
+- **SSE Fallback 위험성**: 성공한 요청(201)에 대한 재시도는 중복 생성 유발
+- **로그 분석 중요성**: 2개 엔드포인트 호출 발견으로 근본 원인 파악
+- **에러 로깅 필수**: 모든 catch 블록에 에러 로깅 추가 필요
+- **체계적 진단**: /sc:troubleshoot 명령으로 단계별 분석 효과적
+
 ## EAS Build & 비공개 테스트 제출 (2026-03-13)
 
 - **빌드**: EAS production profile, versionCode 19
