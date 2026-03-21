@@ -206,16 +206,25 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
   - Build ID: 785c6503-4889-467a-a0e4-811418be712a
   - AAB: https://expo.dev/artifacts/eas/fS343itu3BYqKrfq9KbfnQ.aab
 - 27차 (`231e0503`) — SSE 스트림 중단 처리 + 에러 로깅
-- 27-2차 (`89ce2982`) — versionCode 27 빌드 ✅
+- 27-2차 (`89ce2982`) — versionCode 27 빌드
   - Build ID: d0da1658-5789-435b-be68-eed1b3558841
   - AAB: https://expo.dev/artifacts/eas/rMPixfB7Kvdk1dNrudzTHB.aab
   - 포함: 버그 #4 수정 (SSE 중단 처리 + 에러 로깅)
+  - ❌ Play Console 거부: versionCode 27 이미 사용됨
+- 28차 (`b2c8210a`) — versionCode 28 설정 + alpha track 구성
+  - frontend/eas.json: track "production" → "alpha"
+  - eas.json: submit track "alpha" 추가
+- 29차 — versionCode 29 빌드 ✅
+  - Build ID: e02cb511-3484-41d2-9d3e-dcf1f861af09
+  - AAB: https://expo.dev/artifacts/eas/tFyobQtJUKy5VDR5GzJ9EM.aab
+  - 포함: 버그 #4 수정 (SSE 중단 처리 + 에러 로깅)
+  - Alpha 트랙 업로드 대기
 
 ### 현재 상태
 - ✅ 백엔드 프로덕션 배포 완료 (25-2차)
 - ✅ 프론트엔드 SSE 중단 처리 완료 (27차)
-- ✅ versionCode 27 빌드 완료
-- ⏳ Play Console 업로드 필요
+- ✅ versionCode 29 빌드 완료
+- ⏳ Play Console Alpha 트랙 업로드 필요
 
 ### 핵심 교훈
 - **SSE Fallback 위험성**: 성공한 요청(201)에 대한 재시도는 중복 생성 유발
