@@ -237,6 +237,29 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
      - 사용자 경험 개선 (불필요한 경고 제거)
    - 배포: 32-5차 (`b16bfd67`)
 
+7. **버그 #8: SSE 불완전 이벤트 파싱 실패** ⭐ **(최종 근본 원인)**
+   - 위치: `frontend/src/services/api.ts:497-527`
+   - 현상:
+     - 여행 생성 성공하지만 "Trip created but connection interrupted" 경고 지속
+     - TripDetail 대신 TripList로 리다이렉트
+     - 디버그 로그가 Metro에 나타나지 않음 (Expo Go 캐시 문제)
+   - 근본 원인:
+     - SSE 이벤트는 double newline (`\n\n`)으로 끝나야 완전한 이벤트
+     - 백엔드가 `{step: 'complete', tripId: xxx}` 전송 직후 `res.end()` 호출
+     - 버퍼에 `data: {...}` 형태로 남지만 trailing `\n\n` 없음
+     - 기존 코드는 single `\n`으로 split → SSE 형식 처리 실패
+     - `complete` 이벤트 파싱 실패 → `result = null` → 에러 경로 진입
+   - 수정:
+     - `api.ts:504-559`: SSE 이벤트 형식 올바르게 처리
+     - 버퍼가 `\n\n`으로 끝나지 않으면 추가
+     - `\n\n`으로 split하여 완전한 이벤트 블록 처리
+     - complete 이벤트 못 찾으면 최근 여행 조회 (15초 이내)
+   - 영향:
+     - "Trip created but connection interrupted" 경고 완전 제거
+     - TripDetail로 정상 네비게이션
+     - SSE 스트림 중단 시에도 안정적 처리
+   - 배포: 33차 (`6151feb6`)
+
 6. **버그 #7: `done=true`일 때 마지막 청크 누락** ⭐ **(사용자 보고, 2026-03-22)**
    - 위치: `frontend/src/services/api.ts:445-446`
    - 현상:
@@ -326,6 +349,9 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **에러 처리 완전성**: 에러 플래그 추가 시 해당 케이스의 완전한 처리 필요
 - **상태 동기화 중요성**: 서버 상태 변경 시 클라이언트 상태(refreshStatus) 즉시 동기화
 - **재시도 로직 필수**: 네트워크 일시 장애 대비 exponential backoff 재시도 로직 적용
+- **SSE 이벤트 형식 이해**: SSE는 `data: {json}\n\n` 형식, trailing newlines 필수
+- **버퍼 처리 완전성**: 스트림 종료 시 불완전한 이벤트 처리 로직 필요
+- **디버그 로그 검증**: 로그 미출력 시 코드 미실행 의심 (캐시/빌드 문제)
 - **ReadableStream done 처리**: `done=true`일 때도 마지막 `value`에 데이터가 있을 수 있음
 - **버그 수정 검증**: 수정 후 실제 동작 확인 필수 (단위 테스트 + 통합 테스트 + 사용자 테스트)
 
