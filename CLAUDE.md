@@ -379,6 +379,10 @@ const user = this.userRepository.create(userData);
   - Build Time: 26분 (Upload 24s + Build 26m)
   - 포함: TypeScript 타입 수정
   - **Note**: EAS가 versionCode를 30에서 31로 자동 증가 (설정된 32 무시)
+- 32-4차 — Play Console Alpha 트랙 업로드 완료 ✅
+  - 업로드 일시: 2026-03-22
+  - 출시 노트: ko/en/ja 3개 언어 (버그 수정 및 안정성 개선)
+  - 상태: Google 자동 검사 진행 중 (최대 14분)
 
 ### 현재 상태
 - ✅ TypeScript 컴파일: 백엔드/프론트엔드 0 에러
@@ -386,7 +390,8 @@ const user = this.userRepository.create(userData);
 - ✅ 프론트엔드 테스트: 200/200 통과
 - ⚠️ 백엔드 기존 버그: 10개 실패 (trips.service mock 문제)
 - ✅ versionCode 31 빌드 완료 (AAB 다운로드 가능)
-- 📋 다음 단계: Play Console Alpha 트랙 업로드
+- ✅ Play Console Alpha 트랙 업로드 완료
+- ⏳ Google 자동 검사 진행 중 (최대 14분)
 
 ### 핵심 교훈
 - **타입 안전성**: 객체 리터럴 직접 전달보다 타입 명시 변수 사용
