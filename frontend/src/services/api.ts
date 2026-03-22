@@ -452,30 +452,49 @@ class ApiService {
       if (error.name === 'AbortError') throw error;
       if (error.response) throw error;
 
-      // ✅ FIX: If SSE request started (trip created), try to fetch the created trip
+      // ✅ FIX: If SSE request started (trip created), try to fetch the created trip with retry
       if (sseRequestStarted) {
-        try {
-          // Trip was created on server but stream failed - try to get the latest trip
-          const trips = await this.getTrips({ sortBy: 'createdAt', order: 'DESC', limit: 1 });
-          if (trips?.data && trips.data.length > 0) {
-            const latestTrip = trips.data[0];
-            // Check if trip was created very recently (within last 10 seconds)
-            const tripCreatedAt = new Date(latestTrip.createdAt).getTime();
-            const now = Date.now();
-            if (now - tripCreatedAt < 10000) {
-              // This is likely the trip we just created
-              return latestTrip;
+        // Retry logic: attempt up to 3 times with exponential backoff
+        for (let attempt = 0; attempt < 3; attempt++) {
+          try {
+            // Wait before retry (0ms, 1000ms, 2000ms)
+            if (attempt > 0) {
+              await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
             }
+
+            // Trip was created on server but stream failed - try to get the latest trip
+            const trips = await this.getTrips({ sortBy: 'createdAt', order: 'DESC', limit: 1 });
+            if (trips?.data && trips.data.length > 0) {
+              const latestTrip = trips.data[0];
+              // Check if trip was created very recently (within last 10 seconds)
+              const tripCreatedAt = new Date(latestTrip.createdAt).getTime();
+              const now = Date.now();
+              if (now - tripCreatedAt < 10000) {
+                // This is likely the trip we just created
+                return latestTrip;
+              }
+            }
+
+            // If we reach here, trip not found in recent trips
+            if (attempt === 2) {
+              // Last attempt failed - throw error with tripCreated flag
+              const streamError: any = new Error('Trip created but stream interrupted - please check your trips list');
+              streamError.tripCreated = true; // Flag to help UI show better message
+              throw streamError;
+            }
+          } catch (fetchError: any) {
+            // If this is the last attempt or if it's already a tripCreated error, throw
+            if (attempt === 2 || fetchError.tripCreated) {
+              if (fetchError.tripCreated) {
+                throw fetchError;
+              }
+              // Failed to fetch trips - throw original stream error
+              const streamError: any = new Error('Trip creation in progress - check trips list');
+              streamError.tripCreated = true;
+              throw streamError;
+            }
+            // Otherwise, continue to next retry
           }
-          // Could not find the created trip - throw error with helpful message
-          const streamError: any = new Error('Trip created but stream interrupted - please check your trips list');
-          streamError.tripCreated = true; // Flag to help UI show better message
-          throw streamError;
-        } catch (fetchError) {
-          // Failed to fetch trips - throw original stream error
-          const streamError: any = new Error('Trip creation in progress - check trips list');
-          streamError.tripCreated = true;
-          throw streamError;
         }
       }
 

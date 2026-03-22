@@ -430,6 +430,46 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           severity: 'warning',
         }).catch(() => {});
 
+        // 🔧 FIX: Refresh subscription status to update AI trip count
+        await refreshStatus();
+
+        // 🔧 FIX: Try to fetch the recently created trip
+        try {
+          const trips = await apiService.getTrips({
+            sortBy: 'createdAt',
+            order: 'DESC',
+            limit: 1
+          });
+
+          if (trips?.data && trips.data.length > 0) {
+            const latestTrip = trips.data[0];
+            const tripCreatedAt = new Date(latestTrip.createdAt).getTime();
+            const now = Date.now();
+
+            if (now - tripCreatedAt < 10000) {
+              // ✅ Found the recently created trip - navigate to TripDetail
+              showToast({
+                type: 'success',
+                message: t('create.generating'),
+                position: 'top',
+                duration: 2000,
+              });
+
+              // Show interstitial ad after trip creation (skip for premium), then navigate
+              setTimeout(async () => {
+                if (!isPremium && !isAdmin && isAdLoaded) {
+                  await showInterstitial();
+                }
+                navigation.navigate('TripDetail', { tripId: latestTrip.id });
+              }, 500);
+              return;
+            }
+          }
+        } catch (fetchError) {
+          // If fetching fails, fall through to showing warning and navigating to TripList
+        }
+
+        // If we couldn't find the trip, show warning and navigate to TripList
         showToast({
           type: 'warning',
           message: t('create.alerts.streamInterrupted', {
