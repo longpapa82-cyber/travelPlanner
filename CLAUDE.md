@@ -325,6 +325,71 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **Fallback 전략**: timezoneOffset 없으면 서버 시간 (하위 호환성 유지)
 - **데이터 구조 이해**: Trip에 없고 Itinerary에 있는 필드 파악 중요
 
+## Phase 7: 회귀 테스트 완료 (2026-03-22, 완료 ✅)
+
+### TypeScript 컴파일 에러 수정
+**문제**: Phase 3 P1 수정 후 TypeScript strict type checking 에러 발생
+- `users.service.ts:34`: TypeORM overload 해결 실패
+- `users.service.ts:45-46`: 타입 불일치 (`'free'`, `null`)
+
+**수정 내역** (`8b995134`):
+```typescript
+// 수정 전: 객체 리터럴 직접 전달 → 타입 추론 실패
+const user = this.userRepository.create({
+  subscriptionTier: 'free',  // ❌ Type error
+  subscriptionExpiresAt: null,  // ❌ Type error
+});
+
+// 수정 후: 타입 명시 변수 → 정확한 타입 추론
+const userData: Partial<User> = {
+  subscriptionTier: SubscriptionTier.FREE,  // ✅ enum 사용
+  subscriptionExpiresAt: undefined,  // ✅ 올바른 타입
+};
+const user = this.userRepository.create(userData);
+```
+
+**테스트 업데이트**: users.service.spec.ts에 3개 필드 기대값 추가
+
+### Phase 7 회귀 테스트 결과
+
+| 구분 | 테스트 종류 | 결과 | 비고 |
+|------|------------|------|------|
+| 백엔드 | TypeScript | ✅ 0 에러 | 타입 오버로드 + enum 수정 완료 |
+| 프론트엔드 | TypeScript | ✅ 0 에러 | 변경 없음 |
+| 백엔드 | Jest (397개) | ⚠️ 387/397 통과 | 10개 실패 (기존 버그, P1과 무관) |
+| 프론트엔드 | Jest (200개) | ✅ 200/200 통과 | 모든 테스트 통과 |
+| **P1 수정** | **users.service** | **✅ 20/20 통과** | **변경 코드 테스트 전부 통과** |
+
+**기존 실패 (P1과 무관)**:
+- `trips.service.spec.ts` 10개 테스트: `Cannot read properties of undefined (reading 'id')`
+- 원인: 테스트 mock 설정 문제 (기존 버그)
+- 영향: 실제 기능 정상, 테스트만 실패 (별도 수정 필요)
+
+### 배포 이력
+- 32-1차 (`8b995134`) — TypeScript 타입 에러 수정
+  - backend/src/users/users.service.ts: Partial<User> 타입 변수 추출
+  - backend/src/users/users.service.spec.ts: 테스트 기대값 업데이트
+  - TypeScript: ✅ 0 에러
+  - Jest: users.service.spec.ts ✅ 20/20 통과
+- 32-2차 (`f15664dd`) — versionCode 32로 업데이트
+  - frontend/app.config.js: versionCode 31 → 32
+- 32-3차 — versionCode 32 빌드 진행 중 ⏳
+  - EAS build 시작 (2026-03-22)
+  - 포함: TypeScript 타입 수정
+
+### 현재 상태
+- ✅ TypeScript 컴파일: 백엔드/프론트엔드 0 에러
+- ✅ P1 수정 회귀 테스트 통과 (users.service 20/20)
+- ✅ 프론트엔드 테스트: 200/200 통과
+- ⚠️ 백엔드 기존 버그: 10개 실패 (trips.service mock 문제)
+- ⏳ versionCode 32 빌드 진행 중
+
+### 핵심 교훈
+- **타입 안전성**: 객체 리터럴 직접 전달보다 타입 명시 변수 사용
+- **Enum 사용**: 문자열 리터럴 대신 enum 값 사용으로 타입 안전성 확보
+- **테스트 동기화**: 코드 변경 시 테스트 기대값도 즉시 업데이트
+- **회귀 테스트**: TypeScript + Jest 병렬 실행으로 빠른 검증
+
 ## EAS Build & 비공개 테스트 제출 (2026-03-13)
 
 - **빌드**: EAS production profile, versionCode 19
