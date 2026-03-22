@@ -245,15 +245,16 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
   - Build ID: 12f62cbe-f3b0-4753-8e7b-9938336a844b
   - AAB: https://expo.dev/artifacts/eas/3kNFh4mX93MRHRPdXXBXPz.aab
   - 포함: 버그 #5 수정 (SSE 스트림 중단 후 네비게이션 + AI 카운트 차감)
-  - Alpha 트랙 업로드 대기
+  - ✅ Alpha 트랙 게시 요청 완료 (2026-03-22)
 
 ### 현재 상태
 - ✅ 백엔드 프로덕션 배포 완료 (25-2차)
 - ✅ 프론트엔드 SSE 중단 처리 완료 (27차)
-- ✅ versionCode 29 빌드 완료 (Alpha 트랙 배포됨)
+- ✅ versionCode 29 빌드 완료 (Alpha 트랙 배포됨, 2026-03-21)
 - ✅ 버그 #5 수정 완료 (30차)
 - ✅ versionCode 30 빌드 완료 (버그 #5 포함)
-- ⏳ Play Console Alpha 트랙 업로드 필요
+- ✅ Play Console Alpha 트랙 게시 요청 완료 (2026-03-22)
+- ⏳ Google 자동 검사 진행 중 (최대 14분)
 
 ### 핵심 교훈
 - **SSE Fallback 위험성**: 성공한 요청(201)에 대한 재시도는 중복 생성 유발
