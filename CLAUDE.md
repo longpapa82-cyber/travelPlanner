@@ -198,6 +198,21 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
      - 사용자에게 정확한 메시지: "Trip created but connection interrupted"
    - 배포: 27차 (`231e0503`)
 
+5. **버그 #5: SSE 스트림 중단 후 네비게이션 실패 + AI 카운트 차감 안됨** ⭐ **(사용자 보고)**
+   - 위치: `frontend/src/services/api.ts`, `CreateTripScreen.tsx`
+   - 현상:
+     - 여행 생성 완료 토스트 표시 → 상세 페이지 전환 실패
+     - 생성 횟수 차감 안됨 (3/3 유지)
+   - 근본 원인:
+     - `error.tripCreated` 케이스 처리 불완전 (버그 #4 수정의 부작용)
+     - `refreshStatus()` 미호출 → `aiTripsUsedThisMonth` 업데이트 안됨
+     - `trip` 객체 없이 에러만 throw → TripDetail 이동 불가
+   - 수정:
+     - `api.ts:455-499`: 재시도 로직 추가 (3회, 1초/2초 exponential backoff)
+     - `CreateTripScreen.tsx:424-486`: `refreshStatus()` + 최근 여행 재조회 추가
+     - 성공 시 TripDetail로 정상 이동, 실패 시 TripList로 안내
+   - 배포: 30차 (`40a46447`)
+
 ### 배포 이력
 - 25차 (`a795c4ad`) — 트랜잭션 + SELECT FOR UPDATE
 - 25-2차 (`a80c4faf`) — SELECT 쿼리 컬럼 명시
@@ -218,19 +233,27 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
   - Build ID: e02cb511-3484-41d2-9d3e-dcf1f861af09
   - AAB: https://expo.dev/artifacts/eas/tFyobQtJUKy5VDR5GzJ9EM.aab
   - 포함: 버그 #4 수정 (SSE 중단 처리 + 에러 로깅)
-  - Alpha 트랙 업로드 대기
+  - ✅ Alpha 트랙 업로드 완료 (2026-03-21)
+- 30차 (`40a46447`) — SSE 스트림 중단 후 네비게이션 실패 수정
+  - api.ts: 재시도 로직 (3회, 1초/2초 백오프)
+  - CreateTripScreen.tsx: refreshStatus() + 최근 여행 재조회
+  - 포함: 버그 #5 수정 (네비게이션 + AI 카운트 차감)
 
 ### 현재 상태
 - ✅ 백엔드 프로덕션 배포 완료 (25-2차)
 - ✅ 프론트엔드 SSE 중단 처리 완료 (27차)
-- ✅ versionCode 29 빌드 완료
-- ⏳ Play Console Alpha 트랙 업로드 필요
+- ✅ versionCode 29 빌드 완료 (Alpha 트랙 배포됨)
+- ✅ 버그 #5 수정 완료 (30차)
+- ⏳ 새 빌드 필요 (버그 #5 포함)
 
 ### 핵심 교훈
 - **SSE Fallback 위험성**: 성공한 요청(201)에 대한 재시도는 중복 생성 유발
 - **로그 분석 중요성**: 2개 엔드포인트 호출 발견으로 근본 원인 파악
 - **에러 로깅 필수**: 모든 catch 블록에 에러 로깅 추가 필요
 - **체계적 진단**: /sc:troubleshoot 명령으로 단계별 분석 효과적
+- **에러 처리 완전성**: 에러 플래그 추가 시 해당 케이스의 완전한 처리 필요
+- **상태 동기화 중요성**: 서버 상태 변경 시 클라이언트 상태(refreshStatus) 즉시 동기화
+- **재시도 로직 필수**: 네트워크 일시 장애 대비 exponential backoff 재시도 로직 적용
 
 ## EAS Build & 비공개 테스트 제출 (2026-03-13)
 

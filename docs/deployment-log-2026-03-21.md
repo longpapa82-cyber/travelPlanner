@@ -804,6 +804,200 @@ git commit -m "fix: SSE stream interruption handling + error logging"
 
 ---
 
+## Phase 11: SSE 스트림 중단 후 네비게이션 실패 수정 (2026-03-22)
+
+### 📋 문제 보고
+**사용자 보고 (2026-03-22)**:
+1. 여행 생성 완료 토스트 표시 → 상세 페이지로 전환 안됨
+2. 생성 횟수 차감 안됨 (3/3 유지, 실제로는 여행 생성됨)
+
+### 🔍 진단 (Systematic Troubleshooting)
+
+**Phase 1: CreateTripScreen.tsx 네비게이션 로직 분석**
+```typescript
+// CreateTripScreen.tsx:406-412 (정상 케이스)
+setTimeout(async () => {
+  if (!isPremium && !isAdmin && isAdLoaded) {
+    await showInterstitial();
+  }
+  navigation.navigate('TripDetail', { tripId: trip.id });  // ✅ trip.id 사용
+}, 500);
+```
+
+**Phase 2: error.tripCreated 케이스 확인**
+```typescript
+// CreateTripScreen.tsx:424-445 (문제 케이스)
+if (error.tripCreated) {
+  // ❌ trip 객체 없음 → TripDetail 이동 불가
+  // ❌ refreshStatus() 미호출 → AI 카운트 업데이트 안됨
+  navigation.navigate('TripList');  // TripDetail 아닌 TripList로 이동
+  return;
+}
+```
+
+**Phase 3: api.ts SSE 복구 로직 확인**
+```typescript
+// api.ts:455-479 (문제 발생 지점)
+if (sseRequestStarted) {
+  try {
+    const trips = await this.getTrips({ sortBy: 'createdAt', order: 'DESC', limit: 1 });
+    if (trips?.data && trips.data.length > 0) {
+      const latestTrip = trips.data[0];
+      if (now - tripCreatedAt < 10000) {
+        return latestTrip;  // ✅ 성공 케이스
+      }
+    }
+    // ❌ 실패 케이스: trip 객체 없이 에러만 throw
+    const streamError: any = new Error('Trip created but stream interrupted');
+    streamError.tripCreated = true;
+    throw streamError;
+  }
+}
+```
+
+**Phase 4: 근본 원인 파악**
+
+| 요소 | 정상 케이스 | 문제 케이스 |
+|------|------------|------------|
+| trip 객체 | ✅ 있음 (SSE 성공 시) | ❌ 없음 (최근 여행 조회 실패) |
+| refreshStatus() | ✅ 호출됨 (line 367) | ❌ 미호출 |
+| 네비게이션 | TripDetail | TripList |
+| AI 카운트 | ✅ 차감됨 | ❌ 유지됨 |
+
+**근본 원인**:
+1. `error.tripCreated` 케이스 처리 불완전 (버그 #4 수정의 부작용)
+2. `refreshStatus()` 미호출 → `user.aiTripsUsedThisMonth` 업데이트 안됨
+3. trip 객체 없이 에러만 throw → TripDetail 이동 불가
+
+### 🔧 해결 방안
+
+**방안 1: api.ts 재시도 로직 추가**
+```typescript
+// api.ts:455-499
+if (sseRequestStarted) {
+  // 🔧 FIX: 재시도 로직 (3회, 1초/2초 exponential backoff)
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      if (attempt > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+      }
+
+      const trips = await this.getTrips({ sortBy: 'createdAt', order: 'DESC', limit: 1 });
+      if (trips?.data && trips.data.length > 0) {
+        const latestTrip = trips.data[0];
+        if (now - tripCreatedAt < 10000) {
+          return latestTrip;  // ✅ 재시도 성공
+        }
+      }
+
+      if (attempt === 2) {
+        const streamError: any = new Error('Trip created but stream interrupted');
+        streamError.tripCreated = true;
+        throw streamError;
+      }
+    } catch (fetchError: any) {
+      if (attempt === 2 || fetchError.tripCreated) {
+        throw fetchError;
+      }
+    }
+  }
+}
+```
+
+**방안 2: CreateTripScreen.tsx error.tripCreated 처리 개선**
+```typescript
+// CreateTripScreen.tsx:424-486
+if (error.tripCreated) {
+  // 🔧 FIX: refreshStatus() 호출 → AI 카운트 정확히 차감
+  await refreshStatus();
+
+  // 🔧 FIX: 최근 여행 재조회
+  try {
+    const trips = await apiService.getTrips({
+      sortBy: 'createdAt',
+      order: 'DESC',
+      limit: 1
+    });
+
+    if (trips?.data && trips.data.length > 0) {
+      const latestTrip = trips.data[0];
+      if (now - tripCreatedAt < 10000) {
+        // ✅ 최근 생성된 여행 발견 → TripDetail로 정상 이동
+        showToast({ type: 'success', message: t('create.generating') });
+        setTimeout(async () => {
+          if (!isPremium && !isAdmin && isAdLoaded) {
+            await showInterstitial();
+          }
+          navigation.navigate('TripDetail', { tripId: latestTrip.id });
+        }, 500);
+        return;
+      }
+    }
+  } catch (fetchError) {
+    // 재조회 실패 시에도 refreshStatus는 완료됨
+  }
+
+  // 재조회 실패 시 기존 로직 유지
+  showToast({ type: 'warning', message: t('create.alerts.streamInterrupted') });
+  setTimeout(() => {
+    navigation.navigate('TripList');
+  }, 2000);
+  return;
+}
+```
+
+### 📦 커밋
+
+**커밋 ID**: `40a46447`
+
+**커밋 메시지**:
+```
+fix: SSE 스트림 중단 후 네비게이션 실패 + AI 카운트 차감 안됨 (버그 #5)
+
+## 문제
+1. 여행 생성 성공 토스트 → 상세 페이지 전환 실패
+2. 생성 횟수 차감 안됨 (3/3 유지)
+
+## 근본 원인
+- error.tripCreated 케이스 처리 불완전
+- refreshStatus() 미호출 → aiTripsUsedThisMonth 업데이트 안됨
+- trip 객체 없이 에러만 throw → TripDetail 이동 불가
+
+## 해결
+1. api.ts (455-499): 재시도 로직 (3회, 1초/2초 exponential backoff)
+2. CreateTripScreen.tsx (424-486):
+   - refreshStatus() 추가 → AI 카운트 정확히 차감
+   - 최근 여행 재조회 시도
+   - 성공 시 TripDetail로 정상 이동
+   - 실패 시 TripList로 안내
+
+## 영향
+- SSE 스트림 중단 시에도 정상 네비게이션
+- AI 생성 횟수 정확히 표시
+```
+
+**변경 파일**:
+- `frontend/src/services/api.ts`: +45 -21 (재시도 로직)
+- `frontend/src/screens/trips/CreateTripScreen.tsx`: +35 -14 (refreshStatus + 재조회)
+
+### ✅ 검증
+
+**예상 효과**:
+1. ✅ SSE 스트림 중단 시 자동 복구 (재시도 로직)
+2. ✅ trip 객체 획득 → TripDetail로 정상 이동
+3. ✅ refreshStatus() 호출 → AI 카운트 정확히 차감
+4. ✅ 재조회 실패 시에도 TripList로 안내 (기존 로직)
+
+**테스트 시나리오**:
+- [ ] 네트워크 불안정 환경에서 여행 생성
+- [ ] 생성 후 TripDetail 자동 이동 확인
+- [ ] AI 생성 횟수 차감 확인 (3/3 → 2/3)
+- [ ] 재조회 실패 시 TripList 이동 확인
+
+**Phase 11 소요 시간**: 약 35분
+
+---
+
 ## 🎯 핵심 교훈
 
 ### 문제 #1: 트랜잭션은 실행되었으나 할당량 체크 실패
@@ -838,17 +1032,36 @@ git commit -m "fix: SSE stream interruption handling + error logging"
 
 ---
 
-## 🎯 3가지 버그 요약
+### 문제 #4: error.tripCreated 케이스 처리 불완전
+**원인**: 버그 #4 수정의 부작용
+- `error.tripCreated` 플래그 추가했지만 처리 미완성
+- `refreshStatus()` 미호출 → AI 카운트 업데이트 안됨
+- trip 객체 없이 에러만 throw → TripDetail 이동 불가
+
+**교훈**:
+- **에러 처리 완전성**: 에러 플래그 추가 시 해당 케이스의 완전한 처리 필요
+- **상태 동기화 중요성**: 서버 상태 변경 시 클라이언트 상태 즉시 동기화
+- **재시도 로직 필수**: 네트워크 일시 장애 대비 exponential backoff 재시도
+
+---
+
+## 🎯 5가지 버그 요약
 
 | 버그 | 위치 | 원인 | 수정 | 발견 단계 |
 |------|------|------|------|-----------|
 | #1 더블탭 | Frontend | isLoading 체크 없음 | 즉시 가드 추가 | Phase 1 |
 | #2 SELECT | Backend | 컬럼명 명시 안 함 | 명시적 컬럼 선택 | Phase 8 |
 | #3 Fallback | Frontend | SSE 성공 후 재시도 | sseRequestStarted 플래그 | Phase 9 ✅ |
+| #4 에러 로깅 | Frontend | 에러 로깅 없음 | logError() 추가 | Phase 10 ✅ |
+| #5 네비게이션 | Frontend | error.tripCreated 미완성 | refreshStatus + 재조회 | Phase 11 ✅ |
 
 **최종 진짜 원인**: #3 SSE Fallback (프론트엔드)
 - 백엔드 수정(#2)만으로는 해결 안 됨
 - 프론트엔드가 2개 API를 호출하는 것이 근본 원인
+
+**버그 #4, #5**: 버그 #3 수정의 부작용
+- 버그 #4: 에러 로깅 없음 → logError() 추가
+- 버그 #5: 네비게이션 실패 + AI 카운트 안 차감 → refreshStatus + 재조회
 
 ---
 
