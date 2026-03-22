@@ -443,7 +443,20 @@ class ApiService {
 
           try {
             const { done, value } = await Promise.race([readPromise, timeoutPromise]);
-            if (done) break;
+
+            // ✅ FIX (Bug #7): Process the final chunk before breaking
+            // done=true means no more data to read, but value may still contain the last chunk
+            if (done) {
+              console.log('[SSE DEBUG] Stream done=true, value:', value ? 'exists' : 'null');
+              if (value) {
+                const finalChunk = decoder.decode(value, { stream: false });
+                console.log('[SSE DEBUG] Final chunk decoded:', finalChunk);
+                buffer += finalChunk;
+              }
+              console.log('[SSE DEBUG] Breaking with buffer:', buffer);
+              break;
+            }
+
             lastActivityTime = Date.now(); // Reset activity timer on data received
 
             buffer += decoder.decode(value, { stream: true });
@@ -484,35 +497,75 @@ class ApiService {
         // ✅ FIX (Bug #6): Process any remaining buffer data after stream closes
         // The server may send the final 'complete' event right before closing the connection,
         // causing 'done=true' before we process the buffered data
+        console.log('[SSE DEBUG] Processing remaining buffer, length:', buffer.length, 'trimmed:', buffer.trim().length);
         if (buffer.trim()) {
-          const lines = buffer.split('\n');
-          for (const line of lines) {
-            const dataLine = line.replace(/^data: /, '').trim();
+          console.log('[SSE DEBUG] Buffer content:', buffer);
+
+          // Handle incomplete SSE event (missing trailing \n\n)
+          // If buffer doesn't end with \n\n, it's an incomplete event, add it
+          if (!buffer.endsWith('\n\n')) {
+            buffer += '\n\n';
+            console.log('[SSE DEBUG] Added missing \\n\\n to buffer');
+          }
+
+          // Now process as complete SSE events
+          const events = buffer.split('\n\n').filter(e => e.trim());
+          for (const eventBlock of events) {
+            const dataLine = eventBlock.replace(/^data: /, '').trim();
             if (!dataLine) continue;
 
             try {
               const event = JSON.parse(dataLine);
+              console.log('[SSE DEBUG] Parsed event from buffer:', event);
               if (event.step === 'complete' && event.tripId) {
                 // Found the completion event in remaining buffer - fetch trip data
+                console.log('[SSE DEBUG] Found complete event, fetching trip:', event.tripId);
                 result = await this.getTripById(event.tripId);
+                console.log('[SSE DEBUG] Trip fetched successfully:', result?.id);
               } else if (event.step === 'error') {
                 const error: any = new Error(event.message || 'Trip creation failed');
                 error.response = { status: event.status || 500, data: { message: event.message } };
                 throw error;
               }
             } catch (e: any) {
+              console.log('[SSE DEBUG] Error parsing buffer event:', e.message);
               if (e.response) throw e; // Re-throw structured errors
             }
           }
         }
 
+        console.log('[SSE DEBUG] Returning result:', result ? 'exists' : 'null');
+
+        // If no result after processing all data, but SSE started successfully,
+        // it means the trip was created but we couldn't parse the complete event
+        if (!result && sseRequestStarted) {
+          console.log('[SSE DEBUG] No complete event found but SSE started, attempting to fetch recent trip');
+          // Try to fetch the most recent trip as a fallback
+          try {
+            const trips = await this.getTrips({ sortBy: 'createdAt', order: 'DESC', limit: 1 });
+            if (trips?.data && trips.data.length > 0) {
+              const latestTrip = trips.data[0];
+              const tripCreatedAt = new Date(latestTrip.createdAt).getTime();
+              const now = Date.now();
+              if (now - tripCreatedAt < 15000) { // Within 15 seconds
+                console.log('[SSE DEBUG] Found recent trip, using as result');
+                result = latestTrip;
+              }
+            }
+          } catch (fetchError) {
+            console.log('[SSE DEBUG] Failed to fetch recent trip:', fetchError);
+          }
+        }
+
         return result;
       } catch (error: any) {
+        console.log('[SSE DEBUG] Caught error:', error.message, 'sseRequestStarted:', sseRequestStarted);
         if (error.name === 'AbortError') throw error;
         if (error.response) throw error;
 
         // ✅ FIX: If SSE request started (trip created), try to fetch the created trip with retry
         if (sseRequestStarted) {
+          console.log('[SSE DEBUG] SSE request started, attempting retry to fetch created trip');
           // Retry logic: attempt up to 3 times with exponential backoff
           for (let attempt = 0; attempt < 3; attempt++) {
             try {

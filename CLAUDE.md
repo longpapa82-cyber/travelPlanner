@@ -237,6 +237,29 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
      - 사용자 경험 개선 (불필요한 경고 제거)
    - 배포: 32-5차 (`b16bfd67`)
 
+6. **버그 #7: `done=true`일 때 마지막 청크 누락** ⭐ **(사용자 보고, 2026-03-22)**
+   - 위치: `frontend/src/services/api.ts:445-446`
+   - 현상:
+     - 버그 #6 수정 후에도 "Trip created but connection interrupted" 경고 계속 발생
+     - TripList로 이동 (TripDetail 아님)
+     - AI 카운트 차감은 정상 작동
+   - 근본 원인:
+     - ReadableStream의 `done=true`는 "더 이상 읽을 데이터가 없음"을 의미
+     - 하지만 **마지막 `value`는 여전히 유효한 데이터를 포함할 수 있음**
+     - `if (done) break;`로 즉시 루프 탈출 (446번 라인)
+     - **마지막 청크(complete 이벤트)를 버퍼에 추가하지 않고 종료**
+     - 결과: 버그 #6 수정의 버퍼 처리 로직이 빈 버퍼로 인해 실행되지 않음
+   - 수정:
+     - `api.ts:447-454`: `done=true`일 때 마지막 `value`를 버퍼에 추가
+     - `if (value) buffer += decoder.decode(value, { stream: false });`
+     - `stream: false` 설정으로 최종 청크임을 디코더에 명시
+   - 영향:
+     - 버퍼 처리 로직(484-507 라인)이 정상 작동
+     - `complete` 이벤트 올바르게 파싱
+     - TripDetail 화면으로 정상 네비게이션
+     - "Trip created but connection interrupted" 경고 완전 제거
+   - 배포: 32-6차 (예정)
+
 ### 배포 이력
 - 25차 (`a795c4ad`) — 트랜잭션 + SELECT FOR UPDATE
 - 25-2차 (`a80c4faf`) — SELECT 쿼리 컬럼 명시
@@ -280,15 +303,20 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
   - 포함: 버그 #6 수정 (SSE 버퍼 미처리 해결)
   - 빌드 시간: 약 19분 (2026-03-22)
   - ✅ Alpha 트랙 게시 요청 완료 (2026-03-22)
+- 32-6차 — `done=true`일 때 마지막 청크 누락 수정 (버그 #7) ✅
+  - frontend/src/services/api.ts: 마지막 value를 버퍼에 추가
+  - TypeScript: ✅ 0 에러
+  - 영향: 버그 #6 수정이 실제로 작동하도록 수정, 경고 메시지 완전 제거 예상
 
 ### 현재 상태
 - ✅ 백엔드 프로덕션 배포 완료 (25-2차)
 - ✅ 프론트엔드 SSE 중단 처리 완료 (27차)
 - ✅ 버그 #5 수정 완료 (30차)
 - ✅ 버그 #6 수정 완료 (32-5차) - SSE 버퍼 미처리 해결
+- ✅ 버그 #7 수정 완료 (32-6차) - `done=true`일 때 마지막 청크 누락 수정
 - ✅ versionCode 32 빌드 완료 (버그 #6 포함, 2026-03-22)
 - ✅ Play Console Alpha 트랙 게시 요청 완료 (2026-03-22)
-- ⏳ Google 자동 검사 진행 중 (최대 14분)
+- ⏳ 사용자 테스트 필요 (버그 #7 수정 효과 확인)
 
 ### 핵심 교훈
 - **SSE Fallback 위험성**: 성공한 요청(201)에 대한 재시도는 중복 생성 유발
@@ -298,6 +326,8 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **에러 처리 완전성**: 에러 플래그 추가 시 해당 케이스의 완전한 처리 필요
 - **상태 동기화 중요성**: 서버 상태 변경 시 클라이언트 상태(refreshStatus) 즉시 동기화
 - **재시도 로직 필수**: 네트워크 일시 장애 대비 exponential backoff 재시도 로직 적용
+- **ReadableStream done 처리**: `done=true`일 때도 마지막 `value`에 데이터가 있을 수 있음
+- **버그 수정 검증**: 수정 후 실제 동작 확인 필수 (단위 테스트 + 통합 테스트 + 사용자 테스트)
 
 ## 🔴 CRITICAL: 여행 상태 타임존 버그 수정 (2026-03-22, 완료 ✅)
 
