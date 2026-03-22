@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { User, AuthProvider } from './entities/user.entity';
+import { User, AuthProvider, SubscriptionTier } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { t } from '../common/i18n';
@@ -30,7 +30,7 @@ export class UsersService {
     profileImage?: string;
     isEmailVerified?: boolean;
   }): Promise<User> {
-    const user = this.userRepository.create({
+    const userData: Partial<User> = {
       email: data.email,
       passwordHash: data.password
         ? await bcrypt.hash(data.password, 12)
@@ -42,10 +42,11 @@ export class UsersService {
       isEmailVerified: data.isEmailVerified ?? false,
       // Initialize AI trip count and subscription fields explicitly
       aiTripsUsedThisMonth: 0,
-      subscriptionTier: 'free',
-      subscriptionExpiresAt: null,
-    });
+      subscriptionTier: SubscriptionTier.FREE,
+      subscriptionExpiresAt: undefined,
+    };
 
+    const user = this.userRepository.create(userData);
     return await this.userRepository.save(user);
   }
 

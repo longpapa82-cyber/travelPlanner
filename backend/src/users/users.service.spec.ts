@@ -124,6 +124,9 @@ describe('UsersService', () => {
         providerId: undefined,
         profileImage: undefined,
         isEmailVerified: false,
+        aiTripsUsedThisMonth: 0,
+        subscriptionTier: 'free',
+        subscriptionExpiresAt: undefined,
       });
       expect(repository.save).toHaveBeenCalledWith(createdUser);
       expect(result).toEqual(createdUser);
@@ -161,6 +164,9 @@ describe('UsersService', () => {
         providerId: oauthData.providerId,
         profileImage: oauthData.profileImage,
         isEmailVerified: false,
+        aiTripsUsedThisMonth: 0,
+        subscriptionTier: 'free',
+        subscriptionExpiresAt: undefined,
       });
       expect(result.passwordHash).toBeNull();
     });
