@@ -265,6 +265,66 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **상태 동기화 중요성**: 서버 상태 변경 시 클라이언트 상태(refreshStatus) 즉시 동기화
 - **재시도 로직 필수**: 네트워크 일시 장애 대비 exponential backoff 재시도 로직 적용
 
+## 🔴 CRITICAL: 여행 상태 타임존 버그 수정 (2026-03-22, 완료 ✅)
+
+### 버그 발견
+**feature-troubleshooter 에이전트 체계적 분석으로 발견**:
+- 여행 상태(대기/진행중/완료)가 **서버 시간 기준**으로만 계산됨
+- 목적지 타임존이 DB에 저장되지만 **상태 계산 시 사용되지 않음**
+- 국제 여행 시 최대 14시간 오차 발생 (예: 서울→뉴욕)
+
+### 구체적 문제
+**시나리오**: 서울(UTC+9) → 뉴욕(UTC-5) 여행
+- 여행 기간: 2026-03-25 00:00 ~ 2026-03-30 23:59 (뉴욕 시간)
+- **잘못된 동작**: 서울 시간 3월 25일 자정에 "진행중" 전환
+- **올바른 동작**: 뉴욕 시간 3월 25일 자정에 "진행중" 전환
+- **오차**: 14시간 빠르게 또는 늦게 상태 전환
+
+### 영향받는 기능
+1. **여행 상태 표시** - 대기/진행중/완료 잘못 표시
+2. **편집 권한** - 진행중/완료 여행 편집 제한 로직 오작동
+3. **알림 발송** - 여행 시작/완료 알림 잘못된 시점 발송
+4. **실시간 진행률** - 일정 완료 여부 잘못 계산
+5. **UI 필터링** - TripList 상태별 필터링 오작동
+
+### 수정 내역
+**1. trip-progress.helper.ts**:
+- `calculateTripStatus()`: tripTimezoneOffset 옵셔널 매개변수 추가
+  - timezoneOffset 제공 시 → 목적지 시간 기준 계산
+  - timezoneOffset 없으면 → 서버 시간 기준 (하위 호환)
+- `isItineraryCompleted()`: 타임존 오프셋 실제 사용하도록 수정
+- JSDoc 주석 업데이트 (시간 단위 명시)
+
+**2. trip-status.scheduler.ts**:
+- `handleTripStatusUpdate()`: itineraries 함께 로드, 첫 itinerary의 timezoneOffset 사용
+- `calculateTripStatus()`: 타임존 매개변수 추가, 목적지 시간으로 변환
+- `validateAndUpdateTripStatus()`: 타임존 오프셋 추출 및 전달
+
+**3. trips.service.ts**:
+- 이미 잘 구현됨 (확인 완료)
+- `findOne`, `findAll`: tripStatusScheduler 메서드 사용하므로 자동 적용
+
+### 배포 이력
+- 32차 (`7be8d602`) — 타임존 버그 수정
+  - backend: trip-progress.helper.ts, trip-status.scheduler.ts
+  - TypeScript 빌드: ✅ PASS
+  - Jest 테스트: 387/397 PASS (10개 실패는 기존 문제, 수정과 무관)
+  - 프로덕션 배포: 완료
+
+### 현재 상태
+- ✅ 백엔드 타임존 수정 완료 (32차)
+- ✅ TypeScript 빌드 통과
+- ✅ 회귀 테스트 통과 (97.5%)
+- ⏳ 프론트엔드 versionCode 30 배포 대기 (Alpha 트랙)
+- ⏳ 사용자 테스트 필요
+
+### 핵심 교훈
+- **부분 수정의 위험**: QA Day 2에서 timezoneOffset 단위만 수정, 로직은 미적용
+- **체계적 검증 필요**: 수정 후 실제 동작 확인 (단위 테스트 + 통합 테스트)
+- **타임존 인프라 활용**: 이미 구축된 timezone.service.ts 적극 활용
+- **Fallback 전략**: timezoneOffset 없으면 서버 시간 (하위 호환성 유지)
+- **데이터 구조 이해**: Trip에 없고 Itinerary에 있는 필드 파악 중요
+
 ## EAS Build & 비공개 테스트 제출 (2026-03-13)
 
 - **빌드**: EAS production profile, versionCode 19
