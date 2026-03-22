@@ -373,16 +373,20 @@ const user = this.userRepository.create(userData);
   - Jest: users.service.spec.ts ✅ 20/20 통과
 - 32-2차 (`f15664dd`) — versionCode 32로 업데이트
   - frontend/app.config.js: versionCode 31 → 32
-- 32-3차 — versionCode 32 빌드 진행 중 ⏳
-  - EAS build 시작 (2026-03-22)
+- 32-3차 — versionCode 31 빌드 완료 ✅
+  - Build ID: a80be9b4-8d8b-4d6c-a30e-9bbc324b94da
+  - AAB: https://expo.dev/artifacts/eas/mKyH7T27W7HpWGoA9uZ8A3.aab
+  - Build Time: 26분 (Upload 24s + Build 26m)
   - 포함: TypeScript 타입 수정
+  - **Note**: EAS가 versionCode를 30에서 31로 자동 증가 (설정된 32 무시)
 
 ### 현재 상태
 - ✅ TypeScript 컴파일: 백엔드/프론트엔드 0 에러
 - ✅ P1 수정 회귀 테스트 통과 (users.service 20/20)
 - ✅ 프론트엔드 테스트: 200/200 통과
 - ⚠️ 백엔드 기존 버그: 10개 실패 (trips.service mock 문제)
-- ⏳ versionCode 32 빌드 진행 중
+- ✅ versionCode 31 빌드 완료 (AAB 다운로드 가능)
+- 📋 다음 단계: Play Console Alpha 트랙 업로드
 
 ### 핵심 교훈
 - **타입 안전성**: 객체 리터럴 직접 전달보다 타입 명시 변수 사용
