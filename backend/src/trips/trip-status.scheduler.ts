@@ -37,73 +37,74 @@ export class TripStatusScheduler {
     this.logger.log('Starting daily trip status update...');
 
     try {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Start of day
-
       // Count updates for logging
       let upcomingToOngoing = 0;
       let ongoingToCompleted = 0;
 
-      // Update upcoming → ongoing
-      // Trips where today >= startDate AND status is still 'upcoming'
-      const upcomingTrips = await this.tripRepository.find({
-        where: {
-          status: TripStatus.UPCOMING,
-          startDate: LessThan(today),
-        },
+      // Load all trips with itineraries to get timezone info
+      const allTrips = await this.tripRepository.find({
+        relations: ['itineraries'],
       });
 
-      for (const trip of upcomingTrips) {
-        trip.status = TripStatus.ONGOING;
-        await this.tripRepository.save(trip);
-        upcomingToOngoing++;
+      for (const trip of allTrips) {
+        // Get timezone offset from first itinerary (if available)
+        const timezoneOffset =
+          trip.itineraries && trip.itineraries.length > 0
+            ? trip.itineraries[0].timezoneOffset
+            : undefined;
 
-        // Notify user that their trip has started
-        if (this.notificationsService) {
-          this.notificationsService
-            .create(
-              trip.userId,
-              NotificationType.TRIP_STARTED,
-              '🌍 여행 시작!',
-              `${trip.destination} 여행이 시작되었습니다. 즐거운 여행 되세요!`,
-              { tripId: trip.id },
-            )
-            .catch((err) =>
-              this.logger.warn('Failed to send trip start notification', err),
-            );
-        }
-      }
+        // Calculate correct status based on destination timezone
+        const correctStatus = this.calculateTripStatus(
+          trip.startDate,
+          trip.endDate,
+          timezoneOffset,
+        );
 
-      // Update ongoing → completed
-      // Trips where today > endDate AND status is still 'ongoing'
-      const ongoingTrips = await this.tripRepository.find({
-        where: {
-          status: TripStatus.ONGOING,
-          endDate: LessThan(today),
-        },
-      });
+        // Update if status changed
+        if (trip.status !== correctStatus) {
+          const oldStatus = trip.status;
+          trip.status = correctStatus;
+          await this.tripRepository.save(trip);
 
-      for (const trip of ongoingTrips) {
-        trip.status = TripStatus.COMPLETED;
-        await this.tripRepository.save(trip);
-        ongoingToCompleted++;
+          // Track transition for logging
+          if (oldStatus === TripStatus.UPCOMING && correctStatus === TripStatus.ONGOING) {
+            upcomingToOngoing++;
 
-        // Notify user that their trip is complete
-        if (this.notificationsService) {
-          this.notificationsService
-            .create(
-              trip.userId,
-              NotificationType.TRIP_COMPLETED,
-              '✅ 여행 완료!',
-              `${trip.destination} 여행이 완료되었습니다. 추억을 확인해보세요!`,
-              { tripId: trip.id },
-            )
-            .catch((err) =>
-              this.logger.warn(
-                'Failed to send trip complete notification',
-                err,
-              ),
-            );
+            // Notify user that their trip has started
+            if (this.notificationsService) {
+              this.notificationsService
+                .create(
+                  trip.userId,
+                  NotificationType.TRIP_STARTED,
+                  '🌍 여행 시작!',
+                  `${trip.destination} 여행이 시작되었습니다. 즐거운 여행 되세요!`,
+                  { tripId: trip.id },
+                )
+                .catch((err) =>
+                  this.logger.warn('Failed to send trip start notification', err),
+                );
+            }
+          } else if (oldStatus === TripStatus.ONGOING && correctStatus === TripStatus.COMPLETED) {
+            ongoingToCompleted++;
+
+            // Notify user that their trip is complete
+            if (this.notificationsService) {
+              this.notificationsService
+                .create(
+                  trip.userId,
+                  NotificationType.TRIP_COMPLETED,
+                  '✅ 여행 완료!',
+                  `${trip.destination} 여행이 완료되었습니다. 추억을 확인해보세요!`,
+                  { tripId: trip.id },
+                )
+                .catch((err) =>
+                  this.logger.warn(
+                    'Failed to send trip complete notification',
+                    err,
+                  ),
+                );
+            }
+          }
         }
       }
 
@@ -129,9 +130,21 @@ export class TripStatusScheduler {
   /**
    * Calculate and return correct status for a trip based on dates
    * (Does not update database, just returns what status should be)
+   * @param startDate Trip start date
+   * @param endDate Trip end date
+   * @param timezoneOffset Trip destination timezone offset in hours (e.g., 9 for KST, -5 for EST)
    */
-  calculateTripStatus(startDate: Date, endDate: Date): TripStatus {
-    const today = new Date();
+  calculateTripStatus(startDate: Date, endDate: Date, timezoneOffset?: number): TripStatus {
+    // Calculate today in destination timezone
+    let today = new Date();
+    if (timezoneOffset != null) {
+      // Convert to destination time
+      const localOffsetMinutes = today.getTimezoneOffset();
+      const destOffsetMinutes = timezoneOffset * 60; // hours → minutes
+      today = new Date(
+        today.getTime() + (localOffsetMinutes + destOffsetMinutes) * 60 * 1000,
+      );
+    }
     today.setHours(0, 0, 0, 0);
 
     const start = new Date(startDate);
@@ -200,9 +213,16 @@ export class TripStatusScheduler {
    * Returns true if status was updated, false otherwise
    */
   async validateAndUpdateTripStatus(trip: Trip): Promise<boolean> {
+    // Get timezone offset from first itinerary (if available)
+    const timezoneOffset =
+      trip.itineraries && trip.itineraries.length > 0
+        ? trip.itineraries[0].timezoneOffset
+        : undefined;
+
     const correctStatus = this.calculateTripStatus(
       trip.startDate,
       trip.endDate,
+      timezoneOffset,
     );
 
     if (trip.status !== correctStatus) {

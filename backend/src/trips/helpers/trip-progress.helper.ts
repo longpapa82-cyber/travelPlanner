@@ -8,22 +8,39 @@ import { Itinerary, Activity } from '../entities/itinerary.entity';
 
 /**
  * 현재 날짜/시간 기준으로 여행 상태 계산
+ * @param trip 여행 객체
+ * @param currentDate 비교 기준 날짜 (기본: 현재 시간)
+ * @param tripTimezoneOffset 여행지 시간대 오프셋 (시간 단위, 예: 9 for KST, -5 for EST)
+ * @returns 여행 상태 (upcoming/ongoing/completed)
  */
 export function calculateTripStatus(
   trip: Trip,
   currentDate: Date = new Date(),
+  tripTimezoneOffset?: number,
 ): TripStatus {
   const startDate = new Date(trip.startDate);
   const endDate = new Date(trip.endDate);
 
+  // 목적지 시간 계산 (timezoneOffset이 제공된 경우)
+  let current = new Date(currentDate);
+  if (tripTimezoneOffset != null) {
+    // 현지 시간으로 변환
+    // getTimezoneOffset()은 분 단위이고 부호가 반대 (UTC+9 → -540)
+    const localOffsetMinutes = current.getTimezoneOffset();
+    const destOffsetMinutes = tripTimezoneOffset * 60; // hours → minutes
+    current = new Date(
+      current.getTime() + (localOffsetMinutes + destOffsetMinutes) * 60 * 1000,
+    );
+  }
+
   // 시간 제거 (날짜만 비교)
-  const current = new Date(currentDate.toDateString());
+  const currentDateOnly = new Date(current.toDateString());
   const start = new Date(startDate.toDateString());
   const end = new Date(endDate.toDateString());
 
-  if (current < start) {
+  if (currentDateOnly < start) {
     return TripStatus.UPCOMING;
-  } else if (current > end) {
+  } else if (currentDateOnly > end) {
     return TripStatus.COMPLETED;
   } else {
     return TripStatus.ONGOING;
@@ -33,11 +50,11 @@ export function calculateTripStatus(
 /**
  * 특정 일정(Itinerary)이 완료되었는지 확인
  * @param itinerary 일정
- * @param tripTimezoneOffset 여행지 시간대 오프셋 (분 단위)
+ * @param tripTimezoneOffset 여행지 시간대 오프셋 (시간 단위, 예: 9 for KST, -5 for EST)
  */
 export function isItineraryCompleted(
   itinerary: Itinerary,
-  _tripTimezoneOffset?: number,
+  tripTimezoneOffset?: number,
 ): boolean {
   // 이미 완료 표시된 경우
   if (itinerary.isCompleted) {
@@ -45,7 +62,16 @@ export function isItineraryCompleted(
   }
 
   // 현재 시간 (여행지 시간대 적용)
-  const now = new Date();
+  let now = new Date();
+  if (tripTimezoneOffset != null) {
+    // 현지 시간으로 변환
+    const localOffsetMinutes = now.getTimezoneOffset();
+    const destOffsetMinutes = tripTimezoneOffset * 60; // hours → minutes
+    now = new Date(
+      now.getTime() + (localOffsetMinutes + destOffsetMinutes) * 60 * 1000,
+    );
+  }
+
   const itineraryDate = new Date(itinerary.date);
 
   // 날짜만 비교 (시간 제거)
@@ -60,7 +86,7 @@ export function isItineraryCompleted(
  * 특정 활동(Activity)이 완료되었는지 확인
  * @param activity 활동
  * @param itineraryDate 일정 날짜
- * @param tripTimezoneOffset 여행지 시간대 오프셋 (분 단위)
+ * @param tripTimezoneOffset 여행지 시간대 오프셋 (시간 단위, 예: 9 for KST, -5 for EST)
  */
 export function isActivityCompleted(
   activity: Activity,
