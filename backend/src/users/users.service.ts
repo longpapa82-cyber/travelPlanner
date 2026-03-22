@@ -40,6 +40,10 @@ export class UsersService {
       providerId: data.providerId,
       profileImage: data.profileImage,
       isEmailVerified: data.isEmailVerified ?? false,
+      // Initialize AI trip count and subscription fields explicitly
+      aiTripsUsedThisMonth: 0,
+      subscriptionTier: 'free',
+      subscriptionExpiresAt: null,
     });
 
     return await this.userRepository.save(user);
