@@ -481,6 +481,31 @@ class ApiService {
           }
         }
 
+        // ✅ FIX (Bug #6): Process any remaining buffer data after stream closes
+        // The server may send the final 'complete' event right before closing the connection,
+        // causing 'done=true' before we process the buffered data
+        if (buffer.trim()) {
+          const lines = buffer.split('\n');
+          for (const line of lines) {
+            const dataLine = line.replace(/^data: /, '').trim();
+            if (!dataLine) continue;
+
+            try {
+              const event = JSON.parse(dataLine);
+              if (event.step === 'complete' && event.tripId) {
+                // Found the completion event in remaining buffer - fetch trip data
+                result = await this.getTripById(event.tripId);
+              } else if (event.step === 'error') {
+                const error: any = new Error(event.message || 'Trip creation failed');
+                error.response = { status: event.status || 500, data: { message: event.message } };
+                throw error;
+              }
+            } catch (e: any) {
+              if (e.response) throw e; // Re-throw structured errors
+            }
+          }
+        }
+
         return result;
       } catch (error: any) {
         if (error.name === 'AbortError') throw error;
