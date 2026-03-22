@@ -279,6 +279,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
   - AAB: https://expo.dev/artifacts/eas/71f8hVS3DrmFnv9LXbAGnm.aab
   - 포함: 버그 #6 수정 (SSE 버퍼 미처리 해결)
   - 빌드 시간: 약 19분 (2026-03-22)
+  - ✅ Alpha 트랙 게시 요청 완료 (2026-03-22)
 
 ### 현재 상태
 - ✅ 백엔드 프로덕션 배포 완료 (25-2차)
@@ -286,7 +287,8 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - ✅ 버그 #5 수정 완료 (30차)
 - ✅ 버그 #6 수정 완료 (32-5차) - SSE 버퍼 미처리 해결
 - ✅ versionCode 32 빌드 완료 (버그 #6 포함, 2026-03-22)
-- 📋 다음 단계: Play Console Alpha 트랙 업로드 및 게시 요청
+- ✅ Play Console Alpha 트랙 게시 요청 완료 (2026-03-22)
+- ⏳ Google 자동 검사 진행 중 (최대 14분)
 
 ### 핵심 교훈
 - **SSE Fallback 위험성**: 성공한 요청(201)에 대한 재시도는 중복 생성 유발
