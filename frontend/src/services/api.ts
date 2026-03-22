@@ -363,6 +363,9 @@ class ApiService {
     return response.data;
   }
 
+  // Track active SSE requests to prevent concurrent duplicates
+  private activeSseRequest: Promise<any> | null = null;
+
   /**
    * Create trip with SSE progress streaming.
    * Falls back to regular createTrip if SSE fails.
@@ -372,135 +375,172 @@ class ApiService {
     onProgress?: (step: string, message?: string) => void,
     signal?: AbortSignal,
   ): Promise<any> {
+    // If there's already an active SSE request, return it (prevent duplicates)
+    if (this.activeSseRequest) {
+      return this.activeSseRequest;
+    }
+
     let sseRequestStarted = false;
 
-    try {
-      const token = await secureStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-      const lang = getCurrentLanguage();
+    // Wrap the entire operation in a promise that we can track
+    this.activeSseRequest = (async () => {
+      try {
+        const token = await secureStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+        const lang = getCurrentLanguage();
 
-      const response = await fetch(`${API_URL}/trips/create-stream`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'text/event-stream',
-          'Accept-Language': lang,
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(data),
-        signal,
-      });
+        const response = await fetch(`${API_URL}/trips/create-stream`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'text/event-stream',
+            'Accept-Language': lang,
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify(data),
+          signal,
+        });
 
-      if (!response.ok) {
-        const errorBody = await response.text();
-        let errorMessage = 'Trip creation failed';
-        try {
-          const parsed = JSON.parse(errorBody);
-          errorMessage = parsed.message || errorMessage;
-        } catch {}
-        const error: any = new Error(errorMessage);
-        error.response = { status: response.status, data: { message: errorMessage } };
-        throw error;
-      }
+        if (!response.ok) {
+          const errorBody = await response.text();
+          let errorMessage = 'Trip creation failed';
+          try {
+            const parsed = JSON.parse(errorBody);
+            errorMessage = parsed.message || errorMessage;
+          } catch {}
+          const error: any = new Error(errorMessage);
+          error.response = { status: response.status, data: { message: errorMessage } };
+          throw error;
+        }
 
-      // ✅ FIX: SSE request started successfully (201) - trip is being created on server
-      // From this point, we MUST NOT fallback to createTrip() as it would create duplicates
-      sseRequestStarted = true;
+        // ✅ FIX: SSE request started successfully (201) - trip is being created on server
+        // From this point, we MUST NOT fallback to createTrip() as it would create duplicates
+        sseRequestStarted = true;
 
-      const reader = response.body?.getReader();
-      if (!reader) {
-        // No streaming support - but trip creation already started on server
-        // Poll for trip status instead of creating duplicate
-        throw new Error('Streaming not supported but trip creation started');
-      }
+        const reader = response.body?.getReader();
+        if (!reader) {
+          // No streaming support - but trip creation already started on server
+          // Poll for trip status instead of creating duplicate
+          throw new Error('Streaming not supported but trip creation started');
+        }
 
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let result: any = null;
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let result: any = null;
+        let lastActivityTime = Date.now();
+        const SSE_TIMEOUT = 30000; // 30 seconds without data = timeout
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          const dataLine = line.replace(/^data: /, '').trim();
-          if (!dataLine) continue;
+        while (true) {
+          // Add timeout protection to prevent indefinite hanging
+          const readPromise = reader.read();
+          const timeoutPromise = new Promise<never>((_, reject) => {
+            setTimeout(() => {
+              const timeSinceLastActivity = Date.now() - lastActivityTime;
+              if (timeSinceLastActivity >= SSE_TIMEOUT) {
+                reject(new Error('SSE stream timeout - no data received for 30 seconds'));
+              }
+            }, SSE_TIMEOUT);
+          });
 
           try {
-            const event = JSON.parse(dataLine);
-            if (event.step === 'complete' && event.tripId) {
-              // Fetch the full trip data
-              result = await this.getTripById(event.tripId);
-            } else if (event.step === 'error') {
-              const error: any = new Error(event.message || 'Trip creation failed');
-              error.response = { status: event.status || 500, data: { message: event.message } };
-              throw error;
-            } else {
-              onProgress?.(event.step, event.message);
-            }
-          } catch (e: any) {
-            if (e.response) throw e; // Re-throw structured errors
-          }
-        }
-      }
+            const { done, value } = await Promise.race([readPromise, timeoutPromise]);
+            if (done) break;
+            lastActivityTime = Date.now(); // Reset activity timer on data received
 
-      return result;
-    } catch (error: any) {
-      if (error.name === 'AbortError') throw error;
-      if (error.response) throw error;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n\n');
+            buffer = lines.pop() || '';
 
-      // ✅ FIX: If SSE request started (trip created), try to fetch the created trip with retry
-      if (sseRequestStarted) {
-        // Retry logic: attempt up to 3 times with exponential backoff
-        for (let attempt = 0; attempt < 3; attempt++) {
-          try {
-            // Wait before retry (0ms, 1000ms, 2000ms)
-            if (attempt > 0) {
-              await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-            }
+            for (const line of lines) {
+              const dataLine = line.replace(/^data: /, '').trim();
+              if (!dataLine) continue;
 
-            // Trip was created on server but stream failed - try to get the latest trip
-            const trips = await this.getTrips({ sortBy: 'createdAt', order: 'DESC', limit: 1 });
-            if (trips?.data && trips.data.length > 0) {
-              const latestTrip = trips.data[0];
-              // Check if trip was created very recently (within last 10 seconds)
-              const tripCreatedAt = new Date(latestTrip.createdAt).getTime();
-              const now = Date.now();
-              if (now - tripCreatedAt < 10000) {
-                // This is likely the trip we just created
-                return latestTrip;
+              try {
+                const event = JSON.parse(dataLine);
+                if (event.step === 'complete' && event.tripId) {
+                  // Fetch the full trip data
+                  result = await this.getTripById(event.tripId);
+                } else if (event.step === 'error') {
+                  const error: any = new Error(event.message || 'Trip creation failed');
+                  error.response = { status: event.status || 500, data: { message: event.message } };
+                  throw error;
+                } else {
+                  onProgress?.(event.step, event.message);
+                }
+              } catch (e: any) {
+                if (e.response) throw e; // Re-throw structured errors
               }
             }
-
-            // If we reach here, trip not found in recent trips
-            if (attempt === 2) {
-              // Last attempt failed - throw error with tripCreated flag
-              const streamError: any = new Error('Trip created but stream interrupted - please check your trips list');
-              streamError.tripCreated = true; // Flag to help UI show better message
-              throw streamError;
+          } catch (timeoutError: any) {
+            // SSE timeout - trip was likely created but stream froze
+            if (timeoutError.message?.includes('SSE stream timeout')) {
+              // Set flag that trip was created
+              sseRequestStarted = true;
+              throw timeoutError;
             }
-          } catch (fetchError: any) {
-            // If this is the last attempt or if it's already a tripCreated error, throw
-            if (attempt === 2 || fetchError.tripCreated) {
-              if (fetchError.tripCreated) {
-                throw fetchError;
-              }
-              // Failed to fetch trips - throw original stream error
-              const streamError: any = new Error('Trip creation in progress - check trips list');
-              streamError.tripCreated = true;
-              throw streamError;
-            }
-            // Otherwise, continue to next retry
+            throw timeoutError;
           }
         }
-      }
 
-      // Only fallback if SSE request never reached server
-      return this.createTrip(data);
-    }
+        return result;
+      } catch (error: any) {
+        if (error.name === 'AbortError') throw error;
+        if (error.response) throw error;
+
+        // ✅ FIX: If SSE request started (trip created), try to fetch the created trip with retry
+        if (sseRequestStarted) {
+          // Retry logic: attempt up to 3 times with exponential backoff
+          for (let attempt = 0; attempt < 3; attempt++) {
+            try {
+              // Wait before retry (0ms, 1000ms, 2000ms)
+              if (attempt > 0) {
+                await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+              }
+
+              // Trip was created on server but stream failed - try to get the latest trip
+              const trips = await this.getTrips({ sortBy: 'createdAt', order: 'DESC', limit: 1 });
+              if (trips?.data && trips.data.length > 0) {
+                const latestTrip = trips.data[0];
+                // Check if trip was created very recently (within last 10 seconds)
+                const tripCreatedAt = new Date(latestTrip.createdAt).getTime();
+                const now = Date.now();
+                if (now - tripCreatedAt < 10000) {
+                  // This is likely the trip we just created
+                  return latestTrip;
+                }
+              }
+
+              // If we reach here, trip not found in recent trips
+              if (attempt === 2) {
+                // Last attempt failed - throw error with tripCreated flag
+                const streamError: any = new Error('Trip created but stream interrupted - please check your trips list');
+                streamError.tripCreated = true; // Flag to help UI show better message
+                throw streamError;
+              }
+            } catch (fetchError: any) {
+              // If this is the last attempt or if it's already a tripCreated error, throw
+              if (attempt === 2 || fetchError.tripCreated) {
+                if (fetchError.tripCreated) {
+                  throw fetchError;
+                }
+                // Failed to fetch trips - throw original stream error
+                const streamError: any = new Error('Trip creation in progress - check trips list');
+                streamError.tripCreated = true;
+                throw streamError;
+              }
+              // Otherwise, continue to next retry
+            }
+          }
+        }
+
+        // Only fallback if SSE request never reached server
+        return this.createTrip(data);
+      } finally {
+        // Clear the active request tracker
+        this.activeSseRequest = null;
+      }
+    })();
+
+    return this.activeSseRequest;
   }
 
   async getTrips(params?: {

@@ -287,6 +287,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   }, []);
 
   const doCreateTrip = async () => {
+    // Double-check loading state to prevent race conditions
+    if (isLoading) {
+      return;
+    }
+
     setIsLoading(true);
     setGenerationStep(0);
     progressAnim.setValue(0);
@@ -364,7 +369,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       }).start();
 
       // Refresh subscription status so AI remaining count updates
-      refreshStatus();
+      await refreshStatus();
 
       // Show pre-warning when user has 1 AI trip left after this one
       if (!isPremium && aiTripsRemaining === 2) {
@@ -424,7 +429,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       // Check if trip was created but stream interrupted
       if (error.tripCreated) {
         // Log error to backend for admin visibility
-        apiService.logError({
+        apiService.reportError({
           errorMessage: error.message || 'SSE stream interrupted after trip creation',
           screen: 'CreateTripScreen',
           severity: 'warning',
@@ -492,7 +497,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         : serverMsg || t('create.alerts.createFailed');
 
       // Log error to backend for admin visibility
-      apiService.logError({
+      apiService.reportError({
         errorMessage: error.message || message,
         screen: 'CreateTripScreen',
         severity: 'error',
@@ -500,7 +505,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       }).catch(() => {});
 
       // Refresh subscription status so AI remaining count is accurate
-      refreshStatus();
+      await refreshStatus();
 
       showToast({
         type: 'error',
@@ -509,11 +514,16 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         duration: 4000,
       });
     } finally {
+      // Clean up resources but keep loading state management in the main flow
       if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
       abortControllerRef.current = null;
-      setIsLoading(false);
+      // Move loading state reset to specific places in try/catch
+      // to prevent premature reset while SSE is still running
       setGenerationStep(0);
       setShowCancelConfirm(false);
+      // Only reset loading if we're still in loading state
+      // (not already reset by success or error handlers)
+      setIsLoading(false);
     }
   };
 
