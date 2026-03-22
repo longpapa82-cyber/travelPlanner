@@ -213,6 +213,30 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
      - 성공 시 TripDetail로 정상 이동, 실패 시 TripList로 안내
    - 배포: 30차 (`40a46447`)
 
+6. **버그 #6: SSE 스트림 종료 후 남은 버퍼 미처리** ⭐ **(사용자 보고)**
+   - 위치: `frontend/src/services/api.ts:446-484`
+   - 현상:
+     - 여행 생성 성공 → "Trip created but connection interrupted" 경고 메시지 표시
+     - 중복 생성 없음 (버그 #3 수정 효과)
+     - 버그 #5 수정 후에도 계속 발생
+   - 근본 원인:
+     - 백엔드가 `{step: 'complete', tripId: xxx}` 전송 후 즉시 `res.end()` 호출
+     - 클라이언트 SSE 리더가 `done = true` 수신
+     - **버퍼에 아직 파싱되지 않은 `complete` 이벤트 존재**
+     - `if (done) break;`로 즉시 루프 탈출 (446번 라인)
+     - 남은 버퍼 데이터를 처리하지 않고 종료
+     - `result`가 `null`로 남아 에러 처리 경로 진입
+   - 수정:
+     - `api.ts:484-507`: while 루프 종료 후 남은 버퍼 데이터 처리 로직 추가
+     - `buffer.trim()` 체크 후 남은 데이터 파싱
+     - `complete` 이벤트 발견 시 trip 데이터 fetch
+     - `error` 이벤트 발견 시 에러 throw
+   - 영향:
+     - "Trip created but connection interrupted" 경고 제거
+     - 정상적으로 TripDetail 화면으로 이동
+     - 사용자 경험 개선 (불필요한 경고 제거)
+   - 배포: 32-5차 (`b16bfd67`)
+
 ### 배포 이력
 - 25차 (`a795c4ad`) — 트랜잭션 + SELECT FOR UPDATE
 - 25-2차 (`a80c4faf`) — SELECT 쿼리 컬럼 명시
@@ -246,15 +270,23 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
   - AAB: https://expo.dev/artifacts/eas/3kNFh4mX93MRHRPdXXBXPz.aab
   - 포함: 버그 #5 수정 (SSE 스트림 중단 후 네비게이션 + AI 카운트 차감)
   - ✅ Alpha 트랙 게시 요청 완료 (2026-03-22)
+- 32-5차 (`b16bfd67`) — SSE 버퍼 미처리 수정 (버그 #6)
+  - frontend/src/services/api.ts: while 루프 종료 후 남은 버퍼 데이터 처리
+  - 영향: "Trip created but connection interrupted" 경고 제거
+  - TypeScript 컴파일: ✅ 0 에러
+- 32차 — versionCode 32 빌드 ✅
+  - Build ID: 309f8988-ea12-4dc4-854a-943b274505c6
+  - AAB: https://expo.dev/artifacts/eas/71f8hVS3DrmFnv9LXbAGnm.aab
+  - 포함: 버그 #6 수정 (SSE 버퍼 미처리 해결)
+  - 빌드 시간: 약 19분 (2026-03-22)
 
 ### 현재 상태
 - ✅ 백엔드 프로덕션 배포 완료 (25-2차)
 - ✅ 프론트엔드 SSE 중단 처리 완료 (27차)
-- ✅ versionCode 29 빌드 완료 (Alpha 트랙 배포됨, 2026-03-21)
 - ✅ 버그 #5 수정 완료 (30차)
-- ✅ versionCode 30 빌드 완료 (버그 #5 포함)
-- ✅ Play Console Alpha 트랙 게시 요청 완료 (2026-03-22)
-- ⏳ Google 자동 검사 진행 중 (최대 14분)
+- ✅ 버그 #6 수정 완료 (32-5차) - SSE 버퍼 미처리 해결
+- ✅ versionCode 32 빌드 완료 (버그 #6 포함, 2026-03-22)
+- 📋 다음 단계: Play Console Alpha 트랙 업로드 및 게시 요청
 
 ### 핵심 교훈
 - **SSE Fallback 위험성**: 성공한 요청(201)에 대한 재시도는 중복 생성 유발
