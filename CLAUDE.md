@@ -330,16 +330,40 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
   - frontend/src/services/api.ts: 마지막 value를 버퍼에 추가
   - TypeScript: ✅ 0 에러
   - 영향: 버그 #6 수정이 실제로 작동하도록 수정, 경고 메시지 완전 제거 예상
+- 33차 (`6151feb6`) — SSE 불완전 이벤트 파싱 실패 수정 (버그 #8) ✅
+  - feature-troubleshooter 에이전트로 근본 원인 발견
+  - frontend/src/services/api.ts:504-559: SSE 이벤트 형식 올바르게 처리
+  - 버퍼가 `\n\n`으로 끝나지 않으면 추가
+  - `\n\n`으로 split하여 완전한 이벤트 블록 처리
+  - complete 이벤트 못 찾으면 최근 여행 조회 (15초 이내)
+  - TypeScript: ✅ 0 에러
+- 33-2차 — 백엔드 SSE 디버깅 로깅 추가 ✅
+  - backend/src/trips/trips.controller.ts: SSE 응답 로깅
+  - complete 이벤트 전송 전후 로그 추가
+  - TypeScript 빌드: ✅ 통과
+- 33-3차 — 프론트엔드 코드 로드 검증 + 완전한 캐시 클리어 ✅
+  - frontend/src/services/api.ts: "SSE DEBUGGING VERSION 8.0" 버전 표시 추가
+  - .expo, node_modules/.cache, .metro-cache 디렉토리 삭제
+  - Metro bundler 재시작 (--reset-cache)
+  - 상태: Expo Go 앱 캐시 클리어 대기 중
 
-### 현재 상태
+### 현재 상태 (2026-03-22, 13:15 KST)
 - ✅ 백엔드 프로덕션 배포 완료 (25-2차)
 - ✅ 프론트엔드 SSE 중단 처리 완료 (27차)
-- ✅ 버그 #5 수정 완료 (30차)
+- ✅ 버그 #5 수정 완료 (30차) - 네비게이션 + AI 카운트 차감
 - ✅ 버그 #6 수정 완료 (32-5차) - SSE 버퍼 미처리 해결
-- ✅ 버그 #7 수정 완료 (32-6차) - `done=true`일 때 마지막 청크 누락 수정
+- ✅ 버그 #7 수정 완료 (32-6차) - `done=true`일 때 마지막 청크 누락
+- ✅ 버그 #8 수정 완료 (33차) - SSE 불완전 이벤트 파싱 실패 (feature-troubleshooter 분석)
+- ✅ 백엔드 디버깅 로깅 추가 (33-2차)
+- ✅ 프론트엔드 버전 표시 추가 (33-3차) - "SSE DEBUGGING VERSION 8.0"
+- ✅ 완전한 캐시 클리어 완료 (.expo, node_modules/.cache, .metro-cache)
+- ✅ Metro bundler 재시작 완료 (--reset-cache)
 - ✅ versionCode 32 빌드 완료 (버그 #6 포함, 2026-03-22)
 - ✅ Play Console Alpha 트랙 게시 요청 완료 (2026-03-22)
-- ⏳ 사용자 테스트 필요 (버그 #7 수정 효과 확인)
+- ⚠️ **문제 지속 중**: 사용자 테스트에서 여전히 경고 메시지 발생
+  - console.log 미출력 → 앱이 업데이트된 코드 미로드 의심
+  - **필요 조치**: Expo Go 앱 캐시 클리어 (기기 재시작 또는 앱 재설치)
+  - **검증 방법**: Metro 로그에 "SSE DEBUGGING VERSION 8.0" 메시지 확인
 
 ### 핵심 교훈
 - **SSE Fallback 위험성**: 성공한 요청(201)에 대한 재시도는 중복 생성 유발
@@ -354,6 +378,9 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **디버그 로그 검증**: 로그 미출력 시 코드 미실행 의심 (캐시/빌드 문제)
 - **ReadableStream done 처리**: `done=true`일 때도 마지막 `value`에 데이터가 있을 수 있음
 - **버그 수정 검증**: 수정 후 실제 동작 확인 필수 (단위 테스트 + 통합 테스트 + 사용자 테스트)
+- **Expo Go 캐시의 독립성**: Metro bundler --reset-cache만으로는 부족, Expo Go 앱 자체 캐시도 클리어 필요
+- **코드 로드 검증 방법**: 명확한 버전 표시 로그 추가로 실제 코드 실행 여부 확인
+- **feature-troubleshooter 활용**: 복잡한 버그는 전문 에이전트로 체계적 분석 (버그 #8 해결)
 
 ## 🔴 CRITICAL: 여행 상태 타임존 버그 수정 (2026-03-22, 완료 ✅)
 

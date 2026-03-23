@@ -91,7 +91,9 @@ export class TripsController {
     // Stream progress events to client
     const subscription = progress$.subscribe({
       next: (event) => {
-        res.write(`data: ${JSON.stringify(event)}\n\n`);
+        const data = `data: ${JSON.stringify(event)}\n\n`;
+        console.log('[BACKEND SSE] Sending progress event:', event.step, 'length:', data.length);
+        res.write(data);
       },
     });
 
@@ -99,10 +101,17 @@ export class TripsController {
     this.tripsService
       .create(userId, createTripDto, language, progress$)
       .then((trip) => {
-        res.write(
-          `data: ${JSON.stringify({ step: 'complete', tripId: trip.id })}\n\n`,
-        );
-        res.end();
+        const completeEvent = { step: 'complete', tripId: trip.id };
+        const data = `data: ${JSON.stringify(completeEvent)}\n\n`;
+        console.log('[BACKEND SSE] Sending complete event:', completeEvent, 'length:', data.length);
+        res.write(data);
+
+        // Ensure the data is flushed before ending the response
+        // Add a small delay to ensure the client receives the complete event
+        setTimeout(() => {
+          console.log('[BACKEND SSE] Ending response after flush delay');
+          res.end();
+        }, 100);
       })
       .catch((error) => {
         const message = error.message || 'Trip creation failed';

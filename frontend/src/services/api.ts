@@ -375,6 +375,11 @@ class ApiService {
     onProgress?: (step: string, message?: string) => void,
     signal?: AbortSignal,
   ): Promise<any> {
+    console.log('='.repeat(80));
+    console.log('🚀 SSE DEBUGGING VERSION 9.0 - Enhanced Debugging');
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('='.repeat(80));
+
     // If there's already an active SSE request, return it (prevent duplicates)
     if (this.activeSseRequest) {
       return this.activeSseRequest;
@@ -447,13 +452,21 @@ class ApiService {
             // ✅ FIX (Bug #7): Process the final chunk before breaking
             // done=true means no more data to read, but value may still contain the last chunk
             if (done) {
-              console.log('[SSE DEBUG] Stream done=true, value:', value ? 'exists' : 'null');
+              console.log('[SSE DEBUG] Stream done=true');
+              console.log('[SSE DEBUG]   - value exists?', value ? 'YES' : 'NO');
+              console.log('[SSE DEBUG]   - value length:', value ? value.byteLength : 0);
               if (value) {
                 const finalChunk = decoder.decode(value, { stream: false });
-                console.log('[SSE DEBUG] Final chunk decoded:', finalChunk);
+                console.log('[SSE DEBUG]   - Final chunk decoded:', JSON.stringify(finalChunk));
+                console.log('[SSE DEBUG]   - Final chunk bytes:', finalChunk.split('').map(c => {
+                  if (c === '\n') return '\\n';
+                  if (c === '\r') return '\\r';
+                  return c;
+                }).join(''));
                 buffer += finalChunk;
               }
-              console.log('[SSE DEBUG] Breaking with buffer:', buffer);
+              console.log('[SSE DEBUG] Breaking loop with buffer length:', buffer.length);
+              console.log('[SSE DEBUG] Buffer content:', JSON.stringify(buffer.substring(0, 200)));
               break;
             }
 
@@ -469,9 +482,13 @@ class ApiService {
 
               try {
                 const event = JSON.parse(dataLine);
+                console.log('[SSE DEBUG] Main loop parsed event:', event.step, event.tripId ? `(tripId: ${event.tripId})` : '');
+
                 if (event.step === 'complete' && event.tripId) {
+                  console.log('[SSE DEBUG] *** COMPLETE EVENT FOUND IN MAIN LOOP ***');
                   // Fetch the full trip data
                   result = await this.getTripById(event.tripId);
+                  console.log('[SSE DEBUG] Trip fetched:', result?.id ? 'SUCCESS' : 'FAILED');
                 } else if (event.step === 'error') {
                   const error: any = new Error(event.message || 'Trip creation failed');
                   error.response = { status: event.status || 500, data: { message: event.message } };
@@ -481,6 +498,7 @@ class ApiService {
                 }
               } catch (e: any) {
                 if (e.response) throw e; // Re-throw structured errors
+                console.log('[SSE DEBUG] Error parsing in main loop:', e.message);
               }
             }
           } catch (timeoutError: any) {
@@ -497,9 +515,18 @@ class ApiService {
         // ✅ FIX (Bug #6): Process any remaining buffer data after stream closes
         // The server may send the final 'complete' event right before closing the connection,
         // causing 'done=true' before we process the buffered data
-        console.log('[SSE DEBUG] Processing remaining buffer, length:', buffer.length, 'trimmed:', buffer.trim().length);
+        console.log('[SSE DEBUG] === PROCESSING REMAINING BUFFER ===');
+        console.log('[SSE DEBUG] Buffer length:', buffer.length);
+        console.log('[SSE DEBUG] Buffer trimmed length:', buffer.trim().length);
+        console.log('[SSE DEBUG] Buffer content:', JSON.stringify(buffer));
+        console.log('[SSE DEBUG] Buffer bytes:', buffer.split('').map(c => {
+          if (c === '\n') return '\\n';
+          if (c === '\r') return '\\r';
+          return c;
+        }).join(''));
+
         if (buffer.trim()) {
-          console.log('[SSE DEBUG] Buffer content:', buffer);
+          console.log('[SSE DEBUG] Buffer has content, processing...');
 
           // Handle incomplete SSE event (missing trailing \n\n)
           // If buffer doesn't end with \n\n, it's an incomplete event, add it
@@ -510,18 +537,29 @@ class ApiService {
 
           // Now process as complete SSE events
           const events = buffer.split('\n\n').filter(e => e.trim());
+          console.log('[SSE DEBUG] Events to process from buffer:', events.length);
+
           for (const eventBlock of events) {
-            const dataLine = eventBlock.replace(/^data: /, '').trim();
+            console.log('[SSE DEBUG] Processing event block:', JSON.stringify(eventBlock));
+
+            // Handle both formats: with or without "data: " prefix
+            let dataLine = eventBlock.trim();
+            if (dataLine.startsWith('data: ')) {
+              dataLine = dataLine.substring(6).trim();
+            }
+            console.log('[SSE DEBUG] Data line after processing:', JSON.stringify(dataLine));
+
             if (!dataLine) continue;
 
             try {
               const event = JSON.parse(dataLine);
-              console.log('[SSE DEBUG] Parsed event from buffer:', event);
+              console.log('[SSE DEBUG] Successfully parsed event from buffer:', event);
+
               if (event.step === 'complete' && event.tripId) {
                 // Found the completion event in remaining buffer - fetch trip data
-                console.log('[SSE DEBUG] Found complete event, fetching trip:', event.tripId);
+                console.log('[SSE DEBUG] *** COMPLETE EVENT FOUND IN BUFFER ***');
                 result = await this.getTripById(event.tripId);
-                console.log('[SSE DEBUG] Trip fetched successfully:', result?.id);
+                console.log('[SSE DEBUG] Trip fetched:', result?.id ? 'SUCCESS' : 'FAILED');
               } else if (event.step === 'error') {
                 const error: any = new Error(event.message || 'Trip creation failed');
                 error.response = { status: event.status || 500, data: { message: event.message } };
@@ -529,12 +567,15 @@ class ApiService {
               }
             } catch (e: any) {
               console.log('[SSE DEBUG] Error parsing buffer event:', e.message);
+              console.log('[SSE DEBUG] Failed to parse:', dataLine);
               if (e.response) throw e; // Re-throw structured errors
             }
           }
         }
 
-        console.log('[SSE DEBUG] Returning result:', result ? 'exists' : 'null');
+        console.log('[SSE DEBUG] === FINAL RESULT CHECK ===');
+        console.log('[SSE DEBUG] Result exists?', result ? 'YES' : 'NO');
+        console.log('[SSE DEBUG] SSE request started?', sseRequestStarted ? 'YES' : 'NO');
 
         // If no result after processing all data, but SSE started successfully,
         // it means the trip was created but we couldn't parse the complete event
