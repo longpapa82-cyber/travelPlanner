@@ -376,8 +376,9 @@ class ApiService {
     signal?: AbortSignal,
   ): Promise<any> {
     console.log('='.repeat(80));
-    console.log('🚀 SSE DEBUGGING VERSION 9.0 - Enhanced Debugging');
+    console.log('🚀 SSE DEBUGGING VERSION 10.0 - DEFINITIVE FIX');
     console.log('Timestamp:', new Date().toISOString());
+    console.log('Build Time: 2026-03-23 20:30 KST');
     console.log('='.repeat(80));
 
     // If there's already an active SSE request, return it (prevent duplicates)
@@ -528,47 +529,69 @@ class ApiService {
         if (buffer.trim()) {
           console.log('[SSE DEBUG] Buffer has content, processing...');
 
-          // Handle incomplete SSE event (missing trailing \n\n)
-          // If buffer doesn't end with \n\n, it's an incomplete event, add it
-          if (!buffer.endsWith('\n\n')) {
-            buffer += '\n\n';
-            console.log('[SSE DEBUG] Added missing \\n\\n to buffer');
+          // Try multiple parsing strategies for robustness
+          // Strategy 1: Try to parse as-is (for partial JSON)
+          let dataToProcess = buffer.trim();
+
+          // Remove "data: " prefix if present
+          if (dataToProcess.startsWith('data: ')) {
+            dataToProcess = dataToProcess.substring(6).trim();
           }
 
-          // Now process as complete SSE events
-          const events = buffer.split('\n\n').filter(e => e.trim());
-          console.log('[SSE DEBUG] Events to process from buffer:', events.length);
+          // Strategy 2: Try direct JSON parse first (simplest case)
+          try {
+            const event = JSON.parse(dataToProcess);
+            console.log('[SSE DEBUG] Direct JSON parse successful:', event);
 
-          for (const eventBlock of events) {
-            console.log('[SSE DEBUG] Processing event block:', JSON.stringify(eventBlock));
-
-            // Handle both formats: with or without "data: " prefix
-            let dataLine = eventBlock.trim();
-            if (dataLine.startsWith('data: ')) {
-              dataLine = dataLine.substring(6).trim();
+            if (event.step === 'complete' && event.tripId) {
+              console.log('[SSE DEBUG] *** COMPLETE EVENT FOUND (direct parse) ***');
+              result = await this.getTripById(event.tripId);
+              console.log('[SSE DEBUG] Trip fetched:', result?.id ? 'SUCCESS' : 'FAILED');
             }
-            console.log('[SSE DEBUG] Data line after processing:', JSON.stringify(dataLine));
+          } catch (directParseError) {
+            console.log('[SSE DEBUG] Direct parse failed, trying SSE format...');
 
-            if (!dataLine) continue;
+            // Strategy 3: Handle as SSE formatted events
+            if (!buffer.endsWith('\n\n')) {
+              buffer += '\n\n';
+              console.log('[SSE DEBUG] Added missing \\n\\n to buffer');
+            }
 
-            try {
-              const event = JSON.parse(dataLine);
-              console.log('[SSE DEBUG] Successfully parsed event from buffer:', event);
+            // Now process as complete SSE events
+            const events = buffer.split('\n\n').filter(e => e.trim());
+            console.log('[SSE DEBUG] Events to process from buffer:', events.length);
 
-              if (event.step === 'complete' && event.tripId) {
-                // Found the completion event in remaining buffer - fetch trip data
-                console.log('[SSE DEBUG] *** COMPLETE EVENT FOUND IN BUFFER ***');
-                result = await this.getTripById(event.tripId);
-                console.log('[SSE DEBUG] Trip fetched:', result?.id ? 'SUCCESS' : 'FAILED');
-              } else if (event.step === 'error') {
-                const error: any = new Error(event.message || 'Trip creation failed');
-                error.response = { status: event.status || 500, data: { message: event.message } };
-                throw error;
+            for (const eventBlock of events) {
+              console.log('[SSE DEBUG] Processing event block:', JSON.stringify(eventBlock));
+
+              // Handle both formats: with or without "data: " prefix
+              let dataLine = eventBlock.trim();
+              if (dataLine.startsWith('data: ')) {
+                dataLine = dataLine.substring(6).trim();
               }
-            } catch (e: any) {
-              console.log('[SSE DEBUG] Error parsing buffer event:', e.message);
-              console.log('[SSE DEBUG] Failed to parse:', dataLine);
-              if (e.response) throw e; // Re-throw structured errors
+              console.log('[SSE DEBUG] Data line after processing:', JSON.stringify(dataLine));
+
+              if (!dataLine) continue;
+
+              try {
+                const event = JSON.parse(dataLine);
+                console.log('[SSE DEBUG] Successfully parsed event from buffer:', event);
+
+                if (event.step === 'complete' && event.tripId) {
+                  // Found the completion event in remaining buffer - fetch trip data
+                  console.log('[SSE DEBUG] *** COMPLETE EVENT FOUND IN BUFFER ***');
+                  result = await this.getTripById(event.tripId);
+                  console.log('[SSE DEBUG] Trip fetched:', result?.id ? 'SUCCESS' : 'FAILED');
+                } else if (event.step === 'error') {
+                  const error: any = new Error(event.message || 'Trip creation failed');
+                  error.response = { status: event.status || 500, data: { message: event.message } };
+                  throw error;
+                }
+              } catch (e: any) {
+                console.log('[SSE DEBUG] Error parsing buffer event:', e.message);
+                console.log('[SSE DEBUG] Failed to parse:', dataLine);
+                if (e.response) throw e; // Re-throw structured errors
+              }
             }
           }
         }

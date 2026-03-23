@@ -106,12 +106,21 @@ export class TripsController {
         console.log('[BACKEND SSE] Sending complete event:', completeEvent, 'length:', data.length);
         res.write(data);
 
-        // Ensure the data is flushed before ending the response
-        // Add a small delay to ensure the client receives the complete event
+        // Force flush the complete event to ensure it's sent over the network
+        // Some Node.js environments buffer writes, so we need to explicitly flush
+        // Note: res.flush() may not be available in all environments
+        const responseAny = res as any;
+        if (typeof responseAny.flush === 'function') {
+          responseAny.flush();
+          console.log('[BACKEND SSE] Flushed complete event');
+        }
+
+        // Add a longer delay to ensure the data travels through network buffers
+        // This addresses cases where network latency or buffering delays transmission
         setTimeout(() => {
           console.log('[BACKEND SSE] Ending response after flush delay');
           res.end();
-        }, 100);
+        }, 500); // Increased from 100ms to 500ms for better reliability
       })
       .catch((error) => {
         const message = error.message || 'Trip creation failed';
