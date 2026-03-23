@@ -360,10 +360,22 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - ✅ Metro bundler 재시작 완료 (--reset-cache)
 - ✅ versionCode 32 빌드 완료 (버그 #6 포함, 2026-03-22)
 - ✅ Play Console Alpha 트랙 게시 요청 완료 (2026-03-22)
-- ⚠️ **문제 지속 중**: 사용자 테스트에서 여전히 경고 메시지 발생
-  - console.log 미출력 → 앱이 업데이트된 코드 미로드 의심
-  - **필요 조치**: Expo Go 앱 캐시 클리어 (기기 재시작 또는 앱 재설치)
-  - **검증 방법**: Metro 로그에 "SSE DEBUGGING VERSION 8.0" 메시지 확인
+
+9. **버그 #9: SSE Complete 이벤트 전송 타이밍** ⭐ **(2026-03-23)**
+   - 위치: `backend/src/trips/trips.controller.ts:113`
+   - 현상:
+     - 여행 생성 성공하지만 "Trip created but connection interrupted" 토스트 지속
+     - TripDetail 대신 TripList로 리다이렉트
+     - 디버그 로그 미출력 (Expo 캐시 문제로 오인)
+   - 근본 원인:
+     - 백엔드가 complete 이벤트 전송 직후 즉시 `res.end()` 호출
+     - Node.js 스트림 버퍼링으로 인해 데이터가 네트워크로 전송되기 전에 연결 종료
+     - 클라이언트가 마지막 청크 수신 전에 스트림 종료 감지
+   - 수정:
+     - `trips.controller.ts`: 100ms setTimeout 후 res.end() 호출
+     - 데이터가 네트워크 버퍼를 통해 전송될 시간 확보
+     - 클라이언트 측에 상세 디버깅 로그 추가
+   - 배포: 34차 (`abd74520`)
 
 ### 핵심 교훈
 - **SSE Fallback 위험성**: 성공한 요청(201)에 대한 재시도는 중복 생성 유발
@@ -381,6 +393,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **Expo Go 캐시의 독립성**: Metro bundler --reset-cache만으로는 부족, Expo Go 앱 자체 캐시도 클리어 필요
 - **코드 로드 검증 방법**: 명확한 버전 표시 로그 추가로 실제 코드 실행 여부 확인
 - **feature-troubleshooter 활용**: 복잡한 버그는 전문 에이전트로 체계적 분석 (버그 #8 해결)
+- **SSE 스트림 플러시 중요성**: res.end() 전 버퍼 플러시 시간 확보 필수 (버그 #9)
 
 ## 🔴 CRITICAL: 여행 상태 타임존 버그 수정 (2026-03-22, 완료 ✅)
 
