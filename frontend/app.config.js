@@ -40,7 +40,7 @@ export default ({ config }) => ({
     },
     edgeToEdgeEnabled: true,
     package: 'com.longpapa82.travelplanner',
-    versionCode: config.android?.versionCode ?? 32,
+    versionCode: config.android?.versionCode ?? 34,
     intentFilters: [
       {
         action: 'VIEW',
