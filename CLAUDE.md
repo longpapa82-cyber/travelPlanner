@@ -620,6 +620,183 @@ async createTripWithPolling(
 - **완전 제거 전략**: 레거시 코드 완전 제거로 기술 부채 방지
 - **표준 패턴 선택**: 폴링은 검증된 방식, SSE는 특수 케이스
 
+## 🟢 Bug #14: 관리자 AI 생성 제한 해제 (2026-03-24, 완료 ✅)
+
+### 문제
+Bug #13 배포 후, 관리자 계정(longpapa82@gmail.com)에서 AI 여행 생성 시 "Monthly AI generation limit (3) reached" 에러 발생. 관리자는 무제한 생성이 가능해야 하나 일반 사용자와 동일한 3회 제한이 적용됨.
+
+### 근본 원인
+1. **DB 이슈**: 관리자 계정의 role이 'user'로 설정됨 (admin 아님)
+2. **코드 이슈**: trips.service.ts가 role 및 subscriptionTier를 체크하지 않음
+
+### 수정 내역
+
+**1. trips.service.ts** (lines 91-163):
+```typescript
+// role 필드 추가 선택
+.select([
+  'users.id',
+  'users.aiTripsUsedThisMonth',
+  'users.subscriptionTier',
+  'users.role',  // 추가
+])
+
+// 관리자 무제한, 구독 티어별 제한 로직
+if (user.users_role === 'admin') {
+  // 관리자는 제한 없음
+} else {
+  let aiTripLimit = user.users_subscriptionTier === 'premium'
+    ? parseInt(process.env.AI_TRIPS_PREMIUM_LIMIT || '30', 10)
+    : parseInt(process.env.AI_TRIPS_FREE_LIMIT || '3', 10);
+
+  if (currentCount >= aiTripLimit) {
+    throw new ForbiddenException(`${tierMessage} limit reached`);
+  }
+}
+
+// 관리자는 카운터 증가 생략
+if (user.users_role !== 'admin') {
+  await queryRunner.manager
+    .createQueryBuilder()
+    .update('users')
+    .set({ aiTripsUsedThisMonth: () => 'aiTripsUsedThisMonth + 1' })
+    .where('id = :userId', { userId })
+    .execute();
+}
+```
+
+**2. 환경 변수**:
+```bash
+AI_TRIPS_FREE_LIMIT=3      # 무료 사용자
+AI_TRIPS_PREMIUM_LIMIT=30  # 프리미엄 사용자
+```
+
+**3. 프로덕션 DB 수정**:
+```sql
+UPDATE users SET role = 'admin' WHERE email = 'longpapa82@gmail.com';
+```
+
+### 배포 이력
+- 25차 (`7d389cd4`) — 코드 수정 + 테스트 추가
+- Hetzner VPS: DB 업데이트 + env 추가 + 컨테이너 재생성
+
+### 새로운 동작
+- **관리자**: 무제한 AI 생성 (제한 체크 없음, 카운터 증가 없음)
+- **프리미엄**: 30회/월 (env 설정 가능)
+- **무료**: 3회/월 (env 설정 가능)
+- **수동 모드**: 모든 제한 우회
+
+### 검증
+- ✅ TypeScript 컴파일: 0 에러
+- ✅ Jest 테스트: trips.service.ai-limits.spec.ts 추가
+- ✅ 프로덕션 DB: role='admin' 확인
+- ✅ 프로덕션 env: AI_TRIPS_PREMIUM_LIMIT=30 확인
+- ✅ 컨테이너: 재생성 완료, env 로드 확인
+
+### 핵심 교훈
+- **DB vs 코드 동기화**: 코드 수정과 프로덕션 DB 상태 동시 확인 필요
+- **환경 변수 배포**: 컨테이너 재생성 없이는 새 env 적용 안 됨
+- **실시간 진단**: feature-troubleshooter의 프로덕션 SSH 접근으로 즉시 해결
+
+## 🟢 Bug #15: 백엔드 인증 에러 i18n 지원 (2026-03-24, 완료 ✅)
+
+### 문제
+사용자가 한국어 설정으로 앱 사용 중 회원가입 실패 시 영어 메시지 표시: "Registration failed. Please check your information and try again." 설정된 언어와 일치하지 않아 사용자 혼란 발생.
+
+### 근본 원인
+auth.service.ts의 에러 메시지가 영어로 하드코딩됨 (line 81 등). 기존 i18n 시스템(`common/i18n.ts`)이 있으나 인증 서비스에 미적용.
+
+### 수정 내역
+
+**1. i18n.ts** - 12개 번역 키 그룹 추가 (17개 언어):
+- `auth.emailAlreadyRegistered` - "이미 등록된 이메일입니다"
+- `auth.registrationFailed` - "회원가입에 실패했습니다"
+- `auth.invalidCredentials` - "잘못된 인증 정보입니다"
+- `auth.userNotFound` - "사용자를 찾을 수 없습니다"
+- `auth.invalidToken` - "유효하지 않은 토큰입니다"
+- `auth.tokenExpired` - "토큰이 만료되었습니다"
+- 외 6개 키
+
+**2. auth.service.ts** - 언어 매개변수 추가:
+```typescript
+async register(registerDto: RegisterDto, lang: string = 'en'): Promise<AuthResponse> {
+  if (existingUser) {
+    throw new ConflictException(t('auth.emailAlreadyRegistered', lang));
+  }
+  // ...
+  catch (error) {
+    throw new BadRequestException(t('auth.registrationFailed', lang));
+  }
+}
+
+async login(loginDto: LoginDto, lang: string = 'en'): Promise<AuthResponse> {
+  if (!user || !(await bcrypt.compare(...))) {
+    throw new UnauthorizedException(t('auth.invalidCredentials', lang));
+  }
+}
+```
+
+**3. auth.controller.ts** - Accept-Language 헤더 처리:
+```typescript
+@Post('register')
+async register(
+  @Body() registerDto: RegisterDto,
+  @Headers('accept-language') acceptLanguage: string | undefined,
+) {
+  const lang = acceptLanguage?.split(',')[0]?.split('-')[0] || 'en';
+  return this.authService.register(registerDto, lang);
+}
+
+@Post('login')
+async login(
+  @Body() loginDto: LoginDto,
+  @Headers('accept-language') acceptLanguage: string | undefined,
+) {
+  const lang = acceptLanguage?.split(',')[0]?.split('-')[0] || 'en';
+  return this.authService.login(loginDto, lang);
+}
+```
+
+### 배포 이력
+- Commit: `9fcb4775` — "fix: Add i18n support for backend authentication error messages (Bug #15)"
+- Hetzner VPS: 백엔드 배포 완료 (3m 23s)
+- 배포 로그: `/tmp/deploy-bug15.txt`
+
+### 테스트 결과
+**API 테스트**:
+```bash
+# 한국어 (ko)
+curl -H "Accept-Language: ko" POST /api/auth/register
+→ {"message":["회원가입에 실패했습니다. 정보를 확인하고 다시 시도해주세요."]}
+
+# 영어 (en)
+curl -H "Accept-Language: en" POST /api/auth/register
+→ {"message":["Registration failed. Please check your information and try again."]}
+```
+
+### 검증 완료
+- ✅ TypeScript 컴파일: 0 에러
+- ✅ i18n 함수 동작: 17개 언어 번역 확인
+- ✅ Accept-Language 헤더: 올바르게 파싱
+- ✅ 프로덕션 API: 한국어/영어 메시지 정상 반환
+- ✅ Rate Limiter: 정상 작동 확인 (429 Too Many Requests)
+
+### 향후 작업
+1. **다른 auth 메서드 확장**:
+   - `refreshToken()`, `resetPassword()`, `verifyEmail()`, `enable2FA()`
+2. **다른 서비스 확장**:
+   - `trips.service.ts` - 여행 관련 에러
+   - `users.service.ts` - 사용자 관련 에러
+   - `subscriptions.service.ts` - 구독 관련 에러
+3. **문서화**:
+   - `docs/backend-i18n-implementation.md` - 확장 가이드 작성 완료
+
+### 핵심 교훈
+- **기존 시스템 활용**: 새 i18n 시스템 구축 대신 기존 `common/i18n.ts` 확장
+- **Accept-Language 표준**: HTTP 헤더 기반 언어 감지 (프론트엔드 변경 불필요)
+- **점진적 확장**: 인증 → 여행 → 사용자 순으로 단계별 적용 가능
+- **테스트 우선**: 실제 API 호출로 i18n 동작 검증
+
 ## 🔴 CRITICAL: 여행 상태 타임존 버그 수정 (2026-03-22, 완료 ✅)
 
 ### 버그 발견
