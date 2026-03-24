@@ -169,6 +169,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 value={name}
                 onChangeText={setName}
                 autoCapitalize="words"
+                autoComplete="name"
                 editable={!isLoading}
                 accessibilityLabel={t('register.name')}
               />
@@ -186,6 +187,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
+                autoComplete="email"
                 editable={!isLoading}
                 accessibilityLabel={t('register.email')}
               />
@@ -202,6 +204,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
+                autoComplete="new-password"
                 editable={!isLoading}
                 accessibilityLabel={t('register.password')}
               />
@@ -254,6 +257,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 onChangeText={setConfirmPassword}
                 secureTextEntry={!showConfirmPassword}
                 autoCapitalize="none"
+                autoComplete="new-password"
                 editable={!isLoading}
                 accessibilityLabel={t('register.confirmPassword')}
               />

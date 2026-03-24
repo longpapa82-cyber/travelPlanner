@@ -192,6 +192,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
+                autoComplete="email"
                 editable={!isLoading}
                 accessibilityLabel={t('login.email')}
                 accessibilityHint={t('login.emailPlaceholder')}
@@ -210,6 +211,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 onChangeText={handlePasswordChange}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
+                autoComplete="current-password"
                 editable={!isLoading}
                 accessibilityLabel={t('login.password')}
               />

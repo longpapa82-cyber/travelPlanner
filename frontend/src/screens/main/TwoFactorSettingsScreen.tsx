@@ -210,6 +210,7 @@ const TwoFactorSettingsScreen: React.FC<Props> = ({ navigation }) => {
             keyboardType="number-pad"
             maxLength={6}
             autoFocus
+            autoComplete="one-time-code"
             accessibilityLabel={t('twoFactor.codePlaceholder')}
           />
           <Button variant="primary" fullWidth loading={isLoading} onPress={handleEnable}>
@@ -269,6 +270,7 @@ const TwoFactorSettingsScreen: React.FC<Props> = ({ navigation }) => {
             keyboardType="number-pad"
             maxLength={6}
             autoFocus
+            autoComplete="one-time-code"
             accessibilityLabel={t('twoFactor.codePlaceholder')}
           />
           <Button variant="danger" fullWidth loading={isLoading} onPress={handleDisable}>
@@ -298,6 +300,7 @@ const TwoFactorSettingsScreen: React.FC<Props> = ({ navigation }) => {
             keyboardType="number-pad"
             maxLength={6}
             autoFocus
+            autoComplete="one-time-code"
             accessibilityLabel={t('twoFactor.codePlaceholder')}
           />
           <Button variant="primary" fullWidth loading={isLoading} onPress={handleRegenerate}>
