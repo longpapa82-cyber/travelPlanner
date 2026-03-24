@@ -547,6 +547,25 @@ async createTripWithPolling(
 3. Play Console Alpha 트랙 업로드
 4. 라이선스 테스터 사용자 테스트
 
+### 배포 현황 (2026-03-24)
+
+**Backend (commit: f817534e)**:
+- ✅ Git push 완료 (2026-03-24 17:15 KST)
+- ⚠️ Railway 자동 배포 미작동 (7분 경과 후에도 404)
+  - 확인: `POST /api/trips/create-async` → 404 (새 엔드포인트 없음)
+  - 확인: `POST /api/trips/create-stream` → 401 (구 엔드포인트 존재)
+  - 원인: Railway GitHub webhook 실패 또는 수동 배포 필요
+  - **조치 필요**: Railway 대시보드에서 수동 배포 트리거
+
+**Frontend (commit: d1cb1062)**:
+- ✅ Git push 완료 (2026-03-24 17:17 KST)
+- ⏳ versionCode 36 EAS 빌드 대기 중
+
+**전략**:
+- Frontend 빌드 먼저 시작 (20-30분 소요)
+- 빌드 진행 중 Railway 수동 배포 처리
+- 백엔드 배포 완료 후 Alpha 트랙 업로드
+
 ### 예상 효과
 
 **안정성**:
