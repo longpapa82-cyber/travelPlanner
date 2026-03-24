@@ -376,9 +376,10 @@ class ApiService {
     signal?: AbortSignal,
   ): Promise<any> {
     console.log('='.repeat(80));
-    console.log('🚀 SSE DEBUGGING VERSION 10.0 - DEFINITIVE FIX');
+    console.log('🚀 SSE DEBUGGING VERSION 12.0 - RAILWAY PROXY FIX');
     console.log('Timestamp:', new Date().toISOString());
-    console.log('Build Time: 2026-03-23 20:30 KST');
+    console.log('Build Time: 2026-03-24 11:00 KST');
+    console.log('Backend: 10KB padding + 3s delay');
     console.log('='.repeat(80));
 
     // If there's already an active SSE request, return it (prevent duplicates)
@@ -484,6 +485,11 @@ class ApiService {
               try {
                 const event = JSON.parse(dataLine);
                 console.log('[SSE DEBUG] Main loop parsed event:', event.step, event.tripId ? `(tripId: ${event.tripId})` : '');
+
+                // Log if we have padding (Bug #11 debugging)
+                if (event.padding) {
+                  console.log('[SSE DEBUG] Event has padding field, length:', event.padding.length);
+                }
 
                 if (event.step === 'complete' && event.tripId) {
                   console.log('[SSE DEBUG] *** COMPLETE EVENT FOUND IN MAIN LOOP ***');

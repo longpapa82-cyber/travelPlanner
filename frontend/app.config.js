@@ -40,7 +40,7 @@ export default ({ config }) => ({
     },
     edgeToEdgeEnabled: true,
     package: 'com.longpapa82.travelplanner',
-    versionCode: config.android?.versionCode ?? 34,
+    versionCode: config.android?.versionCode ?? 35,
     intentFilters: [
       {
         action: 'VIEW',
@@ -58,6 +58,7 @@ export default ({ config }) => ({
     bundler: 'metro',
   },
   plugins: [
+    './plugins/withDisableWebViewAutofill',
     'expo-web-browser',
     'expo-apple-authentication',
     '@react-native-google-signin/google-signin',

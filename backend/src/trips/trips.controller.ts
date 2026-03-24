@@ -88,10 +88,19 @@ export class TripsController {
     res.setHeader('X-Accel-Buffering', 'no');
     res.flushHeaders();
 
+    // Send initial large padding to force Railway proxy to enter streaming mode
+    // This helps bypass initial buffering threshold
+    const initialPadding = 'x'.repeat(10240); // 10KB initial padding
+    res.write(`data: {"step":"init","padding":"${initialPadding}"}\n\n`);
+    console.log('[BACKEND SSE] Sent initial 10KB padding to force streaming mode');
+
     // Send heartbeat to prevent Railway proxy buffering
+    let heartbeatCount = 0;
     const heartbeatInterval = setInterval(() => {
-      res.write(': heartbeat\n\n');
-      console.log('[BACKEND SSE] Heartbeat sent');
+      heartbeatCount++;
+      const heartbeatData = `: heartbeat #${heartbeatCount} at ${new Date().toISOString()}\n\n`;
+      res.write(heartbeatData);
+      console.log('[BACKEND SSE] Heartbeat sent #' + heartbeatCount + ', bytes:', heartbeatData.length);
     }, 5000); // Send every 5 seconds
 
     // Stream progress events to client
@@ -108,9 +117,10 @@ export class TripsController {
       .create(userId, createTripDto, language, progress$)
       .then((trip) => {
         const completeEvent = { step: 'complete', tripId: trip.id };
-        // Add padding to force Railway proxy to flush immediately
-        // Railway buffers ~100KB, so we add padding to bypass buffering
-        const padding = ' '.repeat(1024); // 1KB padding
+        // Add LARGE padding to force Railway proxy to flush immediately
+        // Railway buffers ~100KB, so we need much more padding
+        // We'll send 10KB to be safe (but not too large to avoid bandwidth issues)
+        const padding = 'x'.repeat(10240); // 10KB padding - using 'x' instead of space for better visibility
         const paddedEvent = { ...completeEvent, padding };
         const data = `data: ${JSON.stringify(paddedEvent)}\n\n`;
         console.log('[BACKEND SSE] Sending complete event with padding, length:', data.length);
@@ -125,13 +135,14 @@ export class TripsController {
           console.log('[BACKEND SSE] Flushed complete event');
         }
 
-        // Add a longer delay to ensure the data travels through network buffers
-        // This addresses cases where network latency or buffering delays transmission
+        // Add a MUCH longer delay to ensure Railway proxy flushes buffers
+        // Railway's aggressive connection closure requires significant time
+        // This gives the proxy enough time to transmit the 10KB complete event
         setTimeout(() => {
-          console.log('[BACKEND SSE] Ending response after flush delay');
+          console.log('[BACKEND SSE] Ending response after 3s flush delay');
           clearInterval(heartbeatInterval); // Clear heartbeat interval
           res.end();
-        }, 500); // Increased from 100ms to 500ms for better reliability
+        }, 3000); // Increased from 500ms to 3000ms for Railway proxy
       })
       .catch((error) => {
         clearInterval(heartbeatInterval); // Clear heartbeat interval on error
