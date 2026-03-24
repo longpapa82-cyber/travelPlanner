@@ -88,6 +88,12 @@ export class TripsController {
     res.setHeader('X-Accel-Buffering', 'no');
     res.flushHeaders();
 
+    // Send heartbeat to prevent Railway proxy buffering
+    const heartbeatInterval = setInterval(() => {
+      res.write(': heartbeat\n\n');
+      console.log('[BACKEND SSE] Heartbeat sent');
+    }, 5000); // Send every 5 seconds
+
     // Stream progress events to client
     const subscription = progress$.subscribe({
       next: (event) => {
@@ -102,8 +108,12 @@ export class TripsController {
       .create(userId, createTripDto, language, progress$)
       .then((trip) => {
         const completeEvent = { step: 'complete', tripId: trip.id };
-        const data = `data: ${JSON.stringify(completeEvent)}\n\n`;
-        console.log('[BACKEND SSE] Sending complete event:', completeEvent, 'length:', data.length);
+        // Add padding to force Railway proxy to flush immediately
+        // Railway buffers ~100KB, so we add padding to bypass buffering
+        const padding = ' '.repeat(1024); // 1KB padding
+        const paddedEvent = { ...completeEvent, padding };
+        const data = `data: ${JSON.stringify(paddedEvent)}\n\n`;
+        console.log('[BACKEND SSE] Sending complete event with padding, length:', data.length);
         res.write(data);
 
         // Force flush the complete event to ensure it's sent over the network
@@ -119,10 +129,12 @@ export class TripsController {
         // This addresses cases where network latency or buffering delays transmission
         setTimeout(() => {
           console.log('[BACKEND SSE] Ending response after flush delay');
+          clearInterval(heartbeatInterval); // Clear heartbeat interval
           res.end();
         }, 500); // Increased from 100ms to 500ms for better reliability
       })
       .catch((error) => {
+        clearInterval(heartbeatInterval); // Clear heartbeat interval on error
         const message = error.message || 'Trip creation failed';
         const status = error.status || 500;
         res.write(
