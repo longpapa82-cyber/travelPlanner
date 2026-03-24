@@ -96,6 +96,7 @@ export class TripsService {
             'users.id',
             'users.aiTripsUsedThisMonth',
             'users.subscriptionTier',
+            'users.role',
           ])
           .from('users', 'users')
           .where('users.id = :userId', { userId })
@@ -106,31 +107,60 @@ export class TripsService {
           throw new NotFoundException('User not found');
         }
 
-        const aiTripsFreeLimit = parseInt(
-          process.env.AI_TRIPS_FREE_LIMIT || '3',
-          10,
-        );
-
         const currentCount = user.users_aiTripsUsedThisMonth || 0;
 
-        // Check if user has reached limit
-        if (currentCount >= aiTripsFreeLimit) {
-          throw new ForbiddenException(
-            `Monthly AI generation limit (${aiTripsFreeLimit}) reached. Try manual creation or wait until next month.`,
-          );
+        // Admin users have unlimited AI generations
+        if (user.users_role === 'admin') {
+          // No limit check for admins, proceed with trip creation
+        } else {
+          // Determine the AI trip limit based on subscription tier
+          let aiTripLimit: number;
+
+          if (user.users_subscriptionTier === 'premium') {
+            // Premium users get a higher limit
+            aiTripLimit = parseInt(
+              process.env.AI_TRIPS_PREMIUM_LIMIT || '30',
+              10,
+            );
+          } else {
+            // Free users get the basic limit
+            aiTripLimit = parseInt(
+              process.env.AI_TRIPS_FREE_LIMIT || '3',
+              10,
+            );
+          }
+
+          // Check if user has reached their limit
+          if (currentCount >= aiTripLimit) {
+            const tierMessage = user.users_subscriptionTier === 'premium'
+              ? 'Premium monthly'
+              : 'Monthly';
+            throw new ForbiddenException(
+              `${tierMessage} AI generation limit (${aiTripLimit}) reached. Try manual creation or wait until next month.`,
+            );
+          }
         }
 
         // ✅ CRITICAL: Increment quota BEFORE creating trip (inside transaction)
-        await queryRunner.manager
-          .createQueryBuilder()
-          .update('users')
-          .set({ aiTripsUsedThisMonth: () => 'aiTripsUsedThisMonth + 1' })
-          .where('id = :userId', { userId })
-          .execute();
+        // Skip incrementing for admin users as they have unlimited access
+        if (user.users_role !== 'admin') {
+          await queryRunner.manager
+            .createQueryBuilder()
+            .update('users')
+            .set({ aiTripsUsedThisMonth: () => 'aiTripsUsedThisMonth + 1' })
+            .where('id = :userId', { userId })
+            .execute();
+        }
 
-        this.logger.log(
-          `Incremented AI trip quota for user ${userId}: ${currentCount} -> ${currentCount + 1}`,
-        );
+        if (user.users_role === 'admin') {
+          this.logger.log(
+            `Admin user ${userId} creating AI trip (unlimited access, current count: ${currentCount})`,
+          );
+        } else {
+          this.logger.log(
+            `Incremented AI trip quota for user ${userId}: ${currentCount} -> ${currentCount + 1}`,
+          );
+        }
       }
 
       // Create trip (after quota check and increment)

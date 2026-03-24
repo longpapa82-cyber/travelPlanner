@@ -71,6 +71,36 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **앱 서명 키 SHA-256**: `E7:06:3F:BE:01:C4:47:BF:7C:50:01:79:48:49:7F:72:AB:51:76:B0:27:85:DB:84:C9:01:CE:7A:91:E8:70:7A`
 - **assetlinks.json**: 등록 완료 ✅ (App Links 검증 정상)
 
+## 프로덕션 서버 인프라 (Hetzner VPS)
+
+- **호스팅**: Hetzner Cloud (독일 VPS)
+- **서버 IP**: `46.62.201.127`
+- **도메인**: `mytravel-planner.com`
+- **DNS**: Cloudflare (Proxied, A 레코드)
+- **역방향 DNS**: `static.127.201.62.46.clients.your-server.de`
+- **배포 방식**: 수동 SSH 배포 (Git pull + restart)
+- **프로세스 관리**: PM2 또는 systemd (확인 필요)
+
+### 배포 절차 (수동)
+```bash
+# SSH 접속
+ssh user@46.62.201.127
+
+# 백엔드 배포
+cd /path/to/travelPlanner/backend
+git pull origin main
+npm install
+pm2 restart travelplanner  # 또는 systemd restart
+
+# 배포 확인
+curl https://mytravel-planner.com/api/health
+```
+
+### 참고사항
+- Railway 프로젝트(loyal-curiosity, innovative-reprieve, affectionate-celebration)는 다른 프로젝트(Webtoon, ai-edu-toon, mybaby)용
+- TravelPlanner는 Hetzner VPS에서만 운영 중
+- Cloudflare를 통한 프록시 및 DDoS 보호 적용
+
 ## QA 마스터 플랜 (2026-03-12~16)
 
 - **계획 문서**: `docs/qa-master-plan.md`
