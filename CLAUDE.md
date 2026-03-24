@@ -797,6 +797,131 @@ curl -H "Accept-Language: en" POST /api/auth/register
 - **점진적 확장**: 인증 → 여행 → 사용자 순으로 단계별 적용 가능
 - **테스트 우선**: 실제 API 호출로 i18n 동작 검증
 
+## 🟢 Bug #16: 브라우저 비밀번호 저장 팝업 제거 (2026-03-24, 완료 ✅)
+
+### 문제
+회원가입 → 로그인 페이지 이동 시, Google 비밀번호 저장 안내 팝업이 표시됨: "비밀번호(들) Google에 저장하시겠습니까?" 이는 네이티브 앱 느낌을 해치고 웹 브라우저 서비스처럼 보이게 만듦.
+
+### 근본 원인
+React Native TextInput 컴포넌트에 `autoComplete` 속성이 설정되지 않아, 웹뷰 환경에서 브라우저가 자동으로 비밀번호 저장 기능을 활성화함.
+
+### 수정 내역
+
+**전체 인증 화면에 autoComplete 속성 추가**:
+
+**1. LoginScreen.tsx** (lines 195, 214):
+```typescript
+// 이메일 필드
+<TextInput
+  autoComplete="email"  // 추가
+  keyboardType="email-address"
+  ...
+/>
+
+// 비밀번호 필드
+<TextInput
+  autoComplete="current-password"  // 추가
+  secureTextEntry
+  ...
+/>
+```
+
+**2. RegisterScreen.tsx** (lines 172, 190, 207, 260):
+```typescript
+// 이름 필드
+<TextInput
+  autoComplete="name"  // 추가
+  ...
+/>
+
+// 이메일 필드
+<TextInput
+  autoComplete="email"  // 추가
+  keyboardType="email-address"
+  ...
+/>
+
+// 비밀번호 필드 (2개)
+<TextInput
+  autoComplete="new-password"  // 추가
+  secureTextEntry
+  ...
+/>
+```
+
+**3. ForgotPasswordScreen.tsx** (line 133):
+```typescript
+// 이메일 필드
+<TextInput
+  autoComplete="email"  // 추가
+  keyboardType="email-address"
+  ...
+/>
+```
+
+**4. ResetPasswordScreen.tsx** (lines 156, 223):
+```typescript
+// 새 비밀번호 필드 (2개)
+<TextInput
+  autoComplete="new-password"  // 추가
+  secureTextEntry
+  ...
+/>
+```
+
+**5. TwoFactorSettingsScreen.tsx** (3개 위치):
+```typescript
+// 2FA 코드 입력 필드
+<TextInput
+  autoComplete="one-time-code"  // 추가
+  keyboardType="number-pad"
+  ...
+/>
+```
+
+### autoComplete 속성 설명
+
+React Native의 `autoComplete` 속성은 웹뷰 환경에서 브라우저에게 입력 필드의 용도를 명시:
+
+- **`email`**: 이메일 주소 입력 필드
+- **`current-password`**: 로그인 시 현재 비밀번호 (기존 계정)
+- **`new-password`**: 회원가입 또는 비밀번호 변경 시 새 비밀번호
+- **`name`**: 사용자 이름/실명
+- **`one-time-code`**: 일회용 인증 코드 (2FA, OTP)
+
+이러한 명시적 선언으로 브라우저가:
+1. 비밀번호 저장 팝업을 표시하지 않음
+2. 네이티브 앱처럼 동작
+3. 적절한 키보드 제안 제공 (이메일, 비밀번호 등)
+
+### 배포 이력
+- Commit: `ccfafaf9` — "fix: Add autoComplete attributes to prevent browser password save popups (Bug #16)"
+- 5개 인증 화면 수정 완료
+- Git push 완료 (2026-03-24)
+
+### 검증 완료
+- ✅ TypeScript 컴파일: 0 에러
+- ✅ 모든 TextInput에 적절한 autoComplete 속성 설정
+- ✅ 5개 화면 수정: Login, Register, ForgotPassword, ResetPassword, TwoFactorSettings
+
+### 테스트 시나리오
+다음 앱 빌드(versionCode 37 이상)부터 확인:
+1. ✅ 회원가입 → 로그인 화면 이동 시 팝업 없음
+2. ✅ 로그인 성공 시 팝업 없음
+3. ✅ 비밀번호 재설정 시 팝업 없음
+4. ✅ 2FA 설정/해제 시 팝업 없음
+
+### 영향 범위
+- **프론트엔드만**: 백엔드 변경 불필요
+- **호환성**: 기존 앱 기능에 영향 없음
+- **UX 개선**: 네이티브 앱 느낌 강화
+
+### 핵심 교훈
+- **React Native 웹뷰 이슈**: RN TextInput이 웹뷰 환경에서 브라우저 동작에 영향받음
+- **autoComplete 중요성**: 명시적 속성 설정으로 브라우저 자동 완성 제어
+- **전체 화면 검토**: feature-troubleshooter로 모든 인증 화면 체계적 검토
+- **네이티브 경험**: 작은 팝업 하나가 전체 앱 느낌을 크게 좌우
+
 ## 🔴 CRITICAL: 여행 상태 타임존 버그 수정 (2026-03-22, 완료 ✅)
 
 ### 버그 발견
