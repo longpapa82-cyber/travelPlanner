@@ -169,7 +169,7 @@ describe('TripsService - AI Generation Limits', () => {
 
       // Should not throw even though the count is high
       await expect(
-        service.create('admin-user-id', createTripDto, false),
+        service.create('admin-user-id', createTripDto, 'ko'),
       ).resolves.toBeDefined();
 
       // Should NOT increment the AI trips counter for admin
@@ -212,7 +212,7 @@ describe('TripsService - AI Generation Limits', () => {
 
       // Should not throw as premium user has 30 trip limit
       await expect(
-        service.create('premium-user-id', createTripDto, false),
+        service.create('premium-user-id', createTripDto, 'ko'),
       ).resolves.toBeDefined();
 
       // Should increment the AI trips counter
@@ -249,7 +249,7 @@ describe('TripsService - AI Generation Limits', () => {
       };
 
       await expect(
-        service.create('premium-user-id', createTripDto, false),
+        service.create('premium-user-id', createTripDto, 'ko'),
       ).rejects.toThrow(
         new ForbiddenException(
           'Premium monthly AI generation limit (30) reached. Try manual creation or wait until next month.',
@@ -287,7 +287,7 @@ describe('TripsService - AI Generation Limits', () => {
 
       // Should not throw as free user has not reached 3 trip limit
       await expect(
-        service.create('free-user-id', createTripDto, false),
+        service.create('free-user-id', createTripDto, 'ko'),
       ).resolves.toBeDefined();
 
       // Should increment the AI trips counter
@@ -324,7 +324,7 @@ describe('TripsService - AI Generation Limits', () => {
       };
 
       await expect(
-        service.create('free-user-id', createTripDto, false),
+        service.create('free-user-id', createTripDto, 'ko'),
       ).rejects.toThrow(
         new ForbiddenException(
           'Monthly AI generation limit (3) reached. Try manual creation or wait until next month.',
@@ -356,7 +356,7 @@ describe('TripsService - AI Generation Limits', () => {
 
       // Should not check limits or increment counter in manual mode
       await expect(
-        service.create('any-user-id', createTripDto, true),
+        service.create('any-user-id', createTripDto, 'ko'),
       ).resolves.toBeDefined();
 
       // Should not have queried for user data
