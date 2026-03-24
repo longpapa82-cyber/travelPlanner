@@ -50,8 +50,16 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
-  async login(@Body() loginDto: LoginDto, @Req() req: Request) {
-    return this.authService.login(loginDto, req.headers['user-agent']);
+  async login(
+    @Body() loginDto: LoginDto,
+    @Req() req: Request,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    return this.authService.login(
+      loginDto,
+      req.headers['user-agent'],
+      parseLang(acceptLanguage),
+    );
   }
 
   @Post('refresh')

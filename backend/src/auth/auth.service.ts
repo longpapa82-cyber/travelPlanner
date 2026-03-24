@@ -24,30 +24,11 @@ import {
   AuthResponse,
   TokenPayload,
 } from './interfaces/auth-response.interface';
-import { t } from '../common/i18n';
+import { t, SupportedLang } from '../common/i18n';
 import { getErrorMessage } from '../common/types/request.types';
 import { AuditService } from '../admin/audit.service';
 import { AuditAction } from '../admin/entities/audit-log.entity';
 import { detectPlatform } from '../common/utils/platform-detector';
-
-type SupportedLang =
-  | 'ko'
-  | 'en'
-  | 'ja'
-  | 'zh'
-  | 'es'
-  | 'de'
-  | 'fr'
-  | 'th'
-  | 'vi'
-  | 'pt'
-  | 'ar'
-  | 'id'
-  | 'hi'
-  | 'it'
-  | 'ru'
-  | 'tr'
-  | 'ms';
 
 export interface OAuthUserData {
   providerId: string;
@@ -77,9 +58,7 @@ export class AuthService {
     // Check if user already exists — return generic error to prevent email enumeration
     const existingUser = await this.usersService.findByEmail(registerDto.email);
     if (existingUser) {
-      throw new BadRequestException(
-        'Registration failed. Please check your information and try again.',
-      );
+      throw new BadRequestException(t('auth.registration.failed', lang));
     }
 
     // Create new user
@@ -136,6 +115,7 @@ export class AuthService {
   async login(
     loginDto: LoginDto,
     userAgent?: string,
+    lang: SupportedLang = 'ko',
   ): Promise<AuthResponse | { requiresTwoFactor: true; tempToken: string }> {
     // Check account-level lockout (Redis-based, survives restarts)
     const lockKey = `login_attempts:${loginDto.email}`;
@@ -146,7 +126,7 @@ export class AuthService {
       attempts >= this.LOGIN_MAX_ATTEMPTS
     ) {
       throw new HttpException(
-        'Account temporarily locked due to too many failed login attempts. Try again in 15 minutes.',
+        t('auth.account.locked', lang),
         HttpStatus.LOCKED,
       );
     }
@@ -161,7 +141,7 @@ export class AuthService {
           metadata: { reason: 'user_not_found' },
         })
         .catch(() => {});
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(t('auth.invalid.credentials', lang));
     }
 
     // Validate password
@@ -178,7 +158,7 @@ export class AuthService {
           metadata: { reason: 'invalid_password' },
         })
         .catch(() => {});
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(t('auth.invalid.credentials', lang));
     }
 
     // Login success — reset attempt counter
