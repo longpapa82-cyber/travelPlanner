@@ -997,11 +997,12 @@ export class TripsService {
 
   /**
    * Generate or update share token for a trip
+   * @param expiresInDays - Number of days until token expires (default: 30 days)
    */
   async generateShareToken(
     tripId: string,
     userId: string,
-    expiresInDays?: number,
+    expiresInDays: number = 30, // Security: Default 30-day expiration
   ): Promise<{ shareToken: string; shareUrl: string }> {
     const trip = await this.tripRepository.findOne({ where: { id: tripId } });
 
@@ -1018,12 +1019,9 @@ export class TripsService {
     // Generate a secure random token
     const shareToken = randomBytes(16).toString('hex');
 
-    // Calculate expiration date if provided
-    let shareExpiresAt: Date | undefined;
-    if (expiresInDays && expiresInDays > 0) {
-      shareExpiresAt = new Date();
-      shareExpiresAt.setDate(shareExpiresAt.getDate() + expiresInDays);
-    }
+    // Security: Always set expiration date (default 30 days)
+    const shareExpiresAt = new Date();
+    shareExpiresAt.setDate(shareExpiresAt.getDate() + expiresInDays);
 
     // Update trip with share token
     trip.shareToken = shareToken;

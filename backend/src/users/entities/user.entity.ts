@@ -80,6 +80,9 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   passwordResetExpiry?: Date;
 
+  @Column({ type: 'int', default: 0 })
+  passwordResetAttempts: number;
+
   @Column({ default: false })
   isTwoFactorEnabled: boolean;
 

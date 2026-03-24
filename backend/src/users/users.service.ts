@@ -331,6 +331,7 @@ export class UsersService {
       .set({
         passwordResetToken: token,
         passwordResetExpiry: expiry,
+        passwordResetAttempts: 0, // Reset counter on new token generation
       })
       .where('id = :id', { id: user.id })
       .execute();
@@ -374,11 +375,29 @@ export class UsersService {
       throw new BadRequestException(t('password.reset.expired', lang));
     }
 
+    // Security: Limit password reset attempts to 5 per token
+    // This prevents brute-force attacks even with a valid token
+    if (user.passwordResetAttempts >= 5) {
+      // Invalidate token after too many attempts
+      await this.userRepository.update(user.id, {
+        passwordResetToken: undefined,
+        passwordResetExpiry: undefined,
+        passwordResetAttempts: 0,
+      });
+      throw new BadRequestException(t('password.reset.too_many_attempts', lang));
+    }
+
+    // Increment attempt counter
+    await this.userRepository.update(user.id, {
+      passwordResetAttempts: user.passwordResetAttempts + 1,
+    });
+
     const newHash = await bcrypt.hash(newPassword, 12);
     await this.userRepository.update(user.id, {
       passwordHash: newHash,
       passwordResetToken: undefined,
       passwordResetExpiry: undefined,
+      passwordResetAttempts: 0, // Reset counter on success
     });
 
     return this.findProfileById(user.id);
