@@ -363,332 +363,126 @@ class ApiService {
     return response.data;
   }
 
-  // Track active SSE requests to prevent concurrent duplicates
-  private activeSseRequest: Promise<any> | null = null;
-
-  /**
-   * Create trip with SSE progress streaming.
-   * Falls back to regular createTrip if SSE fails.
-   */
-  async createTripWithProgress(
+  async createTripWithPolling(
     data: any,
     onProgress?: (step: string, message?: string) => void,
     signal?: AbortSignal,
   ): Promise<any> {
     console.log('='.repeat(80));
-    console.log('🚀 SSE DEBUGGING VERSION 12.0 - RAILWAY PROXY FIX');
+    console.log('🚀 POLLING-BASED TRIP CREATION v1.0');
     console.log('Timestamp:', new Date().toISOString());
-    console.log('Build Time: 2026-03-24 11:00 KST');
-    console.log('Backend: 10KB padding + 3s delay');
+    console.log('Solution: Railway SSE workaround via polling');
     console.log('='.repeat(80));
 
-    // If there's already an active SSE request, return it (prevent duplicates)
-    if (this.activeSseRequest) {
-      return this.activeSseRequest;
-    }
+    try {
+      // 1. 비동기 작업 시작 - jobId 즉시 반환
+      console.log('[POLLING] Starting async trip creation');
+      const createResponse = await this.api.post('/trips/create-async', data, {
+        timeout: 10000, // 10초 타임아웃 (빠른 응답 예상)
+        signal,
+      });
 
-    let sseRequestStarted = false;
+      const { jobId } = createResponse.data;
+      console.log('[POLLING] Job started, jobId:', jobId);
 
-    // Wrap the entire operation in a promise that we can track
-    this.activeSseRequest = (async () => {
-      try {
-        const token = await secureStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-        const lang = getCurrentLanguage();
-
-        const response = await fetch(`${API_URL}/trips/create-stream`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'text/event-stream',
-            'Accept-Language': lang,
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify(data),
-          signal,
-        });
-
-        if (!response.ok) {
-          const errorBody = await response.text();
-          let errorMessage = 'Trip creation failed';
-          try {
-            const parsed = JSON.parse(errorBody);
-            errorMessage = parsed.message || errorMessage;
-          } catch {}
-          const error: any = new Error(errorMessage);
-          error.response = { status: response.status, data: { message: errorMessage } };
-          throw error;
-        }
-
-        // ✅ FIX: SSE request started successfully (201) - trip is being created on server
-        // From this point, we MUST NOT fallback to createTrip() as it would create duplicates
-        sseRequestStarted = true;
-
-        const reader = response.body?.getReader();
-        if (!reader) {
-          // No streaming support - but trip creation already started on server
-          // Poll for trip status instead of creating duplicate
-          throw new Error('Streaming not supported but trip creation started');
-        }
-
-        const decoder = new TextDecoder();
-        let buffer = '';
-        let result: any = null;
-        let lastActivityTime = Date.now();
-        const SSE_TIMEOUT = 30000; // 30 seconds without data = timeout
-
-        while (true) {
-          // Add timeout protection to prevent indefinite hanging
-          const readPromise = reader.read();
-          const timeoutPromise = new Promise<never>((_, reject) => {
-            setTimeout(() => {
-              const timeSinceLastActivity = Date.now() - lastActivityTime;
-              if (timeSinceLastActivity >= SSE_TIMEOUT) {
-                reject(new Error('SSE stream timeout - no data received for 30 seconds'));
-              }
-            }, SSE_TIMEOUT);
-          });
-
-          try {
-            const { done, value } = await Promise.race([readPromise, timeoutPromise]);
-
-            // ✅ FIX (Bug #7): Process the final chunk before breaking
-            // done=true means no more data to read, but value may still contain the last chunk
-            if (done) {
-              console.log('[SSE DEBUG] Stream done=true');
-              console.log('[SSE DEBUG]   - value exists?', value ? 'YES' : 'NO');
-              console.log('[SSE DEBUG]   - value length:', value ? value.byteLength : 0);
-              if (value) {
-                const finalChunk = decoder.decode(value, { stream: false });
-                console.log('[SSE DEBUG]   - Final chunk decoded:', JSON.stringify(finalChunk));
-                console.log('[SSE DEBUG]   - Final chunk bytes:', finalChunk.split('').map(c => {
-                  if (c === '\n') return '\\n';
-                  if (c === '\r') return '\\r';
-                  return c;
-                }).join(''));
-                buffer += finalChunk;
-              }
-              console.log('[SSE DEBUG] Breaking loop with buffer length:', buffer.length);
-              console.log('[SSE DEBUG] Buffer content:', JSON.stringify(buffer.substring(0, 200)));
-              break;
-            }
-
-            lastActivityTime = Date.now(); // Reset activity timer on data received
-
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n\n');
-            buffer = lines.pop() || '';
-
-            for (const line of lines) {
-              const dataLine = line.replace(/^data: /, '').trim();
-              if (!dataLine) continue;
-
-              try {
-                const event = JSON.parse(dataLine);
-                console.log('[SSE DEBUG] Main loop parsed event:', event.step, event.tripId ? `(tripId: ${event.tripId})` : '');
-
-                // Log if we have padding (Bug #11 debugging)
-                if (event.padding) {
-                  console.log('[SSE DEBUG] Event has padding field, length:', event.padding.length);
-                }
-
-                if (event.step === 'complete' && event.tripId) {
-                  console.log('[SSE DEBUG] *** COMPLETE EVENT FOUND IN MAIN LOOP ***');
-                  // Fetch the full trip data
-                  result = await this.getTripById(event.tripId);
-                  console.log('[SSE DEBUG] Trip fetched:', result?.id ? 'SUCCESS' : 'FAILED');
-                } else if (event.step === 'error') {
-                  const error: any = new Error(event.message || 'Trip creation failed');
-                  error.response = { status: event.status || 500, data: { message: event.message } };
-                  throw error;
-                } else {
-                  onProgress?.(event.step, event.message);
-                }
-              } catch (e: any) {
-                if (e.response) throw e; // Re-throw structured errors
-                console.log('[SSE DEBUG] Error parsing in main loop:', e.message);
-              }
-            }
-          } catch (timeoutError: any) {
-            // SSE timeout - trip was likely created but stream froze
-            if (timeoutError.message?.includes('SSE stream timeout')) {
-              // Set flag that trip was created
-              sseRequestStarted = true;
-              throw timeoutError;
-            }
-            throw timeoutError;
-          }
-        }
-
-        // ✅ FIX (Bug #6): Process any remaining buffer data after stream closes
-        // The server may send the final 'complete' event right before closing the connection,
-        // causing 'done=true' before we process the buffered data
-        console.log('[SSE DEBUG] === PROCESSING REMAINING BUFFER ===');
-        console.log('[SSE DEBUG] Buffer length:', buffer.length);
-        console.log('[SSE DEBUG] Buffer trimmed length:', buffer.trim().length);
-        console.log('[SSE DEBUG] Buffer content:', JSON.stringify(buffer));
-        console.log('[SSE DEBUG] Buffer bytes:', buffer.split('').map(c => {
-          if (c === '\n') return '\\n';
-          if (c === '\r') return '\\r';
-          return c;
-        }).join(''));
-
-        if (buffer.trim()) {
-          console.log('[SSE DEBUG] Buffer has content, processing...');
-
-          // Try multiple parsing strategies for robustness
-          // Strategy 1: Try to parse as-is (for partial JSON)
-          let dataToProcess = buffer.trim();
-
-          // Remove "data: " prefix if present
-          if (dataToProcess.startsWith('data: ')) {
-            dataToProcess = dataToProcess.substring(6).trim();
-          }
-
-          // Strategy 2: Try direct JSON parse first (simplest case)
-          try {
-            const event = JSON.parse(dataToProcess);
-            console.log('[SSE DEBUG] Direct JSON parse successful:', event);
-
-            if (event.step === 'complete' && event.tripId) {
-              console.log('[SSE DEBUG] *** COMPLETE EVENT FOUND (direct parse) ***');
-              result = await this.getTripById(event.tripId);
-              console.log('[SSE DEBUG] Trip fetched:', result?.id ? 'SUCCESS' : 'FAILED');
-            }
-          } catch (directParseError) {
-            console.log('[SSE DEBUG] Direct parse failed, trying SSE format...');
-
-            // Strategy 3: Handle as SSE formatted events
-            if (!buffer.endsWith('\n\n')) {
-              buffer += '\n\n';
-              console.log('[SSE DEBUG] Added missing \\n\\n to buffer');
-            }
-
-            // Now process as complete SSE events
-            const events = buffer.split('\n\n').filter(e => e.trim());
-            console.log('[SSE DEBUG] Events to process from buffer:', events.length);
-
-            for (const eventBlock of events) {
-              console.log('[SSE DEBUG] Processing event block:', JSON.stringify(eventBlock));
-
-              // Handle both formats: with or without "data: " prefix
-              let dataLine = eventBlock.trim();
-              if (dataLine.startsWith('data: ')) {
-                dataLine = dataLine.substring(6).trim();
-              }
-              console.log('[SSE DEBUG] Data line after processing:', JSON.stringify(dataLine));
-
-              if (!dataLine) continue;
-
-              try {
-                const event = JSON.parse(dataLine);
-                console.log('[SSE DEBUG] Successfully parsed event from buffer:', event);
-
-                if (event.step === 'complete' && event.tripId) {
-                  // Found the completion event in remaining buffer - fetch trip data
-                  console.log('[SSE DEBUG] *** COMPLETE EVENT FOUND IN BUFFER ***');
-                  result = await this.getTripById(event.tripId);
-                  console.log('[SSE DEBUG] Trip fetched:', result?.id ? 'SUCCESS' : 'FAILED');
-                } else if (event.step === 'error') {
-                  const error: any = new Error(event.message || 'Trip creation failed');
-                  error.response = { status: event.status || 500, data: { message: event.message } };
-                  throw error;
-                }
-              } catch (e: any) {
-                console.log('[SSE DEBUG] Error parsing buffer event:', e.message);
-                console.log('[SSE DEBUG] Failed to parse:', dataLine);
-                if (e.response) throw e; // Re-throw structured errors
-              }
-            }
-          }
-        }
-
-        console.log('[SSE DEBUG] === FINAL RESULT CHECK ===');
-        console.log('[SSE DEBUG] Result exists?', result ? 'YES' : 'NO');
-        console.log('[SSE DEBUG] SSE request started?', sseRequestStarted ? 'YES' : 'NO');
-
-        // If no result after processing all data, but SSE started successfully,
-        // it means the trip was created but we couldn't parse the complete event
-        if (!result && sseRequestStarted) {
-          console.log('[SSE DEBUG] No complete event found but SSE started, attempting to fetch recent trip');
-          // Try to fetch the most recent trip as a fallback
-          try {
-            const trips = await this.getTrips({ sortBy: 'createdAt', order: 'DESC', limit: 1 });
-            if (trips?.data && trips.data.length > 0) {
-              const latestTrip = trips.data[0];
-              const tripCreatedAt = new Date(latestTrip.createdAt).getTime();
-              const now = Date.now();
-              if (now - tripCreatedAt < 15000) { // Within 15 seconds
-                console.log('[SSE DEBUG] Found recent trip, using as result');
-                result = latestTrip;
-              }
-            }
-          } catch (fetchError) {
-            console.log('[SSE DEBUG] Failed to fetch recent trip:', fetchError);
-          }
-        }
-
-        return result;
-      } catch (error: any) {
-        console.log('[SSE DEBUG] Caught error:', error.message, 'sseRequestStarted:', sseRequestStarted);
-        if (error.name === 'AbortError') throw error;
-        if (error.response) throw error;
-
-        // ✅ FIX: If SSE request started (trip created), try to fetch the created trip with retry
-        if (sseRequestStarted) {
-          console.log('[SSE DEBUG] SSE request started, attempting retry to fetch created trip');
-          // Retry logic: attempt up to 3 times with exponential backoff
-          for (let attempt = 0; attempt < 3; attempt++) {
-            try {
-              // Wait before retry (0ms, 1000ms, 2000ms)
-              if (attempt > 0) {
-                await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-              }
-
-              // Trip was created on server but stream failed - try to get the latest trip
-              const trips = await this.getTrips({ sortBy: 'createdAt', order: 'DESC', limit: 1 });
-              if (trips?.data && trips.data.length > 0) {
-                const latestTrip = trips.data[0];
-                // Check if trip was created very recently (within last 10 seconds)
-                const tripCreatedAt = new Date(latestTrip.createdAt).getTime();
-                const now = Date.now();
-                if (now - tripCreatedAt < 10000) {
-                  // This is likely the trip we just created
-                  return latestTrip;
-                }
-              }
-
-              // If we reach here, trip not found in recent trips
-              if (attempt === 2) {
-                // Last attempt failed - throw error with tripCreated flag
-                const streamError: any = new Error('Trip created but stream interrupted - please check your trips list');
-                streamError.tripCreated = true; // Flag to help UI show better message
-                throw streamError;
-              }
-            } catch (fetchError: any) {
-              // If this is the last attempt or if it's already a tripCreated error, throw
-              if (attempt === 2 || fetchError.tripCreated) {
-                if (fetchError.tripCreated) {
-                  throw fetchError;
-                }
-                // Failed to fetch trips - throw original stream error
-                const streamError: any = new Error('Trip creation in progress - check trips list');
-                streamError.tripCreated = true;
-                throw streamError;
-              }
-              // Otherwise, continue to next retry
-            }
-          }
-        }
-
-        // Only fallback if SSE request never reached server
-        return this.createTrip(data);
-      } finally {
-        // Clear the active request tracker
-        this.activeSseRequest = null;
+      if (!jobId) {
+        throw new Error('Failed to start trip creation: no jobId received');
       }
-    })();
 
-    return this.activeSseRequest;
+      // 2. 상태 폴링 (1초마다)
+      return new Promise((resolve, reject) => {
+        let pollCount = 0;
+        const maxPolls = 300; // 최대 5분 (300초)
+
+        const pollInterval = setInterval(async () => {
+          // 취소 체크
+          if (signal?.aborted) {
+            clearInterval(pollInterval);
+            reject(new Error('Trip creation cancelled'));
+            return;
+          }
+
+          pollCount++;
+          console.log(`[POLLING] Poll #${pollCount}, jobId: ${jobId}`);
+
+          try {
+            // 작업 상태 조회
+            const statusResponse = await this.api.get(`/trips/job-status/${jobId}`, {
+              timeout: 5000,
+              signal,
+            });
+
+            const status = statusResponse.data;
+            console.log('[POLLING] Status:', status.status, 'progress:', status.progress?.step);
+
+            // 진행률 콜백 호출
+            if (status.progress && onProgress) {
+              onProgress(status.progress.step, status.progress.message);
+            }
+
+            // 완료 처리
+            if (status.status === 'completed' && status.tripId) {
+              console.log('[POLLING] Trip creation completed, tripId:', status.tripId);
+              clearInterval(pollInterval);
+
+              // 최종 여행 데이터 조회
+              try {
+                const trip = await this.getTripById(status.tripId);
+                console.log('[POLLING] Trip fetched successfully');
+                resolve(trip);
+              } catch (fetchError: any) {
+                console.error('[POLLING] Failed to fetch trip:', fetchError.message);
+                // 여행은 생성됐지만 조회 실패 - 에러에 tripId 포함
+                const error: any = new Error('Trip created but failed to fetch details');
+                error.tripId = status.tripId;
+                error.tripCreated = true;
+                reject(error);
+              }
+              return;
+            }
+
+            // 에러 처리
+            if (status.status === 'error') {
+              console.error('[POLLING] Trip creation failed:', status.error);
+              clearInterval(pollInterval);
+              reject(new Error(status.error || 'Trip creation failed'));
+              return;
+            }
+
+            // 타임아웃 체크
+            if (pollCount >= maxPolls) {
+              console.error('[POLLING] Timeout: exceeded maximum polling duration');
+              clearInterval(pollInterval);
+              reject(new Error('Trip creation timeout - please check your trips list'));
+              return;
+            }
+
+            // pending, processing → 계속 폴링
+          } catch (pollError: any) {
+            // 네트워크 에러 등 - 재시도 가능하므로 계속 폴링
+            console.warn(`[POLLING] Poll error:`, pollError.message);
+
+            // 취소 에러는 즉시 중단
+            if (pollError.name === 'AbortError' || pollError.code === 'ECONNABORTED') {
+              clearInterval(pollInterval);
+              reject(pollError);
+              return;
+            }
+
+            // 기타 에러는 경고만 하고 계속 폴링 (일시적 네트워크 장애 대응)
+          }
+        }, 1000); // 1초마다 폴링
+      });
+    } catch (error: any) {
+      console.error('[POLLING] Failed to start trip creation:', error.message);
+
+      if (error.name === 'AbortError') {
+        throw error;
+      }
+
+      // 작업 시작 실패 - 백엔드 에러 또는 네트워크 문제
+      throw new Error(error.response?.data?.message || 'Failed to start trip creation');
+    }
   }
 
   async getTrips(params?: {

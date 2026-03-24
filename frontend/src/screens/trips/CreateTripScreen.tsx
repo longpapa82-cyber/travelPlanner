@@ -345,8 +345,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         planningMode,
       };
 
-      // Use SSE progress streaming for real-time step updates
-      const trip = await apiService.createTripWithProgress(
+      // Use polling-based progress tracking (Railway SSE workaround)
+      const trip = await apiService.createTripWithPolling(
         tripData,
         (step: string) => {
           const stepIndex = STEP_MAP[step] ?? 0;
