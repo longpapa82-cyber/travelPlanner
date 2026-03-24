@@ -16,7 +16,6 @@ import {
   UploadedFile,
   BadRequestException,
   ParseUUIDPipe,
-  MessageEvent,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -27,6 +26,7 @@ import { randomBytes } from 'crypto';
 import { Throttle } from '@nestjs/throttler';
 import { Subject } from 'rxjs';
 import { TripsService, TripCreationProgress } from './trips.service';
+import { JobsService } from './jobs.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { UpdateItineraryDto } from './dto/update-itinerary.dto';
@@ -56,6 +56,7 @@ function escapeIcalValue(value: string): string {
 export class TripsController {
   constructor(
     private readonly tripsService: TripsService,
+    private readonly jobsService: JobsService,
     private readonly imageService: ImageService,
   ) {}
 
@@ -70,99 +71,96 @@ export class TripsController {
     return this.tripsService.create(userId, createTripDto, language);
   }
 
-  @Post('create-stream')
+  /**
+   * 폴링 방식 비동기 여행 생성 (Railway SSE 문제 해결)
+   *
+   * SSE의 Railway 프록시 버퍼링 문제를 근본적으로 해결하기 위해
+   * 폴링 방식으로 전환. 작업을 시작하고 jobId를 즉시 반환.
+   * 클라이언트는 job-status 엔드포인트를 1초마다 폴링하여 진행 상태 확인.
+   */
+  @Post('create-async')
   @Throttle({ short: { ttl: 60000, limit: 5 } })
-  createWithProgress(
+  async createAsync(
     @CurrentUser('userId') userId: string,
     @Headers('accept-language') acceptLanguage: string | undefined,
     @Body() createTripDto: CreateTripDto,
-    @Res() res: Response,
   ) {
     const language = acceptLanguage || 'ko';
-    const progress$ = new Subject<TripCreationProgress>();
+    const jobId = this.jobsService.createJob();
 
-    // Set SSE headers
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no');
-    res.flushHeaders();
-
-    // Send initial large padding to force Railway proxy to enter streaming mode
-    // This helps bypass initial buffering threshold
-    const initialPadding = 'x'.repeat(10240); // 10KB initial padding
-    res.write(`data: {"step":"init","padding":"${initialPadding}"}\n\n`);
-    console.log('[BACKEND SSE] Sent initial 10KB padding to force streaming mode');
-
-    // Send heartbeat to prevent Railway proxy buffering
-    let heartbeatCount = 0;
-    const heartbeatInterval = setInterval(() => {
-      heartbeatCount++;
-      const heartbeatData = `: heartbeat #${heartbeatCount} at ${new Date().toISOString()}\n\n`;
-      res.write(heartbeatData);
-      console.log('[BACKEND SSE] Heartbeat sent #' + heartbeatCount + ', bytes:', heartbeatData.length);
-    }, 5000); // Send every 5 seconds
-
-    // Stream progress events to client
-    const subscription = progress$.subscribe({
-      next: (event) => {
-        const data = `data: ${JSON.stringify(event)}\n\n`;
-        console.log('[BACKEND SSE] Sending progress event:', event.step, 'length:', data.length);
-        res.write(data);
-      },
+    // 비동기로 여행 생성 시작 (응답 반환 후 백그라운드 실행)
+    // 즉시 jobId를 반환하고, 실제 생성은 백그라운드에서 진행
+    setImmediate(() => {
+      this.startTripCreation(jobId, userId, createTripDto, language);
     });
 
-    // Start trip creation with progress tracking
-    this.tripsService
-      .create(userId, createTripDto, language, progress$)
-      .then((trip) => {
-        const completeEvent = { step: 'complete', tripId: trip.id };
-        // Add LARGE padding to force Railway proxy to flush immediately
-        // Railway buffers ~100KB, so we need much more padding
-        // We'll send 10KB to be safe (but not too large to avoid bandwidth issues)
-        const padding = 'x'.repeat(10240); // 10KB padding - using 'x' instead of space for better visibility
-        const paddedEvent = { ...completeEvent, padding };
-        const data = `data: ${JSON.stringify(paddedEvent)}\n\n`;
-        console.log('[BACKEND SSE] Sending complete event with padding, length:', data.length);
-        res.write(data);
+    return { jobId, status: 'pending' };
+  }
 
-        // Force flush the complete event to ensure it's sent over the network
-        // Some Node.js environments buffer writes, so we need to explicitly flush
-        // Note: res.flush() may not be available in all environments
-        const responseAny = res as any;
-        if (typeof responseAny.flush === 'function') {
-          responseAny.flush();
-          console.log('[BACKEND SSE] Flushed complete event');
-        }
+  /**
+   * 작업 상태 조회 (폴링용)
+   *
+   * 클라이언트가 1초마다 이 엔드포인트를 호출하여 작업 진행 상태 확인.
+   * Railway 프록시와 무관하게 독립적 HTTP 요청으로 안정적 동작.
+   */
+  @Get('job-status/:jobId')
+  getJobStatus(@Param('jobId') jobId: string) {
+    return this.jobsService.getJob(jobId);
+  }
 
-        // Add a MUCH longer delay to ensure Railway proxy flushes buffers
-        // Railway's aggressive connection closure requires significant time
-        // This gives the proxy enough time to transmit the 10KB complete event
-        setTimeout(() => {
-          console.log('[BACKEND SSE] Ending response after 3s flush delay');
-          clearInterval(heartbeatInterval); // Clear heartbeat interval
-          res.end();
-        }, 3000); // Increased from 500ms to 3000ms for Railway proxy
-      })
-      .catch((error) => {
-        clearInterval(heartbeatInterval); // Clear heartbeat interval on error
-        const message = error.message || 'Trip creation failed';
-        const status = error.status || 500;
-        res.write(
-          `data: ${JSON.stringify({ step: 'error', message, status })}\n\n`,
-        );
-        res.end();
-      })
-      .finally(() => {
-        subscription.unsubscribe();
-        progress$.complete();
+  /**
+   * 비동기 여행 생성 실행 (백그라운드)
+   *
+   * JobsService와 progress$ Subject를 사용하여
+   * 진행 상태를 실시간으로 추적하고 저장.
+   */
+  private async startTripCreation(
+    jobId: string,
+    userId: string,
+    createTripDto: CreateTripDto,
+    language: string,
+  ): Promise<void> {
+    try {
+      // 상태를 processing으로 업데이트
+      this.jobsService.updateJob(jobId, { status: 'processing' });
+
+      // progress$ Subject 생성 (여행 생성 진행 상태 추적)
+      const progress$ = new Subject<TripCreationProgress>();
+
+      // progress 이벤트 구독 → JobData 업데이트
+      const subscription = progress$.subscribe({
+        next: (progress) => {
+          this.jobsService.updateJob(jobId, { progress });
+        },
       });
 
-    // Handle client disconnect
-    res.on('close', () => {
+      // 여행 생성 (기존 로직 재사용)
+      const trip = await this.tripsService.create(
+        userId,
+        createTripDto,
+        language,
+        progress$,
+      );
+
+      // 완료 상태 업데이트
+      this.jobsService.updateJob(jobId, {
+        status: 'completed',
+        tripId: trip.id,
+        progress: { step: 'complete' },
+      });
+
+      // Subject 정리
       subscription.unsubscribe();
       progress$.complete();
-    });
+    } catch (error) {
+      // 에러 상태 업데이트
+      const errorMessage = error.message || 'Trip creation failed';
+      this.jobsService.updateJob(jobId, {
+        status: 'error',
+        error: errorMessage,
+        progress: { step: 'error', message: errorMessage },
+      });
+    }
   }
 
   @Get()

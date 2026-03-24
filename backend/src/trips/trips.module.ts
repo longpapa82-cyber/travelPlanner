@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { TripsService } from './trips.service';
+import { JobsService } from './jobs.service';
 import { TripsController } from './trips.controller';
 import { ShareController } from './share.controller';
 import { AnalyticsController } from './analytics.controller';
@@ -44,6 +45,7 @@ import { GeocodingCache } from '../common/entities/geocoding-cache.entity';
   ],
   providers: [
     TripsService,
+    JobsService,
     AIService,
     TemplateService,
     EmbeddingService,
