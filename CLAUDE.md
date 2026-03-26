@@ -577,24 +577,30 @@ async createTripWithPolling(
 3. Play Console Alpha 트랙 업로드
 4. 라이선스 테스터 사용자 테스트
 
-### 배포 현황 (2026-03-24)
+### 배포 현황 (2026-03-24, 완료 ✅)
 
-**Backend (commit: f817534e)**:
+**Backend (commit: f817534e → d1cb1062)**:
 - ✅ Git push 완료 (2026-03-24 17:15 KST)
-- ⚠️ Railway 자동 배포 미작동 (7분 경과 후에도 404)
-  - 확인: `POST /api/trips/create-async` → 404 (새 엔드포인트 없음)
-  - 확인: `POST /api/trips/create-stream` → 401 (구 엔드포인트 존재)
-  - 원인: Railway GitHub webhook 실패 또는 수동 배포 필요
-  - **조치 필요**: Railway 대시보드에서 수동 배포 트리거
+- ✅ Hetzner VPS 자동 배포 완료 (지연 후 성공)
+  - 확인: `POST /api/trips/create-async` → **401 Unauthorized** ✅ (엔드포인트 존재, 인증만 필요)
+  - 확인: `POST /api/trips/create-stream` → **404 Not Found** ✅ (SSE 완전 삭제)
+  - 배포 플랫폼: Hetzner VPS (독일), IP: 46.62.201.127
+  - 도메인: https://mytravel-planner.com
+  - ❌ Railway 아님 (다른 프로젝트용)
 
 **Frontend (commit: d1cb1062)**:
 - ✅ Git push 완료 (2026-03-24 17:17 KST)
-- ⏳ versionCode 36 EAS 빌드 대기 중
+- ✅ versionCode 36 EAS 빌드 완료 (17:43 KST)
+  - Build ID: 0487630e-6c30-4d22-b86c-1bd154f40f75
+  - AAB: https://expo.dev/artifacts/eas/yrhTQeVJPs8pPuRDVA6vP.aab
+  - 빌드 시간: 14분 (17:29 → 17:43)
+  - AAB 크기: 68 MB
 
-**전략**:
-- Frontend 빌드 먼저 시작 (20-30분 소요)
-- 빌드 진행 중 Railway 수동 배포 처리
-- 백엔드 배포 완료 후 Alpha 트랙 업로드
+**Play Console Alpha 트랙**:
+- ✅ versionCode 36 업로드 완료 (2026-03-24 18:37 KST)
+- ✅ "선택한 테스트에게 제공됩니다" 상태
+- ✅ 라이선스 테스터 배포 활성화
+- 출시 노트: ko/en/ja 3개 언어 (Bug #13 폴링 방식 설명)
 
 ### 예상 효과
 
@@ -1640,3 +1646,181 @@ Bug fixes and stability improvements
 **작성자**: SuperClaude (feature-troubleshooter + root-cause-analyst)
 **문서 버전**: 1.0
 
+
+## Google AdSense 거부 진단 및 해결 전략 (2026-03-25)
+
+### 거부 통지 내용
+- **날짜**: 2026-03-25
+- **상태**: 주의 필요
+- **사유**: "가치가 별로 없는 콘텐츠" (valuable inventory: no content)
+
+### SEO 진단 결과 ✅
+
+**기술적 SEO 인프라** (모두 정상):
+- ✅ **robots.txt**: 올바른 Allow/Disallow 설정, sitemap 참조 포함
+- ✅ **sitemap.xml**: 49개 URL 포함 (guide 26개 + blog 16개 + 정적 페이지 7개)
+- ✅ **Meta 태그**: 모든 페이지에 title, description, Open Graph 태그 정상 설정
+- ✅ **콘텐츠 품질**: 각 페이지 20~24KB 실제 콘텐츠 보유 (플레이스홀더 아님)
+
+**현재 사이트 콘텐츠**:
+```
+📄 정적 페이지 (7개): 홈, about, contact, privacy, terms, faq, guides-index, blog-index
+📍 여행 가이드 (26개):
+   - 한국어 20개: tokyo, osaka, kyoto, seoul, bangkok, singapore, ho-chi-minh, 
+     kuala-lumpur, bali, paris, london, barcelona, rome, prague, amsterdam, 
+     istanbul, new-york, hawaii, sydney, dubai
+   - 영어 6개: index-en, tokyo-en, osaka-en, seoul-en, bangkok-en, paris-en
+📝 블로그 포스트 (15개):
+   - ai-travel-planning-tips, packing-checklist, budget-travel-guide
+   - first-solo-travel, travel-insurance-guide, japan-transport-pass-guide
+   - europe-culture-differences, southeast-asia-rainy-season
+   - smartphone-travel-photography, currency-exchange-guide
+   - airport-time-saving-tips, travel-internet-guide
+   - family-travel-planning, travel-journal-tips, long-term-travel-guide
+```
+
+### 근본 원인 분석 🔍
+
+**AdSense "가치가 별로 없는 콘텐츠" 오판 이유**:
+1. **Google 크롤러가 사이트를 발견하지 못함**
+   - Google Search Console 미제출 → Google이 사이트 존재를 모름
+   - sitemap.xml 있지만 능동적 제출 필요
+
+2. **색인 대기 중**
+   - 새 사이트는 자연 발견까지 2-4주 소요
+   - AdSense 신청 시점에 색인된 페이지 0개로 추정
+
+3. **AdSense 심사는 Google 색인 기반**
+   - 봇이 크롤링한 페이지만 평가
+   - 색인 없음 = 콘텐츠 없음으로 판단
+
+**결론**: **콘텐츠 부족이 아닌 색인 부족** 문제
+
+### AdSense 재승인 액션 플랜 📋
+
+#### Phase 1: Google Search Console 설정 (즉시 실행)
+1. ✅ Search Console 소유권 확인 (DNS TXT 레코드 or HTML 파일)
+2. ✅ sitemap.xml 제출
+3. ✅ URL 검사 도구로 주요 페이지 색인 요청 (홈, 가이드 5개, 블로그 5개)
+
+**소요 시간**: 15-30분
+**가이드**: `docs/google-search-console-setup.md` (상세)
+**빠른 시작**: `docs/search-console-quickstart.md` (체크리스트)
+
+#### Phase 2: 색인 모니터링 (1-2주)
+4. ⏳ 커버리지 리포트에서 색인 페이지 수 확인
+5. ⏳ 크롤링 오류 수정 (발견 시)
+6. ⏳ 최소 30개 이상 페이지 색인 확인
+
+**목표**:
+- 1주차: 5-10개 색인
+- 2주차: 20-30개 색인
+- 3주차: 40-49개 색인 (전체 완료)
+
+#### Phase 3: AdSense 재신청 (색인 완료 후)
+7. ⏳ Google Analytics 설치 (트래픽 증거)
+8. ⏳ 2-4주 자연 검색 트래픽 축적
+9. ⏳ AdSense 재신청 (색인 증거 + 트래픽 데이터)
+
+**재신청 조건**:
+- [ ] Search Console 색인 페이지 ≥ 30개
+- [ ] 자연 검색 트래픽 ≥ 100회/일 (2주 누적)
+- [ ] 사이트 운영 기간 ≥ 3주
+- [ ] 커버리지 오류 0건
+
+### 예상 타임라인 📅
+
+```
+Day 1-2:   Search Console 설정 + Sitemap 제출 + URL 검사 요청
+Day 3-7:   Google 크롤링 시작 (5-10개 페이지 색인)
+Day 8-14:  색인 확대 (20-30개 페이지)
+Day 15-21: 대부분 색인 완료 (40-49개 페이지)
+Day 22-28: 자연 검색 트래픽 축적
+Day 29-35: AdSense 재신청
+Day 36-49: AdSense 검토 및 승인
+```
+
+**총 소요 시간**: 약 7주 (Search Console 설정 → AdSense 승인)
+
+### 현재 사이트 강점 (AdSense 승인 유리) ✅
+
+**고품질 콘텐츠**:
+- 49개 페이지 (AdSense 기준 20개 이상 충족)
+- 각 페이지 20-24KB 실제 콘텐츠 (플레이스홀더 아님)
+- SEO 최적화 완료 (meta 태그, Open Graph, sitemap)
+
+**다국어 지원**:
+- 한국어, 영어 콘텐츠 제공
+- 국제 사용자 대상 (넓은 타겟층)
+
+**전문성**:
+- 20개 여행지 가이드 (도쿄, 파리, 방콕, 서울 등)
+- 15개 여행 팁 블로그 (패킹, 예산, 안전 등)
+- AI 여행 계획 서비스 (차별화 포인트)
+
+**기술적 SEO**:
+- robots.txt 올바른 설정
+- sitemap.xml 49개 URL 포함
+- HTTPS 적용
+- 모바일 친화적 (React Native Web)
+
+### Search Console 설정 완료 ✅ (2026-03-25)
+
+**완료된 작업**:
+1. ✅ Google Search Console 속성 추가 (`https://mytravel-planner.com`)
+2. ✅ 소유권 확인 완료
+3. ✅ Sitemap 제출 완료
+   - URL: `https://mytravel-planner.com/sitemap.xml`
+   - 상태: 성공
+   - 발견된 URL: 49개
+   - 제출일: 2026-03-25
+4. ✅ 주요 페이지 10개 색인 생성 요청 완료
+   - ✅ `https://mytravel-planner.com/` (이미 색인됨)
+   - ✅ `https://mytravel-planner.com/guides`
+   - ✅ `https://mytravel-planner.com/guides/tokyo`
+   - ✅ `https://mytravel-planner.com/guides/paris`
+   - ✅ `https://mytravel-planner.com/guides/bangkok`
+   - ✅ `https://mytravel-planner.com/blog`
+   - ✅ `https://mytravel-planner.com/blog/ai-travel-planning-tips`
+   - ✅ `https://mytravel-planner.com/blog/packing-checklist`
+   - ✅ `https://mytravel-planner.com/faq`
+   - ✅ `https://mytravel-planner.com/about`
+
+**다음 단계**:
+
+**1주 후** (2026-04-01):
+1. ⏳ Search Console → "색인생성" → "페이지" 메뉴에서 색인 상태 확인
+2. ⏳ 목표: 5-10개 페이지 색인됨
+3. ⏳ 커버리지 오류 확인 및 수정 (발견 시)
+
+**2주 후** (2026-04-08):
+4. ⏳ 색인 상태 재확인 (목표: 20-30개)
+
+**3주 후** (2026-04-15):
+5. ⏳ 색인 완료 확인 (목표: 40-49개)
+6. ⏳ Google Analytics 설치 (트래픽 추적 시작)
+
+**5주 후** (2026-04-29):
+7. ⏳ AdSense 재신청 조건 확인
+   - 색인 페이지 ≥ 30개
+   - 자연 검색 트래픽 ≥ 100회/일
+   - 커버리지 오류 0건
+8. ⏳ 조건 충족 시 AdSense 재신청
+
+**7주 후** (2026-05-13):
+9. ⏳ AdSense 승인 예상 완료 🎉
+
+### 참고 자료 📚
+
+- **상세 가이드**: `docs/google-search-console-setup.md`
+- **빠른 시작**: `docs/search-console-quickstart.md`
+- **Search Console**: https://search.google.com/search-console
+- **AdSense 정책**: https://support.google.com/adsense/answer/9335564
+- **SEO 가이드**: https://developers.google.com/search/docs
+
+---
+
+**진단 완료일**: 2026-03-25
+**Search Console 설정 완료일**: 2026-03-25
+**진단자**: SuperClaude (auto-qa + SEO 분석)
+**다음 점검**: 2026-04-01 (1주 후, 색인 상태 확인)
