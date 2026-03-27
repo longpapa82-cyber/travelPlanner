@@ -172,30 +172,31 @@ export class TripsService {
 
       savedTrip = await queryRunner.manager.save(trip);
 
-      // Commit transaction (quota + trip creation are now atomic)
-      await queryRunner.commitTransaction();
-
       this.logger.log(
-        `Successfully created trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode (transaction committed)`,
+        `Successfully created trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode (transaction started)`,
       );
+
+      // CRITICAL FIX: Keep transaction open for entire trip creation process
+      // Do NOT commit here - moved to the end of the method
     } catch (error) {
       // Rollback on any error (quota increment is also rolled back)
       await queryRunner.rollbackTransaction();
+      await queryRunner.release();
       this.logger.error(
         `Failed to create trip, transaction rolled back: ${getErrorMessage(error)}`,
       );
       throw error;
-    } finally {
-      await queryRunner.release();
     }
 
     this.logger.log(
       `Creating trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode`,
     );
 
-    progress$?.next({ step: 'validating' });
+    // CRITICAL FIX: Wrap ALL operations in try-catch for proper rollback
+    try {
+      progress$?.next({ step: 'validating' });
 
-    // Get location information for timezone and weather
+      // Get location information for timezone and weather
     let timezoneInfo: {
       timezone: string;
       timezoneId: string;
@@ -260,7 +261,7 @@ export class TripsService {
         const date = new Date(startDate);
         date.setDate(date.getDate() + i);
         itineraries.push(
-          this.itineraryRepository.create({
+          queryRunner.manager.create(Itinerary, {
             tripId: savedTrip.id,
             date,
             dayNumber: i + 1,
@@ -271,7 +272,7 @@ export class TripsService {
           }),
         );
       }
-      await this.itineraryRepository.save(itineraries);
+      await queryRunner.manager.save(itineraries);
       return itineraries;
     };
 
@@ -310,7 +311,7 @@ export class TripsService {
         progress$?.next({ step: 'saving' });
         const itineraries: Itinerary[] = [];
         for (const aiItinerary of aiItineraries) {
-          const itinerary = this.itineraryRepository.create({
+          const itinerary = queryRunner.manager.create(Itinerary, {
             tripId: savedTrip.id,
             date: aiItinerary.date,
             dayNumber: aiItinerary.dayNumber,
@@ -322,8 +323,8 @@ export class TripsService {
           itineraries.push(itinerary);
         }
 
-        await this.itineraryRepository.save(itineraries);
-        await this.tripRepository.update(savedTrip.id, { aiStatus: 'success' });
+        await queryRunner.manager.save(itineraries);
+        await queryRunner.manager.update(Trip, savedTrip.id, { aiStatus: 'success' });
         this.logger.log(
           `Successfully generated ${itineraries.length} AI itineraries with weather data for trip ${savedTrip.id}`,
         );
@@ -335,7 +336,7 @@ export class TripsService {
           `Falling back to empty itineraries for trip ${savedTrip.id}`,
         );
 
-        await this.tripRepository.update(savedTrip.id, { aiStatus: 'failed' });
+        await queryRunner.manager.update(Trip, savedTrip.id, { aiStatus: 'failed' });
         progress$?.next({
           step: 'error',
           message: 'AI generation failed, creating empty itineraries',
@@ -345,6 +346,22 @@ export class TripsService {
         const weatherMap = await fetchWeatherMap();
         await createEmptyItineraries(weatherMap);
       }
+    }
+
+      // CRITICAL FIX: Commit transaction only after ALL operations complete
+      await queryRunner.commitTransaction();
+      this.logger.log(
+        `Successfully committed transaction for trip ${savedTrip.id}`,
+      );
+    } catch (error) {
+      // Rollback EVERYTHING including AI counter if ANY error occurs
+      await queryRunner.rollbackTransaction();
+      this.logger.error(
+        `Failed to create trip, rolling back all changes including AI counter: ${getErrorMessage(error)}`,
+      );
+      throw error;
+    } finally {
+      await queryRunner.release();
     }
 
     // Return trip with itineraries

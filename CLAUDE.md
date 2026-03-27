@@ -202,6 +202,35 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-03-27 16:00 KST
+## 후순위 작업 (Backlog)
+
+### URL 노출 최소화 작업 (2026-03-27, 보류)
+
+**배경**: Android 앱 선출시 시 mytravel-planner.com 노출 최소화 필요
+- 웹사이트는 광고/결제 미구현 상태 (무료 서비스)
+- 사용자가 앱 우회하여 웹 접속 가능성 차단 필요
+
+**분석 완료** (`docs/url-exposure-analysis.md`):
+- 총 65개 노출 지점 발견
+- 앱 코드 수정 가능: 10개
+- Play Store 정책상 필수: 51개 (17개 언어 × 3개 URL)
+- OAuth 기술 요구사항: 4개
+
+**권장 조치**:
+1. **P0 - 앱 코드 URL 제거** (2시간)
+   - PaywallModal.tsx: 이용약관/개인정보처리방침 링크 → WebView 전환
+   - HomeScreen.tsx: 공유 메시지 URL → 딥링크로 대체
+2. **P1 - nginx 웹 접근 제어** (1일)
+   - 일반 페이지 접근 차단
+   - Legal 문서 + API + OAuth만 허용
+3. **선택 - API 서브도메인 분리** (4-6시간)
+   - api.mytravel-planner.com 별도 구성
+
+**보류 사유**: Alpha 출시 후 사용자 피드백 기반 우선순위 재조정
+**재검토 시점**: Alpha 테스트 완료 후 (2-3일 후)
+
+---
+
+**최종 업데이트**: 2026-03-27 16:30 KST
 **배포 담당**: SuperClaude (plan-q + 4-phase QA)
-**현재 상태**: Google 자동 검사 진행 중 → Alpha 출시 대기
+**현재 상태**: Google 자동 검사 완료 대기 → 3가지 긴급 이슈 분석 중
