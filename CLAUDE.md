@@ -231,6 +231,60 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-03-27 16:30 KST
-**배포 담당**: SuperClaude (plan-q + 4-phase QA)
-**현재 상태**: Google 자동 검사 완료 대기 → 3가지 긴급 이슈 분석 중
+## 긴급 이슈 해결 (2026-03-27)
+
+### 🔴 Issue #3: AI 생성 실패 시 카운터 소진 버그 (P0, 완료 ⏳ 배포 대기)
+
+**증상**:
+- 테스트 계정 (j090723@naver.com): AI 생성 3/3 → 실패 → 0/3으로 모두 소진
+- 실제로는 여행 생성 안됨
+
+**근본 원인** (feature-troubleshooter 분석):
+- `trips.service.ts` 트랜잭션 범위 설계 결함
+- AI 카운터 증가 후 즉시 커밋 → 이후 timezone/weather/AI 작업은 트랜잭션 밖
+- 실패 시 롤백 불가능 (이미 커밋됨)
+
+**수정 내역**:
+- ✅ 트랜잭션 범위 확장: 모든 작업을 트랜잭션 내 포함
+- ✅ 커밋을 메서드 끝으로 이동 (line 352)
+- ✅ 어떤 단계에서든 실패 시 → 전체 롤백 (AI 카운터 포함)
+- ✅ Git 커밋: `c93da3de` (feature-troubleshooter)
+
+**배포 필요**:
+- ⏳ Hetzner VPS 백엔드 배포 (사용자 수동)
+- ⏳ 테스트 계정 AI 카운터 복구 SQL 실행
+- 📄 배포 가이드: `docs/backend-deployment-guide.md`
+
+### 🟢 Issue #1: 지도 탭 Google Maps 브라우저 이탈 (P1, 완료 ✅)
+
+**증상**:
+- 지도 이미지/활동 클릭 → 기기 브라우저에서 Google Maps 페이지 열림
+- 네이티브 앱에서 완전 이탈, UX 저하
+
+**해결 방안** (Wanderlog 벤치마킹):
+- Alert 다이얼로그로 지도 앱 선택 제공
+- Google Maps / Apple Maps 딥링크 사용 (comgooglemaps://, geo:, maps://)
+- 앱 미설치 시 브라우저 폴백
+
+**수정 내역**:
+- ✅ `TripMapView.tsx`: Alert 다이얼로그 + 딥링크 구현
+- ✅ 17개 언어 i18n 번역 추가 (ko, en, ja, zh, es, de, fr, th, vi, pt, ar, id, hi, it, ru, tr, ms)
+- ✅ TypeScript 컴파일: 0 에러
+- ✅ Git 커밋: `eb70fe02`
+- ✅ GitHub 푸시: 완료
+
+**다음 단계**:
+- versionCode 38 EAS 빌드 (선택, 또는 다음 배포 시 포함)
+
+### ⏳ Issue #2: 비밀번호 저장 팝업 (P2, 진단 대기)
+
+**증상**:
+- 프로필 버튼 클릭 → 광고 + "비밀번호를 Google에 저장하시겠습니까?" 팝업
+
+**상태**: 우선순위 낮음, Issue #3 배포 후 진단 예정
+
+---
+
+**최종 업데이트**: 2026-03-27 20:30 KST
+**배포 담당**: SuperClaude (plan-q + feature-troubleshooter + 병렬 실행)
+**현재 상태**: Issue #1 완료, Issue #3 배포 대기 중
