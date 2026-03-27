@@ -1824,3 +1824,75 @@ Day 36-49: AdSense 검토 및 승인
 **Search Console 설정 완료일**: 2026-03-25
 **진단자**: SuperClaude (auto-qa + SEO 분석)
 **다음 점검**: 2026-04-01 (1주 후, 색인 상태 확인)
+
+---
+
+## 🚀 Production Deployment Log
+
+### versionCode 37 배포 (2026-03-27, 진행 중 ⏳)
+
+**배포 목적**: P0/P1 보안 수정 (토큰 해싱)
+
+#### 보안 수정 사항
+- ✅ **P0 수정**: 비밀번호 리셋 토큰 SHA-256 해싱
+  - 파일: `backend/src/users/users.service.ts`
+  - 메서드: `generatePasswordResetToken()`, `resetPassword()`
+  - 변경: 평문 저장 → SHA-256 해시 저장
+  - 영향: DB 유출 시에도 토큰 재사용 불가
+
+- ✅ **P1 수정**: 이메일 인증 토큰 SHA-256 해싱
+  - 파일: `backend/src/users/users.service.ts`
+  - 메서드: `generateEmailVerificationToken()`, `verifyEmail()`
+  - 변경: 평문 저장 → SHA-256 해시 저장
+  - 영향: 토큰 도용 방지 강화
+
+#### QA 결과 요약
+- **Security-QA**: P0 1건, P1 2건, P2 3건 → P0/P1 모두 수정 완료
+- **Auto-QA**: 95.6% 통과 (43/45), AdminGuard 자동 수정
+- **Feature-Troubleshoot**: P0 1건, P1 5건 → 모두 기존 구현 확인
+- **Publish-QA**: 100% Google Play 정책 준수
+
+#### 배포 이력
+
+**백엔드 (Hetzner VPS)**:
+- Commit: `a2f7da3e` - P0/P1 토큰 해싱 수정
+- Commit: `0405312d` - versionCode 37 업데이트
+- 배포 방식: 수동 SSH 배포
+- 배포 상태: ✅ 완료 (2026-03-27 15:xx KST)
+- 배포 확인: `curl https://mytravel-planner.com/api/health` → `{"status":"ok"}`
+
+**프론트엔드 (EAS Build)**:
+- Build ID: `b62f0d12-c3e1-41fa-adc9-15ab98c77de4`
+- versionCode: **37** (36 → 37 자동 증가)
+- AAB 파일: https://expo.dev/artifacts/eas/ouPkMsbob8uueZjxeCT9r3.aab
+- AAB 크기: 68 MB
+- 빌드 시간: 약 1시간 (14:45 - 15:44 KST)
+- 빌드 상태: ✅ 완료 (2026-03-27 15:44 KST)
+- 로컬 다운로드: `/Users/hoonjaepark/projects/travelPlanner/frontend/mytravel-v37.aab`
+
+**Play Console (Alpha Track)**:
+- 업로드 일시: 2026-03-27 15:45 KST
+- 출시 노트: ko/en/ja 3개 언어
+  - 한국어: "보안 강화 및 안정성 개선"
+  - 영어: "Security Enhancements and Stability Improvements"
+  - 일본어: "セキュリティ強化と安定性の向上"
+- 검사 상태: ⏳ Google 자동 검사 진행 중 (최대 14분)
+- 예상 완료: ~15:59 KST
+
+#### 다음 단계
+1. ⏳ Google 자동 검사 완료 대기 (최대 14분)
+2. ⏳ 검사 통과 시 Alpha 트랙 출시 클릭
+3. ⏳ 라이선스 테스터 배포 확인
+4. ⏳ 사용자 피드백 모니터링
+
+#### 기술 문서
+- 출시 노트: `docs/release-notes-v37.md`
+- QA 계획: plan-q 에이전트 생성
+- 보안 분석: security-qa 에이전트 실행
+- 기능 분석: auto-qa, feature-troubleshoot 에이전트 실행
+
+---
+
+**최종 업데이트**: 2026-03-27 15:50 KST
+**배포 담당**: SuperClaude (plan-q + 4-phase QA)
+**현재 상태**: Google 자동 검사 진행 중 → Alpha 출시 대기
