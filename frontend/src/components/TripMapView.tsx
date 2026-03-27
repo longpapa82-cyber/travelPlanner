@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Platform,
   Linking,
+  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -172,11 +173,45 @@ const TripMapViewInner: React.FC<Props> = ({ itineraries, destination }) => {
     return `https://maps.googleapis.com/maps/api/staticmap?center=${center.lat},${center.lng}&zoom=${zoom}&size=${size}&scale=2&maptype=roadmap&${hidePoiStyle}&${markers}&key=${apiKey}`;
   }, [center, filteredActivities]);
 
-  const openInGoogleMaps = () => {
-    if (!center) return;
-    const url = `https://www.google.com/maps/@${center.lat},${center.lng},14z`;
-    Linking.openURL(url);
-  };
+  const openInMapsApp = useCallback((latitude: number, longitude: number) => {
+    const buttons = [
+      {
+        text: t('detail.map.openInGoogleMaps'),
+        onPress: () => {
+          const url = Platform.select({
+            ios: `comgooglemaps://?q=${latitude},${longitude}`,
+            android: `geo:${latitude},${longitude}?q=${latitude},${longitude}`,
+          });
+          Linking.canOpenURL(url!).then((supported) => {
+            if (supported) {
+              Linking.openURL(url!);
+            } else {
+              // Fallback to browser if Google Maps app not installed
+              Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`);
+            }
+          });
+        },
+      },
+      { text: t('detail.map.cancel'), style: 'cancel' as const },
+    ];
+
+    // Add Apple Maps option on iOS
+    if (Platform.OS === 'ios') {
+      buttons.splice(1, 0, {
+        text: t('detail.map.openInAppleMaps'),
+        onPress: () => {
+          const url = `maps://?q=${latitude},${longitude}`;
+          Linking.openURL(url);
+        },
+      });
+    }
+
+    Alert.alert(
+      t('detail.map.selectMapsApp'),
+      t('detail.map.selectMapsAppMessage'),
+      buttons
+    );
+  }, [t]);
 
   const dayNumbers = useMemo(() => {
     const days = new Set<number>();
@@ -252,7 +287,7 @@ const TripMapViewInner: React.FC<Props> = ({ itineraries, destination }) => {
       {/* Map */}
       <TouchableOpacity
         style={[styles.mapContainer, isDark && styles.mapContainerDark]}
-        onPress={openInGoogleMaps}
+        onPress={() => center && openInMapsApp(center.lat, center.lng)}
         activeOpacity={0.9}
       >
         {mapUrl && !mapLoadError ? (
@@ -308,9 +343,7 @@ const TripMapViewInner: React.FC<Props> = ({ itineraries, destination }) => {
             style={[styles.activityCard, isDark && styles.activityCardDark]}
             onPress={() => {
               if (activity.latitude && activity.longitude) {
-                Linking.openURL(
-                  `https://www.google.com/maps/search/?api=1&query=${activity.latitude},${activity.longitude}`
-                );
+                openInMapsApp(activity.latitude, activity.longitude);
               }
             }}
           >

@@ -270,7 +270,12 @@
       "dayLabel": "{{day}}일차",
       "openInMaps": "Google Maps에서 보기",
       "tapToOpen": "탭하여 지도 열기",
-      "durationMin": "{{min}}분"
+      "durationMin": "{{min}}분",
+      "openInGoogleMaps": "Google Maps에서 열기",
+      "openInAppleMaps": "Apple Maps에서 열기",
+      "cancel": "취소",
+      "selectMapsApp": "지도 앱 선택",
+      "selectMapsAppMessage": "어떤 지도 앱으로 열까요?"
     },
     "budget": {
       "title": "예산 요약",

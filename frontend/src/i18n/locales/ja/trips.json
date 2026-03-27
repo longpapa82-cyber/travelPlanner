@@ -176,7 +176,9 @@
       "deleteTitle": "旅行を削除",
       "deleteMessage": "「{{name}}」を削除しますか？この操作は元に戻せません。",
       "deleteFailed": "削除に失敗しました",
-      "error": "エラー"
+      "error": "エラー",
+      "cancel": "キャンセル",
+      "delete": "削除"
     },
     "sort": {
       "startDate": "出発日順",
@@ -210,14 +212,6 @@
       "deleteTrip": "削除",
       "search": "旅行を検索",
       "searchHint": "目的地で旅行を検索"
-    },
-    "alerts": {
-      "deleteTitle": "旅行を削除",
-      "deleteMessage": "「{{name}}」を削除しますか？この操作は元に戻せません。",
-      "deleteFailed": "削除に失敗しました",
-      "error": "エラー",
-      "cancel": "キャンセル",
-      "delete": "削除"
     },
     "pagination": {
       "showMore": "もっと見る",
@@ -270,7 +264,12 @@
       "dayLabel": "{{day}}日目",
       "openInMaps": "Google Mapsで表示",
       "tapToOpen": "タップして地図を開く",
-      "durationMin": "{{min}}分"
+      "durationMin": "{{min}}分",
+      "openInGoogleMaps": "Buka di Google Maps",
+      "openInAppleMaps": "Buka di Apple Maps",
+      "cancel": "Batal",
+      "selectMapsApp": "Pilih Aplikasi Peta",
+      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
     },
     "budget": {
       "title": "予算概要",

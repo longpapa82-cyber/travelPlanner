@@ -264,7 +264,12 @@
       "dayLabel": "第{{day}}天",
       "openInMaps": "在Google地图中查看",
       "tapToOpen": "点击打开地图",
-      "durationMin": "{{min}}分钟"
+      "durationMin": "{{min}}分钟",
+      "openInGoogleMaps": "Buka di Google Maps",
+      "openInAppleMaps": "Buka di Apple Maps",
+      "cancel": "Batal",
+      "selectMapsApp": "Pilih Aplikasi Peta",
+      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
     },
     "budget": {
       "title": "预算概览",

@@ -264,7 +264,12 @@
       "dayLabel": "Giorno {{day}}",
       "openInMaps": "Visualizza in Google Maps",
       "tapToOpen": "Tocca per aprire la mappa",
-      "durationMin": "{{min}}min"
+      "durationMin": "{{min}}min",
+      "openInGoogleMaps": "Buka di Google Maps",
+      "openInAppleMaps": "Buka di Apple Maps",
+      "cancel": "Batal",
+      "selectMapsApp": "Pilih Aplikasi Peta",
+      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
     },
     "budget": {
       "title": "Riepilogo budget",

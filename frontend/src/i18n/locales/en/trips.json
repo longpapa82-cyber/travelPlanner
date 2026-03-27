@@ -176,7 +176,9 @@
       "deleteTitle": "Delete Trip",
       "deleteMessage": "Delete '{{name}}'? This action cannot be undone.",
       "deleteFailed": "Failed to delete",
-      "error": "Error"
+      "error": "Error",
+      "cancel": "Cancel",
+      "delete": "Delete"
     },
     "sort": {
       "startDate": "By departure",
@@ -210,14 +212,6 @@
       "deleteTrip": "Delete",
       "search": "Search trips",
       "searchHint": "Search trips by destination"
-    },
-    "alerts": {
-      "deleteTitle": "Delete Trip",
-      "deleteMessage": "Delete '{{name}}'? This action cannot be undone.",
-      "deleteFailed": "Failed to delete",
-      "error": "Error",
-      "cancel": "Cancel",
-      "delete": "Delete"
     },
     "pagination": {
       "showMore": "Show more",
@@ -270,7 +264,12 @@
       "dayLabel": "Day {{day}}",
       "openInMaps": "View in Google Maps",
       "tapToOpen": "Tap to open map",
-      "durationMin": "{{min}}min"
+      "durationMin": "{{min}}min",
+      "openInGoogleMaps": "Buka di Google Maps",
+      "openInAppleMaps": "Buka di Apple Maps",
+      "cancel": "Batal",
+      "selectMapsApp": "Pilih Aplikasi Peta",
+      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
     },
     "budget": {
       "title": "Budget Summary",

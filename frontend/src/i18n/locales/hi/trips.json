@@ -264,7 +264,12 @@
       "dayLabel": "दिन {{day}}",
       "openInMaps": "Google Maps में देखें",
       "tapToOpen": "मानचित्र खोलने के लिए टैप करें",
-      "durationMin": "{{min}} मिनट"
+      "durationMin": "{{min}} मिनट",
+      "openInGoogleMaps": "Buka di Google Maps",
+      "openInAppleMaps": "Buka di Apple Maps",
+      "cancel": "Batal",
+      "selectMapsApp": "Pilih Aplikasi Peta",
+      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
     },
     "budget": {
       "title": "बजट सारांश",

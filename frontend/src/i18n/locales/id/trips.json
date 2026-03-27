@@ -264,7 +264,12 @@
       "dayLabel": "Hari {{day}}",
       "openInMaps": "Lihat di Google Maps",
       "tapToOpen": "Ketuk untuk membuka peta",
-      "durationMin": "{{min}} menit"
+      "durationMin": "{{min}} menit",
+      "openInGoogleMaps": "Buka di Google Maps",
+      "openInAppleMaps": "Buka di Apple Maps",
+      "cancel": "Batal",
+      "selectMapsApp": "Pilih Aplikasi Peta",
+      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
     },
     "budget": {
       "title": "Ringkasan Anggaran",
