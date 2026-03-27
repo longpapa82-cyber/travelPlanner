@@ -228,20 +228,25 @@ export class UsersService {
   }
 
   async generateEmailVerificationToken(userId: string): Promise<string> {
+    // Generate random token (sent to user via email)
     const token = crypto.randomBytes(32).toString('hex');
+
+    // Hash token before storing in database (SHA-256 for security)
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
     const expiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
     await this.userRepository
       .createQueryBuilder()
       .update(User)
       .set({
-        emailVerificationToken: token,
+        emailVerificationToken: tokenHash, // Store hashed token
         emailVerificationExpiry: expiry,
       })
       .where('id = :id', { id: userId })
       .execute();
 
-    return token;
+    return token; // Return plain token for email
   }
 
   async verifyEmail(
@@ -265,10 +270,13 @@ export class UsersService {
       | 'tr'
       | 'ms' = 'ko',
   ): Promise<Partial<User>> {
+    // Hash the input token to compare with stored hash
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
     const user = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.emailVerificationToken')
-      .where('user.emailVerificationToken = :token', { token })
+      .where('user.emailVerificationToken = :tokenHash', { tokenHash })
       .getOne();
 
     if (!user) {
@@ -322,21 +330,27 @@ export class UsersService {
       throw new BadRequestException(t('password.reset.socialNotAllowed', lang));
     }
 
+    // Generate random token (sent to user via email)
     const token = crypto.randomBytes(32).toString('hex');
+
+    // Hash token before storing in database (SHA-256 for security)
+    // This prevents token theft if database is compromised
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
     const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
     await this.userRepository
       .createQueryBuilder()
       .update(User)
       .set({
-        passwordResetToken: token,
+        passwordResetToken: tokenHash, // Store hashed token
         passwordResetExpiry: expiry,
         passwordResetAttempts: 0, // Reset counter on new token generation
       })
       .where('id = :id', { id: user.id })
       .execute();
 
-    return { token, user };
+    return { token, user }; // Return plain token for email
   }
 
   async resetPassword(
@@ -361,10 +375,13 @@ export class UsersService {
       | 'tr'
       | 'ms' = 'ko',
   ): Promise<Partial<User>> {
+    // Hash the input token to compare with stored hash
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
     const user = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.passwordResetToken')
-      .where('user.passwordResetToken = :token', { token })
+      .where('user.passwordResetToken = :tokenHash', { tokenHash })
       .getOne();
 
     if (!user) {
