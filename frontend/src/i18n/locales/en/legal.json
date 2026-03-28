@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Is there a fee to use the service?",
-        "a": "MyTravel is free to use with up to 3 AI trip generations per month. Premium subscription ($3.99/month or $29.99/year) unlocks unlimited AI generation, ad-free experience, and enhanced features. Free users will see ads to support service operations."
+        "a": "MyTravel is free to use with up to 3 AI trip generations per month. Premium subscription ($3.99/month or $29.99/year) unlocks 30 AI generations per month, ad-free experience, and enhanced features. Free users will see ads to support service operations."
       },
       "adInfo": {
         "q": "How are ads displayed?",
@@ -129,7 +129,7 @@
       },
       "premium": {
         "q": "What is Premium subscription?",
-        "a": "Premium ($3.99/month or $29.99/year) gives you unlimited AI trip generation, ad-free experience, and enhanced features. Free users can create up to 3 AI trips per month. You can cancel anytime, and your plan will revert to free at the end of the billing period."
+        "a": "Premium ($3.99/month or $29.99/year) gives you 30 AI trip generations per month, ad-free experience, and enhanced features. Free users can create up to 3 AI trips per month. You can cancel anytime, and your plan will revert to free at the end of the billing period."
       },
       "premiumCancel": {
         "q": "How do I cancel Premium?",

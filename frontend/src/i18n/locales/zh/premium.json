@@ -6,7 +6,7 @@
   },
   "premium": {
     "name": "高级版",
-    "description": "无限AI + 无广告",
+    "description": "30 AI/月 + 无广告",
     "price": {
       "monthly": "月度",
       "yearly": "年度",
@@ -16,7 +16,7 @@
     }
   },
   "benefits": {
-    "unlimitedAi": "无限AI旅行规划",
+    "unlimitedAi": "每月30次AI旅行计划",
     "noAds": "无广告",
     "premiumBadge": "高级徽章",
     "tripCreation": "旅行规划创建",
@@ -31,7 +31,7 @@
   },
   "paywall": {
     "title": "升级为高级版",
-    "subtitle": "享受无限AI旅行规划和无广告体验",
+    "subtitle": "享受每月30次AI旅行计划和无广告体验",
     "aiLimitTitle": "AI旅行规划使用量",
     "aiLimitReached": "免费AI旅行规划次数已用完",
     "aiUsed": "次已使用",
@@ -50,7 +50,7 @@
   },
   "promo": {
     "title": "解锁高级版",
-    "subtitle": "无限AI · 无广告 · PRO徽章",
+    "subtitle": "30 AI/月 · 无广告 · PRO徽章",
     "cta": "试用高级版",
     "aiWarning": "本月剩余{{remaining}}次AI旅行",
     "aiLimitHit": "本月免费AI旅行已全部用完",
@@ -58,7 +58,7 @@
   },
   "context": {
     "aiLimit": "免费AI旅行已全部用完",
-    "aiLimitSubtitle": "升级以创建无限AI旅行计划"
+    "aiLimitSubtitle": "升级以创建每月30次AI旅行计划"
   },
   "menu": {
     "subscription": "订阅",

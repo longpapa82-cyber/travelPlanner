@@ -132,7 +132,7 @@ const SubscriptionScreen = () => {
           { feature: t('benefits.tripCreation'), freeLabel: '\u2713', premiumLabel: '\u2713', freeOk: true },
           { feature: t('benefits.social'), freeLabel: '\u2713', premiumLabel: '\u2713', freeOk: true },
           { feature: t('benefits.expenses'), freeLabel: '\u2713', premiumLabel: '\u2713', freeOk: true },
-          { feature: t('benefits.unlimitedAi'), freeLabel: '3/mo', premiumLabel: '\u221E', freeOk: false },
+          { feature: t('benefits.unlimitedAi'), freeLabel: '3/mo', premiumLabel: '30/mo', freeOk: false },
           { feature: t('benefits.noAds'), freeLabel: '\u2717', premiumLabel: '\u2713', freeOk: false },
           { feature: t('benefits.premiumBadge'), freeLabel: '\u2717', premiumLabel: '\u2713', freeOk: false },
         ].map((row, idx) => (

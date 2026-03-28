@@ -6,7 +6,7 @@
   },
   "premium": {
     "name": "Cao cấp",
-    "description": "AI không giới hạn + Không quảng cáo",
+    "description": "30 AI/tháng + Không quảng cáo",
     "price": {
       "monthly": "Hàng tháng",
       "yearly": "Hàng năm",
@@ -16,7 +16,7 @@
     }
   },
   "benefits": {
-    "unlimitedAi": "Lập kế hoạch du lịch AI không giới hạn",
+    "unlimitedAi": "30 kế hoạch du lịch AI mỗi tháng",
     "noAds": "Không quảng cáo",
     "premiumBadge": "Huy hiệu cao cấp",
     "tripCreation": "Tạo kế hoạch du lịch",
@@ -31,7 +31,7 @@
   },
   "paywall": {
     "title": "Nâng cấp lên Cao cấp",
-    "subtitle": "Tận hưởng lập kế hoạch du lịch AI không giới hạn và trải nghiệm không quảng cáo",
+    "subtitle": "Tận hưởng 30 kế hoạch du lịch AI mỗi tháng và trải nghiệm không quảng cáo",
     "aiLimitTitle": "Sử dụng kế hoạch AI",
     "aiLimitReached": "Đã đạt giới hạn kế hoạch AI miễn phí",
     "aiUsed": "đã sử dụng",
@@ -50,7 +50,7 @@
   },
   "promo": {
     "title": "Mở khóa Cao cấp",
-    "subtitle": "AI không giới hạn · Không quảng cáo · Huy hiệu PRO",
+    "subtitle": "30 AI/tháng · Không quảng cáo · Huy hiệu PRO",
     "cta": "Thử Cao cấp",
     "aiWarning": "Còn {{remaining}} chuyến AI tháng này",
     "aiLimitHit": "Bạn đã dùng hết chuyến AI miễn phí tháng này",
@@ -58,7 +58,7 @@
   },
   "context": {
     "aiLimit": "Bạn đã dùng hết chuyến AI miễn phí",
-    "aiLimitSubtitle": "Nâng cấp để tạo kế hoạch AI không giới hạn"
+    "aiLimitSubtitle": "Nâng cấp để tạo 30 kế hoạch du lịch AI mỗi tháng"
   },
   "menu": {
     "subscription": "Đăng ký",

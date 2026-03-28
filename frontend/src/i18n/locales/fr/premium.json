@@ -6,7 +6,7 @@
   },
   "premium": {
     "name": "Premium",
-    "description": "IA illimitée + Sans publicité",
+    "description": "30 AI/mois + Sans publicités",
     "price": {
       "monthly": "Mensuel",
       "yearly": "Annuel",
@@ -16,7 +16,7 @@
     }
   },
   "benefits": {
-    "unlimitedAi": "Planification de voyage IA illimitée",
+    "unlimitedAi": "30 plans de voyage IA par mois",
     "noAds": "Sans publicité",
     "premiumBadge": "Badge premium",
     "tripCreation": "Création de voyage",
@@ -31,7 +31,7 @@
   },
   "paywall": {
     "title": "Passer à Premium",
-    "subtitle": "Profitez d'une planification de voyage IA illimitée et d'une expérience sans publicité",
+    "subtitle": "Profitez de 30 plans de voyage IA par mois et d'une expérience sans publicité",
     "aiLimitTitle": "Utilisation du plan de voyage IA",
     "aiLimitReached": "Limite gratuite de plans de voyage IA atteinte",
     "aiUsed": "utilisés",
@@ -50,7 +50,7 @@
   },
   "promo": {
     "title": "Débloquer Premium",
-    "subtitle": "IA illimitée · Sans pub · Badge PRO",
+    "subtitle": "30 AI/mois · Sans publicités · Badge PRO",
     "cta": "Essayer Premium",
     "aiWarning": "{{remaining}} voyage(s) IA restant(s) ce mois",
     "aiLimitHit": "Vous avez utilisé tous vos voyages IA gratuits ce mois",
@@ -58,7 +58,7 @@
   },
   "context": {
     "aiLimit": "Vous avez utilisé tous vos voyages IA gratuits",
-    "aiLimitSubtitle": "Passez à Premium pour des plans de voyage IA illimités"
+    "aiLimitSubtitle": "Mettez à niveau pour créer 30 plans de voyage IA par mois"
   },
   "menu": {
     "subscription": "Abonnement",

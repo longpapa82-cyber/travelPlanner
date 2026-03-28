@@ -6,7 +6,7 @@
   },
   "premium": {
     "name": "Premium",
-    "description": "Sınırsız AI + Reklamsız",
+    "description": "30 AI/ay + Reklamsız",
     "price": {
       "monthly": "Aylık",
       "yearly": "Yıllık",
@@ -16,7 +16,7 @@
     }
   },
   "benefits": {
-    "unlimitedAi": "Sınırsız AI gezi planlama",
+    "unlimitedAi": "Ayda 30 AI seyahat planı",
     "noAds": "Reklamsız",
     "premiumBadge": "Premium rozeti",
     "tripCreation": "Gezi planlama",
@@ -31,7 +31,7 @@
   },
   "paywall": {
     "title": "Premium'a Yükselt",
-    "subtitle": "Sınırsız AI gezi planlama ve reklamsız deneyimin keyfini çıkarın",
+    "subtitle": "Ayda 30 AI seyahat planı ve reklamsız deneyimin keyfini çıkarın",
     "aiLimitTitle": "AI Gezi Planı Kullanımı",
     "aiLimitReached": "Ücretsiz AI gezi planı limitine ulaşıldı",
     "aiUsed": "kullanıldı",
@@ -50,7 +50,7 @@
   },
   "promo": {
     "title": "Premium'ı Aç",
-    "subtitle": "Sınırsız AI · Reklamsız · PRO Rozeti",
+    "subtitle": "30 AI/ay · Reklamsız · PRO Rozeti",
     "cta": "Premium'ı Dene",
     "aiWarning": "Bu ay {{remaining}} AI gezi hakkı kaldı",
     "aiLimitHit": "Bu ay tüm ücretsiz AI gezi haklarını kullandınız",
@@ -58,7 +58,7 @@
   },
   "context": {
     "aiLimit": "Tüm ücretsiz AI gezi haklarını kullandınız",
-    "aiLimitSubtitle": "Sınırsız AI gezi planları için yükseltin"
+    "aiLimitSubtitle": "Ayda 30 AI seyahat planı oluşturmak için yükseltin"
   },
   "menu": {
     "subscription": "Abonelik",

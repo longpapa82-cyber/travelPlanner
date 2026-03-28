@@ -6,7 +6,7 @@
   },
   "premium": {
     "name": "Premium",
-    "description": "IA Ilimitada + Sem Anúncios",
+    "description": "30 AI/mês + Sem anúncios",
     "price": {
       "monthly": "Mensal",
       "yearly": "Anual",
@@ -16,7 +16,7 @@
     }
   },
   "benefits": {
-    "unlimitedAi": "Planejamento de viagem com IA ilimitado",
+    "unlimitedAi": "30 planos de viagem AI por mês",
     "noAds": "Sem anúncios",
     "premiumBadge": "Selo Premium",
     "tripCreation": "Planejamento de viagem",
@@ -31,7 +31,7 @@
   },
   "paywall": {
     "title": "Upgrade para Premium",
-    "subtitle": "Aproveite o planejamento de viagem com IA ilimitado e uma experiência sem anúncios",
+    "subtitle": "Aproveite 30 planos de viagem AI por mês e uma experiência sem anúncios",
     "aiLimitTitle": "Uso do Plano de Viagem com IA",
     "aiLimitReached": "Limite gratuito de planos de viagem com IA atingido",
     "aiUsed": "usados",
@@ -50,7 +50,7 @@
   },
   "promo": {
     "title": "Desbloquear Premium",
-    "subtitle": "IA Ilimitada · Sem Anúncios · Selo PRO",
+    "subtitle": "30 AI/mês · Sem anúncios · Distintivo PRO",
     "cta": "Experimentar Premium",
     "aiWarning": "{{remaining}} viagem(ns) IA restante(s) este mês",
     "aiLimitHit": "Você usou todas as viagens IA gratuitas este mês",
@@ -58,7 +58,7 @@
   },
   "context": {
     "aiLimit": "Você usou todas as viagens IA gratuitas",
-    "aiLimitSubtitle": "Faça upgrade para criar planos de viagem IA ilimitados"
+    "aiLimitSubtitle": "Atualize para criar 30 planos de viagem AI por mês"
   },
   "menu": {
     "subscription": "Assinatura",

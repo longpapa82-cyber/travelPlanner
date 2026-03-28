@@ -6,7 +6,7 @@
   },
   "premium": {
     "name": "プレミアム",
-    "description": "無制限AI + 広告なし",
+    "description": "月30回 AI + 広告なし",
     "price": {
       "monthly": "月額",
       "yearly": "年額",
@@ -16,7 +16,7 @@
     }
   },
   "benefits": {
-    "unlimitedAi": "無制限のAI旅行プラン",
+    "unlimitedAi": "月30回のAI旅行プラン",
     "noAds": "広告なし",
     "premiumBadge": "プレミアムバッジ",
     "tripCreation": "旅行プラン作成",
@@ -31,7 +31,7 @@
   },
   "paywall": {
     "title": "プレミアムにアップグレード",
-    "subtitle": "無制限のAI旅行プランと広告なしの体験をお楽しみください",
+    "subtitle": "月30回のAI旅行プランと広告なしの体験をお楽しみください",
     "aiLimitTitle": "AI旅行プラン使用量",
     "aiLimitReached": "無料AI旅行プランの上限に達しました",
     "aiUsed": "回使用",
@@ -50,7 +50,7 @@
   },
   "promo": {
     "title": "プレミアムを解除",
-    "subtitle": "無制限AI · 広告なし · PROバッジ",
+    "subtitle": "月30回 AI · 広告なし · PROバッジ",
     "cta": "プレミアムを試す",
     "aiWarning": "今月のAI旅行プラン残り{{remaining}}回",
     "aiLimitHit": "今月の無料AI旅行プランをすべて使い切りました",
@@ -58,7 +58,7 @@
   },
   "context": {
     "aiLimit": "無料AI旅行プランをすべて使い切りました",
-    "aiLimitSubtitle": "アップグレードして無制限のAI旅行プランを作成しましょう"
+    "aiLimitSubtitle": "月30回のAI旅行プランを作成するにはアップグレード"
   },
   "menu": {
     "subscription": "サブスクリプション",

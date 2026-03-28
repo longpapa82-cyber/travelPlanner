@@ -6,7 +6,7 @@
   },
   "premium": {
     "name": "프리미엄",
-    "description": "무제한 AI + 광고 없음",
+    "description": "월 30회 AI + 광고 없음",
     "price": {
       "monthly": "월간",
       "yearly": "연간",
@@ -16,7 +16,7 @@
     }
   },
   "benefits": {
-    "unlimitedAi": "무제한 AI 여행 계획",
+    "unlimitedAi": "월 30회 AI 여행 계획",
     "noAds": "광고 없음",
     "premiumBadge": "프리미엄 뱃지",
     "tripCreation": "여행 계획 생성",
@@ -31,7 +31,7 @@
   },
   "paywall": {
     "title": "프리미엄으로 업그레이드",
-    "subtitle": "무제한 AI 여행 계획과 광고 없는 경험을 즐기세요",
+    "subtitle": "월 30회 AI 여행 계획과 광고 없는 경험을 즐기세요",
     "aiLimitTitle": "AI 여행 계획 사용량",
     "aiLimitReached": "무료 AI 여행 계획 한도에 도달했습니다",
     "aiUsed": "회 사용",
@@ -50,7 +50,7 @@
   },
   "promo": {
     "title": "프리미엄 잠금 해제",
-    "subtitle": "무제한 AI · 광고 없음 · PRO 뱃지",
+    "subtitle": "월 30회 AI · 광고 없음 · PRO 뱃지",
     "cta": "프리미엄 시작",
     "aiWarning": "이번 달 AI 여행 {{remaining}}회 남음",
     "aiLimitHit": "이번 달 무료 AI 여행을 모두 사용했어요",
@@ -58,7 +58,7 @@
   },
   "context": {
     "aiLimit": "무료 AI 여행을 모두 사용했어요",
-    "aiLimitSubtitle": "프리미엄으로 업그레이드하여 무제한 AI 여행 계획을 만드세요"
+    "aiLimitSubtitle": "프리미엄으로 업그레이드하여 월 30회 AI 여행 계획을 만드세요"
   },
   "menu": {
     "subscription": "구독",

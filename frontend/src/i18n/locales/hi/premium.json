@@ -6,7 +6,7 @@
   },
   "premium": {
     "name": "Premium",
-    "description": "असीमित AI + विज्ञापन-मुक्त",
+    "description": "30 AI/महीना + कोई विज्ञापन नहीं",
     "price": {
       "monthly": "मासिक",
       "yearly": "वार्षिक",
@@ -16,7 +16,7 @@
     }
   },
   "benefits": {
-    "unlimitedAi": "असीमित AI यात्रा योजना",
+    "unlimitedAi": "प्रति माह 30 AI यात्रा योजनाएं",
     "noAds": "विज्ञापन-मुक्त",
     "premiumBadge": "Premium बैज",
     "tripCreation": "यात्रा योजना",
@@ -31,7 +31,7 @@
   },
   "paywall": {
     "title": "Premium में अपग्रेड करें",
-    "subtitle": "असीमित AI यात्रा योजना और विज्ञापन-मुक्त अनुभव का आनंद लें",
+    "subtitle": "प्रति माह 30 AI यात्रा योजनाओं और विज्ञापन-मुक्त अनुभव का आनंद लें",
     "aiLimitTitle": "AI यात्रा योजना उपयोग",
     "aiLimitReached": "मुफ्त AI यात्रा योजना सीमा पूरी हुई",
     "aiUsed": "उपयोग किया",
@@ -50,7 +50,7 @@
   },
   "promo": {
     "title": "Premium अनलॉक करें",
-    "subtitle": "असीमित AI · विज्ञापन-मुक्त · PRO बैज",
+    "subtitle": "30 AI/महीना · कोई विज्ञापन नहीं · PRO बैज",
     "cta": "Premium आज़माएं",
     "aiWarning": "इस महीने {{remaining}} AI यात्रा(एं) शेष",
     "aiLimitHit": "इस महीने सभी मुफ्त AI यात्राएं उपयोग हो चुकी हैं",
@@ -58,7 +58,7 @@
   },
   "context": {
     "aiLimit": "सभी मुफ्त AI यात्राएं उपयोग हो चुकी हैं",
-    "aiLimitSubtitle": "असीमित AI यात्रा योजनाएं बनाने के लिए अपग्रेड करें"
+    "aiLimitSubtitle": "प्रति माह 30 AI यात्रा योजनाएं बनाने के लिए अपग्रेड करें"
   },
   "menu": {
     "subscription": "सदस्यता",
