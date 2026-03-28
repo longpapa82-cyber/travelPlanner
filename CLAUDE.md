@@ -49,6 +49,18 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
   - RevenueCat Connected to Google ✅ + Track new purchases ✅
   - 테스트 알림: 성공 ✅ (Last received 2026-03-11, 5:49 UTC)
 
+## Google Places API
+
+- **프로젝트**: tripPlanner (tripplanner-486511)
+- **API 키**: AIzaSyC35ndnoqvz4460uBwaKQ_f8soRVF_aeaE (backend/.env)
+- **활성화 상태**: ✅ 활성화 완료 (2026-03-28)
+- **활성화된 API**: Places API (Legacy)
+- **용도**: 위치 자동완성 (manual activity creation)
+- **월간 한도**: 9,500회 (무료 한도 10,000회 중 95%)
+- **엔드포인트**: `/api/places/autocomplete` (인증 필요)
+- **프론트엔드**: PlacesAutocomplete 컴포넌트 + Fallback UI
+- **비용**: $0 (무료 한도 내)
+
 ## AdMob 설정
 
 - **Android App ID**: `ca-app-pub-7330738950092177~5475101490`

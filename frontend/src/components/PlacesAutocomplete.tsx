@@ -156,6 +156,14 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
           />
         </View>
       )}
+
+      {!apiAvailable && value.length >= 2 && !loading && (
+        <View style={styles.apiUnavailable}>
+          <Text style={styles.apiUnavailableText}>
+            위치 자동완성을 사용할 수 없습니다. 직접 입력해주세요.
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -223,5 +231,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: theme.colors.textSecondary,
     marginTop: 2,
+  },
+  apiUnavailable: {
+    marginTop: 4,
+    padding: theme.spacing.sm,
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.borderRadius.sm,
+  },
+  apiUnavailableText: {
+    fontSize: 12,
+    color: theme.colors.textSecondary,
+    fontStyle: 'italic',
   },
 });
