@@ -71,6 +71,10 @@ export class PlacesService {
         this.logger.warn(
           `Places API status: ${data.status} — ${data.error_message || ''}`,
         );
+        // Return available:false when API is denied or has errors
+        if (data.status === 'REQUEST_DENIED' || data.status === 'OVER_QUERY_LIMIT') {
+          return { predictions: [], available: false };
+        }
         return { predictions: [], available: true };
       }
 

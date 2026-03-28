@@ -105,7 +105,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
     savingRef.current = true;
 
     // Validation
-    if (!formData.time || !formData.title || !formData.location || !formData.description?.trim()) {
+    if (!formData.time || !formData.title || !formData.location || !formData.description || !formData.description.trim()) {
       showToast({ type: 'warning', message: t('activityModal.validationErrorMessage'), position: 'top' });
       savingRef.current = false;
       return;
