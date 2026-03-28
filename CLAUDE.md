@@ -283,8 +283,47 @@ curl https://mytravel-planner.com/api/health
 
 **상태**: 우선순위 낮음, Issue #3 배포 후 진단 예정
 
+### 🔴 Issue #4: 허위 광고 - 프리미엄 "무제한 AI" 표기 (P0, 완료 ✅)
+
+**심각도**: 🔴 CRITICAL - 법적 리스크 / 허위 광고
+
+**문제**:
+- 구독 안내에서 "무제한 AI 생성"이라고 표기하지만 실제로는 **월 30회 제한**
+- 영향 범위: 22개 파일, 17개 언어 모두 잘못된 표기
+- 법적 리스크: 허위 광고, 소비자 보호법 위반 가능, App Store 정책 위반 가능
+
+**감사 결과** (Explore agent):
+- SubscriptionScreen.tsx line 135: 무한대 기호 `∞` 사용
+- 17개 premium.json: "Unlimited AI" 표기 (5개 키 각각)
+- 2개 legal.json: "unlimited AI generation" 표기
+
+**실제 제한** (백엔드 확인):
+- backend/src/trips/trips.service.ts: `AI_TRIPS_PREMIUM_LIMIT=30` (lines 91-164)
+- backend/.env: `AI_TRIPS_PREMIUM_LIMIT=30`
+
+**수정 내역** (20개 파일):
+- ✅ 17개 premium.json: 5개 키 수정 (ko 수동 + 16개 Python 스크립트)
+  - premium.description: "Unlimited AI" → "30 AI/month"
+  - benefits.unlimitedAi: "Unlimited AI trip planning" → "30 AI trips per month"
+  - paywall.subtitle: "unlimited AI..." → "30 AI trips per month..."
+  - promo.subtitle: "Unlimited AI..." → "30 AI/month..."
+  - context.aiLimitSubtitle: "unlimited AI trip plans" → "30 AI trips per month"
+- ✅ SubscriptionScreen.tsx line 135: `\u221E` → `'30/mo'`
+- ✅ legal.json (en, ko): "unlimited AI generation" → "30 AI generations per month"
+- ✅ Git 커밋: `6fc16476`
+- ✅ GitHub 푸시: 완료
+
+**문서**:
+- 📄 감사 보고서: `docs/premium-unlimited-ai-audit.md`
+- 📄 상세 분석: `docs/subscription-ai-limits-analysis.md`
+
+**예상 효과**:
+- ✅ 법적 리스크 제거
+- ✅ App Store 정책 준수
+- ✅ 사용자 신뢰 회복 (정직한 표기)
+
 ---
 
-**최종 업데이트**: 2026-03-27 20:30 KST
-**배포 담당**: SuperClaude (plan-q + feature-troubleshooter + 병렬 실행)
-**현재 상태**: Issue #1 완료, Issue #3 배포 대기 중
+**최종 업데이트**: 2026-03-28 09:30 KST
+**배포 담당**: SuperClaude (Explore + 체계적 수정)
+**현재 상태**: Issue #1 완료, Issue #3 배포 완료, Issue #4 완료
