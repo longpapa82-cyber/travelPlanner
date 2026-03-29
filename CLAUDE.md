@@ -2,6 +2,42 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
+## 📍 현재 상태 (2026-03-29)
+
+- **버전**: versionCode 40 (Alpha 테스트 진행 중)
+- **서버**: https://mytravel-planner.com (Hetzner VPS)
+- **상태**: Alpha 테스트 진행 중 → 프로덕션 출시 대기
+
+### 최근 배포 (versionCode 40, 2026-03-28)
+- **수정 내용**: 수동 일정 추가 버그 수정 (Issue #6)
+- **배포 상태**: ✅ 완료 (Alpha 트랙)
+- **다음 단계**: 1-2일 사용자 테스트 후 프로덕션 출시
+
+### 최근 보안 수정 (2026-03-29)
+- **P0-1**: 비밀번호 리셋 토큰 재사용 방지 (트랜잭션 + 락)
+- **P0-2**: Share Token 만료 검증 추가 (DB 레벨)
+- **배포 상태**: ✅ 백엔드 완료 (프론트엔드는 versionCode 40에 포함)
+
+---
+
+## 🔗 빠른 참조
+
+### 설정 문서
+- [OAuth/API 설정](#google-cloud-console-oauth-20-credentials)
+- [Play Console 설정](#google-play-console-상태)
+- [프로덕션 서버](#프로덕션-서버-인프라-hetzner-vps)
+
+### 개발 가이드
+- [배포 절차](#배포-절차-수동)
+- [버그 수정 이력](#-버그-수정-이력-요약)
+- [보안 수정](#-p0-보안-취약점-수정-2026-03-29-완료-)
+
+### 아카이브
+- 상세 배포 로그: `docs/archive/deployment-history.md`
+- 버그 상세 내역: `docs/archive/bug-history-2026-03.md`
+
+---
+
 ## Google Cloud Console OAuth 2.0 Credentials
 
 | 이름 | 유형 | 클라이언트 ID | 비고 |
@@ -17,7 +53,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 ## Google Play Console 상태
 
-- **비공개 테스트 (Alpha)**: 등록 완료 (v1.0.0, versionCode 37 검토 중)
+- **비공개 테스트 (Alpha)**: 등록 완료 (v1.0.0, versionCode 40 테스트 진행 중, 2026-03-29)
 - **앱 서명**: Google Play에서 서명 중
 - **자동 보호**: 보호 조치 사용
 - **앱 ID**: 4975949156119360543
@@ -90,19 +126,19 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **도메인**: `mytravel-planner.com`
 - **DNS**: Cloudflare (Proxied, A 레코드)
 - **역방향 DNS**: `static.127.201.62.46.clients.your-server.de`
-- **배포 방식**: 수동 SSH 배포 (Git pull + restart)
-- **프로세스 관리**: PM2 또는 systemd (확인 필요)
+- **배포 방식**: 수동 SSH 배포 (rsync + Docker restart)
+- **프로세스 관리**: Docker Compose
 
 ### 배포 절차 (수동)
 ```bash
 # SSH 접속
-ssh user@46.62.201.127
+ssh -i ~/.ssh/travelplanner-oci root@46.62.201.127
 
 # 백엔드 배포
-cd /path/to/travelPlanner/backend
-git pull origin main
-npm install
-pm2 restart travelplanner  # 또는 systemd restart
+cd /root/travelPlanner/backend
+rsync -avz --exclude node_modules src/ /root/travelPlanner/backend/src/
+docker compose build
+docker compose restart
 
 # 배포 확인
 curl https://mytravel-planner.com/api/health
@@ -126,17 +162,19 @@ curl https://mytravel-planner.com/api/health
 | #16 | 2026-03-24 | 🟢 LOW | 브라우저 비밀번호 저장 팝업 제거 | ✅ 완료 | - |
 | 타임존 | 2026-03-22 | 🔴 CRITICAL | 여행 상태 타임존 버그 (서버 시간 → 목적지 시간) | ✅ 완료 | 32 |
 | #10-12 | 2026-03-23~24 | 🔴 CRITICAL | SSE 버퍼링 (Railway 프록시) → Bug #13으로 해결 | ✅ 완료 | 33-35 |
+| P0-1 | 2026-03-29 | 🔴 CRITICAL | 비밀번호 리셋 토큰 재사용 방지 | ✅ 완료 | 40 |
+| P0-2 | 2026-03-29 | 🔴 CRITICAL | Share Token 만료 검증 추가 | ✅ 완료 | 40 |
 
-**상세 내용**: `docs/bug-fixes-history.md` 참조
+**상세 내용**: `docs/archive/bug-history-2026-03.md` 참조
 
 ---
 
-## 📊 QA 결과 요약 (2026-03-12~13)
+## 📊 QA 결과 요약 (2026-03-12~13, 2026-03-29)
 
 | QA 유형 | 결과 | P0 | P1 | P2 | 비고 |
 |---------|------|----|----|----|----|
 | Security-QA | PASS | 0 | 0 | 3 | SQL Injection, XSS, CSRF 등 전항목 PASS |
-| Auto-QA | 95.6% | 0 | 0 | - | 43/45 테스트 통과, AdminGuard 자동 수정 |
+| Auto-QA | 96% | 0 | 0 | - | 70/73 테스트 통과 |
 | Feature-Troubleshoot | PASS | 0 | 0 | - | 모두 기존 구현 확인 |
 | Publish-QA | 100% | 0 | 0 | - | Google Play 정책 10/10 PASS |
 | 회귀 테스트 | PASS | - | - | - | Frontend/Backend TypeScript 0 에러, Jest 597/597 PASS |
@@ -169,173 +207,52 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-## 🚀 Production Deployment Log
+## 🔐 P0 보안 취약점 수정 (2026-03-29, 완료 ✅)
 
-### versionCode 37 배포 (2026-03-27, 진행 중 ⏳)
+### 수정 사항
 
-**배포 목적**: P0/P1 보안 수정 (토큰 해싱)
+**P0-1: 비밀번호 리셋 토큰 재사용 방지** ✅
+- **파일**: `backend/src/users/users.service.ts:356-441`
+- **취약점**: 비밀번호 해싱 중(~100-300ms) 동일한 토큰으로 병렬 요청 성공
+- **수정**:
+  - 데이터베이스 트랜잭션 추가
+  - `SELECT FOR UPDATE` (비관적 쓰기 락)로 user 행 잠금
+  - 토큰 검증 + 비밀번호 업데이트 + 토큰 제거를 원자적(atomic) 처리
+- **효과**: 계정 탈취 위험 완전 제거
 
-#### 보안 수정 사항
-- ✅ **P0**: 비밀번호 리셋 토큰 SHA-256 해싱
-- ✅ **P1**: 이메일 인증 토큰 SHA-256 해싱
-- 파일: `backend/src/users/users.service.ts`
-- 영향: DB 유출 시에도 토큰 재사용 불가
+**P0-2: Share Token 만료 검증 추가** ✅
+- **파일**: `backend/src/trips/trips.service.ts:1061-1088`
+- **취약점**: 만료된 공유 링크가 영구적으로 접근 가능
+- **수정**:
+  - 만료 검증을 SQL WHERE 절로 이동
+  - `(trip.shareExpiresAt IS NULL OR trip.shareExpiresAt > :now)`
+  - 데이터베이스가 만료된 링크를 로드 전에 필터링
+  - 열거 공격 방지 (일반적인 에러 메시지)
+- **효과**: 개인 여행 데이터 노출 위험 제거
 
-#### QA 결과 (plan-q)
-- Security-QA: P0 1건, P1 2건 → 모두 수정 완료
-- Auto-QA: 95.6% (43/45), AdminGuard 자동 수정
-- Feature-Troubleshoot: 모두 기존 구현 확인
-- Publish-QA: 100% Play 정책 준수
+### 배포 상태
 
-#### 배포 이력
+- ✅ 백엔드: P0 보안 수정 배포 완료 (Hetzner VPS, 2026-03-29)
+- ✅ 프론트엔드: versionCode 40 (Alpha 트랙)
 
-**백엔드 (Hetzner VPS)**:
-- Commit: `a2f7da3e`, `0405312d`
-- 배포 상태: ✅ 완료 (2026-03-27 15:xx KST)
-- 배포 확인: `curl https://mytravel-planner.com/api/health` → `{"status":"ok"}`
+### Go/No-Go 판정: GO ✅
 
-**프론트엔드 (EAS Build)**:
-- Build ID: `b62f0d12-c3e1-41fa-adc9-15ab98c77de4`
-- versionCode: **37**
-- AAB: https://expo.dev/artifacts/eas/ouPkMsbob8uueZjxeCT9r3.aab (68 MB)
-- 빌드 상태: ✅ 완료 (2026-03-27 15:44 KST)
+- P0 이슈: 0건 ✅
+- P1 이슈: 0건 ✅
+- Auto-QA: 96% ✅
+- Security-QA: P0/P1 0건 ✅
+- TypeScript: 0 에러 ✅
+- 회귀 테스트: 통과 ✅
 
-**Play Console (Alpha Track)**:
-- 업로드: 2026-03-27 15:45 KST
-- 출시 노트: ko/en/ja 3개 언어
-- 검사 상태: ⏳ Google 자동 검사 진행 중 (최대 14분)
-- 예상 완료: ~15:59 KST
+### 다음 단계
 
-#### 기술 문서
-- 출시 노트: `docs/release-notes-v37.md`
-- 버그 수정 이력: `docs/bug-fixes-history.md`
-- AdSense 진단: `docs/adsense-diagnosis.md`
-- QA 계획: `docs/qa-master-plan.md`
+1. Alpha 트랙 라이선스 테스터 사용자 테스트 (1-2일)
+2. 이슈 없으면 프로덕션 출시:
+   - 1% → 10% → 100% 단계적 출시
 
----
-
-## 후순위 작업 (Backlog)
-
-### URL 노출 최소화 작업 (2026-03-27, 보류)
-
-**배경**: Android 앱 선출시 시 mytravel-planner.com 노출 최소화 필요
-- 웹사이트는 광고/결제 미구현 상태 (무료 서비스)
-- 사용자가 앱 우회하여 웹 접속 가능성 차단 필요
-
-**분석 완료** (`docs/url-exposure-analysis.md`):
-- 총 65개 노출 지점 발견
-- 앱 코드 수정 가능: 10개
-- Play Store 정책상 필수: 51개 (17개 언어 × 3개 URL)
-- OAuth 기술 요구사항: 4개
-
-**권장 조치**:
-1. **P0 - 앱 코드 URL 제거** (2시간)
-   - PaywallModal.tsx: 이용약관/개인정보처리방침 링크 → WebView 전환
-   - HomeScreen.tsx: 공유 메시지 URL → 딥링크로 대체
-2. **P1 - nginx 웹 접근 제어** (1일)
-   - 일반 페이지 접근 차단
-   - Legal 문서 + API + OAuth만 허용
-3. **선택 - API 서브도메인 분리** (4-6시간)
-   - api.mytravel-planner.com 별도 구성
-
-**보류 사유**: Alpha 출시 후 사용자 피드백 기반 우선순위 재조정
-**재검토 시점**: Alpha 테스트 완료 후 (2-3일 후)
+**상세 문서**: `docs/archive/deployment-history.md` 참조
 
 ---
 
-## 긴급 이슈 해결 (2026-03-27)
-
-### 🔴 Issue #3: AI 생성 실패 시 카운터 소진 버그 (P0, 완료 ⏳ 배포 대기)
-
-**증상**:
-- 테스트 계정 (j090723@naver.com): AI 생성 3/3 → 실패 → 0/3으로 모두 소진
-- 실제로는 여행 생성 안됨
-
-**근본 원인** (feature-troubleshooter 분석):
-- `trips.service.ts` 트랜잭션 범위 설계 결함
-- AI 카운터 증가 후 즉시 커밋 → 이후 timezone/weather/AI 작업은 트랜잭션 밖
-- 실패 시 롤백 불가능 (이미 커밋됨)
-
-**수정 내역**:
-- ✅ 트랜잭션 범위 확장: 모든 작업을 트랜잭션 내 포함
-- ✅ 커밋을 메서드 끝으로 이동 (line 352)
-- ✅ 어떤 단계에서든 실패 시 → 전체 롤백 (AI 카운터 포함)
-- ✅ Git 커밋: `c93da3de` (feature-troubleshooter)
-
-**배포 필요**:
-- ⏳ Hetzner VPS 백엔드 배포 (사용자 수동)
-- ⏳ 테스트 계정 AI 카운터 복구 SQL 실행
-- 📄 배포 가이드: `docs/backend-deployment-guide.md`
-
-### 🟢 Issue #1: 지도 탭 Google Maps 브라우저 이탈 (P1, 완료 ✅)
-
-**증상**:
-- 지도 이미지/활동 클릭 → 기기 브라우저에서 Google Maps 페이지 열림
-- 네이티브 앱에서 완전 이탈, UX 저하
-
-**해결 방안** (Wanderlog 벤치마킹):
-- Alert 다이얼로그로 지도 앱 선택 제공
-- Google Maps / Apple Maps 딥링크 사용 (comgooglemaps://, geo:, maps://)
-- 앱 미설치 시 브라우저 폴백
-
-**수정 내역**:
-- ✅ `TripMapView.tsx`: Alert 다이얼로그 + 딥링크 구현
-- ✅ 17개 언어 i18n 번역 추가 (ko, en, ja, zh, es, de, fr, th, vi, pt, ar, id, hi, it, ru, tr, ms)
-- ✅ TypeScript 컴파일: 0 에러
-- ✅ Git 커밋: `eb70fe02`
-- ✅ GitHub 푸시: 완료
-
-**다음 단계**:
-- versionCode 38 EAS 빌드 (선택, 또는 다음 배포 시 포함)
-
-### ⏳ Issue #2: 비밀번호 저장 팝업 (P2, 진단 대기)
-
-**증상**:
-- 프로필 버튼 클릭 → 광고 + "비밀번호를 Google에 저장하시겠습니까?" 팝업
-
-**상태**: 우선순위 낮음, Issue #3 배포 후 진단 예정
-
-### 🔴 Issue #4: 허위 광고 - 프리미엄 "무제한 AI" 표기 (P0, 완료 ✅)
-
-**심각도**: 🔴 CRITICAL - 법적 리스크 / 허위 광고
-
-**문제**:
-- 구독 안내에서 "무제한 AI 생성"이라고 표기하지만 실제로는 **월 30회 제한**
-- 영향 범위: 22개 파일, 17개 언어 모두 잘못된 표기
-- 법적 리스크: 허위 광고, 소비자 보호법 위반 가능, App Store 정책 위반 가능
-
-**감사 결과** (Explore agent):
-- SubscriptionScreen.tsx line 135: 무한대 기호 `∞` 사용
-- 17개 premium.json: "Unlimited AI" 표기 (5개 키 각각)
-- 2개 legal.json: "unlimited AI generation" 표기
-
-**실제 제한** (백엔드 확인):
-- backend/src/trips/trips.service.ts: `AI_TRIPS_PREMIUM_LIMIT=30` (lines 91-164)
-- backend/.env: `AI_TRIPS_PREMIUM_LIMIT=30`
-
-**수정 내역** (20개 파일):
-- ✅ 17개 premium.json: 5개 키 수정 (ko 수동 + 16개 Python 스크립트)
-  - premium.description: "Unlimited AI" → "30 AI/month"
-  - benefits.unlimitedAi: "Unlimited AI trip planning" → "30 AI trips per month"
-  - paywall.subtitle: "unlimited AI..." → "30 AI trips per month..."
-  - promo.subtitle: "Unlimited AI..." → "30 AI/month..."
-  - context.aiLimitSubtitle: "unlimited AI trip plans" → "30 AI trips per month"
-- ✅ SubscriptionScreen.tsx line 135: `\u221E` → `'30/mo'`
-- ✅ legal.json (en, ko): "unlimited AI generation" → "30 AI generations per month"
-- ✅ Git 커밋: `6fc16476`
-- ✅ GitHub 푸시: 완료
-
-**문서**:
-- 📄 감사 보고서: `docs/premium-unlimited-ai-audit.md`
-- 📄 상세 분석: `docs/subscription-ai-limits-analysis.md`
-
-**예상 효과**:
-- ✅ 법적 리스크 제거
-- ✅ App Store 정책 준수
-- ✅ 사용자 신뢰 회복 (정직한 표기)
-
----
-
-**최종 업데이트**: 2026-03-28 09:30 KST
-**배포 담당**: SuperClaude (Explore + 체계적 수정)
-**현재 상태**: Issue #1 완료, Issue #3 배포 완료, Issue #4 완료
+**최종 업데이트**: 2026-03-29 17:30 KST
+**현재 상태**: Alpha 테스트 진행 중 → 프로덕션 출시 대기
