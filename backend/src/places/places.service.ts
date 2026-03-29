@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import { MapboxService } from './mapbox.service';
 
 export interface PlacePrediction {
   placeId: string;
@@ -17,7 +18,10 @@ export class PlacesService {
   private monthlyCount = 0;
   private currentMonth = new Date().getMonth();
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private mapboxService: MapboxService,
+  ) {
     const key = this.configService.get<string>('GOOGLE_MAPS_API_KEY');
     if (key && key !== '' && !key.includes('your-')) {
       this.apiKey = key;
@@ -34,6 +38,25 @@ export class PlacesService {
     sessionToken?: string,
     language = 'en',
   ): Promise<{ predictions: PlacePrediction[]; available: boolean }> {
+    if (!input || input.trim().length < 2) {
+      return { predictions: [], available: true };
+    }
+
+    // ===== PHASE 2: Mapbox Fallback Chain =====
+    // 1. Try Mapbox first (100K/month free)
+    try {
+      const mapboxResult = await this.mapboxService.geocodeForward(input, language);
+      if (mapboxResult.available && mapboxResult.predictions.length > 0) {
+        this.logger.log(`Mapbox success: ${mapboxResult.predictions.length} results`);
+        return mapboxResult;
+      }
+      // Mapbox returned empty or unavailable → fallback to Google
+      this.logger.log('Mapbox empty or unavailable, falling back to Google Places');
+    } catch (error: any) {
+      this.logger.warn(`Mapbox error: ${error.message}, falling back to Google Places`);
+    }
+
+    // ===== 2. Fallback to Google Places =====
     // Reset counter on new month
     const now = new Date();
     if (now.getMonth() !== this.currentMonth) {
@@ -41,13 +64,10 @@ export class PlacesService {
       this.monthlyCount = 0;
     }
 
-    // No API key or exceeded free limit → return empty (frontend falls back to text input)
+    // No API key or exceeded free limit → return unavailable
     if (!this.apiKey || this.monthlyCount >= this.MONTHLY_LIMIT) {
+      this.logger.warn('Google Places unavailable (no key or limit exceeded)');
       return { predictions: [], available: false };
-    }
-
-    if (!input || input.trim().length < 2) {
-      return { predictions: [], available: true };
     }
 
     try {
@@ -87,9 +107,10 @@ export class PlacesService {
         }),
       );
 
+      this.logger.log(`Google Places success: ${predictions.length} results`);
       return { predictions, available: true };
     } catch (error: any) {
-      this.logger.error(`Places autocomplete error: ${error.message}`);
+      this.logger.error(`Google Places error: ${error.message}`);
       return { predictions: [], available: true };
     }
   }
