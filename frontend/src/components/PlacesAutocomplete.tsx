@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   FlatList,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { theme } from '../constants/theme';
 import apiService from '../services/api';
@@ -52,18 +53,29 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   }, []);
 
   const searchPlaces = useCallback(async (input: string) => {
-    if (input.trim().length < 2) {
+    if (input.trim().length < 3) {
       setPredictions([]);
       setShowDropdown(false);
       return;
     }
 
+    const language = getCurrentLanguage();
+
+    // 1. Check local cache first
+    const cached = await getCachedPlaces(input, language);
+    if (cached) {
+      setPredictions(cached);
+      setShowDropdown(cached.length > 0);
+      return;
+    }
+
+    // 2. Fetch from API
     try {
       setLoading(true);
       const result = await apiService.placesAutocomplete(
         input,
         sessionToken.current,
-        getCurrentLanguage(),
+        language,
       );
 
       if (!result.available) {
@@ -75,6 +87,11 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
 
       setPredictions(result.predictions);
       setShowDropdown(result.predictions.length > 0);
+
+      // 3. Save to cache
+      if (result.predictions.length > 0) {
+        await setCachedPlaces(input, language, result.predictions);
+      }
     } catch {
       // Silently fail — user can still type manually
       setPredictions([]);
@@ -95,7 +112,7 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     if (!apiAvailable) return;
 
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => searchPlaces(text), 350);
+    debounceTimer.current = setTimeout(() => searchPlaces(text), 500);
   };
 
   const handleSelect = (place: PlacePrediction) => {
@@ -157,7 +174,7 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
         </View>
       )}
 
-      {!apiAvailable && value.length >= 2 && !loading && (
+      {!apiAvailable && value.length >= 3 && !loading && (
         <View style={styles.apiUnavailable}>
           <Text style={styles.apiUnavailableText}>
             위치 자동완성을 사용할 수 없습니다. 직접 입력해주세요.
@@ -170,6 +187,73 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
 
 function generateSessionToken(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+// Local caching helpers
+const CACHE_KEY = '@places_autocomplete_cache';
+const MAX_CACHE_SIZE = 100;
+const CACHE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+interface CachedPlace {
+  query: string;
+  language: string;
+  predictions: PlacePrediction[];
+  timestamp: number;
+}
+
+async function getCachedPlaces(query: string, language: string): Promise<PlacePrediction[] | null> {
+  try {
+    const cacheStr = await AsyncStorage.getItem(CACHE_KEY);
+    if (!cacheStr) return null;
+
+    const cache: CachedPlace[] = JSON.parse(cacheStr);
+    const normalizedQuery = query.trim().toLowerCase();
+
+    // Find exact match
+    const cached = cache.find(
+      (item) =>
+        item.query === normalizedQuery &&
+        item.language === language &&
+        Date.now() - item.timestamp < CACHE_EXPIRY_MS
+    );
+
+    return cached?.predictions || null;
+  } catch {
+    return null;
+  }
+}
+
+async function setCachedPlaces(
+  query: string,
+  language: string,
+  predictions: PlacePrediction[]
+): Promise<void> {
+  try {
+    const cacheStr = await AsyncStorage.getItem(CACHE_KEY);
+    let cache: CachedPlace[] = cacheStr ? JSON.parse(cacheStr) : [];
+
+    const normalizedQuery = query.trim().toLowerCase();
+
+    // Remove existing entry for this query
+    cache = cache.filter((item) => item.query !== normalizedQuery || item.language !== language);
+
+    // Add new entry at the front (LRU)
+    cache.unshift({
+      query: normalizedQuery,
+      language,
+      predictions,
+      timestamp: Date.now(),
+    });
+
+    // Keep only MAX_CACHE_SIZE items
+    if (cache.length > MAX_CACHE_SIZE) {
+      cache = cache.slice(0, MAX_CACHE_SIZE);
+    }
+
+    await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+  } catch {
+    // Silently fail — caching is optional
+  }
 }
 
 const styles = StyleSheet.create({
