@@ -228,6 +228,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
               <PlacesAutocomplete
                 value={formData.location || ''}
                 onChangeText={(text) => setFormData({ ...formData, location: text })}
+                onSelect={(place) => setFormData({ ...formData, location: place.description })}
                 placeholder={t('activityModal.locationPlaceholder')}
               />
             </View>
@@ -501,6 +502,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     padding: theme.spacing.lg,
+    paddingBottom: theme.spacing.xl, // Extra padding for Android navigation bar
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
     gap: theme.spacing.md,
