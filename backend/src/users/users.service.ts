@@ -378,46 +378,66 @@ export class UsersService {
     // Hash the input token to compare with stored hash
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-    const user = await this.userRepository
-      .createQueryBuilder('user')
-      .addSelect('user.passwordResetToken')
-      .where('user.passwordResetToken = :tokenHash', { tokenHash })
-      .getOne();
+    // Use transaction to prevent race condition token reuse
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    if (!user) {
-      throw new BadRequestException(t('password.reset.invalid', lang));
-    }
+    try {
+      // SELECT FOR UPDATE locks the user row, preventing parallel token reuse
+      const user = await queryRunner.manager
+        .createQueryBuilder(User, 'user')
+        .setLock('pessimistic_write')
+        .addSelect('user.passwordResetToken')
+        .addSelect('user.passwordResetAttempts')
+        .where('user.passwordResetToken = :tokenHash', { tokenHash })
+        .getOne();
 
-    if (user.passwordResetExpiry && user.passwordResetExpiry < new Date()) {
-      throw new BadRequestException(t('password.reset.expired', lang));
-    }
+      if (!user) {
+        await queryRunner.rollbackTransaction();
+        throw new BadRequestException(t('password.reset.invalid', lang));
+      }
 
-    // Security: Limit password reset attempts to 5 per token
-    // This prevents brute-force attacks even with a valid token
-    if (user.passwordResetAttempts >= 5) {
-      // Invalidate token after too many attempts
-      await this.userRepository.update(user.id, {
+      if (user.passwordResetExpiry && user.passwordResetExpiry < new Date()) {
+        await queryRunner.rollbackTransaction();
+        throw new BadRequestException(t('password.reset.expired', lang));
+      }
+
+      // Security: Limit password reset attempts to 5 per token
+      // This prevents brute-force attacks even with a valid token
+      if (user.passwordResetAttempts >= 5) {
+        // Invalidate token after too many attempts
+        await queryRunner.manager.update(User, user.id, {
+          passwordResetToken: undefined,
+          passwordResetExpiry: undefined,
+          passwordResetAttempts: 0,
+        });
+        await queryRunner.commitTransaction();
+        throw new BadRequestException(
+          t('password.reset.too_many_attempts', lang),
+        );
+      }
+
+      // Hash new password (CPU-intensive, but within transaction lock)
+      const newHash = await bcrypt.hash(newPassword, 12);
+
+      // Atomically update password and invalidate token
+      await queryRunner.manager.update(User, user.id, {
+        passwordHash: newHash,
         passwordResetToken: undefined,
         passwordResetExpiry: undefined,
-        passwordResetAttempts: 0,
+        passwordResetAttempts: 0, // Reset counter on success
       });
-      throw new BadRequestException(t('password.reset.too_many_attempts', lang));
+
+      await queryRunner.commitTransaction();
+
+      return this.findProfileById(user.id);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
     }
-
-    // Increment attempt counter
-    await this.userRepository.update(user.id, {
-      passwordResetAttempts: user.passwordResetAttempts + 1,
-    });
-
-    const newHash = await bcrypt.hash(newPassword, 12);
-    await this.userRepository.update(user.id, {
-      passwordHash: newHash,
-      passwordResetToken: undefined,
-      passwordResetExpiry: undefined,
-      passwordResetAttempts: 0, // Reset counter on success
-    });
-
-    return this.findProfileById(user.id);
   }
 
   // ============ Travel Preferences ============
