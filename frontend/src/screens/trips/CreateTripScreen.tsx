@@ -110,6 +110,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [aiConsentGiven, setAiConsentGiven] = useState(false);
+  const [isShowingRewardedAd, setIsShowingRewardedAd] = useState(false);
 
   // Check if AI consent was previously given
   useEffect(() => {
@@ -225,7 +226,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleCreateTrip = async () => {
     // ✅ FIX: Prevent duplicate requests from double-tap
-    if (isLoading) {
+    if (isLoading || isCreatingRef.current) {
       return; // Block concurrent calls
     }
 
@@ -276,6 +277,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const timeoutWarningRef = useRef<NodeJS.Timeout | null>(null);
+  const isCreatingRef = useRef(false); // Guard: Prevent duplicate creation from rapid clicks
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const handleCancelCreation = useCallback(() => {
@@ -283,15 +285,18 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     setShowCancelConfirm(false);
     setIsLoading(false);
     setGenerationStep(0);
+    isCreatingRef.current = false; // Reset guard on cancel
     if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
   }, []);
 
   const doCreateTrip = async () => {
     // Double-check loading state to prevent race conditions
-    if (isLoading) {
+    if (isLoading || isCreatingRef.current) {
       return;
     }
 
+    // Set guards immediately
+    isCreatingRef.current = true;
     setIsLoading(true);
     setGenerationStep(0);
     progressAnim.setValue(0);
@@ -524,6 +529,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       // Only reset loading if we're still in loading state
       // (not already reset by success or error handlers)
       setIsLoading(false);
+      isCreatingRef.current = false; // Reset guard
     }
   };
 
@@ -820,16 +826,37 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
             )}
 
             {/* Rewarded Ad — unlock extra insights */}
-            {destination.trim().length >= 2 && isRewardedLoaded && !insightsUnlocked && (
+            {destination.trim().length >= 2 && !insightsUnlocked && (
               <TouchableOpacity
                 style={[
                   styles.rewardedAdButton,
                   {
                     backgroundColor: isDark ? `${colors.warning.main}20` : `${colors.warning.main}10`,
                     borderColor: colors.warning.main,
+                    opacity: !isRewardedLoaded || isShowingRewardedAd ? 0.5 : 1,
                   },
                 ]}
-                onPress={() => showRewarded(() => setInsightsUnlocked(true))}
+                onPress={async () => {
+                  if (isShowingRewardedAd) return;
+                  if (!isRewardedLoaded) {
+                    showToast({
+                      type: 'warning',
+                      message: t('create.rewardedAd.notAvailable', {
+                        defaultValue: '광고를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.',
+                      }),
+                      position: 'top',
+                      duration: 3000,
+                    });
+                    return;
+                  }
+                  try {
+                    setIsShowingRewardedAd(true);
+                    await showRewarded(() => setInsightsUnlocked(true));
+                  } finally {
+                    setIsShowingRewardedAd(false);
+                  }
+                }}
+                disabled={isShowingRewardedAd}
                 accessibilityRole="button"
                 accessibilityLabel={t('create.rewardedAd.label')}
               >
@@ -837,7 +864,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 <Text style={[styles.rewardedAdText, { color: theme.colors.text }]}>
                   {t('create.rewardedAd.label')}
                 </Text>
-                <Icon name="play-circle-outline" size={18} color={colors.warning.main} />
+                {isShowingRewardedAd ? (
+                  <ActivityIndicator size="small" color={colors.warning.main} />
+                ) : (
+                  <Icon name="play-circle-outline" size={18} color={colors.warning.main} />
+                )}
               </TouchableOpacity>
             )}
           </View>

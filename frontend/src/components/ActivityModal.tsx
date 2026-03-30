@@ -12,6 +12,7 @@ import {
   Pressable,
   useWindowDimensions,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
@@ -63,6 +64,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 }) => {
   const { t } = useTranslation('components');
   const { showToast } = useToast();
+  const insets = useSafeAreaInsets(); // Get safe area insets for Android/iOS
   const activityTypes = ACTIVITY_TYPES_META.map(item => ({
     ...item,
     label: t(item.key),
@@ -227,8 +229,11 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
               </Text>
               <PlacesAutocomplete
                 value={formData.location || ''}
-                onChangeText={(text) => setFormData({ ...formData, location: text })}
-                onSelect={(place) => setFormData({ ...formData, location: place.description })}
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, location: text }))}
+                onSelect={(place) => {
+                  // Use functional update to avoid stale closure
+                  setFormData((prev) => ({ ...prev, location: place.description }));
+                }}
                 placeholder={t('activityModal.locationPlaceholder')}
               />
             </View>
@@ -337,7 +342,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
           </ScrollView>
 
           {/* Footer Buttons */}
-          <View style={styles.footer}>
+          <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
             <TouchableOpacity
               style={[styles.button, styles.cancelButton]}
               onPress={onClose}
@@ -502,7 +507,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     padding: theme.spacing.lg,
-    paddingBottom: theme.spacing.xl, // Extra padding for Android navigation bar
+    // paddingBottom is set dynamically using insets.bottom
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
     gap: theme.spacing.md,

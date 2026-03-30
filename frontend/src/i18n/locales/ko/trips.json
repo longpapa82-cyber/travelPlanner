@@ -44,9 +44,9 @@
     "dates": {
       "title": "언제 떠나시나요?",
       "start": "출발일",
-      "end": "도착일",
+      "end": "종료일",
       "selectStart": "출발일을 선택하세요",
-      "selectEnd": "도착일을 선택하세요"
+      "selectEnd": "종료일을 선택하세요"
     },
     "notes": {
       "title": "특별한 계획이 있나요?",
