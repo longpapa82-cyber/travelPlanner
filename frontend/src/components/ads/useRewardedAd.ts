@@ -8,5 +8,6 @@ export function useRewardedAd() {
     isLoaded: false,
     show: async (_onReward?: () => void) => {},
     load: () => {},
+    reload: () => {},
   };
 }

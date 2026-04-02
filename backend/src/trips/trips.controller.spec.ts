@@ -9,6 +9,7 @@ import request from 'supertest';
 import { TripsController } from './trips.controller';
 import { TripsService } from './trips.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AdminExemptThrottlerGuard } from '../common/guards/admin-exempt-throttler.guard';
 import { ImageService } from '../common/image.service';
 import { TripStatus } from './entities/trip.entity';
 
@@ -127,6 +128,10 @@ describe('TripsController (Integration)', () => {
           request.user = mockUser;
           return true;
         }),
+      })
+      .overrideGuard(AdminExemptThrottlerGuard)
+      .useValue({
+        canActivate: jest.fn(() => true),
       })
       .compile();
 

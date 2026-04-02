@@ -30,7 +30,12 @@ if (!REWARDED_UNIT_ID && !__DEV__) {
   console.error('[AdMob] Rewarded ad unit ID not configured. Check app.config.js admob settings.');
 }
 
-export function useRewardedAd() {
+export function useRewardedAd(): {
+  isLoaded: boolean;
+  show: (onReward?: () => void) => Promise<void>;
+  load: () => void;
+  reload: () => void;
+} {
   const [isLoaded, setIsLoaded] = useState(false);
   const adRef = useRef<RewardedAd | null>(null);
   const rewardCallbackRef = useRef<(() => void) | null>(null);

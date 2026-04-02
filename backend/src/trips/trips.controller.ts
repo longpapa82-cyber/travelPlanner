@@ -41,6 +41,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ImageService } from '../common/image.service';
 import { validateImageMagicBytes } from '../common/utils/file-validation';
+import { AdminExemptThrottlerGuard } from '../common/guards/admin-exempt-throttler.guard';
 
 /** Escape a string value for safe inclusion in iCalendar output (RFC 5545 §3.3.11). */
 function escapeIcalValue(value: string): string {
@@ -61,6 +62,7 @@ export class TripsController {
   ) {}
 
   @Post()
+  @UseGuards(AdminExemptThrottlerGuard)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
   create(
     @CurrentUser('userId') userId: string,
@@ -79,6 +81,7 @@ export class TripsController {
    * 클라이언트는 job-status 엔드포인트를 1초마다 폴링하여 진행 상태 확인.
    */
   @Post('create-async')
+  @UseGuards(AdminExemptThrottlerGuard)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
   async createAsync(
     @CurrentUser('userId') userId: string,

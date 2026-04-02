@@ -16,11 +16,13 @@ import { colors } from '../constants/theme';
 
 interface DestinationInsightsProps {
   destination: string;
+  showEnhancedInsights?: boolean;
   onRecommendationsLoaded?: (recommendations: DestinationRecommendations) => void;
 }
 
 export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
   destination,
+  showEnhancedInsights = false,
   onRecommendationsLoaded,
 }) => {
   const { t } = useTranslation('components');
@@ -197,15 +199,21 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
               color={theme.colors.textSecondary}
             />
             <Text style={styles.activitiesTitle}>
-              {t('destinationInsights.topActivities', { count: Math.min(5, recommendations.topActivities.length) })}
+              {t('destinationInsights.topActivities', { count: Math.min(showEnhancedInsights ? 10 : 5, recommendations.topActivities.length) })}
             </Text>
+            {showEnhancedInsights && (
+              <View style={styles.premiumBadge}>
+                <Ionicons name="star" size={12} color={colors.warning.main} />
+                <Text style={styles.premiumBadgeText}>Enhanced</Text>
+              </View>
+            )}
           </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.activitiesScroll}
           >
-            {recommendations.topActivities.slice(0, 5).map((activity, index) => (
+            {recommendations.topActivities.slice(0, showEnhancedInsights ? 10 : 5).map((activity, index) => (
               <View key={index} style={styles.activityChip}>
                 <Text style={styles.activityText}>
                   {index + 1}. {activity}
@@ -347,6 +355,20 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     fontWeight: '600',
     color: theme.colors.textSecondary,
     flex: 1,
+  },
+  premiumBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    backgroundColor: isDark ? `${colors.warning.main}20` : `${colors.warning.main}10`,
+  },
+  premiumBadgeText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: colors.warning.main,
   },
   activitiesScroll: {
     gap: 8,

@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { Platform } from 'react-native';
 import { Toast } from './Toast';
 import { ToastProps, ToastContextValue } from './Toast.types';
+
+// Web: use createPortal to render Toast at document root
+const createPortal = Platform.OS === 'web' && typeof document !== 'undefined'
+  ? require('react-dom').createPortal
+  : undefined;
 
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 
@@ -35,10 +41,25 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
     hideToast,
   };
 
+  // Render Toast via portal on web to escape modal stacking contexts
+  const renderToast = () => {
+    if (!toastProps) return null;
+
+    const toastElement = <Toast {...toastProps} visible={visible} onHide={hideToast} />;
+
+    // Web: Use portal to render at document.body
+    if (createPortal && typeof document !== 'undefined') {
+      return createPortal(toastElement, document.body);
+    }
+
+    // Native: Render normally
+    return toastElement;
+  };
+
   return (
     <ToastContext.Provider value={value}>
       {children}
-      {toastProps && <Toast {...toastProps} visible={visible} onHide={hideToast} />}
+      {renderToast()}
     </ToastContext.Provider>
   );
 };
