@@ -1,0 +1,255 @@
+## Release Notes - versionCode 44 (P0 Hotfix)
+
+### 한국어 (ko-KR)
+제목: 핵심 버그 수정 및 안정성 개선
+
+6개의 주요 버그를 수정하여 앱 안정성과 사용자 경험을 대폭 개선했습니다.
+
+주요 수정사항:
+• 여행 생성 시 중복 생성 문제 해결
+• 위치 검색 자동완성 선택 오류 수정
+• 날짜 선택 라벨 정확도 개선
+• Android 화면 하단 버튼 표시 문제 해결
+• 광고 시청 기능 사용성 개선
+
+더 나은 여행 계획을 위해 지속적으로 개선하고 있습니다.
+
+---
+
+### English (en-US)
+Title: Critical Bug Fixes & Stability Improvements
+
+Fixed 6 major bugs to significantly improve app stability and user experience.
+
+Key fixes:
+• Resolved duplicate trip creation issue
+• Fixed location autocomplete selection error
+• Improved date label accuracy
+• Fixed button visibility on Android navigation bar
+• Enhanced ad reward feature usability
+
+We're continuously improving for better travel planning.
+
+---
+
+### 日本語 (ja-JP)
+タイトル: 重要なバグ修正と安定性の向上
+
+アプリの安定性とユーザー体験を大幅に改善するため、6つの主要なバグを修正しました。
+
+主な修正内容:
+• 旅行作成時の重複作成問題を解決
+• 場所検索の自動補完選択エラーを修正
+• 日付ラベルの正確性を改善
+• Androidナビゲーションバーのボタン表示問題を解決
+• 広告視聴機能の使いやすさを向上
+
+より良い旅行計画のために継続的に改善しています。
+
+---
+
+### 简体中文 (zh-CN)
+标题: 关键错误修复和稳定性改进
+
+修复了6个主要错误，大幅提升应用稳定性和用户体验。
+
+主要修复:
+• 解决了旅行创建时的重复创建问题
+• 修复了位置搜索自动补全选择错误
+• 改进了日期标签准确性
+• 解决了Android导航栏按钮显示问题
+• 增强了广告奖励功能可用性
+
+我们持续改进，为您提供更好的旅行规划体验。
+
+---
+
+### Español (es)
+Título: Correcciones Críticas y Mejoras de Estabilidad
+
+Se corrigieron 6 errores importantes para mejorar significativamente la estabilidad de la aplicación y la experiencia del usuario.
+
+Correcciones principales:
+• Se resolvió el problema de creación duplicada de viajes
+• Se corrigió el error de selección de autocompletado de ubicación
+• Se mejoró la precisión de las etiquetas de fecha
+• Se solucionó el problema de visibilidad de botones en la barra de navegación de Android
+• Se mejoró la usabilidad de la función de recompensa por anuncios
+
+Mejoramos continuamente para una mejor planificación de viajes.
+
+---
+
+### Français (fr)
+Titre: Corrections Critiques et Améliorations de Stabilité
+
+Correction de 6 bugs majeurs pour améliorer significativement la stabilité de l'application et l'expérience utilisateur.
+
+Principales corrections:
+• Résolution du problème de création de voyages en double
+• Correction de l'erreur de sélection d'autocomplétion de lieu
+• Amélioration de la précision des étiquettes de date
+• Résolution du problème de visibilité des boutons sur la barre de navigation Android
+• Amélioration de l'utilisabilité de la fonction de récompense publicitaire
+
+Nous améliorons continuellement pour une meilleure planification de voyage.
+
+---
+
+### Deutsch (de)
+Titel: Kritische Fehlerbehebungen & Stabilitätsverbesserungen
+
+6 Hauptfehler behoben, um die App-Stabilität und Benutzererfahrung erheblich zu verbessern.
+
+Hauptkorrekturen:
+• Problem mit doppelter Reiseerstellung behoben
+• Fehler bei der Auswahl der Standort-Autovervollständigung behoben
+• Genauigkeit der Datumsbeschriftungen verbessert
+• Problem mit der Schaltflächensichtbarkeit in der Android-Navigationsleiste behoben
+• Benutzerfreundlichkeit der Werbebelohnungsfunktion verbessert
+
+Wir verbessern kontinuierlich für eine bessere Reiseplanung.
+
+---
+
+### Português (pt)
+Título: Correções Críticas e Melhorias de Estabilidade
+
+Corrigidos 6 bugs principais para melhorar significativamente a estabilidade do aplicativo e a experiência do usuário.
+
+Principais correções:
+• Resolvido problema de criação duplicada de viagens
+• Corrigido erro de seleção de preenchimento automático de localização
+• Melhorada precisão dos rótulos de data
+• Resolvido problema de visibilidade de botões na barra de navegação do Android
+• Aprimorada usabilidade do recurso de recompensa por anúncios
+
+Melhoramos continuamente para um melhor planejamento de viagens.
+
+---
+
+### Italiano (it)
+Titolo: Correzioni Critiche e Miglioramenti di Stabilità
+
+Corretti 6 bug principali per migliorare significativamente la stabilità dell'app e l'esperienza utente.
+
+Correzioni principali:
+• Risolto problema di creazione duplicata di viaggi
+• Corretto errore di selezione autocompletamento posizione
+• Migliorata precisione delle etichette data
+• Risolto problema di visibilità pulsanti sulla barra di navigazione Android
+• Migliorata usabilità della funzione premio pubblicità
+
+Miglioriamo continuamente per una migliore pianificazione del viaggio.
+
+---
+
+### Русский (ru)
+Заголовок: Критические исправления и улучшение стабильности
+
+Исправлено 6 основных ошибок для значительного улучшения стабильности приложения и пользовательского опыта.
+
+Основные исправления:
+• Решена проблема дублирования создания поездок
+• Исправлена ошибка выбора автозаполнения местоположения
+• Улучшена точность меток дат
+• Решена проблема видимости кнопок на панели навигации Android
+• Улучшена удобство использования функции рекламного вознаграждения
+
+Мы постоянно совершенствуемся для лучшего планирования путешествий.
+
+---
+
+### العربية (ar)
+العنوان: إصلاحات حرجة وتحسينات الاستقرار
+
+تم إصلاح 6 أخطاء رئيسية لتحسين استقرار التطبيق وتجربة المستخدم بشكل كبير.
+
+الإصلاحات الرئيسية:
+• حل مشكلة إنشاء الرحلات المكررة
+• إصلاح خطأ اختيار الإكمال التلقائي للموقع
+• تحسين دقة تسميات التاريخ
+• حل مشكلة رؤية الأزرار على شريط التنقل في Android
+• تحسين سهولة استخدام ميزة مكافأة الإعلانات
+
+نحن نتحسن باستمرار من أجل تخطيط أفضل للسفر.
+
+---
+
+### ไทย (th)
+หัวข้อ: การแก้ไขบั๊กสำคัญและการปรับปรุงเสถียรภาพ
+
+แก้ไขบั๊กหลัก 6 รายการเพื่อปรับปรุงเสถียรภาพของแอปและประสบการณ์ผู้ใช้อย่างมีนัยสำคัญ
+
+การแก้ไขหลัก:
+• แก้ไขปัญหาการสร้างทริปซ้ำ
+• แก้ไขข้อผิดพลาดการเลือกการเติมข้อความอัตโนมัติของสถานที่
+• ปรับปรุงความถูกต้องของป้ายวันที่
+• แก้ไขปัญหาการมองเห็นปุ่มบนแถบนำทางของ Android
+• ปรับปรุงความสามารถในการใช้งานคุณสมบัติรางวัลโฆษณา
+
+เรากำลังปรับปรุงอย่างต่อเนื่องเพื่อการวางแผนการเดินทางที่ดีขึ้น
+
+---
+
+### Tiếng Việt (vi)
+Tiêu đề: Sửa Lỗi Nghiêm Trọng & Cải Thiện Độ Ổn Định
+
+Đã sửa 6 lỗi chính để cải thiện đáng kể độ ổn định của ứng dụng và trải nghiệm người dùng.
+
+Các sửa chữa chính:
+• Giải quyết vấn đề tạo chuyến đi trùng lặp
+• Sửa lỗi chọn tự động hoàn thành vị trí
+• Cải thiện độ chính xác của nhãn ngày
+• Giải quyết vấn đề hiển thị nút trên thanh điều hướng Android
+• Nâng cao khả năng sử dụng tính năng phần thưởng quảng cáo
+
+Chúng tôi liên tục cải thiện để lập kế hoạch du lịch tốt hơn.
+
+---
+
+### हिन्दी (hi)
+शीर्षक: महत्वपूर्ण बग फिक्स और स्थिरता सुधार
+
+ऐप की स्थिरता और उपयोगकर्ता अनुभव में महत्वपूर्ण सुधार के लिए 6 प्रमुख बग ठीक किए गए।
+
+मुख्य सुधार:
+• डुप्लिकेट ट्रिप निर्माण समस्या हल की गई
+• स्थान ऑटोकम्पलीट चयन त्रुटि ठीक की गई
+• तारीख लेबल सटीकता में सुधार
+• Android नेविगेशन बार पर बटन दृश्यता समस्या हल की गई
+• विज्ञापन पुरस्कार सुविधा उपयोगिता में सुधार
+
+बेहतर यात्रा योजना के लिए हम लगातार सुधार कर रहे हैं।
+
+---
+
+### Bahasa Indonesia (id)
+Judul: Perbaikan Bug Kritis & Peningkatan Stabilitas
+
+Memperbaiki 6 bug utama untuk meningkatkan stabilitas aplikasi dan pengalaman pengguna secara signifikan.
+
+Perbaikan utama:
+• Menyelesaikan masalah pembuatan perjalanan duplikat
+• Memperbaiki kesalahan pemilihan pelengkapan otomatis lokasi
+• Meningkatkan akurasi label tanggal
+• Menyelesaikan masalah visibilitas tombol di bilah navigasi Android
+• Meningkatkan kegunaan fitur hadiah iklan
+
+Kami terus meningkatkan untuk perencanaan perjalanan yang lebih baik.
+
+---
+
+### Bahasa Melayu (ms)
+Tajuk: Pembetulan Pepijat Kritikal & Penambahbaikan Kestabilan
+
+Membetulkan 6 pepijat utama untuk meningkatkan kestabilan aplikasi dan pengalaman pengguna dengan ketara.
+
+Pembetulan utama:
+• Menyelesaikan masalah penciptaan perjalanan berganda
+• Membetulkan ralat pemilihan autolengkap lokasi
+• Meningkatkan ketepatan label tarikh
+• Menyelesaikan masalah keterlihatan butang pada bar navigasi Android
+• Meningkatkan kebolehgunaan ciri ganjaran iklan
+
+Kami terus menambah baik untuk perancangan perjalanan yang lebih baik.

@@ -25,13 +25,23 @@ const REWARDED_UNIT_ID = __DEV__
     ? extra.admob?.rewardedAdUnitId?.ios || ''
     : extra.admob?.rewardedAdUnitId?.android || '';
 
+// Log configuration issues in production
+if (!REWARDED_UNIT_ID && !__DEV__) {
+  console.error('[AdMob] Rewarded ad unit ID not configured. Check app.config.js admob settings.');
+}
+
 export function useRewardedAd() {
   const [isLoaded, setIsLoaded] = useState(false);
   const adRef = useRef<RewardedAd | null>(null);
   const rewardCallbackRef = useRef<(() => void) | null>(null);
+  const retryCountRef = useRef(0);
+  const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const load = useCallback(() => {
-    if (!REWARDED_UNIT_ID) return;
+    if (!REWARDED_UNIT_ID) {
+      console.warn('[AdMob] No rewarded ad unit ID configured');
+      return;
+    }
 
     const rewarded = RewardedAd.createForAdRequest(REWARDED_UNIT_ID, {
       requestNonPersonalizedAdsOnly: true,
@@ -41,6 +51,7 @@ export function useRewardedAd() {
       RewardedAdEventType.LOADED,
       () => {
         setIsLoaded(true);
+        retryCountRef.current = 0; // Reset retry count on successful load
       },
     );
 
@@ -57,8 +68,21 @@ export function useRewardedAd() {
       rewarded.load();
     });
 
-    const errorUnsub = rewarded.addAdEventListener(AdEventType.ERROR, () => {
+    const errorUnsub = rewarded.addAdEventListener(AdEventType.ERROR, (error) => {
+      console.warn('[AdMob] Rewarded ad error:', error);
       setIsLoaded(false);
+
+      // Retry loading with exponential backoff (max 3 retries)
+      if (retryCountRef.current < 3) {
+        const delay = Math.min(1000 * Math.pow(2, retryCountRef.current), 8000);
+        retryCountRef.current++;
+
+        if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current);
+        retryTimeoutRef.current = setTimeout(() => {
+          console.log(`[AdMob] Retrying rewarded ad load (attempt ${retryCountRef.current})`);
+          rewarded.load();
+        }, delay);
+      }
     });
 
     adRef.current = rewarded;
@@ -69,6 +93,7 @@ export function useRewardedAd() {
       earnedUnsub();
       closedUnsub();
       errorUnsub();
+      if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current);
     };
   }, []);
 
@@ -89,5 +114,13 @@ export function useRewardedAd() {
     [isLoaded],
   );
 
-  return { isLoaded, show, load };
+  // Manual reload function for production retry
+  const reload = useCallback(() => {
+    retryCountRef.current = 0; // Reset retry counter
+    if (adRef.current) {
+      adRef.current.load();
+    }
+  }, []);
+
+  return { isLoaded, show, load, reload };
 }

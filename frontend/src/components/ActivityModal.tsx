@@ -31,6 +31,7 @@ interface Activity {
   title: string;
   description: string;
   location: string;
+  placeId?: string; // Add placeId for map pin functionality
   estimatedDuration?: number;
   estimatedCost?: number;
   actualCost?: number;
@@ -229,10 +230,15 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
               </Text>
               <PlacesAutocomplete
                 value={formData.location || ''}
-                onChangeText={(text) => setFormData((prev) => ({ ...prev, location: text }))}
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, location: text, placeId: undefined }))}
                 onSelect={(place) => {
-                  // Use functional update to avoid stale closure
-                  setFormData((prev) => ({ ...prev, location: place.description }));
+                  // CRITICAL FIX: Update both location text AND placeId atomically
+                  // This ensures the UI shows the selected text and we have the placeId for maps
+                  setFormData((prev) => ({
+                    ...prev,
+                    location: place.description,
+                    placeId: place.placeId
+                  }));
                 }}
                 placeholder={t('activityModal.locationPlaceholder')}
               />
@@ -387,7 +393,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
           display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'center',
-          zIndex: 9998,
+          zIndex: 10000,
         }}
         onClick={(e: any) => { if (e.target === e.currentTarget) onClose(); }}
       >

@@ -117,11 +117,18 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
 
   const handleSelect = (place: PlacePrediction) => {
     skipNextSearch.current = true;
-    onChangeText(place.description);
     setPredictions([]);
     setShowDropdown(false);
     sessionToken.current = generateSessionToken(); // New session after selection
-    onSelect?.(place);
+
+    // CRITICAL FIX: Only call onSelect if provided, otherwise fall back to onChangeText
+    // This prevents double state updates and ensures the selection is properly handled
+    if (onSelect) {
+      onSelect(place);
+    } else {
+      // Fallback for components that only use onChangeText
+      onChangeText(place.description);
+    }
   };
 
   const handleBlur = () => {

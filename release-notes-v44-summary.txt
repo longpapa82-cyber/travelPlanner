@@ -1,0 +1,48 @@
+## Release Notes Summary - versionCode 44
+
+===========================================
+한국어 (ko-KR)
+===========================================
+
+6개의 주요 버그를 수정하여 앱 안정성과 사용자 경험을 대폭 개선했습니다.
+
+주요 수정사항:
+• 여행 생성 시 중복 생성 문제 해결
+• 위치 검색 자동완성 선택 오류 수정
+• 날짜 선택 라벨 정확도 개선
+• Android 화면 하단 버튼 표시 문제 해결
+• 광고 시청 기능 사용성 개선
+
+더 나은 여행 계획을 위해 지속적으로 개선하고 있습니다.
+
+
+===========================================
+English (en-US)
+===========================================
+
+Fixed 6 major bugs to significantly improve app stability and user experience.
+
+Key fixes:
+• Resolved duplicate trip creation issue
+• Fixed location autocomplete selection error
+• Improved date label accuracy
+• Fixed button visibility on Android navigation bar
+• Enhanced ad reward feature usability
+
+We're continuously improving for better travel planning.
+
+
+===========================================
+日本語 (ja-JP)
+===========================================
+
+アプリの安定性とユーザー体験を大幅に改善するため、6つの主要なバグを修正しました。
+
+主な修正内容:
+• 旅行作成時の重複作成問題を解決
+• 場所検索の自動補完選択エラーを修正
+• 日付ラベルの正確性を改善
+• Androidナビゲーションバーのボタン表示問題を解決
+• 広告視聴機能の使いやすさを向上
+
+より良い旅行計画のために継続的に改善しています。

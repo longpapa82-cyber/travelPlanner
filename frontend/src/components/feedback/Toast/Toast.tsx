@@ -87,7 +87,8 @@ export const Toast: React.FC<ToastComponentProps> = ({
       left: theme.spacing.md,
       right: theme.spacing.md,
       [position]: theme.spacing.lg,
-      zIndex: 9999,
+      zIndex: 10001, // Increased from 9999 to be above modal (10000)
+      elevation: 10001, // For Android to ensure it's above everything
     },
     toast: {
       backgroundColor: typeConfig.backgroundColor,

@@ -1,0 +1,22 @@
+# Backend Production Deployment Commands (Issue #6)
+# Copy and paste these commands in your terminal
+
+# 1. SSH into Hetzner VPS
+ssh root@46.62.201.127
+
+# 2. Once logged in, run these commands:
+cd /root/travelPlanner/backend
+git pull origin main
+npm install --production
+pm2 restart travelplanner
+
+# 3. Verify deployment
+curl https://mytravel-planner.com/api/health
+
+# 4. Exit SSH
+exit
+
+# Expected output:
+# - Git pull: "Already up to date" or "Updating..."
+# - PM2: "✓ travelplanner restarted"
+# - Health check: {"status":"ok"}

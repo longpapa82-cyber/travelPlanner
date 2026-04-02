@@ -106,7 +106,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { t } = useTranslation('trips');
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
   const { isPremium, isAdmin, aiTripsRemaining, aiTripsLimit, isAiLimitReached, refreshStatus, showPaywall } = usePremium();
-  const { show: showRewarded, isLoaded: isRewardedLoaded } = useRewardedAd();
+  const { show: showRewarded, isLoaded: isRewardedLoaded, reload: reloadRewardedAd } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [aiConsentGiven, setAiConsentGiven] = useState(false);
@@ -419,6 +419,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           await showInterstitial();
         }
         navigation.navigate('TripDetail', { tripId: trip.id });
+        // Reset guards after successful navigation
+        setIsLoading(false);
+        isCreatingRef.current = false;
       }, 500);
     } catch (error: any) {
       if (error.name === 'AbortError') {
@@ -428,6 +431,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           position: 'top',
           duration: 3000,
         });
+        // Reset guards after cancel
+        setIsLoading(false);
+        isCreatingRef.current = false;
         return;
       }
 
@@ -471,6 +477,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   await showInterstitial();
                 }
                 navigation.navigate('TripDetail', { tripId: latestTrip.id });
+                // Reset guards only after navigation completes
+                setIsLoading(false);
+                isCreatingRef.current = false;
               }, 500);
               return;
             }
@@ -491,6 +500,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         // Navigate to trips list after short delay
         setTimeout(() => {
           navigation.navigate('TripList');
+          // Reset guards after navigation
+          setIsLoading(false);
+          isCreatingRef.current = false;
         }, 2000);
         return;
       }
@@ -518,18 +530,17 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         position: 'top',
         duration: 4000,
       });
+
+      // Reset guards after error shown
+      setIsLoading(false);
+      isCreatingRef.current = false;
     } finally {
-      // Clean up resources but keep loading state management in the main flow
+      // Clean up resources but DON'T reset guards here
+      // Guards are reset only in specific places above (success/error/cancel)
       if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
       abortControllerRef.current = null;
-      // Move loading state reset to specific places in try/catch
-      // to prevent premature reset while SSE is still running
       setGenerationStep(0);
       setShowCancelConfirm(false);
-      // Only reset loading if we're still in loading state
-      // (not already reset by success or error handlers)
-      setIsLoading(false);
-      isCreatingRef.current = false; // Reset guard
     }
   };
 
@@ -813,6 +824,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
             {destination && destination.trim().length >= 2 && (
               <DestinationInsights
                 destination={destination}
+                showEnhancedInsights={insightsUnlocked}
                 onRecommendationsLoaded={(recommendations) => {
                   // Auto-fill recommended values
                   if (recommendations.recommendedDuration && !startDate && !endDate) {
@@ -838,7 +850,25 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 ]}
                 onPress={async () => {
                   if (isShowingRewardedAd) return;
+
+                  // Enhanced error handling with better user feedback
                   if (!isRewardedLoaded) {
+                    // Development/Web fallback - unlock insights without ad
+                    if (__DEV__ || Platform.OS === 'web') {
+                      setInsightsUnlocked(true);
+                      showToast({
+                        type: 'info',
+                        message: t('create.rewardedAd.devMode', {
+                          defaultValue: '개발 모드: 인사이트가 잠금 해제되었습니다',
+                        }),
+                        position: 'top',
+                        duration: 2000,
+                      });
+                      return;
+                    }
+
+                    // Production: Try to reload the ad and show retry option
+                    reloadRewardedAd(); // Attempt to reload the ad
                     showToast({
                       type: 'warning',
                       message: t('create.rewardedAd.notAvailable', {
@@ -849,9 +879,31 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     });
                     return;
                   }
+
                   try {
                     setIsShowingRewardedAd(true);
-                    await showRewarded(() => setInsightsUnlocked(true));
+                    await showRewarded(() => {
+                      setInsightsUnlocked(true);
+                      // Show success feedback when reward is earned
+                      showToast({
+                        type: 'success',
+                        message: t('create.rewardedAd.success', {
+                          defaultValue: '상세 인사이트가 잠금 해제되었습니다!',
+                        }),
+                        position: 'top',
+                        duration: 2000,
+                      });
+                    });
+                  } catch (error) {
+                    console.error('Rewarded ad error:', error);
+                    showToast({
+                      type: 'error',
+                      message: t('create.rewardedAd.error', {
+                        defaultValue: '광고 로드 중 오류가 발생했습니다',
+                      }),
+                      position: 'top',
+                      duration: 3000,
+                    });
                   } finally {
                     setIsShowingRewardedAd(false);
                   }
