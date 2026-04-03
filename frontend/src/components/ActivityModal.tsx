@@ -11,6 +11,7 @@ import {
   Platform,
   Pressable,
   useWindowDimensions,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -56,6 +57,111 @@ const ACTIVITY_TYPES_META = [
   { value: 'other', key: 'activityModal.types.other' as const, icon: 'dots-horizontal' },
 ];
 
+// Inline Toast Component for Modal
+const InlineToast: React.FC<{
+  visible: boolean;
+  message: string;
+  type: 'warning' | 'error' | 'success' | 'info';
+}> = ({ visible, message, type }) => {
+  const translateY = useRef(new Animated.Value(-100)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (visible) {
+      Animated.parallel([
+        Animated.spring(translateY, {
+          toValue: 0,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      Animated.parallel([
+        Animated.timing(translateY, {
+          toValue: -100,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [visible, translateY, opacity]);
+
+  const getTypeConfig = () => {
+    switch (type) {
+      case 'warning':
+        return {
+          backgroundColor: theme.colors.warning,
+          icon: 'alert',
+        };
+      case 'error':
+        return {
+          backgroundColor: theme.colors.error,
+          icon: 'alert-circle',
+        };
+      case 'success':
+        return {
+          backgroundColor: theme.colors.success,
+          icon: 'check-circle',
+        };
+      default:
+        return {
+          backgroundColor: theme.colors.primary,
+          icon: 'information',
+        };
+    }
+  };
+
+  const typeConfig = getTypeConfig();
+
+  // Don't render if not visible
+  if (!visible) return null;
+
+  return (
+    <Animated.View
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10000,
+        transform: [{ translateY }],
+        opacity,
+        backgroundColor: typeConfig.backgroundColor,
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: theme.spacing.md,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+      }}
+    >
+      <Icon name={typeConfig.icon} size={24} color="#fff" />
+      <Text style={{
+        flex: 1,
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: '500',
+        marginLeft: theme.spacing.md,
+      }}>
+        {message}
+      </Text>
+    </Animated.View>
+  );
+};
+
 export const ActivityModal: React.FC<ActivityModalProps> = ({
   visible,
   onClose,
@@ -83,6 +189,13 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
   const [showTimePicker, setShowTimePicker] = useState(false);
   const savingRef = useRef(false);
 
+  // State for inline toast
+  const [inlineToast, setInlineToast] = useState<{
+    visible: boolean;
+    message: string;
+    type: 'warning' | 'error' | 'success' | 'info';
+  }>({ visible: false, message: '', type: 'warning' });
+
   useEffect(() => {
     if (activity) {
       setFormData(activity);
@@ -102,6 +215,20 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 
   const isValidTime = (time: string) => /^([01]\d|2[0-3]):([0-5]\d)$/.test(time);
 
+  // Helper function to show toast messages
+  const showModalToast = (type: 'warning' | 'error' | 'success' | 'info', message: string) => {
+    // On native platforms, use inline toast to avoid modal z-index issues
+    if (Platform.OS !== 'web') {
+      setInlineToast({ visible: true, message, type });
+      setTimeout(() => {
+        setInlineToast(prev => ({ ...prev, visible: false }));
+      }, 3000);
+    } else {
+      // On web, use regular toast context
+      showToast({ type, message, position: 'top' });
+    }
+  };
+
   const handleSave = async () => {
     // Ref-based guard prevents double-execution (onPress + onClick may both fire on web)
     if (savingRef.current) return;
@@ -109,12 +236,12 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 
     // Validation
     if (!formData.time || !formData.title || !formData.location || !formData.description || !formData.description.trim()) {
-      showToast({ type: 'warning', message: t('activityModal.validationErrorMessage'), position: 'top' });
+      showModalToast('warning', t('activityModal.validationErrorMessage'));
       savingRef.current = false;
       return;
     }
     if (!isValidTime(formData.time)) {
-      showToast({ type: 'warning', message: t('activityModal.invalidTimeFormat'), position: 'top' });
+      showModalToast('warning', t('activityModal.invalidTimeFormat'));
       savingRef.current = false;
       return;
     }
@@ -124,7 +251,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
       await onSave(formData);
       onClose();
     } catch (error: any) {
-      showToast({ type: 'error', message: error.response?.data?.message || t('activityModal.saveError'), position: 'top' });
+      showModalToast('error', error.response?.data?.message || t('activityModal.saveError'));
     } finally {
       setLoading(false);
       savingRef.current = false;
@@ -133,6 +260,15 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 
   const modalInner = (
         <View style={styles.modalContainer}>
+          {/* Inline Toast for native platforms */}
+          {Platform.OS !== 'web' && (
+            <InlineToast
+              visible={inlineToast.visible}
+              message={inlineToast.message}
+              type={inlineToast.type}
+            />
+          )}
+
           {/* Header */}
           <View style={styles.header}>
             <Text style={styles.headerTitle}>
