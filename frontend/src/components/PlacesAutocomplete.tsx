@@ -43,6 +43,8 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sessionToken = useRef(generateSessionToken());
   const skipNextSearch = useRef(false);
+  // Track if we just made a selection to prevent input value conflicts
+  const justSelected = useRef(false);
 
   // Refresh session token periodically (every 3 minutes like Google recommends)
   useEffect(() => {
@@ -102,12 +104,16 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   }, []);
 
   const handleChangeText = (text: string) => {
-    onChangeText(text);
-
-    if (skipNextSearch.current) {
-      skipNextSearch.current = false;
+    // CRITICAL FIX: Check both flags BEFORE calling onChangeText
+    // This prevents the field from being reset when a selection is made
+    if (skipNextSearch.current || justSelected.current) {
+      if (skipNextSearch.current) {
+        skipNextSearch.current = false;
+      }
       return;
     }
+
+    onChangeText(text);
 
     if (!apiAvailable) return;
 
@@ -116,7 +122,11 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   };
 
   const handleSelect = (place: PlacePrediction) => {
+    // Set flags BEFORE any state updates to prevent race conditions
     skipNextSearch.current = true;
+    justSelected.current = true;
+
+    // Clear dropdown immediately
     setPredictions([]);
     setShowDropdown(false);
     sessionToken.current = generateSessionToken(); // New session after selection
@@ -129,6 +139,11 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
       // Fallback for components that only use onChangeText
       onChangeText(place.description);
     }
+
+    // Clear the justSelected flag after a short delay
+    setTimeout(() => {
+      justSelected.current = false;
+    }, 100);
   };
 
   const handleBlur = () => {
