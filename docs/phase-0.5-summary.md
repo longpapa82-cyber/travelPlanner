@@ -239,12 +239,16 @@ curl https://mytravel-planner.com/landing.html | grep 'justify-content: space-be
   - HTML 캐시: 1시간 → 5분 (92% 단축)
   - 정적 리소스 캐시: 1시간 → 1년 (성능 개선)
   - 다음 배포부터 5분 내 반영 보장
-- [ ] **Cloudflare CDN 캐시 만료 대기** (~16:00 KST 또는 5분 후)
+- [x] **Cloudflare CDN 캐시 최적화 완료** (16:29 KST)
+  - Cloudflare Page Rule 생성 (Cache Everything, 2h TTL)
+  - Docker 볼륨 동기화 문제 해결
+  - 최종 검증 PASS (500ms, wasDismissedRecently, 4h dismiss)
 
 ---
 
-**최종 업데이트**: 2026-04-03 15:22 KST
+**최종 업데이트**: 2026-04-03 16:29 KST
 **작성자**: Claude Code
-**배포 상태**: ✅ 완료 (랜딩 페이지 + 가이드 27개 + Nginx 최적화)
-**CDN 캐시**: ⏳ 만료 대기 중 (~16:00 KST 또는 15:26 KST)
-**다음 배포**: 5분 내 반영 보장
+**배포 상태**: ✅ 완료 (랜딩 페이지 + 가이드 27개 + Nginx + Cloudflare)
+**검수 상태**: ✅ PASS (16:29 KST)
+**CDN 캐시**: ✅ 정상 동작 (cf-cache-status: HIT)
+**다음 배포**: 5분 내 반영 보장 (Nginx) + 2시간 CDN 캐시
