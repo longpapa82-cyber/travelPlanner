@@ -104,27 +104,33 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   }, []);
 
   const handleChangeText = (text: string) => {
-    // CRITICAL FIX: Check both flags BEFORE calling onChangeText
-    // This prevents the field from being reset when a selection is made
+    console.log('[PlacesAutocomplete] handleChangeText called with:', text);
+
+    // Always update the parent component with the new text
+    onChangeText(text);
+
+    // Check if we should skip the search (but we already updated the parent above)
     if (skipNextSearch.current) {
       console.log('[PlacesAutocomplete] Skipping search - selection in progress');
       skipNextSearch.current = false;
-      // Don't clear justSelected here, let the timeout handle it
+      // Don't trigger a new search
       return;
     }
 
-    // Check justSelected separately to allow the value to update but skip search
+    // Check justSelected separately to prevent immediate re-search after selection
     if (justSelected.current) {
       console.log('[PlacesAutocomplete] Selection just made, skipping search');
-      // Don't clear justSelected here, let the timeout handle it
+      // Don't trigger a new search
       return;
     }
 
-    console.log('[PlacesAutocomplete] Text changed to:', text);
-    onChangeText(text);
+    // Only proceed with search if API is available
+    if (!apiAvailable) {
+      console.log('[PlacesAutocomplete] API not available, skipping search');
+      return;
+    }
 
-    if (!apiAvailable) return;
-
+    console.log('[PlacesAutocomplete] Triggering search for:', text);
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
     debounceTimer.current = setTimeout(() => searchPlaces(text), 500);
   };
