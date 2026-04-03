@@ -28,7 +28,7 @@ interface SubscriptionStats {
 }
 
 const SUBSCRIPTION_PLATFORMS: Record<string, { icon: string; color: string; label: string }> = {
-  web: { icon: 'web', color: '#3B82F6', label: 'Paddle (Web)' },
+  web: { icon: 'web', color: '#3B82F6', label: 'Stripe (Web)' },
   ios: { icon: 'apple', color: '#1D1D1F', label: 'Apple (iOS)' },
   android: { icon: 'google-play', color: '#34A853', label: 'Google (Android)' },
 };

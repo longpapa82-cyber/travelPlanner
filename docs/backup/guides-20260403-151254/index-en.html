@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Guides - MyTravel | Complete City Guides for Popular Destinations</title>
+  <meta name="description" content="Explore MyTravel's curated travel guides for 20 popular destinations worldwide. Find top attractions, local food, transportation tips, weather info, and more for Tokyo, Paris, Bangkok, New York, and beyond." />
+  <link rel="canonical" href="https://mytravel-planner.com/guides/index-en" />
+  <link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/guides/" />
+  <link rel="alternate" hreflang="en" href="https://mytravel-planner.com/guides/index-en" />
+  <link rel="alternate" hreflang="x-default" href="https://mytravel-planner.com/guides/index-en" />
+  <meta property="og:title" content="Travel Guides - MyTravel" />
+  <meta property="og:description" content="Complete travel guides for 20 popular destinations worldwide. Attractions, food, transport, and weather info all in one place." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mytravel-planner.com/guides/index-en" />
+  <meta property="og:site_name" content="MyTravel" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="theme-color" content="#2563EB" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
+    .logo span { color: #f59e0b; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #2563EB; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #2563EB; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .nav a.btn-primary { color: #fff; }
+
+    .page-hero { background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 3rem 1.5rem; text-align: center; }
+    .page-hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .page-hero p { color: #475569; max-width: 600px; margin: 0 auto; }
+
+    .breadcrumb { max-width: 1200px; margin: 0 auto; padding: 1rem 1.5rem; font-size: 0.85rem; color: #64748b; }
+    .breadcrumb a { color: #2563EB; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .content { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    .content h2 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1e293b; border-left: 4px solid #2563EB; padding-left: 0.75rem; }
+    .content p { color: #334155; margin-bottom: 1rem; font-size: 1rem; line-height: 1.8; }
+    .intro-text { max-width: 800px; margin: 0 auto 2rem; text-align: center; }
+
+    .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .dest-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 2rem 1.5rem; text-align: center; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
+    .dest-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(37,99,235,0.12); border-color: #2563EB; }
+    .dest-card .emoji { font-size: 3rem; margin-bottom: 0.75rem; }
+    .dest-card h3 { font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .dest-card p { color: #64748b; font-size: 0.9rem; line-height: 1.6; flex-grow: 1; }
+    .dest-card .card-link { display: inline-block; margin-top: 1rem; color: #2563EB; font-weight: 600; font-size: 0.9rem; }
+    .dest-card .card-link:hover { text-decoration: underline; }
+    .dest-card .lang-tag { display: inline-block; margin-top: 0.5rem; font-size: 0.75rem; color: #94a3b8; }
+
+    .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 0; overflow: hidden; }
+
+    .footer { background: #1e293b; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
+    .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .footer a:hover { color: #fff; }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #334155; text-align: center; font-size: 0.85rem; }
+    .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
+
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .page-hero h1 { font-size: 1.5rem; }
+      .dest-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+      .dest-card { padding: 1.5rem 1rem; }
+    }
+  
+    /* Smart App Banner */
+    .smart-app-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #4A90D9 0%, #5BA3E8 100%);
+      color: white;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideDown 0.3s ease-out;
+      display: none;
+    }
+    .smart-app-banner.show { display: block; }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+    .banner-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.875rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .banner-icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+    .banner-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .banner-text h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.125rem;
+    }
+    .banner-text p {
+      font-size: 0.8rem;
+      opacity: 0.95;
+      margin-bottom: 0.25rem;
+    }
+    .banner-rating {
+      font-size: 0.7rem;
+      opacity: 0.9;
+    }
+    .banner-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .banner-download {
+      background: white;
+      color: #4A90D9;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 1.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .banner-download:hover {
+      background: #f0f9ff;
+      transform: scale(1.02);
+    }
+    .banner-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .banner-close:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    @media (max-width: 480px) {
+      .banner-content { padding: 0.75rem 0.875rem; gap: 0.75rem; }
+      .banner-icon { font-size: 2rem; }
+      .banner-text h4 { font-size: 0.95rem; }
+      .banner-text p { font-size: 0.75rem; }
+      .banner-download { padding: 0.4rem 1rem; font-size: 0.85rem; }
+    }
+
+  </style>
+</head>
+<body>
+<!-- Smart App Banner (Android Only) -->
+<div id="smartAppBanner" class="smart-app-banner">
+  <div class="banner-content">
+    <div class="banner-icon">🎯</div>
+    <div class="banner-text">
+      <h4>myTravel</h4>
+      <p id="bannerTagline">AI Creates Your Perfect Trip</p>
+      <div class="banner-rating">⭐⭐⭐⭐⭐ 4.8 (12K Reviews)</div>
+    </div>
+  </div>
+  <div class="banner-actions">
+    <button class="banner-download" onclick="handleBannerInstall()">Download Free</button>
+    <button class="banner-close" onclick="handleBannerDismiss()">✕</button>
+  </div>
+</div>
+
+
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/landing-en" class="logo">My<span>Travel</span></a>
+    <nav class="nav">
+      <a href="/landing-en">Home</a>
+      <a href="/about">About</a>
+      <a href="/guides/index-en" style="color:#2563EB;font-weight:600;">Guides</a>
+      <a href="/blog">Blog</a>
+      <a href="/contact">Contact</a>
+      <a href="/login" class="btn btn-primary">Login</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <h1>Travel Guides</h1>
+  <p>Discover everything you need to know about 20 popular destinations around the world</p>
+</section>
+
+<div class="breadcrumb">
+  <a href="/landing-en">Home</a> &gt; Travel Guides
+</div>
+
+<main class="content">
+  <div class="intro-text">
+    <p>
+      MyTravel's curated collection of travel guides covers 20 of the world's most popular
+      destinations. Each guide includes top attractions, local cuisine recommendations,
+      transportation tips, weather information, and the best time to visit. Use these guides
+      to plan your trip, then let MyTravel's AI create a personalized itinerary for you.
+    </p>
+    <p>
+      The best trips start with great planning. Whether you're a first-time visitor wondering
+      where to go, what to eat, and how to get around, or a seasoned traveler looking for
+      hidden gems and local tips, our guides provide practical, up-to-date information
+      curated for every type of traveler. From the vibrant cities of Asia to the historic
+      streets of Europe and beyond, explore the world with confidence.
+    </p>
+  </div>
+
+  <h2>Popular Destinations in Asia</h2>
+  <div class="dest-grid">
+    <a href="/guides/tokyo-en" class="dest-card">
+      <div class="emoji">🗼</div>
+      <h3>Tokyo</h3>
+      <p>Where ancient traditions meet cutting-edge technology. From Senso-ji temple to Shibuya Crossing, Tokyo offers an unforgettable blend of old and new.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+    </a>
+    <a href="/guides/kyoto" class="dest-card">
+      <div class="emoji">⛩️</div>
+      <h3>Kyoto</h3>
+      <p>Japan's cultural heart with over 2,000 temples and shrines. Experience Kinkaku-ji, Fushimi Inari, and the magical Arashiyama Bamboo Grove.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/osaka-en" class="dest-card">
+      <div class="emoji">🏯</div>
+      <h3>Osaka</h3>
+      <p>Japan's kitchen and entertainment capital. Dotonbori's neon lights, Osaka Castle's history, and Universal Studios make for an unforgettable visit.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+    </a>
+    <a href="/guides/seoul-en" class="dest-card">
+      <div class="emoji">🇰🇷</div>
+      <h3>Seoul</h3>
+      <p>The heart of K-culture where centuries-old palaces stand alongside trendy neighborhoods. Explore Gyeongbokgung, Hongdae, and Myeongdong.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+    </a>
+    <a href="/guides/bangkok-en" class="dest-card">
+      <div class="emoji">🛕</div>
+      <h3>Bangkok</h3>
+      <p>A paradise of ornate temples and legendary street food. Affordable prices and warm weather make it Southeast Asia's most popular gateway.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+    </a>
+    <a href="/guides/singapore" class="dest-card">
+      <div class="emoji">🇸🇬</div>
+      <h3>Singapore</h3>
+      <p>The Garden City and food paradise. Marina Bay Sands, Gardens by the Bay, and Sentosa Island make this a gem of Southeast Asia.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/ho-chi-minh" class="dest-card">
+      <div class="emoji">🇻🇳</div>
+      <h3>Ho Chi Minh City</h3>
+      <p>Vietnam's vibrant metropolis. Savor pho, banh mi, and egg coffee while exploring rich history and buzzing energy.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/kuala-lumpur" class="dest-card">
+      <div class="emoji">🇲🇾</div>
+      <h3>Kuala Lumpur</h3>
+      <p>A multicultural marvel beneath the Petronas Twin Towers. Nasi lemak, satay, and Batu Caves showcase Malaysia's diversity.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/bali" class="dest-card">
+      <div class="emoji">🌴</div>
+      <h3>Bali</h3>
+      <p>The Island of the Gods. Lush tropical landscapes, unique Hindu culture, and world-class beaches make it perfect for honeymoons and wellness retreats.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+  </div>
+
+  <!-- Ad slot -->
+  <div class="ad-container">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="2397004834" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <h2>Popular Destinations in Europe</h2>
+  <div class="dest-grid">
+    <a href="/guides/paris-en" class="dest-card">
+      <div class="emoji">🗼</div>
+      <h3>Paris</h3>
+      <p>The City of Light and Love. The Eiffel Tower, Louvre Museum, and Montmartre offer world-class culture, art, and cuisine in every corner.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+    </a>
+    <a href="/guides/london" class="dest-card">
+      <div class="emoji">🎡</div>
+      <h3>London</h3>
+      <p>Where history meets modern trends. Big Ben, Buckingham Palace, the British Museum, and Soho's vibrant streets offer endless exploration.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/barcelona" class="dest-card">
+      <div class="emoji">⛪</div>
+      <h3>Barcelona</h3>
+      <p>Gaudi's architectural masterpieces meet Mediterranean vibes. La Sagrada Familia and Park Guell captivate every visitor.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/rome" class="dest-card">
+      <div class="emoji">🏛️</div>
+      <h3>Rome</h3>
+      <p>The Eternal City. Walk through 2,000 years of history at the Colosseum, Vatican, and Trevi Fountain while savoring pasta and gelato.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/prague" class="dest-card">
+      <div class="emoji">🏰</div>
+      <h3>Prague</h3>
+      <p>The City of a Hundred Spires. Prague Castle, Charles Bridge, and the Astronomical Clock pair beautifully with the world's finest beer.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/amsterdam" class="dest-card">
+      <div class="emoji">🌷</div>
+      <h3>Amsterdam</h3>
+      <p>Canals, bicycles, and creative freedom. The Van Gogh Museum, Anne Frank House, and canal cruises define this charming Dutch capital.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/istanbul" class="dest-card">
+      <div class="emoji">🇹🇷</div>
+      <h3>Istanbul</h3>
+      <p>Where East meets West. Hagia Sophia, Blue Mosque, and the Grand Bazaar showcase centuries of Ottoman and Byzantine splendor.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+  </div>
+
+  <h2>Americas, Oceania & Middle East</h2>
+  <div class="dest-grid">
+    <a href="/guides/new-york" class="dest-card">
+      <div class="emoji">🗽</div>
+      <h3>New York</h3>
+      <p>The Big Apple. The Statue of Liberty, Times Square, Central Park, and Broadway create an endless energy that defines this iconic metropolis.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/hawaii" class="dest-card">
+      <div class="emoji">🌺</div>
+      <h3>Hawaii</h3>
+      <p>Pacific paradise. Waikiki sunsets, Diamond Head hikes, and the Aloha spirit make it the ultimate destination for honeymoons and family trips.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/sydney" class="dest-card">
+      <div class="emoji">🇦🇺</div>
+      <h3>Sydney</h3>
+      <p>Australia's harbor city. The Opera House, Harbour Bridge, Bondi Beach, and Blue Mountains offer a perfect blend of nature and urban life.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+    <a href="/guides/dubai" class="dest-card">
+      <div class="emoji">🇦🇪</div>
+      <h3>Dubai</h3>
+      <p>A futuristic city rising from the desert. Burj Khalifa, Palm Jumeirah, and desert safaris combine luxury and adventure like nowhere else.</p>
+      <span class="card-link">Read Guide &rarr;</span>
+      <span class="lang-tag">Korean only</span>
+    </a>
+  </div>
+
+  <h2>Travel Preparation Checklist</h2>
+  <p>
+    Before heading abroad, there are essential things to check. First, verify your passport's
+    validity — most countries require at least 6 months of remaining validity upon entry.
+    Depending on your destination, you may need a visa, so research requirements early.
+    Travel insurance is highly recommended to cover unexpected situations like medical
+    emergencies, trip cancellations, or lost luggage. For currency, exchange a small amount
+    before departure and use local ATMs or exchange offices for better rates.
+  </p>
+  <p>
+    Book flights at least 2-3 months in advance for the best prices. Choose accommodation
+    based on proximity to public transportation and city center access to save time and
+    money on getting around. Prepare a local SIM card or pocket WiFi before departure so
+    you can use maps and translation apps immediately upon arrival. With MyTravel, you can
+    check local weather, time zones, and recommended attractions at a glance, making your
+    trip planning much easier.
+  </p>
+
+  <h2>Start Planning with MyTravel</h2>
+  <p>
+    Found your dream destination? Let MyTravel's AI create a personalized travel itinerary
+    just for you. Simply enter your destination and dates, and our AI will generate an
+    optimized schedule considering local weather, travel times, and popular attractions.
+    You can freely customize the generated itinerary to match your preferences. Share your
+    plans with other travelers for tips, or browse community itineraries for inspiration.
+    Available in 17 languages, MyTravel helps travelers worldwide plan their perfect trip
+    in their native language.
+  </p>
+  <p style="text-align:center;margin-top:1.5rem;">
+    <a href="/login" class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem;">Get Started for Free</a>
+  </p>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <h4>MyTravel</h4>
+      <p style="font-size:0.9rem;">AI-powered travel planning service.<br/>Just pick a destination and get a perfect itinerary.</p>
+      <div class="langs" style="margin-top:1rem;">
+        <span class="lang-badge">🇰🇷 한국어</span>
+        <span class="lang-badge">🇺🇸 English</span>
+        <span class="lang-badge">🇯🇵 日本語</span>
+        <span class="lang-badge">🇨🇳 中文</span>
+        <span class="lang-badge">🇪🇸 Español</span>
+        <span class="lang-badge">🇩🇪 Deutsch</span>
+        <span class="lang-badge">🇫🇷 Français</span>
+        <span class="lang-badge">🇹🇭 ไทย</span>
+        <span class="lang-badge">🇻🇳 Tiếng Việt</span>
+      </div>
+    </div>
+    <div>
+      <h4>Service</h4>
+      <a href="/login">Create Trip Plan</a>
+      <a href="/guides/index-en">Travel Guides</a>
+      <a href="/blog">Blog</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </div>
+    <div>
+      <h4>Policies</h4>
+      <a href="/terms-en">Terms of Service</a>
+      <a href="/privacy-en">Privacy Policy</a>
+      <a href="/faq">FAQ</a>
+      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:longpapa82@gmail.com" style="display:inline;">longpapa82@gmail.com</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2024-2026 MyTravel. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // ============================================================
+  // Smart App Banner Logic (Android Only)
+  // ============================================================
+
+  const CONFIG = {
+    playStoreURL: 'https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner',
+    storageKeys: {
+      dismissed: 'smartBanner_dismissed',
+      variant: 'smartBanner_variant'
+    }
+  };
+
+  const BANNER_VARIANTS = {
+    A: 'AI Creates Your Perfect Trip',
+    B: 'Travel Planning Made Easy',
+    C: 'Plan Your Trip in 5 Seconds'
+  };
+
+  function isMobile() {
+    return /Android/i.test(navigator.userAgent);
+  }
+
+  function wasDismissedToday() {
+    const dismissed = localStorage.getItem(CONFIG.storageKeys.dismissed);
+    const today = new Date().toDateString();
+    return dismissed === today;
+  }
+
+  function getVariant() {
+    let variant = localStorage.getItem(CONFIG.storageKeys.variant);
+    if (!variant || !BANNER_VARIANTS[variant]) {
+      const variants = Object.keys(BANNER_VARIANTS);
+      variant = variants[Math.floor(Math.random() * variants.length)];
+      localStorage.setItem(CONFIG.storageKeys.variant, variant);
+    }
+    return variant;
+  }
+
+  function trackEvent(eventName, params = {}) {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', eventName, params);
+    }
+  }
+
+  function showBanner() {
+    const banner = document.getElementById('smartAppBanner');
+    if (!banner) return;
+
+    const variant = getVariant();
+    const taglineEl = document.getElementById('bannerTagline');
+    if (taglineEl) {
+      taglineEl.textContent = BANNER_VARIANTS[variant];
+    }
+
+    banner.classList.add('show');
+    trackEvent('banner_view', {
+      variant: variant,
+      page: window.location.pathname
+    });
+  }
+
+  window.handleBannerInstall = function() {
+    const variant = getVariant();
+    const deepLink = encodeURIComponent(window.location.pathname + window.location.search);
+    const url = CONFIG.playStoreURL + '&referrer=' + deepLink;
+
+    trackEvent('banner_click', {
+      variant: variant,
+      page: window.location.pathname,
+      deepLink: deepLink
+    });
+
+    window.open(url, '_blank');
+  };
+
+  window.handleBannerDismiss = function() {
+    const banner = document.getElementById('smartAppBanner');
+    if (!banner) return;
+
+    const variant = getVariant();
+    const today = new Date().toDateString();
+    localStorage.setItem(CONFIG.storageKeys.dismissed, today);
+
+    banner.classList.remove('show');
+    trackEvent('banner_dismiss', {
+      variant: variant,
+      page: window.location.pathname
+    });
+  };
+
+  if (isMobile() && !wasDismissedToday()) {
+    setTimeout(showBanner, 2000);
+  }
+
+</script>
+
+</body>
+</html>

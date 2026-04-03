@@ -37,7 +37,7 @@
     "mrr": "Ricavi mensili",
     "revenue": "Ricavi",
     "commission": "Commissione",
-    "paddle": "Paddle (Web)",
+    "paddle": "Stripe (Web)",
     "apple": "Apple (iOS)",
     "google": "Google (Android)",
     "commissionRate": "Tasso di commissione",

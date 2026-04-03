@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartAppBanner Debug Tool</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .debug-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; margin-bottom: 30px; }
+    h2 { color: #4A90D9; margin-top: 0; }
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-family: monospace;
+    }
+    .status.pass { background: #d4edda; color: #155724; }
+    .status.fail { background: #f8d7da; color: #721c24; }
+    .status.warn { background: #fff3cd; color: #856404; }
+    button {
+      background: #4A90D9;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+      font-size: 14px;
+    }
+    button:hover { background: #357abd; }
+    button.danger { background: #dc3545; }
+    button.danger:hover { background: #c82333; }
+    .code-block {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      overflow-x: auto;
+      border: 1px solid #dee2e6;
+      margin: 10px 0;
+      white-space: pre-wrap;
+    }
+    .banner-preview {
+      position: relative;
+      height: 100px;
+      border: 2px dashed #ccc;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    .test-banner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #4A90D9 0%, #5BA3E8 100%);
+      color: white;
+      padding: 15px;
+      display: none;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .test-banner.show { display: flex; }
+    .error-log {
+      color: red;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 SmartAppBanner Debug Tool</h1>
+
+  <div class="debug-section">
+    <h2>1. Environment Detection</h2>
+    <div id="envStatus"></div>
+  </div>
+
+  <div class="debug-section">
+    <h2>2. LocalStorage Status</h2>
+    <div id="storageStatus"></div>
+    <button onclick="clearStorage()">🗑️ Clear All Banner Data</button>
+    <button onclick="setDismissed()">📝 Set as Dismissed</button>
+  </div>
+
+  <div class="debug-section">
+    <h2>3. Banner Element Check</h2>
+    <div id="elementStatus"></div>
+    <button onclick="checkProduction()">🌐 Check Production Site</button>
+  </div>
+
+  <div class="debug-section">
+    <h2>4. JavaScript Console Errors</h2>
+    <div id="errorStatus"></div>
+    <div class="code-block" id="consoleOutput">No errors detected yet...</div>
+  </div>
+
+  <div class="debug-section">
+    <h2>5. Test Banner Display</h2>
+    <div class="banner-preview">
+      <div id="testBanner" class="test-banner">
+        <div>🎯</div>
+        <div style="margin-left: 10px;">
+          <strong>Test Banner Working!</strong><br>
+          <small>If you see this, display logic works</small>
+        </div>
+      </div>
+    </div>
+    <button onclick="showTestBanner()">👁️ Show Test Banner</button>
+    <button onclick="hideTestBanner()">🙈 Hide Test Banner</button>
+  </div>
+
+  <div class="debug-section">
+    <h2>6. Quick Fix Commands</h2>
+    <p>Run these in Chrome DevTools Console on <a href="https://mytravel-planner.com/landing.html" target="_blank">production site</a>:</p>
+
+    <h3>Command 1: Clear & Force Show Banner</h3>
+    <div class="code-block" id="cmd1"></div>
+
+    <h3>Command 2: Debug Current State</h3>
+    <div class="code-block" id="cmd2"></div>
+
+    <h3>Command 3: Force Display Banner (Override All Checks)</h3>
+    <div class="code-block" id="cmd3"></div>
+
+    <h3>Command 4: Check for CSS Conflicts</h3>
+    <div class="code-block" id="cmd4"></div>
+  </div>
+
+  <div class="debug-section">
+    <h2>7. Recommended Fix</h2>
+    <div class="status warn">
+      <strong>Most Likely Issue:</strong> The banner was dismissed today and stored in localStorage
+    </div>
+    <p><strong>Immediate Actions:</strong></p>
+    <ol>
+      <li>Run Command 1 above in Chrome DevTools</li>
+      <li>If banner still doesn't show, run Command 3</li>
+      <li>Check Command 4 output for CSS issues</li>
+    </ol>
+
+    <p><strong>Permanent Fix (for landing.html):</strong></p>
+    <div class="code-block" id="fixCode"></div>
+  </div>
+
+  <script>
+    // Safe DOM manipulation helper
+    function safeSetText(elementId, text) {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.textContent = text;
+      }
+    }
+
+    // Safe DOM creation helper
+    function createStatusDiv(className, text) {
+      const div = document.createElement('div');
+      div.className = 'status ' + className;
+      div.textContent = text;
+      return div;
+    }
+
+    // Environment detection
+    function checkEnvironment() {
+      const envDiv = document.getElementById('envStatus');
+      if (!envDiv) return;
+
+      // Clear existing content
+      while (envDiv.firstChild) {
+        envDiv.removeChild(envDiv.firstChild);
+      }
+
+      const userAgent = navigator.userAgent;
+      const isAndroid = /Android/i.test(userAgent);
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
+
+      envDiv.appendChild(createStatusDiv(
+        isAndroid ? 'pass' : 'fail',
+        'Android Detection: ' + (isAndroid ? '✅ YES' : '❌ NO')
+      ));
+
+      envDiv.appendChild(createStatusDiv(
+        isMobile ? 'pass' : 'warn',
+        'Mobile Detection: ' + (isMobile ? '✅ YES' : '⚠️ NO')
+      ));
+
+      envDiv.appendChild(createStatusDiv('', 'User Agent: ' + userAgent));
+      envDiv.appendChild(createStatusDiv('', 'Current Time: ' + new Date().toString()));
+    }
+
+    // Storage status
+    function checkStorage() {
+      const storageDiv = document.getElementById('storageStatus');
+      if (!storageDiv) return;
+
+      // Clear existing content
+      while (storageDiv.firstChild) {
+        storageDiv.removeChild(storageDiv.firstChild);
+      }
+
+      const dismissed = localStorage.getItem('smartBanner_dismissed');
+      const variant = localStorage.getItem('smartBanner_variant');
+      const today = new Date().toDateString();
+
+      storageDiv.appendChild(createStatusDiv(
+        dismissed === today ? 'fail' : 'pass',
+        'Dismissed Today: ' + (dismissed === today ? '❌ YES (Banner Hidden!)' : '✅ NO')
+      ));
+
+      storageDiv.appendChild(createStatusDiv('', 'Dismissal Date: ' + (dismissed || 'Never dismissed')));
+      storageDiv.appendChild(createStatusDiv('', "Today's Date: " + today));
+      storageDiv.appendChild(createStatusDiv('', 'A/B Variant: ' + (variant || 'Not assigned')));
+    }
+
+    // Element check
+    function checkElements() {
+      const elementDiv = document.getElementById('elementStatus');
+      if (!elementDiv) return;
+
+      // Clear existing content
+      while (elementDiv.firstChild) {
+        elementDiv.removeChild(elementDiv.firstChild);
+      }
+
+      elementDiv.appendChild(createStatusDiv('warn', '⚠️ Must check on production site directly'));
+      elementDiv.appendChild(createStatusDiv('', "Open DevTools on production and run: document.getElementById('smartAppBanner')"));
+    }
+
+    // Clear storage
+    function clearStorage() {
+      localStorage.removeItem('smartBanner_dismissed');
+      localStorage.removeItem('smartBanner_variant');
+      alert('✅ Banner data cleared! Refresh the production page.');
+      checkStorage();
+    }
+
+    // Set as dismissed
+    function setDismissed() {
+      localStorage.setItem('smartBanner_dismissed', new Date().toDateString());
+      alert('📝 Set as dismissed for today');
+      checkStorage();
+    }
+
+    // Check production
+    function checkProduction() {
+      window.open('https://mytravel-planner.com/landing.html?debug_banner=true', '_blank');
+    }
+
+    // Test banner functions
+    function showTestBanner() {
+      const banner = document.getElementById('testBanner');
+      if (banner) {
+        banner.classList.add('show');
+      }
+    }
+
+    function hideTestBanner() {
+      const banner = document.getElementById('testBanner');
+      if (banner) {
+        banner.classList.remove('show');
+      }
+    }
+
+    // Error monitoring
+    window.addEventListener('error', function(e) {
+      const output = document.getElementById('consoleOutput');
+      if (output) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-log';
+        errorDiv.textContent = 'Error: ' + e.message + ' at ' + e.filename + ':' + e.lineno;
+        output.appendChild(errorDiv);
+      }
+    });
+
+    // Set command code blocks
+    safeSetText('cmd1', `// Clear dismissal and force show banner
+localStorage.removeItem('smartBanner_dismissed');
+localStorage.removeItem('smartBanner_variant');
+location.reload();`);
+
+    safeSetText('cmd2', `// Check current state
+console.log('=== SmartAppBanner Debug ===');
+console.log('User Agent:', navigator.userAgent);
+console.log('Is Android:', /Android/i.test(navigator.userAgent));
+console.log('Dismissed:', localStorage.getItem('smartBanner_dismissed'));
+console.log('Today:', new Date().toDateString());
+console.log('Banner Element:', document.getElementById('smartAppBanner'));
+console.log('Has show class:', document.getElementById('smartAppBanner')?.classList.contains('show'));`);
+
+    safeSetText('cmd3', `// Force display banner immediately
+(function() {
+  const banner = document.getElementById('smartAppBanner');
+  if (banner) {
+    banner.style.display = 'flex';
+    banner.classList.add('show');
+    console.log('✅ Banner forced to display');
+  } else {
+    console.error('❌ Banner element not found!');
+  }
+})();`);
+
+    safeSetText('cmd4', `// Check computed styles
+const banner = document.getElementById('smartAppBanner');
+if (banner) {
+  const styles = window.getComputedStyle(banner);
+  console.log('Display:', styles.display);
+  console.log('Visibility:', styles.visibility);
+  console.log('Opacity:', styles.opacity);
+  console.log('Z-index:', styles.zIndex);
+  console.log('Position:', styles.position);
+}`);
+
+    safeSetText('fixCode', `// Add error handling and debug mode
+function showBanner() {
+  try {
+    const banner = document.getElementById('smartAppBanner');
+    if (!banner) {
+      console.error('SmartAppBanner: Element not found');
+      return;
+    }
+
+    const variant = getVariant();
+    const taglineEl = document.getElementById('bannerTagline');
+    if (taglineEl) {
+      taglineEl.textContent = BANNER_VARIANTS[variant];
+    }
+
+    banner.classList.add('show');
+    console.log('SmartAppBanner: Displayed successfully');
+
+    // Track event with error handling
+    if (typeof trackEvent === 'function') {
+      trackEvent('banner_view', {
+        variant: variant,
+        page: window.location.pathname
+      });
+    }
+  } catch (error) {
+    console.error('SmartAppBanner Error:', error);
+  }
+}
+
+// Add debug parameter support
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('debug_banner') === 'true') {
+  console.log('Debug mode: Force showing banner');
+  localStorage.removeItem('smartBanner_dismissed');
+  setTimeout(showBanner, 100);
+}`);
+
+    // Initialize
+    checkEnvironment();
+    checkStorage();
+    checkElements();
+  </script>
+</body>
+</html>

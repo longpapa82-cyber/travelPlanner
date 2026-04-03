@@ -345,7 +345,7 @@ export class AdminService {
 
     // Commission rates by platform
     const commissions: Record<string, number> = {
-      web: 0.05, // Paddle: 5% MoR fee
+      web: 0.029, // Stripe: 2.9% + $0.30 (approximated to 2.9% for simplicity)
       ios: 0.15, // Apple: 15% (small business)
       android: 0.15, // Google: 15% (first $1M)
     };

@@ -37,7 +37,7 @@
     "mrr": "Monatl. Einnahmen",
     "revenue": "Einnahmen",
     "commission": "Provision",
-    "paddle": "Paddle (Web)",
+    "paddle": "Stripe (Web)",
     "apple": "Apple (iOS)",
     "google": "Google (Android)",
     "commissionRate": "Provisionssatz",

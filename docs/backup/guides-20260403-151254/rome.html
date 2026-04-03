@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로마 여행 가이드 - MyTravel</title>
+  <meta name="description" content="로마 여행 완벽 가이드. 콜로세움, 바티칸 박물관, 트레비 분수 등 추천 관광지와 파스타, 젤라또 등 현지 음식, 로마패스 팁까지 확인하세요." />
+  <link rel="canonical" href="https://mytravel-planner.com/guides/rome" />
+  <meta property="og:title" content="로마 여행 가이드 - MyTravel" />
+  <meta property="og:description" content="로마 추천 관광지, 현지 음식, 여행 팁을 한눈에. AI가 만드는 나만의 로마 여행 계획." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://mytravel-planner.com/guides/rome" />
+  <meta property="og:site_name" content="MyTravel" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="theme-color" content="#2563EB" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
+    .logo span { color: #f59e0b; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #2563EB; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #2563EB; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .nav a.btn-primary { color: #fff; }
+
+    .page-hero { background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 3rem 1.5rem; text-align: center; }
+    .page-hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .page-hero p { color: #475569; max-width: 600px; margin: 0 auto; }
+
+    .breadcrumb { max-width: 800px; margin: 0 auto; padding: 1rem 1.5rem 0; font-size: 0.85rem; color: #64748b; }
+    .breadcrumb a { color: #2563EB; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .content { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+    .content h2 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1e293b; border-left: 4px solid #2563EB; padding-left: 0.75rem; }
+    .content p { color: #334155; margin-bottom: 1rem; font-size: 1rem; line-height: 1.8; }
+    .content ul { margin: 1rem 0; padding-left: 1.5rem; }
+    .content li { margin-bottom: 0.5rem; color: #334155; }
+
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .info-card { background: #f8fafc; border-radius: 0.75rem; padding: 1.25rem; text-align: center; }
+    .info-card .icon { font-size: 1.75rem; margin-bottom: 0.4rem; }
+    .info-card h3 { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .info-card p { color: #64748b; font-size: 0.85rem; margin-bottom: 0; }
+
+    .spot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .spot-card { background: #f8fafc; border-radius: 0.75rem; padding: 1.25rem; }
+    .spot-card h3 { font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem; color: #1e293b; }
+    .spot-card p { color: #64748b; font-size: 0.9rem; margin-bottom: 0; }
+
+    .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 0; overflow: hidden; }
+
+    .footer { background: #1e293b; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
+    .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .footer a:hover { color: #fff; }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #334155; text-align: center; font-size: 0.85rem; }
+    .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
+
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .page-hero h1 { font-size: 1.5rem; }
+      .info-grid { grid-template-columns: repeat(2, 1fr); }
+      .spot-grid { grid-template-columns: 1fr; }
+    }
+  
+    /* Smart App Banner */
+    .smart-app-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #4A90D9 0%, #5BA3E8 100%);
+      color: white;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideDown 0.3s ease-out;
+      display: none;
+    }
+    .smart-app-banner.show { display: block; }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+    .banner-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.875rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .banner-icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+    .banner-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .banner-text h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.125rem;
+    }
+    .banner-text p {
+      font-size: 0.8rem;
+      opacity: 0.95;
+      margin-bottom: 0.25rem;
+    }
+    .banner-rating {
+      font-size: 0.7rem;
+      opacity: 0.9;
+    }
+    .banner-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .banner-download {
+      background: white;
+      color: #4A90D9;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 1.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .banner-download:hover {
+      background: #f0f9ff;
+      transform: scale(1.02);
+    }
+    .banner-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .banner-close:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    @media (max-width: 480px) {
+      .banner-content { padding: 0.75rem 0.875rem; gap: 0.75rem; }
+      .banner-icon { font-size: 2rem; }
+      .banner-text h4 { font-size: 0.95rem; }
+      .banner-text p { font-size: 0.75rem; }
+      .banner-download { padding: 0.4rem 1rem; font-size: 0.85rem; }
+    }
+
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TravelGuide",
+    "name": "로마 여행 가이드 - MyTravel",
+    "description": "로마 여행 완벽 가이드. 콜로세움, 바티칸 박물관, 트레비 분수 등 추천 관광지와 파스타, 젤라또 등 현지 음식, 로마패스 팁까지 확인하세요.",
+    "url": "https://mytravel-planner.com/guides/rome",
+    "datePublished": "2025-12-01",
+    "dateModified": "2026-02-20",
+    "author": {
+      "@type": "Organization",
+      "name": "MyTravel"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "MyTravel",
+      "url": "https://mytravel-planner.com"
+    },
+    "inLanguage": "ko"
+  }
+  </script>
+</head>
+<body>
+<!-- Smart App Banner (Android Only) -->
+<div id="smartAppBanner" class="smart-app-banner">
+  <div class="banner-content">
+    <div class="banner-icon">🎯</div>
+    <div class="banner-text">
+      <h4>myTravel</h4>
+      <p id="bannerTagline">AI가 만드는 완벽한 여행</p>
+      <div class="banner-rating">⭐⭐⭐⭐⭐ 4.8점 (12K)</div>
+    </div>
+  </div>
+  <div class="banner-actions">
+    <button class="banner-download" onclick="handleBannerInstall()">무료 다운로드</button>
+    <button class="banner-close" onclick="handleBannerDismiss()">✕</button>
+  </div>
+</div>
+
+
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">My<span>Travel</span></a>
+    <nav class="nav">
+      <a href="/">홈</a>
+      <a href="/about">소개</a>
+      <a href="/guides/" style="color:#2563EB;font-weight:600;">가이드</a>
+      <a href="/blog">블로그</a>
+      <a href="/contact">문의</a>
+      <a href="/trips/create?destination=Rome" class="btn btn-primary">로그인</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <h1>로마 여행 가이드</h1>
+  <p>영원의 도시, 로마의 2,800년 역사와 미식을 경험하세요</p>
+</section>
+
+<div class="breadcrumb">
+  <a href="/">홈</a> &gt; <a href="/guides">가이드</a> &gt; 로마
+</div>
+
+<p style="max-width:800px;margin:0 auto;padding:0.5rem 1.5rem;font-size:0.85rem;color:#94a3b8;">마지막 업데이트: 2026년 2월 20일 | MyTravel 팀</p>
+<main class="content">
+  <h2>로마 소개</h2>
+  <p>
+    로마는 2,800년 이상의 역사를 지닌 이탈리아의 수도이자, '영원의 도시'라 불리는 세계 문명의 요람입니다.
+    고대 로마 제국의 유적부터 르네상스 예술, 바로크 건축, 그리고 현대 이탈리아 문화까지
+    수천 년의 역사가 한 도시 안에 겹겹이 쌓여 있어 걸어 다니는 것 자체가 시간 여행입니다.
+    콜로세움, 바티칸 시국, 판테온 등 세계적인 유산이 도시 곳곳에 자리하고 있으며,
+    로마에서는 어느 골목을 돌아도 놀라운 역사적 건축물을 만나게 됩니다.
+    거기에 세계 최고 수준의 음식 문화가 더해져 파스타, 피자, 젤라또, 에스프레소 등
+    이탈리아 미식의 정수를 경험할 수 있습니다. 로마는 역사, 예술, 음식, 쇼핑 등
+    여행의 모든 요소를 갖춘 완벽한 유럽 여행지입니다.
+  </p>
+
+  <h2>실용 정보</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="icon">💶</div>
+      <h3>통화</h3>
+      <p>유로 (EUR)</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🕐</div>
+      <h3>시차</h3>
+      <p>KST -8시간</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🗣️</div>
+      <h3>언어</h3>
+      <p>이탈리아어</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🔌</div>
+      <h3>전압</h3>
+      <p>230V / 50Hz (C, F, L타입)</p>
+    </div>
+  </div>
+
+  <h2>추천 관광지</h2>
+  <p>
+    로마는 도시 전체가 야외 박물관이라고 해도 과언이 아닙니다. 주요 관광지 대부분이 도보 거리 안에 있어
+    걸어서 둘러보기 좋지만, 하루에 모든 것을 볼 수는 없으므로 최소 3~4일의 일정을 추천합니다.
+  </p>
+  <div class="spot-grid">
+    <div class="spot-card">
+      <h3>🏟️ 콜로세움</h3>
+      <p>서기 80년에 완공된 로마의 상징적인 원형 경기장으로, 최대 5만 명을 수용했습니다. 검투사 경기가 열리던 지하 구조와 관람석을 돌아보며 고대 로마의 위용을 체감할 수 있습니다. 포로 로마노와 통합 티켓으로 구입 가능합니다.</p>
+    </div>
+    <div class="spot-card">
+      <h3>🎨 바티칸 박물관</h3>
+      <p>세계에서 가장 방대한 예술 컬렉션을 소장한 박물관으로, 미켈란젤로의 시스티나 성당 천장화가 하이라이트입니다. 라파엘로의 아테네 학당, 고대 조각품 등 수만 점의 작품을 만날 수 있으며, 입장까지 수시간 대기가 필요하므로 온라인 예약이 필수입니다.</p>
+    </div>
+    <div class="spot-card">
+      <h3>⛲ 트레비 분수</h3>
+      <p>바로크 양식의 화려한 분수로, 동전을 던지면 로마에 다시 돌아올 수 있다는 전설이 유명합니다. 밤에 조명을 받은 분수의 모습이 특히 아름다우며, 이른 아침이나 늦은 밤에 방문하면 비교적 한적하게 감상할 수 있습니다.</p>
+    </div>
+    <div class="spot-card">
+      <h3>🏛️ 판테온</h3>
+      <p>기원전 27년에 건설된 고대 로마의 신전으로, 2,000년이 지난 지금도 세계 최대의 비보강 콘크리트 돔을 유지하고 있습니다. 천장 중앙의 오쿨루스(원형 개구부)로 쏟아지는 자연광이 신비로운 분위기를 연출합니다. 입장은 무료이나 예약이 필요합니다.</p>
+    </div>
+    <div class="spot-card">
+      <h3>🪜 스페인 광장</h3>
+      <p>영화 '로마의 휴일'로 유명해진 135개의 계단이 있는 광장입니다. 계단 아래의 바르카치아 분수와 위쪽의 트리니타 데이 몬티 교회가 아름다운 조화를 이룹니다. 주변에는 명품 쇼핑가인 콘도티 거리가 있습니다.</p>
+    </div>
+    <div class="spot-card">
+      <h3>🏚️ 포로 로마노</h3>
+      <p>고대 로마 제국의 정치, 종교, 상업 중심지였던 유적지입니다. 원로원 건물, 개선문, 신전 터 등이 남아 있어 로마 제국의 영광을 생생하게 느낄 수 있습니다. 콜로세움과 팔라티노 언덕을 포함한 통합 티켓으로 방문하는 것이 효율적입니다.</p>
+    </div>
+  </div>
+
+  <!-- Ad slot -->
+  <div class="ad-container">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="2397004834" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <h2>현지 음식</h2>
+  <p>
+    이탈리아 음식은 전 세계에서 사랑받지만, 로마에서 먹는 진짜 이탈리아 음식은 차원이 다릅니다.
+    신선한 재료와 심플한 조리법이 만들어내는 깊은 맛은 로마 여행의 가장 큰 즐거움 중 하나입니다.
+    관광지 주변의 '관광객 전용 레스토랑'보다는 골목 안쪽의 현지인 식당(트라토리아)을 찾아가면 더 좋은 가격에 더 맛있는 음식을 즐길 수 있습니다.
+  </p>
+  <ul>
+    <li><strong>파스타</strong> — 로마의 4대 파스타는 반드시 맛보아야 합니다. 까르보나라(달걀, 관찰레, 페코리노 치즈), 카치오 에 페페(후추와 치즈), 아마트리치아나(토마토 소스와 관찰레), 그리치아(관찰레와 치즈)가 그것입니다. 크림을 넣지 않는 정통 까르보나라의 진한 맛에 놀라게 될 것입니다.</li>
+    <li><strong>젤라또 (Gelato)</strong> — 이탈리아 젤라또는 일반 아이스크림보다 공기 함량이 적어 더 진하고 부드럽습니다. 인공 색소를 사용하지 않는 '아르티지아날레(수제)' 가게를 선택하세요. 피스타치오, 스트라치아텔라, 노치올라(헤이즐넛)가 인기 맛입니다.</li>
+    <li><strong>피자</strong> — 로마식 피자는 나폴리 피자와 달리 얇고 바삭한 크러스트가 특징입니다. 'Pizza al taglio'(조각 피자)는 무게 단위로 판매되어 원하는 만큼만 저렴하게 맛볼 수 있습니다. 트라스테베레 지역에 유명 피자 맛집이 많습니다.</li>
+    <li><strong>에스프레소</strong> — 이탈리아에서 커피는 곧 에스프레소입니다. 카페(바)에서 서서 마시면 앉아서 마시는 것보다 절반 가격인 1~1.5유로입니다. 아침에는 카푸치노, 점심 이후에는 에스프레소를 마시는 것이 이탈리아식 커피 예절입니다.</li>
+  </ul>
+
+  <h2>여행 팁</h2>
+  <p>
+    로마 여행을 알차게 즐기기 위한 실용적인 팁들을 소개합니다.
+    특히 로마패스와 바티칸 복장 규정은 미리 알아두면 시간과 비용을 절약할 수 있습니다.
+  </p>
+  <ul>
+    <li><strong>로마패스 (Roma Pass)</strong> — 48시간(32유로) 또는 72시간(52유로) 패스로, 콜로세움, 보르게세 미술관 등 주요 관광지 1~2곳 무료 입장과 대중교통 무제한 이용이 포함됩니다. 유적지마다 긴 대기줄을 건너뛸 수 있는 우선 입장 혜택이 큰 장점입니다.</li>
+    <li><strong>바티칸 복장 규정</strong> — 성 베드로 대성당과 바티칸 박물관 방문 시 무릎과 어깨를 가리는 복장이 필수입니다. 반바지, 민소매, 미니스커트는 입장이 거부될 수 있으니 얇은 긴바지와 가디건을 준비하세요. 여름에도 이 규정은 엄격히 적용됩니다.</li>
+    <li><strong>수돗물 분수 (Nasone)</strong> — 로마 거리 곳곳에는 'Nasone'라 불리는 공공 음수대가 2,500개 이상 설치되어 있습니다. 깨끗한 수돗물이 24시간 흐르고 있어 물병을 가져가면 생수를 따로 살 필요가 없습니다. 물 윗구멍을 손가락으로 막으면 위쪽 구멍에서 물이 뿜어져 나와 마시기 편합니다.</li>
+    <li><strong>코페르토 (Coperto)</strong> — 이탈리아 레스토랑에서는 자리값(coperto)으로 1인당 1~3유로가 추가됩니다. 팁은 필수가 아니지만, 좋은 서비스에 대해 5~10% 정도 남기는 것이 일반적입니다. 메뉴판에 코페르토 금액이 표시되어 있으니 확인하세요.</li>
+  </ul>
+
+  <h2>최적의 여행 시기</h2>
+  <p>
+    로마 여행의 최적 시기는 4월~6월과 9월~10월입니다. 이 시기에는 평균 기온이 18~26도로 쾌적하고,
+    야외 관광지를 돌아다니기에 완벽한 날씨입니다. 특히 4월 부활절과 5월의 로마는 꽃이 만발하여
+    도시가 가장 아름다운 시기입니다.
+    7~8월은 기온이 35도 이상 올라가는 폭염이 빈번하며, 많은 로마 시민들이 바캉스를 떠나
+    일부 로컬 레스토랑이 문을 닫습니다. 하지만 긴 낮 시간과 야외 오페라 등 여름 축제를 즐길 수 있습니다.
+    겨울(12~2월)은 기온이 5~12도로 쌀쌀하지만 관광객이 가장 적어 바티칸 박물관이나 콜로세움을
+    한적하게 관람할 수 있습니다. 크리스마스 시즌의 성 베드로 광장 장식은 특별한 경험이 됩니다.
+    비수기 항공권과 숙소가 크게 저렴해지므로 예산 여행자에게는 좋은 선택입니다.
+  </p>
+
+  <p style="margin-top:2rem;padding:1.25rem;background:#eff6ff;border-radius:0.75rem;text-align:center;">
+    MyTravel로 나만의 로마 여행 계획을 세워보세요!<br/>
+    <a href="/trips/create?destination=Rome" style="color:#2563EB;font-weight:600;">지금 시작하기 &rarr;</a>
+  </p>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <h4>MyTravel</h4>
+      <p style="font-size:0.9rem;">AI 기반 여행 계획 서비스.<br/>목적지만 선택하면 완벽한 일정이 완성됩니다.</p>
+      <div class="langs" style="margin-top:1rem;">
+        <span class="lang-badge">🇰🇷 한국어</span>
+        <span class="lang-badge">🇺🇸 English</span>
+        <span class="lang-badge">🇯🇵 日本語</span>
+        <span class="lang-badge">🇨🇳 中文</span>
+        <span class="lang-badge">🇪🇸 Español</span>
+        <span class="lang-badge">🇩🇪 Deutsch</span>
+        <span class="lang-badge">🇫🇷 Français</span>
+        <span class="lang-badge">🇹🇭 ไทย</span>
+        <span class="lang-badge">🇻🇳 Tiếng Việt</span>
+      </div>
+    </div>
+    <div>
+      <h4>서비스</h4>
+      <a href="/trips/create?destination=Rome">여행 계획 만들기</a>
+      <a href="/guides/">여행 가이드</a>
+      <a href="/blog">블로그</a>
+      <a href="/about">서비스 소개</a>
+      <a href="/contact">문의하기</a>
+    </div>
+    <div>
+      <h4>정책</h4>
+      <a href="/terms">이용약관</a>
+      <a href="/privacy">개인정보처리방침</a>
+      <a href="/faq">FAQ</a>
+      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:longpapa82@gmail.com" style="display:inline;">longpapa82@gmail.com</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2024-2026 MyTravel. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // ============================================================
+  // Smart App Banner Logic (Android Only)
+  // ============================================================
+
+  const CONFIG = {
+    playStoreURL: 'https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner',
+    storageKeys: {
+      dismissed: 'smartBanner_dismissed',
+      variant: 'smartBanner_variant'
+    }
+  };
+
+  const BANNER_VARIANTS = {
+    A: '여행 계획, 더 쉽고 빠르게',
+    B: 'AI가 만드는 완벽한 여행',
+    C: '5초 만에 여행 일정 완성'
+  };
+
+  function isMobile() {
+    return /Android/i.test(navigator.userAgent);
+  }
+
+  function wasDismissedToday() {
+    const dismissed = localStorage.getItem(CONFIG.storageKeys.dismissed);
+    const today = new Date().toDateString();
+    return dismissed === today;
+  }
+
+  function getVariant() {
+    let variant = localStorage.getItem(CONFIG.storageKeys.variant);
+    if (!variant || !BANNER_VARIANTS[variant]) {
+      const variants = Object.keys(BANNER_VARIANTS);
+      variant = variants[Math.floor(Math.random() * variants.length)];
+      localStorage.setItem(CONFIG.storageKeys.variant, variant);
+    }
+    return variant;
+  }
+
+  function trackEvent(eventName, params = {}) {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', eventName, params);
+    }
+  }
+
+  function showBanner() {
+    const banner = document.getElementById('smartAppBanner');
+    if (!banner) return;
+
+    const variant = getVariant();
+    const taglineEl = document.getElementById('bannerTagline');
+    if (taglineEl) {
+      taglineEl.textContent = BANNER_VARIANTS[variant];
+    }
+
+    banner.classList.add('show');
+    trackEvent('banner_view', {
+      variant: variant,
+      page: window.location.pathname
+    });
+  }
+
+  window.handleBannerInstall = function() {
+    const variant = getVariant();
+    const deepLink = encodeURIComponent(window.location.pathname + window.location.search);
+    const url = CONFIG.playStoreURL + '&referrer=' + deepLink;
+
+    trackEvent('banner_click', {
+      variant: variant,
+      page: window.location.pathname,
+      deepLink: deepLink
+    });
+
+    window.open(url, '_blank');
+  };
+
+  window.handleBannerDismiss = function() {
+    const banner = document.getElementById('smartAppBanner');
+    if (!banner) return;
+
+    const variant = getVariant();
+    const today = new Date().toDateString();
+    localStorage.setItem(CONFIG.storageKeys.dismissed, today);
+
+    banner.classList.remove('show');
+    trackEvent('banner_dismiss', {
+      variant: variant,
+      page: window.location.pathname
+    });
+  };
+
+  if (isMobile() && !wasDismissedToday()) {
+    setTimeout(showBanner, 2000);
+  }
+
+</script>
+
+</body>
+</html>

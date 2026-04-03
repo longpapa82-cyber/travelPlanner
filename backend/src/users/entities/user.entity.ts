@@ -140,6 +140,12 @@ export class User {
   @Column({ type: 'varchar', nullable: true, select: false })
   paddleCustomerId?: string;
 
+  @Column({ type: 'varchar', nullable: true, select: false })
+  stripeCustomerId?: string;
+
+  @Column({ type: 'varchar', nullable: true, select: false })
+  stripeSubscriptionId?: string;
+
   @Column({ type: 'int', default: 0 })
   aiTripsUsedThisMonth: number;
 
