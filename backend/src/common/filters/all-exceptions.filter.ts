@@ -74,22 +74,28 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       );
     }
 
-    // Persist 5xx errors to ErrorLog (fire-and-forget, rate-limited)
+    // Determine if this error should be logged
+    const shouldLogError = this.shouldLogError(status, request.path, error);
+
+    // Persist important errors to ErrorLog (fire-and-forget, rate-limited)
     const now = Date.now();
     if (now - this.errorLogWindowStart > 60_000) {
       this.errorLogCount = 0;
       this.errorLogWindowStart = now;
     }
-    if (status >= 500 && this.dataSource?.isInitialized && this.errorLogCount < AllExceptionsFilter.MAX_ERROR_LOGS_PER_MINUTE) {
+    if (shouldLogError && this.dataSource?.isInitialized && this.errorLogCount < AllExceptionsFilter.MAX_ERROR_LOGS_PER_MINUTE) {
       this.errorLogCount++;
-      const errorMessage =
-        exception instanceof Error
-          ? exception.message
-          : typeof message === 'string'
-            ? message
-            : Array.isArray(message)
-              ? message.join('; ')
-              : 'Unknown error';
+      // Extract meaningful error message for logging
+      let errorMessage: string;
+      if (typeof message === 'string') {
+        errorMessage = message;
+      } else if (Array.isArray(message)) {
+        errorMessage = message.join('; ');
+      } else if (exception instanceof Error) {
+        errorMessage = exception.message;
+      } else {
+        errorMessage = 'Unknown error';
+      }
 
       this.dataSource
         .getRepository(ErrorLog)
@@ -97,7 +103,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
           errorMessage: errorMessage.slice(0, 500),
           stackTrace:
             exception instanceof Error ? exception.stack : undefined,
-          severity: status >= 500 ? 'error' : 'warning',
+          severity: this.getSeverity(status),
           platform: 'web',
           screen: `${request.method} ${request.path}`.slice(0, 200),
           userAgent: request.headers['user-agent']?.slice(0, 500),
@@ -118,5 +124,45 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
     });
+  }
+
+  /**
+   * Determines if an error should be logged to the database.
+   * Logs:
+   * - All 5xx errors (server errors)
+   * - 429 (rate limiting/throttler)
+   * - 401/403 on sensitive endpoints (auth, admin)
+   * - 400 on auth endpoints (validation failures)
+   */
+  private shouldLogError(status: number, path: string, error: string): boolean {
+    // Always log 5xx errors
+    if (status >= 500) return true;
+
+    // Log rate limiting (ThrottlerException)
+    if (status === 429) return true;
+
+    // Log auth-related failures
+    const authPaths = ['/auth/register', '/auth/login', '/auth/verify-email', '/auth/reset-password'];
+    if (authPaths.some(p => path.includes(p))) {
+      // Log auth failures (401, 403) and validation errors (400)
+      if ([400, 401, 403].includes(status)) return true;
+    }
+
+    // Log admin access attempts
+    if (path.includes('/admin') && [401, 403].includes(status)) return true;
+
+    // Log subscription/payment errors
+    if (path.includes('/subscription') && status >= 400) return true;
+
+    return false;
+  }
+
+  /**
+   * Maps HTTP status codes to severity levels for error logs
+   */
+  private getSeverity(status: number): 'error' | 'warning' | 'fatal' {
+    if (status >= 500) return 'error';
+    if (status === 429) return 'warning'; // Rate limiting
+    return 'warning'; // Other 4xx errors
   }
 }

@@ -76,12 +76,14 @@ export const Input: React.FC<InputProps> = ({
           multiline={multiline}
           numberOfLines={numberOfLines}
           textAlignVertical={multiline ? 'top' : 'center'}
-          autoComplete={type === 'password' ? 'off' : type === 'email' ? 'email' : 'off'}
+          autoComplete={type === 'email' ? 'email' : 'off'}
           autoCorrect={type !== 'password' && type !== 'email'}
           autoCapitalize={type === 'email' ? 'none' : type === 'password' ? 'none' : 'sentences'}
           accessible
           accessibilityLabel={label || placeholder}
           accessibilityState={{ disabled }}
+          // Disable password manager prompts on Android
+          importantForAutofill={type === 'password' ? 'no' : 'auto'}
         />
 
         {type === 'password' && (

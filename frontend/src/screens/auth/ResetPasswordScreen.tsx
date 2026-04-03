@@ -153,7 +153,8 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
                 onChangeText={setNewPassword}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
-                autoComplete="new-password"
+                autoComplete="off"
+                importantForAutofill="no"
                 editable={!isLoading}
                 accessibilityLabel={t('resetPassword.newPassword')}
               />
@@ -220,7 +221,8 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
                 onChangeText={setConfirmPassword}
                 secureTextEntry={!showConfirmPassword}
                 autoCapitalize="none"
-                autoComplete="new-password"
+                autoComplete="off"
+                importantForAutofill="no"
                 editable={!isLoading}
                 accessibilityLabel={t('resetPassword.confirmPassword')}
               />

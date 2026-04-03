@@ -211,7 +211,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 onChangeText={handlePasswordChange}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
-                autoComplete="current-password"
+                autoComplete="off"
+                importantForAutofill="no"
                 editable={!isLoading}
                 accessibilityLabel={t('login.password')}
               />

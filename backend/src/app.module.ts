@@ -19,7 +19,7 @@ import { AdminModule } from './admin/admin.module';
 import { SocialModule } from './social/social.module';
 import { PlacesModule } from './places/places.module';
 import { SubscriptionModule } from './subscription/subscription.module';
-import { StripeModule } from './stripe/stripe.module';
+// import { StripeModule } from './stripe/stripe.module';
 import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
 import { LifecycleService } from './common/lifecycle.service';
 
@@ -52,7 +52,7 @@ import emailConfig from './config/email.config';
         {
           name: 'medium',
           ttl: 60000,
-          limit: 100,
+          limit: 200,
         },
       ],
     }),
@@ -81,7 +81,7 @@ import emailConfig from './config/email.config';
     SocialModule,
     PlacesModule,
     SubscriptionModule,
-    StripeModule,
+    // StripeModule,
   ],
   controllers: [AppController],
   providers: [

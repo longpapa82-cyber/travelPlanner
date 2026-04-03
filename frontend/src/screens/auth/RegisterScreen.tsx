@@ -204,7 +204,8 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
-                autoComplete="new-password"
+                autoComplete="off"
+                importantForAutofill="no"
                 editable={!isLoading}
                 accessibilityLabel={t('register.password')}
               />
@@ -257,7 +258,8 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 onChangeText={setConfirmPassword}
                 secureTextEntry={!showConfirmPassword}
                 autoCapitalize="none"
-                autoComplete="new-password"
+                autoComplete="off"
+                importantForAutofill="no"
                 editable={!isLoading}
                 accessibilityLabel={t('register.confirmPassword')}
               />

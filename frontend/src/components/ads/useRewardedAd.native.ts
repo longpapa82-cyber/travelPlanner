@@ -6,7 +6,7 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import AdManager from '../../utils/adManager.native';
+import AdManager from '../../utils/adManager';
 import { canShowFullScreenAd, recordFullScreenAdShown } from './adFrequency';
 
 export function useRewardedAd(): {

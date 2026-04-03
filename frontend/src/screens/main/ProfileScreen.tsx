@@ -633,6 +633,9 @@ const ProfileScreen = ({ navigation }: any) => {
                 placeholder={t('changePassword.currentPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 secureTextEntry
+                autoComplete="off"
+                importantForAutofill="no"
+                autoCapitalize="none"
               />
               <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('changePassword.new')}</Text>
               <TextInput
@@ -642,6 +645,9 @@ const ProfileScreen = ({ navigation }: any) => {
                 placeholder={t('changePassword.newPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 secureTextEntry
+                autoComplete="off"
+                importantForAutofill="no"
+                autoCapitalize="none"
               />
               <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('changePassword.confirm')}</Text>
               <TextInput
@@ -651,6 +657,9 @@ const ProfileScreen = ({ navigation }: any) => {
                 placeholder={t('changePassword.confirmPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 secureTextEntry
+                autoComplete="off"
+                importantForAutofill="no"
+                autoCapitalize="none"
               />
               <Button variant="primary" fullWidth onPress={handleChangePassword} loading={isSaving} disabled={isSaving}>
                 {t('changePassword.submit')}
@@ -719,6 +728,9 @@ const ProfileScreen = ({ navigation }: any) => {
                 placeholder={t('deleteAccount.passwordPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 secureTextEntry
+                autoComplete="off"
+                importantForAutofill="no"
+                autoCapitalize="none"
                 editable={!isDeleting}
               />
               <Button variant="primary" fullWidth onPress={handleConfirmDelete} loading={isDeleting} disabled={isDeleting}
