@@ -107,12 +107,17 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     // CRITICAL FIX: Check both flags BEFORE calling onChangeText
     // This prevents the field from being reset when a selection is made
     if (skipNextSearch.current || justSelected.current) {
+      console.log('[PlacesAutocomplete] Skipping change - selection in progress');
       if (skipNextSearch.current) {
         skipNextSearch.current = false;
+      }
+      if (justSelected.current) {
+        justSelected.current = false;
       }
       return;
     }
 
+    console.log('[PlacesAutocomplete] Text changed to:', text);
     onChangeText(text);
 
     if (!apiAvailable) return;
@@ -122,6 +127,8 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   };
 
   const handleSelect = (place: PlacePrediction) => {
+    console.log('[PlacesAutocomplete] Selecting place:', place.description);
+
     // Set flags BEFORE any state updates to prevent race conditions
     skipNextSearch.current = true;
     justSelected.current = true;
@@ -134,16 +141,19 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     // CRITICAL FIX: Only call onSelect if provided, otherwise fall back to onChangeText
     // This prevents double state updates and ensures the selection is properly handled
     if (onSelect) {
+      console.log('[PlacesAutocomplete] Calling onSelect');
       onSelect(place);
     } else {
       // Fallback for components that only use onChangeText
+      console.log('[PlacesAutocomplete] Falling back to onChangeText');
       onChangeText(place.description);
     }
 
-    // Clear the justSelected flag after a short delay
+    // Clear the justSelected flag after a longer delay to ensure no race conditions
     setTimeout(() => {
+      console.log('[PlacesAutocomplete] Clearing justSelected flag');
       justSelected.current = false;
-    }, 100);
+    }, 500);
   };
 
   const handleBlur = () => {
