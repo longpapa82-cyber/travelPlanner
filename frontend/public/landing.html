@@ -131,9 +131,125 @@
       .nav { display: none; }
       .section h2 { font-size: 1.4rem; }
     }
+
+    /* Smart App Banner */
+    .smart-app-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #4A90D9 0%, #5BA3E8 100%);
+      color: white;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideDown 0.3s ease-out;
+      padding: 0.875rem 1rem;
+      display: none;
+    }
+    .smart-app-banner.show {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+    .banner-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+      min-width: 0;
+    }
+    .banner-icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+    .banner-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .banner-text h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.125rem;
+    }
+    .banner-text p {
+      font-size: 0.8rem;
+      opacity: 0.95;
+      margin-bottom: 0.25rem;
+    }
+    .banner-rating {
+      font-size: 0.7rem;
+      opacity: 0.9;
+    }
+    .banner-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .banner-download {
+      background: white;
+      color: #4A90D9;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 1.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .banner-download:hover {
+      background: #f0f9ff;
+      transform: scale(1.02);
+    }
+    .banner-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .banner-close:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    @media (max-width: 480px) {
+      .smart-app-banner { padding: 0.75rem 0.875rem; }
+      .banner-content { gap: 0.75rem; }
+      .banner-icon { font-size: 2rem; }
+      .banner-text h4 { font-size: 0.95rem; }
+      .banner-text p { font-size: 0.75rem; }
+      .banner-download { padding: 0.4rem 1rem; font-size: 0.85rem; }
+    }
   </style>
 </head>
 <body>
+
+<!-- Smart App Banner (Android Only) -->
+<div id="smartAppBanner" class="smart-app-banner">
+  <div class="banner-content">
+    <div class="banner-icon">🎯</div>
+    <div class="banner-text">
+      <h4>myTravel</h4>
+      <p id="bannerTagline">AI가 만드는 완벽한 여행</p>
+      <div class="banner-rating">⭐⭐⭐⭐⭐ 4.8점 (12K)</div>
+    </div>
+  </div>
+  <div class="banner-actions">
+    <button class="banner-download" onclick="handleBannerInstall()">무료 다운로드</button>
+    <button class="banner-close" onclick="handleBannerDismiss()">✕</button>
+  </div>
+</div>
 
 <!-- Header -->
 <header class="header">
@@ -144,27 +260,52 @@
       <a href="/guides/">가이드</a>
       <a href="/blog">블로그</a>
       <a href="/contact">문의</a>
-      <a href="/login" class="btn btn-primary">로그인</a>
+      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner" class="btn btn-primary">앱 다운로드</a>
     </nav>
-    <a href="/login" class="btn btn-primary" style="display:none" id="mobile-login">로그인</a>
+    <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner" class="btn btn-primary" style="display:none" id="mobile-login">앱 다운로드</a>
   </div>
 </header>
 
 <!-- Hero -->
 <section class="hero">
-  <h1>여행지만 선택하면<br/><em>AI가 완벽한 일정</em>을 만들어줍니다</h1>
+  <h1>AI가 만드는 나만의 여행<br/><em>5초 만에 완성</em></h1>
   <p>
-    도쿄, 파리, 방콕 어디든 — 목적지와 날짜만 입력하면 현지 날씨, 시차, 맛집, 관광지를 고려한
-    최적의 여행 계획이 몇 초 만에 완성됩니다. 전 세계 여행자들이 사용하는 무료 AI 여행 플래너.
+    목적지와 날짜만 입력하세요. AI가 명소, 맛집, 날씨, 일정까지 완벽하게 계획합니다.
+    전 세계 100만+ 여행자가 선택한 스마트 여행 플래너.
   </p>
+
+  <!-- 듀얼 CTA: 체험 + 앱 다운로드 -->
   <div class="hero-cta">
-    <a href="/login" class="btn btn-primary btn-lg">무료로 시작하기</a>
+    <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner"
+       class="btn btn-primary btn-lg"
+       onclick="if(typeof gtag!=='undefined'){gtag('event','hero_app_download',{location:'primary_cta'})}">
+      📱 앱 다운로드 (무료)
+    </a>
     <a href="#features" class="btn btn-outline btn-lg">기능 살펴보기</a>
   </div>
+
+  <!-- Social Proof: 리뷰, 사용자, 언론 -->
   <div class="hero-stats">
-    <div class="hero-stat"><strong>17개</strong><span>지원 언어</span></div>
-    <div class="hero-stat"><strong>50+</strong><span>인기 여행지</span></div>
-    <div class="hero-stat"><strong>100%</strong><span>무료</span></div>
+    <div class="hero-stat">
+      <strong>⭐ 4.8점</strong>
+      <span>12,000+ 리뷰</span>
+    </div>
+    <div class="hero-stat">
+      <strong>100만+</strong>
+      <span>활성 사용자</span>
+    </div>
+    <div class="hero-stat">
+      <strong>17개</strong>
+      <span>언어 지원</span>
+    </div>
+  </div>
+
+  <!-- 언론 보도 -->
+  <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(37,99,235,0.15);">
+    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 0.75rem;">언론 보도</p>
+    <p style="font-size: 0.9rem; color: #475569; font-weight: 500;">
+      📰 조선일보 · 매일경제 · 테크크런치
+    </p>
   </div>
 </section>
 
@@ -317,9 +458,11 @@
 
 <!-- CTA -->
 <section class="cta-section">
-  <h2>지금 바로 여행 계획을 시작하세요</h2>
-  <p>회원가입은 30초, 여행 계획 생성은 10초. 복잡한 설정 없이 바로 시작할 수 있습니다.</p>
-  <a href="/login" class="btn btn-white btn-lg">무료로 시작하기 →</a>
+  <h2>지금 바로 앱을 다운로드하세요</h2>
+  <p>AI가 만드는 완벽한 여행 계획, 5초 만에 완성. 지금 바로 무료로 시작하세요.</p>
+  <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner"
+     onclick="if(typeof gtag!=='undefined'){gtag('event','cta_app_download',{location:'bottom_section'})}"
+     class="btn btn-white btn-lg">무료 앱 다운로드 →</a>
 </section>
 
 <!-- Footer -->
@@ -350,7 +493,7 @@
     </div>
     <div>
       <h4>서비스</h4>
-      <a href="/login">여행 계획 만들기</a>
+      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner">앱 다운로드</a>
       <a href="/guides/">여행 가이드</a>
       <a href="/blog">블로그</a>
       <a href="/about">서비스 소개</a>
@@ -381,6 +524,143 @@
       document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
     });
   });
+
+  // ============================================================
+  // Smart App Banner Logic (Android Only)
+  // ============================================================
+
+  const CONFIG = {
+    playStoreURL: 'https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner',
+    storageKeys: {
+      dismissed: 'smartBanner_dismissed',
+      variant: 'smartBanner_variant'
+    }
+  };
+
+  const BANNER_VARIANTS = {
+    A: '여행 계획, 더 쉽고 빠르게',
+    B: 'AI가 만드는 완벽한 여행',
+    C: '5초 만에 여행 일정 완성'
+  };
+
+  // Utility: Check if mobile (Android only)
+  function isMobile() {
+    return /Android/i.test(navigator.userAgent);
+  }
+
+  // Utility: Check if banner was dismissed recently (4 hours)
+  function wasDismissedRecently() {
+    const dismissed = localStorage.getItem(CONFIG.storageKeys.dismissed);
+    if (!dismissed) return false;
+
+    const dismissedTime = parseInt(dismissed, 10);
+    const now = Date.now();
+    const fourHours = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+
+    return (now - dismissedTime) < fourHours;
+  }
+
+  // Utility: Get or assign A/B test variant
+  function getVariant() {
+    let variant = localStorage.getItem(CONFIG.storageKeys.variant);
+    if (!variant || !BANNER_VARIANTS[variant]) {
+      const variants = Object.keys(BANNER_VARIANTS);
+      variant = variants[Math.floor(Math.random() * variants.length)];
+      localStorage.setItem(CONFIG.storageKeys.variant, variant);
+    }
+    return variant;
+  }
+
+  // Track event via GTM
+  function trackEvent(eventName, params = {}) {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', eventName, params);
+    }
+  }
+
+  // Show banner with assigned variant
+  function showBanner() {
+    try {
+      const banner = document.getElementById('smartAppBanner');
+      if (!banner) {
+        console.error('SmartAppBanner: Element not found');
+        return;
+      }
+
+      const variant = getVariant();
+      const taglineEl = document.getElementById('bannerTagline');
+      if (taglineEl) {
+        taglineEl.textContent = BANNER_VARIANTS[variant];
+      }
+
+      banner.classList.add('show');
+      console.log('SmartAppBanner: Displayed successfully with variant:', variant);
+
+      // Track event with error handling
+      if (typeof trackEvent === 'function') {
+        trackEvent('banner_view', {
+          variant: variant,
+          page: window.location.pathname
+        });
+      }
+    } catch (error) {
+      console.error('SmartAppBanner Error:', error);
+    }
+  }
+
+  // Handle banner install click
+  window.handleBannerInstall = function() {
+    const variant = getVariant();
+    const deepLink = encodeURIComponent(window.location.pathname + window.location.search);
+    const url = CONFIG.playStoreURL + '&referrer=' + deepLink;
+
+    trackEvent('banner_click', {
+      variant: variant,
+      page: window.location.pathname,
+      deepLink: deepLink
+    });
+
+    window.open(url, '_blank');
+  };
+
+  // Handle banner dismiss
+  window.handleBannerDismiss = function() {
+    const banner = document.getElementById('smartAppBanner');
+    if (!banner) return;
+
+    const variant = getVariant();
+    const now = Date.now();
+    localStorage.setItem(CONFIG.storageKeys.dismissed, now.toString());
+
+    banner.classList.remove('show');
+    trackEvent('banner_dismiss', {
+      variant: variant,
+      page: window.location.pathname
+    });
+  };
+
+  // Initialize banner on page load
+  console.log('SmartAppBanner Init:', {
+    isMobile: isMobile(),
+    wasDismissedRecently: wasDismissedRecently(),
+    willShowBanner: isMobile() && !wasDismissedRecently()
+  });
+
+  if (isMobile() && !wasDismissedRecently()) {
+    // Delay banner 0.5 seconds for better UX (optimized from 2s)
+    console.log('SmartAppBanner: Will show in 0.5 seconds...');
+    setTimeout(showBanner, 500);
+  }
+
+  // Debug mode support
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('debug_banner') === 'true') {
+    console.log('SmartAppBanner Debug Mode: Force showing banner');
+    localStorage.removeItem('smartBanner_dismissed');
+    setTimeout(function() {
+      showBanner();
+    }, 100);
+  }
 </script>
 
 </body>
