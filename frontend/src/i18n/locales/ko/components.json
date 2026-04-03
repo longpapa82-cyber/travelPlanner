@@ -3,6 +3,7 @@
     "addTitle": "활동 추가",
     "editTitle": "활동 수정",
     "time": "시간",
+    "timePlaceholder": "시간 선택",
     "title": "제목",
     "titlePlaceholder": "활동 제목을 입력하세요",
     "location": "장소",

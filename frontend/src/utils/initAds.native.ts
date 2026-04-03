@@ -17,35 +17,67 @@ export async function initializeAds(): Promise<void> {
   if (initialized) return;
 
   try {
-    // 1. Google UMP consent (GDPR) — must come before SDK init
+    console.log('[AdMob] Starting AdMob initialization...');
+
+    // 1. Configure test devices FIRST (important for Alpha testing)
+    const testDeviceIds = ['EMULATOR', 'SIMULATOR'];
+
+    // In development, always use test ads
+    if (__DEV__) {
+      console.log('[AdMob] Development mode - configuring for test ads');
+      await mobileAds().setRequestConfiguration({
+        maxAdContentRating: MaxAdContentRating.G,
+        tagForChildDirectedTreatment: false,
+        tagForUnderAgeOfConsent: false,
+        testDeviceIdentifiers: testDeviceIds,
+      });
+    } else {
+      console.log('[AdMob] Production mode - using production ads');
+      // For production builds (including Alpha), still set test device IDs
+      // This allows internal testers to see test ads
+      await mobileAds().setRequestConfiguration({
+        maxAdContentRating: MaxAdContentRating.G,
+        tagForChildDirectedTreatment: false,
+        tagForUnderAgeOfConsent: false,
+        // Note: In production, only devices with these IDs will see test ads
+        // All other devices will see real ads
+        testDeviceIdentifiers: testDeviceIds,
+      });
+    }
+
+    // 2. Google UMP consent (GDPR) — must come after config but before init
     try {
       const consentInfo = await AdsConsent.requestInfoUpdate();
+      console.log('[AdMob] Consent status:', consentInfo.status);
+
       if (
         consentInfo.status === AdsConsentStatus.REQUIRED ||
         consentInfo.status === AdsConsentStatus.UNKNOWN
       ) {
         await AdsConsent.loadAndShowConsentFormIfRequired();
       }
-    } catch {
+    } catch (error) {
       // UMP not configured in AdMob console yet — proceed without consent form
+      console.log('[AdMob] UMP consent not configured, proceeding without consent form');
     }
 
-    // 2. ATT is handled by useTrackingTransparency + PrePermissionATTModal
+    // 3. ATT is handled by useTrackingTransparency + PrePermissionATTModal
     //    (deferred until session >= 3). Do NOT request here to avoid
     //    conflicting with the deferred pattern and hurting opt-in rates.
 
-    // 3. Configure and initialize AdMob
-    await mobileAds().setRequestConfiguration({
-      maxAdContentRating: MaxAdContentRating.G,
-      tagForChildDirectedTreatment: false,
-      tagForUnderAgeOfConsent: false,
+    // 4. Initialize AdMob SDK
+    const adapterStatuses = await mobileAds().initialize();
+
+    // Log adapter status for debugging
+    console.log('[AdMob] Initialization complete. Adapter statuses:');
+    Object.keys(adapterStatuses).forEach(adapter => {
+      const status = (adapterStatuses as any)[adapter];
+      console.log(`[AdMob]   ${adapter}: ${status.state}`);
     });
 
-    await mobileAds().initialize();
     initialized = true;
+    console.log('[AdMob] ✅ AdMob SDK initialized successfully');
   } catch (error) {
-    if (__DEV__) {
-      console.warn('AdMob initialization failed:', error);
-    }
+    console.error('[AdMob] ❌ AdMob initialization failed:', error);
   }
 }

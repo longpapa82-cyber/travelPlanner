@@ -3,6 +3,7 @@
     "addTitle": "アクティビティを追加",
     "editTitle": "アクティビティを編集",
     "time": "時間",
+    "timePlaceholder": "時間を選択",
     "title": "タイトル",
     "titlePlaceholder": "アクティビティのタイトルを入力",
     "location": "場所",

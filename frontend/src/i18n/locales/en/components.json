@@ -3,6 +3,7 @@
     "addTitle": "Add Activity",
     "editTitle": "Edit Activity",
     "time": "Time",
+    "timePlaceholder": "Select time",
     "title": "Title",
     "titlePlaceholder": "Enter activity title",
     "location": "Location",

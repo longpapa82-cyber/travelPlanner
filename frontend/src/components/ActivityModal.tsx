@@ -173,8 +173,12 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
                       style={styles.input}
                       onPress={() => setShowTimePicker(true)}
                     >
-                      <Text style={{ fontSize: 16, color: formData.time ? theme.colors.text : theme.colors.textSecondary }}>
-                        {formData.time || '09:00'}
+                      <Text style={{
+                        fontSize: 16,
+                        color: formData.time ? theme.colors.text : theme.colors.textSecondary,
+                        fontStyle: formData.time ? 'normal' : 'italic'
+                      }}>
+                        {formData.time || t('activityModal.timePlaceholder')}
                       </Text>
                     </TouchableOpacity>
                     {showTimePicker && (

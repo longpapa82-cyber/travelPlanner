@@ -24,6 +24,7 @@ import { API_URL, STORAGE_KEYS } from './src/constants/config';
 import { secureStorage } from './src/utils/storage';
 import { useAppOpenAd } from './src/components/ads/useAppOpenAd';
 import { initializeAds } from './src/utils/initAds';
+import { logTestDeviceInfo } from './src/utils/testDeviceHelper';
 import PaywallModal from './src/components/PaywallModal';
 import { TutorialProvider } from './src/contexts/TutorialContext';
 import WelcomeModal from './src/components/tutorial/WelcomeModal';
@@ -245,6 +246,11 @@ function App() {
     }
 
     async function prepare() {
+      // Log test device info for debugging (especially for Alpha testing)
+      if (Platform.OS !== 'web') {
+        await logTestDeviceInfo();
+      }
+
       await Promise.all([
         initI18n(),
         initializeAds(),
