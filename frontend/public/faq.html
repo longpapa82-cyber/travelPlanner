@@ -97,7 +97,7 @@
       <div class="faq-item">
         <h2 class="faq-question">3. 고객 지원은 어떻게 받나요?</h2>
         <div class="faq-answer">
-          <p>이메일: longpapa82@gmail.com</p>
+          <p>이메일: <span id="support-email"></span></p>
           <p>응답 시간: 영업일 기준 7일 이내</p>
         </div>
       </div>
@@ -109,5 +109,18 @@
       </a>
     </div>
   </div>
+  <script>
+    // Email rendering to bypass Cloudflare obfuscation
+    document.addEventListener('DOMContentLoaded', function() {
+      var emailElement = document.getElementById('support-email');
+      if (emailElement) {
+        var email = 'longpapa82' + '@' + 'gmail.com';
+        var link = document.createElement('a');
+        link.href = 'mailto:' + email;
+        link.textContent = email;
+        emailElement.appendChild(link);
+      }
+    });
+  </script>
 </body>
 </html>
