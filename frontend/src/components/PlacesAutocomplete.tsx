@@ -106,14 +106,17 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   const handleChangeText = (text: string) => {
     // CRITICAL FIX: Check both flags BEFORE calling onChangeText
     // This prevents the field from being reset when a selection is made
-    if (skipNextSearch.current || justSelected.current) {
-      console.log('[PlacesAutocomplete] Skipping change - selection in progress');
-      if (skipNextSearch.current) {
-        skipNextSearch.current = false;
-      }
-      if (justSelected.current) {
-        justSelected.current = false;
-      }
+    if (skipNextSearch.current) {
+      console.log('[PlacesAutocomplete] Skipping search - selection in progress');
+      skipNextSearch.current = false;
+      // Don't clear justSelected here, let the timeout handle it
+      return;
+    }
+
+    // Check justSelected separately to allow the value to update but skip search
+    if (justSelected.current) {
+      console.log('[PlacesAutocomplete] Selection just made, skipping search');
+      // Don't clear justSelected here, let the timeout handle it
       return;
     }
 

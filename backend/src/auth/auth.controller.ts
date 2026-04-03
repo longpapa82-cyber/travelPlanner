@@ -39,7 +39,7 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  @Throttle({ short: { ttl: 60000, limit: 3 } })
+  @Throttle({ medium: { ttl: 60000, limit: 10 } })
   async register(
     @Body() registerDto: RegisterDto,
     @Headers('accept-language') acceptLanguage?: string,

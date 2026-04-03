@@ -77,6 +77,11 @@ export async function initializeAds(): Promise<void> {
 
     initialized = true;
     console.log('[AdMob] ✅ AdMob SDK initialized successfully');
+
+    // 5. Initialize AdManager singleton for ad loading and management
+    const AdManager = require('./adManager.native').default;
+    await AdManager.getInstance().initialize();
+    console.log('[AdMob] ✅ AdManager initialized successfully');
   } catch (error) {
     console.error('[AdMob] ❌ AdMob initialization failed:', error);
   }

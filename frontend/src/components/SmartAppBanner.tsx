@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: '#4A90D9',
-    backgroundImage: 'linear-gradient(135deg, #4A90D9 0%, #5BA3E8 100%)' as any,
+    // backgroundImage: 'linear-gradient(135deg, #4A90D9 0%, #5BA3E8 100%)' as any,
     paddingVertical: 12,
     paddingHorizontal: 16,
     flexDirection: 'row',
