@@ -17,6 +17,7 @@ import { AppNotification } from '../../types';
 import apiService from '../../services/api';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { useConfirm } from '../../components/feedback/ConfirmDialog';
+import { notificationEvents } from '../../utils/notificationEvents';
 
 const NOTIFICATION_ICONS: Record<string, string> = {
   trip_started: 'airplane-takeoff',
@@ -102,6 +103,8 @@ const NotificationsScreen = () => {
       setNotifications(prev =>
         prev.map(n => n.id === notification.id ? { ...n, isRead: true } : n),
       );
+      // Emit event to update unread count in MainNavigator
+      notificationEvents.emitCountUpdate();
     } catch {
       // silent
     }
@@ -112,6 +115,8 @@ const NotificationsScreen = () => {
       await apiService.markAllNotificationsRead();
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
       showToast({ type: 'success', message: t('notifications.allMarkedRead'), position: 'top' });
+      // Emit event to update unread count in MainNavigator
+      notificationEvents.emitCountUpdate();
     } catch {
       showToast({ type: 'error', message: t('notifications.error'), position: 'top' });
     }
@@ -119,9 +124,15 @@ const NotificationsScreen = () => {
 
   const handleDelete = async (id: string) => {
     try {
+      // Check if the notification being deleted is unread
+      const notification = notifications.find(n => n.id === id);
       await apiService.deleteNotification(id);
       setNotifications(prev => prev.filter(n => n.id !== id));
       setTotal(prev => prev - 1);
+      // If deleted notification was unread, update the count
+      if (notification && !notification.isRead) {
+        notificationEvents.emitCountUpdate();
+      }
     } catch {
       showToast({ type: 'error', message: t('notifications.error'), position: 'top' });
     }
@@ -137,10 +148,16 @@ const NotificationsScreen = () => {
     });
     if (!ok) return;
     try {
+      // Check if there are any unread notifications before deletion
+      const hasUnreadBefore = notifications.some(n => !n.isRead);
       await apiService.deleteAllNotifications();
       setNotifications([]);
       setTotal(0);
       showToast({ type: 'success', message: t('notifications.allDeleted'), position: 'top' });
+      // If there were unread notifications, update the count
+      if (hasUnreadBefore) {
+        notificationEvents.emitCountUpdate();
+      }
     } catch {
       showToast({ type: 'error', message: t('notifications.error'), position: 'top' });
     }
@@ -182,10 +199,12 @@ const NotificationsScreen = () => {
           screen: 'TripList',
         });
         setTimeout(() => {
-          navigation.navigate('Trips', {
-            screen: 'TripDetail',
-            params: { tripId: item.data.tripId },
-          });
+          if (item.data?.tripId) {
+            navigation.navigate('Trips', {
+              screen: 'TripDetail',
+              params: { tripId: item.data.tripId },
+            });
+          }
         }, 100);
       }
     } else if (item.type === 'new_follower' && item.data?.followerId) {
