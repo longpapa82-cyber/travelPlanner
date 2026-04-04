@@ -21,6 +21,7 @@ import apiService from '../../services/api';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { trackEvent } from '../../services/eventTracker';
 import { APP_URL } from '../../constants/config';
+import { ensureAbsoluteUrl } from '../../utils/images';
 
 type Tab = 'following' | 'trending';
 
@@ -189,7 +190,7 @@ const DiscoverScreen = () => {
             onPress={() => navigateToProfile(item.user.id)}
           >
             {item.user.profileImage ? (
-              <Image source={{ uri: item.user.profileImage }} style={styles.avatar} />
+              <Image source={{ uri: ensureAbsoluteUrl(item.user.profileImage) }} style={styles.avatar} />
             ) : (
               <View style={[styles.avatar, styles.avatarPlaceholder]}>
                 <Icon name="account" size={18} color={colors.neutral[400]} />

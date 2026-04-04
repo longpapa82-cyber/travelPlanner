@@ -485,6 +485,18 @@ export class TripsController {
       generateThumbnail: true,
       thumbnailSize: 300,
     });
-    return { url: result.url, thumbnailUrl: result.thumbnailUrl };
+
+    // Convert relative URLs to absolute URLs for frontend
+    const baseUrl = process.env.APP_URL || 'https://mytravel-planner.com';
+    const fullUrl = result.url.startsWith('http')
+      ? result.url
+      : `${baseUrl}${result.url}`;
+    const fullThumbnailUrl = result.thumbnailUrl
+      ? (result.thumbnailUrl.startsWith('http')
+          ? result.thumbnailUrl
+          : `${baseUrl}${result.thumbnailUrl}`)
+      : undefined;
+
+    return { url: fullUrl, thumbnailUrl: fullThumbnailUrl };
   }
 }

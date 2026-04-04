@@ -21,6 +21,7 @@ import apiService from '../../services/api';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { trackEvent } from '../../services/eventTracker';
 import { APP_URL } from '../../constants/config';
+import { ensureAbsoluteUrl } from '../../utils/images';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'UserProfile'>;
 
@@ -192,7 +193,7 @@ const UserProfileScreen = ({ route }: Props) => {
   const renderHeader = () => (
     <View style={styles.header}>
       {profile.profileImage ? (
-        <Image source={{ uri: profile.profileImage }} style={styles.profileImage} />
+        <Image source={{ uri: ensureAbsoluteUrl(profile.profileImage) }} style={styles.profileImage} />
       ) : (
         <View style={[styles.profileImage, styles.profilePlaceholder]}>
           <Icon name="account" size={48} color={colors.neutral[400]} />

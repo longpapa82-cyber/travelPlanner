@@ -30,6 +30,7 @@ import { usePremium } from '../../contexts/PremiumContext';
 import { PREMIUM_ENABLED } from '../../constants/config';
 import apiService from '../../services/api';
 import { useTutorial } from '../../contexts/TutorialContext';
+import { ensureAbsoluteUrl } from '../../utils/images';
 
 const ProfileScreen = ({ navigation }: any) => {
   const { t } = useTranslation('profile');
@@ -280,7 +281,7 @@ const ProfileScreen = ({ navigation }: any) => {
           accessibilityLabel={t('editProfile.changePhoto')}
         >
           {user?.profileImage ? (
-            <Image source={{ uri: user.profileImage }} style={styles.avatarImage} />
+            <Image source={{ uri: ensureAbsoluteUrl(user.profileImage) }} style={styles.avatarImage} />
           ) : (
             <Icon name="account-circle" size={100} color={theme.colors.primary} />
           )}

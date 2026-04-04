@@ -84,3 +84,21 @@ export function getHeroImageUrl(
 ): string {
   return buildUnsplashUrl(HERO_PHOTOS[heroKey], options);
 }
+
+/**
+ * Ensure a profile image URL is absolute.
+ * Handles both relative paths (/uploads/...) and full URLs.
+ */
+export function ensureAbsoluteUrl(url: string | undefined | null): string | undefined {
+  if (!url) return undefined;
+
+  // Already absolute URL
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  // Convert relative URL to absolute
+  // Use production URL as default for profile images
+  const baseUrl = 'https://mytravel-planner.com';
+  return `${baseUrl}${url}`;
+}
