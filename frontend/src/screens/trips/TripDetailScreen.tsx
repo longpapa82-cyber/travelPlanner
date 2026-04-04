@@ -22,7 +22,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+// Removed GestureHandlerRootView to prevent nested gesture conflicts
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
 import { TripsStackParamList, Trip, Activity } from '../../types';
@@ -86,6 +86,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
+  const scrollViewRef = useRef<ScrollView>(null);
 
   // ── Data fetching ─────────────────────────────────────
 
@@ -152,6 +153,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [trip?.id, fetchCollaborators]);
 
   const isOwner = trip?.userId === user?.id;
+  const userRole = trip?.userRole || (isOwner ? 'owner' : 'viewer');
 
   // ── Hero action handlers ──────────────────────────────
 
@@ -394,12 +396,10 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     : getDestinationImageUrl(trip.destination, { width: 800 });
   const duration = getDuration();
 
-  // On web, GestureHandlerRootView intercepts touch events and breaks native scroll
-  const RootWrapper = Platform.OS === 'web' ? View : GestureHandlerRootView;
-
+  // GestureHandlerRootView should be at app root, not here to avoid conflicts
+  // Removing local GestureHandlerRootView to prevent nested gesture contexts
   return (
-    <RootWrapper style={{ flex: 1 }}>
-      <View style={styles.container}>
+    <View style={styles.container}>
         {/* Completed Trip Banner */}
         {trip.status === 'completed' && (
           <View style={[styles.completedBanner, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100] }]}>
@@ -448,6 +448,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         />
 
         <ScrollView
+          ref={scrollViewRef}
           style={styles.content}
           contentContainerStyle={styles.contentContainer}
           refreshControl={
@@ -458,12 +459,29 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             />
           }
           showsVerticalScrollIndicator={false}
+          // Add props to fix scroll issues on Android
+          nestedScrollEnabled={true}
+          scrollEventThrottle={16}
+          removeClippedSubviews={Platform.OS === 'android'}
+          // Ensure touches are handled properly
+          keyboardShouldPersistTaps="handled"
+          // Android-specific performance optimization
+          overScrollMode="always"
+          // Bounce effect for iOS to help recover from stuck state
+          bounces={true}
+          // Ensure scroll is enabled
+          scrollEnabled={true}
         >
           {/* Tab Bar */}
           <View style={[styles.tabBar, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[0] }]}>
             <TouchableOpacity
               style={[styles.tab, activeTab === 'itinerary' && styles.tabActive]}
-              onPress={() => setActiveTab('itinerary')}
+              onPress={() => {
+                setActiveTab('itinerary');
+                // Force scroll recovery on tab change
+                scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+                setTimeout(() => scrollViewRef.current?.scrollTo({ y: 1, animated: false }), 10);
+              }}
             >
               <Icon name="calendar-text" size={18} color={activeTab === 'itinerary' ? colors.primary[500] : colors.neutral[400]} />
               <Text style={[styles.tabText, activeTab === 'itinerary' && styles.tabTextActive]}>
@@ -472,7 +490,12 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.tab, activeTab === 'map' && styles.tabActive]}
-              onPress={() => setActiveTab('map')}
+              onPress={() => {
+                setActiveTab('map');
+                // Force scroll recovery on tab change
+                scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+                setTimeout(() => scrollViewRef.current?.scrollTo({ y: 1, animated: false }), 10);
+              }}
             >
               <Icon name="map-outline" size={18} color={activeTab === 'map' ? colors.primary[500] : colors.neutral[400]} />
               <Text style={[styles.tabText, activeTab === 'map' && styles.tabTextActive]}>
@@ -592,7 +615,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
                     dayIndex={itinerary.dayNumber - 1}
                     tripStatus={trip.status}
                     fadeAnim={fadeAnim}
-                    canAddActivity={trip.status !== 'completed'}
+                    canAddActivity={trip.status !== 'completed' && (userRole === 'owner' || userRole === 'editor')}
+                    userRole={userRole}
                     onAddActivity={handleAddActivity}
                     onEditActivity={handleEditActivity}
                     onDeleteActivity={handleDeleteActivity}
@@ -664,7 +688,6 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           onShareChanged={fetchTripDetails}
         />
       </View>
-    </RootWrapper>
   );
 };
 

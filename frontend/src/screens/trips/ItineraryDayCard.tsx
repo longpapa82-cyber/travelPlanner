@@ -28,6 +28,7 @@ interface ItineraryDayCardProps {
   tripStatus: string;
   fadeAnim: Animated.Value;
   canAddActivity: boolean;
+  userRole?: 'owner' | 'editor' | 'viewer';
   onAddActivity: (itineraryId: string) => void;
   onEditActivity: (itineraryId: string, activityIndex: number, activity: Activity) => void;
   onDeleteActivity: (itineraryId: string, activityIndex: number) => void;
@@ -41,6 +42,7 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
   tripStatus,
   fadeAnim,
   canAddActivity,
+  userRole = 'viewer',
   onAddActivity,
   onEditActivity,
   onDeleteActivity,
@@ -100,9 +102,10 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
         </View>
       )}
 
-      {/* Activities with Timeline - Draggable on native, static on web */}
+      {/* Activities with Timeline - Draggable only when editing, static otherwise */}
       <View style={styles.activitiesContainer}>
-        {Platform.OS === 'web' ? (
+        {/* Use static rendering on web or when trip is completed/viewing */}
+        {(Platform.OS === 'web' || tripStatus === 'completed' || userRole === 'viewer') ? (
           itinerary.activities.map((activity, index) => (
             <ActivityItem
               key={`activity-${itinerary.id}-${index}`}
@@ -113,6 +116,7 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
               tripStatus={tripStatus}
               timezone={itinerary.timezone}
               activityIndex={index}
+              userRole={userRole}
               onToggleCompletion={onToggleCompletion}
               onEdit={onEditActivity}
               onDelete={onDeleteActivity}
@@ -130,6 +134,7 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
                 tripStatus={tripStatus}
                 timezone={itinerary.timezone}
                 activityIndex={itinerary.activities.indexOf(params.item)}
+                userRole={userRole}
                 onToggleCompletion={onToggleCompletion}
                 onEdit={onEditActivity}
                 onDelete={onDeleteActivity}
@@ -144,6 +149,9 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
             scrollEnabled={false}
             maxToRenderPerBatch={5}
             initialNumToRender={5}
+            // Add these props to prevent gesture conflicts
+            activationDistance={20}
+            containerStyle={{ overflow: 'visible' }}
           />
         )}
       </View>

@@ -12,8 +12,9 @@ import VerifyEmailScreen from '../screens/auth/VerifyEmailScreen';
 import SharedTripViewScreen from '../screens/trips/SharedTripViewScreen';
 import AnnouncementListScreen from '../screens/main/AnnouncementListScreen';
 import AnnouncementDetailScreen from '../screens/main/AnnouncementDetailScreen';
-import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, View, StyleSheet, Platform } from 'react-native';
 import PrePermissionATTModal, { shouldShowATTPrePermission } from '../components/PrePermissionATTModal';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -86,7 +87,9 @@ const RootNavigator = () => {
     );
   }
 
-  return (
+  // Wrap entire app in GestureHandlerRootView for proper gesture handling
+  // This should be the only GestureHandlerRootView in the app
+  const NavigationContent = (
     <NavigationContainer
       linking={linking}
       theme={{
@@ -127,6 +130,18 @@ const RootNavigator = () => {
         onDismiss={handleATTDismiss}
       />
     </NavigationContainer>
+  );
+
+  // On web, don't use GestureHandlerRootView as it can interfere with scroll
+  if (Platform.OS === 'web') {
+    return NavigationContent;
+  }
+
+  // On native platforms, wrap with GestureHandlerRootView for proper gesture handling
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      {NavigationContent}
+    </GestureHandlerRootView>
   );
 };
 
