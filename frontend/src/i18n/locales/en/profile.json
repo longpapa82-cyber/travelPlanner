@@ -31,6 +31,9 @@
     "name": "Name",
     "namePlaceholder": "Enter your name",
     "changePhoto": "Change profile photo",
+    "previewTitle": "Set Profile Photo",
+    "previewHint": "Would you like to set this photo as your profile picture?",
+    "confirmPhoto": "Set",
     "save": "Save",
     "alerts": {
       "nameRequired": "Please enter your name",

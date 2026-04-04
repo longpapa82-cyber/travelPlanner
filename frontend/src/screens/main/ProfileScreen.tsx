@@ -56,6 +56,8 @@ const ProfileScreen = ({ navigation }: any) => {
 
   // Photo upload state
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [showImagePreview, setShowImagePreview] = useState(false);
+  const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
 
   // Analytics states
   const [stats, setStats] = useState<any>(null);
@@ -232,16 +234,35 @@ const ProfileScreen = ({ navigation }: any) => {
       });
       if (result.canceled || !result.assets?.[0]?.uri) return;
 
+      // Show preview modal instead of immediate upload
+      setSelectedImageUri(result.assets[0].uri);
+      setShowImagePreview(true);
+    } catch (error: any) {
+      showToast({ type: 'error', message: error.response?.data?.message || t('editProfile.alerts.photoFailed'), position: 'top' });
+    }
+  };
+
+  const handleConfirmProfilePhoto = async () => {
+    if (!selectedImageUri || isUploadingPhoto) return;
+
+    try {
       setIsUploadingPhoto(true);
-      const uploaded = await apiService.uploadProfilePhoto(result.assets[0].uri);
+      const uploaded = await apiService.uploadProfilePhoto(selectedImageUri);
       // No need to call updateProfile separately, the backend already updates it
       await refreshUser();
       showToast({ type: 'success', message: t('editProfile.alerts.photoSuccess'), position: 'top' });
+      setShowImagePreview(false);
+      setSelectedImageUri(null);
     } catch (error: any) {
       showToast({ type: 'error', message: error.response?.data?.message || t('editProfile.alerts.photoFailed'), position: 'top' });
     } finally {
       setIsUploadingPhoto(false);
     }
+  };
+
+  const handleCancelProfilePhoto = () => {
+    setShowImagePreview(false);
+    setSelectedImageUri(null);
   };
 
   const openUrl = (url: string) => {
@@ -743,6 +764,53 @@ const ProfileScreen = ({ navigation }: any) => {
         </View>
       </Modal>
 
+      {/* Profile Photo Preview Modal */}
+      <Modal visible={showImagePreview} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: theme.colors.text }]}>{t('editProfile.previewTitle', { defaultValue: '프로필 사진 설정' })}</Text>
+              <TouchableOpacity onPress={handleCancelProfilePhoto} disabled={isUploadingPhoto}>
+                <Icon name="close" size={24} color={theme.colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.modalBody}>
+              {selectedImageUri && (
+                <View style={styles.previewContainer}>
+                  <Image
+                    source={{ uri: selectedImageUri }}
+                    style={styles.previewImage}
+                    resizeMode="cover"
+                  />
+                  <Text style={[styles.previewHint, { color: theme.colors.textSecondary }]}>
+                    {t('editProfile.previewHint', { defaultValue: '선택한 사진을 프로필 사진으로 설정하시겠습니까?' })}
+                  </Text>
+                </View>
+              )}
+              <View style={styles.buttonRow}>
+                <Button
+                  variant="outline"
+                  style={{ flex: 1, marginRight: 8 }}
+                  onPress={handleCancelProfilePhoto}
+                  disabled={isUploadingPhoto}
+                >
+                  {tCommon('cancel')}
+                </Button>
+                <Button
+                  variant="primary"
+                  style={{ flex: 1, marginLeft: 8 }}
+                  onPress={handleConfirmProfilePhoto}
+                  loading={isUploadingPhoto}
+                  disabled={isUploadingPhoto}
+                >
+                  {t('editProfile.confirmPhoto', { defaultValue: '설정' })}
+                </Button>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
     </ScrollView>
   );
 };
@@ -918,6 +986,29 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   languageLabel: {
     fontSize: 16,
     fontWeight: '500',
+  },
+  previewContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  previewImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    marginBottom: 16,
+    borderWidth: 3,
+    borderColor: theme.colors.primary,
+  },
+  previewHint: {
+    fontSize: 14,
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 8,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 4,
+    marginTop: 12,
   },
 });
 

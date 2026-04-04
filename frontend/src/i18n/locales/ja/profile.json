@@ -31,6 +31,9 @@
     "name": "名前",
     "namePlaceholder": "名前を入力",
     "changePhoto": "プロフィール写真を変更",
+    "previewTitle": "プロフィール写真を設定",
+    "previewHint": "この写真をプロフィール写真に設定しますか？",
+    "confirmPhoto": "設定",
     "save": "保存",
     "alerts": {
       "nameRequired": "名前を入力してください",

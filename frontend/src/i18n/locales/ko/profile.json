@@ -31,6 +31,9 @@
     "name": "이름",
     "namePlaceholder": "이름을 입력하세요",
     "changePhoto": "프로필 사진 변경",
+    "previewTitle": "프로필 사진 설정",
+    "previewHint": "선택한 사진을 프로필 사진으로 설정하시겠습니까?",
+    "confirmPhoto": "설정",
     "save": "저장",
     "alerts": {
       "nameRequired": "이름을 입력해주세요",
