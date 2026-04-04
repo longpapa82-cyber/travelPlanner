@@ -2,25 +2,31 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-03)
+## 📍 현재 상태 (2026-04-04)
 
-- **버전**: versionCode 52 (Alpha 테스트 준비 완료)
+- **버전**: versionCode 62 (Alpha 테스트 신규 버그 수정)
 - **서버**: https://mytravel-planner.com (Hetzner VPS)
-- **상태**: Alpha 테스트 버그 수정 완료 → 빌드 대기
+- **상태**: 빌드 진행 중 → 백엔드 배포 대기
 
-### 최근 배포 (versionCode 52, 2026-04-03)
-- **수정 내용**: Alpha 테스트 8개 버그 수정 (P0 광고 + P1 핵심 기능)
-- **배포 상태**: ✅ 코드 수정 완료, ⏳ EAS 빌드 대기
-- **다음 단계**: EAS 빌드 → Alpha 트랙 배포 → 라이선스 테스터 초대
+### 최근 배포 (versionCode 62, 2026-04-04)
+- **수정 내용**: Alpha 테스트 신규 버그 3개 수정 (스크롤, 권한, 프로필 이미지)
+- **빌드 상태**: 🔄 EAS 빌드 진행 중
+- **Build ID**: 878a1229-846c-408d-a763-ce4f55f26678
+- **다음 단계**: 빌드 완료 대기 → 백엔드 배포 → Alpha 트랙 배포
 
-### Alpha 테스트 버그 수정 (versionCode 52, 2026-04-03)
-- **P0 Bug #1, #2**: 광고 미표시 (useRewardedAd.native.ts 교체, 테스트 기기 설정)
-- **P1 Bug #3**: 공유 링크 localhost 오류 (EXPO_PUBLIC_APP_URL 환경변수 추가)
-- **P1 Bug #5**: 위치 선택 미반영 회귀 버그 (handleChangeText 플래그 순서 수정)
-- **P1 Bug #6**: API 504 에러 분석 (일회성 네트워크 이슈, 조치 불필요)
-- **P2 Bug #4**: 시간 입력 UX 개선 ("09:00" → "시간 선택" 다국어 placeholder)
-- **P2 Bug #7, #8**: API Usage/웹 플랫폼 데이터 분석 (정상 동작 확인)
-- **배포 상태**: ✅ 커밋 완료 (a54c5723), ⏳ 빌드 대기
+### versionCode 62 버그 수정 (2026-04-04)
+- **P1 Bug #3**: 간헐적 스크롤 불가 (중복 GestureHandlerRootView 제거, 조건부 렌더링)
+- **NEW Bug #6**: 보기 권한 버튼 표시 (userRole 시스템 구축, 권한 기반 UI)
+- **NEW Bug #7**: 프로필 이미지 설정 불가 (절대 URL 반환, ensureAbsoluteUrl 유틸리티)
+- **커밋**: 5d391bd5, 00d151af, 2a0d7d63, 28e5ca8b
+- **상세 문서**: `docs/bug-fixes/versionCode-62-bug-fixes.md`
+
+### 이전 배포 (versionCode 59, 2026-04-04)
+- **P0 Bug #1, #2**: 광고 미표시 (AdManager 재작성, 테스트 기기 자동 감지)
+- **P1 Bug #4**: 위치 선택 미반영 회귀 버그 (handleSelect 로직 수정)
+- **P1 Bug #5-8**: 초대하기 실패 및 키보드 UX (에러 핸들링, SafeArea, KeyboardAvoidingView)
+- **P2 Bug #4**: Web Stripe 수익 표시 제거
+- **상세 문서**: `docs/bug-fixes/versionCode-59-final-summary.md`
 
 ### 이전 배포 (versionCode 43, 2026-03-30)
 - **Bug #6 (P0)**: 중복 여행 생성 방지
