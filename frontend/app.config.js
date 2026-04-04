@@ -59,8 +59,6 @@ export default ({ config }) => ({
   },
   plugins: [
     './plugins/withDisableWebViewAutofill',
-    '@react-native-community/datetimepicker',
-    '@sentry/react-native',
     'expo-web-browser',
     'expo-apple-authentication',
     '@react-native-google-signin/google-signin',
