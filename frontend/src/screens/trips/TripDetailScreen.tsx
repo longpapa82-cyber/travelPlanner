@@ -67,6 +67,16 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { confirm } = useConfirm();
   const { user } = useAuth();
 
+  // Enhanced debug logging
+  useEffect(() => {
+    console.log('[TripDetailScreen] Component mounted with params:', {
+      fullParams: route.params,
+      tripId: tripId,
+      hasTripId: !!tripId,
+      typeOfTripId: typeof tripId,
+    });
+  }, [tripId, route.params]);
+
   // Early return if tripId is missing
   useEffect(() => {
     if (!tripId) {
@@ -113,10 +123,21 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       console.log('[TripDetailScreen] Fetching trip details for:', tripId);
       const data = await apiService.getTripById(tripId);
+      console.log('[TripDetailScreen] Trip fetched successfully:', {
+        id: data?.id,
+        destination: data?.destination,
+        userRole: data?.userRole,
+        status: data?.status,
+      });
       setTrip(data);
       trackEvent('trip_viewed', { tripId });
     } catch (error: any) {
-      console.error('[TripDetailScreen] Failed to fetch trip:', error.message, error.response?.status);
+      console.error('[TripDetailScreen] Failed to fetch trip - Full error:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        tripId: tripId,
+      });
 
       // Handle different error types
       if (error.response?.status === 404) {
@@ -136,7 +157,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
         // Navigate back after showing the error
         setTimeout(() => navigation.goBack(), 1500);
       } else {
-        showToast({ type: 'error', message: t('detail.alerts.fetchError'), position: 'top' });
+        const errorMsg = error.response?.data?.message || t('detail.alerts.fetchError');
+        showToast({ type: 'error', message: errorMsg, position: 'top' });
       }
     } finally {
       setIsLoading(false);

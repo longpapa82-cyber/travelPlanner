@@ -166,6 +166,9 @@ const NotificationsScreen = () => {
   const handleNotificationPress = (item: AppNotification) => {
     handleMarkAsRead(item);
 
+    // Normalize type to lowercase for comparison (handle both 'collaborator_invite' and 'COLLABORATOR_INVITE')
+    const normalizedType = item.type?.toLowerCase();
+
     const tripTypes = [
       'collaborator_invite',
       'collaborator_joined',
@@ -177,19 +180,39 @@ const NotificationsScreen = () => {
       'trip_liked',
     ];
 
-    console.log('[NotificationsScreen] Notification pressed:', {
+    // Enhanced debug logging
+    console.log('[NotificationsScreen] Notification pressed - Full details:', {
       type: item.type,
+      normalizedType,
       data: item.data,
       tripId: item.data?.tripId,
+      hasTrip: !!item.data?.tripId,
+      typeMatches: tripTypes.includes(normalizedType),
+      fullItem: item,
     });
 
-    if (tripTypes.includes(item.type) && item.data?.tripId) {
+    if (tripTypes.includes(normalizedType) && item.data?.tripId) {
+      const tripId = item.data.tripId;
+
+      // Additional validation
+      if (!tripId || tripId === 'undefined' || tripId === 'null') {
+        console.error('[NotificationsScreen] Invalid tripId:', tripId);
+        showToast({
+          type: 'error',
+          message: t('notifications.invalidTripId', { defaultValue: 'Invalid trip ID' }),
+          position: 'top'
+        });
+        return;
+      }
+
+      console.log('[NotificationsScreen] Navigating to trip:', tripId);
+
       // Use a more explicit navigation approach
       // First navigate to the Trips tab, then to TripDetail
       try {
         navigation.navigate('Trips', {
           screen: 'TripDetail',
-          params: { tripId: item.data.tripId },
+          params: { tripId: tripId },
           initial: false, // Prevent resetting the Trips stack
         });
       } catch (error) {
@@ -199,19 +222,21 @@ const NotificationsScreen = () => {
           screen: 'TripList',
         });
         setTimeout(() => {
-          if (item.data?.tripId) {
+          if (tripId) {
             navigation.navigate('Trips', {
               screen: 'TripDetail',
-              params: { tripId: item.data.tripId },
+              params: { tripId: tripId },
             });
           }
         }, 100);
       }
-    } else if (item.type === 'new_follower' && item.data?.followerId) {
+    } else if (normalizedType === 'new_follower' && item.data?.followerId) {
       navigation.navigate('Profile', {
         screen: 'UserProfile',
         params: { userId: item.data.followerId },
       });
+    } else {
+      console.log('[NotificationsScreen] No action for notification type:', normalizedType);
     }
   };
 
