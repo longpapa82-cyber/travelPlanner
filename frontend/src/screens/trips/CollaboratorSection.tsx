@@ -12,7 +12,11 @@ import {
   TextInput,
   ActivityIndicator,
   Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -46,7 +50,8 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
   const { t } = useTranslation('trips');
   const { showToast } = useToast();
   const { confirm } = useConfirm();
-  const styles = createStyles(theme, isDark);
+  const insets = useSafeAreaInsets();
+  const styles = createStyles(theme, isDark, insets);
 
   const [showCollabModal, setShowCollabModal] = useState(false);
   const [collabEmail, setCollabEmail] = useState('');
@@ -55,14 +60,24 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
 
   const handleInviteCollaborator = async () => {
     if (!collabEmail.trim()) return;
+
+    // Dismiss keyboard before starting
+    Keyboard.dismiss();
+
     try {
       setIsInviting(true);
       await apiService.addCollaborator(tripId, collabEmail.trim(), collabRole);
       setCollabEmail('');
+      setShowCollabModal(false); // Close modal on success
       onRefreshCollaborators();
       showToast({ type: 'success', message: t('detail.collaboration.inviteSuccess'), position: 'top' });
-    } catch {
-      showToast({ type: 'error', message: t('detail.collaboration.inviteFailed'), position: 'top' });
+    } catch (error: any) {
+      console.error('Invite collaborator error:', error);
+      const errorMessage = error?.response?.data?.message?.[0] ||
+                          error?.response?.data?.message ||
+                          error?.message ||
+                          t('detail.collaboration.inviteFailed');
+      showToast({ type: 'error', message: errorMessage, position: 'top' });
     } finally {
       setIsInviting(false);
     }
@@ -166,6 +181,10 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
               onChangeText={setCollabEmail}
               keyboardType="email-address"
               autoCapitalize="none"
+              autoComplete="email"
+              returnKeyType="send"
+              onSubmitEditing={handleInviteCollaborator}
+              blurOnSubmit={true}
             />
 
             <View style={styles.roleSelector}>
@@ -254,9 +273,20 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
 
         return (
           <Modal visible={showCollabModal} transparent animationType="slide">
-            <View style={styles.modalOverlay}>
-              {collabModalContent}
-            </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View style={styles.modalOverlay}>
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                  style={styles.keyboardAvoidingView}
+                >
+                  <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                    <View>
+                      {collabModalContent}
+                    </View>
+                  </TouchableWithoutFeedback>
+                </KeyboardAvoidingView>
+              </View>
+            </TouchableWithoutFeedback>
           </Modal>
         );
       })()}
@@ -264,7 +294,7 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
   );
 };
 
-const createStyles = (theme: any, isDark: boolean) =>
+const createStyles = (theme: any, isDark: boolean, insets: any) =>
   StyleSheet.create({
     collabSection: {
       marginHorizontal: 20,
@@ -338,12 +368,15 @@ const createStyles = (theme: any, isDark: boolean) =>
       justifyContent: 'flex-end',
       backgroundColor: 'rgba(0,0,0,0.4)',
     },
+    keyboardAvoidingView: {
+      justifyContent: 'flex-end',
+    },
     modalContent: {
       backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0],
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
       padding: 20,
-      paddingBottom: 34,
+      paddingBottom: Math.max(34, insets.bottom + 20), // Account for Android navigation bar
     },
     modalHeader: {
       flexDirection: 'row',
