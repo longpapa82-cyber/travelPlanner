@@ -40,11 +40,20 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [apiAvailable, setApiAvailable] = useState(true);
+  const [internalValue, setInternalValue] = useState(value);
+  const [isSelecting, setIsSelecting] = useState(false);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sessionToken = useRef(generateSessionToken());
   const skipNextSearch = useRef(false);
   // Track if we just made a selection to prevent input value conflicts
   const justSelected = useRef(false);
+
+  // Sync external value with internal value when not selecting
+  useEffect(() => {
+    if (!isSelecting) {
+      setInternalValue(value);
+    }
+  }, [value, isSelecting]);
 
   // Refresh session token periodically (every 3 minutes like Google recommends)
   useEffect(() => {
@@ -105,24 +114,34 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
 
   const handleChangeText = (text: string) => {
     console.log('[PlacesAutocomplete] handleChangeText called with:', text);
+    console.log('[PlacesAutocomplete] isSelecting:', isSelecting);
 
-    // Always update the parent component with the new text
-    onChangeText(text);
+    // If we're in the middle of selecting, ignore the change
+    if (isSelecting) {
+      console.log('[PlacesAutocomplete] Ignoring change - selection in progress');
+      return;
+    }
 
-    // Check if we should skip the search (but we already updated the parent above)
+    // Check if we should skip the search first BEFORE updating parent
     if (skipNextSearch.current) {
-      console.log('[PlacesAutocomplete] Skipping search - selection in progress');
+      console.log('[PlacesAutocomplete] Skipping search - flag set');
       skipNextSearch.current = false;
-      // Don't trigger a new search
+      // Update internal value but don't update parent yet
+      setInternalValue(text);
       return;
     }
 
     // Check justSelected separately to prevent immediate re-search after selection
     if (justSelected.current) {
       console.log('[PlacesAutocomplete] Selection just made, skipping search');
-      // Don't trigger a new search
+      // Update internal value but don't update parent yet
+      setInternalValue(text);
       return;
     }
+
+    // Update both internal and parent state
+    setInternalValue(text);
+    onChangeText(text);
 
     // Only proceed with search if API is available
     if (!apiAvailable) {
@@ -141,6 +160,10 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     // Set flags BEFORE any state updates to prevent race conditions
     skipNextSearch.current = true;
     justSelected.current = true;
+    setIsSelecting(true);
+
+    // Update internal value immediately
+    setInternalValue(place.description);
 
     // Clear dropdown immediately
     setPredictions([]);
@@ -157,11 +180,12 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
       onChangeText(place.description);
     }
 
-    // Clear the justSelected flag after a longer delay to ensure no race conditions
+    // Clear the selection flags after a delay to ensure no race conditions
     setTimeout(() => {
-      console.log('[PlacesAutocomplete] Clearing justSelected flag');
+      console.log('[PlacesAutocomplete] Clearing selection flags');
       justSelected.current = false;
-    }, 500);
+      setIsSelecting(false);
+    }, 100);
   };
 
   const handleBlur = () => {
@@ -176,7 +200,7 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
         <TextInput
           style={styles.input}
           placeholder={placeholder}
-          value={value}
+          value={internalValue}
           onChangeText={handleChangeText}
           onFocus={() => {
             if (predictions.length > 0) setShowDropdown(true);

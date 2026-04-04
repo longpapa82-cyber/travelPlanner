@@ -371,26 +371,17 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
               <PlacesAutocomplete
                 value={formData.location || ''}
                 onChangeText={(text) => {
-                  // Update location text
-                  // Only clear placeId if the text actually changed (user is typing)
-                  // This prevents clearing placeId when the same text is set during selection
-                  setFormData((prev) => {
-                    // If location hasn't changed, keep the existing placeId
-                    // This happens when PlacesAutocomplete calls onChangeText during selection
-                    if (prev.location === text) {
-                      return prev;
-                    }
-                    // Location changed - user is typing, clear placeId
-                    return {
-                      ...prev,
-                      location: text,
-                      placeId: undefined
-                    };
-                  });
+                  console.log('[ActivityModal] onChangeText:', text);
+                  // User is typing - clear placeId as it's no longer valid
+                  setFormData((prev) => ({
+                    ...prev,
+                    location: text,
+                    placeId: undefined
+                  }));
                 }}
                 onSelect={(place) => {
-                  // Selection made - update both location and placeId together
-                  // This ensures the text and placeId are synchronized
+                  console.log('[ActivityModal] onSelect:', place.description, place.placeId);
+                  // Selection made - update both location and placeId atomically
                   setFormData((prev) => ({
                     ...prev,
                     location: place.description,
