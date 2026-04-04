@@ -54,7 +54,7 @@ describe('PlacesAutocomplete', () => {
     expect(mockOnSelect).not.toHaveBeenCalled();
   });
 
-  test('should call onSelect with place data when user selects from dropdown', async () => {
+  test('should call BOTH onChangeText and onSelect when user selects from dropdown', async () => {
     const mockOnChangeText = jest.fn();
     const mockOnSelect = jest.fn();
 
@@ -102,8 +102,9 @@ describe('PlacesAutocomplete', () => {
     const tokyoOption = getByText('Tokyo');
     fireEvent.press(tokyoOption);
 
-    // CRITICAL: This is where the bug might be
-    // onSelect should be called with the place object
+    // CRITICAL FIX: Both onChangeText AND onSelect should be called
+    // onChangeText updates the text field, onSelect provides the full place data
+    expect(mockOnChangeText).toHaveBeenCalledWith('Tokyo, Japan');
     expect(mockOnSelect).toHaveBeenCalledWith({
       placeId: 'place123',
       description: 'Tokyo, Japan',
@@ -111,9 +112,9 @@ describe('PlacesAutocomplete', () => {
       secondaryText: 'Japan'
     });
 
-    // onChangeText should NOT be called again after selection
-    // (unless onSelect is not provided)
-    expect(mockOnChangeText).toHaveBeenCalledTimes(1); // Only from initial typing
+    // onChangeText should be called twice: once for typing, once for selection
+    expect(mockOnChangeText).toHaveBeenCalledTimes(2);
+    expect(mockOnSelect).toHaveBeenCalledTimes(1);
   });
 
   test('should handle case when onSelect is not provided', async () => {

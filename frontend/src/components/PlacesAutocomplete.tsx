@@ -147,15 +147,15 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     setShowDropdown(false);
     sessionToken.current = generateSessionToken(); // New session after selection
 
-    // CRITICAL FIX: Only call onSelect if provided, otherwise fall back to onChangeText
-    // This prevents double state updates and ensures the selection is properly handled
+    // CRITICAL FIX: Always update the text field first to ensure UI synchronization
+    // This must happen before calling onSelect to ensure the input shows the selected text
+    console.log('[PlacesAutocomplete] Updating text via onChangeText');
+    onChangeText(place.description);
+
+    // Then call onSelect if provided for additional handling (like setting placeId)
     if (onSelect) {
-      console.log('[PlacesAutocomplete] Calling onSelect');
+      console.log('[PlacesAutocomplete] Also calling onSelect for additional data');
       onSelect(place);
-    } else {
-      // Fallback for components that only use onChangeText
-      console.log('[PlacesAutocomplete] Falling back to onChangeText');
-      onChangeText(place.description);
     }
 
     // Clear the justSelected flag after a longer delay to ensure no race conditions
