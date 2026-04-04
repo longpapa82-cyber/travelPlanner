@@ -104,6 +104,7 @@ export interface Trip {
   itineraries: Itinerary[];
   createdAt: string;
   updatedAt: string;
+  userRole?: 'owner' | 'editor' | 'viewer'; // User's permission level for this trip
 }
 
 // Create Trip DTO

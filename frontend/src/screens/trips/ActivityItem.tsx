@@ -35,6 +35,7 @@ interface ActivityItemProps {
   tripStatus: string;
   timezone?: string | null;
   activityIndex: number;
+  userRole?: 'owner' | 'editor' | 'viewer';
   onToggleCompletion: (itineraryId: string, activityIndex: number, activity: Activity) => void;
   onEdit: (itineraryId: string, activityIndex: number, activity: Activity) => void;
   onDelete: (itineraryId: string, activityIndex: number) => void;
@@ -48,6 +49,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
   tripStatus,
   timezone,
   activityIndex,
+  userRole = 'viewer',
   onToggleCompletion,
   onEdit,
   onDelete,
@@ -64,7 +66,10 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
   const isActivityInPast = activityDateTime < now;
   const isOngoingTrip = tripStatus === 'ongoing';
   const isCompletedTrip = tripStatus === 'completed';
-  const canModify = !isCompletedTrip && !(isOngoingTrip && isActivityInPast);
+
+  // Check both trip status AND user permissions
+  const hasEditPermission = userRole === 'owner' || userRole === 'editor';
+  const canModify = hasEditPermission && !isCompletedTrip && !(isOngoingTrip && isActivityInPast);
 
   const styles = createStyles(theme, isDark);
 

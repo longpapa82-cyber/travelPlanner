@@ -470,17 +470,20 @@ export class TripsService {
     return { trips, total, page, limit };
   }
 
-  async findOne(userId: string, id: string): Promise<Trip> {
+  async findOne(userId: string, id: string): Promise<Trip & { userRole?: string }> {
     // Try owner access first (full access)
     let trip = await this.tripRepository.findOne({
       where: { id, userId },
       relations: ['itineraries'],
     });
 
-    // Fallback: allow read-only view for PUBLIC trips only (social feed detail).
-    // Private trips are strictly owner-only unless the user is a collaborator.
-    if (!trip) {
-      // Check collaborator access
+    let userRole: string = 'viewer'; // Default role
+
+    // Check if user is owner
+    if (trip) {
+      userRole = 'owner';
+    } else {
+      // Check collaborator access and get their role
       const collab = await this.collaboratorRepository.findOne({
         where: { tripId: id, userId },
       });
@@ -489,6 +492,8 @@ export class TripsService {
           where: { id },
           relations: ['itineraries'],
         });
+        // Map collaborator role to user role
+        userRole = collab.role === CollaboratorRole.EDITOR ? 'editor' : 'viewer';
       }
     }
 
@@ -498,6 +503,8 @@ export class TripsService {
         where: { id, isPublic: true },
         relations: ['itineraries'],
       });
+      // Public trips without collaboration are view-only
+      userRole = 'viewer';
     }
 
     if (!trip) {
@@ -523,7 +530,8 @@ export class TripsService {
       trip.itineraries.sort((a, b) => a.dayNumber - b.dayNumber);
     }
 
-    return trip;
+    // Add userRole to the response
+    return { ...trip, userRole };
   }
 
   async update(
@@ -531,7 +539,8 @@ export class TripsService {
     id: string,
     updateTripDto: UpdateTripDto,
   ): Promise<Trip> {
-    const trip = await this.findOne(userId, id);
+    const tripData = await this.findOne(userId, id);
+    const trip = { ...tripData }; // Extract trip without userRole
 
     // Strict ownership check — only owner can update
     if (trip.userId !== userId) {
