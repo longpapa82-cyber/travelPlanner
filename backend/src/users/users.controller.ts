@@ -9,8 +9,16 @@ import {
   Res,
   UseGuards,
   ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
+import { randomBytes } from 'crypto';
 import type { Response } from 'express';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -22,12 +30,15 @@ import { UpdateTravelPreferencesDto } from './dto/update-travel-preferences.dto'
 import { t, parseLang } from '../common/i18n';
 import { AuditService } from '../admin/audit.service';
 import { AuditAction } from '../admin/entities/audit-log.entity';
+import { ImageService } from '../common/image.service';
+import { validateImageMagicBytes } from '../common/utils/file-validation';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly auditService: AuditService,
+    private readonly imageService: ImageService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -48,6 +59,59 @@ export class UsersController {
       updateData.profileImage = dto.profileImage;
 
     return this.usersService.update(userId, updateData);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('me/photo')
+  @Throttle({ short: { ttl: 60000, limit: 10 } })
+  @UseInterceptors(
+    FileInterceptor('photo', {
+      storage: diskStorage({
+        destination: (_req, _file, cb) => {
+          const uploadDir = join(process.cwd(), 'uploads', 'profiles');
+          if (!existsSync(uploadDir)) {
+            mkdirSync(uploadDir, { recursive: true });
+          }
+          cb(null, uploadDir);
+        },
+        filename: (_req, file, cb) => {
+          const uniqueSuffix = `${Date.now()}-${randomBytes(8).toString('hex')}`;
+          cb(null, `profile-${uniqueSuffix}${extname(file.originalname)}`);
+        },
+      }),
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB for profile photos
+      fileFilter: (_req, file, cb) => {
+        if (!file.mimetype.match(/^image\/(jpg|jpeg|png|gif|webp)$/)) {
+          cb(new Error('Only image files are allowed'), false);
+        } else {
+          cb(null, true);
+        }
+      },
+    }),
+  )
+  async uploadProfilePhoto(
+    @CurrentUser('userId') userId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<{ url: string; thumbnailUrl?: string }> {
+    if (!file) {
+      throw new BadRequestException('No image file provided');
+    }
+    if (!validateImageMagicBytes(file.path)) {
+      throw new BadRequestException(
+        'Invalid image file: file signature does not match an allowed image format',
+      );
+    }
+    const result = await this.imageService.processUpload(file.path, {
+      maxWidth: 800,
+      maxHeight: 800,
+      quality: 85,
+      generateThumbnail: false,
+    });
+    // Update user profile with the new image URL
+    await this.usersService.update(userId, {
+      profileImage: result.url,
+    });
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)

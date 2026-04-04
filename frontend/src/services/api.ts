@@ -731,6 +731,36 @@ class ApiService {
     return response.data;
   }
 
+  async uploadProfilePhoto(uri: string): Promise<{ url: string }> {
+    const formData = new FormData();
+    const isWeb = typeof document !== 'undefined';
+
+    if (isWeb && uri.startsWith('data:')) {
+      // Web: convert data URI to Blob
+      const res = await fetch(uri);
+      const blob = await res.blob();
+      const ext = blob.type.split('/')[1] || 'jpeg';
+      formData.append('photo', blob, `profile.${ext}`);
+    } else if (isWeb && uri.startsWith('blob:')) {
+      // Web: blob URL from file picker
+      const res = await fetch(uri);
+      const blob = await res.blob();
+      const ext = blob.type.split('/')[1] || 'jpeg';
+      formData.append('photo', blob, `profile.${ext}`);
+    } else {
+      // Native: RN-style { uri, name, type } object
+      const filename = uri.split('/').pop() || 'profile.jpg';
+      const match = /\.(\w+)$/.exec(filename);
+      const type = match ? `image/${match[1]}` : 'image/jpeg';
+      formData.append('photo', { uri, name: filename, type } as any);
+    }
+
+    const response = await this.api.post('/users/me/photo', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  }
+
   // Collaboration
   async getCollaborators(tripId: string) {
     const response = await this.api.get(`/trips/${tripId}/collaborators`);

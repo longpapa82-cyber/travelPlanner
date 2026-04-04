@@ -233,8 +233,8 @@ const ProfileScreen = ({ navigation }: any) => {
       if (result.canceled || !result.assets?.[0]?.uri) return;
 
       setIsUploadingPhoto(true);
-      const uploaded = await apiService.uploadPhoto(result.assets[0].uri);
-      await apiService.updateProfile({ profileImage: uploaded.url });
+      const uploaded = await apiService.uploadProfilePhoto(result.assets[0].uri);
+      // No need to call updateProfile separately, the backend already updates it
       await refreshUser();
       showToast({ type: 'success', message: t('editProfile.alerts.photoSuccess'), position: 'top' });
     } catch (error: any) {

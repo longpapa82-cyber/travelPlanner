@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { DevThrottlerGuard } from './common/guards/dev-throttler.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule as TypeOrmFeatureModule } from '@nestjs/typeorm';
@@ -40,6 +42,16 @@ import emailConfig from './config/email.config';
 
     // Schedule Module - Cron jobs
     ScheduleModule.forRoot(),
+
+    // Serve static files (uploaded images)
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/uploads',
+      serveStaticOptions: {
+        index: false,
+        maxAge: '7d',
+      },
+    }),
 
     // Throttler Module - Rate limiting
     ThrottlerModule.forRoot({
