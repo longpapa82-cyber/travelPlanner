@@ -703,7 +703,7 @@ class ApiService {
 
   async uploadPhoto(uri: string): Promise<{ url: string }> {
     const formData = new FormData();
-    const isWeb = typeof document !== 'undefined';
+    const isWeb = Platform.OS === 'web';
 
     if (isWeb && uri.startsWith('data:')) {
       // Web: convert data URI to Blob
@@ -722,7 +722,15 @@ class ApiService {
       const filename = uri.split('/').pop() || 'photo.jpg';
       const match = /\.(\w+)$/.exec(filename);
       const type = match ? `image/${match[1]}` : 'image/jpeg';
-      formData.append('photo', { uri, name: filename, type } as any);
+
+      // Type-safe FormData append for React Native
+      const photoData = {
+        uri,
+        name: filename,
+        type
+      } as any;
+
+      (formData as any).append('photo', photoData);
     }
 
     const response = await this.api.post('/trips/upload/photo', formData, {
@@ -733,7 +741,7 @@ class ApiService {
 
   async uploadProfilePhoto(uri: string): Promise<{ url: string }> {
     const formData = new FormData();
-    const isWeb = typeof document !== 'undefined';
+    const isWeb = Platform.OS === 'web';
 
     if (isWeb && uri.startsWith('data:')) {
       // Web: convert data URI to Blob
@@ -752,7 +760,15 @@ class ApiService {
       const filename = uri.split('/').pop() || 'profile.jpg';
       const match = /\.(\w+)$/.exec(filename);
       const type = match ? `image/${match[1]}` : 'image/jpeg';
-      formData.append('photo', { uri, name: filename, type } as any);
+
+      // Type-safe FormData append for React Native
+      const photoData = {
+        uri,
+        name: filename,
+        type
+      } as any;
+
+      (formData as any).append('photo', photoData);
     }
 
     const response = await this.api.post('/users/me/photo', formData, {
