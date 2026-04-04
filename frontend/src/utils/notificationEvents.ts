@@ -1,11 +1,15 @@
-import { EventEmitter } from 'events';
+/**
+ * Simple Event Emitter for notification count updates
+ * React Native compatible (no Node.js dependencies)
+ */
 
-class NotificationEventEmitter extends EventEmitter {
+type Listener = () => void;
+
+class NotificationEventEmitter {
   private static instance: NotificationEventEmitter;
+  private listeners: Set<Listener> = new Set();
 
-  private constructor() {
-    super();
-  }
+  private constructor() {}
 
   static getInstance(): NotificationEventEmitter {
     if (!NotificationEventEmitter.instance) {
@@ -14,14 +18,27 @@ class NotificationEventEmitter extends EventEmitter {
     return NotificationEventEmitter.instance;
   }
 
-  emitCountUpdate() {
-    this.emit('countUpdate');
+  /**
+   * Emit notification count update event
+   */
+  emitCountUpdate(): void {
+    this.listeners.forEach(listener => {
+      try {
+        listener();
+      } catch (error) {
+        console.error('[NotificationEvents] Listener error:', error);
+      }
+    });
   }
 
-  onCountUpdate(callback: () => void) {
-    this.on('countUpdate', callback);
+  /**
+   * Subscribe to notification count updates
+   * @returns Unsubscribe function
+   */
+  onCountUpdate(callback: Listener): () => void {
+    this.listeners.add(callback);
     return () => {
-      this.off('countUpdate', callback);
+      this.listeners.delete(callback);
     };
   }
 }
