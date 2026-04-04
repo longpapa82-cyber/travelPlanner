@@ -31,7 +31,6 @@ const AD_EXPIRY_MS = 4 * 60 * 1000; // 4 minutes
 const ALPHA_TEST_DEVICE_HASHES: string[] = [
   'EMULATOR',
   'SIMULATOR',
-  TestIds.DEVICE || '', // Google's test device
   // Add Alpha tester device hashes here as they're discovered
   // These will be shown in logs when ads fail to load
 ];
@@ -160,21 +159,24 @@ export function useRewardedAd(): {
       setIsLoading(false);
       setError(String(err));
 
-      // Extract device hash from error for debugging
       const errorStr = String(err);
-      const hashMatch = errorStr.match(/device[:\s]+([A-F0-9]{32})/i) ||
-                       errorStr.match(/setTestDeviceIds.*"([A-F0-9]{32})"/i);
 
-      if (hashMatch && hashMatch[1]) {
-        console.log('[useRewardedAd] 🔑 DEVICE HASH DETECTED:', hashMatch[1]);
-        console.log('[useRewardedAd] Add this to ALPHA_TEST_DEVICE_HASHES in useRewardedAd.native.ts');
-      }
+      // Extract device hash from error for debugging (DEV ONLY)
+      if (__DEV__) {
+        const hashMatch = errorStr.match(/device[:\s]+([A-F0-9]{32})/i) ||
+                         errorStr.match(/setTestDeviceIds.*"([A-F0-9]{32})"/i);
 
-      // Log helpful debug info
-      if (errorStr.includes('No fill') || errorStr.includes('ERROR_CODE_NO_FILL')) {
-        console.log('[useRewardedAd] No ads available - common in testing');
-      } else if (errorStr.includes('Network')) {
-        console.log('[useRewardedAd] Network error - check connectivity');
+        if (hashMatch && hashMatch[1]) {
+          console.log('[useRewardedAd] 🔑 DEVICE HASH DETECTED:', hashMatch[1]);
+          console.log('[useRewardedAd] Add this to ALPHA_TEST_DEVICE_HASHES in useRewardedAd.native.ts');
+        }
+
+        // Log helpful debug info
+        if (errorStr.includes('No fill') || errorStr.includes('ERROR_CODE_NO_FILL')) {
+          console.log('[useRewardedAd] No ads available - common in testing');
+        } else if (errorStr.includes('Network')) {
+          console.log('[useRewardedAd] Network error - check connectivity');
+        }
       }
     });
 
@@ -315,18 +317,20 @@ export function useRewardedAd(): {
       }
 
       // Set up one-time reward listener
-      const rewardListener = adRef.current.addAdEventListener(
-        RewardedAdEventType.EARNED_REWARD,
-        (reward) => {
-          console.log('[useRewardedAd] 🎁 Reward earned:', reward);
-          onRewarded();
-          rewardListener(); // Remove listener
-        }
-      );
+      if (adRef.current) {
+        const rewardListener = adRef.current.addAdEventListener(
+          RewardedAdEventType.EARNED_REWARD,
+          (reward) => {
+            console.log('[useRewardedAd] 🎁 Reward earned:', reward);
+            onRewarded();
+            rewardListener(); // Remove listener
+          }
+        );
 
-      // Show the ad
-      console.log('[useRewardedAd] Showing ad...');
-      await adRef.current.show();
+        // Show the ad
+        console.log('[useRewardedAd] Showing ad...');
+        await adRef.current.show();
+      }
 
       recordFullScreenAdShown();
 
@@ -334,9 +338,23 @@ export function useRewardedAd(): {
       console.error('[useRewardedAd] Failed to show ad:', err);
       setError(String(err));
 
-      // CRITICAL: Always give reward on error to not frustrate users
-      console.log('[useRewardedAd] Giving reward anyway (fallback)');
-      onRewarded();
+      // Fallback reward only for legitimate errors, not user-caused blocking
+      const errorStr = String(err);
+      const isLegitimateError =
+        errorStr.includes('No fill') ||          // No ads available (AdMob)
+        errorStr.includes('ERROR_CODE_NO_FILL') || // No ads available
+        errorStr.includes('Network') ||           // Network issues
+        errorStr.includes('timeout') ||           // SDK timeout
+        errorStr.includes('SDK');                 // SDK errors
+
+      if (isLegitimateError) {
+        console.log('[useRewardedAd] Giving reward anyway (legitimate error fallback)');
+        onRewarded();
+      } else {
+        // User might be blocking ads - don't reward
+        console.log('[useRewardedAd] Ad show failed - no fallback reward (possible ad blocker)');
+        throw err; // Re-throw to caller
+      }
     } finally {
       setIsLoading(false);
     }
