@@ -112,11 +112,17 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [aiConsentGiven, setAiConsentGiven] = useState(false);
   const [isShowingRewardedAd, setIsShowingRewardedAd] = useState(false);
 
-  // Check if AI consent was previously given
+  // Check if AI consent was previously given and preload rewarded ad
   useEffect(() => {
     AsyncStorage.getItem('@travelplanner:ai_consent').then((val) => {
       if (val === 'true') setAiConsentGiven(true);
     }).catch(() => {});
+
+    // Preload rewarded ad on screen mount
+    if (!isRewardedLoaded) {
+      console.log('[CreateTripScreen] Preloading rewarded ad on mount');
+      reloadRewardedAd();
+    }
   }, []);
 
   // Auto-switch to manual mode when AI limit is reached
@@ -849,10 +855,22 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   },
                 ]}
                 onPress={async () => {
-                  if (isShowingRewardedAd) return;
+                  if (isShowingRewardedAd) {
+                    console.log('[CreateTripScreen] Already showing rewarded ad, ignoring click');
+                    return;
+                  }
+
+                  console.log('[CreateTripScreen] Rewarded ad button clicked', {
+                    isLoaded: isRewardedLoaded,
+                    isShowingAd: isShowingRewardedAd,
+                    isDev: __DEV__,
+                    platform: Platform.OS
+                  });
 
                   // Enhanced error handling with better user feedback
                   if (!isRewardedLoaded) {
+                    console.log('[CreateTripScreen] Ad not loaded, handling fallback');
+
                     // Development/Web fallback - unlock insights without ad
                     if (__DEV__ || Platform.OS === 'web') {
                       setInsightsUnlocked(true);
@@ -867,23 +885,44 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                       return;
                     }
 
-                    // Production: Try to reload the ad and show retry option
-                    reloadRewardedAd(); // Attempt to reload the ad
+                    // Production: Try to reload the ad with user feedback
+                    console.log('[CreateTripScreen] Production mode: attempting to reload ad');
                     showToast({
-                      type: 'warning',
-                      message: t('create.rewardedAd.notAvailable', {
-                        defaultValue: '광고를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.',
+                      type: 'info',
+                      message: t('create.rewardedAd.loading', {
+                        defaultValue: '광고를 불러오는 중입니다...',
                       }),
                       position: 'top',
-                      duration: 3000,
+                      duration: 2000,
                     });
+
+                    // Attempt to reload and wait briefly
+                    reloadRewardedAd();
+
+                    // Wait 3 seconds for ad to load
+                    setTimeout(() => {
+                      if (!isRewardedLoaded) {
+                        showToast({
+                          type: 'warning',
+                          message: t('create.rewardedAd.notAvailable', {
+                            defaultValue: '광고를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.',
+                          }),
+                          position: 'top',
+                          duration: 3000,
+                        });
+                      }
+                    }, 3000);
                     return;
                   }
 
                   try {
+                    console.log('[CreateTripScreen] Starting to show rewarded ad');
                     setIsShowingRewardedAd(true);
+
                     await showRewarded(() => {
+                      console.log('[CreateTripScreen] Reward earned, unlocking insights');
                       setInsightsUnlocked(true);
+
                       // Show success feedback when reward is earned
                       showToast({
                         type: 'success',
@@ -895,17 +934,22 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                       });
                     });
                   } catch (error) {
-                    console.error('Rewarded ad error:', error);
+                    console.error('[CreateTripScreen] Rewarded ad error:', error);
+
+                    // Still unlock insights on error to not frustrate users
+                    setInsightsUnlocked(true);
+
                     showToast({
-                      type: 'error',
-                      message: t('create.rewardedAd.error', {
-                        defaultValue: '광고 로드 중 오류가 발생했습니다',
+                      type: 'warning',
+                      message: t('create.rewardedAd.errorButUnlocked', {
+                        defaultValue: '광고 로드에 실패했지만 인사이트가 잠금 해제되었습니다',
                       }),
                       position: 'top',
                       duration: 3000,
                     });
                   } finally {
                     setIsShowingRewardedAd(false);
+                    console.log('[CreateTripScreen] Rewarded ad flow completed');
                   }
                 }}
                 disabled={isShowingRewardedAd}

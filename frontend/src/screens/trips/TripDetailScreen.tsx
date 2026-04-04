@@ -57,7 +57,7 @@ interface Props {
 }
 
 const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
-  const { tripId } = route.params;
+  const { tripId } = route.params || {};
   const [trip, setTrip] = useState<Trip | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -66,6 +66,19 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { showToast } = useToast();
   const { confirm } = useConfirm();
   const { user } = useAuth();
+
+  // Early return if tripId is missing
+  useEffect(() => {
+    if (!tripId) {
+      console.error('[TripDetailScreen] No tripId provided in route params:', route.params);
+      showToast({
+        type: 'error',
+        message: t('detail.alerts.invalidTrip') || 'Invalid trip ID',
+        position: 'top'
+      });
+      navigation.goBack();
+    }
+  }, [tripId, navigation, showToast, t, route.params]);
 
   // Activity modal state
   const [modalVisible, setModalVisible] = useState(false);
@@ -91,17 +104,45 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   // ── Data fetching ─────────────────────────────────────
 
   const fetchTripDetails = useCallback(async () => {
+    if (!tripId) {
+      console.error('[TripDetailScreen] Cannot fetch trip - no tripId');
+      setIsLoading(false);
+      return;
+    }
+
     try {
+      console.log('[TripDetailScreen] Fetching trip details for:', tripId);
       const data = await apiService.getTripById(tripId);
       setTrip(data);
       trackEvent('trip_viewed', { tripId });
-    } catch (error) {
-      showToast({ type: 'error', message: t('detail.alerts.fetchError'), position: 'top' });
+    } catch (error: any) {
+      console.error('[TripDetailScreen] Failed to fetch trip:', error.message, error.response?.status);
+
+      // Handle different error types
+      if (error.response?.status === 404) {
+        showToast({
+          type: 'error',
+          message: t('detail.alerts.tripNotFound') || 'Trip not found',
+          position: 'top'
+        });
+        // Navigate back after showing the error
+        setTimeout(() => navigation.goBack(), 1500);
+      } else if (error.response?.status === 403) {
+        showToast({
+          type: 'error',
+          message: t('detail.alerts.noPermission') || 'You do not have permission to view this trip',
+          position: 'top'
+        });
+        // Navigate back after showing the error
+        setTimeout(() => navigation.goBack(), 1500);
+      } else {
+        showToast({ type: 'error', message: t('detail.alerts.fetchError'), position: 'top' });
+      }
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  }, [tripId, t]);
+  }, [tripId, t, navigation]);
 
   useEffect(() => {
     fetchTripDetails();

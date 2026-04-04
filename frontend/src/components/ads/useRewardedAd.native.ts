@@ -28,15 +28,28 @@ export function useRewardedAd(): {
       const state = AdManager.getState();
       setIsLoaded(state.rewardedAdLoaded);
       setError(state.lastRewardedAdError);
+      console.log('[useRewardedAd] Initial state:', {
+        isLoaded: state.rewardedAdLoaded,
+        error: state.lastRewardedAdError
+      });
+    }).catch(err => {
+      console.error('[useRewardedAd] Failed to initialize AdManager:', err);
+      setError(String(err));
     });
 
-    // Poll for state updates
+    // Poll for state updates more frequently (500ms instead of 1000ms)
     const interval = setInterval(() => {
       const state = AdManager.getState();
+      const prevLoaded = isLoaded;
       setIsLoaded(state.rewardedAdLoaded);
       setError(state.lastRewardedAdError);
       setIsLoading(state.loadingRewardedAd);
-    }, 1000);
+
+      // Log state changes
+      if (prevLoaded !== state.rewardedAdLoaded) {
+        console.log('[useRewardedAd] Ad loaded state changed:', state.rewardedAdLoaded);
+      }
+    }, 500);
 
     return () => clearInterval(interval);
   }, []);
@@ -81,9 +94,21 @@ export function useRewardedAd(): {
     setIsLoading(true);
     setError(null);
 
-    AdManager.forceReload().finally(() => {
-      setIsLoading(false);
-    });
+    AdManager.forceReload()
+      .then(() => {
+        console.log('[useRewardedAd] Reload completed successfully');
+        // Check state immediately after reload
+        const state = AdManager.getState();
+        setIsLoaded(state.rewardedAdLoaded);
+        setError(state.lastRewardedAdError);
+      })
+      .catch(err => {
+        console.error('[useRewardedAd] Reload failed:', err);
+        setError(String(err));
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   return {

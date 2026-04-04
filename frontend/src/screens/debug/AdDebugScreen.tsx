@@ -30,6 +30,7 @@ import {
 } from '../../utils/adDebugger';
 import { useRewardedAd } from '../../components/ads';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { runAdDiagnostics, formatDiagnosticsReport, testAdDisplay } from '../../utils/adDiagnostics';
 
 export default function AdDebugScreen() {
   const { t } = useTranslation();

@@ -108,8 +108,8 @@ class AdManager {
       return Promise.resolve();
     }
 
-    // Create and store the initialization promise
-    this.initializationPromise = this.performInitialization();
+    // Create and store the initialization promise with timeout
+    this.initializationPromise = this.performInitializationWithTimeout();
 
     try {
       await this.initializationPromise;
@@ -118,26 +118,65 @@ class AdManager {
     }
   }
 
+  private async performInitializationWithTimeout(): Promise<void> {
+    const INIT_TIMEOUT = 30000; // 30 seconds timeout
+
+    return Promise.race([
+      this.performInitialization(),
+      new Promise<void>((_, reject) => {
+        setTimeout(() => {
+          console.error('[AdManager] ⏰ Initialization timeout after 30 seconds');
+          reject(new Error('AdManager initialization timeout'));
+        }, INIT_TIMEOUT);
+      })
+    ]);
+  }
+
   private async performInitialization(): Promise<void> {
     console.log('[AdManager] 🎯 Starting comprehensive initialization...');
+    console.log('[AdManager] 📊 Current state:', {
+      sdkInitialized: this.state.sdkInitialized,
+      managerInitialized: this.state.managerInitialized,
+      rewardedAdLoaded: this.state.rewardedAdLoaded,
+    });
 
     try {
       // Step 1: Initialize SDK if not already done
       if (!this.state.sdkInitialized) {
+        console.log('[AdManager] 📱 Step 1: Initializing SDK...');
         await this.initializeSDK();
+      } else {
+        console.log('[AdManager] ✓ Step 1: SDK already initialized');
       }
 
       // Step 2: Initialize rewarded ad
+      console.log('[AdManager] 🎮 Step 2: Initializing rewarded ad...');
       await this.initializeRewardedAd();
 
       this.state.managerInitialized = true;
       console.log('[AdManager] ✅ Initialization complete');
+      console.log('[AdManager] 📊 Final state:', {
+        sdkInitialized: this.state.sdkInitialized,
+        managerInitialized: this.state.managerInitialized,
+        rewardedAdLoaded: this.state.rewardedAdLoaded,
+      });
     } catch (error) {
       console.error('[AdManager] ❌ Initialization failed:', error);
       this.state.lastRewardedAdError = String(error);
 
+      // Log the exact error type for debugging
+      const errorStr = String(error);
+      if (errorStr.includes('Module') || errorStr.includes('Cannot find')) {
+        console.error('[AdManager] ❌ Module/import error - check file paths');
+      } else if (errorStr.includes('Network')) {
+        console.error('[AdManager] ❌ Network error - check connectivity');
+      } else if (errorStr.includes('timeout')) {
+        console.error('[AdManager] ❌ Timeout error - initialization took too long');
+      }
+
       // Schedule retry with longer delay for initialization
       setTimeout(() => {
+        console.log('[AdManager] 🔄 Scheduling initialization retry...');
         this.initializationPromise = null;
         this.initialize();
       }, 10000);
@@ -228,22 +267,38 @@ class AdManager {
   private extractDeviceHashFromError(error: any): void {
     const errorMessage = String(error);
 
-    // Look for device hash in error message
-    const hashMatch = errorMessage.match(/device:\s*([A-F0-9]{32})/i);
-    if (hashMatch && hashMatch[1]) {
-      const hash = hashMatch[1];
-      console.log('[AdManager] 🔍 Found device hash in error:', hash);
-      console.log('[AdManager] ⚠️  ACTION REQUIRED: Add this to KNOWN_TEST_DEVICE_HASHES');
-      DeviceEventEmitter.emit('AdMobDeviceHashDetected', hash);
+    // Multiple patterns to catch device hashes in various error formats
+    const patterns = [
+      /device:\s*([A-F0-9]{32})/i,
+      /setTestDeviceIds.*"([A-F0-9]{32})"/i,
+      /test device ID.*([A-F0-9]{32})/i,
+      /Use RequestConfiguration\.Builder\(\)\.setTestDeviceIds\(Arrays\.asList\("([A-F0-9]{32})"\)\)/i,
+      /device\s+ID\s+([A-F0-9]{32})/i,
+    ];
+
+    let hashFound = false;
+    for (const pattern of patterns) {
+      const match = errorMessage.match(pattern);
+      if (match && match[1]) {
+        const hash = match[1];
+        if (!hashFound) {
+          console.log('[AdManager] 🔑 DEVICE HASH DETECTED:', hash);
+          console.log('[AdManager] ⚠️  ACTION REQUIRED:');
+          console.log('[AdManager]    1. Add this hash to KNOWN_TEST_DEVICE_HASHES in adManager.native.ts');
+          console.log('[AdManager]    2. Also add to ALPHA_TEST_DEVICE_HASHES in initAds.native.ts');
+          console.log('[AdManager]    3. Rebuild the app');
+          console.log('[AdManager]    4. Test ads should then work on this device');
+          DeviceEventEmitter.emit('AdMobDeviceHashDetected', hash);
+          hashFound = true;
+        }
+      }
     }
 
-    // Also check for "Use test ads" message which includes the hash
-    const testAdsMatch = errorMessage.match(/setTestDeviceIds.*"([A-F0-9]{32})"/i);
-    if (testAdsMatch && testAdsMatch[1]) {
-      const hash = testAdsMatch[1];
-      console.log('[AdManager] 🔍 Found test device hash:', hash);
-      console.log('[AdManager] ⚠️  ACTION REQUIRED: Add this to KNOWN_TEST_DEVICE_HASHES');
-      DeviceEventEmitter.emit('AdMobDeviceHashDetected', hash);
+    // If no hash found but it's a test device error, provide guidance
+    if (!hashFound && errorMessage.toLowerCase().includes('test')) {
+      console.log('[AdManager] ℹ️  Test device error detected but no hash found');
+      console.log('[AdManager]    The device hash should appear in the full error message');
+      console.log('[AdManager]    Look for a 32-character hexadecimal string');
     }
   }
 

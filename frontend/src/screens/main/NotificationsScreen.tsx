@@ -160,11 +160,34 @@ const NotificationsScreen = () => {
       'trip_liked',
     ];
 
+    console.log('[NotificationsScreen] Notification pressed:', {
+      type: item.type,
+      data: item.data,
+      tripId: item.data?.tripId,
+    });
+
     if (tripTypes.includes(item.type) && item.data?.tripId) {
-      navigation.navigate('Trips', {
-        screen: 'TripDetail',
-        params: { tripId: item.data.tripId },
-      });
+      // Use a more explicit navigation approach
+      // First navigate to the Trips tab, then to TripDetail
+      try {
+        navigation.navigate('Trips', {
+          screen: 'TripDetail',
+          params: { tripId: item.data.tripId },
+          initial: false, // Prevent resetting the Trips stack
+        });
+      } catch (error) {
+        console.error('[NotificationsScreen] Navigation failed:', error);
+        // Fallback: Try to navigate to TripList first, then TripDetail
+        navigation.navigate('Trips', {
+          screen: 'TripList',
+        });
+        setTimeout(() => {
+          navigation.navigate('Trips', {
+            screen: 'TripDetail',
+            params: { tripId: item.data.tripId },
+          });
+        }, 100);
+      }
     } else if (item.type === 'new_follower' && item.data?.followerId) {
       navigation.navigate('Profile', {
         screen: 'UserProfile',

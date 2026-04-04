@@ -110,7 +110,7 @@ async function performInitialization(): Promise<void> {
 
     // 7. Initialize AdManager singleton for ad loading and management
     // Use dynamic import to ensure proper module resolution
-    const AdManager = require('./adManager.native').default;
+    const AdManager = require('./adManager').default;
     await AdManager.initialize();
     console.log('[AdMob] ✅ AdManager initialized successfully');
 

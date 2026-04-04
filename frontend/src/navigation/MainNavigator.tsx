@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
@@ -16,6 +16,7 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors, darkColors } from '../constants/theme';
 import apiService from '../services/api';
+import { notificationEvents } from '../utils/notificationEvents';
 
 /** Wrap a screen component with ErrorBoundary so crashes are isolated per-tab */
 const withErrorBoundary = <P extends object>(Component: React.ComponentType<P>) => {
@@ -42,21 +43,30 @@ const MainNavigator = () => {
   const insets = useSafeAreaInsets();
   const [unreadCount, setUnreadCount] = useState(0);
 
+  const fetchUnread = useCallback(async () => {
+    try {
+      const data = await apiService.getUnreadNotificationCount();
+      setUnreadCount(data.count);
+    } catch {
+      // silent
+    }
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
-      const fetchUnread = async () => {
-        try {
-          const data = await apiService.getUnreadNotificationCount();
-          setUnreadCount(data.count);
-        } catch {
-          // silent
-        }
-      };
       fetchUnread();
       const interval = setInterval(fetchUnread, 60000);
       return () => clearInterval(interval);
-    }, []),
+    }, [fetchUnread]),
   );
+
+  // Listen for notification count updates
+  useEffect(() => {
+    const unsubscribe = notificationEvents.onCountUpdate(() => {
+      fetchUnread();
+    });
+    return unsubscribe;
+  }, [fetchUnread]);
 
   return (
     <Tab.Navigator
