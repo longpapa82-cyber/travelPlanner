@@ -123,29 +123,28 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
       return;
     }
 
-    // Always update internal and parent state first
-    setInternalValue(text);
-    onChangeText(text);
-
-    // Check if we should skip the search
-    const shouldSkipSearch = skipNextSearch.current || justSelected.current;
-
+    // Check if we should skip the search first BEFORE updating parent
     if (skipNextSearch.current) {
       console.log('[PlacesAutocomplete] Skipping search - flag set');
       skipNextSearch.current = false;
-    }
-
-    if (justSelected.current) {
-      console.log('[PlacesAutocomplete] Selection just made, skipping search');
-      // Don't return early - we've already updated the parent above
-    }
-
-    // Only proceed with search if we shouldn't skip and API is available
-    if (shouldSkipSearch) {
-      console.log('[PlacesAutocomplete] Not triggering search due to flags');
+      // Update internal value but don't update parent yet
+      setInternalValue(text);
       return;
     }
 
+    // Check justSelected separately to prevent immediate re-search after selection
+    if (justSelected.current) {
+      console.log('[PlacesAutocomplete] Selection just made, skipping search');
+      // Update internal value but don't update parent yet
+      setInternalValue(text);
+      return;
+    }
+
+    // Update both internal and parent state
+    setInternalValue(text);
+    onChangeText(text);
+
+    // Only proceed with search if API is available
     if (!apiAvailable) {
       console.log('[PlacesAutocomplete] API not available, skipping search');
       return;
@@ -186,9 +185,8 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     setTimeout(() => {
       console.log('[PlacesAutocomplete] Clearing selection flags');
       justSelected.current = false;
-      skipNextSearch.current = false;
       setIsSelecting(false);
-    }, 200);
+    }, 100);
   };
 
   const handleBlur = () => {
