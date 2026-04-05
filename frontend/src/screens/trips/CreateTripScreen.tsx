@@ -421,10 +421,33 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Show interstitial ad after trip creation (skip for premium), then navigate
       setTimeout(async () => {
-        if (!isPremium && !isAdmin && isAdLoaded) {
-          await showInterstitial();
+        // Ensure tripId exists before navigation
+        if (!trip?.id) {
+          console.error('[CreateTripScreen] Trip created but no ID received:', trip);
+          showToast({
+            type: 'error',
+            message: t('create.alerts.createFailed'),
+            position: 'top',
+            duration: 4000,
+          });
+          setIsLoading(false);
+          isCreatingRef.current = false;
+          return;
         }
+
+        // Show ad in parallel with navigation (non-blocking)
+        if (!isPremium && !isAdmin && isAdLoaded) {
+          // Don't await - let ad show in parallel with navigation
+          showInterstitial().catch((error) => {
+            console.warn('[CreateTripScreen] Interstitial ad failed:', error);
+            // Continue with navigation even if ad fails
+          });
+        }
+
+        // Navigate immediately, don't wait for ad
+        console.log('[CreateTripScreen] Navigating to TripDetail with tripId:', trip.id);
         navigation.navigate('TripDetail', { tripId: trip.id });
+
         // Reset guards after successful navigation
         setIsLoading(false);
         isCreatingRef.current = false;
@@ -479,11 +502,29 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
               // Show interstitial ad after trip creation (skip for premium), then navigate
               setTimeout(async () => {
-                if (!isPremium && !isAdmin && isAdLoaded) {
-                  await showInterstitial();
+                // Ensure tripId exists before navigation
+                if (!latestTrip?.id) {
+                  console.error('[CreateTripScreen] Latest trip found but no ID:', latestTrip);
+                  navigation.navigate('TripList');
+                  setIsLoading(false);
+                  isCreatingRef.current = false;
+                  return;
                 }
+
+                // Show ad in parallel with navigation (non-blocking)
+                if (!isPremium && !isAdmin && isAdLoaded) {
+                  // Don't await - let ad show in parallel with navigation
+                  showInterstitial().catch((error) => {
+                    console.warn('[CreateTripScreen] Interstitial ad failed:', error);
+                    // Continue with navigation even if ad fails
+                  });
+                }
+
+                // Navigate immediately, don't wait for ad
+                console.log('[CreateTripScreen] Navigating to TripDetail with tripId:', latestTrip.id);
                 navigation.navigate('TripDetail', { tripId: latestTrip.id });
-                // Reset guards only after navigation completes
+
+                // Reset guards after successful navigation
                 setIsLoading(false);
                 isCreatingRef.current = false;
               }, 500);
