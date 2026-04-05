@@ -23,7 +23,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
-import { colors } from '../../constants/theme';
 import Button from '../../components/core/Button';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import api from '../../services/api';
@@ -35,7 +34,7 @@ interface Props {
 
 const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
   const { t } = useTranslation('consent');
-  const { theme, isDark } = useTheme();
+  const { colors, isDark } = useTheme();
   const { showToast } = useToast();
 
   const [loading, setLoading] = useState(true);
@@ -61,7 +60,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
       setSelectedConsents(initial);
     } catch (error) {
       console.error('[ConsentScreen] Failed to load consents:', error);
-      showToast(t('errors.updateFailed'), 'error');
+      showToast({ message: t('errors.updateFailed'), type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -89,7 +88,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
     const hasAllRequired = requiredConsents.every((c) => selectedConsents[c.type]);
 
     if (!hasAllRequired) {
-      showToast(t('errors.requiredConsent'), 'error');
+      showToast({ message: t('errors.requiredConsent'), type: 'error' });
       return;
     }
 
@@ -105,22 +104,29 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
       };
 
       await api.updateConsents(dto);
-      showToast(t('toast.updateSuccess'), 'success');
+      showToast({ message: t('toast.updateSuccess'), type: 'success' });
       onComplete();
     } catch (error) {
       console.error('[ConsentScreen] Failed to update consents:', error);
-      showToast(t('toast.updateFailed'), 'error');
+      showToast({ message: t('toast.updateFailed'), type: 'error' });
     } finally {
       setSubmitting(false);
     }
   };
 
+  // Define colors based on theme
+  const backgroundColor = isDark ? '#0F172A' : '#FFFFFF';
+  const cardBackground = isDark ? '#1E293B' : '#F5F5F4';
+  const textPrimary = isDark ? '#F1F5F9' : '#1C1917';
+  const textSecondary = isDark ? '#CBD5E1' : '#78716C';
+  const borderColor = isDark ? '#334155' : '#E7E5E4';
+
   if (loading) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <SafeAreaView style={[styles.container, { backgroundColor }]}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={[styles.loadingText, { color: theme.text }]}>Loading...</Text>
+          <ActivityIndicator size="large" color={colors.primary[500]} />
+          <Text style={[styles.loadingText, { color: textPrimary }]}>Loading...</Text>
         </View>
       </SafeAreaView>
     );
@@ -129,10 +135,10 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
   const allSelected = consents.every((c) => selectedConsents[c.type]);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.text }]}>{t('title')}</Text>
-        <Text style={[styles.subtitle, { color: theme.textSecondary }]}>{t('subtitle')}</Text>
+        <Text style={[styles.title, { color: textPrimary }]}>{t('title')}</Text>
+        <Text style={[styles.subtitle, { color: textSecondary }]}>{t('subtitle')}</Text>
       </View>
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -141,7 +147,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
           style={[
             styles.consentItem,
             styles.allAgreeItem,
-            { backgroundColor: theme.cardBackground, borderColor: theme.border },
+            { backgroundColor: cardBackground, borderColor },
           ]}
           onPress={toggleAllConsents}
         >
@@ -149,9 +155,9 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
             <Icon
               name={allSelected ? 'checkbox-marked' : 'checkbox-blank-outline'}
               size={24}
-              color={allSelected ? colors.primary : theme.textSecondary}
+              color={allSelected ? colors.primary[500] : textSecondary}
             />
-            <Text style={[styles.consentTitle, styles.allAgreeText, { color: theme.text }]}>
+            <Text style={[styles.consentTitle, styles.allAgreeText, { color: textPrimary }]}>
               {t('allAgree')}
             </Text>
           </View>
@@ -167,7 +173,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
               key={consent.type}
               style={[
                 styles.consentItem,
-                { backgroundColor: theme.cardBackground, borderColor: theme.border },
+                { backgroundColor: cardBackground, borderColor },
               ]}
               onPress={() => toggleConsent(consent.type)}
             >
@@ -175,20 +181,20 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
                 <Icon
                   name={isSelected ? 'checkbox-marked' : 'checkbox-blank-outline'}
                   size={24}
-                  color={isSelected ? colors.primary : theme.textSecondary}
+                  color={isSelected ? colors.primary[500] : textSecondary}
                 />
                 <View style={styles.consentTextContainer}>
                   <View style={styles.consentTitleRow}>
-                    <Text style={[styles.consentTitle, { color: theme.text }]}>
+                    <Text style={[styles.consentTitle, { color: textPrimary }]}>
                       {t(`${translationKey}.title`)}
                     </Text>
                     {consent.isRequired && (
-                      <View style={[styles.requiredBadge, { backgroundColor: colors.error }]}>
+                      <View style={[styles.requiredBadge, { backgroundColor: colors.error.main }]}>
                         <Text style={styles.requiredText}>{t('required')}</Text>
                       </View>
                     )}
                   </View>
-                  <Text style={[styles.consentDescription, { color: theme.textSecondary }]}>
+                  <Text style={[styles.consentDescription, { color: textSecondary }]}>
                     {t(`${translationKey}.description`)}
                   </Text>
                 </View>
@@ -198,13 +204,14 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
         })}
       </ScrollView>
 
-      <View style={[styles.footer, { backgroundColor: theme.cardBackground, borderTopColor: theme.border }]}>
+      <View style={[styles.footer, { backgroundColor: cardBackground, borderTopColor: borderColor }]}>
         <Button
-          title={t('confirmButton')}
           onPress={handleSubmit}
           loading={submitting}
           disabled={submitting}
-        />
+        >
+          {t('confirmButton')}
+        </Button>
       </View>
     </SafeAreaView>
   );

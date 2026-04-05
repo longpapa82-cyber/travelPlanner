@@ -3,6 +3,7 @@ import { NavigationContainer, LinkingOptions, DefaultTheme, DarkTheme } from '@r
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
 import { useAuth } from '../contexts/AuthContext';
+import { useConsent } from '../contexts/ConsentContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTrackingTransparency } from '../hooks/useTrackingTransparency';
 import { RootStackParamList } from '../types';
@@ -12,6 +13,7 @@ import VerifyEmailScreen from '../screens/auth/VerifyEmailScreen';
 import SharedTripViewScreen from '../screens/trips/SharedTripViewScreen';
 import AnnouncementListScreen from '../screens/main/AnnouncementListScreen';
 import AnnouncementDetailScreen from '../screens/main/AnnouncementDetailScreen';
+import ConsentScreen from '../screens/consent/ConsentScreen';
 import { ActivityIndicator, View, StyleSheet, Platform } from 'react-native';
 import PrePermissionATTModal, { shouldShowATTPrePermission } from '../components/PrePermissionATTModal';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -62,6 +64,7 @@ const linking: LinkingOptions<RootStackParamList> = {
 
 const RootNavigator = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const { needsConsentScreen, isCheckingConsent, markConsentComplete } = useConsent();
   const { theme, isDark } = useTheme();
   const { shouldShowPrePermission, sessionCount, requestTracking } = useTrackingTransparency();
 
@@ -79,12 +82,18 @@ const RootNavigator = () => {
     setShowATTModal(false);
   }, []);
 
-  if (isLoading) {
+  // Show loading while checking auth or consent
+  if (isLoading || (isAuthenticated && isCheckingConsent)) {
     return (
       <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
     );
+  }
+
+  // Show ConsentScreen if user is authenticated but needs consent
+  if (isAuthenticated && needsConsentScreen) {
+    return <ConsentScreen onComplete={markConsentComplete} />;
   }
 
   // Wrap entire app in GestureHandlerRootView for proper gesture handling

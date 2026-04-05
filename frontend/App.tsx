@@ -8,6 +8,7 @@ import * as Font from 'expo-font';
 import { onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { AuthProvider } from './src/contexts/AuthContext';
+import { ConsentProvider } from './src/contexts/ConsentContext';
 import { PremiumProvider } from './src/contexts/PremiumContext';
 import { ToastProvider } from './src/components/feedback/Toast/ToastContext';
 import { ConfirmDialogProvider } from './src/components/feedback/ConfirmDialog';
@@ -286,19 +287,21 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
             <AuthProvider>
-              <PremiumProvider>
-                <TutorialProvider>
-                  <NotificationProvider>
-                    <ToastProvider>
-                      <ConfirmDialogProvider>
-                        <AppContent />
-                        <PaywallModal />
-                        <WelcomeModal />
-                      </ConfirmDialogProvider>
-                    </ToastProvider>
-                  </NotificationProvider>
-                </TutorialProvider>
-              </PremiumProvider>
+              <ConsentProvider>
+                <PremiumProvider>
+                  <TutorialProvider>
+                    <NotificationProvider>
+                      <ToastProvider>
+                        <ConfirmDialogProvider>
+                          <AppContent />
+                          <PaywallModal />
+                          <WelcomeModal />
+                        </ConfirmDialogProvider>
+                      </ToastProvider>
+                    </NotificationProvider>
+                  </TutorialProvider>
+                </PremiumProvider>
+              </ConsentProvider>
             </AuthProvider>
           </ThemeProvider>
         </QueryClientProvider>
