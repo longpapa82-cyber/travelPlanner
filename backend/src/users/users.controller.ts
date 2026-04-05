@@ -27,6 +27,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { DeleteAccountDto } from './dto/delete-account.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateTravelPreferencesDto } from './dto/update-travel-preferences.dto';
+import { UpdateConsentsDto } from './dto/consent.dto';
 import { t, parseLang } from '../common/i18n';
 import { AuditService } from '../admin/audit.service';
 import { AuditAction } from '../admin/entities/audit-log.entity';
