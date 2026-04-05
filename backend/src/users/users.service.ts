@@ -8,6 +8,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { User, AuthProvider, SubscriptionTier } from './entities/user.entity';
+import { UserConsent, ConsentType, ConsentMethod, LegalBasis } from './entities/user-consent.entity';
+import { ConsentAuditLog, ConsentAction } from './entities/consent-audit-log.entity';
+import { UpdateConsentsDto, ConsentsStatusDto, ConsentResponseDto } from './dto/consent.dto';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { t } from '../common/i18n';
@@ -17,6 +20,10 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UserConsent)
+    private readonly consentRepository: Repository<UserConsent>,
+    @InjectRepository(ConsentAuditLog)
+    private readonly auditLogRepository: Repository<ConsentAuditLog>,
     private readonly dataSource: DataSource,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
@@ -554,5 +561,240 @@ export class UsersService {
       expenses,
       notifications,
     };
+  }
+
+  /**
+   * Consent Management - Phase 0b Implementation
+   */
+
+  // Current consent versions (centralized configuration)
+  private readonly CONSENT_VERSIONS: Record<ConsentType, string> = {
+    [ConsentType.TERMS]: '1.0.0',
+    [ConsentType.PRIVACY_REQUIRED]: '1.0.0',
+    [ConsentType.PRIVACY_OPTIONAL]: '1.0.0',
+    [ConsentType.LOCATION]: '1.0.0',
+    [ConsentType.NOTIFICATION]: '1.0.0',
+    [ConsentType.PHOTO]: '1.0.0',
+    [ConsentType.MARKETING]: '1.0.0',
+  };
+
+  // Required consent types (must be granted for app usage)
+  private readonly REQUIRED_CONSENTS: ConsentType[] = [
+    ConsentType.TERMS,
+    ConsentType.PRIVACY_REQUIRED,
+  ];
+
+  /**
+   * Get user's consent status for all consent types
+   */
+  async getConsentsStatus(userId: string): Promise<ConsentsStatusDto> {
+    const user = await this.findById(userId);
+
+    const allConsentTypes = Object.values(ConsentType);
+    const userConsents = await this.consentRepository.find({
+      where: { userId },
+    });
+
+    const consentResponses: ConsentResponseDto[] = allConsentTypes.map(
+      (type) => {
+        const currentVersion = this.CONSENT_VERSIONS[type];
+        const userConsent = userConsents.find(
+          (c) => c.consentType === type && c.consentVersion === currentVersion,
+        );
+
+        const isRequired = this.REQUIRED_CONSENTS.includes(type);
+        const requiresUpdate =
+          userConsent?.consentVersion !== currentVersion ||
+          !userConsent?.isConsented;
+
+        return {
+          type,
+          version: currentVersion,
+          isConsented: userConsent?.isActive() ?? false,
+          consentedAt: userConsent?.consentedAt,
+          isRequired,
+          requiresUpdate,
+          description: this.getConsentDescription(type),
+          benefits: this.getConsentBenefits(type),
+        };
+      },
+    );
+
+    const needsConsent = consentResponses.some(
+      (c) => c.isRequired && !c.isConsented,
+    );
+    const needsUpdate = consentResponses.some(
+      (c) => c.isRequired && c.requiresUpdate,
+    );
+
+    return {
+      consents: consentResponses,
+      needsConsent,
+      needsUpdate,
+    };
+  }
+
+  /**
+   * Update user consents (grant/revoke)
+   */
+  async updateConsents(
+    userId: string,
+    dto: UpdateConsentsDto,
+    ipAddress?: string,
+    userAgent?: string,
+  ): Promise<void> {
+    const user = await this.findById(userId);
+
+    for (const consentItem of dto.consents) {
+      const { type, version, isConsented } = consentItem;
+
+      // Find existing consent record
+      const existingConsent = await this.consentRepository.findOne({
+        where: {
+          userId,
+          consentType: type,
+          consentVersion: version,
+        },
+      });
+
+      if (existingConsent) {
+        // Update existing consent
+        const previousState = {
+          isConsented: existingConsent.isConsented,
+          consentedAt: existingConsent.consentedAt,
+          revokedAt: existingConsent.revokedAt,
+        };
+
+        existingConsent.isConsented = isConsented;
+        existingConsent.consentedAt = isConsented ? new Date() : existingConsent.consentedAt;
+        existingConsent.revokedAt = !isConsented ? new Date() : undefined;
+        existingConsent.ipAddress = ipAddress;
+        existingConsent.userAgent = userAgent;
+
+        await this.consentRepository.save(existingConsent);
+
+        // Log audit trail
+        await this.logConsentChange({
+          userId,
+          action: isConsented ? ConsentAction.GRANT : ConsentAction.REVOKE,
+          consentType: type,
+          previousState,
+          newState: {
+            isConsented: existingConsent.isConsented,
+            consentedAt: existingConsent.consentedAt,
+            revokedAt: existingConsent.revokedAt,
+          },
+          ipAddress,
+          userAgent,
+        });
+      } else {
+        // Create new consent record
+        const newConsent = this.consentRepository.create({
+          userId,
+          consentType: type,
+          consentVersion: version,
+          isConsented,
+          consentedAt: isConsented ? new Date() : undefined,
+          revokedAt: !isConsented ? new Date() : undefined,
+          ipAddress,
+          userAgent,
+          consentMethod: ConsentMethod.INITIAL,
+          legalBasis: this.getLegalBasis(type),
+        });
+
+        await this.consentRepository.save(newConsent);
+
+        // Log audit trail
+        await this.logConsentChange({
+          userId,
+          action: ConsentAction.GRANT,
+          consentType: type,
+          previousState: null,
+          newState: {
+            isConsented: newConsent.isConsented,
+            consentedAt: newConsent.consentedAt,
+            revokedAt: newConsent.revokedAt,
+          },
+          ipAddress,
+          userAgent,
+        });
+      }
+    }
+  }
+
+  /**
+   * Log consent change for audit trail (GDPR compliance)
+   */
+  private async logConsentChange(data: {
+    userId: string;
+    action: ConsentAction;
+    consentType: ConsentType;
+    previousState?: Record<string, any> | null;
+    newState?: Record<string, any>;
+    ipAddress?: string;
+    userAgent?: string;
+  }): Promise<void> {
+    const auditLog = this.auditLogRepository.create({
+      userId: data.userId,
+      action: data.action,
+      consentType: data.consentType,
+      previousState: data.previousState ?? undefined,
+      newState: data.newState,
+      ipAddress: data.ipAddress,
+      userAgent: data.userAgent,
+    });
+
+    await this.auditLogRepository.save(auditLog);
+  }
+
+  /**
+   * Get description for each consent type
+   */
+  private getConsentDescription(type: ConsentType): string {
+    const descriptions: Record<ConsentType, string> = {
+      [ConsentType.TERMS]: 'Service Terms of Use',
+      [ConsentType.PRIVACY_REQUIRED]: 'Privacy Policy - Required Items',
+      [ConsentType.PRIVACY_OPTIONAL]: 'Privacy Policy - Optional Items',
+      [ConsentType.LOCATION]: 'Location Information Usage',
+      [ConsentType.NOTIFICATION]: 'Push Notification Permission',
+      [ConsentType.PHOTO]: 'Photo Access Permission',
+      [ConsentType.MARKETING]: 'Marketing Communications',
+    };
+    return descriptions[type];
+  }
+
+  /**
+   * Get benefits for each consent type
+   */
+  private getConsentBenefits(type: ConsentType): string[] {
+    const benefits: Record<ConsentType, string[]> = {
+      [ConsentType.TERMS]: ['Required for using the service'],
+      [ConsentType.PRIVACY_REQUIRED]: ['Required for account management and service provision'],
+      [ConsentType.PRIVACY_OPTIONAL]: ['Improved user experience', 'Personalized recommendations'],
+      [ConsentType.LOCATION]: ['Search nearby places', 'Travel route recommendations', 'Location-based features'],
+      [ConsentType.NOTIFICATION]: ['Travel reminders', 'Sharing notifications', 'Important updates'],
+      [ConsentType.PHOTO]: ['Profile image upload', 'Travel photo sharing'],
+      [ConsentType.MARKETING]: ['Promotional offers', 'New feature announcements', 'Event notifications'],
+    };
+    return benefits[type];
+  }
+
+  /**
+   * Determine legal basis for processing (GDPR Article 6)
+   */
+  private getLegalBasis(type: ConsentType): LegalBasis {
+    switch (type) {
+      case ConsentType.TERMS:
+      case ConsentType.PRIVACY_REQUIRED:
+        return LegalBasis.CONTRACT; // Service contract
+      case ConsentType.LOCATION:
+      case ConsentType.NOTIFICATION:
+      case ConsentType.PHOTO:
+      case ConsentType.PRIVACY_OPTIONAL:
+      case ConsentType.MARKETING:
+        return LegalBasis.CONSENT; // Explicit user consent
+      default:
+        return LegalBasis.CONSENT;
+    }
   }
 }

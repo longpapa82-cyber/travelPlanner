@@ -184,4 +184,30 @@ export class UsersController {
   async getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findPublicProfile(id);
   }
+
+  /**
+   * Consent Management Endpoints - Phase 0b
+   */
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me/consents')
+  async getConsents(@CurrentUser('userId') userId: string) {
+    return this.usersService.getConsentsStatus(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('me/consents')
+  async updateConsents(
+    @CurrentUser('userId') userId: string,
+    @Body() dto: UpdateConsentsDto,
+    @Headers('x-forwarded-for') xForwardedFor?: string,
+    @Headers('x-real-ip') xRealIp?: string,
+    @Headers('user-agent') userAgent?: string,
+  ) {
+    // Extract IP address (prefer x-forwarded-for, fallback to x-real-ip)
+    const ipAddress = xForwardedFor?.split(',')[0]?.trim() || xRealIp;
+
+    await this.usersService.updateConsents(userId, dto, ipAddress, userAgent);
+    return { message: 'Consents updated successfully' };
+  }
 }
