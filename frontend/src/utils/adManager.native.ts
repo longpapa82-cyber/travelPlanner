@@ -141,16 +141,12 @@ class AdManager {
     });
 
     try {
-      // Step 1: Initialize SDK if not already done
-      if (!this.state.sdkInitialized) {
-        console.log('[AdManager] 📱 Step 1: Initializing SDK...');
-        await this.initializeSDK();
-      } else {
-        console.log('[AdManager] ✓ Step 1: SDK already initialized');
-      }
+      // SDK is initialized by initAds.native.ts - no need to initialize again
+      console.log('[AdManager] ✓ SDK initialized by initAds.native.ts');
+      this.state.sdkInitialized = true;
 
-      // Step 2: Initialize rewarded ad
-      console.log('[AdManager] 🎮 Step 2: Initializing rewarded ad...');
+      // Initialize rewarded ad
+      console.log('[AdManager] 🎮 Initializing rewarded ad...');
       await this.initializeRewardedAd();
 
       this.state.managerInitialized = true;
@@ -185,51 +181,7 @@ class AdManager {
     }
   }
 
-  /**
-   * Initialize the AdMob SDK with proper configuration
-   */
-  private async initializeSDK(): Promise<void> {
-    console.log('[AdManager] 📱 Initializing AdMob SDK...');
-
-    try {
-      // Configure test devices and content rating
-      const testDevices = [...KNOWN_TEST_DEVICE_HASHES];
-
-      // In development, always use test ads
-      const isDev = __DEV__;
-      this.state.isTestDevice = isDev;
-
-      console.log('[AdManager] 🔧 Configuration:', {
-        mode: isDev ? 'DEVELOPMENT' : 'PRODUCTION',
-        testDevices: testDevices.length,
-        platform: Platform.OS,
-      });
-
-      // Set request configuration
-      await mobileAds().setRequestConfiguration({
-        maxAdContentRating: MaxAdContentRating.G,
-        tagForChildDirectedTreatment: false,
-        tagForUnderAgeOfConsent: false,
-        testDeviceIdentifiers: testDevices,
-      });
-
-      // Initialize the SDK
-      const adapterStatuses = await mobileAds().initialize();
-
-      // Log adapter status for debugging
-      console.log('[AdManager] 📊 SDK Initialization complete. Adapter statuses:');
-      Object.keys(adapterStatuses).forEach(adapter => {
-        const status = (adapterStatuses as any)[adapter];
-        console.log(`[AdManager]   ${adapter}: ${status.state} (${status.description || 'ready'})`);
-      });
-
-      this.state.sdkInitialized = true;
-      console.log('[AdManager] ✅ SDK initialized successfully');
-    } catch (error) {
-      console.error('[AdManager] ❌ SDK initialization failed:', error);
-      throw error;
-    }
-  }
+  // SDK initialization removed - handled by initAds.native.ts
 
   /**
    * Initialize rewarded ad with enhanced error handling

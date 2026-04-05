@@ -48,7 +48,6 @@ export function useRewardedAd(): {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
 
   // Track ad state and timing
   const adRef = useRef<RewardedAd | null>(null);
@@ -101,43 +100,8 @@ export function useRewardedAd(): {
     return expired;
   }, [isLoaded]);
 
-  /**
-   * Initialize the AdMob SDK and configure test devices
-   */
-  const initializeSDK = useCallback(async () => {
-    if (isInitialized) {
-      console.log('[useRewardedAd] SDK already initialized');
-      return;
-    }
-
-    console.log('[useRewardedAd] Initializing AdMob SDK...');
-
-    try {
-      // Configure test devices
-      const testDevices = [...ALPHA_TEST_DEVICE_HASHES].filter(Boolean);
-
-      console.log('[useRewardedAd] Configuring with test devices:', testDevices.length);
-
-      // Set request configuration
-      await mobileAds().setRequestConfiguration({
-        maxAdContentRating: MaxAdContentRating.G,
-        tagForChildDirectedTreatment: false,
-        tagForUnderAgeOfConsent: false,
-        testDeviceIdentifiers: testDevices,
-      });
-
-      // Initialize the SDK
-      const adapterStatuses = await mobileAds().initialize();
-
-      console.log('[useRewardedAd] SDK initialized. Adapters:', Object.keys(adapterStatuses).length);
-
-      setIsInitialized(true);
-    } catch (err) {
-      console.error('[useRewardedAd] SDK initialization failed:', err);
-      setError('Failed to initialize ads');
-      throw err;
-    }
-  }, [isInitialized]);
+  // SDK initialization removed - handled by initAds.native.ts
+  // No need to initialize SDK here, it's already initialized in App.tsx
 
   /**
    * Setup ad event listeners
@@ -240,8 +204,8 @@ export function useRewardedAd(): {
    */
   const createAd = useCallback(async () => {
     try {
-      // Initialize SDK first
-      await initializeSDK();
+      // SDK already initialized by initAds.native.ts in App.tsx
+      console.log('[useRewardedAd] Creating ad instance (SDK already initialized)');
 
       // Create ad instance
       const adUnitId = getAdUnitId();
@@ -266,7 +230,7 @@ export function useRewardedAd(): {
       setError('Failed to create ad');
       throw err;
     }
-  }, [initializeSDK, getAdUnitId, setupListeners, loadAd]);
+  }, [getAdUnitId, setupListeners, loadAd]);
 
   /**
    * Initialize on mount
