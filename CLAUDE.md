@@ -4,9 +4,32 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 ## 📍 현재 상태 (2026-04-05)
 
-- **버전**: versionCode 78 (Alpha 빌드 진행 중)
+- **버전**: versionCode 79 (클린 빌드 진행 중 - EAS 캐시 오염 해결)
 - **서버**: https://mytravel-planner.com (Hetzner VPS)
-- **상태**: Phase 0b 완료 ✅ → Alpha 배포 준비 완료
+- **상태**: versionCode 78 Alpha 버그 → versionCode 79 클린 빌드 → Alpha 재배포 예정
+
+### 🔴 versionCode 79: EAS 빌드 캐시 오염 해결 (2026-04-05 진행 중)
+- **배경**: versionCode 78 Alpha 테스트 중 3개 P0 버그 재발견
+  - Bug #1: 광고 재생 실패 (100% 재현)
+  - Bug #2: 장소 선택 미반영 (100% 재현)
+  - Bug #3: 초대 알림 네비게이션 실패 (100% 재현)
+- **근본 원인**: EAS Build Cache Poisoning
+  - 소스 코드: ✅ 3개 버그 모두 수정 완료 (commit 58b55537, 5b9edce5, a14ba69a)
+  - versionCode 78 빌드: ❌ versionCode 72-77의 stale 캐시 재사용
+  - 결과: 버그 수정 파일들이 빌드에서 누락됨
+- **해결 방안**: Clean Build with `--clear-cache`
+  - Build ID: e12c2df1-c99d-423e-b159-7d91d253ab61
+  - 전체 캐시 무효화 → 모든 소스 파일 재컴파일
+  - 예상 완료: 30-35분
+- **검증 절차**:
+  - AAB → APK 자동 변환 (`scripts/verify-build.sh`)
+  - 3개 버그 수정 포함 여부 자동 검증
+  - 검증 성공 시 Alpha 재배포
+- **상세 문서**: `docs/BUG_FIX_4_INVITATION_NAVIGATION.md` (386 lines)
+- **커밋**: 661aca67
+- **영향받은 사용자**:
+  - Alpha 테스터: 7명 (versionCode 78 → 79 업데이트 예정)
+  - 프로덕션 사용자: ~100명 (versionCode 70-71 정상 - 영향 없음)
 
 ### Phase 0b: 사용자 동의 관리 시스템 (2026-04-05 완료) ✅
 - **배경**: GDPR/CCPA 법적 요구사항 준수를 위한 동의 관리 시스템 구축
