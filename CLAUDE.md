@@ -8,6 +8,18 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **서버**: https://mytravel-planner.com (Hetzner VPS)
 - **상태**: versionCode 78 Alpha 버그 → versionCode 79 클린 빌드 → Alpha 재배포 예정
 
+### 🔴 Bug #5: 회원가입 실패 - Entity-Database 스키마 불일치 (2026-04-05 해결) ✅
+- **증상**: 회원가입 시 "An unexpected error occurred" 에러 (100% 재현)
+- **근본 원인**: Stripe → Paddle 마이그레이션 후 User entity에 남아있던 legacy columns
+  - `stripeCustomerId` → `paddleCustomerId`로 이름 변경됨
+  - `stripeSubscriptionId` → 완전히 제거됨
+  - Entity는 여전히 두 컬럼 정의 → INSERT 쿼리 실패
+- **해결**: User entity에서 legacy Stripe 컬럼 제거
+- **배포**: 프로덕션 서버 적용 완료 ✅
+- **검증**: 회원가입 API 정상 동작 확인
+- **문서**: `docs/BUG_FIX_5_REGISTRATION_ERROR.md`
+- **커밋**: ad41b0f5
+
 ### 🔴 versionCode 79: EAS 빌드 캐시 오염 해결 (2026-04-05 진행 중)
 - **배경**: versionCode 78 Alpha 테스트 중 3개 P0 버그 재발견
   - Bug #1: 광고 재생 실패 (100% 재현)
