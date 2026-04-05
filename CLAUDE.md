@@ -2,11 +2,28 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-04)
+## 📍 현재 상태 (2026-04-05)
 
-- **버전**: versionCode 70 (Self-Healing QA Loop 완료)
+- **버전**: versionCode 72 (Alpha 테스트 진행 중)
 - **서버**: https://mytravel-planner.com (Hetzner VPS)
-- **상태**: Alpha 테스트 배포 준비 완료 ✅ → 프로덕션 출시 대기
+- **상태**: 사용자 동의 절차 Phase 0a 완료 ✅ → Phase 0b 준비 중 (versionCode 73)
+
+### 사용자 동의 절차 개선 (Phase 0a, 2026-04-05)
+- **배경**: Alpha 테스트 중 법적 동의 절차 미비 발견
+- **완료 항목**:
+  - ✅ 개인정보 처리방침에 "선택 수집 항목" 섹션 추가 (위치/알림/사진 권한)
+  - ✅ "위치 정보 이용 및 보호" 세부 섹션 추가 (수집 방법, 이용 목적, 보관 기간, 제3자 제공, 철회 방법)
+  - ✅ 법적 근거 명시: 위치정보법, 정보통신망법, 개인정보보호법
+  - ✅ 다국어 동기화: privacy.html (한국어), privacy-en.html (영어)
+  - ✅ 최종 수정일 업데이트: 2026-04-05
+  - ✅ 프로덕션 서버 배포 완료
+- **벤치마킹**: Airbnb, Google Maps, TripAdvisor, Notion 동의 패턴 분석
+- **다음 단계**: Phase 0b (versionCode 73) - 앱 내 동의 화면, DB 스키마, API 구현
+  - ConsentScreen.tsx: 초기 실행 시 동의 화면
+  - user_consents 테이블: 동의 이력 저장
+  - GET/POST /api/users/me/consents: 동의 관리 API
+  - Just-in-Time 권한 요청 모달 (위치/알림/사진)
+- **커밋**: (다음 커밋 예정)
 
 ### 최근 QA 및 배포 (versionCode 70, 2026-04-04)
 - **Self-Healing QA Loop**: 1회 반복으로 성공 ✅
