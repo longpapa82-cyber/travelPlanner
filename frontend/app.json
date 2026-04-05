@@ -4,7 +4,7 @@
     "slug": "travel-planner",
     "version": "1.0.0",
     "android": {
-      "versionCode": 72,
+      "versionCode": 73,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4A90D9"
