@@ -146,7 +146,8 @@ export class AdminService {
         'u.lastLoginAt',
         'u.createdAt',
       ])
-      .orderBy('u.createdAt', 'DESC');
+      .orderBy('u.lastLoginAt', 'DESC', 'NULLS LAST')
+      .addOrderBy('u.createdAt', 'DESC');
 
     if (search) {
       qb.andWhere('(u.name ILIKE :search OR u.email ILIKE :search)', {

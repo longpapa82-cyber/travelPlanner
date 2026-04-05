@@ -31,6 +31,9 @@ const AD_EXPIRY_MS = 4 * 60 * 1000; // 4 minutes
 const ALPHA_TEST_DEVICE_HASHES: string[] = [
   'EMULATOR',
   'SIMULATOR',
+  // Common test device hashes for Android/iOS
+  '33BE2250B43518CCDA7DE426D04EE231', // Common iOS Simulator
+  '2077EF9982D9BD10BAD78E90BEBE988D', // Common Android emulator
   // Add Alpha tester device hashes here as they're discovered
   // These will be shown in logs when ads fail to load
 ];
@@ -51,6 +54,7 @@ export function useRewardedAd(): {
   const adRef = useRef<RewardedAd | null>(null);
   const lastLoadTimeRef = useRef<number>(0);
   const listenersSetupRef = useRef(false);
+  const isLoadedRef = useRef(false);
 
   /**
    * Get the correct ad unit ID
@@ -68,11 +72,14 @@ export function useRewardedAd(): {
       : extra.admob?.rewardedAdUnitId?.android;
 
     if (!productionId) {
-      console.error('[useRewardedAd] Production ad ID not found!');
-      return TestIds.REWARDED;
+      console.error('[useRewardedAd] Production ad ID not found in config!');
+      console.error('[useRewardedAd] Config extra:', JSON.stringify(extra.admob, null, 2));
+      // Don't fall back to test ID in production - this would violate AdMob policies
+      throw new Error('Production ad unit ID not configured');
     }
 
-    console.log('[useRewardedAd] Using PRODUCTION ad ID');
+    console.log('[useRewardedAd] Using PRODUCTION ad ID for', Platform.OS);
+    console.log('[useRewardedAd] Ad ID:', productionId.substring(0, 30) + '...');
     return productionId;
   }, []);
 
@@ -147,6 +154,7 @@ export function useRewardedAd(): {
     ad.addAdEventListener(RewardedAdEventType.LOADED, () => {
       console.log('[useRewardedAd] ✅ Ad loaded successfully');
       setIsLoaded(true);
+      isLoadedRef.current = true;
       setIsLoading(false);
       setError(null);
       lastLoadTimeRef.current = Date.now();
@@ -156,6 +164,7 @@ export function useRewardedAd(): {
     ad.addAdEventListener(AdEventType.ERROR, (err) => {
       console.error('[useRewardedAd] ❌ Ad error:', err);
       setIsLoaded(false);
+      isLoadedRef.current = false;
       setIsLoading(false);
       setError(String(err));
 
@@ -189,6 +198,7 @@ export function useRewardedAd(): {
     ad.addAdEventListener(AdEventType.CLOSED, () => {
       console.log('[useRewardedAd] Ad closed');
       setIsLoaded(false);
+      isLoadedRef.current = false;
       lastLoadTimeRef.current = 0;
 
       // Reload for next use
@@ -264,15 +274,28 @@ export function useRewardedAd(): {
   useEffect(() => {
     console.log('[useRewardedAd] Component mounted, initializing...');
 
-    createAd().catch(err => {
-      console.error('[useRewardedAd] Initial setup failed:', err);
-    });
+    // Delay initial ad creation to ensure SDK is ready
+    const initTimer = setTimeout(() => {
+      createAd().catch(err => {
+        console.error('[useRewardedAd] Initial setup failed:', err);
+
+        // Retry once after a delay
+        setTimeout(() => {
+          console.log('[useRewardedAd] Retrying initialization...');
+          createAd().catch(err2 => {
+            console.error('[useRewardedAd] Second attempt failed:', err2);
+          });
+        }, 2000);
+      });
+    }, 500);
 
     // Cleanup
     return () => {
+      clearTimeout(initTimer);
       console.log('[useRewardedAd] Component unmounting');
       adRef.current = null;
       listenersSetupRef.current = false;
+      isLoadedRef.current = false;
     };
   }, []); // Empty deps - only run once on mount
 
@@ -300,20 +323,39 @@ export function useRewardedAd(): {
       }
 
       // Check if ad is expired or not loaded
-      if (!isLoaded || isAdExpired()) {
+      if (!isLoadedRef.current || isAdExpired()) {
         console.log('[useRewardedAd] Ad not ready, loading Just-in-Time...');
+
+        // Reset the loaded ref before loading
+        isLoadedRef.current = false;
+
+        // Create a promise that resolves when the ad loads or fails
+        const loadPromise = new Promise<boolean>((resolve) => {
+          const checkLoaded = setInterval(() => {
+            if (isLoadedRef.current) {
+              clearInterval(checkLoaded);
+              resolve(true);
+            }
+          }, 100);
+
+          // Timeout after 5 seconds
+          setTimeout(() => {
+            clearInterval(checkLoaded);
+            resolve(false);
+          }, 5000);
+        });
+
+        // Start loading the ad
         await loadAd();
 
-        // Wait for ad to load (max 5 seconds)
-        let waitTime = 0;
-        while (!isLoaded && waitTime < 5000) {
-          await new Promise(resolve => setTimeout(resolve, 500));
-          waitTime += 500;
-        }
+        // Wait for the ad to actually be loaded
+        const adLoaded = await loadPromise;
 
-        if (!isLoaded) {
+        if (!adLoaded) {
           throw new Error('Ad failed to load in time');
         }
+
+        console.log('[useRewardedAd] Ad loaded successfully, ready to show');
       }
 
       // Set up one-time reward listener

@@ -107,6 +107,8 @@ const UserManagementScreen: React.FC<Props> = () => {
         </Text>
         <View style={styles.platformRow}>
           {platforms.map((p) => {
+            // Platform stats show users who have accessed the app via each platform
+            // Web users = users who have logged in via web browser (not just visitors)
             const data = stats.platformStats[p] || { total: 0, todayActive: 0, weeklyActive: 0 };
             const icon = PLATFORM_ICONS[p];
             return (

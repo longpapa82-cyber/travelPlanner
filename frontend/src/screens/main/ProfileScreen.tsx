@@ -790,7 +790,7 @@ const ProfileScreen = ({ navigation }: any) => {
               <View style={styles.buttonRow}>
                 <Button
                   variant="outline"
-                  style={{ flex: 1, marginRight: 8 }}
+                  style={{ flex: 1 }}
                   onPress={handleCancelProfilePhoto}
                   disabled={isUploadingPhoto}
                 >
@@ -798,12 +798,12 @@ const ProfileScreen = ({ navigation }: any) => {
                 </Button>
                 <Button
                   variant="primary"
-                  style={{ flex: 1, marginLeft: 8 }}
+                  style={{ flex: 1 }}
                   onPress={handleConfirmProfilePhoto}
                   loading={isUploadingPhoto}
                   disabled={isUploadingPhoto}
                 >
-                  {t('editProfile.confirmPhoto', { defaultValue: '설정' })}
+                  {t('editProfile.confirmPhoto', { defaultValue: '저장' })}
                 </Button>
               </View>
             </View>
@@ -940,7 +940,9 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 34,
-    maxHeight: '80%',
+    maxHeight: '90%',
+    minHeight: 400,
+    justifyContent: 'space-between',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -990,11 +992,13 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   previewContainer: {
     alignItems: 'center',
     paddingVertical: 20,
+    flex: 1,
+    justifyContent: 'center',
   },
   previewImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
     marginBottom: 16,
     borderWidth: 3,
     borderColor: theme.colors.primary,
@@ -1007,8 +1011,10 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
-    paddingHorizontal: 4,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
     marginTop: 12,
+    gap: 12,
   },
 });
 

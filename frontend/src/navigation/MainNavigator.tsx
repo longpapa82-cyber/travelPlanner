@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { MainTabParamList } from '../types';
@@ -17,6 +17,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { colors, darkColors } from '../constants/theme';
 import apiService from '../services/api';
 import { notificationEvents } from '../utils/notificationEvents';
+import { useNotifications } from '../contexts/NotificationContext';
 
 /** Wrap a screen component with ErrorBoundary so crashes are isolated per-tab */
 const withErrorBoundary = <P extends object>(Component: React.ComponentType<P>) => {
@@ -42,6 +43,8 @@ const MainNavigator = () => {
   const { t } = useTranslation('common');
   const insets = useSafeAreaInsets();
   const [unreadCount, setUnreadCount] = useState(0);
+  const navigation = useNavigation<any>();
+  const { lastNotificationResponse } = useNotifications();
 
   const fetchUnread = useCallback(async () => {
     try {
@@ -67,6 +70,52 @@ const MainNavigator = () => {
     });
     return unsubscribe;
   }, [fetchUnread]);
+
+  // Handle notification tap to navigate
+  useEffect(() => {
+    if (!lastNotificationResponse) return;
+
+    const data = lastNotificationResponse.notification.request.content.data;
+    console.log('[MainNavigator] Handling notification response:', data);
+
+    // Small delay to ensure navigation is ready
+    setTimeout(() => {
+      // Handle trip invitations or trip-related notifications
+      if (data?.tripId) {
+        console.log('[MainNavigator] Navigating to trip:', data.tripId);
+        // Navigate to the Trips tab, then to TripDetail
+        navigation.navigate('Trips', {
+          screen: 'TripDetail',
+          params: { tripId: data.tripId },
+          initial: false,
+        });
+      } else if (data?.type === 'invitation' || data?.type === 'COLLABORATOR_INVITE') {
+        // Handle invitation notifications - if we have a tripId, go directly to the trip
+        if (data?.tripId) {
+          console.log('[MainNavigator] Invitation with tripId, navigating to trip:', data.tripId);
+          navigation.navigate('Trips', {
+            screen: 'TripDetail',
+            params: { tripId: data.tripId },
+            initial: false,
+          });
+        } else {
+          // Otherwise go to notifications screen
+          console.log('[MainNavigator] Invitation without tripId, going to notifications');
+          navigation.navigate('Notifications');
+        }
+      } else if (data?.type === 'daily' || data?.type === 'dayBefore' || data?.type === 'tripStart') {
+        // Handle trip reminder notifications
+        if (data?.tripId) {
+          console.log('[MainNavigator] Trip reminder, navigating to trip:', data.tripId);
+          navigation.navigate('Trips', {
+            screen: 'TripDetail',
+            params: { tripId: data.tripId },
+            initial: false,
+          });
+        }
+      }
+    }, 100);
+  }, [lastNotificationResponse, navigation]);
 
   return (
     <Tab.Navigator

@@ -52,11 +52,17 @@ describe('AllExceptionsFilter', () => {
       }),
     } as any;
 
-    const httpAdapterHost = {
-      httpAdapter: {},
-    } as HttpAdapterHost;
+    // Mock HttpAdapterHost properly for BaseExceptionFilter
+    const mockHttpAdapter = {
+      reply: jest.fn(),
+      getRequestUrl: jest.fn().mockReturnValue('/test'),
+    };
 
-    filter = new AllExceptionsFilter(httpAdapterHost);
+    const httpAdapterHost = {
+      httpAdapter: mockHttpAdapter,
+    };
+
+    filter = new AllExceptionsFilter(httpAdapterHost as any);
     filter.setDataSource(mockDataSource);
   });
 
