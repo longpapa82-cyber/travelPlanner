@@ -4,26 +4,54 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 ## 📍 현재 상태 (2026-04-05)
 
-- **버전**: versionCode 72 (Alpha 테스트 진행 중)
+- **버전**: versionCode 78 (Alpha 빌드 진행 중)
 - **서버**: https://mytravel-planner.com (Hetzner VPS)
-- **상태**: 사용자 동의 절차 Phase 0a 완료 ✅ → Phase 0b 준비 중 (versionCode 73)
+- **상태**: Phase 0b 완료 ✅ → Alpha 배포 준비 완료
 
-### 사용자 동의 절차 개선 (Phase 0a, 2026-04-05)
+### Phase 0b: 사용자 동의 관리 시스템 (2026-04-05 완료) ✅
+- **배경**: GDPR/CCPA 법적 요구사항 준수를 위한 동의 관리 시스템 구축
+- **완료 항목**:
+  - ✅ Backend API 구현 (UsersService, UsersController)
+    - GET /api/users/me/consents: 동의 상태 조회
+    - POST /api/users/me/consents: 동의 업데이트
+  - ✅ Database Migration
+    - user_consents 테이블 생성 (7가지 동의 유형)
+    - consent_audit_logs 테이블 생성 (감사 로그)
+  - ✅ Frontend UI 구현
+    - ConsentScreen.tsx: 초기 실행 시 동의 화면
+    - ConsentContext: 전역 동의 상태 관리
+    - RootNavigator 조건부 렌더링
+  - ✅ 다국어 지원: ko/en (13개 언어 확장 가능)
+  - ✅ 다크/라이트 모드 완벽 지원
+  - ✅ 전체 동의 기능, 필수 동의 검증
+- **법적 준수**:
+  - IP 주소, User-Agent 자동 기록
+  - 동의/철회 이력 감사 로그 저장
+  - 정책 버전 관리 (v1.0.0)
+  - Legal Basis: CONTRACT (필수) / CONSENT (선택)
+- **코드 통계**: +832 라인 (11 파일), 4개 커밋
+  - 27e7341a: Backend (UsersService +239 라인)
+  - ccd08874: Frontend (ConsentScreen +218 라인)
+  - db832bb6: Integration (ConsentContext +95 라인)
+  - 6bc21074: Documentation (+1,092 라인)
+- **EAS Build**:
+  - versionCode 74: d21uQgscrnRXRZYNtRsEBn.aab ✅
+  - versionCode 76: dgmxi5FpBDcJwL4eppXeTr.aab ✅
+  - versionCode 78: 23991a81-9c33-4338-a058-a3d3216eed4b ⏳
+- **배포 문서**:
+  - docs/deployment/phase-0b-alpha-deployment-guide.md
+  - docs/deployment/alpha-tester-guide-v76.md
+  - docs/deployment/phase-0b-deployment-checklist.md
+- **다음 단계**: Alpha 배포 (versionCode 78) → 테스터 피드백 → 프로덕션 출시
+
+### Phase 0a: 개인정보 처리방침 업데이트 (2026-04-05 완료) ✅
 - **배경**: Alpha 테스트 중 법적 동의 절차 미비 발견
 - **완료 항목**:
-  - ✅ 개인정보 처리방침에 "선택 수집 항목" 섹션 추가 (위치/알림/사진 권한)
-  - ✅ "위치 정보 이용 및 보호" 세부 섹션 추가 (수집 방법, 이용 목적, 보관 기간, 제3자 제공, 철회 방법)
+  - ✅ 개인정보 처리방침에 "선택 수집 항목" 섹션 추가
+  - ✅ "위치 정보 이용 및 보호" 세부 섹션 추가
   - ✅ 법적 근거 명시: 위치정보법, 정보통신망법, 개인정보보호법
-  - ✅ 다국어 동기화: privacy.html (한국어), privacy-en.html (영어)
-  - ✅ 최종 수정일 업데이트: 2026-04-05
+  - ✅ 다국어 동기화: privacy.html, privacy-en.html
   - ✅ 프로덕션 서버 배포 완료
-- **벤치마킹**: Airbnb, Google Maps, TripAdvisor, Notion 동의 패턴 분석
-- **다음 단계**: Phase 0b (versionCode 73) - 앱 내 동의 화면, DB 스키마, API 구현
-  - ConsentScreen.tsx: 초기 실행 시 동의 화면
-  - user_consents 테이블: 동의 이력 저장
-  - GET/POST /api/users/me/consents: 동의 관리 API
-  - Just-in-Time 권한 요청 모달 (위치/알림/사진)
-- **커밋**: (다음 커밋 예정)
 
 ### 최근 QA 및 배포 (versionCode 70, 2026-04-04)
 - **Self-Healing QA Loop**: 1회 반복으로 성공 ✅
