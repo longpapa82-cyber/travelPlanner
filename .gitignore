@@ -64,5 +64,8 @@ frontend/web-build/
 secrets/
 uploads/oracleCloudKey/
 
+# Deployment scripts with hardcoded tokens
+deploy-backend.sh
+
 # Database backups
 backups/
