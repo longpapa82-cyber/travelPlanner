@@ -1086,6 +1086,18 @@ class ApiService {
       available: boolean;
     };
   }
+
+  // ─── Consent Management (Phase 0b) ─────────────────
+
+  async getConsentsStatus() {
+    const response = await this.api.get('/users/me/consents');
+    return response.data;
+  }
+
+  async updateConsents(data: any) {
+    const response = await this.api.post('/users/me/consents', data);
+    return response.data;
+  }
 }
 
 export default new ApiService();

@@ -1,0 +1,55 @@
+{
+  "title": "서비스 이용 동의",
+  "subtitle": "여행 플래너를 이용하기 위해 다음 약관에 동의가 필요합니다",
+  "required": "필수",
+  "optional": "선택",
+  "agree": "동의",
+  "disagree": "거부",
+  "allAgree": "전체 동의",
+  "confirmButton": "확인",
+  "types": {
+    "terms": {
+      "title": "서비스 이용약관",
+      "description": "서비스 제공을 위해 필요합니다",
+      "benefits": ["서비스 이용 권한"]
+    },
+    "privacy_required": {
+      "title": "개인정보 처리방침 (필수)",
+      "description": "계정 관리 및 서비스 제공을 위해 필요합니다",
+      "benefits": ["계정 생성 및 관리", "서비스 제공", "고객 지원"]
+    },
+    "privacy_optional": {
+      "title": "개인정보 처리방침 (선택)",
+      "description": "향상된 사용자 경험을 위해 사용됩니다",
+      "benefits": ["개인화된 추천", "사용자 경험 개선"]
+    },
+    "location": {
+      "title": "위치 정보 이용",
+      "description": "주변 장소 검색 및 여행 경로 추천에 사용됩니다",
+      "benefits": ["주변 장소 검색", "여행 경로 추천", "위치 기반 기능"]
+    },
+    "notification": {
+      "title": "알림 수신 동의",
+      "description": "여행 일정 알림 및 공유 알림을 받을 수 있습니다",
+      "benefits": ["여행 일정 알림", "공유 알림", "중요 업데이트"]
+    },
+    "photo": {
+      "title": "사진 접근 권한",
+      "description": "프로필 사진 및 여행 사진 업로드에 사용됩니다",
+      "benefits": ["프로필 이미지 업로드", "여행 사진 공유"]
+    },
+    "marketing": {
+      "title": "마케팅 정보 수신",
+      "description": "프로모션 및 새로운 기능 안내를 받을 수 있습니다",
+      "benefits": ["프로모션 제공", "신기능 안내", "이벤트 알림"]
+    }
+  },
+  "errors": {
+    "requiredConsent": "필수 약관에 동의해주세요",
+    "updateFailed": "동의 정보 업데이트에 실패했습니다"
+  },
+  "toast": {
+    "updateSuccess": "동의 정보가 업데이트되었습니다",
+    "updateFailed": "동의 정보 업데이트에 실패했습니다"
+  }
+}

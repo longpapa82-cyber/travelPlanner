@@ -288,3 +288,40 @@ export type TripsStackParamList = {
   Expenses: { tripId: string };
   AddExpense: { tripId: string; expenseId?: string };
 };
+
+// Consent types (Phase 0b)
+export type ConsentType =
+  | 'terms'
+  | 'privacy_required'
+  | 'privacy_optional'
+  | 'location'
+  | 'notification'
+  | 'photo'
+  | 'marketing';
+
+export interface ConsentItem {
+  type: ConsentType;
+  version: string;
+  isConsented: boolean;
+}
+
+export interface ConsentResponse {
+  type: ConsentType;
+  version: string;
+  isConsented: boolean;
+  consentedAt?: string;
+  isRequired: boolean;
+  requiresUpdate: boolean;
+  description?: string;
+  benefits?: string[];
+}
+
+export interface ConsentsStatus {
+  consents: ConsentResponse[];
+  needsConsent: boolean;
+  needsUpdate: boolean;
+}
+
+export interface UpdateConsentsDto {
+  consents: ConsentItem[];
+}

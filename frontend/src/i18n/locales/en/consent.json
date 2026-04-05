@@ -1,0 +1,55 @@
+{
+  "title": "Service Agreement",
+  "subtitle": "Please agree to the following terms to use Travel Planner",
+  "required": "Required",
+  "optional": "Optional",
+  "agree": "Agree",
+  "disagree": "Decline",
+  "allAgree": "Agree to All",
+  "confirmButton": "Confirm",
+  "types": {
+    "terms": {
+      "title": "Terms of Service",
+      "description": "Required to use the service",
+      "benefits": ["Service usage rights"]
+    },
+    "privacy_required": {
+      "title": "Privacy Policy (Required)",
+      "description": "Required for account management and service provision",
+      "benefits": ["Account creation and management", "Service provision", "Customer support"]
+    },
+    "privacy_optional": {
+      "title": "Privacy Policy (Optional)",
+      "description": "Used to improve user experience",
+      "benefits": ["Personalized recommendations", "Enhanced user experience"]
+    },
+    "location": {
+      "title": "Location Information Usage",
+      "description": "Used for nearby place search and travel route recommendations",
+      "benefits": ["Search nearby places", "Travel route recommendations", "Location-based features"]
+    },
+    "notification": {
+      "title": "Push Notifications",
+      "description": "Receive travel reminders and sharing notifications",
+      "benefits": ["Travel reminders", "Sharing notifications", "Important updates"]
+    },
+    "photo": {
+      "title": "Photo Access",
+      "description": "Used for profile image and travel photo uploads",
+      "benefits": ["Profile image upload", "Travel photo sharing"]
+    },
+    "marketing": {
+      "title": "Marketing Communications",
+      "description": "Receive promotional offers and new feature announcements",
+      "benefits": ["Promotional offers", "New feature announcements", "Event notifications"]
+    }
+  },
+  "errors": {
+    "requiredConsent": "Please agree to the required terms",
+    "updateFailed": "Failed to update consent information"
+  },
+  "toast": {
+    "updateSuccess": "Consent information updated successfully",
+    "updateFailed": "Failed to update consent information"
+  }
+}
