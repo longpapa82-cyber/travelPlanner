@@ -140,11 +140,8 @@ export class User {
   @Column({ type: 'varchar', nullable: true, select: false })
   paddleCustomerId?: string;
 
-  @Column({ type: 'varchar', nullable: true, select: false })
-  stripeCustomerId?: string;
-
-  @Column({ type: 'varchar', nullable: true, select: false })
-  stripeSubscriptionId?: string;
+  // Note: stripeCustomerId was migrated to paddleCustomerId in migration 1740400000000
+  // stripeSubscriptionId was also removed from the database
 
   @Column({ type: 'int', default: 0 })
   aiTripsUsedThisMonth: number;
