@@ -39,6 +39,7 @@ interface ActivityItemProps {
   onToggleCompletion: (itineraryId: string, activityIndex: number, activity: Activity) => void;
   onEdit: (itineraryId: string, activityIndex: number, activity: Activity) => void;
   onDelete: (itineraryId: string, activityIndex: number) => void;
+  isDraggable?: boolean;
 }
 
 const ActivityItem: React.FC<ActivityItemProps> = ({
@@ -53,6 +54,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
   onToggleCompletion,
   onEdit,
   onDelete,
+  isDraggable = true,
 }) => {
   const { item: activity, drag, isActive } = params;
   const { theme, isDark } = useTheme();
@@ -266,8 +268,8 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
       </View>
   );
 
-  // On web, ScaleDecorator requires DraggableFlatList context which is absent
-  if (Platform.OS === 'web') {
+  // ScaleDecorator requires DraggableFlatList's CellProvider context
+  if (Platform.OS === 'web' || !isDraggable) {
     return cardContent;
   }
 

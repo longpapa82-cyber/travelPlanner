@@ -270,7 +270,7 @@ export function useRewardedAd(): {
     console.log('[useRewardedAd] Show requested');
 
     // Check frequency capping
-    if (!canShowFullScreenAd()) {
+    if (!(await canShowFullScreenAd())) {
       console.log('[useRewardedAd] Frequency capped, giving reward');
       onRewarded();
       return;

@@ -55,6 +55,15 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
 
   const progress = getItineraryProgress(itinerary.activities, itinerary.date, tripStatus);
 
+  // Check if this day is in the past (strictly before today)
+  const isDayInPast = (() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dayDate = new Date(itinerary.date);
+    dayDate.setHours(0, 0, 0, 0);
+    return dayDate < today;
+  })();
+
   return (
     <Animated.View
       style={[
@@ -120,6 +129,7 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
               onToggleCompletion={onToggleCompletion}
               onEdit={onEditActivity}
               onDelete={onDeleteActivity}
+              isDraggable={false}
             />
           ))
         ) : (
@@ -156,8 +166,8 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
         )}
       </View>
 
-      {/* Add Activity Button */}
-      {canAddActivity && (
+      {/* Add Activity Button — hidden for past days */}
+      {canAddActivity && !isDayInPast && (
         <TouchableOpacity
           style={[
             styles.addActivityButton,

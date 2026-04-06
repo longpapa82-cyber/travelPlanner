@@ -40,20 +40,10 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [apiAvailable, setApiAvailable] = useState(true);
-  const [internalValue, setInternalValue] = useState(value);
-  const [isSelecting, setIsSelecting] = useState(false);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sessionToken = useRef(generateSessionToken());
-  const skipNextSearch = useRef(false);
-  // Track if we just made a selection to prevent input value conflicts
-  const justSelected = useRef(false);
-
-  // Sync external value with internal value when not selecting
-  useEffect(() => {
-    if (!isSelecting) {
-      setInternalValue(value);
-    }
-  }, [value, isSelecting]);
+  // Track the description of the last selected place to suppress search
+  const selectedDescription = useRef<string | null>(null);
 
   // Refresh session token periodically (every 3 minutes like Google recommends)
   useEffect(() => {
@@ -113,80 +103,35 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   }, []);
 
   const handleChangeText = (text: string) => {
-    console.log('[PlacesAutocomplete] handleChangeText called with:', text);
-    console.log('[PlacesAutocomplete] isSelecting:', isSelecting);
-    console.log('[PlacesAutocomplete] justSelected:', justSelected.current);
-
-    // If we're in the middle of selecting, ignore the change
-    if (isSelecting) {
-      console.log('[PlacesAutocomplete] Ignoring change - selection in progress');
+    // If the text matches a just-selected place, suppress search
+    if (selectedDescription.current && text === selectedDescription.current) {
+      selectedDescription.current = null;
       return;
     }
-
-    // Check if we should skip the search first BEFORE updating parent
-    if (skipNextSearch.current) {
-      console.log('[PlacesAutocomplete] Skipping search - flag set');
-      skipNextSearch.current = false;
-      // Update internal value but don't update parent yet
-      setInternalValue(text);
-      return;
-    }
-
-    // Check justSelected separately to prevent immediate re-search after selection
-    if (justSelected.current) {
-      console.log('[PlacesAutocomplete] Selection just made, skipping search');
-      // Update internal value but don't update parent yet
-      setInternalValue(text);
-      return;
-    }
-
-    // Update both internal and parent state
-    setInternalValue(text);
+    // User is typing — clear selected marker and notify parent
+    selectedDescription.current = null;
     onChangeText(text);
 
     // Only proceed with search if API is available
-    if (!apiAvailable) {
-      console.log('[PlacesAutocomplete] API not available, skipping search');
-      return;
-    }
+    if (!apiAvailable) return;
 
-    console.log('[PlacesAutocomplete] Triggering search for:', text);
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
     debounceTimer.current = setTimeout(() => searchPlaces(text), 500);
   };
 
   const handleSelect = (place: PlacePrediction) => {
-    console.log('[PlacesAutocomplete] Selecting place:', place.description);
-
-    // Set flags BEFORE any state updates to prevent race conditions
-    skipNextSearch.current = true;
-    justSelected.current = true;
-    setIsSelecting(true);
-
-    // Update internal value immediately
-    setInternalValue(place.description);
+    // Mark this description so the next TextInput onChangeText is suppressed
+    selectedDescription.current = place.description;
 
     // Clear dropdown immediately
     setPredictions([]);
     setShowDropdown(false);
-    sessionToken.current = generateSessionToken(); // New session after selection
+    sessionToken.current = generateSessionToken();
 
-    // Always update text via onChangeText first to ensure parent state is consistent
-    console.log('[PlacesAutocomplete] Updating parent text via onChangeText');
-    onChangeText(place.description);
-
-    // Then call onSelect if provided for additional place data (placeId)
+    // Notify parent — onSelect is the single source of truth for selection
     if (onSelect) {
-      console.log('[PlacesAutocomplete] Calling onSelect with full place data');
       onSelect(place);
     }
-
-    // Clear the selection flags after a delay to ensure no race conditions
-    setTimeout(() => {
-      console.log('[PlacesAutocomplete] Clearing selection flags');
-      justSelected.current = false;
-      setIsSelecting(false);
-    }, 100);
   };
 
   const handleBlur = () => {
@@ -201,7 +146,7 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
         <TextInput
           style={styles.input}
           placeholder={placeholder}
-          value={internalValue}
+          value={value}
           onChangeText={handleChangeText}
           onFocus={() => {
             if (predictions.length > 0) setShowDropdown(true);
