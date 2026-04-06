@@ -326,7 +326,10 @@
       "toggleError": "Gagal mengemas kini status",
       "reorderError": "Gagal menyusun semula",
       "exportSuccess": "Fail kalendar berjaya dieksport",
-      "exportError": "Gagal mengeksport kalendar"
+      "exportError": "Gagal mengeksport kalendar",
+      "tripNotFound": "Perjalanan tidak ditemui",
+      "noPermission": "Anda tidak mempunyai kebenaran untuk melihat perjalanan ini",
+      "invalidTrip": "ID perjalanan tidak sah"
     },
     "photos": {
       "addCover": "Tambah foto kulit",

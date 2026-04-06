@@ -31,7 +31,8 @@
       "rest": "พักผ่อน",
       "transport": "การเดินทาง",
       "other": "อื่นๆ"
-    }
+    },
+    "timePlaceholder": "เลือกเวลา"
   },
   "shareModal": {
     "title": "แชร์ทริป",

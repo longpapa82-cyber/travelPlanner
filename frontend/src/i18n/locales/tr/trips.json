@@ -326,7 +326,10 @@
       "toggleError": "Durum güncellenemedi",
       "reorderError": "Sıralama değiştirilemedi",
       "exportSuccess": "Takvim dosyası başarıyla dışa aktarıldı",
-      "exportError": "Takvim dışa aktarılamadı"
+      "exportError": "Takvim dışa aktarılamadı",
+      "tripNotFound": "Gezi bulunamadı",
+      "noPermission": "Bu geziyi görüntüleme izniniz yok",
+      "invalidTrip": "Geçersiz gezi kimliği"
     },
     "photos": {
       "addCover": "Kapak fotoğrafı ekle",

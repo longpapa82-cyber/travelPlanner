@@ -39,7 +39,10 @@
       "photoSuccess": "Profilbild aktualisiert",
       "photoFailed": "Profilbild konnte nicht aktualisiert werden",
       "permissionDenied": "Fotoberechtigungen erforderlich"
-    }
+    },
+    "previewTitle": "Profilbild festlegen",
+    "previewHint": "Möchten Sie dieses Foto als Profilbild festlegen?",
+    "confirmPhoto": "Festlegen"
   },
   "changePassword": {
     "title": "Passwort ändern",

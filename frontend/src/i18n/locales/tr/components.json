@@ -31,7 +31,8 @@
       "rest": "Dinlenme",
       "transport": "Ulaşım",
       "other": "Diğer"
-    }
+    },
+    "timePlaceholder": "Saat seçin"
   },
   "shareModal": {
     "title": "Geziyi Paylaş",

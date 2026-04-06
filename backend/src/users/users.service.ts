@@ -646,7 +646,9 @@ export class UsersService {
     const user = await this.findById(userId);
 
     for (const consentItem of dto.consents) {
-      const { type, version, isConsented } = consentItem;
+      const { type, isConsented } = consentItem;
+      // Always use server-side version to prevent client-side version injection
+      const version = this.CONSENT_VERSIONS[type];
 
       // Find existing consent record
       const existingConsent = await this.consentRepository.findOne({
@@ -667,7 +669,7 @@ export class UsersService {
 
         existingConsent.isConsented = isConsented;
         existingConsent.consentedAt = isConsented ? new Date() : existingConsent.consentedAt;
-        existingConsent.revokedAt = !isConsented ? new Date() : undefined;
+        existingConsent.revokedAt = !isConsented ? new Date() : null;
         existingConsent.ipAddress = ipAddress;
         existingConsent.userAgent = userAgent;
 
@@ -707,7 +709,7 @@ export class UsersService {
         // Log audit trail
         await this.logConsentChange({
           userId,
-          action: ConsentAction.GRANT,
+          action: isConsented ? ConsentAction.GRANT : ConsentAction.REVOKE,
           consentType: type,
           previousState: null,
           newState: {

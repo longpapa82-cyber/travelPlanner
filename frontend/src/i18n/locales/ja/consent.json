@@ -1,0 +1,55 @@
+{
+  "title": "サービス利用同意",
+  "subtitle": "Travel Plannerをご利用いただくには、以下の規約に同意が必要です",
+  "required": "必須",
+  "optional": "任意",
+  "agree": "同意する",
+  "disagree": "同意しない",
+  "allAgree": "すべてに同意",
+  "confirmButton": "確認",
+  "types": {
+    "terms": {
+      "title": "利用規約",
+      "description": "サービスの提供に必要です",
+      "benefits": ["サービス利用権限"]
+    },
+    "privacy_required": {
+      "title": "プライバシーポリシー（必須）",
+      "description": "アカウント管理とサービス提供に必要です",
+      "benefits": ["アカウントの作成と管理", "サービスの提供", "カスタマーサポート"]
+    },
+    "privacy_optional": {
+      "title": "プライバシーポリシー（任意）",
+      "description": "ユーザー体験の向上に使用されます",
+      "benefits": ["パーソナライズされた推薦", "ユーザー体験の改善"]
+    },
+    "location": {
+      "title": "位置情報の利用",
+      "description": "周辺スポットの検索や旅行ルートの提案に使用されます",
+      "benefits": ["周辺スポット検索", "旅行ルート提案", "位置情報ベースの機能"]
+    },
+    "notification": {
+      "title": "通知の受信",
+      "description": "旅行リマインダーや共有通知を受け取れます",
+      "benefits": ["旅行リマインダー", "共有通知", "重要なお知らせ"]
+    },
+    "photo": {
+      "title": "写真へのアクセス",
+      "description": "プロフィール画像や旅行写真のアップロードに使用されます",
+      "benefits": ["プロフィール画像のアップロード", "旅行写真の共有"]
+    },
+    "marketing": {
+      "title": "マーケティング情報の受信",
+      "description": "プロモーションや新機能のお知らせを受け取れます",
+      "benefits": ["プロモーション情報", "新機能のお知らせ", "イベント通知"]
+    }
+  },
+  "errors": {
+    "requiredConsent": "必須項目に同意してください",
+    "updateFailed": "同意情報の更新に失敗しました"
+  },
+  "toast": {
+    "updateSuccess": "同意情報が更新されました",
+    "updateFailed": "同意情報の更新に失敗しました"
+  }
+}

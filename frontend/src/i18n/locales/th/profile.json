@@ -39,7 +39,10 @@
       "photoSuccess": "อัปเดตรูปโปรไฟล์แล้ว",
       "photoFailed": "อัปเดตรูปโปรไฟล์ไม่สำเร็จ",
       "permissionDenied": "ต้องอนุญาตการเข้าถึงรูปภาพ"
-    }
+    },
+    "previewTitle": "ตั้งรูปโปรไฟล์",
+    "previewHint": "คุณต้องการตั้งรูปนี้เป็นรูปโปรไฟล์หรือไม่?",
+    "confirmPhoto": "ตั้ง"
   },
   "changePassword": {
     "title": "เปลี่ยนรหัสผ่าน",

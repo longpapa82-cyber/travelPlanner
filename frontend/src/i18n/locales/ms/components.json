@@ -31,7 +31,8 @@
       "rest": "Rehat",
       "transport": "Pengangkutan",
       "other": "Lain-lain"
-    }
+    },
+    "timePlaceholder": "Pilih masa"
   },
   "shareModal": {
     "title": "Kongsi Perjalanan",

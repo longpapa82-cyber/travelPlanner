@@ -31,7 +31,8 @@
       "rest": "休息",
       "transport": "交通",
       "other": "其他"
-    }
+    },
+    "timePlaceholder": "选择时间"
   },
   "shareModal": {
     "title": "分享旅行",

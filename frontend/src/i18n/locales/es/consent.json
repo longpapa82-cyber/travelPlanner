@@ -1,0 +1,55 @@
+{
+  "title": "Acuerdo de servicio",
+  "subtitle": "Por favor, acepta los siguientes términos para usar Travel Planner",
+  "required": "Obligatorio",
+  "optional": "Opcional",
+  "agree": "Aceptar",
+  "disagree": "Rechazar",
+  "allAgree": "Aceptar todo",
+  "confirmButton": "Confirmar",
+  "types": {
+    "terms": {
+      "title": "Términos de servicio",
+      "description": "Necesario para utilizar el servicio",
+      "benefits": ["Derechos de uso del servicio"]
+    },
+    "privacy_required": {
+      "title": "Política de privacidad (obligatorio)",
+      "description": "Necesario para la gestión de cuentas y prestación del servicio",
+      "benefits": ["Creación y gestión de cuentas", "Prestación del servicio", "Atención al cliente"]
+    },
+    "privacy_optional": {
+      "title": "Política de privacidad (opcional)",
+      "description": "Se utiliza para mejorar la experiencia del usuario",
+      "benefits": ["Recomendaciones personalizadas", "Mejora de la experiencia"]
+    },
+    "location": {
+      "title": "Uso de información de ubicación",
+      "description": "Se utiliza para buscar lugares cercanos y recomendar rutas de viaje",
+      "benefits": ["Buscar lugares cercanos", "Recomendaciones de rutas", "Funciones basadas en ubicación"]
+    },
+    "notification": {
+      "title": "Notificaciones push",
+      "description": "Recibe recordatorios de viaje y notificaciones de uso compartido",
+      "benefits": ["Recordatorios de viaje", "Notificaciones de uso compartido", "Actualizaciones importantes"]
+    },
+    "photo": {
+      "title": "Acceso a fotos",
+      "description": "Se utiliza para subir fotos de perfil y de viaje",
+      "benefits": ["Subir imagen de perfil", "Compartir fotos de viaje"]
+    },
+    "marketing": {
+      "title": "Comunicaciones de marketing",
+      "description": "Recibe ofertas promocionales y anuncios de nuevas funciones",
+      "benefits": ["Ofertas promocionales", "Anuncios de nuevas funciones", "Notificaciones de eventos"]
+    }
+  },
+  "errors": {
+    "requiredConsent": "Por favor, acepta los términos obligatorios",
+    "updateFailed": "Error al actualizar la información de consentimiento"
+  },
+  "toast": {
+    "updateSuccess": "Información de consentimiento actualizada",
+    "updateFailed": "Error al actualizar la información de consentimiento"
+  }
+}

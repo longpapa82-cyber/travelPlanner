@@ -39,7 +39,10 @@
       "photoSuccess": "Foto profil dikemas kini",
       "photoFailed": "Gagal mengemas kini foto profil",
       "permissionDenied": "Kebenaran akses foto diperlukan"
-    }
+    },
+    "previewTitle": "Tetapkan foto profil",
+    "previewHint": "Adakah anda ingin menetapkan foto ini sebagai foto profil?",
+    "confirmPhoto": "Tetapkan"
   },
   "changePassword": {
     "title": "Tukar Kata Laluan",

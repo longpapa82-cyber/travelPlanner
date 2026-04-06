@@ -31,7 +31,8 @@
       "rest": "Riposo",
       "transport": "Trasporto",
       "other": "Altro"
-    }
+    },
+    "timePlaceholder": "Seleziona orario"
   },
   "shareModal": {
     "title": "Condividi viaggio",

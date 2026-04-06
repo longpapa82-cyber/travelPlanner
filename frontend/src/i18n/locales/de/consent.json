@@ -1,0 +1,55 @@
+{
+  "title": "Servicevereinbarung",
+  "subtitle": "Bitte stimme den folgenden Bedingungen zu, um Travel Planner zu nutzen",
+  "required": "Erforderlich",
+  "optional": "Optional",
+  "agree": "Zustimmen",
+  "disagree": "Ablehnen",
+  "allAgree": "Allen zustimmen",
+  "confirmButton": "Bestätigen",
+  "types": {
+    "terms": {
+      "title": "Nutzungsbedingungen",
+      "description": "Erforderlich für die Nutzung des Dienstes",
+      "benefits": ["Nutzungsrechte"]
+    },
+    "privacy_required": {
+      "title": "Datenschutzrichtlinie (erforderlich)",
+      "description": "Erforderlich für Kontoverwaltung und Dienstleistung",
+      "benefits": ["Kontoerstellung und -verwaltung", "Dienstleistung", "Kundensupport"]
+    },
+    "privacy_optional": {
+      "title": "Datenschutzrichtlinie (optional)",
+      "description": "Wird zur Verbesserung der Nutzererfahrung verwendet",
+      "benefits": ["Personalisierte Empfehlungen", "Verbesserte Nutzererfahrung"]
+    },
+    "location": {
+      "title": "Nutzung von Standortdaten",
+      "description": "Wird für die Suche nach Orten in der Nähe und Reiseroutenempfehlungen verwendet",
+      "benefits": ["Orte in der Nähe suchen", "Reiseroutenempfehlungen", "Standortbasierte Funktionen"]
+    },
+    "notification": {
+      "title": "Push-Benachrichtigungen",
+      "description": "Erhalte Reiseerinnerungen und Freigabebenachrichtigungen",
+      "benefits": ["Reiseerinnerungen", "Freigabebenachrichtigungen", "Wichtige Updates"]
+    },
+    "photo": {
+      "title": "Fotozugriff",
+      "description": "Wird für das Hochladen von Profil- und Reisefotos verwendet",
+      "benefits": ["Profilbild hochladen", "Reisefotos teilen"]
+    },
+    "marketing": {
+      "title": "Marketing-Mitteilungen",
+      "description": "Erhalte Werbeangebote und Ankündigungen neuer Funktionen",
+      "benefits": ["Werbeangebote", "Ankündigungen neuer Funktionen", "Veranstaltungsbenachrichtigungen"]
+    }
+  },
+  "errors": {
+    "requiredConsent": "Bitte stimme den erforderlichen Bedingungen zu",
+    "updateFailed": "Aktualisierung der Einwilligungsdaten fehlgeschlagen"
+  },
+  "toast": {
+    "updateSuccess": "Einwilligungsdaten wurden aktualisiert",
+    "updateFailed": "Aktualisierung der Einwilligungsdaten fehlgeschlagen"
+  }
+}

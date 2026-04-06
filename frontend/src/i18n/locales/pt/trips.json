@@ -326,7 +326,10 @@
       "toggleError": "Falha ao atualizar status",
       "reorderError": "Falha ao reordenar",
       "exportSuccess": "Arquivo de calendário exportado",
-      "exportError": "Falha ao exportar calendário"
+      "exportError": "Falha ao exportar calendário",
+      "tripNotFound": "Viagem não encontrada",
+      "noPermission": "Você não tem permissão para ver esta viagem",
+      "invalidTrip": "ID de viagem inválido"
     },
     "photos": {
       "addCover": "Adicionar foto de capa",

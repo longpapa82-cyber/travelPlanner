@@ -1,0 +1,55 @@
+{
+  "title": "Hizmet sözleşmesi",
+  "subtitle": "Travel Planner'ı kullanmak için lütfen aşağıdaki koşulları kabul edin",
+  "required": "Zorunlu",
+  "optional": "İsteğe bağlı",
+  "agree": "Kabul et",
+  "disagree": "Reddet",
+  "allAgree": "Tümünü kabul et",
+  "confirmButton": "Onayla",
+  "types": {
+    "terms": {
+      "title": "Hizmet şartları",
+      "description": "Hizmeti kullanmak için gereklidir",
+      "benefits": ["Hizmet kullanım hakları"]
+    },
+    "privacy_required": {
+      "title": "Gizlilik politikası (zorunlu)",
+      "description": "Hesap yönetimi ve hizmet sunumu için gereklidir",
+      "benefits": ["Hesap oluşturma ve yönetimi", "Hizmet sunumu", "Müşteri desteği"]
+    },
+    "privacy_optional": {
+      "title": "Gizlilik politikası (isteğe bağlı)",
+      "description": "Kullanıcı deneyimini iyileştirmek için kullanılır",
+      "benefits": ["Kişiselleştirilmiş öneriler", "Geliştirilmiş kullanıcı deneyimi"]
+    },
+    "location": {
+      "title": "Konum bilgisi kullanımı",
+      "description": "Yakındaki yerleri aramak ve seyahat rotası önerisi için kullanılır",
+      "benefits": ["Yakındaki yerleri ara", "Seyahat rotası önerileri", "Konum tabanlı özellikler"]
+    },
+    "notification": {
+      "title": "Anlık bildirimler",
+      "description": "Seyahat hatırlatıcıları ve paylaşım bildirimleri alın",
+      "benefits": ["Seyahat hatırlatıcıları", "Paylaşım bildirimleri", "Önemli güncellemeler"]
+    },
+    "photo": {
+      "title": "Fotoğraf erişimi",
+      "description": "Profil ve seyahat fotoğrafları yüklemek için kullanılır",
+      "benefits": ["Profil fotoğrafı yükle", "Seyahat fotoğraflarını paylaş"]
+    },
+    "marketing": {
+      "title": "Pazarlama iletişimi",
+      "description": "Promosyon teklifleri ve yeni özellik duyuruları alın",
+      "benefits": ["Promosyon teklifleri", "Yeni özellik duyuruları", "Etkinlik bildirimleri"]
+    }
+  },
+  "errors": {
+    "requiredConsent": "Lütfen zorunlu koşulları kabul edin",
+    "updateFailed": "Onay bilgileri güncellenemedi"
+  },
+  "toast": {
+    "updateSuccess": "Onay bilgileri güncellendi",
+    "updateFailed": "Onay bilgileri güncellenemedi"
+  }
+}

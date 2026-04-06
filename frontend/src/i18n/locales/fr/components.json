@@ -31,7 +31,8 @@
       "rest": "Repos",
       "transport": "Transport",
       "other": "Autre"
-    }
+    },
+    "timePlaceholder": "Sélectionner l'heure"
   },
   "shareModal": {
     "title": "Partager le voyage",

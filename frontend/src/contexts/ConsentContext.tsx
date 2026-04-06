@@ -76,8 +76,9 @@ export const ConsentProvider: React.FC<ConsentProviderProps> = ({ children }) =>
 
   const markConsentComplete = () => {
     setNeedsConsentScreen(false);
-    // Optionally re-check consent status to update local state
-    checkConsentStatus();
+    // Do not re-check immediately — the POST was just accepted.
+    // Re-checking can cause a race condition where stale backend data
+    // re-shows the consent screen briefly after completion.
   };
 
   return (

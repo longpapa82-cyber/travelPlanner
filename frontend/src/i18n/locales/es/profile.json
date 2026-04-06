@@ -39,7 +39,10 @@
       "photoSuccess": "Foto de perfil actualizada",
       "photoFailed": "Error al actualizar foto de perfil",
       "permissionDenied": "Se requiere permiso de acceso a fotos"
-    }
+    },
+    "previewTitle": "Establecer foto de perfil",
+    "previewHint": "¿Desea establecer esta foto como su foto de perfil?",
+    "confirmPhoto": "Establecer"
   },
   "changePassword": {
     "title": "Cambiar contraseña",

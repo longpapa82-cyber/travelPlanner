@@ -326,7 +326,10 @@
       "toggleError": "Aggiornamento stato fallito",
       "reorderError": "Riordino fallito",
       "exportSuccess": "File calendario esportato con successo",
-      "exportError": "Esportazione calendario fallita"
+      "exportError": "Esportazione calendario fallita",
+      "tripNotFound": "Viaggio non trovato",
+      "noPermission": "Non hai il permesso di visualizzare questo viaggio",
+      "invalidTrip": "ID viaggio non valido"
     },
     "photos": {
       "addCover": "Aggiungi foto di copertina",

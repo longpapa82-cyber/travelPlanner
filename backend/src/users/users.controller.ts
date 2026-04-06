@@ -179,23 +179,20 @@ export class UsersController {
     return { message: t('account.deleted', parseLang(acceptLanguage)) };
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async getUserById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.findPublicProfile(id);
-  }
-
   /**
    * Consent Management Endpoints - Phase 0b
+   * NOTE: Must be declared BEFORE @Get(':id') to prevent route shadowing
    */
 
   @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 10 } })
   @Get('me/consents')
   async getConsents(@CurrentUser('userId') userId: string) {
     return this.usersService.getConsentsStatus(userId);
   }
 
   @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 5 } })
   @Post('me/consents')
   async updateConsents(
     @CurrentUser('userId') userId: string,
@@ -209,5 +206,11 @@ export class UsersController {
 
     await this.usersService.updateConsents(userId, dto, ipAddress, userAgent);
     return { message: 'Consents updated successfully' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async getUserById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.findPublicProfile(id);
   }
 }

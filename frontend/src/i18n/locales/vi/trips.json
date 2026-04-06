@@ -326,7 +326,10 @@
       "toggleError": "Cập nhật trạng thái thất bại",
       "reorderError": "Sắp xếp lại thất bại",
       "exportSuccess": "Xuất file lịch thành công",
-      "exportError": "Xuất lịch thất bại"
+      "exportError": "Xuất lịch thất bại",
+      "tripNotFound": "Không tìm thấy chuyến đi",
+      "noPermission": "Bạn không có quyền xem chuyến đi này",
+      "invalidTrip": "ID chuyến đi không hợp lệ"
     },
     "photos": {
       "addCover": "Thêm ảnh bìa",

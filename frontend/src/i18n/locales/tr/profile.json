@@ -39,7 +39,10 @@
       "photoSuccess": "Profil fotoğrafı güncellendi",
       "photoFailed": "Profil fotoğrafı güncellenemedi",
       "permissionDenied": "Fotoğraf erişim izni gerekli"
-    }
+    },
+    "previewTitle": "Profil fotoğrafını ayarla",
+    "previewHint": "Bu fotoğrafı profil fotoğrafınız olarak ayarlamak ister misiniz?",
+    "confirmPhoto": "Ayarla"
   },
   "changePassword": {
     "title": "Şifre Değiştir",

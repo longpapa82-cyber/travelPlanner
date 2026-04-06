@@ -31,7 +31,8 @@
       "rest": "Istirahat",
       "transport": "Transportasi",
       "other": "Lainnya"
-    }
+    },
+    "timePlaceholder": "Pilih waktu"
   },
   "shareModal": {
     "title": "Bagikan Perjalanan",

@@ -326,7 +326,10 @@
       "toggleError": "Échec de la mise à jour du statut",
       "reorderError": "Échec de la réorganisation",
       "exportSuccess": "Fichier calendrier exporté",
-      "exportError": "Échec de l'exportation du calendrier"
+      "exportError": "Échec de l'exportation du calendrier",
+      "tripNotFound": "Voyage non trouvé",
+      "noPermission": "Vous n'avez pas la permission de voir ce voyage",
+      "invalidTrip": "ID de voyage invalide"
     },
     "photos": {
       "addCover": "Ajouter une photo de couverture",

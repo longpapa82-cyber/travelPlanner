@@ -31,7 +31,8 @@
       "rest": "आराम",
       "transport": "परिवहन",
       "other": "अन्य"
-    }
+    },
+    "timePlaceholder": "समय चुनें"
   },
   "shareModal": {
     "title": "यात्रा साझा करें",

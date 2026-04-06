@@ -76,7 +76,7 @@ export class UserConsent {
   consentedAt?: Date;
 
   @Column({ type: 'timestamp with time zone', nullable: true })
-  revokedAt?: Date;
+  revokedAt: Date | null;
 
   @Column({ type: 'inet', nullable: true })
   ipAddress?: string;

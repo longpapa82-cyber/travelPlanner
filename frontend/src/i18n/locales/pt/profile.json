@@ -1,45 +1,86 @@
 {
-  "title": "Perfil", "guest": "Visitante",
-  "sections": { "account": "Conta", "settings": "Configurações", "support": "Suporte", "admin": "Admin", "dataPrivacy": "Dados e Privacidade" },
+  "title": "Perfil",
+  "guest": "Visitante",
+  "sections": {
+    "account": "Conta",
+    "settings": "Configurações",
+    "support": "Suporte",
+    "admin": "Admin",
+    "dataPrivacy": "Dados e Privacidade"
+  },
   "menu": {
-    "editProfile": "Editar Perfil", "changePassword": "Alterar Senha",
-    "twoFactor": "Autenticação de Dois Fatores", "twoFactorEnabled": "Ativada", "twoFactorDisabled": "Desativada",
-    "language": "Idioma", "notifications": "Notificações",
-    "notificationsEnabled": "Ativadas", "notificationsDisabled": "Desativadas",
-    "darkMode": "Modo Escuro", "help": "Ajuda", "terms": "Termos de Serviço",
-    "privacy": "Política de Privacidade", "licenses": "Licenças de código aberto", "revenue": "Painel de Receitas", "admin": "Painel Admin"
+    "editProfile": "Editar Perfil",
+    "changePassword": "Alterar Senha",
+    "twoFactor": "Autenticação de Dois Fatores",
+    "twoFactorEnabled": "Ativada",
+    "twoFactorDisabled": "Desativada",
+    "language": "Idioma",
+    "notifications": "Notificações",
+    "notificationsEnabled": "Ativadas",
+    "notificationsDisabled": "Desativadas",
+    "darkMode": "Modo Escuro",
+    "help": "Ajuda",
+    "terms": "Termos de Serviço",
+    "privacy": "Política de Privacidade",
+    "licenses": "Licenças de código aberto",
+    "revenue": "Painel de Receitas",
+    "admin": "Painel Admin"
   },
   "editProfile": {
-    "title": "Editar Perfil", "name": "Nome", "namePlaceholder": "Digite seu nome",
-    "changePhoto": "Alterar foto de perfil", "save": "Salvar",
+    "title": "Editar Perfil",
+    "name": "Nome",
+    "namePlaceholder": "Digite seu nome",
+    "changePhoto": "Alterar foto de perfil",
+    "save": "Salvar",
     "alerts": {
-      "nameRequired": "Por favor, insira seu nome", "success": "Perfil atualizado com sucesso",
-      "failed": "Falha ao atualizar perfil", "photoSuccess": "Foto de perfil atualizada",
-      "photoFailed": "Falha ao atualizar foto de perfil", "permissionDenied": "Permissão de acesso à foto necessária"
-    }
+      "nameRequired": "Por favor, insira seu nome",
+      "success": "Perfil atualizado com sucesso",
+      "failed": "Falha ao atualizar perfil",
+      "photoSuccess": "Foto de perfil atualizada",
+      "photoFailed": "Falha ao atualizar foto de perfil",
+      "permissionDenied": "Permissão de acesso à foto necessária"
+    },
+    "previewTitle": "Definir foto de perfil",
+    "previewHint": "Deseja definir esta foto como sua foto de perfil?",
+    "confirmPhoto": "Definir"
   },
   "changePassword": {
-    "title": "Alterar Senha", "current": "Senha Atual",
-    "currentPlaceholder": "Digite a senha atual", "new": "Nova Senha",
+    "title": "Alterar Senha",
+    "current": "Senha Atual",
+    "currentPlaceholder": "Digite a senha atual",
+    "new": "Nova Senha",
     "newPlaceholder": "Digite a nova senha (8+ caracteres, letras e números)",
-    "confirm": "Confirmar Nova Senha", "confirmPlaceholder": "Digite a nova senha novamente",
+    "confirm": "Confirmar Nova Senha",
+    "confirmPlaceholder": "Digite a nova senha novamente",
     "submit": "Alterar Senha",
     "alerts": {
       "allFieldsRequired": "Por favor, preencha todos os campos",
       "minLength": "A nova senha deve ter pelo menos 8 caracteres com letras e números",
-      "mismatch": "As novas senhas não coincidem", "success": "Senha alterada com sucesso",
+      "mismatch": "As novas senhas não coincidem",
+      "success": "Senha alterada com sucesso",
       "failed": "Falha ao alterar a senha"
     }
   },
-  "languageSelector": { "title": "Selecionar Idioma", "description": "Escolha seu idioma preferido" },
-  "logout": { "title": "Sair", "message": "Tem certeza de que deseja sair?", "button": "Sair" },
+  "languageSelector": {
+    "title": "Selecionar Idioma",
+    "description": "Escolha seu idioma preferido"
+  },
+  "logout": {
+    "title": "Sair",
+    "message": "Tem certeza de que deseja sair?",
+    "button": "Sair"
+  },
   "deleteAccount": {
     "title": "Excluir Conta",
     "message": "Excluir sua conta removerá permanentemente todos os dados. Tem certeza?",
     "button": "Excluir Conta",
     "passwordConfirm": "Digite sua senha para confirmar a exclusão da conta",
     "passwordPlaceholder": "Digite a senha",
-    "alerts": { "success": "Conta excluída com sucesso", "failed": "Falha ao excluir conta", "passwordRequired": "Por favor, insira sua senha" }
+    "alerts": {
+      "success": "Conta excluída com sucesso",
+      "failed": "Falha ao excluir conta",
+      "passwordRequired": "Por favor, insira sua senha"
+    }
   },
   "exportData": {
     "button": "Exportar meus dados",
@@ -48,18 +89,40 @@
   },
   "version": "Versão",
   "analytics": {
-    "title": "Estatísticas de Viagem", "totalTrips": "Total de Viagens", "completedTrips": "Concluídas",
-    "ongoingTrips": "Em andamento", "upcomingTrips": "Próximas", "totalDays": "Total de Dias",
-    "avgDuration": "Duração Média", "days": "dias", "countriesVisited": "Países",
-    "countries": "países", "totalSpent": "Total Gasto", "totalBudget": "Orçamento Total",
-    "topDestinations": "Principais Destinos", "times": "vezes", "activities": "Atividades",
-    "completedOf": "{{completed}} / {{total}} concluídas", "noData": "Nenhum dado de viagem ainda", "loading": "Carregando estatísticas..."
+    "title": "Estatísticas de Viagem",
+    "totalTrips": "Total de Viagens",
+    "completedTrips": "Concluídas",
+    "ongoingTrips": "Em andamento",
+    "upcomingTrips": "Próximas",
+    "totalDays": "Total de Dias",
+    "avgDuration": "Duração Média",
+    "days": "dias",
+    "countriesVisited": "Países",
+    "countries": "países",
+    "totalSpent": "Total Gasto",
+    "totalBudget": "Orçamento Total",
+    "topDestinations": "Principais Destinos",
+    "times": "vezes",
+    "activities": "Atividades",
+    "completedOf": "{{completed}} / {{total}} concluídas",
+    "noData": "Nenhum dado de viagem ainda",
+    "loading": "Carregando estatísticas..."
   },
   "revenue": {
-    "last30Days": "Últimos 30 dias", "totalClicks": "Total de Cliques", "conversions": "Conversões",
-    "conversionRate": "Taxa de Conv.", "commission": "Comissão", "highlights": "Destaques",
-    "topProvider": "Principal Provedor", "topDestination": "Principal Destino", "totalRevenue": "Receita Total",
-    "byProvider": "Por Provedor", "clicks": "cliques", "conv": "conv",
-    "noData": "Nenhum dado disponível ainda", "adminOnly": "Acesso de administrador necessário", "loadError": "Falha ao carregar dados"
+    "last30Days": "Últimos 30 dias",
+    "totalClicks": "Total de Cliques",
+    "conversions": "Conversões",
+    "conversionRate": "Taxa de Conv.",
+    "commission": "Comissão",
+    "highlights": "Destaques",
+    "topProvider": "Principal Provedor",
+    "topDestination": "Principal Destino",
+    "totalRevenue": "Receita Total",
+    "byProvider": "Por Provedor",
+    "clicks": "cliques",
+    "conv": "conv",
+    "noData": "Nenhum dado disponível ainda",
+    "adminOnly": "Acesso de administrador necessário",
+    "loadError": "Falha ao carregar dados"
   }
 }

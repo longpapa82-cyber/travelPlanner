@@ -326,7 +326,10 @@
       "toggleError": "Status konnte nicht aktualisiert werden",
       "reorderError": "Neuordnung fehlgeschlagen",
       "exportSuccess": "Kalenderdatei exportiert",
-      "exportError": "Kalenderexport fehlgeschlagen"
+      "exportError": "Kalenderexport fehlgeschlagen",
+      "tripNotFound": "Reise nicht gefunden",
+      "noPermission": "Sie haben keine Berechtigung, diese Reise anzuzeigen",
+      "invalidTrip": "Ungültige Reise-ID"
     },
     "photos": {
       "addCover": "Titelbild hinzufügen",

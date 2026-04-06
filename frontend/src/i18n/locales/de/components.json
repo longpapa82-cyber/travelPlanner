@@ -31,7 +31,8 @@
       "rest": "Pause",
       "transport": "Transport",
       "other": "Sonstiges"
-    }
+    },
+    "timePlaceholder": "Zeit auswählen"
   },
   "shareModal": {
     "title": "Reise teilen",

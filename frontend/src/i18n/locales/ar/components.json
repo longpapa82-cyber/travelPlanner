@@ -31,7 +31,8 @@
       "rest": "راحة",
       "transport": "مواصلات",
       "other": "أخرى"
-    }
+    },
+    "timePlaceholder": "اختر الوقت"
   },
   "shareModal": {
     "title": "مشاركة الرحلة",

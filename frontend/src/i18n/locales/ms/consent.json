@@ -1,0 +1,55 @@
+{
+  "title": "Perjanjian perkhidmatan",
+  "subtitle": "Sila bersetuju dengan syarat berikut untuk menggunakan Travel Planner",
+  "required": "Wajib",
+  "optional": "Pilihan",
+  "agree": "Setuju",
+  "disagree": "Tolak",
+  "allAgree": "Setuju semua",
+  "confirmButton": "Sahkan",
+  "types": {
+    "terms": {
+      "title": "Syarat perkhidmatan",
+      "description": "Diperlukan untuk menggunakan perkhidmatan",
+      "benefits": ["Hak penggunaan perkhidmatan"]
+    },
+    "privacy_required": {
+      "title": "Dasar privasi (wajib)",
+      "description": "Diperlukan untuk pengurusan akaun dan penyediaan perkhidmatan",
+      "benefits": ["Penciptaan dan pengurusan akaun", "Penyediaan perkhidmatan", "Sokongan pelanggan"]
+    },
+    "privacy_optional": {
+      "title": "Dasar privasi (pilihan)",
+      "description": "Digunakan untuk meningkatkan pengalaman pengguna",
+      "benefits": ["Cadangan yang diperibadikan", "Peningkatan pengalaman pengguna"]
+    },
+    "location": {
+      "title": "Penggunaan maklumat lokasi",
+      "description": "Digunakan untuk mencari tempat berdekatan dan mencadangkan laluan perjalanan",
+      "benefits": ["Cari tempat berdekatan", "Cadangan laluan perjalanan", "Ciri berasaskan lokasi"]
+    },
+    "notification": {
+      "title": "Notifikasi tolak",
+      "description": "Terima peringatan perjalanan dan notifikasi perkongsian",
+      "benefits": ["Peringatan perjalanan", "Notifikasi perkongsian", "Kemas kini penting"]
+    },
+    "photo": {
+      "title": "Akses foto",
+      "description": "Digunakan untuk memuat naik foto profil dan foto perjalanan",
+      "benefits": ["Muat naik foto profil", "Kongsi foto perjalanan"]
+    },
+    "marketing": {
+      "title": "Komunikasi pemasaran",
+      "description": "Terima tawaran promosi dan pengumuman ciri baharu",
+      "benefits": ["Tawaran promosi", "Pengumuman ciri baharu", "Notifikasi acara"]
+    }
+  },
+  "errors": {
+    "requiredConsent": "Sila bersetuju dengan syarat yang diwajibkan",
+    "updateFailed": "Gagal mengemas kini maklumat persetujuan"
+  },
+  "toast": {
+    "updateSuccess": "Maklumat persetujuan dikemas kini",
+    "updateFailed": "Gagal mengemas kini maklumat persetujuan"
+  }
+}

@@ -39,7 +39,10 @@
       "photoSuccess": "Foto profil diperbarui",
       "photoFailed": "Gagal memperbarui foto profil",
       "permissionDenied": "Izin akses foto diperlukan"
-    }
+    },
+    "previewTitle": "Atur foto profil",
+    "previewHint": "Apakah Anda ingin mengatur foto ini sebagai foto profil?",
+    "confirmPhoto": "Atur"
   },
   "changePassword": {
     "title": "Ubah Kata Sandi",

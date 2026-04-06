@@ -1,0 +1,55 @@
+{
+  "title": "Acordo de serviço",
+  "subtitle": "Por favor, aceite os seguintes termos para usar o Travel Planner",
+  "required": "Obrigatório",
+  "optional": "Opcional",
+  "agree": "Aceitar",
+  "disagree": "Recusar",
+  "allAgree": "Aceitar tudo",
+  "confirmButton": "Confirmar",
+  "types": {
+    "terms": {
+      "title": "Termos de serviço",
+      "description": "Necessário para usar o serviço",
+      "benefits": ["Direitos de uso do serviço"]
+    },
+    "privacy_required": {
+      "title": "Política de privacidade (obrigatório)",
+      "description": "Necessário para gestão de conta e prestação de serviço",
+      "benefits": ["Criação e gestão de conta", "Prestação de serviço", "Suporte ao cliente"]
+    },
+    "privacy_optional": {
+      "title": "Política de privacidade (opcional)",
+      "description": "Usado para melhorar a experiência do usuário",
+      "benefits": ["Recomendações personalizadas", "Melhoria da experiência"]
+    },
+    "location": {
+      "title": "Uso de informações de localização",
+      "description": "Usado para pesquisar locais próximos e recomendar rotas de viagem",
+      "benefits": ["Pesquisar locais próximos", "Recomendações de rotas", "Recursos baseados em localização"]
+    },
+    "notification": {
+      "title": "Notificações push",
+      "description": "Receba lembretes de viagem e notificações de compartilhamento",
+      "benefits": ["Lembretes de viagem", "Notificações de compartilhamento", "Atualizações importantes"]
+    },
+    "photo": {
+      "title": "Acesso a fotos",
+      "description": "Usado para enviar fotos de perfil e de viagem",
+      "benefits": ["Enviar foto de perfil", "Compartilhar fotos de viagem"]
+    },
+    "marketing": {
+      "title": "Comunicações de marketing",
+      "description": "Receba ofertas promocionais e anúncios de novos recursos",
+      "benefits": ["Ofertas promocionais", "Anúncios de novos recursos", "Notificações de eventos"]
+    }
+  },
+  "errors": {
+    "requiredConsent": "Por favor, aceite os termos obrigatórios",
+    "updateFailed": "Falha ao atualizar informações de consentimento"
+  },
+  "toast": {
+    "updateSuccess": "Informações de consentimento atualizadas",
+    "updateFailed": "Falha ao atualizar informações de consentimento"
+  }
+}

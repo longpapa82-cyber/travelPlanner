@@ -31,7 +31,8 @@
       "rest": "Отдых",
       "transport": "Транспорт",
       "other": "Другое"
-    }
+    },
+    "timePlaceholder": "Выбрать время"
   },
   "shareModal": {
     "title": "Поделиться поездкой",

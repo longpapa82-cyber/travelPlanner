@@ -326,7 +326,10 @@
       "toggleError": "状态更新失败",
       "reorderError": "排序失败",
       "exportSuccess": "日历文件已导出",
-      "exportError": "日历导出失败"
+      "exportError": "日历导出失败",
+      "tripNotFound": "找不到旅行",
+      "noPermission": "您无权查看此旅行",
+      "invalidTrip": "无效的旅行ID"
     },
     "photos": {
       "addCover": "添加封面照片",

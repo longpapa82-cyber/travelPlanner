@@ -326,7 +326,10 @@
       "toggleError": "فشل تحديث الحالة",
       "reorderError": "فشل إعادة الترتيب",
       "exportSuccess": "تم تصدير ملف التقويم",
-      "exportError": "فشل تصدير التقويم"
+      "exportError": "فشل تصدير التقويم",
+      "tripNotFound": "لم يتم العثور على الرحلة",
+      "noPermission": "ليس لديك إذن لعرض هذه الرحلة",
+      "invalidTrip": "معرف رحلة غير صالح"
     },
     "photos": {
       "addCover": "إضافة صورة غلاف",

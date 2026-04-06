@@ -39,7 +39,10 @@
       "photoSuccess": "Photo de profil mise à jour",
       "photoFailed": "Échec de la mise à jour de la photo de profil",
       "permissionDenied": "Autorisation d'accès aux photos requise"
-    }
+    },
+    "previewTitle": "Définir la photo de profil",
+    "previewHint": "Souhaitez-vous définir cette photo comme photo de profil ?",
+    "confirmPhoto": "Définir"
   },
   "changePassword": {
     "title": "Changer le mot de passe",

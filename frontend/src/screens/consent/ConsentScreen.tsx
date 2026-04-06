@@ -83,6 +83,13 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
   };
 
   const handleSubmit = async () => {
+    // Guard against submitting empty form (API load failure)
+    if (consents.length === 0) {
+      showToast({ message: t('errors.updateFailed'), type: 'error' });
+      loadConsents();
+      return;
+    }
+
     // Validate required consents
     const requiredConsents = consents.filter((c) => c.isRequired);
     const hasAllRequired = requiredConsents.every((c) => selectedConsents[c.type]);
@@ -126,7 +133,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
       <SafeAreaView style={[styles.container, { backgroundColor }]}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary[500]} />
-          <Text style={[styles.loadingText, { color: textPrimary }]}>Loading...</Text>
+          <Text style={[styles.loadingText, { color: textPrimary }]}>{t('common:loading', 'Loading...')}</Text>
         </View>
       </SafeAreaView>
     );

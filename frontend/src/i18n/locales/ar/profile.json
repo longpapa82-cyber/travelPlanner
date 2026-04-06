@@ -39,7 +39,10 @@
       "photoSuccess": "تم تحديث صورة الملف الشخصي",
       "photoFailed": "فشل تحديث صورة الملف الشخصي",
       "permissionDenied": "مطلوب إذن الوصول إلى الصور"
-    }
+    },
+    "previewTitle": "تعيين صورة الملف الشخصي",
+    "previewHint": "هل ترغب في تعيين هذه الصورة كصورة ملفك الشخصي؟",
+    "confirmPhoto": "تعيين"
   },
   "changePassword": {
     "title": "تغيير كلمة المرور",
