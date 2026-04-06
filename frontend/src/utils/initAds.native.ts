@@ -72,13 +72,12 @@ async function performInitialization(): Promise<void> {
       const consentInfo = await AdsConsent.requestInfoUpdate();
       console.log('[AdMob] 📋 Consent status:', consentInfo.status);
 
-      if (
-        consentInfo.status === AdsConsentStatus.REQUIRED ||
-        consentInfo.status === AdsConsentStatus.UNKNOWN
-      ) {
+      if (consentInfo.status === AdsConsentStatus.REQUIRED) {
         console.log('[AdMob] 📋 Showing consent form...');
         const consentResult = await AdsConsent.loadAndShowConsentFormIfRequired();
         console.log('[AdMob] 📋 Consent form result:', consentResult);
+      } else {
+        console.log('[AdMob] 📋 Consent not required, proceeding (status:', consentInfo.status, ')');
       }
     } catch (error) {
       // UMP not configured in AdMob console yet — proceed without consent form

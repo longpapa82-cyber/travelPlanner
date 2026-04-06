@@ -24,6 +24,16 @@ export function useGDPRConsent(): GDPRConsentResult {
   useEffect(() => {
     let mounted = true;
 
+    // Safety timeout: if UMP SDK hangs, proceed with non-personalized ads
+    const safetyTimeout = setTimeout(() => {
+      if (mounted && !isReady) {
+        console.log('[useGDPRConsent] Timeout — proceeding without UMP result');
+        setConsentStatus('not_required');
+        setCanShowPersonalizedAds(false);
+        setIsReady(true);
+      }
+    }, 5000);
+
     (async () => {
       try {
         const { AdsConsent, AdsConsentStatus } = await import('react-native-google-mobile-ads');
@@ -72,7 +82,10 @@ export function useGDPRConsent(): GDPRConsentResult {
       }
     })();
 
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+      clearTimeout(safetyTimeout);
+    };
   }, []);
 
   return { consentStatus, canShowPersonalizedAds, isReady };
