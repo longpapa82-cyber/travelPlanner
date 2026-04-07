@@ -122,6 +122,13 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   };
 
   const handleSelect = (place: PlacePrediction) => {
+    console.log('[PlacesAutocomplete] handleSelect:', JSON.stringify({
+      description: place.description,
+      placeId: place.placeId,
+      lat: place.latitude,
+      lng: place.longitude,
+      hasCoords: !!(place.latitude && place.longitude),
+    }));
     // Mark this description so the next TextInput onChangeText is suppressed
     selectedDescription.current = place.description;
 

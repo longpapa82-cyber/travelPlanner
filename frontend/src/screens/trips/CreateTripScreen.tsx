@@ -109,14 +109,18 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { show: showRewarded, isLoaded: isRewardedLoaded, reload: reloadRewardedAd } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
 
-  // Restore insightsUnlocked state after Android Activity recreation (rewarded ad lifecycle)
+  // Restore state after Android Activity recreation (rewarded ad lifecycle)
   useEffect(() => {
-    if (destination) {
-      AsyncStorage.getItem(`@insights_unlocked_${destination}`).then((val) => {
-        if (val === 'true') setInsightsUnlocked(true);
-      });
-    }
-  }, [destination]);
+    // Check if returning from rewarded ad with persisted state
+    AsyncStorage.getItem('@rewarded_ad_destination').then((savedDest) => {
+      if (savedDest) {
+        setDestination(savedDest);
+        setInsightsUnlocked(true);
+        // Clean up
+        AsyncStorage.multiRemove(['@rewarded_ad_destination']).catch(() => {});
+      }
+    });
+  }, []);
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [aiConsentGiven, setAiConsentGiven] = useState(false);
   const [isShowingRewardedAd, setIsShowingRewardedAd] = useState(false);
@@ -975,11 +979,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   try {
                     console.log('[CreateTripScreen] Starting to show rewarded ad');
                     setIsShowingRewardedAd(true);
+                    // Persist destination before ad opens (Android may destroy Activity)
+                    if (destination) {
+                      await AsyncStorage.setItem('@rewarded_ad_destination', destination);
+                    }
 
                     await showRewarded(() => {
                       console.log('[CreateTripScreen] Reward earned, unlocking insights');
                       setInsightsUnlocked(true);
-                      if (destination) AsyncStorage.setItem(`@insights_unlocked_${destination}`, 'true').catch(() => {});
 
                       // Show success feedback when reward is earned
                       showToast({
@@ -1007,6 +1014,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     });
                   } finally {
                     setIsShowingRewardedAd(false);
+                    // Clean up persisted ad state
+                    AsyncStorage.removeItem('@rewarded_ad_destination').catch(() => {});
                     console.log('[CreateTripScreen] Rewarded ad flow completed');
                   }
                 }}

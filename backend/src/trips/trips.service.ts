@@ -803,13 +803,16 @@ export class TripsService {
     const activityDateTime = `${dateStr}T${addActivityDto.time}`;
     this.canModifyActivity(trip, activityDateTime);
 
-    // For ongoing trips, cannot add past activities
-    if (
-      trip.status === TripStatus.ONGOING &&
-      this.isActivityInPast(activityDateTime)
-    ) {
+    // Allow adding activities for today and future dates during ongoing trips.
+    // Users commonly record today's morning activities in the afternoon.
+    // Only block adding to dates that have fully passed (yesterday or earlier).
+    const activityDate = new Date(dateStr);
+    activityDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (trip.status === TripStatus.ONGOING && activityDate < today) {
       throw new ForbiddenException(
-        'Cannot add activities in the past during an ongoing trip.',
+        'Cannot add activities to past dates during an ongoing trip.',
       );
     }
 
