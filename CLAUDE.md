@@ -4,9 +4,20 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 ## 📍 현재 상태 (2026-04-07)
 
-- **버전**: versionCode 83 (상용화 최종 검수 + 근본 수정 완료)
+- **버전**: versionCode 84 (AdMob 정책 위반 수정 포함)
 - **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ 정상
-- **상태**: versionCode 83 빌드 완료 → Alpha 트랙 업로드 대기
+- **상태**: Alpha 트랙 versionCode 84 출시 완료 → AdMob 검토 대기 (~4/14)
+
+### 🟡 AdMob 정책 위반 검토 중 (2026-04-07 요청)
+- **문제**: "수정된 광고 코드: 광고 프레임 크기 변경" — 광고 게재 53% 제한
+- **신고 날짜**: 2026-03-29
+- **수정 내용**:
+  1. ✅ AdMobBanner: 에러 시 `return null` 제거 → minHeight 컨테이너 유지
+  2. ✅ TripDetailScreen: 탭 전환 시 광고 언마운트 → 항상 렌더링
+  3. ✅ `overflow: hidden` 제거 (광고 클리핑 방지)
+- **검토 요청**: 2026-04-07 접수
+- **예상 완료**: ~2026-04-14 (1주일)
+- **검토 통과 후**: `EXPO_PUBLIC_USE_TEST_ADS` 제거 → 프로덕션 광고 전환 → 단계적 출시
 
 ### 🟢 versionCode 83: 상용화 최종 검수 + 전면 개선 (2026-04-06~07 완료) ✅
 
@@ -58,8 +69,11 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **빌드**: versionCode 83 (`fEdAMqa3TViWdqHevD3TKt.aab`)
 - **Backend 배포**: ✅ 4차 배포 완료 (좌표 + 소유자 포함)
 - **TypeScript**: ✅ Frontend + Backend 0 에러
-- **다음 단계**: Alpha 트랙 AAB 업로드 → 테스터 검증 → 프로덕션 단계적 출시
-- **⚠️ 프로덕션 출시 시**: eas.json에서 `EXPO_PUBLIC_USE_TEST_ADS` 제거 필요
+- **versionCode 84**: AdMob 정책 위반 수정 포함 빌드 (`7d4SUvegeRC4ZCw4HJMhbj.aab`)
+- **Alpha 출시**: ✅ versionCode 84 Alpha 트랙 출시 완료 (2026-04-07)
+- **AdMob 검토**: ✅ 검토 요청 접수 (2026-04-07, 예상 ~4/14)
+- **다음 단계**: AdMob 검토 통과 → `EXPO_PUBLIC_USE_TEST_ADS` 제거 → 프로덕션 단계적 출시
+- **⚠️ 프로덕션 출시 시**: eas.json에서 `EXPO_PUBLIC_USE_TEST_ADS` 반드시 제거
 
 ### Phase 0b: 사용자 동의 관리 시스템 (2026-04-05 완료) ✅
 - **배경**: GDPR/CCPA 법적 요구사항 준수를 위한 동의 관리 시스템 구축
