@@ -32,7 +32,9 @@ interface Activity {
   title: string;
   description: string;
   location: string;
-  placeId?: string; // Add placeId for map pin functionality
+  placeId?: string;
+  latitude?: number;
+  longitude?: number;
   estimatedDuration?: number;
   estimatedCost?: number;
   actualCost?: number;
@@ -248,6 +250,12 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
 
     try {
       setLoading(true);
+      console.log('[ActivityModal] Saving with coords:', JSON.stringify({
+        location: formData.location,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        placeId: formData.placeId,
+      }));
       await onSave(formData);
       onClose();
     } catch (error: any) {
@@ -380,6 +388,12 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
                 }}
                 onSelect={(place) => {
                   // Selection — update location, placeId, and coordinates atomically
+                  console.log('[ActivityModal] onSelect place:', JSON.stringify({
+                    description: place.description,
+                    placeId: place.placeId,
+                    latitude: place.latitude,
+                    longitude: place.longitude,
+                  }));
                   setFormData((prev) => ({
                     ...prev,
                     location: place.description,

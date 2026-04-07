@@ -444,10 +444,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           return;
         }
 
-        // Show ad first, then navigate after it closes (prevents Android Activity lifecycle issue)
+        // Show ad (non-blocking with timeout) then navigate
         if (!isPremium && !isAdmin && isAdLoaded) {
           try {
-            await showInterstitial();
+            // Race between ad completion and 10s timeout to prevent white screen
+            await Promise.race([
+              showInterstitial(),
+              new Promise(resolve => setTimeout(resolve, 10000)),
+            ]);
           } catch (error) {
             console.warn('[CreateTripScreen] Interstitial ad failed:', error);
           }

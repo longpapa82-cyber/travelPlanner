@@ -1082,6 +1082,8 @@ class ApiService {
         description: string;
         mainText: string;
         secondaryText: string;
+        latitude?: number;
+        longitude?: number;
       }>;
       available: boolean;
     };
