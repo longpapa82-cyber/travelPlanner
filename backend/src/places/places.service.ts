@@ -8,6 +8,8 @@ export interface PlacePrediction {
   description: string;
   mainText: string;
   secondaryText: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 @Injectable()

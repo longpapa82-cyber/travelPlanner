@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: 16,
-    paddingBottom: 24,
+    paddingBottom: 40,
     borderTopWidth: 1,
   },
 });

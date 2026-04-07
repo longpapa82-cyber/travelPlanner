@@ -95,6 +95,8 @@ export class MapboxService {
             description: feature.place_name,
             mainText,
             secondaryText,
+            latitude: feature.center?.[1],
+            longitude: feature.center?.[0],
           };
         },
       );

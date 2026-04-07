@@ -819,6 +819,8 @@ export class TripsService {
       title: addActivityDto.title,
       description: addActivityDto.description,
       location: addActivityDto.location,
+      latitude: addActivityDto.latitude,
+      longitude: addActivityDto.longitude,
       estimatedDuration: addActivityDto.estimatedDuration,
       estimatedCost: addActivityDto.estimatedCost,
       type: addActivityDto.type || 'other',

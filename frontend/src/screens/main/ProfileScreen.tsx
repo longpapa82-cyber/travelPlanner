@@ -228,8 +228,7 @@ const ProfileScreen = ({ navigation }: any) => {
       // System picker (PHPicker / Photo Picker) — no permission required
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
-        allowsEditing: true,
-        aspect: [1, 1],
+        allowsEditing: false,
         quality: 0.8,
       });
       if (result.canceled || !result.assets?.[0]?.uri) return;

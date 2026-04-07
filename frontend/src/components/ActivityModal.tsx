@@ -379,11 +379,13 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
                   }));
                 }}
                 onSelect={(place) => {
-                  // Selection — update location and placeId atomically
+                  // Selection — update location, placeId, and coordinates atomically
                   setFormData((prev) => ({
                     ...prev,
                     location: place.description,
                     placeId: place.placeId,
+                    latitude: place.latitude,
+                    longitude: place.longitude,
                   }));
                 }}
                 placeholder={t('activityModal.locationPlaceholder')}
