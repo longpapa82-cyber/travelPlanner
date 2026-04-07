@@ -4,20 +4,37 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 ## 📍 현재 상태 (2026-04-07)
 
-- **버전**: versionCode 84 (AdMob 정책 위반 수정 포함)
+- **버전**: versionCode 86 (Alpha 테스트 중)
 - **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ 정상
-- **상태**: Alpha 트랙 versionCode 84 출시 완료 → AdMob 검토 대기 (~4/14)
+- **상태**: Alpha 테스트 진행 중 → AdMob 검토 + 프로덕션 출시 대기
 
-### 🟡 AdMob 정책 위반 검토 중 (2026-04-07 요청)
-- **문제**: "수정된 광고 코드: 광고 프레임 크기 변경" — 광고 게재 53% 제한
-- **신고 날짜**: 2026-03-29
-- **수정 내용**:
-  1. ✅ AdMobBanner: 에러 시 `return null` 제거 → minHeight 컨테이너 유지
-  2. ✅ TripDetailScreen: 탭 전환 시 광고 언마운트 → 항상 렌더링
-  3. ✅ `overflow: hidden` 제거 (광고 클리핑 방지)
-- **검토 요청**: 2026-04-07 접수
-- **예상 완료**: ~2026-04-14 (1주일)
-- **검토 통과 후**: `EXPO_PUBLIC_USE_TEST_ADS` 제거 → 프로덕션 광고 전환 → 단계적 출시
+### 🟢 versionCode 86: Alpha 테스터 피드백 반영 (2026-04-07 완료) ✅
+- **프로필 사진**: 시스템 크롭 제거 → 선택 즉시 업로드 (Android Activity lifecycle 문제 해결)
+- **좌표 미저장 근본 해결**:
+  - ActivityModal `Activity` 인터페이스에 latitude/longitude 추가 (이것이 근본 원인)
+  - api.ts placesAutocomplete 반환 타입에 lat/lng 추가
+  - handleSaveActivity에서 lat/lng 포함
+  - UpdateActivityDto에 lat/lng 필드 추가
+  - 진단 로그 추가 (onSelect, handleSave 시 좌표 값)
+- **배너 광고 중복**: 하단 배너 제거 (1개만 유지)
+- **여행 생성 → 메인 이동**: showInterstitial() await + 10초 타임아웃 (흰 화면 방지)
+- **보상형 광고 후 상태 유실**: insightsUnlocked AsyncStorage persist
+- **커밋**: e650bcd9, 4634e704
+- **빌드**: versionCode 86 (`ig3YMTuPoZ2yELkxPpRdHb.aab`)
+
+### 🟡 AdMob 상태 (2026-04-07)
+- **정책 위반 검토**: "광고 프레임 크기 변경" → 검토 요청 접수 (2026-04-07, ~4/14 예상)
+- **스토어 연결**: Alpha 트랙에서는 Google Play 연결 불가 → 프로덕션 출시 후 연결
+- **광고 게재**: 53% 제한 중 (검토 통과 시 해제)
+- **수입**: 지난달 US$0.14
+- **app-ads.txt**: 미설정 (프로덕션 출시 시 설정 필요)
+- **현재 Alpha**: `EXPO_PUBLIC_USE_TEST_ADS=true`로 테스트 광고 사용 중
+- **프로덕션 출시 시**:
+  1. AdMob 정책 검토 통과 확인
+  2. eas.json에서 `EXPO_PUBLIC_USE_TEST_ADS` 제거
+  3. 새 빌드 (프로덕션 광고 ID)
+  4. Play Console 프로덕션 트랙 제출 (1% → 10% → 100%)
+  5. AdMob 스토어 연결 자동 완료
 
 ### 🟢 versionCode 83: 상용화 최종 검수 + 전면 개선 (2026-04-06~07 완료) ✅
 
