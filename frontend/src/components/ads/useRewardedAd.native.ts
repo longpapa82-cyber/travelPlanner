@@ -59,9 +59,11 @@ export function useRewardedAd(): {
    * Get the correct ad unit ID
    */
   const getAdUnitId = useCallback((): string => {
-    // Always use test ads in development
-    if (__DEV__) {
-      console.log('[useRewardedAd] Using TEST ad ID');
+    // Use test ads in development or when explicitly set for Alpha testing
+    const useTestAds = __DEV__ || process.env.EXPO_PUBLIC_USE_TEST_ADS === 'true';
+
+    if (useTestAds) {
+      console.log('[useRewardedAd] Using TEST ad ID (dev or alpha)');
       return TestIds.REWARDED;
     }
 
@@ -72,13 +74,10 @@ export function useRewardedAd(): {
 
     if (!productionId) {
       console.error('[useRewardedAd] Production ad ID not found in config!');
-      console.error('[useRewardedAd] Config extra:', JSON.stringify(extra.admob, null, 2));
-      // Don't fall back to test ID in production - this would violate AdMob policies
-      throw new Error('Production ad unit ID not configured');
+      return TestIds.REWARDED; // Fallback to test ads rather than crashing
     }
 
     console.log('[useRewardedAd] Using PRODUCTION ad ID for', Platform.OS);
-    console.log('[useRewardedAd] Ad ID:', productionId.substring(0, 30) + '...');
     return productionId;
   }, []);
 

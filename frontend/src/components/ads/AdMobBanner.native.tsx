@@ -36,7 +36,8 @@ const AdMobBannerComponent: React.FC<AdMobBannerProps> = ({
   const { isDark } = useTheme();
   const [adError, setAdError] = useState(false);
 
-  const unitId = __DEV__
+  const useTestAds = __DEV__ || process.env.EXPO_PUBLIC_USE_TEST_ADS === 'true';
+  const unitId = useTestAds
     ? TestIds.BANNER
     : adUnitId || '';
 

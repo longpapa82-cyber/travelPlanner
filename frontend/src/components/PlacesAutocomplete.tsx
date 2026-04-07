@@ -136,7 +136,7 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
 
   const handleBlur = () => {
     // Delay hiding to allow tap on dropdown item
-    setTimeout(() => setShowDropdown(false), 200);
+    setTimeout(() => setShowDropdown(false), 300);
   };
 
   return (

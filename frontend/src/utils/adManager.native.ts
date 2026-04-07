@@ -480,9 +480,10 @@ class AdManager {
    * Get the correct ad unit ID with enhanced logging
    */
   private getRewardedAdUnitId(): string {
-    // Always use test ads in development
-    if (__DEV__) {
-      console.log('[AdManager] 🧪 Using TEST rewarded ad ID');
+    // Use test ads in development or Alpha testing
+    const useTestAds = __DEV__ || process.env.EXPO_PUBLIC_USE_TEST_ADS === 'true';
+    if (useTestAds) {
+      console.log('[AdManager] 🧪 Using TEST rewarded ad ID (dev or alpha)');
       return TestIds.REWARDED;
     }
 

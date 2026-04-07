@@ -279,7 +279,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={styles.content}>
+          <ScrollView style={styles.content} keyboardShouldPersistTaps="handled">
             {/* Time Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>
