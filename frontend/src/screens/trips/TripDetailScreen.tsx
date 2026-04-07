@@ -356,8 +356,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleSaveActivity = useCallback(async (activityData: Partial<Activity>) => {
     try {
-      const { time, title, description, location, estimatedDuration, estimatedCost, actualCost, type } = activityData;
-      const sanitizedData = { time, title, description, location, estimatedDuration, estimatedCost, actualCost, type };
+      const { time, title, description, location, latitude, longitude, estimatedDuration, estimatedCost, actualCost, type } = activityData as any;
+      const sanitizedData = { time, title, description, location, latitude, longitude, estimatedDuration, estimatedCost, actualCost, type };
 
       if (modalMode === 'add') {
         await apiService.addActivity(tripId, selectedItineraryId, sanitizedData);
@@ -713,8 +713,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             )
           )}
 
-          {/* Bottom Ad Banner — always rendered to maintain stable frame (AdMob policy) */}
-          <AdBanner size="banner" style={{ marginHorizontal: 16 }} />
+          {/* Single banner ad maintained above — removed duplicate here */}
 
           {/* Collaboration Section */}
           <CollaboratorSection

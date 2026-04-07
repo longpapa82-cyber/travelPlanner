@@ -61,6 +61,18 @@ export class UpdateActivityDto {
   type?: string;
 
   @IsOptional()
+  @IsNumber()
+  latitude?: number;
+
+  @IsOptional()
+  @IsNumber()
+  longitude?: number;
+
+  @IsOptional()
+  @IsString()
+  placeId?: string;
+
+  @IsOptional()
   @IsBoolean()
   completed?: boolean;
 }

@@ -233,11 +233,17 @@ const ProfileScreen = ({ navigation }: any) => {
       });
       if (result.canceled || !result.assets?.[0]?.uri) return;
 
-      // Show preview modal instead of immediate upload
-      setSelectedImageUri(result.assets[0].uri);
-      setShowImagePreview(true);
+      // Upload immediately — Android Activity lifecycle can destroy component state
+      // between picker return and modal display, causing the preview modal to auto-close
+      setIsUploadingPhoto(true);
+      showToast({ type: 'info', message: t('editProfile.alerts.photoUploading', '프로필 사진을 업로드 중입니다...'), position: 'top' });
+      await apiService.uploadProfilePhoto(result.assets[0].uri);
+      await refreshUser();
+      showToast({ type: 'success', message: t('editProfile.alerts.photoSuccess'), position: 'top' });
     } catch (error: any) {
       showToast({ type: 'error', message: error.response?.data?.message || t('editProfile.alerts.photoFailed'), position: 'top' });
+    } finally {
+      setIsUploadingPhoto(false);
     }
   };
 

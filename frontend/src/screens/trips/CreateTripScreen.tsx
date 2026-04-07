@@ -108,6 +108,15 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { isPremium, isAdmin, aiTripsRemaining, aiTripsLimit, isAiLimitReached, refreshStatus, showPaywall } = usePremium();
   const { show: showRewarded, isLoaded: isRewardedLoaded, reload: reloadRewardedAd } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
+
+  // Restore insightsUnlocked state after Android Activity recreation (rewarded ad lifecycle)
+  useEffect(() => {
+    if (destination) {
+      AsyncStorage.getItem(`@insights_unlocked_${destination}`).then((val) => {
+        if (val === 'true') setInsightsUnlocked(true);
+      });
+    }
+  }, [destination]);
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [aiConsentGiven, setAiConsentGiven] = useState(false);
   const [isShowingRewardedAd, setIsShowingRewardedAd] = useState(false);
@@ -435,16 +444,19 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           return;
         }
 
-        // Show ad in parallel with navigation (non-blocking)
+        // Show ad first, then navigate after it closes (prevents Android Activity lifecycle issue)
         if (!isPremium && !isAdmin && isAdLoaded) {
-          // Don't await - let ad show in parallel with navigation
-          showInterstitial().catch((error) => {
+          try {
+            await showInterstitial();
+          } catch (error) {
             console.warn('[CreateTripScreen] Interstitial ad failed:', error);
-            // Continue with navigation even if ad fails
-          });
+          }
         }
 
-        // Navigate immediately, don't wait for ad
+        // Navigate to trip detail after ad completes (or immediately if no ad)
+        // Clean up persisted insights state
+        if (destination) AsyncStorage.removeItem(`@insights_unlocked_${destination}`).catch(() => {});
+
         console.log('[CreateTripScreen] Navigating to TripDetail with tripId:', trip.id);
         navigation.navigate('TripDetail', { tripId: trip.id });
 
@@ -963,6 +975,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     await showRewarded(() => {
                       console.log('[CreateTripScreen] Reward earned, unlocking insights');
                       setInsightsUnlocked(true);
+                      if (destination) AsyncStorage.setItem(`@insights_unlocked_${destination}`, 'true').catch(() => {});
 
                       // Show success feedback when reward is earned
                       showToast({
