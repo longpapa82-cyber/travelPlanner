@@ -7,6 +7,12 @@
   "disagree": "Refuser",
   "allAgree": "Tout accepter",
   "confirmButton": "Confirmer",
+  "sectionRequired": "Obligatoire",
+  "sectionOptional": "Facultatif",
+  "allAgreeDescription": "Accepter tous les éléments obligatoires et facultatifs",
+  "confirmButtonEnabled": "Accepter et commencer",
+  "confirmButtonDisabled": "Veuillez accepter les éléments obligatoires",
+  "jitNote": "Les autorisations de localisation, notifications et photos seront demandées lors de l'utilisation de ces fonctionnalités",
   "types": {
     "terms": {
       "title": "Conditions d'utilisation",

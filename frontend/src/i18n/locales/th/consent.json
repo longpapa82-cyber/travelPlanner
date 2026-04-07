@@ -7,6 +7,12 @@
   "disagree": "ปฏิเสธ",
   "allAgree": "ยอมรับทั้งหมด",
   "confirmButton": "ยืนยัน",
+  "sectionRequired": "จำเป็น",
+  "sectionOptional": "ไม่บังคับ",
+  "allAgreeDescription": "ยอมรับรายการที่จำเป็นและไม่บังคับทั้งหมด",
+  "confirmButtonEnabled": "ยอมรับและเริ่มใช้งาน",
+  "confirmButtonDisabled": "กรุณายอมรับรายการที่จำเป็น",
+  "jitNote": "สิทธิ์การเข้าถึงตำแหน่ง การแจ้งเตือน และรูปภาพจะถูกขออนุญาตเมื่อใช้ฟีเจอร์เหล่านั้น",
   "types": {
     "terms": {
       "title": "เงื่อนไขการใช้บริการ",

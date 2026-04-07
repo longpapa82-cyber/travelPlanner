@@ -131,10 +131,14 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
                   {c.user?.name || c.user?.email}
                 </Text>
                 <Text style={[styles.collaboratorRole, { color: theme.colors.textSecondary }]}>
-                  {c.role === 'editor' ? t('detail.collaboration.roleEditor') : t('detail.collaboration.roleViewer')}
+                  {c.role === 'owner'
+                    ? t('detail.collaboration.roleOwner', '여행 만든 사람')
+                    : c.role === 'editor'
+                      ? t('detail.collaboration.roleEditor')
+                      : t('detail.collaboration.roleViewer')}
                 </Text>
               </View>
-              {isOwner && (
+              {isOwner && c.role !== 'owner' && (
                 <TouchableOpacity onPress={() => handleRemoveCollaborator(c.id)}>
                   <Icon name="close-circle-outline" size={22} color={colors.error.main} />
                 </TouchableOpacity>

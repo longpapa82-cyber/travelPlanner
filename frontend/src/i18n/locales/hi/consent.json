@@ -7,6 +7,12 @@
   "disagree": "अस्वीकार",
   "allAgree": "सभी से सहमत",
   "confirmButton": "पुष्टि करें",
+  "sectionRequired": "आवश्यक",
+  "sectionOptional": "वैकल्पिक",
+  "allAgreeDescription": "सभी आवश्यक और वैकल्पिक मदों से सहमत",
+  "confirmButtonEnabled": "सहमत होकर शुरू करें",
+  "confirmButtonDisabled": "कृपया आवश्यक मदों से सहमत हों",
+  "jitNote": "स्थान, सूचना और फोटो अनुमतियाँ उन सुविधाओं का उपयोग करते समय माँगी जाएंगी",
   "types": {
     "terms": {
       "title": "सेवा की शर्तें",

@@ -7,6 +7,12 @@
   "disagree": "Rechazar",
   "allAgree": "Aceptar todo",
   "confirmButton": "Confirmar",
+  "sectionRequired": "Obligatorio",
+  "sectionOptional": "Opcional",
+  "allAgreeDescription": "Acepto todos los elementos obligatorios y opcionales",
+  "confirmButtonEnabled": "Aceptar y empezar",
+  "confirmButtonDisabled": "Acepta los elementos obligatorios",
+  "jitNote": "Los permisos de ubicación, notificaciones y fotos se solicitarán cuando uses esas funciones",
   "types": {
     "terms": {
       "title": "Términos de servicio",

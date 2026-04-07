@@ -7,6 +7,12 @@
   "disagree": "Tolak",
   "allAgree": "Setuju semua",
   "confirmButton": "Sahkan",
+  "sectionRequired": "Wajib",
+  "sectionOptional": "Pilihan",
+  "allAgreeDescription": "Bersetuju dengan semua perkara wajib dan pilihan",
+  "confirmButtonEnabled": "Setuju dan mula",
+  "confirmButtonDisabled": "Sila bersetuju dengan perkara wajib",
+  "jitNote": "Kebenaran lokasi, pemberitahuan dan foto akan diminta apabila anda menggunakan ciri-ciri tersebut",
   "types": {
     "terms": {
       "title": "Syarat perkhidmatan",

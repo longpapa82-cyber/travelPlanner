@@ -7,6 +7,12 @@
   "disagree": "Decline",
   "allAgree": "Agree to All",
   "confirmButton": "Confirm",
+  "sectionRequired": "Required",
+  "sectionOptional": "Optional",
+  "allAgreeDescription": "Agree to all required and optional items",
+  "confirmButtonEnabled": "Agree and Start",
+  "confirmButtonDisabled": "Please agree to required items",
+  "jitNote": "Location, notification, and photo permissions will be requested when you use those features",
   "types": {
     "terms": {
       "title": "Terms of Service",

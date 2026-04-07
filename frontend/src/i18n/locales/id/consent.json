@@ -7,6 +7,12 @@
   "disagree": "Tolak",
   "allAgree": "Setujui semua",
   "confirmButton": "Konfirmasi",
+  "sectionRequired": "Wajib",
+  "sectionOptional": "Opsional",
+  "allAgreeDescription": "Setuju dengan semua item wajib dan opsional",
+  "confirmButtonEnabled": "Setuju dan mulai",
+  "confirmButtonDisabled": "Silakan setujui item wajib",
+  "jitNote": "Izin lokasi, notifikasi, dan foto akan diminta saat Anda menggunakan fitur tersebut",
   "types": {
     "terms": {
       "title": "Ketentuan layanan",

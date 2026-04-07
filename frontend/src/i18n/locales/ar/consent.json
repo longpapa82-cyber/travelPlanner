@@ -7,6 +7,12 @@
   "disagree": "رفض",
   "allAgree": "الموافقة على الكل",
   "confirmButton": "تأكيد",
+  "sectionRequired": "مطلوب",
+  "sectionOptional": "اختياري",
+  "allAgreeDescription": "الموافقة على جميع العناصر المطلوبة والاختيارية",
+  "confirmButtonEnabled": "الموافقة والبدء",
+  "confirmButtonDisabled": "يرجى الموافقة على العناصر المطلوبة",
+  "jitNote": "سيتم طلب أذونات الموقع والإشعارات والصور عند استخدام تلك الميزات",
   "types": {
     "terms": {
       "title": "شروط الخدمة",

@@ -1306,13 +1306,32 @@ export class TripsService {
       if (!collab) return [];
     }
 
-    return this.collaboratorRepository
+    const collaborators = await this.collaboratorRepository
       .createQueryBuilder('collab')
       .leftJoin('collab.user', 'user')
       .addSelect(['user.id', 'user.name', 'user.profileImage'])
       .where('collab.tripId = :tripId', { tripId })
       .orderBy('collab.createdAt', 'ASC')
       .getMany();
+
+    // Prepend trip owner as first entry so collaborators see who created the trip
+    const tripWithOwner = await this.tripRepository.findOne({
+      where: { id: tripId },
+      relations: ['user'],
+    });
+    const owner = tripWithOwner?.user;
+
+    if (owner) {
+      const ownerEntry = {
+        id: `owner-${owner.id}`,
+        user: owner,
+        role: 'owner',
+        createdAt: trip.createdAt,
+      };
+      return [ownerEntry, ...collaborators];
+    }
+
+    return collaborators;
   }
 
   async leaveTrip(tripId: string, userId: string): Promise<void> {

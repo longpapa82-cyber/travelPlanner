@@ -7,6 +7,12 @@
   "disagree": "同意しない",
   "allAgree": "すべてに同意",
   "confirmButton": "確認",
+  "sectionRequired": "必須同意",
+  "sectionOptional": "任意同意",
+  "allAgreeDescription": "必須および任意項目すべてに同意します",
+  "confirmButtonEnabled": "同意して始める",
+  "confirmButtonDisabled": "必須項目に同意してください",
+  "jitNote": "位置情報、通知、写真の権限は該当機能の使用時に案内されます",
   "types": {
     "terms": {
       "title": "利用規約",
