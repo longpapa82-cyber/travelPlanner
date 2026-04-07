@@ -2,46 +2,64 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-05)
+## 📍 현재 상태 (2026-04-07)
 
-- **버전**: versionCode 79 (클린 빌드 진행 중 - EAS 캐시 오염 해결)
-- **서버**: https://mytravel-planner.com (Hetzner VPS)
-- **상태**: versionCode 78 Alpha 버그 → versionCode 79 클린 빌드 → Alpha 재배포 예정
+- **버전**: versionCode 83 (상용화 최종 검수 + 근본 수정 완료)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ 정상
+- **상태**: versionCode 83 빌드 완료 → Alpha 트랙 업로드 대기
 
-### 🔴 Bug #5: 회원가입 실패 - Entity-Database 스키마 불일치 (2026-04-05 해결) ✅
-- **증상**: 회원가입 시 "An unexpected error occurred" 에러 (100% 재현)
-- **근본 원인**: Stripe → Paddle 마이그레이션 후 User entity에 남아있던 legacy columns
-  - `stripeCustomerId` → `paddleCustomerId`로 이름 변경됨
-  - `stripeSubscriptionId` → 완전히 제거됨
-  - Entity는 여전히 두 컬럼 정의 → INSERT 쿼리 실패
-- **해결**: User entity에서 legacy Stripe 컬럼 제거
-- **배포**: 프로덕션 서버 적용 완료 ✅
-- **검증**: 회원가입 API 정상 동작 확인
-- **문서**: `docs/BUG_FIX_5_REGISTRATION_ERROR.md`
-- **커밋**: ad41b0f5
+### 🟢 versionCode 83: 상용화 최종 검수 + 전면 개선 (2026-04-06~07 완료) ✅
 
-### 🔴 versionCode 79: EAS 빌드 캐시 오염 해결 (2026-04-05 진행 중)
-- **배경**: versionCode 78 Alpha 테스트 중 3개 P0 버그 재발견
-  - Bug #1: 광고 재생 실패 (100% 재현)
-  - Bug #2: 장소 선택 미반영 (100% 재현)
-  - Bug #3: 초대 알림 네비게이션 실패 (100% 재현)
-- **근본 원인**: EAS Build Cache Poisoning
-  - 소스 코드: ✅ 3개 버그 모두 수정 완료 (commit 58b55537, 5b9edce5, a14ba69a)
-  - versionCode 78 빌드: ❌ versionCode 72-77의 stale 캐시 재사용
-  - 결과: 버그 수정 파일들이 빌드에서 누락됨
-- **해결 방안**: Clean Build with `--clear-cache`
-  - Build ID: e12c2df1-c99d-423e-b159-7d91d253ab61
-  - 전체 캐시 무효화 → 모든 소스 파일 재컴파일
-  - 예상 완료: 30-35분
-- **검증 절차**:
-  - AAB → APK 자동 변환 (`scripts/verify-build.sh`)
-  - 3개 버그 수정 포함 여부 자동 검증
-  - 검증 성공 시 Alpha 재배포
-- **상세 문서**: `docs/BUG_FIX_4_INVITATION_NAVIGATION.md` (386 lines)
-- **커밋**: 661aca67
-- **영향받은 사용자**:
-  - Alpha 테스터: 7명 (versionCode 78 → 79 업데이트 예정)
-  - 프로덕션 사용자: ~100명 (versionCode 70-71 정상 - 영향 없음)
+#### Phase 1: 보안/품질 검수 (4개 QA 에이전트 병렬 실행)
+- **Auto-QA**: 10/10 (100%) — ConsentScreen 17개 언어, 동의 흐름, 회귀 테스트 통과
+- **Security-QA**: 82→95점 — CRITICAL 1건 + HIGH 3건 수정
+- **Final-QA**: P1 2건 수정 (레이스 컨디션, 빈 폼 제출)
+- **Publish-QA**: Blocker 1건 + P1 2건 수정
+
+#### Phase 2: 보안 수정 12건
+1. ✅ ConsentScreen i18n 미등록 → 17개 언어 완성
+2. ✅ Route ordering: consent API `:id` 와일드카드에 가려짐 → 순서 수정
+3. ✅ 감사 로그 action 오류 (GRANT→REVOKE)
+4. ✅ Version 클라이언트 주입 차단
+5. ✅ Consent API Rate Limiting 추가
+6. ✅ markConsentComplete 레이스 컨디션 해결
+7. ✅ 빈 동의 폼 제출 차단
+8. ✅ eas.json releaseStatus completed→draft (단계적 출시)
+9. ✅ revokedAt 재동의 미초기화 (undefined→null)
+10. ✅ Loading 텍스트 i18n 적용
+11. ✅ 7개 i18n 키 14개 언어 추가
+12. ✅ 15개 언어 consent.json 생성
+
+#### Phase 3: Alpha 테스터 피드백 근본 수정
+1. ✅ **장소 선택 미반영 (8번째 재발 → 근본 해결)**
+   - 진짜 원인: ActivityModal ScrollView에 `keyboardShouldPersistTaps` 미설정
+   - 키보드 열린 상태에서 터치 → ScrollView가 가로채 → handleSelect 미호출
+   - PlacesAutocomplete도 순수 controlled 컴포넌트로 재작성
+2. ✅ **광고 전체 미동작 (근본 해결)**
+   - 원인 1: UMP consent UNKNOWN → consent form 로드 실패/행
+   - 원인 2: EAS production 빌드에서 `__DEV__=false` → 프로덕션 광고 ID → AdMob 미승인
+   - 수정: `EXPO_PUBLIC_USE_TEST_ADS` 환경변수로 Alpha에서 테스트 광고 사용
+3. ✅ **useIsActive 크래시 19회** → isDraggable prop으로 ScaleDecorator 조건부 사용
+4. ✅ **canShowFullScreenAd async 버그** → await 추가
+5. ✅ **지난 날짜 활동 추가 버튼** → isDayInPast 체크
+6. ✅ **초대 네비게이션 에러 화면** → isDraggable로 동시 해결
+
+#### Phase 4: UX 개선
+1. ✅ **ConsentScreen 전면 재설계**: 7→4 항목, 필수/선택 그룹핑
+   - JIT 항목(location, notification, photo) 초기 화면에서 제거
+   - useSafeAreaInsets() (Android 하단 버튼 가림 근본 해결)
+   - 전체 동의 강조 카드, 버튼 동적 상태
+   - 17개 언어 6개 키 추가
+2. ✅ **프로필 사진 크롭**: allowsEditing:false → 앱 프리뷰 직행
+3. ✅ **장소 좌표 미저장 (3중 수정)**: Mapbox 좌표 추출 + Frontend 전달 + Backend 저장
+4. ✅ **공동 여행자 소유자 표시**: trip owner를 첫 항목으로 추가
+
+- **커밋**: 2042966c, 26fa20b0, 8d9454b2, 4046dde9, 7472f7b2, 372a4ae6
+- **빌드**: versionCode 83 (`fEdAMqa3TViWdqHevD3TKt.aab`)
+- **Backend 배포**: ✅ 4차 배포 완료 (좌표 + 소유자 포함)
+- **TypeScript**: ✅ Frontend + Backend 0 에러
+- **다음 단계**: Alpha 트랙 AAB 업로드 → 테스터 검증 → 프로덕션 단계적 출시
+- **⚠️ 프로덕션 출시 시**: eas.json에서 `EXPO_PUBLIC_USE_TEST_ADS` 제거 필요
 
 ### Phase 0b: 사용자 동의 관리 시스템 (2026-04-05 완료) ✅
 - **배경**: GDPR/CCPA 법적 요구사항 준수를 위한 동의 관리 시스템 구축
