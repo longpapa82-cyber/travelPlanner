@@ -100,16 +100,43 @@ export class PlacesService {
         return { predictions: [], available: true };
       }
 
-      const predictions: PlacePrediction[] = (data.predictions || []).map(
-        (p: any) => ({
-          placeId: p.place_id,
-          description: p.description,
-          mainText: p.structured_formatting?.main_text || p.description,
-          secondaryText: p.structured_formatting?.secondary_text || '',
+      const rawPredictions = (data.predictions || []).map((p: any) => ({
+        placeId: p.place_id,
+        description: p.description,
+        mainText: p.structured_formatting?.main_text || p.description,
+        secondaryText: p.structured_formatting?.secondary_text || '',
+      }));
+
+      // Fetch coordinates for each prediction via Place Details API
+      // Google session billing: autocomplete + details = single session charge
+      const predictions: PlacePrediction[] = await Promise.all(
+        rawPredictions.map(async (pred: PlacePrediction) => {
+          try {
+            const detailParams: Record<string, string> = {
+              place_id: pred.placeId,
+              key: this.apiKey!,
+              fields: 'geometry',
+            };
+            if (sessionToken) detailParams.sessiontoken = sessionToken;
+            const { data: detailData } = await axios.get(
+              'https://maps.googleapis.com/maps/api/place/details/json',
+              { params: detailParams, timeout: 3000 },
+            );
+            if (detailData.result?.geometry?.location) {
+              return {
+                ...pred,
+                latitude: detailData.result.geometry.location.lat,
+                longitude: detailData.result.geometry.location.lng,
+              };
+            }
+          } catch (e: any) {
+            this.logger.warn(`Place Details failed for ${pred.placeId}: ${e.message}`);
+          }
+          return pred;
         }),
       );
 
-      this.logger.log(`Google Places success: ${predictions.length} results`);
+      this.logger.log(`Google Places success: ${predictions.length} results (with coords)`);
       return { predictions, available: true };
     } catch (error: any) {
       this.logger.error(`Google Places error: ${error.message}`);

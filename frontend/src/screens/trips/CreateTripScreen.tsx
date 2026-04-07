@@ -979,16 +979,15 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   try {
                     console.log('[CreateTripScreen] Starting to show rewarded ad');
                     setIsShowingRewardedAd(true);
-                    // Persist destination before ad opens (Android may destroy Activity)
-                    if (destination) {
-                      await AsyncStorage.setItem('@rewarded_ad_destination', destination);
-                    }
 
-                    await showRewarded(() => {
+                    // Fire-and-forget: don't await the ad show.
+                    // Android may destroy the Activity during ad display,
+                    // causing the await to never resolve or resolve in wrong context.
+                    // The reward callback handles everything we need.
+                    showRewarded(() => {
                       console.log('[CreateTripScreen] Reward earned, unlocking insights');
                       setInsightsUnlocked(true);
-
-                      // Show success feedback when reward is earned
+                      setIsShowingRewardedAd(false);
                       showToast({
                         type: 'success',
                         message: t('create.rewardedAd.success', {
@@ -997,26 +996,23 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                         position: 'top',
                         duration: 2000,
                       });
+                    }).catch((error) => {
+                      console.error('[CreateTripScreen] Rewarded ad error:', error);
+                      setInsightsUnlocked(true);
+                      setIsShowingRewardedAd(false);
+                      showToast({
+                        type: 'warning',
+                        message: t('create.rewardedAd.errorButUnlocked', {
+                          defaultValue: '광고 로드에 실패했지만 인사이트가 잠금 해제되었습니다',
+                        }),
+                        position: 'top',
+                        duration: 3000,
+                      });
                     });
                   } catch (error) {
-                    console.error('[CreateTripScreen] Rewarded ad error:', error);
-
-                    // Still unlock insights on error to not frustrate users
+                    console.error('[CreateTripScreen] Rewarded ad sync error:', error);
                     setInsightsUnlocked(true);
-
-                    showToast({
-                      type: 'warning',
-                      message: t('create.rewardedAd.errorButUnlocked', {
-                        defaultValue: '광고 로드에 실패했지만 인사이트가 잠금 해제되었습니다',
-                      }),
-                      position: 'top',
-                      duration: 3000,
-                    });
-                  } finally {
                     setIsShowingRewardedAd(false);
-                    // Clean up persisted ad state
-                    AsyncStorage.removeItem('@rewarded_ad_destination').catch(() => {});
-                    console.log('[CreateTripScreen] Rewarded ad flow completed');
                   }
                 }}
                 disabled={isShowingRewardedAd}
