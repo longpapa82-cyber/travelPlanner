@@ -4,23 +4,32 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 ## 📍 현재 상태 (2026-04-07)
 
-- **버전**: versionCode 86 (Alpha 테스트 중)
+- **버전**: versionCode 88 (빌드 중) — 좌표 근본 해결 + 광고 개선
 - **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ 정상
 - **상태**: Alpha 테스트 진행 중 → AdMob 검토 + 프로덕션 출시 대기
 
-### 🟢 versionCode 86: Alpha 테스터 피드백 반영 (2026-04-07 완료) ✅
-- **프로필 사진**: 시스템 크롭 제거 → 선택 즉시 업로드 (Android Activity lifecycle 문제 해결)
-- **좌표 미저장 근본 해결**:
-  - ActivityModal `Activity` 인터페이스에 latitude/longitude 추가 (이것이 근본 원인)
-  - api.ts placesAutocomplete 반환 타입에 lat/lng 추가
-  - handleSaveActivity에서 lat/lng 포함
-  - UpdateActivityDto에 lat/lng 필드 추가
-  - 진단 로그 추가 (onSelect, handleSave 시 좌표 값)
+### 🟢 versionCode 88: 좌표 근본 해결 + 광고 개선 (2026-04-07 빌드 중)
+- **좌표 미저장 — 진짜 근본 원인 발견 및 해결**:
+  - 원인: Mapbox가 한국어 입력("도쿄도") 미지원 → Google Places fallback
+  - Google Places Autocomplete는 좌표를 반환하지 않음
+  - 해결: Google fallback 시 **Place Details API**로 각 예측의 geometry 좌표 조회
+  - API 직접 검증 완료: 도쿄도 lat=35.6764, lng=139.6500 ✅
+  - 비용: 세션 기반 과금으로 추가 비용 $0 (Autocomplete + Details = 단일 세션)
+  - Mapbox 우선 유지 (영어 입력 시 무료), Google은 fallback으로만 사용
+- **보상형 광고 후 홈 이동**:
+  - 원인: `await showRewarded()` → Android Activity destroy 시 Promise 미resolve
+  - 해결: fire-and-forget 패턴 (await 제거), reward 콜백만으로 상태 처리
+- **과거 시간 활동 추가**: 오늘 날짜는 시간 무관 허용, 어제 이전만 차단
+- **토스트 z-index**: 99999로 증가 (모달 위 표시)
+- **커밋**: 586361e1
+- **빌드**: versionCode 88 (진행 중)
+
+### 🟢 versionCode 85-87: Alpha 테스터 피드백 반영 (2026-04-07 완료) ✅
+- **프로필 사진**: 선택 즉시 업로드 (Android Activity lifecycle 해결)
+- **좌표 미저장 (부분 수정)**: ActivityModal 인터페이스, handleSaveActivity, UpdateActivityDto
 - **배너 광고 중복**: 하단 배너 제거 (1개만 유지)
-- **여행 생성 → 메인 이동**: showInterstitial() await + 10초 타임아웃 (흰 화면 방지)
-- **보상형 광고 후 상태 유실**: insightsUnlocked AsyncStorage persist
-- **커밋**: e650bcd9, 4634e704
-- **빌드**: versionCode 86 (`ig3YMTuPoZ2yELkxPpRdHb.aab`)
+- **여행 생성 → 메인 이동**: showInterstitial() await + 10초 타임아웃
+- **AdMob 정책 위반**: 프레임 크기 변경 수정 + 검토 요청 접수
 
 ### 🟡 AdMob 상태 (2026-04-07)
 - **정책 위반 검토**: "광고 프레임 크기 변경" → 검토 요청 접수 (2026-04-07, ~4/14 예상)
@@ -276,12 +285,30 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 - **프로젝트**: tripPlanner (tripplanner-486511)
 - **API 키**: AIzaSyC35ndnoqvz4460uBwaKQ_f8soRVF_aeaE (backend/.env)
 - **활성화 상태**: ✅ 활성화 완료 (2026-03-28)
-- **활성화된 API**: Places API (Legacy)
-- **용도**: 위치 자동완성 (manual activity creation)
-- **월간 한도**: 9,500회 (무료 한도 10,000회 중 95%)
+- **활성화된 API**: Places API (Legacy) + Place Details API
+- **용도**: 위치 자동완성 + 좌표 조회 (Mapbox 한국어 미지원 시 Google fallback)
+- **장소 검색 체인**: Mapbox (무료 100K/월) → Google Autocomplete + Place Details (세션 기반)
 - **엔드포인트**: `/api/places/autocomplete` (인증 필요)
 - **프론트엔드**: PlacesAutocomplete 컴포넌트 + Fallback UI
-- **비용**: $0 (무료 한도 내)
+- **비용**: 세션 기반 과금 ($0.017/세션), Mapbox 성공 시 $0
+
+## 비용 분석 (2026-04-07 산출)
+
+### 여행 자동 생성 10,000건 예상 비용
+| API | 캐시 적중률 | 실제 호출 | 비용 |
+|-----|-----------|---------|------|
+| OpenAI GPT-4o-mini | ~60% (템플릿) | 4,000건 | $200 |
+| Google Geocoding | ~70% (Redis) | 3,000건 | $15 |
+| OpenWeather | ~80% (6h TTL) | 2,000건 | $0 (무료) |
+| LocationIQ | ~50% | 25,000건 | $0 (5K/일 무료) |
+| Google Place Details | 세션 포함 | - | $0 |
+| **합계** | | | **~$215** |
+| **건당 평균** | | | **$0.022 (~30원)** |
+
+### 장소 검색 비용 변경 (Place Details 추가)
+- 추가 비용: **$0** (Google 세션 토큰 기반 과금 → Autocomplete + Details = 단일 세션)
+- Mapbox 영어 입력 성공 시: 완전 무료
+- Google fallback 시: 세션당 $0.017 (이전과 동일)
 
 ## AdMob 설정
 
