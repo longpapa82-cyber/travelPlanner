@@ -661,10 +661,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             </Animated.View>
           )}
 
-          {/* Ad Banner */}
-          {activeTab === 'itinerary' && (
-            <AdBanner size="adaptive" style={{ marginHorizontal: 16 }} />
-          )}
+          {/* Ad Banner — always rendered to maintain stable frame (AdMob policy) */}
+          <AdBanner size="adaptive" style={{ marginHorizontal: 16 }} />
 
           {/* Itineraries */}
           {activeTab === 'itinerary' && (
@@ -715,10 +713,8 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
             )
           )}
 
-          {/* Bottom Ad Banner */}
-          {activeTab === 'itinerary' && trip.itineraries.length > 0 && (
-            <AdBanner size="banner" style={{ marginHorizontal: 16 }} />
-          )}
+          {/* Bottom Ad Banner — always rendered to maintain stable frame (AdMob policy) */}
+          <AdBanner size="banner" style={{ marginHorizontal: 16 }} />
 
           {/* Collaboration Section */}
           <CollaboratorSection

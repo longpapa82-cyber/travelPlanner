@@ -50,11 +50,9 @@ const AdBanner: React.FC<AdBannerProps> = ({
   const { isPremium } = usePremium();
   const { isReady: consentReady, canShowPersonalizedAds } = useGDPRConsent();
 
-  // Premium users don't see banner ads
-  if (isPremium) return null;
-
-  // Wait for consent check before showing ads (native + web)
-  if (!consentReady) return null;
+  // Premium users and consent-pending: render nothing before any ad is requested
+  // This is safe because no ad frame has been created yet
+  if (isPremium || !consentReady) return null;
 
   if (Platform.OS === 'web') {
     const slot = adSenseSlot || DEFAULT_ADSENSE_SLOT;

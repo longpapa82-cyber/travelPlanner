@@ -2,6 +2,10 @@
  * Google AdMob Banner Component for Native (iOS/Android)
  *
  * Uses react-native-google-mobile-ads for native ad display.
+ *
+ * IMPORTANT: AdMob policy requires that ad containers maintain stable dimensions.
+ * Never return null or change container size after an ad has been requested.
+ * On error, keep the container with the same height but hide the ad content.
  */
 
 import React, { useState } from 'react';
@@ -27,6 +31,16 @@ const BANNER_SIZE_MAP: Record<AdMobBannerSize, keyof typeof BannerAdSize> = {
   adaptive: 'ANCHORED_ADAPTIVE_BANNER',
 };
 
+// Minimum heights for each banner size to maintain stable frame dimensions
+const BANNER_MIN_HEIGHT: Record<AdMobBannerSize, number> = {
+  banner: 50,
+  largeBanner: 100,
+  mediumRectangle: 250,
+  fullBanner: 60,
+  leaderboard: 90,
+  adaptive: 60,
+};
+
 const AdMobBannerComponent: React.FC<AdMobBannerProps> = ({
   adUnitId,
   size = 'adaptive',
@@ -41,19 +55,25 @@ const AdMobBannerComponent: React.FC<AdMobBannerProps> = ({
     ? TestIds.BANNER
     : adUnitId || '';
 
-  if (!unitId || adError) return null;
+  // No ad unit configured — render nothing (this is before any ad request)
+  if (!unitId) return null;
 
   const adSize = BannerAdSize[BANNER_SIZE_MAP[size]] || BannerAdSize.ANCHORED_ADAPTIVE_BANNER;
+  const minHeight = BANNER_MIN_HEIGHT[size] || 60;
 
+  // Always render the container to maintain stable frame dimensions (AdMob policy).
+  // On error, keep the container but hide the ad content.
   return (
-    <View style={[styles.container, isDark && styles.containerDark, style]}>
-      <BannerAd
-        unitId={unitId}
-        size={adSize}
-        requestOptions={{ requestNonPersonalizedAdsOnly }}
-        onAdLoaded={() => setAdError(false)}
-        onAdFailedToLoad={() => setAdError(true)}
-      />
+    <View style={[styles.container, isDark && styles.containerDark, { minHeight }, style]}>
+      {!adError && (
+        <BannerAd
+          unitId={unitId}
+          size={adSize}
+          requestOptions={{ requestNonPersonalizedAdsOnly }}
+          onAdLoaded={() => setAdError(false)}
+          onAdFailedToLoad={() => setAdError(true)}
+        />
+      )}
     </View>
   );
 };
@@ -63,7 +83,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 8,
-    overflow: 'hidden',
   },
   containerDark: {
     backgroundColor: 'transparent',
