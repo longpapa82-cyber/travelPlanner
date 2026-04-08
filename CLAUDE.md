@@ -4,10 +4,18 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 ## 📍 현재 상태 (2026-04-08)
 
-- **버전**: versionCode 88 (Alpha 테스트 중) — 좌표 근본 해결 완료
+- **버전**: versionCode 88 (Alpha 테스트 중) — 전수 검수 GO 판정
 - **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ 정상
-- **상태**: Alpha 테스트 + API 비용 Phase 1 최적화 완료 → AdMob 검토 + 프로덕션 출시 대기
-- **Frontend 재빌드**: 불필요 (좌표 근본 원인은 Backend Place Details, 이미 배포 완료)
+- **상태**: 전수 검수 GO ✅ → AdMob 검토 대기 (~4/14) → 프로덕션 출시 준비
+- **Frontend 재빌드**: 불필요 (테스트 코드만 변경, 런타임 영향 없음)
+
+### 🟢 전수 검수 결과 — GO 판정 (2026-04-08) ✅
+- **L1 Auto-QA**: Backend 412/412, Frontend 205/209 — 5건 자동 수정
+- **L2 Security-QA**: 92/100 — CRITICAL 0, HIGH 1 (방어 심층, 직접 유출 없음)
+- **L4 Publish-QA**: Conditional GO — P0 0건, WARN 1건 (테스트 광고 플래그)
+- **Go/No-Go**: P0 0건, P1 0건, TS 0에러, 617 tests PASS → **GO ✅**
+- **프로덕션 출시 전 필수**: eas.json `EXPO_PUBLIC_USE_TEST_ADS` 제거
+- **ThrottleException**: 20→40/min 상향 배포 완료
 
 ### 🟢 API 비용 절감 Phase 1 완료 (2026-04-08) ✅
 - **OpenAI Prompt Caching**: 시스템 프롬프트 ~30→~1200 토큰 (input 50% 할인)
