@@ -148,28 +148,43 @@ export class TimezoneService {
     longitude: number,
     timestamp?: Date,
   ): Promise<TimezoneInfo | null> {
-    if (!this.apiKey) {
-      this.logger.warn('Google Maps API not configured');
-      return null;
+    // Primary: Use offline geo-tz library — no API call, instant response
+    try {
+      const { find } = await import('geo-tz');
+      const timezones = find(latitude, longitude);
+      const timeZoneId = timezones[0];
+
+      if (timeZoneId) {
+        const targetTimestamp = timestamp || new Date();
+        const localDateTime = DateTime.fromJSDate(targetTimestamp, { zone: timeZoneId });
+        const offset = localDateTime.offset / 60; // minutes to hours
+
+        return {
+          timezone: timeZoneId,
+          timezoneId: timeZoneId,
+          timezoneOffset: offset,
+          localTime: localDateTime.toISO() ?? '',
+        };
+      }
+    } catch (geoTzError: any) {
+      this.logger.warn(`geo-tz failed: ${geoTzError.message}, falling back to Google API`);
     }
 
-    // Redis cache: round coordinates to 1 decimal (~11km precision, same timezone zone)
-    const cacheKey = `tz:${latitude.toFixed(1)}:${longitude.toFixed(1)}`;
+    // Fallback: Google Timezone API (only if geo-tz fails)
+    if (!this.apiKey) return null;
 
-    // Check cache (timezone data is very stable — 30 day TTL)
+    const cacheKey = `tz:${latitude.toFixed(1)}:${longitude.toFixed(1)}`;
     const cached = await this.cacheManager.get<{
       timeZoneId: string;
       timeZoneName: string;
       rawOffset: number;
       dstOffset: number;
     }>(cacheKey);
+
     if (cached) {
-      this.logger.debug(`Timezone cache hit: ${cacheKey}`);
       const targetTimestamp = timestamp || new Date();
+      const localDateTime = DateTime.fromJSDate(targetTimestamp, { zone: cached.timeZoneId });
       const totalOffset = cached.rawOffset + cached.dstOffset;
-      const localDateTime = DateTime.fromJSDate(targetTimestamp, {
-        zone: cached.timeZoneId,
-      });
       return {
         timezone: cached.timeZoneName,
         timezoneId: cached.timeZoneId,
@@ -192,13 +207,11 @@ export class TimezoneService {
 
       const { timeZoneId, timeZoneName, rawOffset, dstOffset } = response.data;
 
-      // Cache timezone data for 30 days (timezones rarely change)
       await this.cacheManager.set(
         cacheKey,
         { timeZoneId, timeZoneName, rawOffset, dstOffset },
         30 * 24 * 60 * 60 * 1000,
       );
-      // Fire-and-forget: log API usage
       this.apiUsageService
         ?.logApiUsage({
           provider: 'google_timezone',
@@ -207,25 +220,19 @@ export class TimezoneService {
         })
         .catch(() => {});
 
-      // Calculate total offset in seconds
       const totalOffset = rawOffset + dstOffset;
-
-      // Get local time using luxon
-      const localDateTime = DateTime.fromJSDate(targetTimestamp, {
-        zone: timeZoneId,
-      });
+      const localDateTime = DateTime.fromJSDate(targetTimestamp, { zone: timeZoneId });
 
       return {
         timezone: timeZoneName,
         timezoneId: timeZoneId,
-        timezoneOffset: totalOffset / 3600, // Convert to hours
+        timezoneOffset: totalOffset / 3600,
         localTime: localDateTime.toISO() ?? '',
       };
     } catch (error) {
       this.logger.error(
         `Failed to get timezone for coordinates (${latitude}, ${longitude}): ${this.safeErrorMessage(error)}`,
       );
-      // Fire-and-forget: log error
       this.apiUsageService
         ?.logApiUsage({
           provider: 'google_timezone',

@@ -63,6 +63,89 @@ const LANGUAGE_NAMES: Record<string, string> = {
   ms: 'Malay',
 };
 
+/**
+ * Shared system prompt for OpenAI Prompt Caching.
+ * OpenAI automatically caches prompts with 1024+ token prefixes that are identical
+ * across requests, providing 50% discount on cached input tokens.
+ * This prompt contains stable travel planning knowledge, JSON schema, and guidelines
+ * that remain constant across all requests. The language-specific instruction is
+ * appended at the end so the shared prefix stays cacheable.
+ *
+ * Target: ~1200 tokens to exceed the 1024 minimum threshold.
+ */
+const SYSTEM_PROMPT_BASE = `You are an expert travel planner AI with deep knowledge of global destinations, local customs, transportation, dining, and activities. Your role is to create detailed, practical, and enjoyable travel itineraries.
+
+## Core Principles
+1. **Realistic Scheduling**: Account for travel time between locations, opening hours, and local customs (siesta, prayer times, etc.).
+2. **Geographic Flow**: Organize activities by proximity to minimize unnecessary travel. Group nearby attractions on the same day.
+3. **Local Authenticity**: Prioritize authentic local experiences over tourist traps. Include local restaurants, hidden gems, and cultural experiences.
+4. **Practical Details**: Include accurate estimated costs in local currency, realistic time estimates, and transportation recommendations.
+5. **Safety & Comfort**: Consider weather, seasonal factors, and traveler comfort. Avoid scheduling strenuous activities back-to-back.
+6. **Cultural Sensitivity**: Respect local customs, dress codes for religious sites, and cultural norms.
+
+## Activity Types
+Use these exact type values: "sightseeing", "dining", "shopping", "entertainment", "nature", "culture", "sports", "relaxation", "nightlife", "transport", "accommodation", "other".
+
+## JSON Response Schema
+Return a valid JSON object. Each activity MUST include:
+- "time": string in "HH:MM" format (24-hour), activities should start no earlier than 07:00 and end by 23:00
+- "type": one of the activity types listed above
+- "title": concise activity name (max 100 characters)
+- "location": full address or well-known location name with area/district
+- "latitude": number (decimal degrees, e.g., 35.6762)
+- "longitude": number (decimal degrees, e.g., 139.6503)
+- "description": 2-3 sentences explaining the activity, why it's recommended, and practical tips
+- "estimatedCost": number in USD (0 for free activities)
+- "estimatedDuration": number in minutes (minimum 30, maximum 480)
+
+## Scheduling Guidelines
+- Breakfast: 07:00-09:00 (allow 45-60 min)
+- Morning activities: 09:00-12:00
+- Lunch: 12:00-13:30 (allow 60-90 min)
+- Afternoon activities: 13:30-18:00
+- Dinner: 18:00-20:00 (allow 60-120 min)
+- Evening activities: 20:00-23:00
+- Include 15-30 min transport time between locations
+- Plan 4-6 activities per day (not too packed, not too sparse)
+- First day: lighter schedule (jet lag consideration)
+- Last day: morning activities only (check-out, airport)
+
+## Cost Estimation Guidelines
+- Budget meals: $5-15
+- Mid-range meals: $15-40
+- Fine dining: $40-100+
+- Museum/attraction entry: $5-25
+- Transport (per trip): $2-15
+- Shopping: estimate reasonable amounts
+- Free activities: parks, temples (exterior), walking tours = $0
+
+## Multi-Day Trip Guidelines
+- Day 1: Arrival day, lighter schedule, nearby attractions
+- Middle days: Full exploration, mix of iconic and hidden gems
+- Last day: Morning activities, souvenir shopping, departure preparation
+- Vary activity types across days (don't cluster all dining or all sightseeing)
+- Include at least one unique/memorable experience per day
+- Consider day-trip opportunities for nearby cities/towns
+
+## Weather Considerations
+- Rainy day alternatives: museums, indoor markets, cooking classes
+- Hot weather: morning/evening outdoor activities, midday indoor rest
+- Cold weather: warm indoor activities, hot spring visits, cozy cafes
+
+## Budget Level Adjustments
+- "budget": Focus on street food, free attractions, public transport, hostels
+- "midRange": Mix of local and popular restaurants, some paid attractions, comfortable transport
+- "luxury": Fine dining, premium experiences, private tours, first-class transport
+
+## Travel Style Adjustments
+- "relaxed": Fewer activities, more free time, spa/wellness, scenic walks
+- "balanced": Standard 4-5 activities per day, mix of sightseeing and leisure
+- "active": 6+ activities per day, adventure sports, hiking, early starts
+- "cultural": Museums, temples, historical sites, traditional experiences, workshops
+- "foodie": Food tours, cooking classes, local markets, restaurant recommendations
+
+IMPORTANT: All text content (title, description, location) must be written in the specified language only. Do not mix languages.`;
+
 @Injectable()
 export class AIService {
   private readonly logger = new Logger(AIService.name);
@@ -134,7 +217,7 @@ export class AIService {
         withRetry(
           () =>
             this.streamCompletion(
-              `Expert travel planner. Return JSON daily itinerary. Consider travel time, hours, customs. All text (title, description, location) in ${langName} only.`,
+              `${SYSTEM_PROMPT_BASE}\n\nLanguage: ${langName}. Return a JSON daily itinerary.`,
               prompt,
               { maxTokens: 4096, label: 'daily itinerary' },
             ),
@@ -502,7 +585,7 @@ Return JSON:
         withRetry(
           () =>
             this.streamCompletion(
-              `Expert travel planner. Return JSON multi-day itinerary with logical geographic flow. All text (title, description, location) in ${langName} only.`,
+              `${SYSTEM_PROMPT_BASE}\n\nLanguage: ${langName}. Return a JSON multi-day itinerary with logical geographic flow.`,
               prompt,
               { maxTokens, label: `full ${totalDays}d trip` },
             ),
@@ -920,9 +1003,10 @@ Return JSON:
   }
 
   /**
-   * Cron: Every Sunday at 2 AM, pre-generate templates for top 20 popular destinations.
-   * Covers 3/5/7-day variants in ko and en languages.
+   * Cron: Every Sunday at 2 AM, pre-generate templates for top 50 popular destinations.
+   * Covers 2/3/4/5/7-day variants in ko, en, ja languages.
    * This dramatically increases template cache hit rate for common searches.
+   * Expanded from 20×3×2=120 to 50×5×3=750 combinations for 85%+ cache hit rate.
    */
   @Cron('0 2 * * 0') // Every Sunday at 2 AM
   async handleTemplateWarmup(): Promise<void> {
@@ -930,9 +1014,9 @@ Return JSON:
 
     try {
       const queue = await this.templateService.getWarmupQueue(
-        20,
-        [3, 5, 7],
-        ['ko', 'en'],
+        50,
+        [2, 3, 4, 5, 7],
+        ['ko', 'en', 'ja'],
       );
       if (queue.length === 0) {
         this.logger.log(

@@ -31,8 +31,8 @@ export class TemplateService {
   private readonly logger = new Logger(TemplateService.name);
   /** Templates older than this are considered stale */
   private readonly STALE_THRESHOLD_MS = 90 * 24 * 60 * 60 * 1000; // 90 days
-  /** Minimum cosine similarity to consider a vector match valid (lowered from 0.82 → 0.75 → 0.70 to broaden cache hits) */
-  private readonly VECTOR_SIMILARITY_THRESHOLD = 0.70;
+  /** Minimum cosine similarity to consider a vector match valid (lowered from 0.82 → 0.75 → 0.70 → 0.65 to maximize cache hits) */
+  private readonly VECTOR_SIMILARITY_THRESHOLD = 0.65;
 
   constructor(
     @InjectRepository(ItineraryTemplate)
