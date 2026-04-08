@@ -151,11 +151,11 @@ describe('AuthService', () => {
       // Arrange
       usersService.findByEmail.mockResolvedValue(mockUser as any);
 
-      // Act & Assert
-      await expect(service.register(registerDto)).rejects.toThrow(
+      // Act & Assert — pass lang='en' so i18n returns English messages
+      await expect(service.register(registerDto, 'en')).rejects.toThrow(
         BadRequestException,
       );
-      await expect(service.register(registerDto)).rejects.toThrow(
+      await expect(service.register(registerDto, 'en')).rejects.toThrow(
         'Registration failed. Please check your information and try again.',
       );
       expect(usersService.create).not.toHaveBeenCalled();
@@ -228,11 +228,11 @@ describe('AuthService', () => {
       // Arrange
       usersService.findByEmail.mockResolvedValue(null);
 
-      // Act & Assert
-      await expect(service.login(loginDto)).rejects.toThrow(
+      // Act & Assert — pass lang='en' so i18n returns English messages
+      await expect(service.login(loginDto, undefined, 'en')).rejects.toThrow(
         UnauthorizedException,
       );
-      await expect(service.login(loginDto)).rejects.toThrow(
+      await expect(service.login(loginDto, undefined, 'en')).rejects.toThrow(
         'Invalid credentials',
       );
       expect(usersService.validatePassword).not.toHaveBeenCalled();
@@ -243,11 +243,11 @@ describe('AuthService', () => {
       usersService.findByEmail.mockResolvedValue(mockUser as any);
       usersService.validatePassword.mockResolvedValue(false);
 
-      // Act & Assert
-      await expect(service.login(loginDto)).rejects.toThrow(
+      // Act & Assert — pass lang='en' so i18n returns English messages
+      await expect(service.login(loginDto, undefined, 'en')).rejects.toThrow(
         UnauthorizedException,
       );
-      await expect(service.login(loginDto)).rejects.toThrow(
+      await expect(service.login(loginDto, undefined, 'en')).rejects.toThrow(
         'Invalid credentials',
       );
     });

@@ -11,6 +11,8 @@ import {
   UserRole,
   SubscriptionTier,
 } from './entities/user.entity';
+import { UserConsent } from './entities/user-consent.entity';
+import { ConsentAuditLog } from './entities/consent-audit-log.entity';
 
 // Mock bcrypt
 jest.mock('bcrypt');
@@ -70,6 +72,22 @@ describe('UsersService', () => {
         {
           provide: getRepositoryToken(User),
           useValue: mockRepository,
+        },
+        {
+          provide: getRepositoryToken(UserConsent),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+            save: jest.fn(),
+            create: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(ConsentAuditLog),
+          useValue: {
+            save: jest.fn(),
+            create: jest.fn(),
+          },
         },
         {
           provide: DataSource,

@@ -8,6 +8,7 @@ import {
 import request from 'supertest';
 import { TripsController } from './trips.controller';
 import { TripsService } from './trips.service';
+import { JobsService } from './jobs.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminExemptThrottlerGuard } from '../common/guards/admin-exempt-throttler.guard';
 import { ImageService } from '../common/image.service';
@@ -113,6 +114,14 @@ describe('TripsController (Integration)', () => {
         {
           provide: TripsService,
           useValue: mockTripsService,
+        },
+        {
+          provide: JobsService,
+          useValue: {
+            createJob: jest.fn().mockReturnValue('mock-job-id'),
+            getJob: jest.fn(),
+            updateJob: jest.fn(),
+          },
         },
         {
           provide: ImageService,
@@ -284,6 +293,14 @@ describe('TripsController (Integration)', () => {
             useValue: mockTripsService,
           },
           {
+            provide: JobsService,
+            useValue: {
+              createJob: jest.fn().mockReturnValue('mock-job-id'),
+              getJob: jest.fn(),
+              updateJob: jest.fn(),
+            },
+          },
+          {
             provide: ImageService,
             useValue: { processUpload: jest.fn() },
           },
@@ -292,6 +309,10 @@ describe('TripsController (Integration)', () => {
         .overrideGuard(JwtAuthGuard)
         .useValue({
           canActivate: jest.fn(() => false),
+        })
+        .overrideGuard(AdminExemptThrottlerGuard)
+        .useValue({
+          canActivate: jest.fn(() => true),
         })
         .compile();
 
@@ -903,6 +924,14 @@ describe('TripsController (Integration)', () => {
             useValue: mockTripsService,
           },
           {
+            provide: JobsService,
+            useValue: {
+              createJob: jest.fn().mockReturnValue('mock-job-id'),
+              getJob: jest.fn(),
+              updateJob: jest.fn(),
+            },
+          },
+          {
             provide: ImageService,
             useValue: { processUpload: jest.fn() },
           },
@@ -911,6 +940,10 @@ describe('TripsController (Integration)', () => {
         .overrideGuard(JwtAuthGuard)
         .useValue({
           canActivate: jest.fn(() => false),
+        })
+        .overrideGuard(AdminExemptThrottlerGuard)
+        .useValue({
+          canActivate: jest.fn(() => true),
         })
         .compile();
 

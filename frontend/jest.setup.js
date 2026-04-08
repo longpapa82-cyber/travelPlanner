@@ -38,3 +38,18 @@ jest.mock('expo-localization', () => ({
 
 // Mock react-native-vector-icons
 jest.mock('react-native-vector-icons/MaterialCommunityIcons', () => 'Icon');
+
+// Mock @expo/vector-icons
+jest.mock('@expo/vector-icons', () => {
+  const MockIcon = 'Icon';
+  return {
+    MaterialCommunityIcons: MockIcon,
+    Ionicons: MockIcon,
+    FontAwesome: MockIcon,
+    FontAwesome5: MockIcon,
+    MaterialIcons: MockIcon,
+    Feather: MockIcon,
+    AntDesign: MockIcon,
+    Entypo: MockIcon,
+  };
+});

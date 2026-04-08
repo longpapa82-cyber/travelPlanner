@@ -26,11 +26,12 @@ describe('TripsService - AI Generation Limits', () => {
       rollbackTransaction: jest.fn(),
       release: jest.fn(),
       manager: {
-        create: jest.fn().mockImplementation((entity, data) => ({
+        create: jest.fn().mockImplementation((_entity, data) => ({
           ...data,
           id: 'generated-id',
         })),
         save: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
+        update: jest.fn().mockResolvedValue({ affected: 1 }),
         createQueryBuilder: jest.fn().mockReturnValue({
           select: jest.fn().mockReturnThis(),
           from: jest.fn().mockReturnThis(),
@@ -53,7 +54,16 @@ describe('TripsService - AI Generation Limits', () => {
           provide: getRepositoryToken(Trip),
           useValue: {
             find: jest.fn(),
-            findOne: jest.fn(),
+            findOne: jest.fn().mockImplementation(({ where }) => {
+              // Return a matching trip for owner check in findOne()
+              return Promise.resolve({
+                id: where?.id || 'generated-id',
+                userId: where?.userId || 'test-user-id',
+                destination: 'Test Destination',
+                status: 'upcoming',
+                itineraries: [],
+              });
+            }),
             save: jest.fn(),
             update: jest.fn().mockResolvedValue({ affected: 1 }),
             manager: {
@@ -70,7 +80,10 @@ describe('TripsService - AI Generation Limits', () => {
         },
         {
           provide: getRepositoryToken(Collaborator),
-          useValue: {},
+          useValue: {
+            findOne: jest.fn().mockResolvedValue(null),
+            find: jest.fn().mockResolvedValue([]),
+          },
         },
         {
           provide: AIService,
@@ -90,33 +103,44 @@ describe('TripsService - AI Generation Limits', () => {
         {
           provide: TimezoneService,
           useValue: {
+            getLocationInfo: jest.fn().mockResolvedValue({
+              latitude: 48.8566,
+              longitude: 2.3522,
+              formattedAddress: 'Paris, France',
+            }),
             getTimezoneInfo: jest.fn().mockResolvedValue({
+              timezone: 'Europe/Paris',
               timezoneId: 'Europe/Paris',
-              offset: 60,
+              timezoneOffset: 2,
+              localTime: '2024-06-01T12:00:00',
             }),
           },
         },
         {
           provide: WeatherService,
           useValue: {
-            getWeatherForDates: jest.fn().mockResolvedValue([]),
+            getWeatherForDateRange: jest.fn().mockResolvedValue(new Map()),
           },
         },
         {
           provide: TripStatusScheduler,
           useValue: {
-            calculateTripStatus: jest.fn(),
+            validateAndUpdateTripStatus: jest.fn().mockResolvedValue(false),
           },
         },
         {
           provide: NotificationsService,
           useValue: {
-            sendTripCreatedNotification: jest.fn(),
+            create: jest.fn().mockResolvedValue(undefined),
+            createForMultipleUsers: jest.fn().mockResolvedValue(undefined),
           },
         },
         {
           provide: SubscriptionService,
-          useValue: {},
+          useValue: {
+            checkAiTripLimit: jest.fn().mockResolvedValue({ allowed: true, remaining: 3 }),
+            incrementAiTripCount: jest.fn().mockResolvedValue(undefined),
+          },
         },
         {
           provide: DataSource,
@@ -347,6 +371,7 @@ describe('TripsService - AI Generation Limits', () => {
         startDate: '2024-11-01',
         endDate: '2024-11-05',
         numberOfTravelers: 2,
+        planningMode: 'manual',
         preferences: {
           budget: 'medium',
           travelStyle: 'cultural',

@@ -19,6 +19,9 @@ jest.mock('../PlacesAutocomplete', () => ({
   PlacesAutocomplete: () => null,
 }));
 
+// Mock DateTimePicker (native module)
+jest.mock('@react-native-community/datetimepicker', () => 'DateTimePicker');
+
 describe('ActivityModal - Time Input Field', () => {
   const mockOnClose = jest.fn();
   const mockOnSave = jest.fn();

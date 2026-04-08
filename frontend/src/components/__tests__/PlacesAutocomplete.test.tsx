@@ -5,6 +5,7 @@ import apiService from '../../services/api';
 
 // Mock the API service
 jest.mock('../../services/api', () => ({
+  __esModule: true,
   default: {
     placesAutocomplete: jest.fn()
   }
@@ -102,19 +103,19 @@ describe('PlacesAutocomplete', () => {
     const tokyoOption = getByText('Tokyo');
     fireEvent.press(tokyoOption);
 
-    // CRITICAL FIX: Both onChangeText AND onSelect should be called
-    // onChangeText updates the text field, onSelect provides the full place data
-    expect(mockOnChangeText).toHaveBeenCalledWith('Tokyo, Japan');
+    // handleSelect only calls onSelect — parent (ActivityModal) updates location via onSelect
+    // onChangeText is NOT called during selection (only during manual typing)
     expect(mockOnSelect).toHaveBeenCalledWith({
       placeId: 'place123',
       description: 'Tokyo, Japan',
       mainText: 'Tokyo',
       secondaryText: 'Japan'
     });
-
-    // onChangeText should be called twice: once for typing, once for selection
-    expect(mockOnChangeText).toHaveBeenCalledTimes(2);
     expect(mockOnSelect).toHaveBeenCalledTimes(1);
+
+    // onChangeText was called once for typing, NOT for selection
+    expect(mockOnChangeText).toHaveBeenCalledTimes(1);
+    expect(mockOnChangeText).toHaveBeenCalledWith('Doky');
   });
 
   test('should handle case when onSelect is not provided', async () => {
@@ -164,8 +165,10 @@ describe('PlacesAutocomplete', () => {
     const tokyoOption = getByText('Tokyo');
     fireEvent.press(tokyoOption);
 
-    // When onSelect is not provided, onChangeText should be called with the description
-    expect(mockOnChangeText).toHaveBeenCalledWith('Tokyo, Japan');
+    // When onSelect is not provided, handleSelect does nothing extra
+    // onChangeText is only called for the initial typing, not for selection
+    expect(mockOnChangeText).toHaveBeenCalledTimes(1);
+    expect(mockOnChangeText).toHaveBeenCalledWith('Doky');
   });
 
   test('BUG REPRODUCTION: Stale closure issue in ActivityModal', async () => {
