@@ -148,29 +148,7 @@ export class TimezoneService {
     longitude: number,
     timestamp?: Date,
   ): Promise<TimezoneInfo | null> {
-    // Primary: Use offline geo-tz library — no API call, instant response
-    try {
-      const { find } = await import('geo-tz');
-      const timezones = find(latitude, longitude);
-      const timeZoneId = timezones[0];
-
-      if (timeZoneId) {
-        const targetTimestamp = timestamp || new Date();
-        const localDateTime = DateTime.fromJSDate(targetTimestamp, { zone: timeZoneId });
-        const offset = localDateTime.offset / 60; // minutes to hours
-
-        return {
-          timezone: timeZoneId,
-          timezoneId: timeZoneId,
-          timezoneOffset: offset,
-          localTime: localDateTime.toISO() ?? '',
-        };
-      }
-    } catch (geoTzError: any) {
-      this.logger.warn(`geo-tz failed: ${geoTzError.message}, falling back to Google API`);
-    }
-
-    // Fallback: Google Timezone API (only if geo-tz fails)
+    // Google Timezone API with aggressive Redis caching (30 days, ~11km precision)
     if (!this.apiKey) return null;
 
     const cacheKey = `tz:${latitude.toFixed(1)}:${longitude.toFixed(1)}`;
