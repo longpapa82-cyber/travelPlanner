@@ -59,7 +59,7 @@ export class AnalyticsController {
    */
   @Get('destination-recommendations')
   @UseGuards(JwtAuthGuard)
-  @Throttle({ short: { ttl: 60000, limit: 20 } })
+  @Throttle({ short: { ttl: 60000, limit: 40 } })
   async getDestinationRecommendations(
     @Query('destination') destination: string,
   ) {
