@@ -64,9 +64,9 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
 
     const language = getCurrentLanguage();
 
-    // 1. Check local cache first
+    // 1. Check local cache first — only use if predictions have coordinates
     const cached = await getCachedPlaces(input, language);
-    if (cached) {
+    if (cached && cached.length > 0 && cached[0].latitude !== undefined) {
       setPredictions(cached);
       setShowDropdown(cached.length > 0);
       return;

@@ -465,8 +465,20 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         // Clean up persisted insights state
         if (destination) AsyncStorage.removeItem(`@insights_unlocked_${destination}`).catch(() => {});
 
+        // Navigate to TripDetail, falling back to TripList if navigation fails
         console.log('[CreateTripScreen] Navigating to TripDetail with tripId:', trip.id);
-        navigation.navigate('TripDetail', { tripId: trip.id });
+        try {
+          navigation.reset({
+            index: 1,
+            routes: [
+              { name: 'TripList' },
+              { name: 'TripDetail', params: { tripId: trip.id } },
+            ],
+          });
+        } catch (navError) {
+          console.warn('[CreateTripScreen] Navigation reset failed, trying navigate:', navError);
+          navigation.navigate('TripList' as any);
+        }
 
         // Reset guards after successful navigation
         setIsLoading(false);

@@ -170,7 +170,7 @@ const AddExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
         splitMethod,
         date,
         paidByUserId,
-        splitUserIds,
+        splits: splitUserIds.map((uid) => ({ userId: uid })),
       };
 
       if (expenseId) {

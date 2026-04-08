@@ -816,6 +816,13 @@ export class TripsService {
       );
     }
 
+    // DIAGNOSTIC: Log what the frontend is actually sending
+    this.logger.log(
+      `[COORDS-DIAG] addActivity received: location=${addActivityDto.location}, ` +
+      `lat=${addActivityDto.latitude}, lng=${addActivityDto.longitude}, ` +
+      `keys=${Object.keys(addActivityDto).join(',')}`,
+    );
+
     // Add new activity to the activities array
     const newActivity = {
       time: addActivityDto.time,
