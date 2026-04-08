@@ -2,13 +2,23 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-07)
+## 📍 현재 상태 (2026-04-08)
 
-- **버전**: versionCode 88 (빌드 중) — 좌표 근본 해결 + 광고 개선
+- **버전**: versionCode 88 (Alpha 테스트 중) — 좌표 근본 해결 완료
 - **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ 정상
-- **상태**: Alpha 테스트 진행 중 → AdMob 검토 + 프로덕션 출시 대기
+- **상태**: Alpha 테스트 + API 비용 Phase 1 최적화 완료 → AdMob 검토 + 프로덕션 출시 대기
+- **Frontend 재빌드**: 불필요 (좌표 근본 원인은 Backend Place Details, 이미 배포 완료)
 
-### 🟢 versionCode 88: 좌표 근본 해결 + 광고 개선 (2026-04-07 빌드 중)
+### 🟢 API 비용 절감 Phase 1 완료 (2026-04-08) ✅
+- **OpenAI Prompt Caching**: 시스템 프롬프트 ~30→~1200 토큰 (input 50% 할인)
+- **템플릿 워밍업 확대**: 20→50 목적지, [3,5,7]→[2,3,4,5,7] 기간, [ko,en]→[ko,en,ja]
+- **Vector threshold**: 0.70→0.65 (캐시 적중률 +5%)
+- **의존성 버전 고정**: 모든 `^` 제거, Docker 빌드 안정화
+- **geo-tz**: Docker Alpine 호환성 문제로 Phase 2 연기
+- **예상 절감**: ~45% ($224→~$125/10K건)
+- **서버 배포**: ✅ 완료 (Health OK)
+
+### 🟢 versionCode 88: 좌표 근본 해결 + 광고 개선 (2026-04-07 완료) ✅
 - **좌표 미저장 — 진짜 근본 원인 발견 및 해결**:
   - 원인: Mapbox가 한국어 입력("도쿄도") 미지원 → Google Places fallback
   - Google Places Autocomplete는 좌표를 반환하지 않음
