@@ -240,6 +240,17 @@ class ApiService {
     return response.data;
   }
 
+  // 6-digit code verification (mobile-first)
+  async sendVerificationCode(): Promise<{ message: string; expiresIn: number }> {
+    const response = await this.api.post('/auth/send-verification-code');
+    return response.data;
+  }
+
+  async verifyEmailCode(code: string): Promise<{ message: string; isEmailVerified: boolean }> {
+    const response = await this.api.post('/auth/verify-email-code', { code });
+    return response.data;
+  }
+
   // Password Reset
   async forgotPassword(email: string) {
     const response = await this.api.post('/auth/forgot-password', { email });

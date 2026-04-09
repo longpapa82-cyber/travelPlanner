@@ -109,6 +109,39 @@ export class AuthController {
     );
   }
 
+  // 6-digit code verification (mobile-first)
+  @Post('send-verification-code')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 3 } })
+  async sendVerificationCode(
+    @Req() req: Request,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    const userId = (req as any).user?.id || (req as any).user?.sub;
+    return this.authService.sendVerificationCode(
+      userId,
+      parseLang(acceptLanguage),
+    );
+  }
+
+  @Post('verify-email-code')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ short: { ttl: 60000, limit: 10 } })
+  async verifyEmailCode(
+    @Req() req: Request,
+    @Body() body: { code: string },
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    const userId = (req as any).user?.id || (req as any).user?.sub;
+    return this.authService.verifyEmailCode(
+      userId,
+      body.code,
+      parseLang(acceptLanguage),
+    );
+  }
+
   // Password Reset
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)

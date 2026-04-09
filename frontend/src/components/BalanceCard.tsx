@@ -19,11 +19,14 @@ interface BalanceCardProps {
   currency?: string;
 }
 
-const formatCurrency = (amount: number, currency: string): string => {
-  const abs = Math.abs(amount);
+const formatCurrency = (amount: number | string, currency: string): string => {
+  const num = typeof amount === 'string' ? parseFloat(amount) || 0 : amount;
+  const abs = Math.abs(num);
   const symbol =
     currency === 'KRW' ? '\u20A9' : currency === 'JPY' ? '\u00A5' : currency === 'EUR' ? '\u20AC' : '$';
-  return `${symbol}${abs.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  const decimals = currency === 'KRW' || currency === 'JPY' ? 0 : 2;
+  const formatted = abs.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return `${symbol}${formatted}`;
 };
 
 const BalanceCard: React.FC<BalanceCardProps> = memo(({ userName, balance, currency = 'USD' }) => {

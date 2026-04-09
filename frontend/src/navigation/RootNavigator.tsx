@@ -14,6 +14,7 @@ import SharedTripViewScreen from '../screens/trips/SharedTripViewScreen';
 import AnnouncementListScreen from '../screens/main/AnnouncementListScreen';
 import AnnouncementDetailScreen from '../screens/main/AnnouncementDetailScreen';
 import ConsentScreen from '../screens/consent/ConsentScreen';
+import EmailVerificationCodeScreen from '../screens/auth/EmailVerificationCodeScreen';
 import { ActivityIndicator, View, StyleSheet, Platform } from 'react-native';
 import PrePermissionATTModal, { shouldShowATTPrePermission } from '../components/PrePermissionATTModal';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -63,7 +64,7 @@ const linking: LinkingOptions<RootStackParamList> = {
 };
 
 const RootNavigator = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user, refreshUser } = useAuth();
   const { needsConsentScreen, isCheckingConsent, markConsentComplete } = useConsent();
   const { theme, isDark } = useTheme();
   const { shouldShowPrePermission, sessionCount, requestTracking } = useTrackingTransparency();
@@ -94,6 +95,23 @@ const RootNavigator = () => {
   // Show ConsentScreen if user is authenticated but needs consent
   if (isAuthenticated && needsConsentScreen) {
     return <ConsentScreen onComplete={markConsentComplete} />;
+  }
+
+  // Show EmailVerificationCodeScreen if email user hasn't verified yet
+  // Social login users (google, kakao, apple) are auto-verified
+  const needsEmailVerification =
+    isAuthenticated &&
+    user &&
+    user.provider === 'email' &&
+    user.isEmailVerified === false;
+
+  if (needsEmailVerification) {
+    return (
+      <EmailVerificationCodeScreen
+        onVerified={refreshUser}
+        userEmail={user.email}
+      />
+    );
   }
 
   // Wrap entire app in GestureHandlerRootView for proper gesture handling

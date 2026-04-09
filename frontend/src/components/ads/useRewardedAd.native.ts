@@ -268,12 +268,9 @@ export function useRewardedAd(): {
   const show = useCallback(async (onRewarded: () => void) => {
     console.log('[useRewardedAd] Show requested');
 
-    // Check frequency capping
-    if (!(await canShowFullScreenAd())) {
-      console.log('[useRewardedAd] Frequency capped, giving reward');
-      onRewarded();
-      return;
-    }
+    // Skip frequency capping for rewarded ads — user explicitly opted in
+    // Rewarded ads are user-initiated, not interruptive, so capping should not apply
+    console.log('[useRewardedAd] Rewarded ad is user-initiated, skipping frequency cap');
 
     setIsLoading(true);
     setError(null);

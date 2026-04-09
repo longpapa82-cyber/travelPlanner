@@ -229,7 +229,11 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
       setTimeout(async () => {
         if (!isPremium && !isAdmin && isAdLoaded) {
-          await showInterstitial();
+          // Race against 10s timeout to prevent infinite hang on Android Activity destroy
+          await Promise.race([
+            showInterstitial().catch(() => {}),
+            new Promise((resolve) => setTimeout(resolve, 10000)),
+          ]);
         }
         navigation.navigate('TripDetail', { tripId });
       }, 500);

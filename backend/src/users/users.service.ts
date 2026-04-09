@@ -8,12 +8,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { User, AuthProvider, SubscriptionTier } from './entities/user.entity';
-import { UserConsent, ConsentType, ConsentMethod, LegalBasis } from './entities/user-consent.entity';
-import { ConsentAuditLog, ConsentAction } from './entities/consent-audit-log.entity';
-import { UpdateConsentsDto, ConsentsStatusDto, ConsentResponseDto } from './dto/consent.dto';
+import {
+  UserConsent,
+  ConsentType,
+  ConsentMethod,
+  LegalBasis,
+} from './entities/user-consent.entity';
+import {
+  ConsentAuditLog,
+  ConsentAction,
+} from './entities/consent-audit-log.entity';
+import {
+  UpdateConsentsDto,
+  ConsentsStatusDto,
+  ConsentResponseDto,
+} from './dto/consent.dto';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { t } from '../common/i18n';
+import { t, SupportedLang } from '../common/i18n';
 
 @Injectable()
 export class UsersService {
@@ -254,6 +266,105 @@ export class UsersService {
       .execute();
 
     return token; // Return plain token for email
+  }
+
+  /**
+   * Generate a 6-digit verification code for mobile-first email verification.
+   * Code is hashed before storage (SHA-256). Expires in 10 minutes.
+   */
+  async generateEmailVerificationCode(userId: string): Promise<string> {
+    const code = crypto.randomInt(100000, 999999).toString();
+    const codeHash = crypto.createHash('sha256').update(code).digest('hex');
+    const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    await this.userRepository
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        emailVerificationToken: codeHash,
+        emailVerificationExpiry: expiry,
+        emailVerificationAttempts: 0,
+        lastVerificationSentAt: new Date(),
+      })
+      .where('id = :id', { id: userId })
+      .execute();
+
+    return code;
+  }
+
+  /**
+   * Verify a 6-digit code. Max 5 attempts per code.
+   */
+  async verifyEmailCode(
+    userId: string,
+    code: string,
+    lang: SupportedLang = 'ko',
+  ): Promise<Partial<User>> {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.emailVerificationToken')
+      .where('user.id = :id', { id: userId })
+      .getOne();
+
+    if (!user) {
+      throw new BadRequestException(t('email.verification.invalid', lang));
+    }
+
+    if (user.isEmailVerified) {
+      return this.findProfileById(user.id);
+    }
+
+    // Check attempts
+    if (user.emailVerificationAttempts >= 5) {
+      throw new BadRequestException(
+        t('email.verification.tooManyAttempts', lang),
+      );
+    }
+
+    // Check expiry
+    if (
+      !user.emailVerificationExpiry ||
+      user.emailVerificationExpiry < new Date()
+    ) {
+      throw new BadRequestException(t('email.verification.expired', lang));
+    }
+
+    // Compare hashed code
+    const codeHash = crypto.createHash('sha256').update(code).digest('hex');
+    if (codeHash !== user.emailVerificationToken) {
+      await this.userRepository.increment(
+        { id: userId },
+        'emailVerificationAttempts',
+        1,
+      );
+      const remaining = 4 - user.emailVerificationAttempts;
+      throw new BadRequestException(
+        t('email.verification.invalid', lang) +
+          (remaining > 0 ? ` (${remaining})` : ''),
+      );
+    }
+
+    // Success
+    await this.userRepository.update(userId, {
+      isEmailVerified: true,
+      emailVerificationToken: undefined,
+      emailVerificationExpiry: undefined,
+      emailVerificationAttempts: 0,
+    });
+
+    return this.findProfileById(userId);
+  }
+
+  /**
+   * Check if resend is allowed (60s cooldown)
+   */
+  async canResendVerificationCode(userId: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'lastVerificationSentAt'],
+    });
+    if (!user?.lastVerificationSentAt) return true;
+    return Date.now() - user.lastVerificationSentAt.getTime() >= 60000;
   }
 
   async verifyEmail(
@@ -668,7 +779,9 @@ export class UsersService {
         };
 
         existingConsent.isConsented = isConsented;
-        existingConsent.consentedAt = isConsented ? new Date() : existingConsent.consentedAt;
+        existingConsent.consentedAt = isConsented
+          ? new Date()
+          : existingConsent.consentedAt;
         existingConsent.revokedAt = !isConsented ? new Date() : null;
         existingConsent.ipAddress = ipAddress;
         existingConsent.userAgent = userAgent;
@@ -771,12 +884,29 @@ export class UsersService {
   private getConsentBenefits(type: ConsentType): string[] {
     const benefits: Record<ConsentType, string[]> = {
       [ConsentType.TERMS]: ['Required for using the service'],
-      [ConsentType.PRIVACY_REQUIRED]: ['Required for account management and service provision'],
-      [ConsentType.PRIVACY_OPTIONAL]: ['Improved user experience', 'Personalized recommendations'],
-      [ConsentType.LOCATION]: ['Search nearby places', 'Travel route recommendations', 'Location-based features'],
-      [ConsentType.NOTIFICATION]: ['Travel reminders', 'Sharing notifications', 'Important updates'],
+      [ConsentType.PRIVACY_REQUIRED]: [
+        'Required for account management and service provision',
+      ],
+      [ConsentType.PRIVACY_OPTIONAL]: [
+        'Improved user experience',
+        'Personalized recommendations',
+      ],
+      [ConsentType.LOCATION]: [
+        'Search nearby places',
+        'Travel route recommendations',
+        'Location-based features',
+      ],
+      [ConsentType.NOTIFICATION]: [
+        'Travel reminders',
+        'Sharing notifications',
+        'Important updates',
+      ],
       [ConsentType.PHOTO]: ['Profile image upload', 'Travel photo sharing'],
-      [ConsentType.MARKETING]: ['Promotional offers', 'New feature announcements', 'Event notifications'],
+      [ConsentType.MARKETING]: [
+        'Promotional offers',
+        'New feature announcements',
+        'Event notifications',
+      ],
     };
     return benefits[type];
   }

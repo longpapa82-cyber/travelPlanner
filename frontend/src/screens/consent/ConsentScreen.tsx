@@ -278,7 +278,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
           {
             backgroundColor,
             borderTopColor: borderColor,
-            paddingBottom: Math.max(insets.bottom, 16) + 16,
+            paddingBottom: Math.max(insets.bottom, 32) + 24,
           },
         ]}
       >

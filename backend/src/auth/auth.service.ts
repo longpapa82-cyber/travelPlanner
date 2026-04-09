@@ -412,7 +412,9 @@ export class AuthService {
       return this.oauthLogin(oauthUser, userAgent);
     } catch (error) {
       if (error instanceof UnauthorizedException) throw error;
-      this.logger.error(`Google ID token verification failed: ${getErrorMessage(error)}`);
+      this.logger.error(
+        `Google ID token verification failed: ${getErrorMessage(error)}`,
+      );
       throw new UnauthorizedException('Invalid Google ID token');
     }
   }
@@ -452,6 +454,53 @@ export class AuthService {
     );
 
     return { message: t('email.verification.sent', lang) };
+  }
+
+  /**
+   * Send 6-digit verification code to authenticated user's email.
+   */
+  async sendVerificationCode(
+    userId: string,
+    lang: SupportedLang = 'ko',
+  ): Promise<{ message: string; expiresIn: number }> {
+    const user = await this.usersService.findProfileById(userId);
+    if (!user || !user.email) {
+      throw new BadRequestException(t('email.verification.invalid', lang));
+    }
+    if (user.isEmailVerified) {
+      return { message: t('email.verification.success', lang), expiresIn: 0 };
+    }
+
+    // Check cooldown (60s)
+    const canResend = await this.usersService.canResendVerificationCode(userId);
+    if (!canResend) {
+      throw new BadRequestException(t('email.verification.cooldown', lang));
+    }
+
+    const code = await this.usersService.generateEmailVerificationCode(userId);
+    await this.emailService.sendVerificationCodeEmail(
+      user.email!,
+      user.name || '',
+      code,
+      lang,
+    );
+
+    return { message: t('email.verification.sent', lang), expiresIn: 600 };
+  }
+
+  /**
+   * Verify 6-digit code for authenticated user.
+   */
+  async verifyEmailCode(
+    userId: string,
+    code: string,
+    lang: SupportedLang = 'ko',
+  ): Promise<{ message: string; isEmailVerified: boolean }> {
+    await this.usersService.verifyEmailCode(userId, code, lang);
+    return {
+      message: t('email.verification.success', lang),
+      isEmailVerified: true,
+    };
   }
 
   async forgotPassword(

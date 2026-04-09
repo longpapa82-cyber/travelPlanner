@@ -34,6 +34,7 @@ describe('UsersService', () => {
     isEmailVerified: false,
     isTwoFactorEnabled: false,
     passwordResetAttempts: 0,
+    emailVerificationAttempts: 0,
     followersCount: 0,
     followingCount: 0,
     subscriptionTier: SubscriptionTier.FREE,

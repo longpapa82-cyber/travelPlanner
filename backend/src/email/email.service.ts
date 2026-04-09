@@ -147,6 +147,76 @@ export class EmailService {
     }
   }
 
+  /**
+   * Send 6-digit verification code email (mobile-first).
+   */
+  async sendVerificationCodeEmail(
+    email: string,
+    name: string,
+    code: string,
+    lang: SupportedLang = 'ko',
+  ): Promise<void> {
+    const subjects: Record<SupportedLang, string> = {
+      ko: `[MyTravel] 인증 코드: ${code}`,
+      en: `[MyTravel] Verification code: ${code}`,
+      ja: `[MyTravel] 認証コード: ${code}`,
+      zh: `[MyTravel] 验证码: ${code}`,
+      es: `[MyTravel] Código: ${code}`,
+      de: `[MyTravel] Code: ${code}`,
+      fr: `[MyTravel] Code: ${code}`,
+      th: `[MyTravel] รหัส: ${code}`,
+      vi: `[MyTravel] Mã: ${code}`,
+      pt: `[MyTravel] Código: ${code}`,
+      ar: `[MyTravel] الرمز: ${code}`,
+      id: `[MyTravel] Kode: ${code}`,
+      hi: `[MyTravel] कोड: ${code}`,
+      it: `[MyTravel] Codice: ${code}`,
+      ru: `[MyTravel] Код: ${code}`,
+      tr: `[MyTravel] Kod: ${code}`,
+      ms: `[MyTravel] Kod: ${code}`,
+    };
+    const templateLang = EMAIL_TEMPLATE_FALLBACK[lang];
+
+    const startTime = Date.now();
+    try {
+      const result = (await this.mailerService.sendMail({
+        to: email,
+        subject: subjects[lang],
+        template: `verify-code-${templateLang}`,
+        context: { name, code },
+      })) as { message?: string } | undefined;
+
+      if (this.isDev && result?.message) {
+        this.logger.debug(`[DEV] Verification code for ${email}: ${code}`);
+      }
+
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'email',
+          feature: 'email',
+          status: 'success',
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
+      this.logger.log(`Verification code email sent to ${maskEmail(email)}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to send verification code to ${maskEmail(email)}: ${getErrorMessage(error)}`,
+      );
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'email',
+          feature: 'email',
+          status: 'error',
+          errorCode: getErrorMessage(error).slice(0, 100),
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
+      if (!this.isDev) throw error;
+      this.logger.warn(`[DEV] Verification code: ${code}`);
+    }
+  }
+
   async sendPasswordResetEmail(
     email: string,
     name: string,
@@ -213,7 +283,9 @@ export class EmailService {
         })
         .catch(() => {});
       if (!this.isDev) throw error;
-      this.logger.warn(`[DEV] Email send failed for ${maskEmail(email)} (token: ${token.slice(0, 8)}...)`);
+      this.logger.warn(
+        `[DEV] Email send failed for ${maskEmail(email)} (token: ${token.slice(0, 8)}...)`,
+      );
     }
   }
 }

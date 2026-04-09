@@ -21,7 +21,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { TripsStackParamList, Expense, Balance, Settlement } from '../../types';
@@ -59,10 +59,13 @@ const CATEGORY_COLORS: Record<string, string> = {
   other: '#6B7280',
 };
 
-const formatCurrency = (amount: number, currency: string): string => {
+const formatCurrency = (amount: number | string, currency: string): string => {
+  const num = typeof amount === 'string' ? parseFloat(amount) || 0 : amount;
   const symbol =
     currency === 'KRW' ? '\u20A9' : currency === 'JPY' ? '\u00A5' : currency === 'EUR' ? '\u20AC' : '$';
-  return `${symbol}${amount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  const decimals = currency === 'KRW' || currency === 'JPY' ? 0 : 2;
+  const formatted = num.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return `${symbol}${formatted}`;
 };
 
 const formatDate = (dateStr: string): string => {
@@ -130,6 +133,15 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
     load();
   }, [fetchAll]);
 
+  // Refetch when screen regains focus (e.g., returning from AddExpense)
+  useFocusEffect(
+    useCallback(() => {
+      if (!isLoading) {
+        fetchAll();
+      }
+    }, [fetchAll, isLoading]),
+  );
+
   const onRefresh = useCallback(async () => {
     setIsRefreshing(true);
     await fetchAll();
@@ -138,14 +150,14 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
 
   // Computed summary values
   const summary = useMemo(() => {
-    const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+    const totalSpent = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
     const myShare = expenses.reduce((sum, e) => {
       const mySplit = e.splits.find((s) => s.userId === currentUserId);
-      return sum + (mySplit ? mySplit.amount : 0);
+      return sum + (mySplit ? Number(mySplit.amount) : 0);
     }, 0);
 
     const myBalance = balances.find((b) => b.userId === currentUserId);
-    const balanceAmount = myBalance ? myBalance.balance : 0;
+    const balanceAmount = myBalance ? Number(myBalance.balance) : 0;
 
     const settledCount = expenses.reduce((sum, e) => {
       const allSettled = e.splits.every((s) => s.isSettled);
@@ -180,18 +192,19 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
     [tripId, showToast, t, fetchBalances, confirm],
   );
 
-  // Settle handler
+  // Settle handler — settles ALL unsettled splits for the given user
   const handleSettle = useCallback(
     async (fromUserId: string, _toUserId: string) => {
-      // Find the first unsettled expense split from this user
-      const expenseToSettle = expenses.find((e) =>
+      const expensesToSettle = expenses.filter((e) =>
         e.splits.some((s) => s.userId === fromUserId && !s.isSettled),
       );
 
-      if (!expenseToSettle) return;
+      if (expensesToSettle.length === 0) return;
 
       try {
-        await apiService.settleExpense(tripId, expenseToSettle.id);
+        await Promise.all(
+          expensesToSettle.map((e) => apiService.settleExpense(tripId, e.id)),
+        );
         await fetchAll();
         showToast({ type: 'success', message: t('detail.expenses.settledMark'), position: 'top', duration: 2000 });
       } catch {

@@ -68,6 +68,7 @@ const AddExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [paidByUserId, setPaidByUserId] = useState('');
   const [splitUserIds, setSplitUserIds] = useState<string[]>([]);
+  const [exactAmounts, setExactAmounts] = useState<Record<string, string>>({});
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [currentUserId, setCurrentUserId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -160,8 +161,28 @@ const AddExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
       return;
     }
 
+    // Validate exact split amounts
+    if (splitMethod === 'exact') {
+      const splitTotal = splitUserIds.reduce((sum, uid) => sum + (parseFloat(exactAmounts[uid] || '0') || 0), 0);
+      if (Math.abs(splitTotal - amountNum) > 0.01) {
+        showToast({
+          type: 'error',
+          message: t('detail.expenses.exactSplitMismatch', {
+            defaultValue: `분할 금액 합계(${splitTotal.toFixed(2)})가 총액(${amountNum.toFixed(2)})과 일치하지 않습니다.`,
+          }),
+          position: 'top',
+          duration: 4000,
+        });
+        return;
+      }
+    }
+
     setIsLoading(true);
     try {
+      const splits = splitMethod === 'exact'
+        ? splitUserIds.map((uid) => ({ userId: uid, amount: parseFloat(exactAmounts[uid] || '0') || 0 }))
+        : splitUserIds.map((uid) => ({ userId: uid }));
+
       const data = {
         description: description.trim(),
         amount: amountNum,
@@ -170,7 +191,7 @@ const AddExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
         splitMethod,
         date,
         paidByUserId,
-        splits: splitUserIds.map((uid) => ({ userId: uid })),
+        splits,
       };
 
       if (expenseId) {
@@ -360,6 +381,36 @@ const AddExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
               );
             })}
           </View>
+
+          {/* Per-user amount inputs for exact split */}
+          {splitMethod === 'exact' && splitUserIds.length > 0 && (
+            <View style={{ gap: 8, marginTop: 8 }}>
+              {splitUserIds.map((uid) => {
+                const member = allMembers.find((m) => m.id === uid);
+                return (
+                  <View key={uid} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <Text style={[styles.label, { flex: 1, marginBottom: 0 }]} numberOfLines={1}>
+                      {member?.name || uid}
+                    </Text>
+                    <TextInput
+                      style={[styles.input, { flex: 1, textAlign: 'right', paddingVertical: 10, fontSize: 16, fontWeight: '600' }]}
+                      value={exactAmounts[uid] || ''}
+                      onChangeText={(val) => setExactAmounts((prev) => ({ ...prev, [uid]: val }))}
+                      keyboardType="decimal-pad"
+                      placeholder="0"
+                      placeholderTextColor={theme.colors.textSecondary}
+                      accessibilityLabel={`${member?.name} amount`}
+                    />
+                  </View>
+                );
+              })}
+              <Text style={{ fontSize: 12, color: theme.colors.textSecondary, textAlign: 'right' }}>
+                {t('detail.expenses.exactSplitHint', {
+                  defaultValue: `합계: ${splitUserIds.reduce((s, uid) => s + (parseFloat(exactAmounts[uid] || '0') || 0), 0).toFixed(2)} / ${amount || '0'}`,
+                })}
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* Submit */}

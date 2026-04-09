@@ -145,6 +145,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [isAiLimitReached]);
 
+  const isMountedRef = useRef(true);
+  useEffect(() => { return () => { isMountedRef.current = false; }; }, []);
+
   const doCreateTripRef = useRef<(() => Promise<void>) | null>(null);
 
   const handleAiConsentAccept = useCallback(async () => {
@@ -434,6 +437,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Show interstitial ad after trip creation (skip for premium), then navigate
       setTimeout(async () => {
+        // Guard against stale closure if component already unmounted
+        if (!isMountedRef.current) return;
+
         // Ensure tripId exists before navigation
         if (!trip?.id) {
           console.error('[CreateTripScreen] Trip created but no ID received:', trip);
@@ -916,8 +922,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               />
             )}
 
-            {/* Rewarded Ad — unlock extra insights */}
-            {destination.trim().length >= 2 && !insightsUnlocked && (
+            {/* Rewarded Ad — unlock extra insights (only when ad is loaded) */}
+            {destination.trim().length >= 2 && !insightsUnlocked && isRewardedLoaded && (
               <TouchableOpacity
                 style={[
                   styles.rewardedAdButton,
@@ -992,6 +998,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     console.log('[CreateTripScreen] Starting to show rewarded ad');
                     setIsShowingRewardedAd(true);
 
+                    // Persist form state before ad — Android may destroy Activity
+                    AsyncStorage.setItem('@rewarded_ad_destination', destination).catch(() => {});
+
                     // Fire-and-forget: don't await the ad show.
                     // Android may destroy the Activity during ad display,
                     // causing the await to never resolve or resolve in wrong context.
@@ -1010,21 +1019,22 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                       });
                     }).catch((error) => {
                       console.error('[CreateTripScreen] Rewarded ad error:', error);
-                      setInsightsUnlocked(true);
                       setIsShowingRewardedAd(false);
                       showToast({
                         type: 'warning',
-                        message: t('create.rewardedAd.errorButUnlocked', {
-                          defaultValue: '광고 로드에 실패했지만 인사이트가 잠금 해제되었습니다',
+                        message: t('create.rewardedAd.notAvailable', {
+                          defaultValue: '광고를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.',
                         }),
                         position: 'top',
                         duration: 3000,
                       });
+                      // Clean up persisted state since ad was not shown
+                      AsyncStorage.removeItem('@rewarded_ad_destination').catch(() => {});
                     });
                   } catch (error) {
                     console.error('[CreateTripScreen] Rewarded ad sync error:', error);
-                    setInsightsUnlocked(true);
                     setIsShowingRewardedAd(false);
+                    AsyncStorage.removeItem('@rewarded_ad_destination').catch(() => {});
                   }
                 }}
                 disabled={isShowingRewardedAd}

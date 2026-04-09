@@ -19,10 +19,13 @@ interface SettlementSummaryProps {
   onSettle?: (fromUserId: string, toUserId: string) => void;
 }
 
-const formatCurrency = (amount: number, currency: string): string => {
+const formatCurrency = (amount: number | string, currency: string): string => {
+  const num = typeof amount === 'string' ? parseFloat(amount) || 0 : amount;
   const symbol =
     currency === 'KRW' ? '\u20A9' : currency === 'JPY' ? '\u00A5' : currency === 'EUR' ? '\u20AC' : '$';
-  return `${symbol}${amount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  const decimals = currency === 'KRW' || currency === 'JPY' ? 0 : 2;
+  const formatted = num.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return `${symbol}${formatted}`;
 };
 
 const SettlementSummary: React.FC<SettlementSummaryProps> = memo(

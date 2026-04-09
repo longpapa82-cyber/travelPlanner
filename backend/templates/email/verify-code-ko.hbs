@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>인증 코드 - MyTravel</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #F3F4F6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #F3F4F6; padding: 40px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+          <!-- Header -->
+          <tr>
+            <td align="center" style="background: linear-gradient(135deg, #3B82F6, #2563EB); padding: 32px 24px;">
+              <div style="font-size: 36px; margin-bottom: 8px;">&#x1F512;</div>
+              <h1 style="margin: 0; color: #FFFFFF; font-size: 22px; font-weight: 700;">MyTravel</h1>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px 32px 24px;">
+              <h2 style="margin: 0 0 16px; color: #111827; font-size: 20px; font-weight: 700; text-align: center;">이메일 인증 코드</h2>
+              <p style="margin: 0 0 32px; color: #4B5563; font-size: 15px; line-height: 1.6; text-align: center;">
+                안녕하세요 {{name}}님, 아래 인증 코드를 앱에 입력해주세요.
+              </p>
+              <!-- Code Display -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom: 32px;">
+                    <div style="display: inline-block; background: #F0F7FF; border: 2px solid #3B82F6; border-radius: 12px; padding: 20px 48px; letter-spacing: 12px; font-size: 36px; font-weight: 700; color: #1E40AF; font-family: 'Courier New', monospace;">{{code}}</div>
+                  </td>
+                </tr>
+              </table>
+              <!-- Expiry Warning -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="background-color: #FEF3C7; border-radius: 8px; padding: 14px 20px;">
+                    <p style="margin: 0; color: #92400E; font-size: 13px; text-align: center; line-height: 1.5;">
+                      &#x23F3; 이 코드는 10분간 유효합니다.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- Security Note -->
+          <tr>
+            <td style="padding: 0 32px 24px;">
+              <p style="margin: 0; color: #9CA3AF; font-size: 12px; text-align: center; line-height: 1.5;">
+                본인이 요청하지 않은 경우 이 이메일을 무시해주세요.
+              </p>
+            </td>
+          </tr>
+          <!-- Divider -->
+          <tr>
+            <td style="padding: 0 32px;"><div style="border-top: 1px solid #E5E7EB;"></div></td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 24px 32px;">
+              <p style="margin: 0; color: #9CA3AF; font-size: 12px; text-align: center;">&copy; 2025 MyTravel. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
