@@ -169,9 +169,17 @@ export class ExpensesService {
    */
   private calculateSplits(
     totalAmount: number,
-    splits: { userId: string; amount?: number }[],
+    rawSplits: { userId: string; amount?: number }[],
     method: SplitMethod,
   ): { userId: string; amount: number }[] {
+    // Deduplicate splits by userId to prevent double-counting
+    const seen = new Set<string>();
+    const splits = rawSplits.filter((s) => {
+      if (seen.has(s.userId)) return false;
+      seen.add(s.userId);
+      return true;
+    });
+
     if (method === SplitMethod.EQUAL) {
       const perPerson = Math.round((totalAmount / splits.length) * 100) / 100;
       // Handle rounding: give remainder to the first person

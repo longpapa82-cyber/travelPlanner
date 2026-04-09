@@ -89,7 +89,10 @@ export class ExpensesController {
     @Param('tripId', ParseUUIDPipe) tripId: string,
     @Param('expenseId', ParseUUIDPipe) expenseId: string,
     @CurrentUser('userId') userId: string,
+    @Body() body?: { targetUserId?: string },
   ) {
-    return this.expensesService.settleUp(tripId, expenseId, userId);
+    // If targetUserId provided, settle that user's split (creditor settling debtor)
+    const settleForUserId = body?.targetUserId || userId;
+    return this.expensesService.settleUp(tripId, expenseId, settleForUserId);
   }
 }

@@ -72,14 +72,17 @@ export function useAppOpenAd() {
         return;
       }
 
-      // App returning to foreground
+      // App returning to foreground — require minimum 30s in background
+      // to prevent firing right after a rewarded/interstitial ad closes
       if (nextState === 'active' && backgroundTimestamp.current > 0) {
+        const bgDuration = Date.now() - backgroundTimestamp.current;
+        backgroundTimestamp.current = 0;
+        if (bgDuration < 30000) return; // Skip if background < 30s (ad transition)
         const canShow = await canShowFullScreenAd();
         if (canShow && isLoadedRef.current && adRef.current) {
           await adRef.current.show();
           await recordFullScreenAdShown();
         }
-        backgroundTimestamp.current = 0;
       }
     };
 

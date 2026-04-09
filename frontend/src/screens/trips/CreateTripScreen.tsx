@@ -435,61 +435,46 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         });
       }
 
-      // Show interstitial ad after trip creation (skip for premium), then navigate
-      setTimeout(async () => {
-        // Guard against stale closure if component already unmounted
-        if (!isMountedRef.current) return;
-
-        // Ensure tripId exists before navigation
-        if (!trip?.id) {
-          console.error('[CreateTripScreen] Trip created but no ID received:', trip);
-          showToast({
-            type: 'error',
-            message: t('create.alerts.createFailed'),
-            position: 'top',
-            duration: 4000,
-          });
-          setIsLoading(false);
-          isCreatingRef.current = false;
-          return;
-        }
-
-        // Show ad (non-blocking with timeout) then navigate
-        if (!isPremium && !isAdmin && isAdLoaded) {
-          try {
-            // Race between ad completion and 10s timeout to prevent white screen
-            await Promise.race([
-              showInterstitial(),
-              new Promise(resolve => setTimeout(resolve, 10000)),
-            ]);
-          } catch (error) {
-            console.warn('[CreateTripScreen] Interstitial ad failed:', error);
-          }
-        }
-
-        // Navigate to trip detail after ad completes (or immediately if no ad)
-        // Clean up persisted insights state
-        if (destination) AsyncStorage.removeItem(`@insights_unlocked_${destination}`).catch(() => {});
-
-        // Navigate to TripDetail, falling back to TripList if navigation fails
-        console.log('[CreateTripScreen] Navigating to TripDetail with tripId:', trip.id);
-        try {
-          navigation.reset({
-            index: 1,
-            routes: [
-              { name: 'TripList' },
-              { name: 'TripDetail', params: { tripId: trip.id } },
-            ],
-          });
-        } catch (navError) {
-          console.warn('[CreateTripScreen] Navigation reset failed, trying navigate:', navError);
-          navigation.navigate('TripList' as any);
-        }
-
-        // Reset guards after successful navigation
+      // Ensure tripId exists before navigation
+      if (!trip?.id) {
+        console.error('[CreateTripScreen] Trip created but no ID received:', trip);
+        showToast({
+          type: 'error',
+          message: t('create.alerts.createFailed'),
+          position: 'top',
+          duration: 4000,
+        });
         setIsLoading(false);
         isCreatingRef.current = false;
-      }, 500);
+        return;
+      }
+
+      // Fire-and-forget interstitial ad — never await, never block navigation
+      // This prevents white screen from Android Activity destruction during ad display
+      if (!isPremium && !isAdmin && isAdLoaded) {
+        showInterstitial().catch(() => {});
+      }
+
+      // Clean up persisted insights state
+      if (destination) AsyncStorage.removeItem(`@insights_unlocked_${destination}`).catch(() => {});
+
+      // Navigate immediately — don't wait for ad
+      console.log('[CreateTripScreen] Navigating to TripDetail with tripId:', trip.id);
+      try {
+        navigation.reset({
+          index: 1,
+          routes: [
+            { name: 'TripList' },
+            { name: 'TripDetail', params: { tripId: trip.id } },
+          ],
+        });
+      } catch (navError) {
+        console.warn('[CreateTripScreen] Navigation reset failed:', navError);
+        navigation.navigate('TripList' as any);
+      }
+
+      setIsLoading(false);
+      isCreatingRef.current = false;
     } catch (error: any) {
       if (error.name === 'AbortError') {
         showToast({

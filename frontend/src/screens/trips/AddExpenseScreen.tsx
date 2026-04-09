@@ -85,8 +85,8 @@ const AddExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
         setPaidByUserId(profile.id);
         setCollaborators(collabs);
 
-        // Default: split with all members
-        const allUserIds = [profile.id, ...collabs.map((c: Collaborator) => c.user?.id).filter(Boolean)] as string[];
+        // Default: split with all members (deduplicate — collabs may include owner)
+        const allUserIds = [...new Set([profile.id, ...collabs.map((c: Collaborator) => c.user?.id).filter(Boolean)])] as string[];
         setSplitUserIds(allUserIds);
 
         if (profile.travelPreferences?.budget) {

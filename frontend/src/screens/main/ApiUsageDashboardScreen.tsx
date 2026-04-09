@@ -122,8 +122,10 @@ const ApiUsageDashboardScreen: React.FC<Props> = () => {
     return `${parseInt(parts[1])}/${parseInt(parts[2])}`;
   };
 
-  const getChangePercent = (): string | null => {
-    if (!summary || !summary.prevMonth.totalCost) return null;
+  const getChangePercent = (): string => {
+    if (!summary) return 'N/A';
+    if (!summary.prevMonth.totalCost && !summary.mtd.totalCost) return '-';
+    if (!summary.prevMonth.totalCost) return summary.mtd.totalCost > 0 ? '+100%' : '-';
     const change = ((summary.mtd.totalCost - summary.prevMonth.totalCost) / summary.prevMonth.totalCost) * 100;
     const sign = change >= 0 ? '+' : '';
     return `${sign}${change.toFixed(1)}%`;
@@ -155,9 +157,9 @@ const ApiUsageDashboardScreen: React.FC<Props> = () => {
       },
       {
         label: 'vs Prev Month',
-        value: changePercent || 'N/A',
+        value: changePercent,
         sub: `prev: ${formatCost(summary.prevMonth.totalCost)}`,
-        color: changePercent && changePercent.startsWith('+') ? '#EF4444' : '#10B981',
+        color: changePercent.startsWith('+') ? '#EF4444' : changePercent.startsWith('-') ? '#10B981' : '#6B7280',
       },
       {
         label: 'Forecast',

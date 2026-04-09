@@ -203,7 +203,7 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
 
       try {
         await Promise.all(
-          expensesToSettle.map((e) => apiService.settleExpense(tripId, e.id)),
+          expensesToSettle.map((e) => apiService.settleExpense(tripId, e.id, fromUserId)),
         );
         await fetchAll();
         showToast({ type: 'success', message: t('detail.expenses.settledMark'), position: 'top', duration: 2000 });

@@ -885,8 +885,8 @@ class ApiService {
     return response.data;
   }
 
-  async settleExpense(tripId: string, expenseId: string) {
-    const response = await this.api.post(`/trips/${tripId}/expenses/${expenseId}/settle`);
+  async settleExpense(tripId: string, expenseId: string, targetUserId?: string) {
+    const response = await this.api.post(`/trips/${tripId}/expenses/${expenseId}/settle`, targetUserId ? { targetUserId } : {});
     return response.data;
   }
 

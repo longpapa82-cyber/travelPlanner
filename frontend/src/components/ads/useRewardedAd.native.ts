@@ -329,12 +329,13 @@ export function useRewardedAd(): {
           }
         );
 
+        // Record BEFORE show to prevent AppOpenAd race condition
+        recordFullScreenAdShown();
+
         // Show the ad
         console.log('[useRewardedAd] Showing ad...');
         await adRef.current.show();
       }
-
-      recordFullScreenAdShown();
 
     } catch (err) {
       console.error('[useRewardedAd] Failed to show ad:', err);

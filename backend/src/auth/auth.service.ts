@@ -69,22 +69,8 @@ export class AuthService {
       provider: AuthProvider.EMAIL,
     });
 
-    // Send verification email (non-blocking)
-    try {
-      const token = await this.usersService.generateEmailVerificationToken(
-        user.id,
-      );
-      await this.emailService.sendVerificationEmail(
-        user.email!,
-        user.name,
-        token,
-        lang,
-      );
-    } catch (error) {
-      this.logger.error(
-        `Failed to send verification email: ${getErrorMessage(error)}`,
-      );
-    }
+    // Email verification code is sent by the frontend's EmailVerificationCodeScreen
+    // on mount via POST /auth/send-verification-code. No need to send here.
 
     // Audit log: registration
     this.auditService
