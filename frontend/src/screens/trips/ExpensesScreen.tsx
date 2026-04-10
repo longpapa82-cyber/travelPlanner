@@ -192,21 +192,28 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
     [tripId, showToast, t, fetchBalances, confirm],
   );
 
-  // Settle handler — settles ALL unsettled splits for the given user
+  // Settle handler — settles splits for a specific from→to user pair
   const handleSettle = useCallback(
-    async (fromUserId: string, _toUserId: string) => {
+    async (fromUserId: string, toUserId: string) => {
+      // Filter expenses where fromUser has unsettled splits AND toUser is the payer
       const expensesToSettle = expenses.filter((e) =>
+        e.paidByUserId === toUserId &&
         e.splits.some((s) => s.userId === fromUserId && !s.isSettled),
       );
 
       if (expensesToSettle.length === 0) return;
 
       try {
-        await Promise.all(
+        const results = await Promise.allSettled(
           expensesToSettle.map((e) => apiService.settleExpense(tripId, e.id, fromUserId)),
         );
+        const succeeded = results.filter((r) => r.status === 'fulfilled').length;
         await fetchAll();
-        showToast({ type: 'success', message: t('detail.expenses.settledMark'), position: 'top', duration: 2000 });
+        if (succeeded > 0) {
+          showToast({ type: 'success', message: t('detail.expenses.settledMark'), position: 'top', duration: 2000 });
+        } else {
+          showToast({ type: 'error', message: t('detail.expenses.alerts.settleFailed'), position: 'top' });
+        }
       } catch {
         showToast({ type: 'error', message: t('detail.expenses.alerts.settleFailed'), position: 'top' });
       }

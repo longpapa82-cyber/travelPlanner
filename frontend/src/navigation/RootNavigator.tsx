@@ -1,6 +1,5 @@
-import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
-import { NavigationContainer, LinkingOptions, DefaultTheme, DarkTheme, NavigationState } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import { NavigationContainer, LinkingOptions, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
 import { useAuth } from '../contexts/AuthContext';
@@ -70,26 +69,6 @@ const RootNavigator = () => {
   const { theme, isDark } = useTheme();
   const { shouldShowPrePermission, sessionCount, requestTracking } = useTrackingTransparency();
 
-  // Navigation state persistence — survives Android Activity recreation
-  const [isNavReady, setIsNavReady] = useState(false);
-  const [initialNavState, setInitialNavState] = useState<NavigationState | undefined>();
-
-  useEffect(() => {
-    AsyncStorage.getItem('@nav_state')
-      .then((saved) => {
-        if (saved) {
-          try { setInitialNavState(JSON.parse(saved)); } catch {}
-        }
-      })
-      .finally(() => setIsNavReady(true));
-  }, []);
-
-  const onNavStateChange = useCallback((state: NavigationState | undefined) => {
-    if (state) {
-      AsyncStorage.setItem('@nav_state', JSON.stringify(state)).catch(() => {});
-    }
-  }, []);
-
   // ATT pre-permission modal state
   const [showATTModal, setShowATTModal] = useState(false);
 
@@ -104,8 +83,8 @@ const RootNavigator = () => {
     setShowATTModal(false);
   }, []);
 
-  // Show loading while checking auth, consent, or restoring navigation state
-  if (isLoading || !isNavReady || (isAuthenticated && isCheckingConsent)) {
+  // Show loading while checking auth or consent
+  if (isLoading || (isAuthenticated && isCheckingConsent)) {
     return (
       <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -139,8 +118,6 @@ const RootNavigator = () => {
   // This should be the only GestureHandlerRootView in the app
   const NavigationContent = (
     <NavigationContainer
-      initialState={isAuthenticated ? initialNavState : undefined}
-      onStateChange={onNavStateChange}
       linking={linking}
       theme={{
         ...(isDark ? DarkTheme : DefaultTheme),

@@ -205,7 +205,7 @@ const AddExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [description, amount, currency, category, splitMethod, date, paidByUserId, splitUserIds, tripId, expenseId, navigation, showToast, t]);
+  }, [description, amount, currency, category, splitMethod, date, paidByUserId, splitUserIds, exactAmounts, tripId, expenseId, navigation, showToast, t]);
 
   const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
