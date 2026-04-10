@@ -102,7 +102,10 @@ export class AuthService {
     loginDto: LoginDto,
     userAgent?: string,
     lang: SupportedLang = 'ko',
-  ): Promise<AuthResponse & { requiresEmailVerification?: boolean } | { requiresTwoFactor: true; tempToken: string }> {
+  ): Promise<
+    | (AuthResponse & { requiresEmailVerification?: boolean })
+    | { requiresTwoFactor: true; tempToken: string }
+  > {
     // Check account-level lockout (Redis-based, survives restarts)
     const lockKey = `login_attempts:${loginDto.email}`;
     const attempts = await this.cacheManager.get<number>(lockKey);

@@ -78,6 +78,7 @@ export class UsersService {
   }
 
   async findProfileById(id: string): Promise<Partial<User>> {
+    if (!id) return null as any;
     const user = await this.userRepository.findOne({
       where: { id },
       select: [
