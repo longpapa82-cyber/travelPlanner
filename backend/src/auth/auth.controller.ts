@@ -113,7 +113,7 @@ export class AuthController {
   @Post('send-verification-code')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  @Throttle({ short: { ttl: 60000, limit: 3 } })
+  @Throttle({ short: { ttl: 60000, limit: 5 } })
   async sendVerificationCode(
     @Req() req: Request,
     @Headers('accept-language') acceptLanguage?: string,

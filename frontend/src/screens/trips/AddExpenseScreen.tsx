@@ -130,7 +130,7 @@ const AddExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
   const allMembers = useMemo(() => {
     const members: { id: string; name: string }[] = [];
     if (currentUserId) {
-      members.push({ id: currentUserId, name: t('detail.expenses.paidBy') + ' (me)' });
+      members.push({ id: currentUserId, name: t('detail.expenses.me', { defaultValue: '나' }) });
     }
     collaborators.forEach((c) => {
       if (c.user && c.user.id !== currentUserId) {
@@ -161,10 +161,12 @@ const AddExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
       return;
     }
 
-    // Validate exact split amounts
+    // Validate exact split amounts (use integer arithmetic to avoid float precision issues)
     if (splitMethod === 'exact') {
-      const splitTotal = splitUserIds.reduce((sum, uid) => sum + (parseFloat(exactAmounts[uid] || '0') || 0), 0);
-      if (Math.abs(splitTotal - amountNum) > 0.01) {
+      const splitTotalCents = splitUserIds.reduce((sum, uid) => sum + Math.round((parseFloat(exactAmounts[uid] || '0') || 0) * 100), 0);
+      const amountCents = Math.round(amountNum * 100);
+      if (Math.abs(splitTotalCents - amountCents) > 1) {
+        const splitTotal = splitTotalCents / 100;
         showToast({
           type: 'error',
           message: t('detail.expenses.exactSplitMismatch', {

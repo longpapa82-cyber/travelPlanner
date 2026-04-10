@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import AuthLegalModal from './legal/AuthLegalModal';
 import { useAuth } from '../contexts/AuthContext';
 import { usePremium } from '../contexts/PremiumContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -44,6 +45,7 @@ const PaywallModal: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [packages, setPackages] = useState<{ monthly: any; yearly: any }>({ monthly: null, yearly: null });
+  const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
   const offeringsLoaded = useRef(false);
   const paddleInitialized = useRef(false);
 
@@ -183,6 +185,7 @@ const PaywallModal: React.FC = () => {
   };
 
   return (
+    <>
     <Modal
       visible={isPaywallVisible}
       animationType="slide"
@@ -344,19 +347,19 @@ const PaywallModal: React.FC = () => {
               </Text>
             </TouchableOpacity>
 
-            {/* Subscription terms & legal links */}
+            {/* Subscription terms & legal links (in-app modal, no browser) */}
             <View style={styles.legalSection}>
               <Text style={[styles.legalText, { color: theme.colors.textSecondary }]}>
                 {t('paywall.autoRenewNotice')}
               </Text>
               <View style={styles.legalLinks}>
-                <TouchableOpacity onPress={() => Linking.openURL('https://mytravel-planner.com/terms')}>
+                <TouchableOpacity onPress={() => setLegalModal('terms')}>
                   <Text style={[styles.legalLink, { color: theme.colors.primary }]}>
                     {t('paywall.termsLink')}
                   </Text>
                 </TouchableOpacity>
                 <Text style={[styles.legalSeparator, { color: theme.colors.textSecondary }]}> · </Text>
-                <TouchableOpacity onPress={() => Linking.openURL('https://mytravel-planner.com/privacy')}>
+                <TouchableOpacity onPress={() => setLegalModal('privacy')}>
                   <Text style={[styles.legalLink, { color: theme.colors.primary }]}>
                     {t('paywall.privacyLink')}
                   </Text>
@@ -367,6 +370,14 @@ const PaywallModal: React.FC = () => {
         </View>
       </View>
     </Modal>
+
+    {/* In-app legal modal for terms/privacy */}
+    <AuthLegalModal
+      visible={legalModal !== null}
+      onClose={() => setLegalModal(null)}
+      type={legalModal ?? 'terms'}
+    />
+    </>
   );
 };
 

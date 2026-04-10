@@ -42,14 +42,14 @@ const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, us
   const [isVerifying, setIsVerifying] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
-  const [hasSentInitial, setHasSentInitial] = useState(false);
+  const hasSentInitialRef = useRef(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
-  // Send initial code on mount
+  // Send initial code on mount (no toast — silent initial send)
   useEffect(() => {
-    if (!hasSentInitial) {
-      handleResend();
-      setHasSentInitial(true);
+    if (!hasSentInitialRef.current) {
+      hasSentInitialRef.current = true;
+      sendCodeSilently();
     }
   }, []);
 
@@ -62,6 +62,22 @@ const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, us
     return () => clearInterval(timer);
   }, [cooldown]);
 
+  // Silent send for initial mount — no toast on success, only on error
+  const sendCodeSilently = useCallback(async () => {
+    if (isSending) return;
+    setIsSending(true);
+    try {
+      await apiService.sendVerificationCode();
+      setCooldown(RESEND_COOLDOWN);
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || t('verification.sendFailed', { defaultValue: '코드 발송에 실패했습니다.' });
+      showToast({ type: 'error', message: msg, position: 'top' });
+    } finally {
+      setIsSending(false);
+    }
+  }, [isSending, showToast, t]);
+
+  // Manual resend — shows success toast
   const handleResend = useCallback(async () => {
     if (cooldown > 0 || isSending) return;
     setIsSending(true);

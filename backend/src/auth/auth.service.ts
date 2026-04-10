@@ -102,7 +102,7 @@ export class AuthService {
     loginDto: LoginDto,
     userAgent?: string,
     lang: SupportedLang = 'ko',
-  ): Promise<AuthResponse | { requiresTwoFactor: true; tempToken: string }> {
+  ): Promise<AuthResponse & { requiresEmailVerification?: boolean } | { requiresTwoFactor: true; tempToken: string }> {
     // Check account-level lockout (Redis-based, survives restarts)
     const lockKey = `login_attempts:${loginDto.email}`;
     const attempts = await this.cacheManager.get<number>(lockKey);
@@ -149,6 +149,24 @@ export class AuthService {
 
     // Login success — reset attempt counter
     await this.cacheManager.del(lockKey);
+
+    // Block login for unverified email users — they must complete verification first
+    if (user.provider === AuthProvider.EMAIL && !user.isEmailVerified) {
+      // Generate tokens so frontend can call send-verification-code (requires JWT)
+      const tokens = await this.generateTokens(user.id, user.email!);
+      return {
+        user: {
+          id: user.id,
+          email: user.email ?? null,
+          name: user.name,
+          provider: user.provider,
+          profileImage: user.profileImage ?? null,
+          isEmailVerified: false,
+        },
+        ...tokens,
+        requiresEmailVerification: true,
+      };
+    }
 
     // Audit log: successful login
     this.auditService

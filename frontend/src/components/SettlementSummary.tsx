@@ -17,6 +17,7 @@ interface SettlementSummaryProps {
   settlements: Settlement[];
   currency?: string;
   onSettle?: (fromUserId: string, toUserId: string) => void;
+  currentUserId?: string;
 }
 
 const formatCurrency = (amount: number | string, currency: string): string => {
@@ -29,7 +30,7 @@ const formatCurrency = (amount: number | string, currency: string): string => {
 };
 
 const SettlementSummary: React.FC<SettlementSummaryProps> = memo(
-  ({ settlements, currency = 'USD', onSettle }) => {
+  ({ settlements, currency = 'USD', onSettle, currentUserId }) => {
     const { t } = useTranslation('trips');
     const { theme, isDark } = useTheme();
 
@@ -129,8 +130,9 @@ const SettlementSummary: React.FC<SettlementSummaryProps> = memo(
               </View>
             </View>
 
-            {/* Settle button */}
-            {onSettle && (
+            {/* Settle button — only shown to the debtor (fromUser) or creditor (toUser) */}
+            {onSettle && currentUserId &&
+              (currentUserId === settlement.fromUserId || currentUserId === settlement.toUserId) && (
               <TouchableOpacity
                 style={[
                   styles.settleButton,

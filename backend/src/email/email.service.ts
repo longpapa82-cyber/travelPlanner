@@ -212,8 +212,8 @@ export class EmailService {
           latencyMs: Date.now() - startTime,
         })
         .catch(() => {});
-      if (!this.isDev) throw error;
-      this.logger.warn(`[DEV] Verification code: ${code}`);
+      // Always throw — email delivery failure must be reported to the caller
+      throw error;
     }
   }
 

@@ -92,12 +92,8 @@ const RootNavigator = () => {
     );
   }
 
-  // Show ConsentScreen if user is authenticated but needs consent
-  if (isAuthenticated && needsConsentScreen) {
-    return <ConsentScreen onComplete={markConsentComplete} />;
-  }
-
-  // Show EmailVerificationCodeScreen if email user hasn't verified yet
+  // Show EmailVerificationCodeScreen FIRST if email user hasn't verified yet
+  // Email verification must complete BEFORE consent (legal requirement: verify identity first)
   // Social login users (google, kakao, apple) are auto-verified
   const needsEmailVerification =
     isAuthenticated &&
@@ -113,6 +109,11 @@ const RootNavigator = () => {
         userEmail={user.email}
       />
     );
+  }
+
+  // Show ConsentScreen AFTER email verification is complete
+  if (isAuthenticated && needsConsentScreen) {
+    return <ConsentScreen onComplete={markConsentComplete} />;
   }
 
   // Wrap entire app in GestureHandlerRootView for proper gesture handling

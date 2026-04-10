@@ -192,17 +192,17 @@ export class ExpensesService {
       }));
     }
 
-    // Exact method: validate that splits sum to total
-    const splitTotal = splits.reduce(
-      (sum, s) => sum + Number(s.amount || 0),
+    // Exact method: validate that splits sum to total (using integer arithmetic)
+    const splitTotalCents = splits.reduce(
+      (sum, s) => sum + Math.round(Number(s.amount || 0) * 100),
       0,
     );
-    const roundedSplitTotal = Math.round(splitTotal * 100) / 100;
-    const roundedTotal = Math.round(totalAmount * 100) / 100;
+    const totalCents = Math.round(totalAmount * 100);
 
-    if (Math.abs(roundedSplitTotal - roundedTotal) > 0.01) {
+    if (Math.abs(splitTotalCents - totalCents) > 1) {
+      // Allow 1 cent tolerance for rounding
       throw new BadRequestException(
-        `Split amounts (${roundedSplitTotal}) do not match total amount (${roundedTotal})`,
+        `Split amounts (${(splitTotalCents / 100).toFixed(2)}) do not match total amount (${(totalCents / 100).toFixed(2)})`,
       );
     }
 
@@ -374,25 +374,36 @@ export class ExpensesService {
       .where('expense.tripId = :tripId', { tripId })
       .getMany();
 
-    // Accumulate balances per user
+    // Accumulate balances per user (only unsettled splits count)
     const balanceMap = new Map<string, { name: string; balance: number }>();
 
     for (const expense of expenses) {
       const payerId = expense.paidByUserId;
       const payerName = expense.paidBy?.name || 'Unknown';
-      const totalAmount = Number(expense.amount);
 
-      // Payer gets +totalAmount (they paid for everyone)
-      if (!balanceMap.has(payerId)) {
-        balanceMap.set(payerId, { name: payerName, balance: 0 });
+      // Only count unsettled splits for balance calculation
+      const unsettledSplits = expense.splits.filter((s) => !s.isSettled);
+      const unsettledTotal = unsettledSplits.reduce(
+        (sum, s) => sum + Number(s.amount),
+        0,
+      );
+
+      // Payer gets +unsettledTotal (amount still owed to them)
+      if (unsettledTotal > 0.01) {
+        if (!balanceMap.has(payerId)) {
+          balanceMap.set(payerId, { name: payerName, balance: 0 });
+        }
+        balanceMap.get(payerId)!.balance += unsettledTotal;
       }
-      balanceMap.get(payerId)!.balance += totalAmount;
 
-      // Each split participant gets -splitAmount (they owe their share)
-      for (const split of expense.splits) {
+      // Each unsettled split participant gets -splitAmount (they still owe)
+      for (const split of unsettledSplits) {
         const splitUserId = split.userId;
         const splitUserName = split.user?.name || 'Unknown';
         const splitAmount = Number(split.amount);
+
+        // Skip payer's own split — payer doesn't owe themselves
+        if (splitUserId === payerId) continue;
 
         if (!balanceMap.has(splitUserId)) {
           balanceMap.set(splitUserId, { name: splitUserName, balance: 0 });

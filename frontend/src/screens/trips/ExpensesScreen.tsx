@@ -536,6 +536,7 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
                   settlements={settlements}
                   currency={summary.currency}
                   onSettle={handleSettle}
+                  currentUserId={currentUserId}
                 />
               </View>
             );

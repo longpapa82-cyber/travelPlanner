@@ -83,7 +83,9 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   }, [user?.subscriptionTier, user?.subscriptionExpiresAt, localPremiumOverride, isLoggingOut]);
 
   const isAdmin = !!(user?.email && ADMIN_EMAILS.includes(user.email));
-  const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
+  // Use conservative default: if profile data is missing, assume limit reached (not available)
+  // This prevents showing "3/3 available" when server data hasn't loaded yet
+  const aiTripsUsed = user?.aiTripsUsedThisMonth ?? AI_TRIPS_FREE_LIMIT;
   const aiTripsLimit = (isPremium || isAdmin) ? -1 : AI_TRIPS_FREE_LIMIT;
   const aiTripsRemaining = (isPremium || isAdmin) ? -1 : Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed);
   const isAiLimitReached = !isPremium && !isAdmin && aiTripsRemaining <= 0;
