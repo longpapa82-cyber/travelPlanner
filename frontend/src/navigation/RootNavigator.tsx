@@ -64,7 +64,7 @@ const linking: LinkingOptions<RootStackParamList> = {
 };
 
 const RootNavigator = () => {
-  const { isAuthenticated, isLoading, user, refreshUser } = useAuth();
+  const { isAuthenticated, isLoading, user, refreshUser, logout } = useAuth();
   const { needsConsentScreen, isCheckingConsent, markConsentComplete } = useConsent();
   const { theme, isDark } = useTheme();
   const { shouldShowPrePermission, sessionCount, requestTracking } = useTrackingTransparency();
@@ -109,6 +109,7 @@ const RootNavigator = () => {
     return (
       <EmailVerificationCodeScreen
         onVerified={refreshUser}
+        onLogout={logout}
         userEmail={user.email}
       />
     );

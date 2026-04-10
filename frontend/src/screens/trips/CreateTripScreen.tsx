@@ -29,7 +29,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp, useFocusEffect } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
@@ -137,13 +137,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       reloadRewardedAd();
     }
   }, []);
-
-  // Refresh AI trip count on screen focus (prevents stale cache)
-  useFocusEffect(
-    useCallback(() => {
-      refreshStatus();
-    }, [refreshStatus]),
-  );
 
   // Auto-switch to manual mode when AI limit is reached
   useEffect(() => {

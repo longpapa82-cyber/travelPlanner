@@ -25,13 +25,14 @@ import apiService from '../../services/api';
 
 interface Props {
   onVerified: () => void;
+  onLogout: () => void;
   userEmail?: string;
 }
 
 const CODE_LENGTH = 6;
 const RESEND_COOLDOWN = 60;
 
-const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, userEmail }) => {
+const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, userEmail }) => {
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
   const { t } = useTranslation('auth');
@@ -235,6 +236,15 @@ const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, userEmail })
       <Text style={[styles.spamNotice, { color: theme.colors.textSecondary }]}>
         {t('verification.checkSpam', { defaultValue: '이메일이 오지 않으면 스팸함을 확인해주세요.' })}
       </Text>
+
+      {/* Logout — escape route for users who can't verify */}
+      <Text
+        style={[styles.logoutText, { color: theme.colors.textSecondary }]}
+        onPress={onLogout}
+        accessibilityRole="button"
+      >
+        {t('verification.logout', { defaultValue: '다른 계정으로 로그인' })}
+      </Text>
     </KeyboardAvoidingView>
   );
 };
@@ -302,6 +312,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 16,
     textAlign: 'center',
+  },
+  logoutText: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 32,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
   },
 });
 

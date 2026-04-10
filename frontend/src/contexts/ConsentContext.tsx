@@ -43,6 +43,8 @@ export const ConsentProvider: React.FC<ConsentProviderProps> = ({ children }) =>
   const [needsConsentScreen, setNeedsConsentScreen] = useState(false);
 
   // Check consent status when user becomes authenticated
+  // Use user?.id (stable scalar) instead of user (object reference)
+  // to prevent re-firing on every refreshUser() call
   useEffect(() => {
     if (isAuthenticated && user) {
       checkConsentStatus();
@@ -51,7 +53,7 @@ export const ConsentProvider: React.FC<ConsentProviderProps> = ({ children }) =>
       setConsentsStatus(null);
       setNeedsConsentScreen(false);
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user?.id]);
 
   const checkConsentStatus = async () => {
     try {
