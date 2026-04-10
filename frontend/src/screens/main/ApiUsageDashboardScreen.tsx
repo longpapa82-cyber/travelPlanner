@@ -125,7 +125,7 @@ const ApiUsageDashboardScreen: React.FC<Props> = () => {
   const getChangePercent = (): string => {
     if (!summary) return 'N/A';
     if (!summary.prevMonth.totalCost && !summary.mtd.totalCost) return '-';
-    if (!summary.prevMonth.totalCost) return summary.mtd.totalCost > 0 ? '+100%' : '-';
+    if (!summary.prevMonth.totalCost) return summary.mtd.totalCost > 0 ? '신규' : '-';
     const change = ((summary.mtd.totalCost - summary.prevMonth.totalCost) / summary.prevMonth.totalCost) * 100;
     const sign = change >= 0 ? '+' : '';
     return `${sign}${change.toFixed(1)}%`;
@@ -144,27 +144,27 @@ const ApiUsageDashboardScreen: React.FC<Props> = () => {
     const changePercent = getChangePercent();
     const cards = [
       {
-        label: 'Today',
+        label: '오늘',
         value: formatCost(summary.today.totalCost),
-        sub: `${summary.today.totalCalls} calls`,
+        sub: `${summary.today.totalCalls}건`,
         color: '#3B82F6',
       },
       {
-        label: 'MTD',
+        label: '이번 달',
         value: formatCost(summary.mtd.totalCost),
-        sub: `${summary.mtd.totalCalls} calls`,
+        sub: `${summary.mtd.totalCalls}건`,
         color: '#10B981',
       },
       {
-        label: 'vs Prev Month',
+        label: '전월 대비',
         value: changePercent,
-        sub: `prev: ${formatCost(summary.prevMonth.totalCost)}`,
+        sub: `전월: ${formatCost(summary.prevMonth.totalCost)}`,
         color: changePercent.startsWith('+') ? '#EF4444' : changePercent.startsWith('-') ? '#10B981' : '#6B7280',
       },
       {
-        label: 'Forecast',
+        label: '예상 비용',
         value: formatCost(summary.forecast),
-        sub: `err: ${summary.errorRate}%`,
+        sub: `오류: ${summary.errorRate}%`,
         color: '#8B5CF6',
       },
     ];
@@ -191,7 +191,7 @@ const ApiUsageDashboardScreen: React.FC<Props> = () => {
     return (
       <View style={[styles.section, { backgroundColor: theme.colors.white }]}>
         <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-          Provider Breakdown (MTD)
+          API 제공사별 사용량 (이번 달)
         </Text>
         {/* Distribution bar */}
         <View style={styles.distributionBar}>
@@ -225,7 +225,7 @@ const ApiUsageDashboardScreen: React.FC<Props> = () => {
                   {formatCost(pData.cost)}
                 </Text>
                 <Text style={[styles.providerCalls, { color: theme.colors.textSecondary }]}>
-                  {pData.calls} calls ({pct}%)
+                  {pData.calls}건 ({pct}%)
                 </Text>
               </View>
             </View>
@@ -237,14 +237,14 @@ const ApiUsageDashboardScreen: React.FC<Props> = () => {
 
   const renderPeriodToggle = () => {
     const periods: { key: PeriodKey; label: string }[] = [
-      { key: '7d', label: '7 Days' },
-      { key: '30d', label: '30 Days' },
-      { key: 'mtd', label: 'MTD' },
+      { key: '7d', label: '7일' },
+      { key: '30d', label: '30일' },
+      { key: 'mtd', label: '이번 달' },
     ];
     return (
       <View style={[styles.section, { backgroundColor: theme.colors.white, paddingBottom: 4 }]}>
         <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-          Daily Usage
+          일별 사용량
         </Text>
         <View style={styles.toggleRow}>
           {periods.map((p) => (
