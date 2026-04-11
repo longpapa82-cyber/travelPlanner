@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useMemo, useEf
 import { Platform } from 'react-native';
 import { useAuth } from './AuthContext';
 import { SubscriptionStatus } from '../types';
-import { initRevenueCat, logIn, logOut as rcLogOut } from '../services/revenueCat';
+import { initRevenueCat, logIn, logOut as rcLogOut, getCustomerInfo } from '../services/revenueCat';
 import { PREMIUM_ENABLED } from '../constants/config';
 
 const AI_TRIPS_FREE_LIMIT = 3;
@@ -54,13 +54,29 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Initialize RevenueCat on native platforms when user is available
+  // After init, check if user has active entitlements and sync premium status
   useEffect(() => {
     if (Platform.OS === 'web') return;
     if (!user?.id) return;
 
-    initRevenueCat(String(user.id)).then(() => {
-      logIn(String(user.id));
-    });
+    (async () => {
+      await initRevenueCat(String(user.id));
+      await logIn(String(user.id));
+
+      // Check RevenueCat for active subscriptions and override if needed
+      try {
+        const info = await getCustomerInfo();
+        const hasActiveEntitlement = info?.entitlements?.active &&
+          Object.keys(info.entitlements.active).length > 0;
+        if (hasActiveEntitlement && !localPremiumOverride) {
+          setLocalPremiumOverride(true);
+          // Also refresh backend user data to sync subscription status
+          refreshUser?.();
+        }
+      } catch {
+        // Silent — premium detection is best-effort
+      }
+    })();
   }, [user?.id]);
 
   // Clear local premium override and logout state when user changes

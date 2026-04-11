@@ -1496,7 +1496,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>
                 {t('create.aiInfo.description')}
               </Text>
-              {!isPremium && (
+              {isPremium ? (
+                <Text style={[styles.infoText, { color: theme.colors.primary, marginTop: 4, fontWeight: '600' }]}>
+                  {t('create.aiInfo.premium', { defaultValue: '프리미엄: 월 30회 AI 자동 생성 가능' })}
+                </Text>
+              ) : (
                 <Text style={[styles.infoText, { color: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600' }]}>
                   {aiTripsRemaining > 0
                     ? t('create.aiInfo.remaining', { remaining: aiTripsRemaining, total: aiTripsLimit > 0 ? aiTripsLimit : 3 })

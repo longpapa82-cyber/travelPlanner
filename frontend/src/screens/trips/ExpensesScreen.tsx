@@ -151,6 +151,11 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
   // Computed summary values
   const summary = useMemo(() => {
     const totalSpent = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+    // 내가 결제한 총액
+    const myPaid = expenses
+      .filter((e) => e.paidByUserId === currentUserId)
+      .reduce((sum, e) => sum + Number(e.amount), 0);
+    // 내가 부담해야 할 금액 (모든 경비에서 내 분할 합계)
     const myShare = expenses.reduce((sum, e) => {
       const mySplit = e.splits.find((s) => s.userId === currentUserId);
       return sum + (mySplit ? Number(mySplit.amount) : 0);
@@ -166,7 +171,7 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
 
     const currency = expenses.length > 0 ? expenses[0].currency : 'USD';
 
-    return { totalSpent, myShare, balanceAmount, settledCount, totalExpenses: expenses.length, currency };
+    return { totalSpent, myPaid, myShare, balanceAmount, settledCount, totalExpenses: expenses.length, currency };
   }, [expenses, balances, currentUserId]);
 
   // Delete expense handler
@@ -320,10 +325,35 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
         </View>
 
-        {/* Amount */}
-        <Text style={[styles.expenseAmount, { color: isDark ? colors.neutral[100] : colors.neutral[800] }]}>
-          {formatCurrency(item.amount, item.currency)}
-        </Text>
+        {/* Amount + Settlement badge */}
+        <View style={styles.expenseAmountContainer}>
+          <Text style={[styles.expenseAmount, { color: isDark ? colors.neutral[100] : colors.neutral[800] }]}>
+            {formatCurrency(item.amount, item.currency)}
+          </Text>
+          {item.splits && item.splits.length > 0 && (
+            <View style={[
+              styles.settlementBadge,
+              {
+                backgroundColor: item.splits.every((s) => s.isSettled)
+                  ? (isDark ? `${colors.success.main}20` : colors.success.light)
+                  : (isDark ? `${colors.warning?.main || '#F59E0B'}20` : '#FEF3C7'),
+              },
+            ]}>
+              <Icon
+                name={item.splits.every((s) => s.isSettled) ? 'check' : 'clock-outline'}
+                size={10}
+                color={item.splits.every((s) => s.isSettled) ? colors.success.main : (colors.warning?.main || '#F59E0B')}
+              />
+              <Text style={[styles.settlementBadgeText, {
+                color: item.splits.every((s) => s.isSettled) ? colors.success.main : (colors.warning?.main || '#F59E0B'),
+              }]}>
+                {item.splits.every((s) => s.isSettled)
+                  ? t('detail.expenses.settledShort', { defaultValue: '정산됨' })
+                  : `${item.splits.filter((s) => s.isSettled).length}/${item.splits.length}`}
+              </Text>
+            </View>
+          )}
+        </View>
       </TouchableOpacity>
     );
   };
@@ -365,7 +395,7 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
         <View style={{ width: 36 }} />
       </View>
 
-      {/* Summary Card */}
+      {/* Summary Card — Splitwise-style balance overview */}
       <View style={styles.summaryCard}>
         <View style={styles.summaryGrid}>
           {/* Total Spent */}
@@ -381,10 +411,23 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
             </Text>
           </View>
 
-          {/* My Share */}
+          {/* My Paid — 내가 결제한 금액 */}
           <View style={styles.summaryItem}>
             <View style={styles.summaryItemHeader}>
-              <Icon name="account-cash" size={16} color={colors.secondary[500]} />
+              <Icon name="credit-card-outline" size={16} color={colors.secondary[500]} />
+              <Text style={[styles.summaryLabel, { color: theme.colors.textSecondary }]}>
+                {t('detail.expenses.myPaid', { defaultValue: '내가 결제' })}
+              </Text>
+            </View>
+            <Text style={[styles.summaryValue, { color: isDark ? colors.neutral[100] : colors.neutral[800] }]}>
+              {formatCurrency(summary.myPaid, summary.currency)}
+            </Text>
+          </View>
+
+          {/* My Share — 내가 부담할 금액 */}
+          <View style={styles.summaryItem}>
+            <View style={styles.summaryItemHeader}>
+              <Icon name="account-cash" size={16} color={colors.warning?.main || '#F59E0B'} />
               <Text style={[styles.summaryLabel, { color: theme.colors.textSecondary }]}>
                 {t('detail.expenses.myShare')}
               </Text>
@@ -394,45 +437,56 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
             </Text>
           </View>
 
-          {/* Balance */}
+          {/* Net Balance — 최종 정산 금액 */}
           <View style={styles.summaryItem}>
             <View style={styles.summaryItemHeader}>
               <Icon
-                name={summary.balanceAmount >= 0 ? 'arrow-down-bold-circle' : 'arrow-up-bold-circle'}
+                name={summary.balanceAmount > 0 ? 'arrow-down-bold-circle' : summary.balanceAmount < 0 ? 'arrow-up-bold-circle' : 'check-circle'}
                 size={16}
-                color={summary.balanceAmount >= 0 ? colors.success.main : colors.error.main}
+                color={summary.balanceAmount > 0 ? colors.success.main : summary.balanceAmount < 0 ? colors.error.main : colors.success.main}
               />
               <Text style={[styles.summaryLabel, { color: theme.colors.textSecondary }]}>
-                {summary.balanceAmount >= 0
+                {summary.balanceAmount > 0
                   ? t('detail.expenses.owedToMe')
-                  : t('detail.expenses.iOwe')}
+                  : summary.balanceAmount < 0
+                  ? t('detail.expenses.iOwe')
+                  : t('detail.expenses.settled')}
               </Text>
             </View>
             <Text
               style={[
                 styles.summaryValue,
-                { color: summary.balanceAmount >= 0 ? colors.success.main : colors.error.main },
+                { color: summary.balanceAmount > 0 ? colors.success.main : summary.balanceAmount < 0 ? colors.error.main : colors.success.main },
               ]}
             >
-              {formatCurrency(Math.abs(summary.balanceAmount), summary.currency)}
-            </Text>
-          </View>
-
-          {/* Settlement Status */}
-          <View style={styles.summaryItem}>
-            <View style={styles.summaryItemHeader}>
-              <Icon name="check-circle" size={16} color={colors.success.main} />
-              <Text style={[styles.summaryLabel, { color: theme.colors.textSecondary }]}>
-                {t('detail.expenses.settled')}
-              </Text>
-            </View>
-            <Text style={[styles.summaryValue, { color: isDark ? colors.neutral[100] : colors.neutral[800] }]}>
-              {summary.totalExpenses > 0
-                ? `${summary.settledCount}/${summary.totalExpenses}`
-                : t('detail.expenses.settled')}
+              {summary.balanceAmount === 0
+                ? t('detail.expenses.allSettled', { defaultValue: '정산 완료' })
+                : formatCurrency(Math.abs(summary.balanceAmount), summary.currency)}
             </Text>
           </View>
         </View>
+
+        {/* Balance explanation — 잔액이 있을 때만 표시 */}
+        {summary.balanceAmount !== 0 && (
+          <View style={[styles.balanceExplain, { backgroundColor: isDark ? colors.neutral[700] : colors.neutral[50], borderColor: isDark ? colors.neutral[600] : colors.neutral[200] }]}>
+            <Icon name="information-outline" size={14} color={theme.colors.textSecondary} />
+            <Text style={[styles.balanceExplainText, { color: theme.colors.textSecondary }]}>
+              {summary.balanceAmount > 0
+                ? t('detail.expenses.balanceExplainPositive', {
+                    defaultValue: `결제한 금액(${formatCurrency(summary.myPaid, summary.currency)})이 부담 금액(${formatCurrency(summary.myShare, summary.currency)})보다 많아 ${formatCurrency(summary.balanceAmount, summary.currency)}을 받을 수 있습니다.`,
+                    paid: formatCurrency(summary.myPaid, summary.currency),
+                    share: formatCurrency(summary.myShare, summary.currency),
+                    balance: formatCurrency(summary.balanceAmount, summary.currency),
+                  })
+                : t('detail.expenses.balanceExplainNegative', {
+                    defaultValue: `부담 금액(${formatCurrency(summary.myShare, summary.currency)})이 결제한 금액(${formatCurrency(summary.myPaid, summary.currency)})보다 많아 ${formatCurrency(Math.abs(summary.balanceAmount), summary.currency)}을 보내야 합니다.`,
+                    share: formatCurrency(summary.myShare, summary.currency),
+                    paid: formatCurrency(summary.myPaid, summary.currency),
+                    balance: formatCurrency(Math.abs(summary.balanceAmount), summary.currency),
+                  })}
+            </Text>
+          </View>
+        )}
       </View>
 
       {/* Tab Bar */}
@@ -507,14 +561,27 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
                   </View>
                   {balances.length > 0 ? (
                     <View style={styles.balanceList}>
-                      {balances.map((balance) => (
-                        <BalanceCard
-                          key={balance.userId}
-                          userName={balance.userName}
-                          balance={balance.balance}
-                          currency={summary.currency}
-                        />
-                      ))}
+                      {balances.map((bal) => {
+                        const paidTotal = expenses
+                          .filter((e) => e.paidByUserId === bal.userId)
+                          .reduce((s, e) => s + Number(e.amount), 0);
+                        const shareTotal = expenses.reduce((s, e) => {
+                          const sp = e.splits.find((x) => x.userId === bal.userId);
+                          return s + (sp ? Number(sp.amount) : 0);
+                        }, 0);
+                        const paidCount = expenses.filter((e) => e.paidByUserId === bal.userId).length;
+                        return (
+                          <BalanceCard
+                            key={bal.userId}
+                            userName={bal.userName}
+                            balance={bal.balance}
+                            currency={summary.currency}
+                            paidTotal={paidTotal}
+                            shareTotal={shareTotal}
+                            paidCount={paidCount}
+                          />
+                        );
+                      })}
                     </View>
                   ) : (
                     <Text style={[styles.emptyBalanceText, { color: theme.colors.textSecondary }]}>
@@ -627,6 +694,20 @@ const createStyles = (theme: any, isDark: boolean) =>
       fontSize: 18,
       fontWeight: '700',
     },
+    balanceExplain: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: 6,
+      marginTop: 12,
+      padding: 10,
+      borderRadius: 8,
+      borderWidth: 1,
+    },
+    balanceExplainText: {
+      flex: 1,
+      fontSize: 12,
+      lineHeight: 18,
+    },
     tabBar: {
       flexDirection: 'row',
       borderRadius: 12,
@@ -706,9 +787,25 @@ const createStyles = (theme: any, isDark: boolean) =>
     expenseMetaDot: {
       fontSize: 12,
     },
+    expenseAmountContainer: {
+      alignItems: 'flex-end',
+      gap: 4,
+    },
     expenseAmount: {
       fontSize: 16,
       fontWeight: '700',
+    },
+    settlementBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 3,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 6,
+    },
+    settlementBadgeText: {
+      fontSize: 10,
+      fontWeight: '600',
     },
     emptyState: {
       alignItems: 'center',

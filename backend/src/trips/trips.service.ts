@@ -124,17 +124,15 @@ export class TripsService {
             );
           } else {
             // Free users get the basic limit
-            aiTripLimit = parseInt(
-              process.env.AI_TRIPS_FREE_LIMIT || '3',
-              10,
-            );
+            aiTripLimit = parseInt(process.env.AI_TRIPS_FREE_LIMIT || '3', 10);
           }
 
           // Check if user has reached their limit
           if (currentCount >= aiTripLimit) {
-            const tierMessage = user.users_subscriptionTier === 'premium'
-              ? 'Premium monthly'
-              : 'Monthly';
+            const tierMessage =
+              user.users_subscriptionTier === 'premium'
+                ? 'Premium monthly'
+                : 'Monthly';
             throw new ForbiddenException(
               `${tierMessage} AI generation limit (${aiTripLimit}) reached. Try manual creation or wait until next month.`,
             );
@@ -197,156 +195,160 @@ export class TripsService {
       progress$?.next({ step: 'validating' });
 
       // Get location information for timezone and weather
-    let timezoneInfo: {
-      timezone: string;
-      timezoneId: string;
-      timezoneOffset: number;
-      localTime: string;
-    } | null = null;
-    let locationInfo: { latitude: number; longitude: number } | null = null;
+      let timezoneInfo: {
+        timezone: string;
+        timezoneId: string;
+        timezoneOffset: number;
+        localTime: string;
+      } | null = null;
+      let locationInfo: { latitude: number; longitude: number } | null = null;
 
-    try {
-      const location = await this.timezoneService.getLocationInfo(
-        createTripDto.destination,
-      );
-      if (location) {
-        locationInfo = {
-          latitude: location.latitude,
-          longitude: location.longitude,
-        };
-        this.logger.log(
-          `Retrieved location for ${createTripDto.destination}: ${location.latitude}, ${location.longitude}`,
-        );
-
-        // Get timezone with location
-        timezoneInfo = await this.timezoneService.getTimezoneInfo(
-          location.latitude,
-          location.longitude,
-          startDate,
-        );
-        if (timezoneInfo) {
-          this.logger.log(`Retrieved timezone: ${timezoneInfo.timezoneId}`);
-        }
-      }
-    } catch (error) {
-      this.logger.warn(
-        `Failed to get location/timezone information: ${getErrorMessage(error)}`,
-      );
-    }
-
-    // Helper: fetch weather for all days in a single API call
-    const fetchWeatherMap = async () => {
-      if (!locationInfo) {
-        return new Map<number, any>();
-      }
       try {
-        return await this.weatherService.getWeatherForDateRange(
-          locationInfo.latitude,
-          locationInfo.longitude,
-          startDate,
-          endDate,
+        const location = await this.timezoneService.getLocationInfo(
+          createTripDto.destination,
         );
+        if (location) {
+          locationInfo = {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          };
+          this.logger.log(
+            `Retrieved location for ${createTripDto.destination}: ${location.latitude}, ${location.longitude}`,
+          );
+
+          // Get timezone with location
+          timezoneInfo = await this.timezoneService.getTimezoneInfo(
+            location.latitude,
+            location.longitude,
+            startDate,
+          );
+          if (timezoneInfo) {
+            this.logger.log(`Retrieved timezone: ${timezoneInfo.timezoneId}`);
+          }
+        }
       } catch (error) {
         this.logger.warn(
-          `Failed to get weather range: ${getErrorMessage(error)}`,
-        );
-        return new Map<number, any>();
-      }
-    };
-
-    // Helper: create empty day-card itineraries with weather/timezone
-    const createEmptyItineraries = async (weatherMap: Map<number, any>) => {
-      const itineraries: Itinerary[] = [];
-      for (let i = 0; i < numberOfDays; i++) {
-        const date = new Date(startDate);
-        date.setDate(date.getDate() + i);
-        itineraries.push(
-          queryRunner.manager.create(Itinerary, {
-            tripId: savedTrip.id,
-            date,
-            dayNumber: i + 1,
-            activities: [],
-            timezone: timezoneInfo?.timezoneId,
-            timezoneOffset: timezoneInfo?.timezoneOffset,
-            weather: weatherMap.get(i + 1) ?? undefined,
-          }),
+          `Failed to get location/timezone information: ${getErrorMessage(error)}`,
         );
       }
-      await queryRunner.manager.save(itineraries);
-      return itineraries;
-    };
 
-    if (isManualMode) {
-      // Manual mode: skip AI, create empty day cards with weather/timezone
-      progress$?.next({ step: 'weather' });
-      const weatherMap = await fetchWeatherMap();
-      const itineraries = await createEmptyItineraries(weatherMap);
-      this.logger.log(
-        `Created ${itineraries.length} empty itineraries (manual mode) for trip ${savedTrip.id}`,
-      );
-    } else {
-      // ✅ Note: AI trip count already incremented in transaction above
-      // AI mode: generate itineraries with AI + weather in parallel
-      try {
-        progress$?.next({ step: 'ai_generating' });
-        const aiPromise = this.aiService.generateAllItineraries({
-          destination: createTripDto.destination,
-          country: createTripDto.country,
-          city: createTripDto.city,
-          startDate,
-          endDate,
-          numberOfTravelers: createTripDto.numberOfTravelers || 1,
-          preferences: createTripDto.preferences,
-          language,
-        });
+      // Helper: fetch weather for all days in a single API call
+      const fetchWeatherMap = async () => {
+        if (!locationInfo) {
+          return new Map<number, any>();
+        }
+        try {
+          return await this.weatherService.getWeatherForDateRange(
+            locationInfo.latitude,
+            locationInfo.longitude,
+            startDate,
+            endDate,
+          );
+        } catch (error) {
+          this.logger.warn(
+            `Failed to get weather range: ${getErrorMessage(error)}`,
+          );
+          return new Map<number, any>();
+        }
+      };
 
-        // Fetch weather in parallel while AI generates
+      // Helper: create empty day-card itineraries with weather/timezone
+      const createEmptyItineraries = async (weatherMap: Map<number, any>) => {
+        const itineraries: Itinerary[] = [];
+        for (let i = 0; i < numberOfDays; i++) {
+          const date = new Date(startDate);
+          date.setDate(date.getDate() + i);
+          itineraries.push(
+            queryRunner.manager.create(Itinerary, {
+              tripId: savedTrip.id,
+              date,
+              dayNumber: i + 1,
+              activities: [],
+              timezone: timezoneInfo?.timezoneId,
+              timezoneOffset: timezoneInfo?.timezoneOffset,
+              weather: weatherMap.get(i + 1) ?? undefined,
+            }),
+          );
+        }
+        await queryRunner.manager.save(itineraries);
+        return itineraries;
+      };
+
+      if (isManualMode) {
+        // Manual mode: skip AI, create empty day cards with weather/timezone
         progress$?.next({ step: 'weather' });
         const weatherMap = await fetchWeatherMap();
-
-        // Wait for AI generation to complete
-        const aiItineraries = await aiPromise;
-
-        // Combine AI results with weather data
-        progress$?.next({ step: 'saving' });
-        const itineraries: Itinerary[] = [];
-        for (const aiItinerary of aiItineraries) {
-          const itinerary = queryRunner.manager.create(Itinerary, {
-            tripId: savedTrip.id,
-            date: aiItinerary.date,
-            dayNumber: aiItinerary.dayNumber,
-            activities: aiItinerary.activities,
-            timezone: timezoneInfo?.timezoneId,
-            timezoneOffset: timezoneInfo?.timezoneOffset,
-            weather: weatherMap.get(aiItinerary.dayNumber) ?? undefined,
+        const itineraries = await createEmptyItineraries(weatherMap);
+        this.logger.log(
+          `Created ${itineraries.length} empty itineraries (manual mode) for trip ${savedTrip.id}`,
+        );
+      } else {
+        // ✅ Note: AI trip count already incremented in transaction above
+        // AI mode: generate itineraries with AI + weather in parallel
+        try {
+          progress$?.next({ step: 'ai_generating' });
+          const aiPromise = this.aiService.generateAllItineraries({
+            destination: createTripDto.destination,
+            country: createTripDto.country,
+            city: createTripDto.city,
+            startDate,
+            endDate,
+            numberOfTravelers: createTripDto.numberOfTravelers || 1,
+            preferences: createTripDto.preferences,
+            language,
           });
-          itineraries.push(itinerary);
+
+          // Fetch weather in parallel while AI generates
+          progress$?.next({ step: 'weather' });
+          const weatherMap = await fetchWeatherMap();
+
+          // Wait for AI generation to complete
+          const aiItineraries = await aiPromise;
+
+          // Combine AI results with weather data
+          progress$?.next({ step: 'saving' });
+          const itineraries: Itinerary[] = [];
+          for (const aiItinerary of aiItineraries) {
+            const itinerary = queryRunner.manager.create(Itinerary, {
+              tripId: savedTrip.id,
+              date: aiItinerary.date,
+              dayNumber: aiItinerary.dayNumber,
+              activities: aiItinerary.activities,
+              timezone: timezoneInfo?.timezoneId,
+              timezoneOffset: timezoneInfo?.timezoneOffset,
+              weather: weatherMap.get(aiItinerary.dayNumber) ?? undefined,
+            });
+            itineraries.push(itinerary);
+          }
+
+          await queryRunner.manager.save(itineraries);
+          await queryRunner.manager.update(Trip, savedTrip.id, {
+            aiStatus: 'success',
+          });
+          this.logger.log(
+            `Successfully generated ${itineraries.length} AI itineraries with weather data for trip ${savedTrip.id}`,
+          );
+        } catch (error) {
+          this.logger.error(
+            `Failed to generate AI itineraries: ${getErrorMessage(error)}`,
+          );
+          this.logger.log(
+            `Falling back to empty itineraries for trip ${savedTrip.id}`,
+          );
+
+          await queryRunner.manager.update(Trip, savedTrip.id, {
+            aiStatus: 'failed',
+          });
+          progress$?.next({
+            step: 'error',
+            message: 'AI generation failed, creating empty itineraries',
+          });
+
+          // Fallback: Create empty itineraries with weather
+          const weatherMap = await fetchWeatherMap();
+          await createEmptyItineraries(weatherMap);
         }
-
-        await queryRunner.manager.save(itineraries);
-        await queryRunner.manager.update(Trip, savedTrip.id, { aiStatus: 'success' });
-        this.logger.log(
-          `Successfully generated ${itineraries.length} AI itineraries with weather data for trip ${savedTrip.id}`,
-        );
-      } catch (error) {
-        this.logger.error(
-          `Failed to generate AI itineraries: ${getErrorMessage(error)}`,
-        );
-        this.logger.log(
-          `Falling back to empty itineraries for trip ${savedTrip.id}`,
-        );
-
-        await queryRunner.manager.update(Trip, savedTrip.id, { aiStatus: 'failed' });
-        progress$?.next({
-          step: 'error',
-          message: 'AI generation failed, creating empty itineraries',
-        });
-
-        // Fallback: Create empty itineraries with weather
-        const weatherMap = await fetchWeatherMap();
-        await createEmptyItineraries(weatherMap);
       }
-    }
 
       // CRITICAL FIX: Commit transaction only after ALL operations complete
       await queryRunner.commitTransaction();
@@ -470,7 +472,10 @@ export class TripsService {
     return { trips, total, page, limit };
   }
 
-  async findOne(userId: string, id: string): Promise<Trip & { userRole?: string }> {
+  async findOne(
+    userId: string,
+    id: string,
+  ): Promise<Trip & { userRole?: string }> {
     // Try owner access first (full access)
     let trip = await this.tripRepository.findOne({
       where: { id, userId },
@@ -493,7 +498,8 @@ export class TripsService {
           relations: ['itineraries'],
         });
         // Map collaborator role to user role
-        userRole = collab.role === CollaboratorRole.EDITOR ? 'editor' : 'viewer';
+        userRole =
+          collab.role === CollaboratorRole.EDITOR ? 'editor' : 'viewer';
       }
     }
 
@@ -819,8 +825,8 @@ export class TripsService {
     // DIAGNOSTIC: Log what the frontend is actually sending
     this.logger.log(
       `[COORDS-DIAG] addActivity received: location=${addActivityDto.location}, ` +
-      `lat=${addActivityDto.latitude}, lng=${addActivityDto.longitude}, ` +
-      `keys=${Object.keys(addActivityDto).join(',')}`,
+        `lat=${addActivityDto.latitude}, lng=${addActivityDto.longitude}, ` +
+        `keys=${Object.keys(addActivityDto).join(',')}`,
     );
 
     // Add new activity to the activities array
@@ -837,6 +843,14 @@ export class TripsService {
     };
 
     itinerary.activities = [...itinerary.activities, newActivity];
+
+    // Sort activities by startTime to maintain chronological order
+    itinerary.activities.sort((a, b) => {
+      if (!a.time && !b.time) return 0;
+      if (!a.time) return 1;
+      if (!b.time) return -1;
+      return a.time.localeCompare(b.time);
+    });
 
     this.logger.log(
       `Added activity "${newActivity.title}" to itinerary ${itineraryId}`,
@@ -909,6 +923,14 @@ export class TripsService {
     };
 
     itinerary.activities[activityIndex] = updatedActivity;
+
+    // Re-sort activities by startTime after update
+    itinerary.activities.sort((a, b) => {
+      if (!a.time && !b.time) return 0;
+      if (!a.time) return 1;
+      if (!b.time) return -1;
+      return a.time.localeCompare(b.time);
+    });
 
     this.logger.log(
       `Updated activity at index ${activityIndex} in itinerary ${itineraryId}`,
@@ -1090,10 +1112,9 @@ export class TripsService {
       .where('trip.shareToken = :shareToken', { shareToken })
       .andWhere('trip.isPublic = :isPublic', { isPublic: true })
       // Database-level expiration check: only return non-expired shares
-      .andWhere(
-        '(trip.shareExpiresAt IS NULL OR trip.shareExpiresAt > :now)',
-        { now },
-      )
+      .andWhere('(trip.shareExpiresAt IS NULL OR trip.shareExpiresAt > :now)', {
+        now,
+      })
       .getOne();
 
     if (!trip) {

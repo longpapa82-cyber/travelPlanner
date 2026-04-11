@@ -17,6 +17,9 @@ interface BalanceCardProps {
   userName: string;
   balance: number;
   currency?: string;
+  paidTotal?: number;
+  shareTotal?: number;
+  paidCount?: number;
 }
 
 const formatCurrency = (amount: number | string, currency: string): string => {
@@ -29,8 +32,14 @@ const formatCurrency = (amount: number | string, currency: string): string => {
   return `${symbol}${formatted}`;
 };
 
-const BalanceCard: React.FC<BalanceCardProps> = memo(({ userName, balance, currency = 'USD' }) => {
-  const { isDark } = useTheme();
+// Display name: show only part before @ for emails
+const displayName = (name: string): string => {
+  if (name.includes('@')) return name.split('@')[0];
+  return name;
+};
+
+const BalanceCard: React.FC<BalanceCardProps> = memo(({ userName, balance, currency = 'USD', paidTotal, shareTotal, paidCount }) => {
+  const { theme, isDark } = useTheme();
 
   const isPositive = balance > 0;
   const isNegative = balance < 0;
@@ -78,12 +87,19 @@ const BalanceCard: React.FC<BalanceCardProps> = memo(({ userName, balance, curre
           style={[styles.userName, { color: isDark ? colors.neutral[100] : colors.neutral[800] }]}
           numberOfLines={1}
         >
-          {userName}
+          {displayName(userName)}
         </Text>
         <Text style={[styles.balanceText, { color: balanceColor }]}>
           {isNegative ? '-' : isPositive ? '+' : ''}
           {formatCurrency(balance, currency)}
         </Text>
+        {paidTotal !== undefined && (
+          <Text style={[styles.detailText, { color: theme.colors.textSecondary }]} numberOfLines={1}>
+            {paidCount ? `${paidCount}건 결제(${formatCurrency(paidTotal, currency)})` : `결제 없음`}
+            {' · '}
+            {`부담 ${formatCurrency(shareTotal || 0, currency)}`}
+          </Text>
+        )}
       </View>
       {isZero && (
         <View style={[styles.settledBadge, { backgroundColor: isDark ? colors.neutral[700] : colors.neutral[100] }]}>
@@ -128,6 +144,10 @@ const styles = StyleSheet.create({
   balanceText: {
     fontSize: 18,
     fontWeight: '700',
+  },
+  detailText: {
+    fontSize: 11,
+    marginTop: 2,
   },
   settledBadge: {
     width: 24,

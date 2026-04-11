@@ -118,7 +118,10 @@ export class AuthController {
     @Req() req: Request,
     @Headers('accept-language') acceptLanguage?: string,
   ) {
-    const userId = (req as any).user?.userId || (req as any).user?.id || (req as any).user?.sub;
+    const userId =
+      (req as any).user?.userId ||
+      (req as any).user?.id ||
+      (req as any).user?.sub;
     return this.authService.sendVerificationCode(
       userId,
       parseLang(acceptLanguage),
@@ -134,7 +137,10 @@ export class AuthController {
     @Body() body: { code: string },
     @Headers('accept-language') acceptLanguage?: string,
   ) {
-    const userId = (req as any).user?.userId || (req as any).user?.id || (req as any).user?.sub;
+    const userId =
+      (req as any).user?.userId ||
+      (req as any).user?.id ||
+      (req as any).user?.sub;
     return this.authService.verifyEmailCode(
       userId,
       body.code,

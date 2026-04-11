@@ -364,6 +364,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         apiService.removePushToken(),
       ]);
 
+      // Sign out from Google (so next login shows account picker)
+      try {
+        const { nativeGoogleSignOut } = require('../services/googleNativeSignIn');
+        await nativeGoogleSignOut();
+      } catch {
+        // Silent — Google sign-out is best-effort
+      }
+
       // Clear tokens and cached data
       await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
       await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);

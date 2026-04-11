@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from './AuthContext';
+import { useConsent } from './ConsentContext';
 
 const TUTORIAL_KEYS = {
   WELCOME: '@travelplanner:tutorial_welcome',
@@ -33,6 +34,7 @@ interface TutorialProviderProps {
 
 export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
+  const { needsConsentScreen } = useConsent();
   const [welcomeCompleted, setWelcomeCompleted] = useState(true);
   const [coachCompleted, setCoachCompleted] = useState(true);
   const [loaded, setLoaded] = useState(false);
@@ -55,10 +57,11 @@ export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) 
     })();
   }, [isAuthenticated]);
 
-  // Only show tutorial after email verification is complete (or for social login users who are auto-verified)
+  // Only show tutorial after BOTH email verification AND consent are complete
   const isFullyVerified = user?.provider !== 'email' || user?.isEmailVerified === true;
-  const showWelcome = loaded && isAuthenticated && isFullyVerified && !welcomeCompleted;
-  const showCoachMark = loaded && isAuthenticated && isFullyVerified && welcomeCompleted && !coachCompleted;
+  const isFullyOnboarded = isFullyVerified && !needsConsentScreen;
+  const showWelcome = loaded && isAuthenticated && isFullyOnboarded && !welcomeCompleted;
+  const showCoachMark = loaded && isAuthenticated && isFullyOnboarded && welcomeCompleted && !coachCompleted;
 
   const completeWelcome = useCallback((navigate = false) => {
     setWelcomeCompleted(true);
