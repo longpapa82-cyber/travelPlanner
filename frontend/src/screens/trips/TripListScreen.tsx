@@ -120,12 +120,26 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
       setFetchError(false);
       const data = await apiService.getTrips(buildParams(params));
       // Handle both paginated response { trips, total } and legacy array response
+      const recalcStatus = (tripList: any[]) =>
+        tripList.map((trip) => {
+          if (!trip.startDate || !trip.endDate) return trip;
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const start = new Date(trip.startDate + 'T00:00:00');
+          const end = new Date(trip.endDate + 'T00:00:00');
+          let status = trip.status;
+          if (today > end) status = 'completed';
+          else if (today >= start && today <= end) status = 'ongoing';
+          else status = 'upcoming';
+          return { ...trip, status };
+        });
+
       if (data && Array.isArray(data.trips)) {
-        setTrips(data.trips);
+        setTrips(recalcStatus(data.trips));
         setTotalTrips(data.total);
         setCurrentPage(data.page || 1);
       } else if (Array.isArray(data)) {
-        setTrips(data);
+        setTrips(recalcStatus(data));
         setTotalTrips(data.length);
         setCurrentPage(1);
       }

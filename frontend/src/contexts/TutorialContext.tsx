@@ -32,7 +32,7 @@ interface TutorialProviderProps {
 }
 
 export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [welcomeCompleted, setWelcomeCompleted] = useState(true);
   const [coachCompleted, setCoachCompleted] = useState(true);
   const [loaded, setLoaded] = useState(false);
@@ -55,8 +55,10 @@ export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) 
     })();
   }, [isAuthenticated]);
 
-  const showWelcome = loaded && isAuthenticated && !welcomeCompleted;
-  const showCoachMark = loaded && isAuthenticated && welcomeCompleted && !coachCompleted;
+  // Only show tutorial after email verification is complete (or for social login users who are auto-verified)
+  const isFullyVerified = user?.provider !== 'email' || user?.isEmailVerified === true;
+  const showWelcome = loaded && isAuthenticated && isFullyVerified && !welcomeCompleted;
+  const showCoachMark = loaded && isAuthenticated && isFullyVerified && welcomeCompleted && !coachCompleted;
 
   const completeWelcome = useCallback((navigate = false) => {
     setWelcomeCompleted(true);

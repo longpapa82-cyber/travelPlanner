@@ -260,9 +260,13 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     if (!startDate || !endDate) {
       errors.dates = t('create.alerts.datesRequired');
     } else {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      if (start >= end) {
+      const start = new Date(startDate + 'T00:00:00');
+      const end = new Date(endDate + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (start <= today) {
+        errors.dates = t('create.alerts.startDateFuture', { defaultValue: '출발일은 내일 이후여야 합니다.' });
+      } else if (start >= end) {
         errors.dates = t('create.alerts.startDateRequired');
       }
     }

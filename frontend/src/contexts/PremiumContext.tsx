@@ -83,12 +83,12 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   }, [user?.subscriptionTier, user?.subscriptionExpiresAt, localPremiumOverride, isLoggingOut]);
 
   const isAdmin = !!(user?.email && ADMIN_EMAILS.includes(user.email));
-  // Use conservative default: if profile data is missing, assume limit reached (not available)
-  // This prevents showing "3/3 available" when server data hasn't loaded yet
-  const aiTripsUsed = user?.aiTripsUsedThisMonth ?? AI_TRIPS_FREE_LIMIT;
+  // Use actual server value; default to 0 (not used) when profile is loaded with aiTripsUsedThisMonth present
+  // Only show limit reached when we have confirmed data from the server
+  const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
   const aiTripsLimit = (isPremium || isAdmin) ? -1 : AI_TRIPS_FREE_LIMIT;
   const aiTripsRemaining = (isPremium || isAdmin) ? -1 : Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed);
-  const isAiLimitReached = !isPremium && !isAdmin && aiTripsRemaining <= 0;
+  const isAiLimitReached = !isPremium && !isAdmin && user?.aiTripsUsedThisMonth !== undefined && aiTripsRemaining <= 0;
 
   const showPaywall = useCallback((context: PaywallContext = 'general') => {
     if (!PREMIUM_ENABLED) return;

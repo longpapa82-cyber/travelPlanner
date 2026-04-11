@@ -532,7 +532,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         visible={showCoachMark && isFocused}
         targetLayout={createTripLayout}
         message={tTutorial('coach.createTrip')}
-        position="below"
+        position="above"
         onNext={completeCoach}
         onDismiss={completeCoach}
       />

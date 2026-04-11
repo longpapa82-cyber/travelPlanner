@@ -62,20 +62,19 @@ const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, us
     return () => clearInterval(timer);
   }, [cooldown]);
 
-  // Silent send for initial mount — no toast on success, only on error
+  // Silent send for initial mount — no toast at all (errors logged, not shown)
   const sendCodeSilently = useCallback(async () => {
     if (isSending) return;
     setIsSending(true);
     try {
       await apiService.sendVerificationCode();
       setCooldown(RESEND_COOLDOWN);
-    } catch (error: any) {
-      const msg = error?.response?.data?.message || t('verification.sendFailed', { defaultValue: '코드 발송에 실패했습니다.' });
-      showToast({ type: 'error', message: msg, position: 'top' });
+    } catch {
+      // Silent on initial mount — user can manually press resend if needed
     } finally {
       setIsSending(false);
     }
-  }, [isSending, showToast, t]);
+  }, [isSending]);
 
   // Manual resend — shows success toast
   const handleResend = useCallback(async () => {
@@ -156,12 +155,7 @@ const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, us
     }
   }, [code, onVerified, showToast, t]);
 
-  // Auto-submit when all 6 digits entered
-  useEffect(() => {
-    if (code.every((d) => d !== '') && !isVerifying) {
-      handleVerify();
-    }
-  }, [code]);
+  // No auto-submit — user must press the verify button manually
 
   const maskedEmail = userEmail
     ? userEmail.replace(/(.{2})(.*)(@.*)/, '$1***$3')
