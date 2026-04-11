@@ -148,6 +148,7 @@ const ItineraryDayCard: React.FC<ItineraryDayCardProps> = ({
                 onToggleCompletion={onToggleCompletion}
                 onEdit={onEditActivity}
                 onDelete={onDeleteActivity}
+                isDraggable={true}
               />
             )}
             keyExtractor={(item, index) => `activity-${itinerary.id}-${index}`}

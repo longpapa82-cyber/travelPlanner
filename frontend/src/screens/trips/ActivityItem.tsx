@@ -54,7 +54,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
   onToggleCompletion,
   onEdit,
   onDelete,
-  isDraggable = true,
+  isDraggable = false,
 }) => {
   const { item: activity, drag, isActive } = params;
   const { theme, isDark } = useTheme();
