@@ -70,7 +70,8 @@ const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, us
       await apiService.sendVerificationCode();
       setCooldown(RESEND_COOLDOWN);
     } catch {
-      // Silent on initial mount — user can manually press resend if needed
+      // Set cooldown even on failure to prevent rapid retries hitting server rate limit
+      setCooldown(RESEND_COOLDOWN);
     } finally {
       setIsSending(false);
     }

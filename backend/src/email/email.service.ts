@@ -139,11 +139,8 @@ export class EmailService {
           latencyMs: Date.now() - startTime,
         })
         .catch(() => {});
-      if (!this.isDev) throw error;
-      // In dev, log the URL so the developer can still verify
-      this.logger.warn(
-        `[DEV] Email send failed but verification URL: ${verificationUrl}`,
-      );
+      // Always throw — email delivery failure must be reported to the caller
+      throw error;
     }
   }
 
@@ -282,10 +279,8 @@ export class EmailService {
           latencyMs: Date.now() - startTime,
         })
         .catch(() => {});
-      if (!this.isDev) throw error;
-      this.logger.warn(
-        `[DEV] Email send failed for ${maskEmail(email)} (token: ${token.slice(0, 8)}...)`,
-      );
+      // Always throw — email delivery failure must be reported to the caller
+      throw error;
     }
   }
 }

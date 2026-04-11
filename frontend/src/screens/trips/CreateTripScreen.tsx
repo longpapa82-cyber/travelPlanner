@@ -911,8 +911,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               />
             )}
 
-            {/* Rewarded Ad — unlock extra insights (only when ad is loaded) */}
-            {destination.trim().length >= 2 && !insightsUnlocked && isRewardedLoaded && (
+            {/* Rewarded Ad — unlock extra insights (hidden for premium users) */}
+            {!isPremium && destination.trim().length >= 2 && !insightsUnlocked && isRewardedLoaded && (
               <TouchableOpacity
                 style={[
                   styles.rewardedAdButton,
@@ -1499,6 +1499,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               {isPremium ? (
                 <Text style={[styles.infoText, { color: theme.colors.primary, marginTop: 4, fontWeight: '600' }]}>
                   {t('create.aiInfo.premium', { defaultValue: '프리미엄: 월 30회 AI 자동 생성 가능' })}
+                </Text>
+              ) : aiTripsRemaining === -1 ? (
+                <Text style={[styles.infoText, { color: theme.colors.textSecondary, marginTop: 4, fontWeight: '600' }]}>
+                  {t('create.aiInfo.loading', { defaultValue: '생성 가능 횟수 확인 중...' })}
                 </Text>
               ) : (
                 <Text style={[styles.infoText, { color: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600' }]}>
