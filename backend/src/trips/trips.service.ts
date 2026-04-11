@@ -232,18 +232,22 @@ export class TripsService {
         );
       }
 
-      // Helper: fetch weather for all days in a single API call
+      // Helper: fetch weather with 10s timeout to prevent long waits
       const fetchWeatherMap = async () => {
         if (!locationInfo) {
           return new Map<number, any>();
         }
         try {
-          return await this.weatherService.getWeatherForDateRange(
+          const weatherPromise = this.weatherService.getWeatherForDateRange(
             locationInfo.latitude,
             locationInfo.longitude,
             startDate,
             endDate,
           );
+          const timeoutPromise = new Promise<Map<number, any>>((_, reject) =>
+            setTimeout(() => reject(new Error('Weather fetch timeout (10s)')), 10000),
+          );
+          return await Promise.race([weatherPromise, timeoutPromise]);
         } catch (error) {
           this.logger.warn(
             `Failed to get weather range: ${getErrorMessage(error)}`,

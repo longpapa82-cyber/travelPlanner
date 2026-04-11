@@ -100,7 +100,11 @@ const DatePickerField: React.FC<DatePickerProps> = ({
           onChange={(_: any, selectedDate?: Date) => {
             setShowPicker(false);
             if (selectedDate) {
-              onChange(selectedDate.toISOString().split('T')[0]);
+              // Use local date parts to avoid UTC timezone shift (e.g., KST 4/12 → UTC 4/11)
+              const y = selectedDate.getFullYear();
+              const m = String(selectedDate.getMonth() + 1).padStart(2, '0');
+              const d = String(selectedDate.getDate()).padStart(2, '0');
+              onChange(`${y}-${m}-${d}`);
             }
           }}
         />
@@ -127,7 +131,10 @@ const DatePickerField: React.FC<DatePickerProps> = ({
                 maximumDate={maximumDate}
                 onChange={(_: any, selectedDate?: Date) => {
                   if (selectedDate) {
-                    onChange(selectedDate.toISOString().split('T')[0]);
+                    const y = selectedDate.getFullYear();
+                    const m = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                    const d = String(selectedDate.getDate()).padStart(2, '0');
+                    onChange(`${y}-${m}-${d}`);
                   }
                 }}
                 locale={getDateLocale()}

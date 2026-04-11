@@ -236,6 +236,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await setSessionFlag(true);
       trackEvent('login', { method: 'email' });
       registerPushAfterLogin();
+
+      // Fetch full profile to populate aiTripsUsedThisMonth, subscriptionTier, etc.
+      try {
+        const profile = await apiService.getProfile();
+        if (profile) setUser(profile);
+      } catch {
+        // Best-effort — profile will be fetched on next app focus
+      }
     } catch (error) {
       if (error instanceof TwoFactorRequiredError) throw error;
       throw error;

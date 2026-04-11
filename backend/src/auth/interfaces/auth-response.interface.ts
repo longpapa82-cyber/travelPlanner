@@ -6,6 +6,9 @@ export interface AuthResponse {
     provider: string;
     profileImage?: string | null;
     isEmailVerified?: boolean;
+    subscriptionTier?: string;
+    subscriptionExpiresAt?: Date | string | null;
+    aiTripsUsedThisMonth?: number;
   };
   accessToken: string;
   refreshToken: string;

@@ -203,6 +203,9 @@ export class AuthService {
         provider: user.provider,
         profileImage: user.profileImage ?? null,
         isEmailVerified: user.isEmailVerified,
+        subscriptionTier: user.subscriptionTier,
+        subscriptionExpiresAt: user.subscriptionExpiresAt,
+        aiTripsUsedThisMonth: user.aiTripsUsedThisMonth,
       },
       ...tokens,
     };
