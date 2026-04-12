@@ -44,6 +44,7 @@ const CoachMark: React.FC<CoachMarkProps> = ({
   const { t } = useTranslation('tutorial');
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const { width: screenWidth } = useWindowDimensions();
+  const [tooltipHeight, setTooltipHeight] = React.useState(0);
 
   useEffect(() => {
     if (visible && targetLayout) {
@@ -83,8 +84,11 @@ const CoachMark: React.FC<CoachMarkProps> = ({
   if (position === 'below') {
     tooltipStyle.top = spotY + spotH + 16;
   } else {
-    tooltipStyle.bottom = undefined;
-    tooltipStyle.top = spotY - 16 - 120;
+    // Use measured tooltip height for accurate positioning above the spotlight
+    const effectiveHeight = tooltipHeight > 0 ? tooltipHeight : 120;
+    tooltipStyle.top = spotY - 16 - effectiveHeight;
+    // Prevent negative top (tooltip going off-screen)
+    if (tooltipStyle.top < 16) tooltipStyle.top = 16;
   }
 
   const arrowLeft = Math.min(
@@ -116,7 +120,13 @@ const CoachMark: React.FC<CoachMarkProps> = ({
         />
 
         {/* Tooltip */}
-        <View style={[styles.tooltip, tooltipStyle]}>
+        <View
+          style={[styles.tooltip, tooltipStyle]}
+          onLayout={(e) => {
+            const h = e.nativeEvent.layout.height;
+            if (h > 0 && h !== tooltipHeight) setTooltipHeight(h);
+          }}
+        >
           {position === 'below' && (
             <View style={[styles.arrow, styles.arrowUp, { left: arrowLeft - 16 }]} />
           )}

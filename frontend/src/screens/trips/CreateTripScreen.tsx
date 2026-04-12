@@ -69,6 +69,8 @@ const getPopularDestinations = (t: TFunction) => [
 
 // Duration quick picks (in days)
 const getDurationOptions = (t: TFunction) => [
+  { days: 1, label: t('create.duration.options.1day', { defaultValue: '당일' }), icon: 'calendar-today' },
+  { days: 2, label: t('create.duration.options.2days', { defaultValue: '1박 2일' }), icon: 'calendar-range' },
   { days: 3, label: t('create.duration.options.3days'), icon: 'calendar-week' },
   { days: 7, label: t('create.duration.options.1week'), icon: 'calendar-week-begin' },
   { days: 14, label: t('create.duration.options.2weeks'), icon: 'calendar-month' },
@@ -266,7 +268,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       today.setHours(0, 0, 0, 0);
       if (start <= today) {
         errors.dates = t('create.alerts.startDateFuture', { defaultValue: '출발일은 내일 이후여야 합니다.' });
-      } else if (start >= end) {
+      } else if (start > end) {
         errors.dates = t('create.alerts.startDateRequired');
       }
     }
@@ -422,23 +424,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         apiService.updateTravelPreferences(preferences).catch(() => {});
       }
 
-      // Show AI failure warning if AI generation failed
-      if (trip.aiStatus === 'failed') {
-        showToast({
-          type: 'warning',
-          message: t('create.aiFallbackWarning', { defaultValue: 'AI 일정 생성에 실패했습니다. 수동으로 활동을 추가해주세요.' }),
-          position: 'top',
-          duration: 4000,
-        });
-      } else {
-        showToast({
-          type: 'success',
-          message: t('create.generating'),
-          position: 'top',
-          duration: 2000,
-        });
-      }
-
       // Ensure tripId exists before navigation
       if (!trip?.id) {
         console.error('[CreateTripScreen] Trip created but no ID received:', trip);
@@ -455,8 +440,35 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Fire-and-forget interstitial ad — never await, never block navigation
       // This prevents white screen from Android Activity destruction during ad display
-      if (!isPremium && !isAdmin && isAdLoaded) {
+      const willShowAd = !isPremium && !isAdmin && isAdLoaded;
+      if (willShowAd) {
         showInterstitial().catch(() => {});
+      }
+
+      // Show toast AFTER ad decision to prevent toast being hidden behind interstitial
+      // Delay toast slightly when ad is shown so it appears after ad dismissal
+      const showResultToast = () => {
+        if (trip.aiStatus === 'failed') {
+          showToast({
+            type: 'warning',
+            message: t('create.aiFallbackWarning', { defaultValue: 'AI 일정 생성에 실패했습니다. 수동으로 활동을 추가해주세요.' }),
+            position: 'top',
+            duration: 4000,
+          });
+        } else {
+          showToast({
+            type: 'success',
+            message: t('create.generating'),
+            position: 'top',
+            duration: 2000,
+          });
+        }
+      };
+      if (willShowAd) {
+        // Delay toast so it shows after ad is dismissed (typical interstitial ~3-5s)
+        setTimeout(showResultToast, 4000);
+      } else {
+        showResultToast();
       }
 
       // Clean up persisted insights state
@@ -1496,9 +1508,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>
                 {t('create.aiInfo.description')}
               </Text>
-              {isPremium ? (
+              {isPremium || isAdmin ? (
                 <Text style={[styles.infoText, { color: theme.colors.primary, marginTop: 4, fontWeight: '600' }]}>
-                  {t('create.aiInfo.premium', { defaultValue: '프리미엄: 월 30회 AI 자동 생성 가능' })}
+                  {isAdmin
+                    ? t('create.aiInfo.admin', { defaultValue: '관리자: 무제한 AI 자동 생성' })
+                    : t('create.aiInfo.premium', { defaultValue: '프리미엄: 월 30회 AI 자동 생성 가능' })}
                 </Text>
               ) : aiTripsRemaining === -1 ? (
                 <Text style={[styles.infoText, { color: theme.colors.textSecondary, marginTop: 4, fontWeight: '600' }]}>

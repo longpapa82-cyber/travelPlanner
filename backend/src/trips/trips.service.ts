@@ -194,19 +194,26 @@ export class TripsService {
     try {
       progress$?.next({ step: 'validating' });
 
-      // Get location information for timezone and weather
-      let timezoneInfo: {
+      // Get location information for timezone and weather (with 8s timeout to prevent long waits)
+      type TimezoneResult = {
         timezone: string;
         timezoneId: string;
         timezoneOffset: number;
         localTime: string;
-      } | null = null;
+      } | null;
+      let timezoneInfo: TimezoneResult = null;
       let locationInfo: { latitude: number; longitude: number } | null = null;
 
       try {
-        const location = await this.timezoneService.getLocationInfo(
-          createTripDto.destination,
+        const locationTimeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Location/timezone fetch timeout (8s)')), 8000),
         );
+
+        const location = await Promise.race([
+          this.timezoneService.getLocationInfo(createTripDto.destination),
+          locationTimeoutPromise,
+        ]);
+
         if (location) {
           locationInfo = {
             latitude: location.latitude,
@@ -216,12 +223,17 @@ export class TripsService {
             `Retrieved location for ${createTripDto.destination}: ${location.latitude}, ${location.longitude}`,
           );
 
-          // Get timezone with location
-          timezoneInfo = await this.timezoneService.getTimezoneInfo(
-            location.latitude,
-            location.longitude,
-            startDate,
-          );
+          // Get timezone with location (reuse remaining time from 8s budget)
+          timezoneInfo = await Promise.race([
+            this.timezoneService.getTimezoneInfo(
+              location.latitude,
+              location.longitude,
+              startDate,
+            ),
+            new Promise<never>((_, reject) =>
+              setTimeout(() => reject(new Error('Timezone fetch timeout (5s)')), 5000),
+            ),
+          ]) as TimezoneResult;
           if (timezoneInfo) {
             this.logger.log(`Retrieved timezone: ${timezoneInfo.timezoneId}`);
           }
