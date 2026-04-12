@@ -21,7 +21,7 @@ import apiService from '../../services/api';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { trackEvent } from '../../services/eventTracker';
 import { APP_URL } from '../../constants/config';
-import { ensureAbsoluteUrl } from '../../utils/images';
+import { ensureAbsoluteUrl, getDestinationImageUrl } from '../../utils/images';
 
 type Tab = 'following' | 'trending';
 
@@ -173,16 +173,14 @@ const DiscoverScreen = () => {
       accessibilityRole="button"
       accessibilityLabel={`${item.destination} - ${t('tripBy', { name: item.user.name })}`}
     >
-      {item.coverImage ? (
-        <Image source={{ uri: item.coverImage }} style={styles.coverImage} />
-      ) : (
-        <View style={[styles.coverImage, styles.coverPlaceholder]}>
-          <Icon name="airplane" size={32} color="rgba(255,255,255,0.7)" />
-          <Text style={styles.coverPlaceholderText} numberOfLines={1}>
-            {item.destination}
-          </Text>
-        </View>
-      )}
+      <Image
+        source={{
+          uri: item.coverImage
+            ? ensureAbsoluteUrl(item.coverImage)
+            : getDestinationImageUrl(item.destination, { width: 400 }),
+        }}
+        style={styles.coverImage}
+      />
       <View style={styles.cardBody}>
         <View style={styles.cardHeader}>
           <TouchableOpacity

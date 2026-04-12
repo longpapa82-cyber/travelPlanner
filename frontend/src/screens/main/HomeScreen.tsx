@@ -146,14 +146,22 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     if (showCoachMark && createTripRef.current) {
-      const timeout = setTimeout(() => {
+      // Wait longer for entrance animations and layout to stabilize,
+      // then re-measure in case scroll position changed.
+      const measure = () => {
         createTripRef.current?.measureInWindow((x, y, width, height) => {
           if (width > 0 && height > 0) {
             setCreateTripLayout({ x, y, width, height });
           }
         });
-      }, 500);
-      return () => clearTimeout(timeout);
+      };
+      // Multiple measurement attempts to handle async layout/animation
+      const t1 = setTimeout(measure, 800);
+      const t2 = setTimeout(measure, 1500);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
     }
   }, [showCoachMark]);
 

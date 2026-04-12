@@ -446,7 +446,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       }
 
       // Show toast AFTER ad decision to prevent toast being hidden behind interstitial
-      // Delay toast slightly when ad is shown so it appears after ad dismissal
+      // Only show toast when there's something meaningful to report (AI failure)
+      // Success toast is skipped — user can see the completed trip on the next screen
       const showResultToast = () => {
         if (trip.aiStatus === 'failed') {
           showToast({
@@ -455,17 +456,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
             position: 'top',
             duration: 4000,
           });
-        } else {
-          showToast({
-            type: 'success',
-            message: t('create.generating'),
-            position: 'top',
-            duration: 2000,
-          });
         }
+        // Skip success toast — trip detail screen is self-evident
       };
-      if (willShowAd) {
-        // Delay toast so it shows after ad is dismissed (typical interstitial ~3-5s)
+      if (willShowAd && trip.aiStatus === 'failed') {
+        // Delay warning toast so it shows after ad is dismissed (typical interstitial ~3-5s)
         setTimeout(showResultToast, 4000);
       } else {
         showResultToast();
@@ -649,10 +644,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     };
   }, []);
 
-  // Reset transient error/loading state when screen regains focus.
-  // Prevents stale errors from a previous failed attempt blocking retries.
+  // Reset form state AND transient error/loading state when screen regains focus.
+  // Ensures a fresh form each time user enters the create trip flow.
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
+      // Reset transient state
       setFieldErrors({});
       setIsLoading(false);
       setGenerationStep(0);
@@ -666,6 +662,21 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         clearTimeout(timeoutWarningRef.current);
         timeoutWarningRef.current = null;
       }
+
+      // Reset form inputs so user starts fresh each time
+      // (previously: destination/dates/budget/etc. persisted across navigation)
+      setDestination('');
+      setStartDate('');
+      setEndDate('');
+      setNumberOfTravelers(1);
+      setDescription('');
+      setTotalBudget('');
+      setBudgetCurrency('USD');
+      setPrefBudget('');
+      setPrefStyle('');
+      setPrefInterests([]);
+      setPlanningMode('ai');
+      setInsightsUnlocked(false);
     });
     return unsubscribe;
   }, [navigation]);
