@@ -63,7 +63,7 @@ export class TripsController {
 
   @Post()
   @UseGuards(AdminExemptThrottlerGuard)
-  @Throttle({ short: { ttl: 60000, limit: 5 } })
+  @Throttle({ short: { ttl: 60000, limit: 10 } })
   create(
     @CurrentUser('userId') userId: string,
     @Headers('accept-language') acceptLanguage: string | undefined,
@@ -82,7 +82,7 @@ export class TripsController {
    */
   @Post('create-async')
   @UseGuards(AdminExemptThrottlerGuard)
-  @Throttle({ short: { ttl: 60000, limit: 5 } })
+  @Throttle({ short: { ttl: 60000, limit: 10 } })
   async createAsync(
     @CurrentUser('userId') userId: string,
     @Headers('accept-language') acceptLanguage: string | undefined,

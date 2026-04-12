@@ -182,11 +182,33 @@ export class SubscriptionService {
           ? new Date(parseInt(event.expiration_at_ms, 10))
           : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
 
+        // Detect plan type from product identifier (e.g. "premium_monthly", "premium_yearly")
+        const productId: string = (
+          event.product_id ||
+          event.product_identifier ||
+          ''
+        ).toLowerCase();
+        const planType: 'monthly' | 'yearly' | undefined = productId.includes(
+          'year',
+        )
+          ? 'yearly'
+          : productId.includes('month')
+            ? 'monthly'
+            : undefined;
+
+        const purchasedAt = event.purchased_at_ms
+          ? new Date(parseInt(event.purchased_at_ms, 10))
+          : eventType === 'INITIAL_PURCHASE'
+            ? new Date()
+            : undefined;
+
         await this.userRepository.update(user.id, {
           subscriptionTier: SubscriptionTier.PREMIUM,
           subscriptionPlatform:
             storeToPlatform[event.store || ''] || user.subscriptionPlatform,
           subscriptionExpiresAt: expiresAt,
+          ...(planType && { subscriptionPlanType: planType }),
+          ...(purchasedAt && { subscriptionStartedAt: purchasedAt }),
           revenuecatAppUserId: appUserId,
         });
 
@@ -396,10 +418,26 @@ export class SubscriptionService {
 
     const paddleCustomerId = data.customerId || data.customer_id || null;
 
+    // Detect plan type by comparing line item priceId with configured prices
+    const monthlyPriceId = this.configService.get<string>('PADDLE_PRICE_MONTHLY');
+    const yearlyPriceId = this.configService.get<string>('PADDLE_PRICE_YEARLY');
+    const items: any[] = data.items || data.line_items || [];
+    const matchedPriceId = items
+      .map((it: any) => it?.price?.id || it?.priceId || it?.price_id)
+      .find((id: string | undefined) => !!id);
+    const planType: 'monthly' | 'yearly' | undefined =
+      matchedPriceId === yearlyPriceId
+        ? 'yearly'
+        : matchedPriceId === monthlyPriceId
+          ? 'monthly'
+          : undefined;
+
     await this.userRepository.update(user.id, {
       subscriptionTier: SubscriptionTier.PREMIUM,
       subscriptionPlatform: SubscriptionPlatform.WEB,
       subscriptionExpiresAt: expiresAt,
+      subscriptionStartedAt: new Date(),
+      ...(planType && { subscriptionPlanType: planType }),
       ...(paddleCustomerId && { paddleCustomerId }),
     });
 

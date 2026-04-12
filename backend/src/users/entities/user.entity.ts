@@ -140,6 +140,12 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   subscriptionExpiresAt?: Date;
 
+  @Column({ type: 'timestamp', nullable: true })
+  subscriptionStartedAt?: Date;
+
+  @Column({ type: 'varchar', length: 16, nullable: true })
+  subscriptionPlanType?: 'monthly' | 'yearly';
+
   @Column({ type: 'varchar', nullable: true, select: false })
   revenuecatAppUserId?: string;
 

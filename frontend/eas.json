@@ -42,7 +42,9 @@
       },
       "android": {
         "serviceAccountKeyPath": "./google-play-service-account.json",
-        "releaseStatus": "draft"
+        "track": "alpha",
+        "releaseStatus": "draft",
+        "changesNotSentForReview": false
       }
     }
   }

@@ -18,7 +18,17 @@ import Button from '../../components/core/Button';
 
 const SubscriptionScreen = () => {
   const { t } = useTranslation('premium');
-  const { isPremium, subscriptionTier, expiresAt, aiTripsUsed, aiTripsRemaining, showPaywall } = usePremium();
+  const {
+    isPremium,
+    subscriptionTier,
+    expiresAt,
+    startedAt,
+    planType,
+    platform,
+    aiTripsUsed,
+    aiTripsRemaining,
+    showPaywall,
+  } = usePremium();
   const { theme, isDark } = useTheme();
 
   const openManageSubscription = async () => {
@@ -58,10 +68,55 @@ const SubscriptionScreen = () => {
             </View>
             <PremiumBadge size="medium" />
           </View>
+          {/* Plan type badge */}
+          {planType && (
+            <View style={styles.planMetaRow}>
+              <Icon name="calendar-check" size={16} color="#FFFFFFCC" />
+              <Text style={[styles.planMetaText, { color: '#FFFFFFEE' }]}>
+                {planType === 'yearly'
+                  ? t('status.planYearly', { defaultValue: '연간 플랜' })
+                  : t('status.planMonthly', { defaultValue: '월간 플랜' })}
+              </Text>
+            </View>
+          )}
+          {startedAt && (
+            <View style={styles.planMetaRow}>
+              <Icon name="calendar-start" size={16} color="#FFFFFFCC" />
+              <Text style={[styles.planMetaText, { color: '#FFFFFFCC' }]}>
+                {t('status.startedOn', {
+                  defaultValue: '시작일: {{date}}',
+                  date: formatDate(startedAt),
+                })}
+              </Text>
+            </View>
+          )}
           {expiresAt && (
-            <Text style={[styles.expiresText, { color: '#FFFFFFAA' }]}>
-              {t('status.expiresOn', { date: formatDate(expiresAt) })}
-            </Text>
+            <View style={styles.planMetaRow}>
+              <Icon
+                name={planType ? 'autorenew' : 'calendar-end'}
+                size={16}
+                color="#FFFFFFCC"
+              />
+              <Text style={[styles.planMetaText, { color: '#FFFFFFCC' }]}>
+                {planType
+                  ? t('status.renewsOn', {
+                      defaultValue: '다음 결제일: {{date}}',
+                      date: formatDate(expiresAt),
+                    })
+                  : t('status.expiresOn', { date: formatDate(expiresAt) })}
+              </Text>
+            </View>
+          )}
+          {platform && (
+            <View style={styles.planMetaRow}>
+              <Icon name="cellphone-link" size={16} color="#FFFFFFCC" />
+              <Text style={[styles.planMetaText, { color: '#FFFFFFCC' }]}>
+                {t('status.platform', {
+                  defaultValue: '결제 수단: {{platform}}',
+                  platform,
+                })}
+              </Text>
+            </View>
           )}
         </View>
       ) : (
@@ -208,6 +263,16 @@ const styles = StyleSheet.create({
   expiresText: {
     fontSize: 12,
     marginTop: 12,
+  },
+  planMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 8,
+  },
+  planMetaText: {
+    fontSize: 13,
+    fontWeight: '500',
   },
   section: {
     marginHorizontal: 16,

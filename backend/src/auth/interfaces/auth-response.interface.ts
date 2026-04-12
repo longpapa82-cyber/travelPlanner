@@ -7,7 +7,10 @@ export interface AuthResponse {
     profileImage?: string | null;
     isEmailVerified?: boolean;
     subscriptionTier?: string;
+    subscriptionPlatform?: string | null;
     subscriptionExpiresAt?: Date | string | null;
+    subscriptionStartedAt?: Date | string | null;
+    subscriptionPlanType?: 'monthly' | 'yearly' | null;
     aiTripsUsedThisMonth?: number;
   };
   accessToken: string;

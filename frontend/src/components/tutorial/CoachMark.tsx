@@ -28,8 +28,9 @@ interface CoachMarkProps {
   onDismiss: () => void;
 }
 
-const SPOT_PADDING = 8;
+const SPOT_PADDING = 12;
 const SPOT_RADIUS = 16;
+const TOOLTIP_GAP = 24;
 const WEB_MAX_WIDTH = 600;
 const WEB_DESKTOP_BREAKPOINT = 768;
 
@@ -82,11 +83,11 @@ const CoachMark: React.FC<CoachMarkProps> = ({
   const tooltipRight = isWebDesktop ? screenWidth - containerRight + 16 : 16;
   const tooltipStyle: any = { left: tooltipLeft, right: tooltipRight };
   if (position === 'below') {
-    tooltipStyle.top = spotY + spotH + 16;
+    tooltipStyle.top = spotY + spotH + TOOLTIP_GAP;
   } else {
     // Use measured tooltip height for accurate positioning above the spotlight
     const effectiveHeight = tooltipHeight > 0 ? tooltipHeight : 120;
-    tooltipStyle.top = spotY - 16 - effectiveHeight;
+    tooltipStyle.top = spotY - TOOLTIP_GAP - effectiveHeight;
     // Prevent negative top (tooltip going off-screen)
     if (tooltipStyle.top < 16) tooltipStyle.top = 16;
   }

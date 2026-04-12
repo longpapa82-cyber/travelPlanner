@@ -594,10 +594,18 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       }
 
       const serverMsg = error.response?.data?.message || '';
-      // Map backend English error to i18n message
-      const message = serverMsg.includes('AI generation limit')
-        ? t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 })
-        : serverMsg || t('create.alerts.createFailed');
+      const statusCode = error.response?.status;
+      // Map backend errors to friendly i18n messages
+      let message: string;
+      if (statusCode === 429 || /too many requests|throttler/i.test(serverMsg)) {
+        message = t('create.alerts.tooManyRequests', {
+          defaultValue: '잠시 후 다시 시도해주세요. (요청이 너무 많습니다)',
+        });
+      } else if (serverMsg.includes('AI generation limit')) {
+        message = t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 });
+      } else {
+        message = serverMsg || t('create.alerts.createFailed');
+      }
 
       // Log error to backend for admin visibility
       apiService.reportError({
@@ -640,6 +648,27 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       abortControllerRef.current?.abort();
     };
   }, []);
+
+  // Reset transient error/loading state when screen regains focus.
+  // Prevents stale errors from a previous failed attempt blocking retries.
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setFieldErrors({});
+      setIsLoading(false);
+      setGenerationStep(0);
+      setShowCancelConfirm(false);
+      isCreatingRef.current = false;
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+      if (timeoutWarningRef.current) {
+        clearTimeout(timeoutWarningRef.current);
+        timeoutWarningRef.current = null;
+      }
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const formatDateForDisplay = (dateString: string): string => {
     if (!dateString) return '';

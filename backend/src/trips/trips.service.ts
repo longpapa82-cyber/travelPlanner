@@ -206,7 +206,10 @@ export class TripsService {
 
       try {
         const locationTimeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Location/timezone fetch timeout (8s)')), 8000),
+          setTimeout(
+            () => reject(new Error('Location/timezone fetch timeout (8s)')),
+            8000,
+          ),
         );
 
         const location = await Promise.race([
@@ -224,16 +227,19 @@ export class TripsService {
           );
 
           // Get timezone with location (reuse remaining time from 8s budget)
-          timezoneInfo = await Promise.race([
+          timezoneInfo = (await Promise.race([
             this.timezoneService.getTimezoneInfo(
               location.latitude,
               location.longitude,
               startDate,
             ),
             new Promise<never>((_, reject) =>
-              setTimeout(() => reject(new Error('Timezone fetch timeout (5s)')), 5000),
+              setTimeout(
+                () => reject(new Error('Timezone fetch timeout (5s)')),
+                5000,
+              ),
             ),
-          ]) as TimezoneResult;
+          ])) as TimezoneResult;
           if (timezoneInfo) {
             this.logger.log(`Retrieved timezone: ${timezoneInfo.timezoneId}`);
           }
@@ -257,7 +263,10 @@ export class TripsService {
             endDate,
           );
           const timeoutPromise = new Promise<Map<number, any>>((_, reject) =>
-            setTimeout(() => reject(new Error('Weather fetch timeout (10s)')), 10000),
+            setTimeout(
+              () => reject(new Error('Weather fetch timeout (10s)')),
+              10000,
+            ),
           );
           return await Promise.race([weatherPromise, timeoutPromise]);
         } catch (error) {

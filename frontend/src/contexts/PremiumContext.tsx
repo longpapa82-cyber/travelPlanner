@@ -19,6 +19,9 @@ interface PremiumContextType {
   isAiLimitReached: boolean;
   isAdmin: boolean;
   expiresAt?: string;
+  startedAt?: string;
+  planType?: 'monthly' | 'yearly';
+  platform?: string;
   isPaywallVisible: boolean;
   paywallContext: PaywallContext;
   showPaywall: (context?: PaywallContext) => void;
@@ -153,6 +156,9 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     aiTripsLimit,
     isAiLimitReached,
     expiresAt: user?.subscriptionExpiresAt,
+    startedAt: user?.subscriptionStartedAt,
+    planType: user?.subscriptionPlanType,
+    platform: user?.subscriptionPlatform,
     isPaywallVisible,
     paywallContext,
     showPaywall,
@@ -160,7 +166,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     refreshStatus,
     markPremium,
     markLoggingOut,
-  }), [isPremium, isAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
+  }), [isPremium, isAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, user?.subscriptionStartedAt, user?.subscriptionPlanType, user?.subscriptionPlatform, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
 
   return (
     <PremiumContext.Provider value={value}>

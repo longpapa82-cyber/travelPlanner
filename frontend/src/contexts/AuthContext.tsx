@@ -262,6 +262,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await setSessionFlag(true);
       trackEvent('login', { method: '2fa' });
       registerPushAfterLogin();
+
+      // Fetch full profile to populate subscription fields
+      try {
+        const profile = await apiService.getProfile();
+        if (profile) setUser(profile);
+      } catch {
+        // Best-effort — profile will be fetched on next app focus
+      }
     } catch (error) {
       throw error;
     }
@@ -279,6 +287,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await setSessionFlag(true);
       trackEvent('register', { method: 'email' });
       registerPushAfterLogin();
+
+      // Fetch full profile to populate subscription fields
+      try {
+        const profile = await apiService.getProfile();
+        if (profile) setUser(profile);
+      } catch {
+        // Best-effort — profile will be fetched on next app focus
+      }
     } catch (error) {
       throw error;
     }
@@ -299,6 +315,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(authResponse.user);
     await setSessionFlag(true);
     registerPushAfterLogin();
+
+    // Fetch full profile to populate aiTripsUsedThisMonth, subscriptionTier, etc.
+    // OAuth login responses do not include subscription fields by default.
+    try {
+      const profile = await apiService.getProfile();
+      if (profile) setUser(profile);
+    } catch {
+      // Best-effort — profile will be fetched on next app focus
+    }
   };
 
   const loginWithGoogle = async () => {
@@ -315,6 +340,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         await setSessionFlag(true);
         registerPushAfterLogin();
         trackEvent('login', { method: 'google_native' });
+
+        // Fetch full profile to populate subscriptionTier and aiTripsUsedThisMonth
+        // (native Google Sign-In response excludes these fields).
+        try {
+          const profile = await apiService.getProfile();
+          if (profile) setUser(profile);
+        } catch {
+          // Best-effort — profile will be fetched on next app focus
+        }
         return;
       } catch (error) {
         throw error;

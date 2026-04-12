@@ -11,7 +11,10 @@ export interface User {
   isTwoFactorEnabled?: boolean;
   travelPreferences?: TripPreferences;
   subscriptionTier?: SubscriptionTier;
+  subscriptionPlatform?: string;
   subscriptionExpiresAt?: string;
+  subscriptionStartedAt?: string;
+  subscriptionPlanType?: 'monthly' | 'yearly';
   aiTripsUsedThisMonth?: number;
   createdAt: string;
   updatedAt: string;
