@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { ConfigService } from '@nestjs/config';
+import * as crypto from 'crypto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { SubscriptionService } from './subscription.service';
@@ -65,7 +66,13 @@ export class SubscriptionController {
       );
     } else {
       const expectedAuth = `Bearer ${webhookSecret}`;
-      if (authHeader !== expectedAuth) {
+      // Timing-safe comparison prevents token discovery via response-time
+      // side channels. Lengths are compared first to avoid crashing on
+      // mismatched buffer sizes.
+      const a = Buffer.from(authHeader ?? '', 'utf8');
+      const b = Buffer.from(expectedAuth, 'utf8');
+      const valid = a.length === b.length && crypto.timingSafeEqual(a, b);
+      if (!valid) {
         this.logger.warn('RevenueCat webhook: invalid authorization header');
         throw new UnauthorizedException('Invalid webhook secret');
       }

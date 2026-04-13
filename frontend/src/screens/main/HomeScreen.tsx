@@ -136,6 +136,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { showCoachMark, completeCoach, navigateToCreateTrip, clearNavigateFlag } = useTutorial();
   const createTripRef = useRef<View>(null);
   const [createTripLayout, setCreateTripLayout] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+  // Track entrance animation completion so coachmark measurement waits for final layout
+  const [animationDone, setAnimationDone] = useState(false);
 
   useEffect(() => {
     if (navigateToCreateTrip) {
@@ -144,26 +146,24 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [navigateToCreateTrip, clearNavigateFlag, navigation]);
 
+  // Measure the create-trip button ONLY after entrance animation has committed
+  // its final frame. Prior timer-based approaches (500/800/1500ms) were flaky
+  // because slow devices can delay animation start beyond any fixed timeout.
   useEffect(() => {
-    if (showCoachMark && createTripRef.current) {
-      // Wait longer for entrance animations and layout to stabilize,
-      // then re-measure in case scroll position changed.
-      const measure = () => {
-        createTripRef.current?.measureInWindow((x, y, width, height) => {
-          if (width > 0 && height > 0) {
-            setCreateTripLayout({ x, y, width, height });
-          }
-        });
-      };
-      // Multiple measurement attempts to handle async layout/animation
-      const t1 = setTimeout(measure, 800);
-      const t2 = setTimeout(measure, 1500);
-      return () => {
-        clearTimeout(t1);
-        clearTimeout(t2);
-      };
-    }
-  }, [showCoachMark]);
+    if (!showCoachMark || !animationDone) return;
+    const node = createTripRef.current;
+    if (!node) return;
+
+    // Use rAF to ensure we read the layout AFTER the next paint commit.
+    const rafId = requestAnimationFrame(() => {
+      node.measureInWindow((x, y, width, height) => {
+        if (width > 0 && height > 0) {
+          setCreateTripLayout({ x, y, width, height });
+        }
+      });
+    });
+    return () => cancelAnimationFrame(rafId);
+  }, [showCoachMark, animationDone]);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -202,7 +202,21 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   }, [fetchStats]);
 
   useEffect(() => {
-    // Start animations on mount
+    // Start animations on mount. Signal layout-stable state so coachmark
+    // measurement can run against the committed layout.
+    //
+    // We intentionally DO NOT gate on `finished` — if the animation is
+    // interrupted (re-render, navigation, stopAnimation), we still want the
+    // final layout measured. Otherwise the coachmark would silently never
+    // appear on devices where animations get preempted, defeating the V111
+    // fix. A safety fallback timer also flips the flag in case .start()'s
+    // callback never fires at all.
+    let fired = false;
+    const markDone = () => {
+      if (fired) return;
+      fired = true;
+      setAnimationDone(true);
+    };
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -214,7 +228,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         duration: 600,
         useNativeDriver: Platform.OS !== 'web',
       }),
-    ]).start();
+    ]).start(() => markDone());
+    const fallback = setTimeout(markDone, 1500);
+    return () => clearTimeout(fallback);
   }, []);
 
   const handleCreateTrip = () => {

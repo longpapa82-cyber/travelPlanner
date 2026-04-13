@@ -305,6 +305,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const timeoutWarningRef = useRef<NodeJS.Timeout | null>(null);
+  // Deferred toast after interstitial ad close. Tracked so we can cancel it
+  // on unmount/blur to avoid firing a setState on an unmounted screen.
+  const postAdToastTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isCreatingRef = useRef(false); // Guard: Prevent duplicate creation from rapid clicks
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
@@ -404,16 +407,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       // Refresh subscription status so AI remaining count updates
       await refreshStatus();
 
-      // Show pre-warning when user has 1 AI trip left after this one
-      if (!isPremium && aiTripsRemaining === 2) {
-        // After this trip, only 1 remains
-        showToast({
-          type: 'info',
-          message: t('create.aiInfo.remaining', { remaining: 1, total: aiTripsLimit > 0 ? aiTripsLimit : 3 }),
-          position: 'top',
-          duration: 4000,
-        });
-      }
+      // Defer the "N trips left" toast until AFTER the interstitial ad closes.
+      // Prior code showed the toast immediately, which made it invisible behind
+      // the native ad activity layer (z-index cannot beat native Activity).
+      // We queue it into the post-navigation section below instead.
 
       // Schedule trip reminder notifications
       scheduleTripReminders(trip).catch(() => {});
@@ -446,8 +443,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       }
 
       // Show toast AFTER ad decision to prevent toast being hidden behind interstitial
-      // Only show toast when there's something meaningful to report (AI failure)
-      // Success toast is skipped — user can see the completed trip on the next screen
+      // Native ad Activity layer ignores React Native z-index — deferring is the
+      // only reliable way to make toasts visible after the ad closes.
       const showResultToast = () => {
         if (trip.aiStatus === 'failed') {
           showToast({
@@ -456,12 +453,32 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
             position: 'top',
             duration: 4000,
           });
+          return;
         }
-        // Skip success toast — trip detail screen is self-evident
+        // Pre-warning: only show for free/non-admin users when crossing from 2 → 1 remaining
+        if (!isPremium && !isAdmin && aiTripsRemaining === 2) {
+          const total = aiTripsLimit > 0 ? aiTripsLimit : 3;
+          showToast({
+            type: 'info',
+            message: t('create.aiInfo.remaining', { remaining: 1, total }),
+            position: 'top',
+            duration: 4000,
+          });
+        }
+        // Success toast otherwise: skipped — trip detail screen is self-evident
       };
-      if (willShowAd && trip.aiStatus === 'failed') {
-        // Delay warning toast so it shows after ad is dismissed (typical interstitial ~3-5s)
-        setTimeout(showResultToast, 4000);
+      if (willShowAd) {
+        // Delay until ad likely closed (typical interstitial ~3-5s).
+        // Stored in a ref so unmount/blur cleanup can cancel the pending
+        // toast — otherwise we risk a setState-after-unmount warning when
+        // the user navigates away inside the delay window.
+        if (postAdToastTimerRef.current) {
+          clearTimeout(postAdToastTimerRef.current);
+        }
+        postAdToastTimerRef.current = setTimeout(() => {
+          postAdToastTimerRef.current = null;
+          showResultToast();
+        }, 4000);
       } else {
         showResultToast();
       }
@@ -640,6 +657,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   useEffect(() => {
     return () => {
       if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
+      if (postAdToastTimerRef.current) {
+        clearTimeout(postAdToastTimerRef.current);
+        postAdToastTimerRef.current = null;
+      }
       abortControllerRef.current?.abort();
     };
   }, []);
@@ -661,6 +682,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       if (timeoutWarningRef.current) {
         clearTimeout(timeoutWarningRef.current);
         timeoutWarningRef.current = null;
+      }
+      if (postAdToastTimerRef.current) {
+        clearTimeout(postAdToastTimerRef.current);
+        postAdToastTimerRef.current = null;
       }
 
       // Reset form inputs so user starts fresh each time

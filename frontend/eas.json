@@ -29,8 +29,7 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api",
         "EXPO_PUBLIC_APP_URL": "https://mytravel-planner.com",
-        "REVENUECAT_ANDROID_KEY": "goog_BeyiIKXfhmqtbtzaEGMRICChtQd",
-        "EXPO_PUBLIC_USE_TEST_ADS": "true"
+        "REVENUECAT_ANDROID_KEY": "goog_BeyiIKXfhmqtbtzaEGMRICChtQd"
       },
       "autoIncrement": true
     }

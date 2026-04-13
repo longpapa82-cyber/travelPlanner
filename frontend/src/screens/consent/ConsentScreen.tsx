@@ -278,7 +278,8 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
           {
             backgroundColor,
             borderTopColor: borderColor,
-            paddingBottom: Math.max(insets.bottom, 32) + 24,
+            paddingTop: 24,
+            paddingBottom: Math.max(insets.bottom, 16) + 20,
           },
         ]}
       >
@@ -394,7 +395,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   footer: {
-    padding: 16,
+    paddingTop: 20,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
     borderTopWidth: 1,
   },
 });

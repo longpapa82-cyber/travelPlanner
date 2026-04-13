@@ -46,7 +46,11 @@
   "status": {
     "active": "활성",
     "expired": "만료됨",
-    "expiresOn": "{{date}}까지"
+    "expiresOn": "{{date}}까지",
+    "startedOn": "시작일: {{date}}",
+    "renewsOn": "다음 결제일: {{date}}",
+    "planMonthly": "월간 플랜",
+    "planYearly": "연간 플랜"
   },
   "promo": {
     "title": "프리미엄 잠금 해제",

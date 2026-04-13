@@ -46,7 +46,11 @@
   "status": {
     "active": "Active",
     "expired": "Expired",
-    "expiresOn": "Until {{date}}"
+    "expiresOn": "Until {{date}}",
+    "startedOn": "Started: {{date}}",
+    "renewsOn": "Next billing: {{date}}",
+    "planMonthly": "Monthly plan",
+    "planYearly": "Annual plan"
   },
   "promo": {
     "title": "Unlock Premium",

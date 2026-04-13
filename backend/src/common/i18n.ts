@@ -266,23 +266,42 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     ms: 'E-mel pengesahan telah dihantar.',
   },
   'email.verification.invalid': {
-    ko: '유효하지 않은 인증 토큰입니다.',
-    en: 'Invalid verification token.',
-    ja: '無効な認証トークンです。',
-    zh: '无效的验证令牌。',
-    es: 'Token de verificación inválido.',
-    de: 'Ungültiger Verifizierungstoken.',
-    fr: 'Jeton de vérification invalide.',
-    th: 'โทเค็นยืนยันไม่ถูกต้อง',
-    vi: 'Mã xác minh không hợp lệ.',
-    pt: 'Token de verificação inválido.',
-    ar: 'رمز التحقق غير صالح.',
-    id: 'Token verifikasi tidak valid.',
-    hi: 'अमान्य सत्यापन टोकन।',
-    it: 'Token di verifica non valido.',
-    ru: 'Недействительный токен подтверждения.',
-    tr: 'Geçersiz doğrulama kodu.',
-    ms: 'Token pengesahan tidak sah.',
+    ko: '인증 코드가 올바르지 않습니다.',
+    en: 'The verification code is incorrect.',
+    ja: '認証コードが正しくありません。',
+    zh: '验证码不正确。',
+    es: 'El código de verificación no es correcto.',
+    de: 'Der Bestätigungscode ist nicht korrekt.',
+    fr: 'Le code de vérification est incorrect.',
+    th: 'รหัสยืนยันไม่ถูกต้อง',
+    vi: 'Mã xác minh không chính xác.',
+    pt: 'O código de verificação está incorreto.',
+    ar: 'رمز التحقق غير صحيح.',
+    id: 'Kode verifikasi tidak benar.',
+    hi: 'सत्यापन कोड सही नहीं है।',
+    it: 'Il codice di verifica non è corretto.',
+    ru: 'Код подтверждения неверный.',
+    tr: 'Doğrulama kodu yanlış.',
+    ms: 'Kod pengesahan tidak betul.',
+  },
+  'email.verification.invalidWithRemaining': {
+    ko: '인증 코드가 올바르지 않습니다. {{remaining}}번 더 시도할 수 있어요.',
+    en: 'The verification code is incorrect. You have {{remaining}} attempts left.',
+    ja: '認証コードが正しくありません。あと{{remaining}}回試すことができます。',
+    zh: '验证码不正确。您还有 {{remaining}} 次尝试机会。',
+    es: 'El código de verificación no es correcto. Te quedan {{remaining}} intentos.',
+    de: 'Der Bestätigungscode ist nicht korrekt. Sie haben noch {{remaining}} Versuche.',
+    fr: 'Le code de vérification est incorrect. Il vous reste {{remaining}} tentatives.',
+    th: 'รหัสยืนยันไม่ถูกต้อง เหลือ {{remaining}} ครั้ง',
+    vi: 'Mã xác minh không chính xác. Bạn còn {{remaining}} lần thử.',
+    pt: 'O código de verificação está incorreto. Você tem {{remaining}} tentativas restantes.',
+    ar: 'رمز التحقق غير صحيح. لديك {{remaining}} محاولات متبقية.',
+    id: 'Kode verifikasi tidak benar. Anda memiliki {{remaining}} percobaan tersisa.',
+    hi: 'सत्यापन कोड सही नहीं है। आपके पास {{remaining}} प्रयास शेष हैं।',
+    it: 'Il codice di verifica non è corretto. Hai {{remaining}} tentativi rimasti.',
+    ru: 'Код подтверждения неверный. Осталось попыток: {{remaining}}.',
+    tr: 'Doğrulama kodu yanlış. {{remaining}} deneme hakkınız kaldı.',
+    ms: 'Kod pengesahan tidak betul. Anda mempunyai {{remaining}} percubaan lagi.',
   },
   'email.verification.expired': {
     ko: '인증 코드가 만료되었습니다. 새 코드를 요청해주세요.',
@@ -767,6 +786,16 @@ export function parseLang(acceptLanguage?: string): SupportedLang {
   return (supported.find((l) => l === lang) as SupportedLang) ?? 'ko';
 }
 
-export function t(key: string, lang: SupportedLang = 'ko'): string {
-  return translations[key]?.[lang] ?? translations[key]?.['ko'] ?? key;
+export function t(
+  key: string,
+  lang: SupportedLang = 'ko',
+  params?: Record<string, string | number>,
+): string {
+  const template =
+    translations[key]?.[lang] ?? translations[key]?.['ko'] ?? key;
+  if (!params) return template;
+  return template.replace(/\{\{(\w+)\}\}/g, (match, name) => {
+    const value = params[name];
+    return value !== undefined ? String(value) : match;
+  });
 }

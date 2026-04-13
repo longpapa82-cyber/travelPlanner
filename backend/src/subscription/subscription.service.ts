@@ -67,6 +67,8 @@ export class SubscriptionService {
         'subscriptionTier',
         'subscriptionPlatform',
         'subscriptionExpiresAt',
+        'subscriptionStartedAt',
+        'subscriptionPlanType',
         'aiTripsUsedThisMonth',
       ],
     });
@@ -91,6 +93,8 @@ export class SubscriptionService {
       isPremium,
       platform: user.subscriptionPlatform,
       expiresAt: user.subscriptionExpiresAt,
+      startedAt: user.subscriptionStartedAt,
+      planType: user.subscriptionPlanType,
       aiTripsUsed: user.aiTripsUsedThisMonth,
       aiTripsLimit: isPremium ? -1 : this.aiTripsFreeLimit,
       aiTripsRemaining,
@@ -210,6 +214,7 @@ export class SubscriptionService {
           ...(planType && { subscriptionPlanType: planType }),
           ...(purchasedAt && { subscriptionStartedAt: purchasedAt }),
           revenuecatAppUserId: appUserId,
+          ...(eventType === 'INITIAL_PURCHASE' && { aiTripsUsedThisMonth: 0 }),
         });
 
         // Update cache
@@ -365,7 +370,11 @@ export class SubscriptionService {
 
     let event: any;
     try {
-      event = await this.paddle.webhooks.unmarshal(rawBody, webhookSecret, signature);
+      event = await this.paddle.webhooks.unmarshal(
+        rawBody,
+        webhookSecret,
+        signature,
+      );
     } catch (err: any) {
       this.logger.warn(
         `Paddle webhook signature verification failed: ${err.message}`,
@@ -419,7 +428,9 @@ export class SubscriptionService {
     const paddleCustomerId = data.customerId || data.customer_id || null;
 
     // Detect plan type by comparing line item priceId with configured prices
-    const monthlyPriceId = this.configService.get<string>('PADDLE_PRICE_MONTHLY');
+    const monthlyPriceId = this.configService.get<string>(
+      'PADDLE_PRICE_MONTHLY',
+    );
     const yearlyPriceId = this.configService.get<string>('PADDLE_PRICE_YEARLY');
     const items: any[] = data.items || data.line_items || [];
     const matchedPriceId = items

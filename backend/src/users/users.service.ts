@@ -27,6 +27,11 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { t, SupportedLang } from '../common/i18n';
 
+// Max email verification code attempts before the code is invalidated and
+// the user must request a new one. Kept as a named constant so the
+// "remaining attempts" message stays in sync with the enforcement check.
+const MAX_EMAIL_VERIFICATION_ATTEMPTS = 5;
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -319,7 +324,7 @@ export class UsersService {
     }
 
     // Check attempts
-    if (user.emailVerificationAttempts >= 5) {
+    if (user.emailVerificationAttempts >= MAX_EMAIL_VERIFICATION_ATTEMPTS) {
       throw new BadRequestException(
         t('email.verification.tooManyAttempts', lang),
       );
@@ -341,10 +346,15 @@ export class UsersService {
         'emailVerificationAttempts',
         1,
       );
-      const remaining = 4 - user.emailVerificationAttempts;
+      // user.emailVerificationAttempts is the value BEFORE the increment above.
+      // After this failure the persisted attempts = old + 1, so remaining
+      // attempts = MAX - (old + 1) = MAX - old - 1.
+      const remaining =
+        MAX_EMAIL_VERIFICATION_ATTEMPTS - user.emailVerificationAttempts - 1;
       throw new BadRequestException(
-        t('email.verification.invalid', lang) +
-          (remaining > 0 ? ` (${remaining})` : ''),
+        remaining > 0
+          ? t('email.verification.invalidWithRemaining', lang, { remaining })
+          : t('email.verification.invalid', lang),
       );
     }
 

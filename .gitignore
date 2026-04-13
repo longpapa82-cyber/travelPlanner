@@ -63,6 +63,11 @@ frontend/web-build/
 *.cert
 secrets/
 uploads/oracleCloudKey/
+uploads/
+# Google Cloud / Play Service Account JSON files (any location)
+**/tripplanner-*.json
+**/*-service-account*.json
+google-play-service-account.json
 
 # Deployment scripts with hardcoded tokens
 deploy-backend.sh
