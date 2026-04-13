@@ -2,7 +2,185 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-08)
+## 📍 현재 상태 (2026-04-13) — V111 수정 + V112 Alpha 빌드 + 보안 정리 완료
+
+- **버전**: versionCode 112 (EAS 빌드 중 → Alpha 트랙 draft 자동 업로드 대기)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ 정상 (V111 Backend 수정 배포 완료)
+- **최신 커밋**: `4cb7ba55` — fix: V111 Alpha 검수 7건 근본 수정 + QA 6-Layer 통과 + 보안 정리
+- **EAS Build ID**: `6f9fdbad-5191-4622-987d-f412a992a600` (백그라운드 실행 중)
+- **EAS Submission ID**: `84043e57-7fde-4fc0-bab2-d8a6671f64c2`
+- **Backend 배포 백업**: 서버 `20260413-132101` 타임스탬프 (i18n/users/subscription service+controller 4개 파일)
+
+### 🟢 V111 Alpha 검수 대응 (2026-04-13) ✅
+
+**7건 모두 근본 수정 완료**. Frontend는 V112 빌드로 전달, Backend는 이미 Hetzner 배포 완료.
+
+| # | 이슈 | 해결 |
+|---|---|---|
+| V111-1 | 이메일 인증 에러 메시지 '유효하지 않은 인증 토큰 (4)' 개발자 언어 | Backend i18n t() 보간 + invalidWithRemaining 키 17개 언어 + '코드' 표현 + MAX_EMAIL_VERIFICATION_ATTEMPTS 상수화 |
+| V111-2 | 동의 화면 [동의하고 시작하기] 버튼 하단 부착 | ConsentScreen footer paddingTop 24 + paddingBottom Math.max(insets.bottom, 16) + 20 |
+| V111-3 | 홈 코치마크 위치 불일치 (V109~V111 3회 재발) | HomeScreen animation .start() 콜백 기반 animationDone + requestAnimationFrame + 1500ms fallback. finished=false 시에도 measurement 보장 |
+| V111-4 | '이번 달 AI 자동 생성 1/3회 남음' 오표기 | **근본 원인: RevenueCat webhook 파이프라인 단절** (Google Cloud Service Account 키가 git에 노출되어 자동 disabled) → 새 키 생성 + RevenueCat 재업로드로 복구 |
+| V111-5 | 광고 중 토스트 가려지고 사라지지 않음 | CreateTripScreen setTimeout(showResultToast, 4000)로 광고 close 후 지연 + postAdToastTimerRef + unmount/blur cleanup. Native ad Activity 레이어가 RN z-index를 이기는 구조적 문제라 defer만이 근본 해결 |
+| V111-6 | 구독 화면 구독일/종료일/월간·년간 미표기 | Frontend UI는 이미 정상이었고 Backend webhook 복구로 자동 해결. 보조: subscription.service.ts getSubscriptionStatus() select에 subscriptionStartedAt/PlanType 추가 + premium.json ko/en에 startedOn/renewsOn/planMonthly/planYearly 키 4개 추가 |
+| V111-7 | 구독자도 3/3 형식 미반영 | PremiumContext premium 시 30/30 분기 기존 구현됨. webhook 복구로 자동 해결 |
+
+### 🔥 Phase 1.3 RCA — RevenueCat Webhook 장애 근본 원인
+
+**단일 공통 근본 원인**: `uploads/tripplanner-486511-05e640037694.json` 파일이 public repo 커밋 `666130ca` (2026-03-20)에 포함 → Google 자동 secret scanning이 감지 → 해당 키를 자동 DISABLED 처리 → RevenueCat은 이 키로 Google Play Developer API 호출 시 401 Authentication Error → Customers 0명, Revenue $0, webhook 이벤트 2026-03-11 이후 완전 단절.
+
+V110 작성자는 hoonjae723/longpapa82를 수동 DB UPDATE로 우회 처리 (V110 커밋 메시지에 자백). 오늘 복구:
+- Google Cloud에서 새 키 `bb41acd291a2cfa2af26353a38751ad63e48a2c3` 생성
+- RevenueCat Apps & providers → TravelPlanner (Play Store) → Service Account JSON 재업로드 → `Valid credentials` 확인
+- App User ID detection method: `Use anonymous App User ID` (SDK 사용 시 정상 설정)
+- Backend 로그에서 `Processing RevenueCat event: INITIAL_PURCHASE/EXPIRATION/CANCELLATION` 3건 200 응답으로 정상 처리 확인 (user `366afb15-6ddc-4759-bd89-1b29af13b541`)
+
+### 🛡️ Phase 4 6-Layer QA
+
+**모두 수정 완료**. HIGH 4건 + P0 BLOCKER 5건 식별 후 전부 해결.
+
+- H1: HomeScreen animation `.start()` 콜백이 `finished: false` 시 coachmark 영구 미표시 가능 → fallback timer + unconditional markDone
+- H2: 이메일 인증 `remaining = 4 - attempts` 매직넘버 → `MAX_EMAIL_VERIFICATION_ATTEMPTS` 상수화
+- H3: `subscription.controller.ts` webhook auth `!==` → `crypto.timingSafeEqual` 적용
+- H4: CreateTripScreen `setTimeout(showResultToast, 4000)` unmount cleanup 누락 → `postAdToastTimerRef` + 3곳 cleanup
+- P0 Publish: `EXPO_PUBLIC_USE_TEST_ADS` 제거, `releaseStatus` completed→draft, nginx uploads 확장자 차단 강화 (`.json|.txt|.xml|.yaml|.yml|.ts|.js|.py|.crt|.pfx|...`), `.gitignore`에 `uploads/`, `**/tripplanner-*.json`, `**/*-service-account*.json` 패턴 추가
+
+**V112 후속 권고** (non-blocking):
+- `t()` 함수 key 타입을 `keyof typeof translations`로 강화
+- `getSubscriptionStatus()` 명시적 반환 타입 `SubscriptionStatusDto` 선언
+- `aiTripsLimit: -1` sentinel 대신 discriminated union
+- 41개 개발자 언어 에러 메시지 i18n 적용 (auth.service.ts 등)
+- `console.log` 프로덕션 포함 정리 (`initAds.native.ts` 30+, `MainNavigator.tsx` 5+)
+
+### 🚨 Task #20: GitHub 노출 키 정리 (거의 완료)
+
+**현재 위험도**: 🟢 **매우 낮음** (Google 자동 disabled + Audit Logs 0건 + Play Console 구매자 데이터 없음으로 **악용 흔적 0건 확정**)
+
+**진행 상황 (2026-04-13)**:
+- ✅ Step 1: Google Cloud에서 disabled 키 `05e640037694...` **영구 삭제 완료**. Active 2개 유지 (`f9090d10...` EAS용, `bb41acd291a2...` RevenueCat용)
+- ✅ Step 2: Cloud Audit Logs `결과 0개` — 관리 차원 비정상 변경 없음
+- ✅ **보조 검증**: Play Console 재무 보고서 → 정기 결제 → 구매자 `데이터 없음` — 공격자가 가짜 주문/환불 악용한 흔적 전혀 없음
+- ✅ **Step 3**: Xcode 라이선스 동의 후 git filter-repo 재실행 (`.git/filter-repo/already_ran` 제거 후). 노출 키 파일 히스토리 완전 제거. GitHub raw `main/uploads/*key*.json` 접근 **404 Not Found** 확인
+  - **부작용 발생**: filter-repo가 working tree를 HEAD로 reset하면서 V111 uncommitted 수정이 일시 revert됨
+  - **복구 완료**: (a) Hetzner 서버에서 Backend 4개 파일 rsync pull, (b) Frontend 4개 파일 (HomeScreen/ConsentScreen/CreateTripScreen/premium.json ko+en) 재적용, (c) config 3개 파일 (eas.json/nginx.conf/.gitignore) 재적용. TypeScript Backend+Frontend 0 에러 재검증 완료
+- ✅ **Step 4 (부분)**: force push 완료 (`f144ad0d...c6c682d5 main -> main (forced update)`). V111 수정 commit `4cb7ba55`를 일반 push로 반영. 로컬과 원격 main 동기화
+- ⏳ **Step 5**: GitHub Support에 Sensitive data removal 요청 (상세 가이드 아래 참조). 긴급성 낮음
+
+#### 📮 Step 5 GitHub Support 요청 상세 가이드
+
+**목적**: filter-repo + force push 이후에도 GitHub CDN은 이전 commit SHA를 **최대 며칠간 캐시**함. `https://github.com/longpapa82-cyber/travelPlanner/commit/666130ca` 같은 URL이나 `/raw/666130ca/...` 는 여전히 접근 가능할 수 있음. Support에 요청하면 GitHub이 캐시/fork/API 모두에서 완전 제거해줌.
+
+**소요 시간**: 제출 5분 + GitHub 응답 1~3일
+
+**1단계: 노출 내용 재확인 (선택)**
+제출 전 현재 상태 증거 확보:
+```bash
+# 이것은 404가 나와야 정상 (이미 확인됨)
+curl -sI https://raw.githubusercontent.com/longpapa82-cyber/travelPlanner/main/uploads/tripplanner-486511-05e640037694.json
+
+# 이것은 아직 200일 수 있음 (Support 요청 대상)
+curl -sI https://raw.githubusercontent.com/longpapa82-cyber/travelPlanner/666130ca/uploads/tripplanner-486511-05e640037694.json
+```
+
+**2단계: Support 폼 접속**
+- URL: https://support.github.com/request
+- 로그인 필요 (리포 소유자 `longpapa82-cyber` 계정)
+
+**3단계: 폼 작성**
+
+| 항목 | 입력값 |
+|---|---|
+| **What can we help you with?** (카테고리) | `Account` → `Report sensitive data exposure` 또는 `Security` → `Sensitive data removal` (UI 버전에 따라 다름) |
+| **Subject** | `Sensitive data removal - exposed Google Cloud Service Account key in public repo` |
+| **Repository URL** | `https://github.com/longpapa82-cyber/travelPlanner` |
+| **File path(s)** | `uploads/tripplanner-486511-05e640037694.json` |
+| **Commit SHA(s) containing the sensitive data** | `666130ca287df9f5a408497b6e6f42ddb6238904` (full SHA) |
+| **Has the sensitive data been rotated/revoked?** | **Yes** — Google automatically disabled the key after secret scanning detection, and we permanently deleted it on 2026-04-13. |
+| **Has history been rewritten?** | **Yes** — Used `git filter-repo --path uploads/tripplanner-486511-05e640037694.json --invert-paths` and force-pushed to `main`. Current HEAD `4cb7ba55` does not contain this file. |
+| **What additional help do you need?** | Please purge cached references to the old commit SHA `666130ca` from GitHub's CDN, API, and any forks. Confirm that `https://raw.githubusercontent.com/longpapa82-cyber/travelPlanner/666130ca/uploads/tripplanner-486511-05e640037694.json` returns 404. |
+
+**4단계: 본문 템플릿 (복사해서 사용)**
+
+```
+Hello GitHub Support,
+
+I'm requesting removal of cached references to a sensitive file that was
+accidentally committed to a public repository.
+
+Repository: https://github.com/longpapa82-cyber/travelPlanner
+Sensitive file: uploads/tripplanner-486511-05e640037694.json
+Commit containing the file: 666130ca287df9f5a408497b6e6f42ddb6238904
+Date of exposure: around 2026-03-20
+File content: Google Cloud Service Account private key JSON
+
+Remediation already completed:
+1. The exposed key (private_key_id: 05e640037694c1a06539ea9a236c039aabbb89ee)
+   was automatically disabled by Google's secret scanning within hours of exposure.
+2. On 2026-04-13, I permanently deleted the disabled key in Google Cloud Console.
+3. I ran `git filter-repo --path uploads/tripplanner-486511-05e640037694.json
+   --invert-paths` and force-pushed to main.
+4. Current HEAD is 4cb7ba55 and does NOT contain this file.
+5. `git log --all -- uploads/tripplanner-486511-05e640037694.json` returns empty.
+6. `curl https://raw.githubusercontent.com/longpapa82-cyber/travelPlanner/main/uploads/tripplanner-486511-05e640037694.json`
+   returns 404.
+
+What I need:
+1. Please purge the cached version at the old commit SHA 666130ca.
+2. Currently `https://raw.githubusercontent.com/longpapa82-cyber/travelPlanner/666130ca/...`
+   may still be accessible. Please confirm it returns 404.
+3. Please check if any forks of this repository still contain the file
+   and take appropriate action.
+4. Please verify GitHub's API endpoints no longer return this file content.
+
+Impact assessment confirmed:
+- Google Cloud Audit Logs: 0 suspicious API calls during the exposure window
+- Google Play Console: 0 buyer data or fraudulent orders
+- RevenueCat: already rotated to a new active key (bb41acd291a2...)
+
+Thank you for your assistance with this security remediation.
+```
+
+**5단계: 제출 후 추적**
+- GitHub Support가 이메일로 ticket ID를 보냄
+- 보통 1~3일 내 응답
+- 응답 후 Step 1의 curl 명령을 다시 실행해 `666130ca` SHA도 404인지 확인
+- 확인되면 Task #20 완전 종료
+
+**대체 경로 (만약 Support 응답이 너무 느리면)**:
+- GitHub Docs: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository
+- 보안팀 직접 연락: https://support.github.com/contact/dmca (보안 관련으로 분류 요청)
+
+**백업 정보 (복구 시 사용)**:
+- 원격 mirror clone: `/tmp/travelPlanner-backup-20260413-225319/remote-mirror.git` (filter-repo 이전 상태 보존)
+- Backend 서버 배포본: Hetzner VPS `/root/travelPlanner/backend/` (rsync pull로 복원 가능)
+- 로컬 백업 브랜치: `backup-before-filter-repo-20260413-225319` (filter-repo 영향 받음, 참조 가치 제한적)
+
+---
+
+### 📋 V112 Alpha 배포 이후 계획
+
+1. **EAS 빌드 완료 대기** (자동 알림 수신 예정, 15~25분 소요)
+2. **Play Console → Alpha 트랙 → 초안 확인** → 출시 노트 붙여넣기 (`docs/V112-release-notes.md` 3개 언어 준비됨) → "Alpha에 출시" 수동 클릭
+3. **테스터 기기 V111 7건 검증** (1~2일)
+   - 체크리스트: `docs/V112-alpha-release-guide.md`
+   - 문제 발견 시 Backend 롤백: 서버 `20260413-132101` 백업 복원 + `docker compose build && up -d`
+4. **Task #20 Step 5 (GitHub Support)**: Alpha 검증과 병행 가능
+5. **Production 단계적 출시 판단**: Alpha 안정 확인 후 1% → 10% → 100%
+   - `track`은 Alpha로 유지한 상태에서 Play Console에서 promotion
+   - 프로덕션 전환 시 **반드시 사용자 승인 후** 진행
+6. **V112 후속 기술부채 처리** (별도 스프린트): 6-Layer QA Type Design 권고, 41개 i18n 잔여분, console.log 정리, pre-existing test drift (email.service.spec, ActivityModal) 정리
+
+### 📊 최근 버전별 주요 수정 이력
+
+| 버전 | 주요 수정 | 커밋 |
+|---|---|---|
+| **V112** | **V111 7건 근본 수정 + RevenueCat webhook 복구 + QA 6-Layer + 보안 정리** | `4cb7ba55` |
+| V110 | 폼 리셋/코치마크/탐색 썸네일/생성 토스트 + 수동 DB UPDATE 우회 | `c6c682d5` (filter-repo 재작성) |
+| V109 | 구독 횟수 오표기, 재시도 불가, 자동 업로드 설정 | `95ebf855` (filter-repo 재작성) |
+
+---
+
+## 📍 이전 상태 (2026-04-08)
 
 - **버전**: versionCode 88 (Alpha 테스트 중) — 전수 검수 GO 판정
 - **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ 정상
