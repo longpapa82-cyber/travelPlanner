@@ -64,7 +64,7 @@ V110 작성자는 hoonjae723/longpapa82를 수동 DB UPDATE로 우회 처리 (V1
   - **부작용 발생**: filter-repo가 working tree를 HEAD로 reset하면서 V111 uncommitted 수정이 일시 revert됨
   - **복구 완료**: (a) Hetzner 서버에서 Backend 4개 파일 rsync pull, (b) Frontend 4개 파일 (HomeScreen/ConsentScreen/CreateTripScreen/premium.json ko+en) 재적용, (c) config 3개 파일 (eas.json/nginx.conf/.gitignore) 재적용. TypeScript Backend+Frontend 0 에러 재검증 완료
 - ✅ **Step 4 (부분)**: force push 완료 (`f144ad0d...c6c682d5 main -> main (forced update)`). V111 수정 commit `4cb7ba55`를 일반 push로 반영. 로컬과 원격 main 동기화
-- ⏳ **Step 5**: GitHub Support에 Sensitive data removal 요청 (상세 가이드 아래 참조). 긴급성 낮음
+- ✅ **Step 5**: **GitHub Support 티켓 #4274956 제출 완료** (2026-04-13) — 카테고리: Account restrictions, 제목: "Remove cached sensitive data - travelPlanner commit 666130ca after filter-repo", 상태: Open, 본문에 NOTE 라우팅 지시 + 필수 정보 3가지 (repo owner/name, PR count 0, First Changed Commit hash) + 9단계 복구 체크리스트 + 악용 0건 증거 포함. 예상 응답 1~3일, 검증 명령: `curl -sI https://raw.githubusercontent.com/longpapa82-cyber/travelPlanner/666130ca/uploads/tripplanner-486511-05e640037694.json` (현재 HTTP 200 → 처리 완료 시 404)
 
 #### 📮 Step 5 GitHub Support 요청 상세 가이드
 
