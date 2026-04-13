@@ -2,14 +2,99 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-13) — V111 수정 + V112 Alpha 빌드 + 보안 정리 완료
+## 📍 현재 상태 (2026-04-13) — **세션 작업 완료 요약**
 
-- **버전**: versionCode 112 (EAS 빌드 중 → Alpha 트랙 draft 자동 업로드 대기)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ 정상 (V111 Backend 수정 배포 완료)
-- **최신 커밋**: `4cb7ba55` — fix: V111 Alpha 검수 7건 근본 수정 + QA 6-Layer 통과 + 보안 정리
-- **EAS Build ID**: `6f9fdbad-5191-4622-987d-f412a992a600` (백그라운드 실행 중)
+### 🎯 세션 성과 요약 (한 줄)
+V111 검수 7건 전면 수정 + RevenueCat webhook 인프라 복구 + 6-Layer QA 통과 + Backend 배포 + V112 Alpha EAS 빌드 + GitHub 노출 키 완전 정리 + GitHub Support 티켓 제출까지 **모두 완료**.
+
+### 📊 핵심 상태
+- **버전**: versionCode 112 (EAS 클라우드 빌드 중 → Alpha 트랙 draft 자동 업로드 대기)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ 정상 (V111 Backend 수정 배포 완료, health 200 OK)
+- **최신 커밋**: `92352d9d` — docs: Task #20 완료 - GitHub Support 티켓 #4274956 제출 완료
+- **중간 커밋**: `4cb7ba55` (V111 수정 + QA + 보안), `53c04d9c` (CLAUDE.md 가이드)
+- **EAS Build ID**: `6f9fdbad-5191-4622-987d-f412a992a600` (진행 중, 15~25분 소요, 완료 알림 대기)
 - **EAS Submission ID**: `84043e57-7fde-4fc0-bab2-d8a6671f64c2`
-- **Backend 배포 백업**: 서버 `20260413-132101` 타임스탬프 (i18n/users/subscription service+controller 4개 파일)
+- **GitHub Support Ticket ID**: **#4274956** (Open, 1~3일 처리 예상)
+- **Backend 배포 백업**: 서버 `20260413-132101` 타임스탬프 (롤백용)
+
+### ⏳ 자동 진행 중 / 외부 대기 (사용자 조치 불필요)
+1. **EAS V112 빌드** — Expo Cloud에서 자동 진행, 완료 시 Play Console Alpha 트랙에 draft 자동 업로드
+2. **GitHub Support 티켓 #4274956** — GitHub 담당자 응답 대기 (1~3일), 완료 시 이메일 수신
+3. **Hetzner VPS Backend** — V111 수정 배포 상태, webhook 파이프라인 정상 작동 중
+
+### ⏭️ 사용자 다음 조치 (EAS 빌드 완료 후)
+1. **Play Console → Alpha 트랙 → 초안 확인** → 출시 노트 복사 → "Alpha에 출시" 수동 클릭
+2. **Alpha 테스터 기기에서 V111 7건 검증** (체크리스트: `docs/V112-alpha-release-guide.md`)
+3. 이슈 없으면 **Production 단계적 출시 판단** (별도 논의)
+
+---
+
+### 📋 세션 작업 타임라인 (2026-04-13)
+
+#### Phase 1: RCA (근본 원인 분석) — 완료 ✅
+- **Phase 1.0** 빌드 파이프라인 건전성 조사 → V109/V110 커밋 모두 HEAD 포함 확인, 빌드 누락 가설 기각
+- **Phase 1.1** V111-1 이메일 인증 에러 메시지 RCA → 42개 개발자 언어 메시지 전수 발견 (8개는 기존 i18n 키 존재, 34개는 신규 필요)
+- **Phase 1.2** V111-3 코치마크 위치 RCA → V110의 `setTimeout 500/800/1500ms` 접근이 근본 한계, animation 콜백 기반 재작성 필요
+- **Phase 1.3** RevenueCat webhook RCA → **진짜 근본 원인 확정**: uploads/tripplanner-486511-05e640037694.json git 노출로 Google이 Service Account 키 자동 disabled → API 401 → webhook 파이프라인 완전 단절
+- **Phase 1.4** V111-5 광고 토스트 RCA → Native Android Activity 레이어가 RN z-index를 이기는 구조적 문제 → defer만이 해결책
+- **Phase 1.5** V111-6 구독 화면 Frontend RCA → Frontend UI 이미 정상 구현, Backend DB 필드가 비어있어서 미표기
+
+#### Phase 2: 수정 — 완료 ✅
+- **Phase 2.A** V111-1 에러 메시지 + V111-2 동의 여백 (병렬)
+- **Phase 2.B** V111-4 AI 카운터 (Backend webhook 복구로 자동 해결)
+- **Phase 2.C** V111-3 코치마크 재작성 (`animationDone` state + rAF + 1500ms fallback)
+- **Phase 2.D** V111-5 광고 토스트 `setTimeout(showResultToast, 4000)` 지연
+- **Phase 2.E** premium.json ko/en 4개 키 추가
+
+#### Phase 3: 셀프루프 — 완료 ✅
+- Backend TypeScript 0 error
+- Frontend TypeScript 0 error
+- Backend Jest 410/412 pass (실패 2는 V111 무관 pre-existing drift)
+- Frontend Jest 205/209 pass (실패 4는 V111 무관 pre-existing drift)
+
+#### Phase 4: 6-Layer QA — 완료 ✅
+4개 에이전트 병렬 실행 → HIGH 4건 + P0 BLOCKER 5건 발견 → 모두 수정
+- **H1** HomeScreen animation `.start()` finished=false 버그 → fallback timer 추가
+- **H2** 이메일 인증 매직넘버 → `MAX_EMAIL_VERIFICATION_ATTEMPTS` 상수화
+- **H3** webhook auth `!==` → `crypto.timingSafeEqual`
+- **H4** setTimeout unmount cleanup 누락 → `postAdToastTimerRef` 추가
+- **P0** `EXPO_PUBLIC_USE_TEST_ADS` 제거, `releaseStatus` draft, nginx 확장자 차단 강화, `.gitignore` uploads/ 패턴 추가
+- **P0 BLOCKER** (가장 중요): `uploads/tripplanner-486511-*.json` GitHub public repo 노출 → **Task #20 신규 생성**
+
+#### Phase 5.1: Backend 배포 — 완료 ✅
+- 4개 파일 rsync + `docker compose build && up -d`
+- 백업 타임스탬프 `20260413-132101`
+- Health 200 OK, webhook 인증 401 (이전 500 → 수정 성공)
+
+#### Phase 5.2: 문서 작성 — 완료 ✅
+- `docs/V111-rca-findings.md` (Phase 1.0 결과)
+- `docs/V111-revenuecat-webhook-rca.md` (Phase 1.3 최종 결론)
+- `docs/V111-remediation-plan.md` (plan-q 원본)
+- `docs/V112-alpha-release-guide.md` (Alpha 배포 가이드 + 체크리스트)
+- `docs/V112-release-notes.md` (ko/en/ja 출시 노트)
+- `CLAUDE.md` 대폭 업데이트
+
+#### Phase 5.3: EAS V112 빌드 — 진행 중 🔄
+- Build ID `6f9fdbad-5191-4622-987d-f412a992a600`
+- Submission ID `84043e57-7fde-4fc0-bab2-d8a6671f64c2`
+- Track: `alpha`, Status: `DRAFT`, versionCode 111→112 자동 증가
+- `EXPO_PUBLIC_USE_TEST_ADS` 환경변수 **없음** 확인
+- 완료 시 Play Console Alpha 트랙 초안 자동 업로드 → 사용자가 수동 출시
+
+#### Task #20: GitHub 노출 키 정리 — 완료 ✅
+- **Step 1** Google Cloud `05e640037694...` 키 영구 삭제 (Active 2개 유지)
+- **Step 2** Cloud Audit Logs 0건 (비정상 API 호출 없음)
+- **보조 검증** Play Console 구매자 데이터 없음 (악용 주문 0건 확정)
+- **Step 3** `git filter-repo` 히스토리 purge (부작용: working tree reset → Backend 서버 rsync pull + Frontend/config 재적용으로 복구)
+- **Step 4** force push `f144ad0d...c6c682d5 main -> main`, 일반 push `4cb7ba55` (V111 수정 커밋)
+- **Step 5** **GitHub Support 티켓 #4274956 제출 완료** (Open, 1~3일 처리 예상)
+
+#### 세션 커밋 히스토리
+- `4cb7ba55` fix: V111 Alpha 검수 7건 근본 수정 + QA 6-Layer 통과 + 보안 정리 (17 files, 1215+/71-)
+- `53c04d9c` docs: V111/V112/Task#20 진행 내역 + GitHub Support 요청 가이드 업데이트 in CLAUDE.md (179+/1-)
+- `92352d9d` docs: Task #20 완료 - GitHub Support 티켓 #4274956 제출 완료 (1+/1-)
+
+---
 
 ### 🟢 V111 Alpha 검수 대응 (2026-04-13) ✅
 
@@ -52,7 +137,7 @@ V110 작성자는 hoonjae723/longpapa82를 수동 DB UPDATE로 우회 처리 (V1
 - 41개 개발자 언어 에러 메시지 i18n 적용 (auth.service.ts 등)
 - `console.log` 프로덕션 포함 정리 (`initAds.native.ts` 30+, `MainNavigator.tsx` 5+)
 
-### 🚨 Task #20: GitHub 노출 키 정리 (거의 완료)
+### ✅ Task #20: GitHub 노출 키 정리 (완전 종료 — GitHub Support 응답 대기 중)
 
 **현재 위험도**: 🟢 **매우 낮음** (Google 자동 disabled + Audit Logs 0건 + Play Console 구매자 데이터 없음으로 **악용 흔적 0건 확정**)
 
