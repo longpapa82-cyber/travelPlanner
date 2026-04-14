@@ -24,10 +24,55 @@ export class TwoFactorRequiredError extends Error {
   }
 }
 
+/**
+ * Thrown by AuthContext.register / AuthContext.login when the email is not
+ * yet verified. The caller (RegisterScreen / LoginScreen) should navigate
+ * to EmailVerificationCodeScreen with the resumeToken, which is only
+ * accepted by the send/verify-email-code endpoints via
+ * PendingVerificationGuard (V112 Wave 2).
+ */
+export class EmailNotVerifiedError extends Error {
+  resumeToken: string;
+  user: {
+    id: string;
+    email: string | null;
+    name: string;
+  };
+  constructor(
+    resumeToken: string,
+    user: { id: string; email: string | null; name: string },
+  ) {
+    super('Email verification required');
+    this.name = 'EmailNotVerifiedError';
+    this.resumeToken = resumeToken;
+    this.user = user;
+  }
+}
+
+export interface PendingVerification {
+  resumeToken: string;
+  user: {
+    id: string;
+    email: string | null;
+    name: string;
+  };
+}
+
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  // V112 Wave 2: set when register/login hits an unverified email. Nulled
+  // again after the verification code flow completes (or on logout/cancel).
+  pendingVerification: PendingVerification | null;
+  clearPendingVerification: () => void;
+  // V112 Wave 5: promote the resume-token session to a full session
+  // using the tokens returned by POST /auth/verify-email-code.
+  completeEmailVerification: (tokens: {
+    accessToken: string;
+    refreshToken: string;
+    user: any;
+  }) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   completeTwoFactorLogin: (tempToken: string, code: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
@@ -62,7 +107,11 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [pendingVerification, setPendingVerification] =
+    useState<PendingVerification | null>(null);
   const appState = useRef<AppStateStatus>(AppState.currentState);
+
+  const clearPendingVerification = () => setPendingVerification(null);
 
   // Session flag helpers — AsyncStorage is more reliable than Keychain for simple flags
   const setSessionFlag = async (loggedIn: boolean) => {
@@ -244,8 +293,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } catch {
         // Best-effort — profile will be fetched on next app focus
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof TwoFactorRequiredError) throw error;
+
+      // V112 Wave 2: unverified-email login returns 401 with a structured
+      // body carrying a pending_verification-scoped resumeToken. Promote it
+      // to a typed error so the login screen can navigate to verification
+      // without having to parse HTTP status codes inline.
+      const status = error?.response?.status;
+      const body = error?.response?.data;
+      if (status === 401 && body?.code === 'EMAIL_NOT_VERIFIED' && body?.resumeToken) {
+        setPendingVerification({
+          resumeToken: body.resumeToken,
+          user: body.user,
+        });
+        throw new EmailNotVerifiedError(body.resumeToken, body.user);
+      }
+
       throw error;
     }
   };
@@ -277,23 +341,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (email: string, password: string, name: string) => {
     try {
-      const response: AuthResponse = await apiService.register(email, password, name);
+      // V112 Wave 2: register no longer returns access/refresh tokens. It
+      // returns { user, resumeToken, requiresEmailVerification } — the user
+      // has to complete email verification before a full session exists.
+      // We surface this as EmailNotVerifiedError so the caller is funneled
+      // into the same verification screen as the unverified-login branch.
+      const response = await apiService.register(email, password, name);
 
-      // Store tokens
-      await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
-      await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
-
-      setUser(response.user);
-      await setSessionFlag(true);
       trackEvent('register', { method: 'email' });
-      registerPushAfterLogin();
 
-      // Fetch full profile to populate subscription fields
-      try {
-        const profile = await apiService.getProfile();
-        if (profile) setUser(profile);
-      } catch {
-        // Best-effort — profile will be fetched on next app focus
+      if (response?.resumeToken && response?.user) {
+        setPendingVerification({
+          resumeToken: response.resumeToken,
+          user: response.user,
+        });
+        throw new EmailNotVerifiedError(response.resumeToken, response.user);
+      }
+
+      // Backwards-compat: if an older backend still returns full tokens,
+      // keep the legacy path alive so a staged rollout does not brick clients.
+      if (response?.accessToken && response?.refreshToken) {
+        await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
+        await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
+        setUser(response.user);
+        await setSessionFlag(true);
+        registerPushAfterLogin();
+
+        // Profile fetch is only safe on the legacy (full-token) path. A
+        // resume token is scope-restricted and would 401 against /auth/me.
+        try {
+          const profile = await apiService.getProfile();
+          if (profile) setUser(profile);
+        } catch {
+          // Best-effort — profile will be fetched on next app focus
+        }
       }
     } catch (error) {
       throw error;
@@ -393,6 +474,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const completeEmailVerification = async (tokens: {
+    accessToken: string;
+    refreshToken: string;
+    user: any;
+  }) => {
+    await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, tokens.accessToken);
+    await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
+    setUser(tokens.user);
+    await setSessionFlag(true);
+    setPendingVerification(null);
+    registerPushAfterLogin();
+
+    try {
+      const profile = await apiService.getProfile();
+      if (profile) setUser(profile);
+    } catch {
+      // Best-effort
+    }
+  };
+
   const logout = async () => {
     try {
       // Track logout and flush pending events before clearing auth
@@ -421,10 +522,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await offlineCache.clearAll();
 
       setUser(null);
+      setPendingVerification(null);
     } catch (error) {
       // Silent fail - force clear user state regardless
       await setSessionFlag(false);
       setUser(null);
+      setPendingVerification(null);
     }
   };
 
@@ -432,6 +535,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     isLoading,
     isAuthenticated: !!user,
+    pendingVerification,
+    clearPendingVerification,
+    completeEmailVerification,
     login,
     completeTwoFactorLogin,
     register,

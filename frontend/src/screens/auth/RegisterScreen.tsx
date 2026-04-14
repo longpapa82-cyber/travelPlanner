@@ -26,7 +26,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../types';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth, EmailNotVerifiedError } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -97,6 +97,11 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await register(email, password, name);
     } catch (error: any) {
+      // V112 Wave 5: EmailNotVerifiedError is the happy path for register —
+      // AuthContext has already stored the resumeToken and RootNavigator
+      // will swap to EmailVerificationCodeScreen on the next render.
+      // Nothing to show; the transition is the feedback.
+      if (error instanceof EmailNotVerifiedError) return;
       showToast({ type: 'error', message: error.response?.data?.message || t('register.alerts.networkError'), position: 'top' });
     } finally {
       setIsLoading(false);

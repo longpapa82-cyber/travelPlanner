@@ -72,7 +72,10 @@ describe('AllExceptionsFilter', () => {
 
   describe('shouldLogError', () => {
     it('should log ThrottlerException (429)', () => {
-      const exception = new HttpException('Too Many Requests', HttpStatus.TOO_MANY_REQUESTS);
+      const exception = new HttpException(
+        'Too Many Requests',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
 
       filter.catch(exception, mockHost);
 
@@ -82,12 +85,15 @@ describe('AllExceptionsFilter', () => {
           severity: 'warning',
           platform: 'web',
           screen: 'POST /api/auth/register',
-        })
+        }),
       );
     });
 
     it('should log 401 errors on auth endpoints', () => {
-      const exception = new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      const exception = new HttpException(
+        'Unauthorized',
+        HttpStatus.UNAUTHORIZED,
+      );
       mockRequest.path = '/api/auth/login';
 
       filter.catch(exception, mockHost);
@@ -96,14 +102,14 @@ describe('AllExceptionsFilter', () => {
         expect.objectContaining({
           errorMessage: 'Unauthorized',
           severity: 'warning',
-        })
+        }),
       );
     });
 
     it('should log 400 validation errors on auth endpoints', () => {
       const exception = new HttpException(
         { message: ['Email is required', 'Password is too short'] },
-        HttpStatus.BAD_REQUEST
+        HttpStatus.BAD_REQUEST,
       );
 
       filter.catch(exception, mockHost);
@@ -112,7 +118,7 @@ describe('AllExceptionsFilter', () => {
         expect.objectContaining({
           errorMessage: 'Email is required; Password is too short',
           severity: 'warning',
-        })
+        }),
       );
     });
 
@@ -126,7 +132,10 @@ describe('AllExceptionsFilter', () => {
     });
 
     it('should always log 5xx errors', () => {
-      const exception = new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      const exception = new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
       mockRequest.path = '/api/anything';
 
       filter.catch(exception, mockHost);
@@ -135,7 +144,7 @@ describe('AllExceptionsFilter', () => {
         expect.objectContaining({
           errorMessage: 'Internal Server Error',
           severity: 'error',
-        })
+        }),
       );
       expect(Sentry.captureException).toHaveBeenCalled();
     });
@@ -151,21 +160,39 @@ describe('AllExceptionsFilter', () => {
           errorMessage: 'Forbidden',
           severity: 'warning',
           screen: 'POST /api/admin/dashboard',
-        })
+        }),
       );
     });
 
-    it('should log subscription/payment errors', () => {
-      const exception = new HttpException('Payment Required', HttpStatus.PAYMENT_REQUIRED);
+    it('does NOT log 4xx subscription/paywall errors (V112 Wave 1 policy)', () => {
+      // 402/403/400 on /subscription are business rules (paywall, quota).
+      // They pollute error_logs and swamp real problems, so the filter only
+      // records /subscription failures when they are 5xx server faults.
+      const exception = new HttpException(
+        'Payment Required',
+        HttpStatus.PAYMENT_REQUIRED,
+      );
+      mockRequest.path = '/api/subscription/checkout';
+
+      filter.catch(exception, mockHost);
+
+      expect(mockRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('logs 5xx subscription errors (real server faults)', () => {
+      const exception = new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
       mockRequest.path = '/api/subscription/checkout';
 
       filter.catch(exception, mockHost);
 
       expect(mockRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({
-          errorMessage: 'Payment Required',
-          severity: 'warning',
-        })
+          errorMessage: 'Internal Server Error',
+          severity: 'error',
+        }),
       );
     });
   });
@@ -175,7 +202,10 @@ describe('AllExceptionsFilter', () => {
       // Set limit to a small number for testing
       (AllExceptionsFilter as any).MAX_ERROR_LOGS_PER_MINUTE = 2;
 
-      const exception = new HttpException('Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      const exception = new HttpException(
+        'Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
 
       // First two should be logged
       filter.catch(exception, mockHost);
@@ -190,7 +220,10 @@ describe('AllExceptionsFilter', () => {
 
   describe('response formatting', () => {
     it('should format error response correctly', () => {
-      const exception = new HttpException('Too Many Requests', HttpStatus.TOO_MANY_REQUESTS);
+      const exception = new HttpException(
+        'Too Many Requests',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
 
       filter.catch(exception, mockHost);
 

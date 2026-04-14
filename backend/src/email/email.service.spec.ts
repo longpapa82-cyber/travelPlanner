@@ -150,15 +150,19 @@ describe('EmailService', () => {
       );
     });
 
-    it('should not throw in dev mode when mailer fails', async () => {
+    it('propagates mailer failures to the caller (V112 Wave 1 policy)', async () => {
+      // V112 change: EmailService no longer silently swallows SMTP errors
+      // in dev mode. A dev environment with broken SMTP previously looked
+      // identical to a healthy one, which masked config drift and made
+      // "why didn't my verification email arrive?" undiagnosable. The
+      // catch block now records the failure to error_logs and re-throws.
       (mailerService.sendMail as jest.Mock).mockRejectedValue(
         new Error('SMTP connection refused'),
       );
 
-      // In dev mode, should not throw
       await expect(
         service.sendVerificationEmail('user@example.com', 'User', 'token123'),
-      ).resolves.not.toThrow();
+      ).rejects.toThrow('SMTP connection refused');
     });
 
     it('should throw in production mode when mailer fails', async () => {
@@ -262,14 +266,15 @@ describe('EmailService', () => {
       );
     });
 
-    it('should not throw in dev mode when mailer fails', async () => {
+    it('propagates mailer failures to the caller (V112 Wave 1 policy)', async () => {
+      // See sendVerificationEmail test above — dev mode no longer swallows.
       (mailerService.sendMail as jest.Mock).mockRejectedValue(
         new Error('SMTP Error'),
       );
 
       await expect(
         service.sendPasswordResetEmail('user@example.com', 'User', 'token'),
-      ).resolves.not.toThrow();
+      ).rejects.toThrow('SMTP Error');
     });
 
     it('should throw in production mode when mailer fails', async () => {

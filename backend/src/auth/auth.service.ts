@@ -29,6 +29,10 @@ import { getErrorMessage } from '../common/types/request.types';
 import { AuditService } from '../admin/audit.service';
 import { AuditAction } from '../admin/entities/audit-log.entity';
 import { detectPlatform } from '../common/utils/platform-detector';
+import {
+  AUTH_ERROR_CODES,
+  JWT_SCOPE_PENDING_VERIFICATION,
+} from './constants/auth-error-codes';
 
 export interface OAuthUserData {
   providerId: string;
@@ -36,6 +40,19 @@ export interface OAuthUserData {
   name: string;
   profileImage?: string;
   provider: 'GOOGLE' | 'APPLE' | 'KAKAO';
+}
+
+export interface PendingVerificationResponse {
+  user: {
+    id: string;
+    email: string | null;
+    name: string;
+    provider: AuthProvider;
+    profileImage: string | null;
+    isEmailVerified: boolean;
+  };
+  resumeToken: string;
+  requiresEmailVerification: true;
 }
 
 @Injectable()
@@ -54,33 +71,58 @@ export class AuthService {
   async register(
     registerDto: RegisterDto,
     lang: SupportedLang = 'ko',
-  ): Promise<AuthResponse> {
-    // Check if user already exists — return generic error to prevent email enumeration
+  ): Promise<PendingVerificationResponse> {
+    // Check if user already exists.
+    //
+    // Re-entry policy (V112 fix #3):
+    // - Verified user OR non-EMAIL provider → reject with EMAIL_EXISTS.
+    //   Generic error message prevents account enumeration via provider hints.
+    // - Unverified EMAIL row → refresh in place (rehash password, replace
+    //   name, clear stale verification code) so a user who abandoned the
+    //   verification step can complete signup without being permanently
+    //   blocked by their own orphaned row.
     const existingUser = await this.usersService.findByEmail(registerDto.email);
+
+    let user;
     if (existingUser) {
-      throw new BadRequestException(t('auth.registration.failed', lang));
+      const isUnverifiedEmailAccount =
+        existingUser.provider === AuthProvider.EMAIL &&
+        !existingUser.isEmailVerified;
+
+      if (!isUnverifiedEmailAccount) {
+        throw new BadRequestException({
+          code: AUTH_ERROR_CODES.EMAIL_EXISTS,
+          message: t('auth.registration.failed', lang),
+        });
+      }
+
+      user = await this.usersService.refreshUnverifiedRegistration(
+        existingUser,
+        { password: registerDto.password, name: registerDto.name },
+      );
+    } else {
+      user = await this.usersService.create({
+        email: registerDto.email,
+        password: registerDto.password,
+        name: registerDto.name,
+        provider: AuthProvider.EMAIL,
+      });
     }
 
-    // Create new user
-    const user = await this.usersService.create({
-      email: registerDto.email,
-      password: registerDto.password,
-      name: registerDto.name,
-      provider: AuthProvider.EMAIL,
-    });
-
     // Email verification code is sent by the frontend's EmailVerificationCodeScreen
-    // on mount via POST /auth/send-verification-code. No need to send here.
+    // on mount via POST /auth/send-verification-code (requires resumeToken).
 
-    // Audit log: registration
     this.auditService
       .log({ userId: user.id, action: AuditAction.REGISTER })
       .catch((err) => {
         this.logger.warn(`Failed to update login metadata: ${err.message}`);
       });
 
-    // Generate JWT tokens
-    const tokens = await this.generateTokens(user.id, user.email!);
+    // Issue a scope-restricted resumeToken instead of full access/refresh tokens.
+    // The token is only accepted by PendingVerificationGuard-protected endpoints
+    // (send-verification-code, verify-email-code). A full token pair is issued
+    // on successful verification.
+    const resumeToken = await this.generateResumeToken(user.id, user.email!);
 
     return {
       user: {
@@ -91,7 +133,8 @@ export class AuthService {
         profileImage: user.profileImage ?? null,
         isEmailVerified: user.isEmailVerified,
       },
-      ...tokens,
+      resumeToken,
+      requiresEmailVerification: true,
     };
   }
 
@@ -102,10 +145,7 @@ export class AuthService {
     loginDto: LoginDto,
     userAgent?: string,
     lang: SupportedLang = 'ko',
-  ): Promise<
-    | (AuthResponse & { requiresEmailVerification?: boolean })
-    | { requiresTwoFactor: true; tempToken: string }
-  > {
+  ): Promise<AuthResponse | { requiresTwoFactor: true; tempToken: string }> {
     // Check account-level lockout (Redis-based, survives restarts)
     const lockKey = `login_attempts:${loginDto.email}`;
     const attempts = await this.cacheManager.get<number>(lockKey);
@@ -115,7 +155,10 @@ export class AuthService {
       attempts >= this.LOGIN_MAX_ATTEMPTS
     ) {
       throw new HttpException(
-        t('auth.account.locked', lang),
+        {
+          code: AUTH_ERROR_CODES.ACCOUNT_LOCKED,
+          message: t('auth.account.locked', lang),
+        },
         HttpStatus.LOCKED,
       );
     }
@@ -130,7 +173,10 @@ export class AuthService {
           metadata: { reason: 'user_not_found' },
         })
         .catch(() => {});
-      throw new UnauthorizedException(t('auth.invalid.credentials', lang));
+      throw new UnauthorizedException({
+        code: AUTH_ERROR_CODES.INVALID_CREDENTIALS,
+        message: t('auth.invalid.credentials', lang),
+      });
     }
 
     // Validate password
@@ -147,28 +193,36 @@ export class AuthService {
           metadata: { reason: 'invalid_password' },
         })
         .catch(() => {});
-      throw new UnauthorizedException(t('auth.invalid.credentials', lang));
+      throw new UnauthorizedException({
+        code: AUTH_ERROR_CODES.INVALID_CREDENTIALS,
+        message: t('auth.invalid.credentials', lang),
+      });
     }
 
     // Login success — reset attempt counter
     await this.cacheManager.del(lockKey);
 
-    // Block login for unverified email users — they must complete verification first
+    // Block login for unverified email users. Return 401 EMAIL_NOT_VERIFIED
+    // with a scope-restricted resumeToken so the client can call
+    // send-verification-code / verify-email-code but nothing else.
     if (user.provider === AuthProvider.EMAIL && !user.isEmailVerified) {
-      // Generate tokens so frontend can call send-verification-code (requires JWT)
-      const tokens = await this.generateTokens(user.id, user.email!);
-      return {
-        user: {
-          id: user.id,
-          email: user.email ?? null,
-          name: user.name,
-          provider: user.provider,
-          profileImage: user.profileImage ?? null,
-          isEmailVerified: false,
+      const resumeToken = await this.generateResumeToken(user.id, user.email!);
+      throw new HttpException(
+        {
+          code: AUTH_ERROR_CODES.EMAIL_NOT_VERIFIED,
+          message: t('email.verification.required', lang),
+          resumeToken,
+          user: {
+            id: user.id,
+            email: user.email ?? null,
+            name: user.name,
+            provider: user.provider,
+            profileImage: user.profileImage ?? null,
+            isEmailVerified: false,
+          },
         },
-        ...tokens,
-        requiresEmailVerification: true,
-      };
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     // Audit log: successful login
@@ -528,11 +582,43 @@ export class AuthService {
     userId: string,
     code: string,
     lang: SupportedLang = 'ko',
-  ): Promise<{ message: string; isEmailVerified: boolean }> {
+  ): Promise<{
+    message: string;
+    isEmailVerified: boolean;
+    accessToken: string;
+    refreshToken: string;
+    user: {
+      id: string;
+      email: string | null;
+      name: string;
+      provider: AuthProvider;
+      profileImage: string | null;
+      isEmailVerified: boolean;
+    };
+  }> {
     await this.usersService.verifyEmailCode(userId, code, lang);
+
+    // V112 Wave 5: once the code is accepted, upgrade the caller from a
+    // scope-restricted resume token to a real session. Without this the
+    // client would still be holding a pending_verification token that
+    // cannot access /auth/me or any other normal endpoint, so it would
+    // have to re-enter its password to log in — user-hostile for zero
+    // security benefit (the user just proved they control the email).
+    const user = await this.usersService.findById(userId);
+    const tokens = await this.generateTokens(user.id, user.email!);
+
     return {
       message: t('email.verification.success', lang),
       isEmailVerified: true,
+      ...tokens,
+      user: {
+        id: user.id,
+        email: user.email ?? null,
+        name: user.name,
+        provider: user.provider,
+        profileImage: user.profileImage ?? null,
+        isEmailVerified: user.isEmailVerified,
+      },
     };
   }
 
@@ -851,6 +937,33 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  /**
+   * Issue a short-lived JWT with `scope: 'pending_verification'`.
+   *
+   * Only PendingVerificationGuard accepts this token. JwtStrategy refuses to
+   * validate it for any other endpoint, so a client cannot call e.g. /trips
+   * with a resumeToken even if they try.
+   *
+   * 15 minutes is enough time for the user to receive the email code and
+   * enter it, but short enough to bound the risk if the token leaks.
+   */
+  private async generateResumeToken(
+    userId: string,
+    email: string,
+  ): Promise<string> {
+    return this.jwtService.signAsync(
+      {
+        sub: userId,
+        email,
+        scope: JWT_SCOPE_PENDING_VERIFICATION,
+      },
+      {
+        secret: this.configService.get<string>('jwt.secret'),
+        expiresIn: '15m',
+      },
+    );
   }
 
   private parseDurationToMs(duration: string): number {

@@ -89,7 +89,7 @@ export class TripsController {
     @Body() createTripDto: CreateTripDto,
   ) {
     const language = acceptLanguage || 'ko';
-    const jobId = this.jobsService.createJob();
+    const jobId = this.jobsService.createJob(userId);
 
     // 비동기로 여행 생성 시작 (응답 반환 후 백그라운드 실행)
     // 즉시 jobId를 반환하고, 실제 생성은 백그라운드에서 진행
@@ -98,6 +98,27 @@ export class TripsController {
     });
 
     return { jobId, status: 'pending' };
+  }
+
+  /**
+   * Cancel an in-flight trip creation job.
+   *
+   * V112 fix #4: allows a user to abort a pending/processing job. The
+   * JobsService.cancelJob path fires the AbortController which propagates
+   * into the OpenAI stream and the TripsService.create transaction, rolling
+   * back the AI quota increment and any partially-saved trip rows.
+   *
+   * - 204 on successful cancel (idempotent on terminal states)
+   * - 404 when jobId is unknown
+   * - 403 when the caller is not the job owner
+   */
+  @Delete('jobs/:jobId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  cancelJob(
+    @CurrentUser('userId') userId: string,
+    @Param('jobId') jobId: string,
+  ): void {
+    this.jobsService.cancelJob(jobId, userId);
   }
 
   /**
@@ -123,41 +144,50 @@ export class TripsController {
     createTripDto: CreateTripDto,
     language: string,
   ): Promise<void> {
+    // V112 fix #4: wire an AbortController into the job so DELETE /jobs/:id
+    // can propagate a cancel through tripsService.create → ai.service stream.
+    const abortController = new AbortController();
+    this.jobsService.attachAbortController(jobId, abortController);
+
     try {
-      // 상태를 processing으로 업데이트
       this.jobsService.updateJob(jobId, { status: 'processing' });
 
-      // progress$ Subject 생성 (여행 생성 진행 상태 추적)
       const progress$ = new Subject<TripCreationProgress>();
-
-      // progress 이벤트 구독 → JobData 업데이트
       const subscription = progress$.subscribe({
         next: (progress) => {
+          // Don't clobber a terminal 'cancelled' status with late progress ticks.
+          const current = this.jobsService.getJob(jobId);
+          if (current.status === 'cancelled') return;
           this.jobsService.updateJob(jobId, { progress });
         },
       });
 
-      // 여행 생성 (기존 로직 재사용)
       const trip = await this.tripsService.create(
         userId,
         createTripDto,
         language,
         progress$,
+        abortController.signal,
       );
 
-      // 완료 상태 업데이트
       this.jobsService.updateJob(jobId, {
         status: 'completed',
         tripId: trip.id,
         progress: { step: 'complete' },
       });
 
-      // Subject 정리
       subscription.unsubscribe();
       progress$.complete();
-    } catch (error) {
-      // 에러 상태 업데이트
-      const errorMessage = error.message || 'Trip creation failed';
+    } catch (error: unknown) {
+      // If the user cancelled, jobsService.cancelJob has already set status
+      // to 'cancelled'. We must NOT overwrite that with 'error' here.
+      const current = this.jobsService.getJob(jobId);
+      if (current.status === 'cancelled') {
+        return;
+      }
+
+      const errorMessage =
+        error instanceof Error ? error.message : 'Trip creation failed';
       this.jobsService.updateJob(jobId, {
         status: 'error',
         error: errorMessage,
@@ -492,9 +522,9 @@ export class TripsController {
       ? result.url
       : `${baseUrl}${result.url}`;
     const fullThumbnailUrl = result.thumbnailUrl
-      ? (result.thumbnailUrl.startsWith('http')
-          ? result.thumbnailUrl
-          : `${baseUrl}${result.thumbnailUrl}`)
+      ? result.thumbnailUrl.startsWith('http')
+        ? result.thumbnailUrl
+        : `${baseUrl}${result.thumbnailUrl}`
       : undefined;
 
     return { url: fullUrl, thumbnailUrl: fullThumbnailUrl };

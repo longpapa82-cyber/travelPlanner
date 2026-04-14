@@ -14,16 +14,23 @@ describe('AuthController (Integration)', () => {
   // Mock data
   const mockUser = {
     id: 'user-123',
-    email: 'test@example.com',
+    email: 'test@example.com' as string | null,
     name: 'Test User',
     provider: AuthProvider.EMAIL,
-    profileImage: undefined as string | undefined,
+    profileImage: null as string | null,
+    isEmailVerified: false,
   };
 
   const mockAuthResponse = {
     user: mockUser,
     accessToken: 'mock-access-token',
     refreshToken: 'mock-refresh-token',
+  };
+
+  const mockPendingVerificationResponse = {
+    user: mockUser,
+    resumeToken: 'mock-resume-token',
+    requiresEmailVerification: true as const,
   };
 
   const mockAuthService = {
@@ -92,14 +99,14 @@ describe('AuthController (Integration)', () => {
         name: 'New User',
       };
 
-      authService.register.mockResolvedValue(mockAuthResponse);
+      authService.register.mockResolvedValue(mockPendingVerificationResponse);
 
       const response = await request(app.getHttpServer())
         .post('/auth/register')
         .send(registerDto)
         .expect(201);
 
-      expect(response.body).toEqual(mockAuthResponse);
+      expect(response.body).toEqual(mockPendingVerificationResponse);
       expect(authService.register).toHaveBeenCalledWith(registerDto, 'ko');
       expect(authService.register).toHaveBeenCalledTimes(1);
     });
@@ -358,10 +365,10 @@ describe('AuthController (Integration)', () => {
       const now = new Date();
       const mockProfile = {
         id: mockUser.id,
-        email: mockUser.email,
+        email: mockUser.email ?? undefined,
         name: mockUser.name,
         provider: mockUser.provider,
-        profileImage: mockUser.profileImage,
+        profileImage: mockUser.profileImage ?? undefined,
         isEmailVerified: false,
         isTwoFactorEnabled: false,
         subscriptionTier: SubscriptionTier.FREE,
@@ -435,10 +442,10 @@ describe('AuthController (Integration)', () => {
     it('should use @CurrentUser decorator to extract userId', async () => {
       const mockProfile = {
         id: mockUser.id,
-        email: mockUser.email,
+        email: mockUser.email ?? undefined,
         name: mockUser.name,
         provider: mockUser.provider,
-        profileImage: mockUser.profileImage,
+        profileImage: mockUser.profileImage ?? undefined,
         isEmailVerified: false,
         isTwoFactorEnabled: false,
         subscriptionTier: SubscriptionTier.FREE,
@@ -472,16 +479,20 @@ describe('AuthController (Integration)', () => {
         name: 'Test User',
       };
 
-      authService.register.mockResolvedValue(mockAuthResponse);
+      authService.register.mockResolvedValue(mockPendingVerificationResponse);
 
       const response = await request(app.getHttpServer())
         .post('/auth/register')
         .send(registerDto)
         .expect(201);
 
+      // V112 fix #3: register returns a resume token instead of full tokens.
+      // Verification is completed via PendingVerificationGuard-protected endpoints.
       expect(response.body).toHaveProperty('user');
-      expect(response.body).toHaveProperty('accessToken');
-      expect(response.body).toHaveProperty('refreshToken');
+      expect(response.body).toHaveProperty('resumeToken');
+      expect(response.body).toHaveProperty('requiresEmailVerification', true);
+      expect(response.body).not.toHaveProperty('accessToken');
+      expect(response.body).not.toHaveProperty('refreshToken');
       expect(response.body.user).toHaveProperty('id');
       expect(response.body.user).toHaveProperty('email');
       expect(response.body.user).toHaveProperty('name');
@@ -644,7 +655,7 @@ describe('AuthController (Integration)', () => {
         extraField: 'should be rejected',
       };
 
-      authService.register.mockResolvedValue(mockAuthResponse);
+      authService.register.mockResolvedValue(mockPendingVerificationResponse);
 
       await request(app.getHttpServer())
         .post('/auth/register')
@@ -661,7 +672,7 @@ describe('AuthController (Integration)', () => {
         name: 'Test User',
       };
 
-      authService.register.mockResolvedValue(mockAuthResponse);
+      authService.register.mockResolvedValue(mockPendingVerificationResponse);
 
       await request(app.getHttpServer())
         .post('/auth/register')

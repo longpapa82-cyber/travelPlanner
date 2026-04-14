@@ -22,21 +22,33 @@ import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { colors } from '../../constants/theme';
 import Button from '../../components/core/Button';
 import apiService from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface Props {
   onVerified: () => void;
   onLogout: () => void;
-  userEmail?: string;
+  userEmail?: string | null;
+  // V112 Wave 5: when present, send/verify are authenticated with a
+  // pending_verification-scoped resume token instead of the session access
+  // token. Used by the register and unverified-login flows where the user
+  // does not have a full session yet.
+  resumeToken?: string;
 }
 
 const CODE_LENGTH = 6;
 const RESEND_COOLDOWN = 60;
 
-const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, userEmail }) => {
+const EmailVerificationCodeScreen: React.FC<Props> = ({
+  onVerified,
+  onLogout,
+  userEmail,
+  resumeToken,
+}) => {
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
   const { t } = useTranslation('auth');
   const insets = useSafeAreaInsets();
+  const { completeEmailVerification } = useAuth();
 
   const [code, setCode] = useState<string[]>(Array(CODE_LENGTH).fill(''));
   const [isVerifying, setIsVerifying] = useState(false);
@@ -67,7 +79,7 @@ const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, us
     if (isSending) return;
     setIsSending(true);
     try {
-      await apiService.sendVerificationCode();
+      await apiService.sendVerificationCode(resumeToken);
       setCooldown(RESEND_COOLDOWN);
     } catch {
       // Set cooldown even on failure to prevent rapid retries hitting server rate limit
@@ -82,7 +94,7 @@ const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, us
     if (cooldown > 0 || isSending) return;
     setIsSending(true);
     try {
-      await apiService.sendVerificationCode();
+      await apiService.sendVerificationCode(resumeToken);
       setCooldown(RESEND_COOLDOWN);
       showToast({
         type: 'success',
@@ -137,13 +149,24 @@ const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, us
 
     setIsVerifying(true);
     try {
-      await apiService.verifyEmailCode(fullCode);
+      const result = await apiService.verifyEmailCode(fullCode, resumeToken);
       showToast({
         type: 'success',
         message: t('verification.success', { defaultValue: '이메일이 인증되었습니다!' }),
         position: 'top',
         duration: 2000,
       });
+      // V112 Wave 5: if we were in the resume-token path, the backend
+      // sends back a full token pair and user payload. Promote it to
+      // the session store so the user lands on the authenticated UI
+      // without having to log in again.
+      if (resumeToken && result.accessToken && result.refreshToken && result.user) {
+        await completeEmailVerification({
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+          user: result.user,
+        });
+      }
       onVerified();
     } catch (error: any) {
       const msg = error?.response?.data?.message || t('verification.failed', { defaultValue: '인증에 실패했습니다.' });
@@ -154,7 +177,7 @@ const EmailVerificationCodeScreen: React.FC<Props> = ({ onVerified, onLogout, us
     } finally {
       setIsVerifying(false);
     }
-  }, [code, onVerified, showToast, t]);
+  }, [code, onVerified, showToast, t, resumeToken, completeEmailVerification]);
 
   // No auto-submit — user must press the verify button manually
 

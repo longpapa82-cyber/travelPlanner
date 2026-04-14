@@ -504,14 +504,22 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       setIsLoading(false);
       isCreatingRef.current = false;
     } catch (error: any) {
-      if (error.name === 'AbortError') {
+      // V112 Wave 5: three shapes of cancel can reach here —
+      //   1. error.name === 'AbortError' (axios saw the signal fire)
+      //   2. error.cancelled === true (our polling loop saw status='cancelled')
+      //   3. error.message === 'Trip creation cancelled' (abort reject fallback)
+      // All three should show the same user-facing toast and stop loading.
+      if (
+        error?.name === 'AbortError' ||
+        error?.cancelled === true ||
+        error?.message === 'Trip creation cancelled'
+      ) {
         showToast({
           type: 'info',
           message: t('create.progress.cancelled', { defaultValue: 'Trip creation cancelled' }),
           position: 'top',
           duration: 3000,
         });
-        // Reset guards after cancel
         setIsLoading(false);
         isCreatingRef.current = false;
         return;

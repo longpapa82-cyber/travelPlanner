@@ -3,9 +3,11 @@ import {
   Inject,
   NotFoundException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, LessThan } from 'typeorm';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { User, AuthProvider, SubscriptionTier } from './entities/user.entity';
 import {
@@ -34,6 +36,8 @@ const MAX_EMAIL_VERIFICATION_ATTEMPTS = 5;
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -72,6 +76,87 @@ export class UsersService {
 
     const user = this.userRepository.create(userData);
     return await this.userRepository.save(user);
+  }
+
+  /**
+   * Refresh an existing **unverified** EMAIL-provider registration row so the
+   * user can re-attempt signup without hitting "email already exists".
+   *
+   * Safety contract (caller MUST verify before calling):
+   * - `existing.provider === AuthProvider.EMAIL`
+   * - `existing.isEmailVerified === false`
+   *
+   * Effects:
+   * - re-hashes the new password (bcrypt cost 12, same as `create()`)
+   * - replaces the display name
+   * - clears any in-flight verification code so the next `send-verification-code`
+   *   issues a fresh one (prevents a stale code from a previous attempt being
+   *   redeemed on the new registration)
+   */
+  async refreshUnverifiedRegistration(
+    existing: User,
+    data: { password: string; name: string },
+  ): Promise<User> {
+    if (existing.provider !== AuthProvider.EMAIL) {
+      throw new BadRequestException(
+        'refreshUnverifiedRegistration called on non-EMAIL provider',
+      );
+    }
+    if (existing.isEmailVerified) {
+      throw new BadRequestException(
+        'refreshUnverifiedRegistration called on already-verified user',
+      );
+    }
+
+    const passwordHash = await bcrypt.hash(data.password, 12);
+
+    await this.userRepository.update(existing.id, {
+      passwordHash,
+      name: data.name,
+      emailVerificationToken: undefined,
+      emailVerificationExpiry: undefined,
+      emailVerificationAttempts: 0,
+      lastVerificationSentAt: undefined,
+    });
+
+    return this.findById(existing.id);
+  }
+
+  /**
+   * Hourly cleanup of abandoned email-registration rows.
+   *
+   * A user can start signup (INSERT row), fail to verify, and walk away.
+   * Without cleanup, the row blocks re-registration forever AND occupies
+   * the email unique index. `refreshUnverifiedRegistration` handles the
+   * re-entry case, but a second user who happens to hit the same email
+   * is still blocked until the orphan is removed.
+   *
+   * Policy: delete rows where `provider=EMAIL`, `isEmailVerified=false`,
+   * and `createdAt < now - 24h`. 24h is the same window used by the
+   * verification token expiry, so anything older is definitively expired.
+   */
+  @Cron(CronExpression.EVERY_HOUR)
+  async cleanupUnverifiedRegistrations(): Promise<void> {
+    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    try {
+      const result = await this.userRepository
+        .createQueryBuilder()
+        .delete()
+        .from(User)
+        .where('provider = :provider', { provider: AuthProvider.EMAIL })
+        .andWhere('"isEmailVerified" = false')
+        .andWhere('"createdAt" < :cutoff', { cutoff })
+        .execute();
+
+      if (result.affected && result.affected > 0) {
+        this.logger.log(
+          `cleanupUnverifiedRegistrations: deleted ${result.affected} abandoned rows`,
+        );
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`cleanupUnverifiedRegistrations failed: ${message}`);
+    }
   }
 
   async findById(id: string): Promise<User> {

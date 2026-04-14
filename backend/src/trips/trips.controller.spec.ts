@@ -82,6 +82,14 @@ describe('TripsController (Integration)', () => {
 
   const mockTrips = [mockTrip];
 
+  const mockJobsService = {
+    createJob: jest.fn().mockReturnValue('mock-job-id'),
+    getJob: jest.fn(),
+    updateJob: jest.fn(),
+    attachAbortController: jest.fn(),
+    cancelJob: jest.fn(),
+  };
+
   const mockTripsService = {
     create: jest.fn(),
     findAll: jest.fn(),
@@ -117,11 +125,7 @@ describe('TripsController (Integration)', () => {
         },
         {
           provide: JobsService,
-          useValue: {
-            createJob: jest.fn().mockReturnValue('mock-job-id'),
-            getJob: jest.fn(),
-            updateJob: jest.fn(),
-          },
+          useValue: mockJobsService,
         },
         {
           provide: ImageService,
@@ -582,6 +586,45 @@ describe('TripsController (Integration)', () => {
         mockUserId,
         MOCK_TRIP_ID_2,
       );
+    });
+  });
+
+  describe('DELETE /trips/jobs/:jobId', () => {
+    // V112 fix #4: user-initiated trip creation cancel.
+    it('returns 204 and delegates to jobsService.cancelJob', async () => {
+      mockJobsService.cancelJob.mockReturnValue(undefined);
+
+      await request(app.getHttpServer())
+        .delete('/trips/jobs/job-123')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(204);
+
+      expect(mockJobsService.cancelJob).toHaveBeenCalledWith(
+        'job-123',
+        mockUserId,
+      );
+    });
+
+    it('returns 404 when jobId is unknown', async () => {
+      mockJobsService.cancelJob.mockImplementation(() => {
+        throw new NotFoundException('Job not found: job-missing');
+      });
+
+      await request(app.getHttpServer())
+        .delete('/trips/jobs/job-missing')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(404);
+    });
+
+    it('returns 403 when caller is not the job owner', async () => {
+      mockJobsService.cancelJob.mockImplementation(() => {
+        throw new ForbiddenException('Cannot cancel another user’s job');
+      });
+
+      await request(app.getHttpServer())
+        .delete('/trips/jobs/job-other')
+        .set('Authorization', 'Bearer mock-token')
+        .expect(403);
     });
   });
 

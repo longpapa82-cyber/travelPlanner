@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { sub: string; email: string }) {
+  async validate(payload: { sub: string; email: string; scope?: string }) {
     const user = await this.usersService.findById(payload.sub);
     if (!user) {
       throw new UnauthorizedException('User not found');
@@ -26,6 +26,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       userId: payload.sub,
       email: payload.email,
       isEmailVerified: user.isEmailVerified,
+      // V112 fix #3: propagate scope so PendingVerificationGuard / normal
+      // auth guards can distinguish resume tokens from full access tokens.
+      scope: payload.scope,
     };
   }
 }

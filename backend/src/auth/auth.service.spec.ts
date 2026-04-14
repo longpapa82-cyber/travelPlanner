@@ -2,7 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  UnauthorizedException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
@@ -47,6 +51,7 @@ describe('AuthService', () => {
       generateEmailVerificationToken: jest
         .fn()
         .mockResolvedValue('mock-verification-token'),
+      refreshUnverifiedRegistration: jest.fn(),
     };
 
     const mockJwtService = {
@@ -114,18 +119,13 @@ describe('AuthService', () => {
       name: 'New User',
     };
 
-    it('should successfully register a new user', async () => {
-      // Arrange
+    it('creates a new user and returns a resume token (not full auth)', async () => {
       usersService.findByEmail.mockResolvedValue(null);
       usersService.create.mockResolvedValue(mockUser as any);
-      jwtService.signAsync
-        .mockResolvedValueOnce(mockTokens.accessToken)
-        .mockResolvedValueOnce(mockTokens.refreshToken);
+      jwtService.signAsync.mockResolvedValueOnce('mock-resume-token');
 
-      // Act
       const result = await service.register(registerDto);
 
-      // Assert
       expect(usersService.findByEmail).toHaveBeenCalledWith(registerDto.email);
       expect(usersService.create).toHaveBeenCalledWith({
         email: registerDto.email,
@@ -142,48 +142,78 @@ describe('AuthService', () => {
           profileImage: null,
           isEmailVerified: false,
         },
-        accessToken: mockTokens.accessToken,
-        refreshToken: mockTokens.refreshToken,
+        resumeToken: 'mock-resume-token',
+        requiresEmailVerification: true,
       });
+      // Must not leak access/refresh tokens
+      expect(result).not.toHaveProperty('accessToken');
+      expect(result).not.toHaveProperty('refreshToken');
     });
 
-    it('should throw BadRequestException if email already exists', async () => {
-      // Arrange
-      usersService.findByEmail.mockResolvedValue(mockUser as any);
+    it('signs the resume token with scope=pending_verification and 15m expiry', async () => {
+      usersService.findByEmail.mockResolvedValue(null);
+      usersService.create.mockResolvedValue(mockUser as any);
+      jwtService.signAsync.mockResolvedValueOnce('mock-resume-token');
 
-      // Act & Assert — pass lang='en' so i18n returns English messages
+      await service.register(registerDto);
+
+      expect(jwtService.signAsync).toHaveBeenCalledTimes(1);
+      expect(jwtService.signAsync).toHaveBeenCalledWith(
+        {
+          sub: mockUser.id,
+          email: mockUser.email,
+          scope: 'pending_verification',
+        },
+        { secret: 'test-secret', expiresIn: '15m' },
+      );
+    });
+
+    it('throws EMAIL_EXISTS when a verified account already exists', async () => {
+      const verifiedUser = { ...mockUser, isEmailVerified: true };
+      usersService.findByEmail.mockResolvedValue(verifiedUser as any);
+
       await expect(service.register(registerDto, 'en')).rejects.toThrow(
         BadRequestException,
       );
-      await expect(service.register(registerDto, 'en')).rejects.toThrow(
-        'Registration failed. Please check your information and try again.',
-      );
       expect(usersService.create).not.toHaveBeenCalled();
+      expect(usersService.refreshUnverifiedRegistration).not.toHaveBeenCalled();
     });
 
-    it('should generate both access and refresh tokens', async () => {
-      // Arrange
-      usersService.findByEmail.mockResolvedValue(null);
-      usersService.create.mockResolvedValue(mockUser as any);
-      jwtService.signAsync
-        .mockResolvedValueOnce(mockTokens.accessToken)
-        .mockResolvedValueOnce(mockTokens.refreshToken);
+    it('throws EMAIL_EXISTS when a non-EMAIL provider owns the address', async () => {
+      const googleUser = {
+        ...mockUser,
+        provider: AuthProvider.GOOGLE,
+        isEmailVerified: true,
+      };
+      usersService.findByEmail.mockResolvedValue(googleUser as any);
 
-      // Act
-      await service.register(registerDto);
+      await expect(service.register(registerDto, 'en')).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(usersService.refreshUnverifiedRegistration).not.toHaveBeenCalled();
+    });
 
-      // Assert
-      expect(jwtService.signAsync).toHaveBeenCalledTimes(2);
-      expect(jwtService.signAsync).toHaveBeenNthCalledWith(
-        1,
-        { sub: mockUser.id, email: mockUser.email },
-        { secret: 'test-secret', expiresIn: '15m' },
+    it('refreshes an abandoned unverified EMAIL row instead of rejecting', async () => {
+      const abandonedUser = {
+        ...mockUser,
+        provider: AuthProvider.EMAIL,
+        isEmailVerified: false,
+      };
+      usersService.findByEmail.mockResolvedValue(abandonedUser as any);
+      usersService.refreshUnverifiedRegistration.mockResolvedValue(
+        abandonedUser as any,
       );
-      expect(jwtService.signAsync).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({ sub: mockUser.id, email: mockUser.email }),
-        { secret: 'test-refresh-secret', expiresIn: '7d' },
+      jwtService.signAsync.mockResolvedValueOnce('mock-resume-token');
+
+      const result = await service.register(registerDto);
+
+      expect(usersService.refreshUnverifiedRegistration).toHaveBeenCalledWith(
+        abandonedUser,
+        { password: registerDto.password, name: registerDto.name },
       );
+      expect(usersService.create).not.toHaveBeenCalled();
+      expect(result.resumeToken).toBe('mock-resume-token');
+      expect(result.requiresEmailVerification).toBe(true);
     });
   });
 
@@ -193,35 +223,54 @@ describe('AuthService', () => {
       password: 'Password123!',
     };
 
-    it('should successfully login with valid credentials', async () => {
-      // Arrange
-      usersService.findByEmail.mockResolvedValue(mockUser as any);
+    it('should successfully login with valid credentials (verified user)', async () => {
+      const verifiedUser = { ...mockUser, isEmailVerified: true };
+      usersService.findByEmail.mockResolvedValue(verifiedUser as any);
       usersService.validatePassword.mockResolvedValue(true);
       jwtService.signAsync
         .mockResolvedValueOnce(mockTokens.accessToken)
         .mockResolvedValueOnce(mockTokens.refreshToken);
 
-      // Act
       const result = await service.login(loginDto);
 
-      // Assert
       expect(usersService.findByEmail).toHaveBeenCalledWith(loginDto.email);
       expect(usersService.validatePassword).toHaveBeenCalledWith(
-        mockUser,
+        verifiedUser,
         loginDto.password,
       );
-      expect(result).toEqual({
-        user: {
-          id: mockUser.id,
-          email: mockUser.email,
-          name: mockUser.name,
-          provider: mockUser.provider,
-          profileImage: null,
-          isEmailVerified: false,
-        },
+      expect(result).toMatchObject({
+        user: expect.objectContaining({
+          id: verifiedUser.id,
+          isEmailVerified: true,
+        }),
         accessToken: mockTokens.accessToken,
         refreshToken: mockTokens.refreshToken,
       });
+    });
+
+    it('throws EMAIL_NOT_VERIFIED 401 with a resumeToken for unverified users', async () => {
+      const unverifiedUser = { ...mockUser, isEmailVerified: false };
+      usersService.findByEmail.mockResolvedValue(unverifiedUser as any);
+      usersService.validatePassword.mockResolvedValue(true);
+      jwtService.signAsync.mockResolvedValueOnce('mock-resume-token');
+
+      // The HttpException body carries the structured error payload.
+      await expect(
+        service.login(loginDto, undefined, 'en'),
+      ).rejects.toMatchObject({
+        response: expect.objectContaining({
+          code: 'EMAIL_NOT_VERIFIED',
+          resumeToken: 'mock-resume-token',
+        }),
+        status: 401,
+      });
+
+      // Must not mint full access/refresh tokens on this path.
+      expect(jwtService.signAsync).toHaveBeenCalledTimes(1);
+      expect(jwtService.signAsync).toHaveBeenCalledWith(
+        expect.objectContaining({ scope: 'pending_verification' }),
+        expect.objectContaining({ expiresIn: '15m' }),
+      );
     });
 
     it('should throw UnauthorizedException if user not found', async () => {
@@ -636,22 +685,19 @@ describe('AuthService', () => {
 
   describe('token generation', () => {
     it('should generate tokens with correct configuration', async () => {
-      // Arrange
-      const registerDto: RegisterDto = {
+      const loginDto: LoginDto = {
         email: 'test@example.com',
-        password: 'password123',
-        name: 'Test User',
+        password: 'Password123!',
       };
-      usersService.findByEmail.mockResolvedValue(null);
-      usersService.create.mockResolvedValue(mockUser as any);
+      const verifiedUser = { ...mockUser, isEmailVerified: true };
+      usersService.findByEmail.mockResolvedValue(verifiedUser as any);
+      usersService.validatePassword.mockResolvedValue(true);
       jwtService.signAsync
         .mockResolvedValueOnce(mockTokens.accessToken)
         .mockResolvedValueOnce(mockTokens.refreshToken);
 
-      // Act
-      await service.register(registerDto);
+      await service.login(loginDto);
 
-      // Assert
       expect(configService.get).toHaveBeenCalledWith('jwt.secret');
       expect(configService.get).toHaveBeenCalledWith('jwt.expiresIn');
       expect(configService.get).toHaveBeenCalledWith('jwt.refreshSecret');
@@ -659,25 +705,22 @@ describe('AuthService', () => {
     });
 
     it('should create tokens with user payload', async () => {
-      // Arrange
-      const registerDto: RegisterDto = {
+      const loginDto: LoginDto = {
         email: 'test@example.com',
-        password: 'password123',
-        name: 'Test User',
+        password: 'Password123!',
       };
-      usersService.findByEmail.mockResolvedValue(null);
-      usersService.create.mockResolvedValue(mockUser as any);
+      const verifiedUser = { ...mockUser, isEmailVerified: true };
+      usersService.findByEmail.mockResolvedValue(verifiedUser as any);
+      usersService.validatePassword.mockResolvedValue(true);
       jwtService.signAsync
         .mockResolvedValueOnce(mockTokens.accessToken)
         .mockResolvedValueOnce(mockTokens.refreshToken);
 
-      // Act
-      await service.register(registerDto);
+      await service.login(loginDto);
 
-      // Assert
       const expectedPayload = {
-        sub: mockUser.id,
-        email: mockUser.email,
+        sub: verifiedUser.id,
+        email: verifiedUser.email,
       };
       expect(jwtService.signAsync).toHaveBeenCalledWith(
         expectedPayload,
@@ -690,12 +733,12 @@ describe('AuthService', () => {
     });
 
     it('should generate tokens in parallel using Promise.all', async () => {
-      // Arrange
       const loginDto: LoginDto = {
         email: 'test@example.com',
         password: 'Password123!',
       };
-      usersService.findByEmail.mockResolvedValue(mockUser as any);
+      const verifiedUser = { ...mockUser, isEmailVerified: true };
+      usersService.findByEmail.mockResolvedValue(verifiedUser as any);
       usersService.validatePassword.mockResolvedValue(true);
 
       let accessTokenResolve: any;

@@ -240,14 +240,53 @@ class ApiService {
     return response.data;
   }
 
-  // 6-digit code verification (mobile-first)
-  async sendVerificationCode(): Promise<{ message: string; expiresIn: number }> {
-    const response = await this.api.post('/auth/send-verification-code');
+  // 6-digit code verification (mobile-first).
+  //
+  // V112 Wave 2 change: backend now requires a `pending_verification` scope
+  // JWT on these endpoints. The caller passes the resumeToken issued by
+  // register/login (EMAIL_NOT_VERIFIED 401 branch). The request interceptor
+  // skips its default Bearer injection when Authorization is already set,
+  // so this override lands as-is.
+  async sendVerificationCode(
+    resumeToken?: string,
+  ): Promise<{ message: string; expiresIn: number }> {
+    const response = await this.api.post(
+      '/auth/send-verification-code',
+      {},
+      resumeToken
+        ? { headers: { Authorization: `Bearer ${resumeToken}` } }
+        : undefined,
+    );
     return response.data;
   }
 
-  async verifyEmailCode(code: string): Promise<{ message: string; isEmailVerified: boolean }> {
-    const response = await this.api.post('/auth/verify-email-code', { code });
+  async verifyEmailCode(
+    code: string,
+    resumeToken?: string,
+  ): Promise<{
+    message: string;
+    isEmailVerified: boolean;
+    // V112 Wave 5: backend upgrades the resume token to a full session
+    // on a successful verify. Frontend promotes these to secureStorage
+    // via AuthContext.completeEmailVerification.
+    accessToken?: string;
+    refreshToken?: string;
+    user?: {
+      id: string;
+      email: string | null;
+      name: string;
+      provider: string;
+      profileImage: string | null;
+      isEmailVerified: boolean;
+    };
+  }> {
+    const response = await this.api.post(
+      '/auth/verify-email-code',
+      { code },
+      resumeToken
+        ? { headers: { Authorization: `Bearer ${resumeToken}` } }
+        : undefined,
+    );
     return response.data;
   }
 
@@ -374,6 +413,26 @@ class ApiService {
     return response.data;
   }
 
+  /**
+   * V112 Wave 3: user-initiated cancel of an in-flight AI generation job.
+   * Swallows 404 (already-gone) and 4xx so the UI can call this defensively
+   * without showing an error if the job completed between poll and cancel.
+   * Server returns 204 on success.
+   */
+  async cancelTripJob(jobId: string): Promise<void> {
+    try {
+      await this.api.delete(`/trips/jobs/${jobId}`, { timeout: 5000 });
+    } catch (err: any) {
+      const status = err?.response?.status;
+      if (status === 404 || status === 403) {
+        // Idempotent from the UI's perspective — job already finished or
+        // never existed. Swallow so the cancel button always feels responsive.
+        return;
+      }
+      throw err;
+    }
+  }
+
   async createTripWithPolling(
     data: any,
     onProgress?: (step: string, message?: string) => void,
@@ -404,6 +463,19 @@ class ApiService {
       return new Promise((resolve, reject) => {
         let pollCount = 0;
         const maxPolls = 300; // 최대 5분 (300초)
+        // V112 Wave 3: if the caller aborts via AbortSignal, we must tell
+        // the server to stop too. Without this, AbortSignal only stops the
+        // local polling loop — the backend keeps running, burns the AI
+        // quota, and commits a trip the user never sees.
+        const sendCancelToServer = () => {
+          this.cancelTripJob(jobId).catch((err) => {
+            console.warn('[POLLING] cancelTripJob failed:', err?.message);
+          });
+        };
+        if (signal) {
+          const onAbort = () => sendCancelToServer();
+          signal.addEventListener('abort', onAbort, { once: true });
+        }
 
         const pollInterval = setInterval(async () => {
           // 취소 체크
@@ -449,6 +521,16 @@ class ApiService {
                 error.tripCreated = true;
                 reject(error);
               }
+              return;
+            }
+
+            // V112 Wave 3: cancelled is a terminal state from DELETE /jobs/:id
+            if (status.status === 'cancelled') {
+              console.log('[POLLING] Trip creation cancelled by user');
+              clearInterval(pollInterval);
+              const error: any = new Error('Trip creation cancelled');
+              error.cancelled = true;
+              reject(error);
               return;
             }
 

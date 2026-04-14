@@ -332,6 +332,7 @@ describe('TripsService', () => {
           startDate: expect.any(Date),
           endDate: expect.any(Date),
         }),
+        undefined, // V112 fix #4: second arg is the optional AbortSignal
       );
     });
 

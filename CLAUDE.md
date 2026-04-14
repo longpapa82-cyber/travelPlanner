@@ -2,7 +2,110 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-13) — **세션 작업 완료 요약**
+## 📍 현재 상태 (2026-04-14) — **V112 RCA 5-Wave 전면 수정 완료**
+
+### 🎯 세션 성과 요약 (한 줄)
+V112 RCA 10건(#1~#10) 근본 수정을 5개 웨이브로 분해해 Iteration 0~5에 걸쳐 완료. Backend 429/429 PASS, Frontend TSC 0/Jest 205/209 (실패는 V111 무관 drift), Alpha 빌드 기술적 unblocked 상태.
+
+### 📊 핵심 상태 (2026-04-14)
+- **버전**: V112 (다음 EAS 빌드로 반영 예정)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V112 변경 **미배포 상태**, rsync + docker compose 배포 필요
+- **브랜치**: `main`
+- **Backend 상태**: TypeScript 0 errors, Jest **429/429** (23/23 suites)
+- **Frontend 상태**: TypeScript 0 errors, Jest **205/209** (ActivityModal 2 suites = V111 pre-existing drift, Wave 6 스코프)
+- **V112 범위**: RCA 10건 중 #1~#10 전부 근본 수정 완료 (Iteration 0~5)
+
+### 🌊 V112 5-Wave 완료 현황
+
+| Wave | Iter | 내용 | 완료 |
+|---|---|---|---|
+| 1 | 0 | subscription sentinel 제거, changePassword 토큰 무효화, 에러 로그 필터 (EXPECTED_ERROR_NAMES) | ✅ |
+| 2 | 1-2 | register 재진입 (`refreshUnverifiedRegistration`), pendingVerification JWT scope, 401 EMAIL_NOT_VERIFIED, auth discriminated error codes, unverified 24h cleanup cron, auth spec 재작성 | ✅ |
+| 3 | 3 | Trip cancel 인프라: JobsService.cancelJob, AbortSignal 전파, ai.service 90s timeout, `DELETE /trips/jobs/:jobId`, 10+3 테스트 | ✅ |
+| 4 | 4 | Pre-existing spec drift 정리 (`all-exceptions.filter.spec`, `email.service.spec`) | ✅ |
+| 5 | 5 | Frontend 계약 정렬: RegisterScreen/LoginScreen/EmailVerificationCodeScreen, AuthContext.pendingVerification, CreateTripScreen cancel 브릿지, apiClient resumeToken | ✅ |
+
+### 🔑 V112 최종 계약 (Frontend ↔ Backend)
+
+| Flow | Request | Response |
+|---|---|---|
+| `POST /auth/register` (신규) | `{email, password, name}` | `201 {user, resumeToken, requiresEmailVerification: true}` |
+| `POST /auth/register` (미인증 재진입) | 동일 | 동일 (backend가 in-place refresh) |
+| `POST /auth/register` (기가입/비-EMAIL) | 동일 | `400 {code: 'EMAIL_EXISTS', message}` |
+| `POST /auth/login` (인증됨) | `{email, password}` | `200 {user, accessToken, refreshToken, ...}` |
+| `POST /auth/login` (미인증 EMAIL) | 동일 | `401 {code: 'EMAIL_NOT_VERIFIED', resumeToken, user, message}` |
+| `POST /auth/send-verification-code` | `{}` + `Bearer ${resumeToken}` | `200 {message, expiresIn}` |
+| `POST /auth/verify-email-code` | `{code}` + `Bearer ${resumeToken}` | `200 {message, isEmailVerified, accessToken, refreshToken, user}` |
+| `POST /trips/create-async` | `{...}` | `200 {jobId, status}` |
+| `GET /trips/job-status/:jobId` | — | `{status, progress, tripId?, error?}` — `status` may be `'cancelled'` |
+| `DELETE /trips/jobs/:jobId` | — | `204` / `404` / `403` |
+
+### 🛡️ V112에서 강제되는 핵심 불변식
+
+1. **Scope isolation**: resumeToken은 send/verify-email-code 외 어떤 엔드포인트도 열지 못함 (JwtAuthGuard + PendingVerificationGuard 양방향 차단)
+2. **Quota 롤백 보장**: AI trip cancel 시 `aiTripsUsedThisMonth += 1`이 반드시 롤백 (단일 트랜잭션이 quota increment → trip insert → AI stream → commit 전체를 감쌈)
+3. **Hard timeout 90s**: OpenAI 런어웨이 요청이 DB 커넥션을 무한정 점유할 수 없음 (`AbortSignal.any(external, AbortSignal.timeout(90000))`)
+4. **Cancel authorization**: jobId 유출 시에도 cross-user cancel 불가 (`ForbiddenException`)
+5. **Password-change token invalidation**: 비밀번호 변경 후 이전 refresh token 전부 거부 (`pwd_changed:${userId}` Redis 키 + refreshToken.iat 비교)
+6. **No silent AI fallback on cancel**: cancel 에러가 empty-itineraries fallback으로 삼켜지지 않음 (`TripCancelledError` discriminated class)
+7. **Unverified account cleanup**: 24h 경과 미인증 EMAIL row 시간당 삭제 (같은 이메일 재가입 차단 방지)
+
+### 📁 V112 Iteration 0~5 변경 파일 목록
+
+**Backend (신규)**:
+- `src/auth/constants/auth-error-codes.ts` — discriminated codes + scope literal
+- `src/auth/guards/pending-verification.guard.ts` — inverse of JwtAuthGuard
+- `src/trips/jobs.service.spec.ts` — 10 tests
+- `src/subscription/constants.ts` + `dto/subscription-status.dto.ts` (Wave 1)
+
+**Backend (수정)**:
+- `src/auth/auth.service.ts` — register/login/verifyEmailCode/refreshToken, PendingVerificationResponse, generateResumeToken
+- `src/auth/auth.controller.ts` — PendingVerificationGuard 적용, register 반환 타입
+- `src/auth/strategies/jwt.strategy.ts` — scope 전파
+- `src/auth/guards/jwt-auth.guard.ts` — pending_verification 거부
+- `src/auth/auth.service.spec.ts` + `auth.controller.spec.ts` — 재작성
+- `src/users/users.service.ts` — refreshUnverifiedRegistration + cleanupUnverifiedRegistrations cron
+- `src/trips/jobs.service.ts` — cancelJob + attachAbortController + userId ownership
+- `src/trips/trips.service.ts` — signal thread, TripCancelledError, AI catch re-throw
+- `src/trips/services/ai.service.ts` — generateAllItineraries/Full/Parallel/Daily signal, streamCompletion AbortSignal.any
+- `src/trips/trips.controller.ts` — `DELETE /trips/jobs/:jobId`, startTripCreation AbortController
+- `src/trips/trips.service.spec.ts` + `trips.controller.spec.ts` — cancel 테스트
+- `src/common/filters/all-exceptions.filter.ts` + `.spec.ts` — EXPECTED_ERROR_NAMES + subscription 5xx-only, fencepost tests
+- `src/email/email.service.spec.ts` — "always throw" 계약으로 재작성
+
+**Frontend (수정)**:
+- `src/services/api.ts` — sendVerificationCode/verifyEmailCode resumeToken, cancelTripJob, polling 'cancelled' terminal + abort→server DELETE 브릿지
+- `src/contexts/AuthContext.tsx` — EmailNotVerifiedError, pendingVerification state, completeEmailVerification
+- `src/navigation/RootNavigator.tsx` — pendingVerification 기반 EmailVerificationCodeScreen 분기
+- `src/screens/auth/EmailVerificationCodeScreen.tsx` — resumeToken prop + token 승격
+- `src/screens/auth/RegisterScreen.tsx` + `LoginScreen.tsx` — EmailNotVerifiedError happy-path
+- `src/screens/trips/CreateTripScreen.tsx` — 3가지 cancel 형태 catch 확장
+
+### ⚠️ 배포 전 확인 필요 (Breaking changes)
+
+구 앱 빌드가 새 backend에 붙으면 **가입/인증 경로가 전부 깨집니다**. 프론트엔드와 백엔드는 **동일 배포 사이클**로 나가야 합니다:
+
+1. Backend rsync + `docker compose build && up -d` (Hetzner VPS)
+2. EAS Build V113 (versionCode bump)
+3. Play Console Alpha 트랙 업로드
+4. Alpha 테스터가 새 앱으로 교체하고 로그인/가입/AI 생성 cancel 플로우 검증
+
+**구버전 앱이 잔존하는 기간을 최소화**하기 위해 backend 배포와 EAS 빌드 제출은 같은 창에서 진행 권장.
+
+### ⏭️ 사용자 다음 조치
+
+1. **Backend 배포**: Hetzner VPS에 V112 변경 rsync + Docker rebuild
+2. **EAS Build 제출**: Alpha 트랙, versionCode 113 (V112는 이미 사용됨)
+3. **Alpha 테스터 검증**: V111 7건 + V112 신규 (register/login 재진입, cancel 버튼 실제 동작, verify 후 자동 로그인 등)
+4. **Wave 6 (선택, 저우선순위)**: V111 pre-existing ActivityModal 테스트 2건 드리프트 정리 — Alpha 릴리스 이후 한가할 때 처리
+
+### 📂 상세 로그
+
+세션 전체 timeline과 각 Iteration의 변경 근거/검증/컨트랙트는 `docs/v112-rca/self-loop-log.md`에 기록됨 (Iteration 0~5 전부).
+
+---
+
+## 📍 이전 상태 (2026-04-13) — **V111 Alpha 검수 수정 완료**
 
 ### 🎯 세션 성과 요약 (한 줄)
 V111 검수 7건 전면 수정 + RevenueCat webhook 인프라 복구 + 6-Layer QA 통과 + Backend 배포 + V112 Alpha EAS 빌드 + GitHub 노출 키 완전 정리 + GitHub Support 티켓 제출까지 **모두 완료**.

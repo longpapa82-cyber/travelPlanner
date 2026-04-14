@@ -25,7 +25,11 @@ import AuthLegalModal from '../../components/legal/AuthLegalModal';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../types';
-import { useAuth, TwoFactorRequiredError } from '../../contexts/AuthContext';
+import {
+  useAuth,
+  TwoFactorRequiredError,
+  EmailNotVerifiedError,
+} from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../constants/theme';
@@ -101,6 +105,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         navigation.navigate('TwoFactorLogin', { tempToken: error.tempToken });
         return;
       }
+      // V112 Wave 5: unverified login is the happy path for pending-verify.
+      // AuthContext already set pendingVerification; RootNavigator will
+      // swap to the verification screen on the next render.
+      if (error instanceof EmailNotVerifiedError) return;
       setLoginError(error.response?.data?.message || t('login.alerts.invalidCredentials'));
     } finally {
       setIsLoading(false);

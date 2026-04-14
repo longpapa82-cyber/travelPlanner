@@ -64,7 +64,15 @@ const linking: LinkingOptions<RootStackParamList> = {
 };
 
 const RootNavigator = () => {
-  const { isAuthenticated, isLoading, user, refreshUser, logout } = useAuth();
+  const {
+    isAuthenticated,
+    isLoading,
+    user,
+    refreshUser,
+    logout,
+    pendingVerification,
+    clearPendingVerification,
+  } = useAuth();
   const { needsConsentScreen, isCheckingConsent, markConsentComplete } = useConsent();
   const { theme, isDark } = useTheme();
   const { shouldShowPrePermission, sessionCount, requestTracking } = useTrackingTransparency();
@@ -92,9 +100,27 @@ const RootNavigator = () => {
     );
   }
 
-  // Show EmailVerificationCodeScreen FIRST if email user hasn't verified yet
-  // Email verification must complete BEFORE consent (legal requirement: verify identity first)
-  // Social login users (google, kakao, apple) are auto-verified
+  // V112 Wave 5: resume-token path — user registered or tried to log in
+  // while unverified, backend gave us a scope-restricted resumeToken, and
+  // we have no full session yet. Show the verification screen before
+  // anything else.
+  if (pendingVerification) {
+    return (
+      <EmailVerificationCodeScreen
+        onVerified={refreshUser}
+        onLogout={() => {
+          clearPendingVerification();
+          logout();
+        }}
+        userEmail={pendingVerification.user.email}
+        resumeToken={pendingVerification.resumeToken}
+      />
+    );
+  }
+
+  // Legacy path: full session exists but email is not yet verified.
+  // (Kept for backwards compatibility with staged rollouts; new V112
+  // backend routes unverified users through pendingVerification above.)
   const needsEmailVerification =
     isAuthenticated &&
     user &&

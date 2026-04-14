@@ -183,6 +183,7 @@ export class AIService {
     tripContext: TripContext,
     dayNumber: number,
     date: Date,
+    signal?: AbortSignal,
   ): Promise<ActivityDto[]> {
     if (!this.openai) {
       this.logger.warn('OpenAI not configured, returning empty itinerary');
@@ -219,7 +220,7 @@ export class AIService {
             this.streamCompletion(
               `${SYSTEM_PROMPT_BASE}\n\nLanguage: ${langName}. Return a JSON daily itinerary.`,
               prompt,
-              { maxTokens: 4096, label: 'daily itinerary' },
+              { maxTokens: 4096, label: 'daily itinerary', signal },
             ),
           2,
           1000,
@@ -445,6 +446,7 @@ Return JSON:
 
   async generateAllItineraries(
     tripContext: TripContext,
+    signal?: AbortSignal,
   ): Promise<{ dayNumber: number; date: Date; activities: ActivityDto[] }[]> {
     const totalDays =
       Math.ceil(
@@ -506,11 +508,13 @@ Return JSON:
       itineraries = await this.generateFullTripItinerary(
         tripContext,
         totalDays,
+        signal,
       );
     } else {
       itineraries = await this.generateParallelItineraries(
         tripContext,
         totalDays,
+        signal,
       );
     }
 
@@ -545,6 +549,7 @@ Return JSON:
   private async generateFullTripItinerary(
     tripContext: TripContext,
     totalDays: number,
+    signal?: AbortSignal,
   ): Promise<{ dayNumber: number; date: Date; activities: ActivityDto[] }[]> {
     if (!this.openai) {
       this.logger.warn('OpenAI not configured, returning empty itineraries');
@@ -587,7 +592,7 @@ Return JSON:
             this.streamCompletion(
               `${SYSTEM_PROMPT_BASE}\n\nLanguage: ${langName}. Return a JSON multi-day itinerary with logical geographic flow.`,
               prompt,
-              { maxTokens, label: `full ${totalDays}d trip` },
+              { maxTokens, label: `full ${totalDays}d trip`, signal },
             ),
           2,
           1000,
@@ -680,10 +685,15 @@ Return JSON:
       );
       return itineraries;
     } catch (error) {
+      // Don't fall back after a user-initiated abort — re-raise so the
+      // caller's transaction can roll back instead of silently retrying.
+      if (signal?.aborted) {
+        throw error;
+      }
       this.logger.error(
         `Full trip generation failed, falling back to parallel: ${getErrorMessage(error)}`,
       );
-      return this.generateParallelItineraries(tripContext, totalDays);
+      return this.generateParallelItineraries(tripContext, totalDays, signal);
     }
   }
 
@@ -693,6 +703,7 @@ Return JSON:
   private async generateParallelItineraries(
     tripContext: TripContext,
     totalDays: number,
+    signal?: AbortSignal,
   ): Promise<{ dayNumber: number; date: Date; activities: ActivityDto[] }[]> {
     const BATCH_SIZE = 5;
     const itineraries: {
@@ -715,9 +726,12 @@ Return JSON:
         const dayNumber = i + 1;
 
         batchPromises.push(
-          this.generateDailyItinerary(tripContext, dayNumber, date).then(
-            (activities) => ({ dayNumber, date, activities }),
-          ),
+          this.generateDailyItinerary(
+            tripContext,
+            dayNumber,
+            date,
+            signal,
+          ).then((activities) => ({ dayNumber, date, activities })),
         );
       }
 
@@ -837,23 +851,47 @@ Return JSON:
   private async streamCompletion(
     systemPrompt: string,
     userPrompt: string,
-    opts: { maxTokens?: number; label?: string } = {},
+    opts: {
+      maxTokens?: number;
+      label?: string;
+      signal?: AbortSignal;
+    } = {},
   ): Promise<string | null> {
-    const { maxTokens = 8192, label = 'completion' } = opts;
+    const {
+      maxTokens = 8192,
+      label = 'completion',
+      signal: externalSignal,
+    } = opts;
     const startTime = Date.now();
 
-    const stream = await this.openai.chat.completions.create({
-      model: this.model,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.7,
-      max_tokens: maxTokens,
-      response_format: { type: 'json_object' },
-      stream: true,
-      stream_options: { include_usage: true },
-    });
+    // V112 fix #4: compose the external cancel signal with a hard 90s timeout
+    // so a runaway OpenAI request can never hold a DB transaction open forever.
+    // AbortSignal.any requires Node 20+; fall back to the external signal only.
+    const timeoutMs = 90_000;
+    const timeoutSignal =
+      typeof AbortSignal.timeout === 'function'
+        ? AbortSignal.timeout(timeoutMs)
+        : undefined;
+    const combinedSignal =
+      externalSignal && timeoutSignal && typeof AbortSignal.any === 'function'
+        ? AbortSignal.any([externalSignal, timeoutSignal])
+        : (externalSignal ?? timeoutSignal);
+
+    const stream = await this.openai.chat.completions.create(
+      {
+        model: this.model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        temperature: 0.7,
+        max_tokens: maxTokens,
+        response_format: { type: 'json_object' },
+        stream: true,
+        stream_options: { include_usage: true },
+      },
+      combinedSignal ? { signal: combinedSignal } : undefined,
+    );
 
     let content = '';
     let usage: {
@@ -881,7 +919,7 @@ Return JSON:
       // gpt-4o-mini pricing: $0.15/1M input, $0.60/1M output
       const costUsd =
         (usage.prompt_tokens * 0.15) / 1_000_000 +
-        (usage.completion_tokens * 0.60) / 1_000_000;
+        (usage.completion_tokens * 0.6) / 1_000_000;
       this.apiUsageService
         .logApiUsage({
           provider: 'openai',

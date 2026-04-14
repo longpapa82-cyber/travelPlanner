@@ -24,6 +24,7 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RegisterPushTokenDto } from './dto/register-push-token.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { PendingVerificationGuard } from './guards/pending-verification.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { AppleAuthGuard } from './guards/apple-auth.guard';
 import { KakaoAuthGuard } from './guards/kakao-auth.guard';
@@ -109,10 +110,12 @@ export class AuthController {
     );
   }
 
-  // 6-digit code verification (mobile-first)
+  // 6-digit code verification (mobile-first).
+  // Accepts resume tokens (scope=pending_verification) from register/login,
+  // AND full access tokens (for already-logged-in users changing verification).
   @Post('send-verification-code')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(PendingVerificationGuard)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
   async sendVerificationCode(
     @Req() req: Request,
@@ -130,7 +133,7 @@ export class AuthController {
 
   @Post('verify-email-code')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(PendingVerificationGuard)
   @Throttle({ short: { ttl: 60000, limit: 10 } })
   async verifyEmailCode(
     @Req() req: Request,

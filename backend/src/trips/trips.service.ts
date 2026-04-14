@@ -36,11 +36,25 @@ export type TripCreationStep =
   | 'geocoding'
   | 'saving'
   | 'complete'
-  | 'error';
+  | 'error'
+  | 'cancelled';
 
 export interface TripCreationProgress {
   step: TripCreationStep;
   message?: string;
+}
+
+/**
+ * Thrown from inside TripsService.create when the caller's AbortSignal fires.
+ * Distinct class so the outer catch block can distinguish "user cancelled"
+ * from "AI fallback to empty itineraries" — cancellation must not be masked
+ * by the fallback path.
+ */
+export class TripCancelledError extends Error {
+  constructor() {
+    super('Trip creation cancelled by user');
+    this.name = 'TripCancelledError';
+  }
 }
 
 @Injectable()
@@ -68,7 +82,15 @@ export class TripsService {
     createTripDto: CreateTripDto,
     language: string = 'ko',
     progress$?: Subject<TripCreationProgress>,
+    signal?: AbortSignal,
   ): Promise<Trip> {
+    // V112 fix #4: helper that throws if the caller cancelled the request.
+    // Called at each async boundary so work stops quickly after DELETE /jobs/:id.
+    const throwIfCancelled = () => {
+      if (signal?.aborted) {
+        throw new TripCancelledError();
+      }
+    };
     // Calculate number of days
     const startDate = new Date(createTripDto.startDate);
     const endDate = new Date(createTripDto.endDate);
@@ -192,6 +214,7 @@ export class TripsService {
 
     // CRITICAL FIX: Wrap ALL operations in try-catch for proper rollback
     try {
+      throwIfCancelled();
       progress$?.next({ step: 'validating' });
 
       // Get location information for timezone and weather (with 8s timeout to prevent long waits)
@@ -301,8 +324,10 @@ export class TripsService {
 
       if (isManualMode) {
         // Manual mode: skip AI, create empty day cards with weather/timezone
+        throwIfCancelled();
         progress$?.next({ step: 'weather' });
         const weatherMap = await fetchWeatherMap();
+        throwIfCancelled();
         const itineraries = await createEmptyItineraries(weatherMap);
         this.logger.log(
           `Created ${itineraries.length} empty itineraries (manual mode) for trip ${savedTrip.id}`,
@@ -311,24 +336,30 @@ export class TripsService {
         // ✅ Note: AI trip count already incremented in transaction above
         // AI mode: generate itineraries with AI + weather in parallel
         try {
+          throwIfCancelled();
           progress$?.next({ step: 'ai_generating' });
-          const aiPromise = this.aiService.generateAllItineraries({
-            destination: createTripDto.destination,
-            country: createTripDto.country,
-            city: createTripDto.city,
-            startDate,
-            endDate,
-            numberOfTravelers: createTripDto.numberOfTravelers || 1,
-            preferences: createTripDto.preferences,
-            language,
-          });
+          const aiPromise = this.aiService.generateAllItineraries(
+            {
+              destination: createTripDto.destination,
+              country: createTripDto.country,
+              city: createTripDto.city,
+              startDate,
+              endDate,
+              numberOfTravelers: createTripDto.numberOfTravelers || 1,
+              preferences: createTripDto.preferences,
+              language,
+            },
+            signal,
+          );
 
           // Fetch weather in parallel while AI generates
           progress$?.next({ step: 'weather' });
           const weatherMap = await fetchWeatherMap();
+          throwIfCancelled();
 
           // Wait for AI generation to complete
           const aiItineraries = await aiPromise;
+          throwIfCancelled();
 
           // Combine AI results with weather data
           progress$?.next({ step: 'saving' });
@@ -354,6 +385,15 @@ export class TripsService {
             `Successfully generated ${itineraries.length} AI itineraries with weather data for trip ${savedTrip.id}`,
           );
         } catch (error) {
+          // V112 fix #4: never mask a cancellation with the fallback path.
+          // Cancellation must propagate so the outer catch rolls back the
+          // transaction (quota + trip) instead of committing an empty trip.
+          if (error instanceof TripCancelledError || signal?.aborted) {
+            throw error instanceof TripCancelledError
+              ? error
+              : new TripCancelledError();
+          }
+
           this.logger.error(
             `Failed to generate AI itineraries: ${getErrorMessage(error)}`,
           );
@@ -375,6 +415,7 @@ export class TripsService {
         }
       }
 
+      throwIfCancelled();
       // CRITICAL FIX: Commit transaction only after ALL operations complete
       await queryRunner.commitTransaction();
       this.logger.log(

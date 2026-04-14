@@ -1,8 +1,18 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Logger,
+} from '@nestjs/common';
 import { randomBytes } from 'crypto';
 import { TripCreationProgress } from './trips.service';
 
-export type JobStatus = 'pending' | 'processing' | 'completed' | 'error';
+export type JobStatus =
+  | 'pending'
+  | 'processing'
+  | 'completed'
+  | 'error'
+  | 'cancelled';
 
 export interface JobData {
   jobId: string;
@@ -12,6 +22,12 @@ export interface JobData {
   error: string | null;
   createdAt: Date;
   updatedAt: Date;
+  // V112 fix #4: owner and abort controller for user-initiated cancel.
+  // `userId` is set on createJob and checked in cancelJob to stop one user
+  // from killing another user's job. `abortController` is set by
+  // startTripCreation after it wires the controller into tripsService.create().
+  userId: string | null;
+  abortController: AbortController | null;
 }
 
 /**
@@ -35,10 +51,10 @@ export class JobsService {
   private readonly JOB_TTL = 60 * 60 * 1000;
 
   /**
-   * 새 작업 생성
-   * @returns jobId - 생성된 작업 ID
+   * Create a new job owned by `userId`. The owner is used later by
+   * `cancelJob` to reject cross-user cancellation attempts.
    */
-  createJob(): string {
+  createJob(userId: string): string {
     const jobId = randomBytes(16).toString('hex');
     const job: JobData = {
       jobId,
@@ -48,13 +64,71 @@ export class JobsService {
       error: null,
       createdAt: new Date(),
       updatedAt: new Date(),
+      userId,
+      abortController: null,
     };
 
     this.jobs.set(jobId, job);
     this.scheduleCleanup(jobId);
 
-    this.logger.log(`Job created: ${jobId}`);
+    this.logger.log(`Job created: ${jobId} (user ${userId})`);
     return jobId;
+  }
+
+  /**
+   * Attach an AbortController to an existing job so it can be cancelled later.
+   * Called by `startTripCreation` once the controller has been wired into
+   * tripsService.create(). Separated from createJob because the controller
+   * only exists in the worker path, not in the controller entry.
+   */
+  attachAbortController(jobId: string, controller: AbortController): void {
+    const job = this.jobs.get(jobId);
+    if (!job) return;
+    job.abortController = controller;
+  }
+
+  /**
+   * Cancel a running job.
+   *
+   * Contract:
+   * - Returns silently if the job already finished (completed/error/cancelled).
+   *   This keeps cancellation idempotent — a retried DELETE should not 500.
+   * - Throws `NotFoundException` if the jobId is unknown.
+   * - Throws `ForbiddenException` if the caller is not the owner.
+   * - Otherwise: calls `abortController.abort()` (which propagates to OpenAI
+   *   SDK + the DB transaction catch path) and flips status to 'cancelled'.
+   */
+  cancelJob(jobId: string, userId: string): void {
+    const job = this.jobs.get(jobId);
+    if (!job) {
+      throw new NotFoundException(`Job not found: ${jobId}`);
+    }
+    if (job.userId && job.userId !== userId) {
+      this.logger.warn(
+        `User ${userId} attempted to cancel job ${jobId} owned by ${job.userId}`,
+      );
+      throw new ForbiddenException('Cannot cancel another user’s job');
+    }
+
+    // Idempotent: no-op on terminal states.
+    if (
+      job.status === 'completed' ||
+      job.status === 'error' ||
+      job.status === 'cancelled'
+    ) {
+      return;
+    }
+
+    if (job.abortController && !job.abortController.signal.aborted) {
+      job.abortController.abort();
+    }
+
+    job.status = 'cancelled';
+    job.error = 'Cancelled by user';
+    job.progress = { step: 'cancelled' };
+    job.updatedAt = new Date();
+
+    this.logger.log(`Job ${jobId} cancelled by user ${userId}`);
   }
 
   /**
@@ -62,7 +136,10 @@ export class JobsService {
    * @param jobId - 작업 ID
    * @param updates - 업데이트할 필드
    */
-  updateJob(jobId: string, updates: Partial<Omit<JobData, 'jobId' | 'createdAt'>>): void {
+  updateJob(
+    jobId: string,
+    updates: Partial<Omit<JobData, 'jobId' | 'createdAt'>>,
+  ): void {
     const job = this.jobs.get(jobId);
     if (!job) {
       this.logger.warn(`Job not found for update: ${jobId}`);
@@ -75,7 +152,9 @@ export class JobsService {
     if (updates.status === 'completed' || updates.status === 'error') {
       this.logger.log(
         `Job ${jobId} ${updates.status}: ${
-          updates.status === 'completed' ? `tripId=${updates.tripId}` : `error=${updates.error}`
+          updates.status === 'completed'
+            ? `tripId=${updates.tripId}`
+            : `error=${updates.error}`
         }`,
       );
     }
