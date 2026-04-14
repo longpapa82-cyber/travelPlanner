@@ -38,15 +38,30 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     let status: number;
     let message: string | string[];
     let error: string;
+    // V112 Wave 5: discriminated error code + auxiliary fields (resumeToken,
+    // user) must survive the filter so the frontend can branch on them.
+    // See auth-error-codes.ts and AuthContext.login for consumers.
+    let code: string | undefined;
+    let extra: Record<string, unknown> = {};
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      message =
-        typeof exceptionResponse === 'string'
-          ? exceptionResponse
-          : (exceptionResponse as { message?: string | string[] }).message ||
-            exception.message;
+      if (typeof exceptionResponse === 'string') {
+        message = exceptionResponse;
+      } else {
+        const body = exceptionResponse as {
+          message?: string | string[];
+          code?: string;
+          [key: string]: unknown;
+        };
+        message = body.message || exception.message;
+        code = body.code;
+        // Preserve any non-standard keys (resumeToken, user, ...) so V112
+        // structured error payloads pass through unchanged.
+        const { message: _m, code: _c, statusCode: _s, error: _e, ...rest } = body;
+        extra = rest;
+      }
       error = exception.name;
 
       // Only report 5xx to Sentry
@@ -83,7 +98,11 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       this.errorLogCount = 0;
       this.errorLogWindowStart = now;
     }
-    if (shouldLogError && this.dataSource?.isInitialized && this.errorLogCount < AllExceptionsFilter.MAX_ERROR_LOGS_PER_MINUTE) {
+    if (
+      shouldLogError &&
+      this.dataSource?.isInitialized &&
+      this.errorLogCount < AllExceptionsFilter.MAX_ERROR_LOGS_PER_MINUTE
+    ) {
       this.errorLogCount++;
       // Extract meaningful error message for logging
       let errorMessage: string;
@@ -101,8 +120,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         .getRepository(ErrorLog)
         .save({
           errorMessage: errorMessage.slice(0, 500),
-          stackTrace:
-            exception instanceof Error ? exception.stack : undefined,
+          stackTrace: exception instanceof Error ? exception.stack : undefined,
           severity: this.getSeverity(status),
           platform: 'web',
           screen: `${request.method} ${request.path}`.slice(0, 200),
@@ -121,6 +139,8 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       statusCode: status,
       error,
       message: Array.isArray(message) ? message : [message],
+      ...(code ? { code } : {}),
+      ...extra,
       timestamp: new Date().toISOString(),
       path: request.url,
     });
@@ -161,8 +181,13 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     if (status === 429) return true;
 
     // Log auth-related failures
-    const authPaths = ['/auth/register', '/auth/login', '/auth/verify-email', '/auth/reset-password'];
-    if (authPaths.some(p => path.includes(p))) {
+    const authPaths = [
+      '/auth/register',
+      '/auth/login',
+      '/auth/verify-email',
+      '/auth/reset-password',
+    ];
+    if (authPaths.some((p) => path.includes(p))) {
       // Log auth failures (401, 403) and validation errors (400)
       if ([400, 401, 403].includes(status)) return true;
     }
