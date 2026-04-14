@@ -254,6 +254,26 @@ export class AuthService {
         throw new UnauthorizedException('Account has been deleted');
       }
 
+      // Reject refresh if issued before the user's last password change.
+      // `payload.iat` is in seconds since epoch (JWT standard).
+      const passwordChangedAtRaw = await this.cacheManager.get<string>(
+        `pwd_changed:${payload.sub}`,
+      );
+      if (passwordChangedAtRaw && payload.iat) {
+        const passwordChangedAt = parseInt(passwordChangedAtRaw, 10);
+        if (
+          Number.isFinite(passwordChangedAt) &&
+          payload.iat < passwordChangedAt
+        ) {
+          this.logger.warn(
+            `Refresh token for ${payload.sub} predates password change (iat=${payload.iat}, changed=${passwordChangedAt}) — rejecting`,
+          );
+          throw new UnauthorizedException(
+            'Password was changed — please log in again',
+          );
+        }
+      }
+
       // Get user to include in response
       const user = await this.usersService.findById(payload.sub);
 

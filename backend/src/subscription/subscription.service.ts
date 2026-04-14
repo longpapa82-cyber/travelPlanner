@@ -15,9 +15,14 @@ import {
   SubscriptionTier,
   SubscriptionPlatform,
 } from '../users/entities/user.entity';
+import {
+  AI_TRIPS_FREE_LIMIT,
+  AI_TRIPS_PREMIUM_LIMIT,
+} from './constants';
+import { SubscriptionStatusDto } from './dto/subscription-status.dto';
 
-const AI_TRIPS_FREE_LIMIT_DEFAULT = 3;
 const PREMIUM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const SANDBOX_YEARLY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const ADMIN_EMAILS: string[] = (
   process.env.ADMIN_EMAILS || 'a090723@naver.com,longpapa82@gmail.com'
 )
@@ -29,6 +34,7 @@ const ADMIN_EMAILS: string[] = (
 export class SubscriptionService {
   private readonly logger = new Logger(SubscriptionService.name);
   private readonly aiTripsFreeLimit: number;
+  private readonly aiTripsPremiumLimit: number;
   private readonly paddle: Paddle | null;
 
   constructor(
@@ -39,7 +45,12 @@ export class SubscriptionService {
   ) {
     this.aiTripsFreeLimit = parseInt(
       this.configService.get<string>('AI_TRIPS_FREE_LIMIT') ||
-        String(AI_TRIPS_FREE_LIMIT_DEFAULT),
+        String(AI_TRIPS_FREE_LIMIT),
+      10,
+    );
+    this.aiTripsPremiumLimit = parseInt(
+      this.configService.get<string>('AI_TRIPS_PREMIUM_LIMIT') ||
+        String(AI_TRIPS_PREMIUM_LIMIT),
       10,
     );
 
@@ -58,7 +69,7 @@ export class SubscriptionService {
     }
   }
 
-  async getSubscriptionStatus(userId: string) {
+  async getSubscriptionStatus(userId: string): Promise<SubscriptionStatusDto> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       select: [
@@ -77,27 +88,48 @@ export class SubscriptionService {
       return {
         tier: SubscriptionTier.FREE,
         isPremium: false,
+        isAdmin: false,
         aiTripsUsed: 0,
         aiTripsLimit: this.aiTripsFreeLimit,
         aiTripsRemaining: this.aiTripsFreeLimit,
+        isSandbox: false,
       };
     }
 
+    const isAdmin = !!user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
     const isPremium = this.isUserPremium(user);
-    const aiTripsRemaining = isPremium
-      ? -1 // unlimited
-      : Math.max(0, this.aiTripsFreeLimit - user.aiTripsUsedThisMonth);
+    const effectiveLimit = isPremium
+      ? this.aiTripsPremiumLimit
+      : this.aiTripsFreeLimit;
+    const aiTripsRemaining = Math.max(
+      0,
+      effectiveLimit - user.aiTripsUsedThisMonth,
+    );
+
+    // Sandbox detection: Google Play License Tester accelerates yearly
+    // subscriptions to ~30-minute cycles. If a yearly plan's lifespan from
+    // startedAt→expiresAt is under 7 days, flag as sandbox so the UI can
+    // show a "(테스트 구매)" badge without hiding the real dates.
+    const isSandbox =
+      user.subscriptionPlanType === 'yearly' &&
+      !!user.subscriptionStartedAt &&
+      !!user.subscriptionExpiresAt &&
+      new Date(user.subscriptionExpiresAt).getTime() -
+        new Date(user.subscriptionStartedAt).getTime() <
+        SANDBOX_YEARLY_THRESHOLD_MS;
 
     return {
       tier: isPremium ? SubscriptionTier.PREMIUM : SubscriptionTier.FREE,
       isPremium,
+      isAdmin,
       platform: user.subscriptionPlatform,
-      expiresAt: user.subscriptionExpiresAt,
-      startedAt: user.subscriptionStartedAt,
-      planType: user.subscriptionPlanType,
+      expiresAt: user.subscriptionExpiresAt ?? undefined,
+      startedAt: user.subscriptionStartedAt ?? undefined,
+      planType: user.subscriptionPlanType ?? undefined,
       aiTripsUsed: user.aiTripsUsedThisMonth,
-      aiTripsLimit: isPremium ? -1 : this.aiTripsFreeLimit,
+      aiTripsLimit: effectiveLimit,
       aiTripsRemaining,
+      isSandbox,
     };
   }
 
@@ -105,20 +137,16 @@ export class SubscriptionService {
     allowed: boolean;
     remaining: number;
   }> {
-    // Admin users are exempt from AI trip limits
+    // Admin users are exempt from AI trip limits (unlimited gate)
     const user = await this.userRepository.findOne({
       where: { id: userId },
       select: ['id', 'email'],
     });
     if (user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-      return { allowed: true, remaining: -1 };
+      return { allowed: true, remaining: Number.MAX_SAFE_INTEGER };
     }
 
     const status = await this.getSubscriptionStatus(userId);
-
-    if (status.isPremium) {
-      return { allowed: true, remaining: -1 };
-    }
 
     return {
       allowed: status.aiTripsRemaining > 0,

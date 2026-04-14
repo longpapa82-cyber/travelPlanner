@@ -221,6 +221,17 @@ export class UsersService {
     const newHash = await bcrypt.hash(newPassword, 12);
     await this.userRepository.update(id, { passwordHash: newHash });
 
+    // Invalidate every refresh token issued before this moment. The refresh
+    // flow rejects tokens whose `iat` predates this timestamp, so an attacker
+    // holding a leaked refresh token loses access the moment the victim
+    // rotates their password. Key outlives the longest refresh TTL (30 days).
+    const passwordChangedAt = Math.floor(Date.now() / 1000);
+    await this.cacheManager.set(
+      `pwd_changed:${id}`,
+      String(passwordChangedAt),
+      31 * 24 * 60 * 60 * 1000,
+    );
+
     return { message: t('password.changed', lang) };
   }
 

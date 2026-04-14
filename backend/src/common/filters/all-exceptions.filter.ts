@@ -127,14 +127,33 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
   }
 
   /**
+   * Expected-flow error names that should never be persisted to ErrorLog.
+   * These represent user-initiated or business-rule outcomes (paywall,
+   * cancellation, explicit validation failures), not operational faults.
+   * Logging them pollutes the admin error dashboard and triggers false
+   * alerts on legitimate cancellation paths.
+   */
+  private static readonly EXPECTED_ERROR_NAMES = new Set<string>([
+    'PaywallError',
+    'QuotaExceededError',
+    'AbortError',
+    'CancelledError',
+    'CancelledException',
+    'RequestCancelledException',
+  ]);
+
+  /**
    * Determines if an error should be logged to the database.
    * Logs:
-   * - All 5xx errors (server errors)
+   * - All 5xx errors (server errors) — except expected cancellation/abort
    * - 429 (rate limiting/throttler)
    * - 401/403 on sensitive endpoints (auth, admin)
    * - 400 on auth endpoints (validation failures)
    */
   private shouldLogError(status: number, path: string, error: string): boolean {
+    // Never log expected-flow errors regardless of status
+    if (AllExceptionsFilter.EXPECTED_ERROR_NAMES.has(error)) return false;
+
     // Always log 5xx errors
     if (status >= 500) return true;
 
@@ -151,14 +170,16 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     // Log admin access attempts
     if (path.includes('/admin') && [401, 403].includes(status)) return true;
 
-    // Log subscription/payment errors
-    if (path.includes('/subscription') && status >= 400) return true;
+    // Log subscription/payment errors — but not paywall/quota business rules
+    if (path.includes('/subscription') && status >= 500) return true;
 
     return false;
   }
 
   /**
-   * Maps HTTP status codes to severity levels for error logs
+   * Maps HTTP status codes to severity levels for error logs.
+   * Fatal is reserved for truly catastrophic conditions (out-of-memory,
+   * DB pool exhaustion); plain 5xx are error; rate-limit and 4xx are warn.
    */
   private getSeverity(status: number): 'error' | 'warning' | 'fatal' {
     if (status >= 500) return 'error';
