@@ -8,12 +8,36 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 V112 RCA 10건(#1~#10) 근본 수정을 5개 웨이브로 분해해 Iteration 0~5에 걸쳐 완료. Backend 429/429 PASS, Frontend TSC 0/Jest 205/209 (실패는 V111 무관 drift), Alpha 빌드 기술적 unblocked 상태.
 
 ### 📊 핵심 상태 (2026-04-14)
-- **버전**: V112 (다음 EAS 빌드로 반영 예정)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V112 변경 **미배포 상태**, rsync + docker compose 배포 필요
+- **버전**: V112 (다음 EAS 빌드로 반영 예정 — versionCode 113)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) ✅ **V112 배포 완료 (2026-04-14)**, 프로덕션 smoke test PASS
 - **브랜치**: `main`
+- **최신 커밋**: `a5a05a6c` (filter code discriminator preservation), `32df5175` (Waves 2-5), `f7a4ff23` (Wave 1)
 - **Backend 상태**: TypeScript 0 errors, Jest **429/429** (23/23 suites)
 - **Frontend 상태**: TypeScript 0 errors, Jest **205/209** (ActivityModal 2 suites = V111 pre-existing drift, Wave 6 스코프)
-- **V112 범위**: RCA 10건 중 #1~#10 전부 근본 수정 완료 (Iteration 0~5)
+- **V112 범위**: RCA 10건 중 #1~#10 전부 근본 수정 완료 (Iteration 0~5) + filter fix
+
+### ✅ V112 Backend 프로덕션 배포 (2026-04-14)
+
+1. **서버 백업**: `backend/src.backup-20260414-214056` (롤백용)
+2. **rsync**: `backend/src/` → `/root/travelPlanner/backend/src/` (27 files)
+3. **Docker 재빌드**: `docker compose build backend` — 성공, 이미지 `sha256:9369f62fc9c2...`
+4. **컨테이너 재시작**: `travelplanner-backend-1 Up (healthy)`, NestApplication successfully started
+5. **프로덕션 smoke test PASS**:
+   - `GET /api/health` → `200 {status:'ok', database:'up', cache:'up'}`
+   - `DELETE /api/trips/jobs/:jobId` (무인증) → `401` (엔드포인트 존재 확인)
+   - `POST /api/auth/register` (신규 email) → `201 {user, resumeToken, requiresEmailVerification:true}`, JWT payload `{scope:'pending_verification', exp:15m}`
+   - `POST /api/auth/login` (미인증) → `401 {code:'EMAIL_NOT_VERIFIED', resumeToken, user, message}`
+
+### 🐛 배포 중 발견된 버그 (즉시 수정 배포)
+
+**프로덕션 smoke test가 찾은 숨은 버그**: `AllExceptionsFilter`가 HttpException body를 `{statusCode, error, message, timestamp, path}` 형태로 재직렬화하면서 제가 Wave 2에서 추가한 `code` 필드(그리고 `resumeToken`, `user` 등 auxiliary 필드)를 모두 **드롭**하고 있었음. Unit test는 service layer만 검증했고 필터를 거친 최종 response shape는 확인하지 않아서 놓친 케이스.
+
+- **영향**: Frontend의 `body.code === 'EMAIL_NOT_VERIFIED'` 분기가 **절대로 fire하지 않아** Wave 5 resumeToken 플로우가 통째로 동작 안 할 뻔함
+- **수정**: 필터가 HttpException body의 `code`를 추출해 최종 JSON에 포함하고, 나머지 non-standard 필드(`resumeToken`, `user`, ...)도 spread로 보존
+- **커밋**: `a5a05a6c`
+- **재배포**: 필터 파일 rsync + docker build + up -d
+- **재검증**: 위 smoke test 4건 모두 PASS, 특히 login unverified 응답에 `"code":"EMAIL_NOT_VERIFIED"` + `resumeToken` 둘 다 포함 확인
+- **교훈**: 통합 테스트(httpexception → filter → response JSON)가 unit test만큼 필요. Wave 6/Beta에서 filter integration test 추가 고려.
 
 ### 🌊 V112 5-Wave 완료 현황
 
