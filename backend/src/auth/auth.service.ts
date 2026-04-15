@@ -43,6 +43,12 @@ export interface OAuthUserData {
 }
 
 export interface PendingVerificationResponse {
+  // V115 (V114-8 fix): discriminator lets the frontend distinguish between
+  // a brand-new signup (`created`) and an in-place refresh of an existing
+  // unverified row (`refreshed`). The `refreshed` case warrants a 2-way
+  // dialog offering "continue verification" vs "start over" so the user
+  // is not left wondering whether their account already exists.
+  action: 'created' | 'refreshed';
   user: {
     id: string;
     email: string | null;
@@ -84,6 +90,7 @@ export class AuthService {
     const existingUser = await this.usersService.findByEmail(registerDto.email);
 
     let user;
+    let action: 'created' | 'refreshed';
     if (existingUser) {
       const isUnverifiedEmailAccount =
         existingUser.provider === AuthProvider.EMAIL &&
@@ -100,6 +107,7 @@ export class AuthService {
         existingUser,
         { password: registerDto.password, name: registerDto.name },
       );
+      action = 'refreshed';
     } else {
       user = await this.usersService.create({
         email: registerDto.email,
@@ -107,6 +115,7 @@ export class AuthService {
         name: registerDto.name,
         provider: AuthProvider.EMAIL,
       });
+      action = 'created';
     }
 
     // Email verification code is sent by the frontend's EmailVerificationCodeScreen
@@ -125,6 +134,7 @@ export class AuthService {
     const resumeToken = await this.generateResumeToken(user.id, user.email!);
 
     return {
+      action,
       user: {
         id: user.id,
         email: user.email ?? null,
@@ -136,6 +146,44 @@ export class AuthService {
       resumeToken,
       requiresEmailVerification: true,
     };
+  }
+
+  /**
+   * V115 (V114-8 fix): Hard-delete the existing unverified row and start a
+   * fresh registration. Intended for users who abandoned verification and
+   * now want to start over instead of resuming. Protected by an explicit
+   * `confirmReset` flag and a tight rate limit on the controller.
+   *
+   * Safety invariants:
+   * - Only EMAIL provider + isEmailVerified=false rows may be deleted.
+   * - Verified accounts and social-provider accounts always reject with
+   *   EMAIL_EXISTS — preventing abuse as an account-takeover vector.
+   * - Cascade: trips/consents/subscriptions are ON DELETE CASCADE, but an
+   *   unverified row should have none of these attached in practice.
+   */
+  async registerForce(
+    registerDto: RegisterDto,
+    lang: SupportedLang = 'ko',
+  ): Promise<PendingVerificationResponse> {
+    const existingUser = await this.usersService.findByEmail(registerDto.email);
+
+    if (existingUser) {
+      const isUnverifiedEmailAccount =
+        existingUser.provider === AuthProvider.EMAIL &&
+        !existingUser.isEmailVerified;
+
+      if (!isUnverifiedEmailAccount) {
+        throw new BadRequestException({
+          code: AUTH_ERROR_CODES.EMAIL_EXISTS,
+          message: t('auth.registration.failed', lang),
+        });
+      }
+
+      await this.usersService.hardDeleteUnverifiedUser(existingUser.id);
+    }
+
+    // Fall through to the standard register() which will take the `created` path.
+    return this.register(registerDto, lang);
   }
 
   private readonly LOGIN_MAX_ATTEMPTS = 10;

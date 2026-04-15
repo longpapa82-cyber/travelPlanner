@@ -98,7 +98,26 @@ const CoachMark: React.FC<CoachMarkProps> = ({
   );
 
   return (
-    <Modal transparent visible={visible} animationType="none">
+    <Modal
+      transparent
+      visible={visible}
+      animationType="none"
+      /*
+       * V115 (V114-2a fix, 6회 회귀의 근본 원인):
+       *
+       * Android Modal은 기본적으로 새 Window 루트에서 렌더링되는데,
+       * statusBarTranslucent=false 이면 Modal 내용이 status bar "아래"에서
+       * 시작한다. 반면 createTripRef.measureInWindow()는 status bar 포함
+       * 전체 window 기준 좌표를 리턴 — 결과적으로 Modal 안 spotlight가
+       * 정확히 status bar 높이(24~40dp)만큼 위로 어긋나 보인다.
+       *
+       * 다른 Modal 계열 컴포넌트(Modal, ConfirmDialog, BottomSheet, Loading)는
+       * 모두 이 prop을 설정하고 있으나 CoachMark에만 누락되어 있었음.
+       * V107~V114 수정들은 전부 padding/timing만 건드렸고 좌표계 자체는
+       * 건드린 적이 없어 매번 회귀했다.
+       */
+      statusBarTranslucent
+    >
       <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
         {/* 4-part overlay for spotlight effect */}
         <View style={[styles.overlay, { top: 0, left: 0, right: 0, height: spotY }]} />
@@ -134,10 +153,11 @@ const CoachMark: React.FC<CoachMarkProps> = ({
 
           <Text style={styles.tooltipText}>{message}</Text>
 
+          {/* V115 (V114-2b fix): [건너뛰기] 버튼 제거. 사용자는 오버레이
+           * 바깥을 탭하거나 [다음] 버튼으로 진행한다. onDismiss prop은
+           * 부모가 여전히 사용(외부 dismiss)하지만 이 UI에서는 노출 안 함.
+           */}
           <View style={styles.tooltipButtons}>
-            <TouchableOpacity onPress={onDismiss} style={styles.dismissBtn}>
-              <Text style={styles.dismissText}>{t('coach.dismiss')}</Text>
-            </TouchableOpacity>
             <TouchableOpacity onPress={onNext} style={styles.nextBtn}>
               <Text style={styles.nextText}>{t('coach.next')}</Text>
             </TouchableOpacity>

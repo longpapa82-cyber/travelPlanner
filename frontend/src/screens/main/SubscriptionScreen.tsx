@@ -20,6 +20,7 @@ const SubscriptionScreen = () => {
   const { t } = useTranslation('premium');
   const {
     isPremium,
+    isAdmin,
     subscriptionTier,
     expiresAt,
     startedAt,
@@ -27,6 +28,7 @@ const SubscriptionScreen = () => {
     platform,
     aiTripsUsed,
     aiTripsRemaining,
+    aiTripsLimit,
     showPaywall,
   } = usePremium();
   const { theme, isDark } = useTheme();
@@ -47,6 +49,23 @@ const SubscriptionScreen = () => {
     if (!dateStr) return '-';
     return new Date(dateStr).toLocaleDateString();
   };
+
+  /*
+   * V115 (V114-6a fix): Admin-only detailed datetime formatter.
+   *
+   * Admin grants (hoonjae723@gmail.com, longpapa82@gmail.com) are flagged by
+   * the backend with isAdmin=true. For them we surface the time-of-day too
+   * so QA can verify auto-renewal instants in production — regular users
+   * keep the simpler date-only format to avoid visual noise.
+   */
+  const formatDateTime = (dateStr?: string) => {
+    if (!dateStr) return '-';
+    const d = new Date(dateStr);
+    return `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  };
+
+  const formatBillingDate = (dateStr?: string) =>
+    isAdmin ? formatDateTime(dateStr) : formatDate(dateStr);
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -101,9 +120,9 @@ const SubscriptionScreen = () => {
                 {planType
                   ? t('status.renewsOn', {
                       defaultValue: '다음 결제일: {{date}}',
-                      date: formatDate(expiresAt),
+                      date: formatBillingDate(expiresAt),
                     })
-                  : t('status.expiresOn', { date: formatDate(expiresAt) })}
+                  : t('status.expiresOn', { date: formatBillingDate(expiresAt) })}
               </Text>
             </View>
           )}

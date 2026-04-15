@@ -387,15 +387,18 @@ const styles = StyleSheet.create({
   optionalTag: {
     fontSize: 12,
   },
+  // V115 (V114-4a): 'JIT 권한 별도 안내' 문구와 하단 버튼 footer 사이에
+  // 숨통 확보. 기존 marginBottom 8 / footer paddingTop 20 (28dp 총합) 이
+  // 실기기에서 '버튼이 바닥에 붙어 있음'으로 인식됐다.
   jitNotice: {
     fontSize: 12,
     lineHeight: 18,
     textAlign: 'center',
-    marginTop: 4,
-    marginBottom: 8,
+    marginTop: 12,
+    marginBottom: 24,
   },
   footer: {
-    paddingTop: 20,
+    paddingTop: 24,
     paddingHorizontal: 16,
     paddingBottom: 16,
     borderTopWidth: 1,

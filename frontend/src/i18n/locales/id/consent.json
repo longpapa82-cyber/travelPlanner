@@ -17,37 +17,53 @@
     "terms": {
       "title": "Ketentuan layanan",
       "description": "Diperlukan untuk menggunakan layanan",
-      "benefits": ["Hak penggunaan layanan"]
+      "benefits": [
+        "Hak penggunaan layanan"
+      ]
     },
     "privacy_required": {
-      "title": "Kebijakan privasi (wajib)",
+      "title": "Kebijakan privasi",
       "description": "Diperlukan untuk manajemen akun dan penyediaan layanan",
-      "benefits": ["Pembuatan dan manajemen akun", "Penyediaan layanan", "Dukungan pelanggan"]
-    },
-    "privacy_optional": {
-      "title": "Kebijakan privasi (opsional)",
-      "description": "Digunakan untuk meningkatkan pengalaman pengguna",
-      "benefits": ["Rekomendasi yang dipersonalisasi", "Peningkatan pengalaman pengguna"]
+      "benefits": [
+        "Pembuatan dan manajemen akun",
+        "Penyediaan layanan",
+        "Dukungan pelanggan"
+      ]
     },
     "location": {
       "title": "Penggunaan informasi lokasi",
       "description": "Digunakan untuk mencari tempat terdekat dan merekomendasikan rute perjalanan",
-      "benefits": ["Cari tempat terdekat", "Rekomendasi rute perjalanan", "Fitur berbasis lokasi"]
+      "benefits": [
+        "Cari tempat terdekat",
+        "Rekomendasi rute perjalanan",
+        "Fitur berbasis lokasi"
+      ]
     },
     "notification": {
       "title": "Notifikasi push",
       "description": "Terima pengingat perjalanan dan notifikasi berbagi",
-      "benefits": ["Pengingat perjalanan", "Notifikasi berbagi", "Pembaruan penting"]
+      "benefits": [
+        "Pengingat perjalanan",
+        "Notifikasi berbagi",
+        "Pembaruan penting"
+      ]
     },
     "photo": {
       "title": "Akses foto",
       "description": "Digunakan untuk mengunggah foto profil dan foto perjalanan",
-      "benefits": ["Unggah foto profil", "Berbagi foto perjalanan"]
+      "benefits": [
+        "Unggah foto profil",
+        "Berbagi foto perjalanan"
+      ]
     },
     "marketing": {
       "title": "Komunikasi pemasaran",
       "description": "Terima penawaran promosi dan pengumuman fitur baru",
-      "benefits": ["Penawaran promosi", "Pengumuman fitur baru", "Notifikasi acara"]
+      "benefits": [
+        "Penawaran promosi",
+        "Pengumuman fitur baru",
+        "Notifikasi acara"
+      ]
     }
   },
   "errors": {

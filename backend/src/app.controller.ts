@@ -66,6 +66,30 @@ export class AppController {
     });
   }
 
+  /**
+   * V115 (V114-9): Version contract for zero-downtime rollout.
+   *
+   * Apps hit this on launch to decide whether to allow, nag, or block usage.
+   * `minAppVersionCode` is the floor below which the client is considered
+   * incompatible with the current backend contract — the app shows a blocking
+   * "update required" modal. `recommendedAppVersionCode` drives a dismissable
+   * nag toast for soft rollouts.
+   *
+   * Values are intentionally hardcoded here (not env-driven) so a redeploy
+   * is the only way to raise the floor — prevents accidental lockouts from
+   * a stray env change.
+   */
+  @Get('version')
+  getVersion() {
+    return {
+      apiVersion: '1.0.0',
+      minAppVersionCode: 100,
+      recommendedAppVersionCode: 115,
+      releaseNotesUrl: 'https://mytravel-planner.com/release-notes',
+      timestamp: new Date().toISOString(),
+    };
+  }
+
   @Get('sitemap.xml')
   async getSitemap(@Res() res: Response) {
     const baseUrl = process.env.FRONTEND_URL || 'https://mytravel-planner.com';

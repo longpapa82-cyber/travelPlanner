@@ -28,6 +28,7 @@ describe('AuthController (Integration)', () => {
   };
 
   const mockPendingVerificationResponse = {
+    action: 'created' as const,
     user: mockUser,
     resumeToken: 'mock-resume-token',
     requiresEmailVerification: true as const,

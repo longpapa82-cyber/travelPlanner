@@ -52,6 +52,7 @@ describe('AuthService', () => {
         .fn()
         .mockResolvedValue('mock-verification-token'),
       refreshUnverifiedRegistration: jest.fn(),
+      hardDeleteUnverifiedUser: jest.fn().mockResolvedValue(undefined),
     };
 
     const mockJwtService = {
@@ -134,6 +135,7 @@ describe('AuthService', () => {
         provider: AuthProvider.EMAIL,
       });
       expect(result).toEqual({
+        action: 'created',
         user: {
           id: mockUser.id,
           email: mockUser.email,
@@ -214,6 +216,97 @@ describe('AuthService', () => {
       expect(usersService.create).not.toHaveBeenCalled();
       expect(result.resumeToken).toBe('mock-resume-token');
       expect(result.requiresEmailVerification).toBe(true);
+    });
+
+    // V115 (V114-8): register response carries a discriminator so the
+    // frontend can distinguish first-time signups from in-place refreshes
+    // of abandoned ones — the linchpin of the "continue vs start over"
+    // 2-way dialog.
+    it("returns action='created' for brand-new signups", async () => {
+      usersService.findByEmail.mockResolvedValue(null);
+      usersService.create.mockResolvedValue(mockUser as any);
+      jwtService.signAsync.mockResolvedValueOnce('mock-resume-token');
+
+      const result = await service.register(registerDto);
+      expect(result.action).toBe('created');
+    });
+
+    it("returns action='refreshed' when re-entering an abandoned signup", async () => {
+      const abandoned = { ...mockUser, isEmailVerified: false };
+      usersService.findByEmail.mockResolvedValue(abandoned as any);
+      usersService.refreshUnverifiedRegistration.mockResolvedValue(
+        abandoned as any,
+      );
+      jwtService.signAsync.mockResolvedValueOnce('mock-resume-token');
+
+      const result = await service.register(registerDto);
+      expect(result.action).toBe('refreshed');
+    });
+  });
+
+  describe('registerForce', () => {
+    const registerDto: RegisterDto = {
+      email: 'test@example.com',
+      password: 'Test1234!',
+      name: 'Test User',
+    };
+
+    // V115 (V114-8): the hard-reset path must refuse to delete verified
+    // accounts under any circumstance — this is the primary safety rail
+    // against using register-force as an account-takeover primitive.
+    it('rejects with EMAIL_EXISTS when the existing user is verified', async () => {
+      const verified = { ...mockUser, isEmailVerified: true };
+      usersService.findByEmail.mockResolvedValue(verified as any);
+
+      await expect(service.registerForce(registerDto)).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(usersService.hardDeleteUnverifiedUser).not.toHaveBeenCalled();
+      expect(usersService.create).not.toHaveBeenCalled();
+    });
+
+    it('rejects with EMAIL_EXISTS when the existing user is a social provider', async () => {
+      const social = {
+        ...mockUser,
+        provider: AuthProvider.GOOGLE,
+        isEmailVerified: true,
+      };
+      usersService.findByEmail.mockResolvedValue(social as any);
+
+      await expect(service.registerForce(registerDto)).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(usersService.hardDeleteUnverifiedUser).not.toHaveBeenCalled();
+    });
+
+    it('hard-deletes the abandoned row and creates a fresh one', async () => {
+      const abandoned = { ...mockUser, id: 'old-id', isEmailVerified: false };
+      usersService.findByEmail
+        .mockResolvedValueOnce(abandoned as any) // first call in registerForce
+        .mockResolvedValueOnce(null); // second call inside register() after delete
+      usersService.create.mockResolvedValue({
+        ...mockUser,
+        id: 'new-id',
+      } as any);
+      jwtService.signAsync.mockResolvedValueOnce('mock-resume-token');
+
+      const result = await service.registerForce(registerDto);
+
+      expect(usersService.hardDeleteUnverifiedUser).toHaveBeenCalledWith(
+        'old-id',
+      );
+      expect(usersService.create).toHaveBeenCalled();
+      expect(result.action).toBe('created');
+    });
+
+    it('proceeds to create when no user exists (defensive path)', async () => {
+      usersService.findByEmail.mockResolvedValue(null);
+      usersService.create.mockResolvedValue(mockUser as any);
+      jwtService.signAsync.mockResolvedValueOnce('mock-resume-token');
+
+      const result = await service.registerForce(registerDto);
+      expect(usersService.hardDeleteUnverifiedUser).not.toHaveBeenCalled();
+      expect(result.action).toBe('created');
     });
   });
 

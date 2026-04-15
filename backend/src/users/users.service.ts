@@ -123,6 +123,33 @@ export class UsersService {
   }
 
   /**
+   * V115 (V114-8): Hard-delete an unverified EMAIL user so the caller can
+   * start a brand-new registration. Caller (AuthService.registerForce) is
+   * responsible for rate limiting and verifying the `confirmReset` flag.
+   *
+   * Safety: only deletes rows that are provably EMAIL + unverified. Any
+   * attempt to delete a verified or social-provider row is rejected.
+   */
+  async hardDeleteUnverifiedUser(userId: string): Promise<void> {
+    const existing = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    if (!existing) return;
+    if (existing.provider !== AuthProvider.EMAIL) {
+      throw new BadRequestException(
+        'hardDeleteUnverifiedUser called on non-EMAIL provider',
+      );
+    }
+    if (existing.isEmailVerified) {
+      throw new BadRequestException(
+        'hardDeleteUnverifiedUser called on already-verified user',
+      );
+    }
+    await this.userRepository.delete(userId);
+    this.logger.log(`hardDeleteUnverifiedUser: deleted user ${userId}`);
+  }
+
+  /**
    * Hourly cleanup of abandoned email-registration rows.
    *
    * A user can start signup (INSERT row), fail to verify, and walk away.
@@ -806,12 +833,26 @@ export class UsersService {
   ];
 
   /**
+   * V115 (V114-4c fix): Consent types deprecated from the UI. They remain
+   * in the DB enum for audit trail purposes (existing user_consents rows
+   * are preserved) but are never surfaced in the consent screen, never
+   * accepted in updateConsents(), and are filtered out of getConsentsStatus()
+   * responses. PRIVACY_OPTIONAL overlapped semantically with PRIVACY_REQUIRED
+   * and MARKETING, creating the "duplicate 개인정보 처리방침" UX bug.
+   */
+  private readonly DEPRECATED_CONSENTS: ConsentType[] = [
+    ConsentType.PRIVACY_OPTIONAL,
+  ];
+
+  /**
    * Get user's consent status for all consent types
    */
   async getConsentsStatus(userId: string): Promise<ConsentsStatusDto> {
     const user = await this.findById(userId);
 
-    const allConsentTypes = Object.values(ConsentType);
+    const allConsentTypes = Object.values(ConsentType).filter(
+      (type) => !this.DEPRECATED_CONSENTS.includes(type),
+    );
     const userConsents = await this.consentRepository.find({
       where: { userId },
     });
@@ -868,6 +909,9 @@ export class UsersService {
 
     for (const consentItem of dto.consents) {
       const { type, isConsented } = consentItem;
+      // V115 (V114-4c): silently ignore deprecated consent types — legacy
+      // clients or stale state may still try to send them.
+      if (this.DEPRECATED_CONSENTS.includes(type)) continue;
       // Always use server-side version to prevent client-side version injection
       const version = this.CONSENT_VERSIONS[type];
 

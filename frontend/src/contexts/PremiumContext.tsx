@@ -6,7 +6,26 @@ import { initRevenueCat, logIn, logOut as rcLogOut, getCustomerInfo } from '../s
 import { PREMIUM_ENABLED } from '../constants/config';
 
 const AI_TRIPS_FREE_LIMIT = 3;
-const ADMIN_EMAILS = ['a090723@naver.com', 'longpapa82@gmail.com'];
+/*
+ * V115 (M3 fix): keep this list in sync with backend `ADMIN_EMAILS` env var.
+ *
+ * Why a frontend copy at all? The backend's /subscription/status returns an
+ * `isAdmin` boolean that should be the single source of truth, but the UI
+ * needs to make admin decisions before that round-trip completes (e.g. to
+ * avoid flashing the paywall on cold-start). This fallback list covers the
+ * first render; once the API response lands, `user.isAdmin` from the server
+ * takes precedence.
+ *
+ * Must be lowercased — emails in the user profile may come back in any case
+ * (the backend normalizes, but client-side we defend). Also includes
+ * hoonjae723@gmail.com which was previously missing and caused V114-6a
+ * (admin billing datetime) to silently no-op for that account.
+ */
+const ADMIN_EMAILS = [
+  'a090723@naver.com',
+  'longpapa82@gmail.com',
+  'hoonjae723@gmail.com',
+];
 
 export type PaywallContext = 'ai_limit' | 'general';
 
@@ -113,7 +132,12 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     return true;
   }, [user?.subscriptionTier, user?.subscriptionExpiresAt, localPremiumOverride, isLoggingOut]);
 
-  const isAdmin = !!(user?.email && ADMIN_EMAILS.includes(user.email));
+  // V115 (M3 fix): lowercase both sides before compare. The old path
+  // `ADMIN_EMAILS.includes(user.email)` silently failed for any profile that
+  // arrived with a differently-cased email (e.g. "Hoonjae723@gmail.com").
+  const isAdmin = !!(
+    user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())
+  );
   // Profile loading state: aiTripsUsedThisMonth is undefined until profile is fetched
   const isProfileLoaded = user?.aiTripsUsedThisMonth !== undefined;
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;

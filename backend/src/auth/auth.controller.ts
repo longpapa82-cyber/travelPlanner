@@ -14,6 +14,7 @@ import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 import { AuthService, OAuthUserData } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
+import { RegisterForceDto } from './dto/register-force.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ExchangeOAuthCodeDto } from './dto/exchange-oauth-code.dto';
@@ -46,6 +47,24 @@ export class AuthController {
     @Headers('accept-language') acceptLanguage?: string,
   ) {
     return this.authService.register(registerDto, parseLang(acceptLanguage));
+  }
+
+  // V115 (V114-8 fix): Hard-reset an abandoned unverified registration.
+  // The client must echo `confirmReset: true` — enforced structurally by
+  // RegisterForceDto's @Equals(true) validator since the global ValidationPipe
+  // runs with forbidNonWhitelisted. Rate limited to 1 per 10 minutes per IP
+  // to dampen automated probing; service-layer also rejects verified users.
+  @Post('register-force')
+  @Throttle({ medium: { ttl: 600000, limit: 1 } })
+  async registerForce(
+    @Body() body: RegisterForceDto,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    const { confirmReset: _ignored, ...registerDto } = body;
+    return this.authService.registerForce(
+      registerDto as RegisterDto,
+      parseLang(acceptLanguage),
+    );
   }
 
   @Post('login')

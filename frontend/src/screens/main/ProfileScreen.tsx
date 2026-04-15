@@ -39,7 +39,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
-  const { isPremium, showPaywall, aiTripsRemaining, aiTripsUsed, markLoggingOut } = usePremium();
+  const { isPremium, showPaywall, aiTripsRemaining, aiTripsLimit, aiTripsUsed, markLoggingOut } = usePremium();
   const { t: tPremium } = useTranslation('premium');
   const { t: tTutorial } = useTranslation('tutorial');
   const { resetTutorial } = useTutorial();
@@ -479,7 +479,11 @@ const ProfileScreen = ({ navigation }: any) => {
               <Text style={[styles.menuText, { marginLeft: 0 }]}>{tPremium('menu.subscription')}</Text>
               {!isPremium && (
                 <Text style={{ fontSize: 12, color: theme.colors.textSecondary, marginTop: 2 }}>
-                  {tPremium('menu.aiRemaining', { remaining: aiTripsRemaining >= 0 ? aiTripsRemaining : '\u221E', total: 3 })}
+                  {/* V115 (V114-5/6b fix): derive total from PremiumContext instead of hardcoding 3. */}
+                  {tPremium('menu.aiRemaining', {
+                    remaining: aiTripsRemaining >= 0 ? aiTripsRemaining : '\u221E',
+                    total: aiTripsLimit > 0 ? aiTripsLimit : 3,
+                  })}
                 </Text>
               )}
             </View>
@@ -941,13 +945,14 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
+  // V115 (V114-3 fix): 기존 minHeight 400 + justifyContent 'space-between'
+  // 조합이 내용이 짧은 팝업(계정 삭제 확인 등)에서 400px 박스 중앙에 큰
+  // 흰 공백을 만들었음. 내용 크기에 맞춰 자동 축소하도록 변경.
   modalContent: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 34,
     maxHeight: '90%',
-    minHeight: 400,
-    justifyContent: 'space-between',
   },
   modalHeader: {
     flexDirection: 'row',

@@ -59,7 +59,13 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         code = body.code;
         // Preserve any non-standard keys (resumeToken, user, ...) so V112
         // structured error payloads pass through unchanged.
-        const { message: _m, code: _c, statusCode: _s, error: _e, ...rest } = body;
+        const {
+          message: _m,
+          code: _c,
+          statusCode: _s,
+          error: _e,
+          ...rest
+        } = body;
         extra = rest;
       }
       error = exception.name;

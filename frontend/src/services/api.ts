@@ -15,6 +15,30 @@ function isNetworkError(error: any): boolean {
   return false;
 }
 
+/*
+ * V115 (V114-8, Gate 10 HIGH-3 fix): explicit shape of the register /
+ * register-force response. Previously the code read `(response as any).action`
+ * which bypassed type checking entirely. The backend contract is:
+ * pending-verification payload OR (for legacy backends during rollout) full
+ * auth tokens. Both shapes are modelled here.
+ */
+export interface RegisterResponse {
+  action?: 'created' | 'refreshed';
+  user: {
+    id: string;
+    email: string | null;
+    name: string;
+    provider?: string;
+    profileImage?: string | null;
+    isEmailVerified?: boolean;
+  };
+  resumeToken?: string;
+  requiresEmailVerification?: boolean;
+  // Legacy (pre-V112) full-token path
+  accessToken?: string;
+  refreshToken?: string;
+}
+
 class ApiService {
   private api: AxiosInstance;
   private onAuthExpired: (() => void) | null = null;
@@ -224,9 +248,27 @@ class ApiService {
     return response.data;
   }
 
-  async register(email: string, password: string, name: string) {
+  async register(email: string, password: string, name: string): Promise<RegisterResponse> {
     const response = await this.api.post('/auth/register', { email, password, name });
-    return response.data;
+    return response.data as RegisterResponse;
+  }
+
+  /*
+   * V115 (V114-8 fix): hard-reset an abandoned unverified registration.
+   *
+   * Called only after the user explicitly chose "start over" in response
+   * to an `action: 'refreshed'` register response. The backend deletes the
+   * previous unverified row and returns a fresh `{action: 'created', ...}`
+   * pending-verification payload. Rate limited server-side to 1/10min.
+   */
+  async registerForce(email: string, password: string, name: string): Promise<RegisterResponse> {
+    const response = await this.api.post('/auth/register-force', {
+      email,
+      password,
+      name,
+      confirmReset: true,
+    });
+    return response.data as RegisterResponse;
   }
 
   // Email Verification

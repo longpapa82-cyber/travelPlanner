@@ -105,10 +105,29 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         navigation.navigate('TwoFactorLogin', { tempToken: error.tempToken });
         return;
       }
-      // V112 Wave 5: unverified login is the happy path for pending-verify.
-      // AuthContext already set pendingVerification; RootNavigator will
-      // swap to the verification screen on the next render.
-      if (error instanceof EmailNotVerifiedError) return;
+      /*
+       * V115 (V114-8 fix):
+       *
+       * Before: a silent transition to EmailVerificationCodeScreen confused
+       * users into thinking "registration is already complete, I just need
+       * to log in again." They'd bounce back and forth between login and
+       * verification without understanding their account is still pending.
+       *
+       * After: surface an explicit toast so the user knows the login was
+       * *not* successful — this is continuing an abandoned signup. The
+       * RootNavigator transition is still the main feedback.
+       */
+      if (error instanceof EmailNotVerifiedError) {
+        showToast({
+          type: 'info',
+          message: t('login.alerts.emailNotVerified', {
+            defaultValue: '회원가입이 아직 완료되지 않았습니다. 이메일 인증을 이어갑니다.',
+          }),
+          position: 'top',
+          duration: 4000,
+        });
+        return;
+      }
       setLoginError(error.response?.data?.message || t('login.alerts.invalidCredentials'));
     } finally {
       setIsLoading(false);

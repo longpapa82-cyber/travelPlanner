@@ -17,37 +17,53 @@
     "terms": {
       "title": "服务条款",
       "description": "提供服务所必需",
-      "benefits": ["服务使用权限"]
+      "benefits": [
+        "服务使用权限"
+      ]
     },
     "privacy_required": {
-      "title": "隐私政策（必填）",
+      "title": "隐私政策",
       "description": "账户管理和服务提供所必需",
-      "benefits": ["账户创建和管理", "服务提供", "客户支持"]
-    },
-    "privacy_optional": {
-      "title": "隐私政策（可选）",
-      "description": "用于改善用户体验",
-      "benefits": ["个性化推荐", "用户体验改善"]
+      "benefits": [
+        "账户创建和管理",
+        "服务提供",
+        "客户支持"
+      ]
     },
     "location": {
       "title": "位置信息使用",
       "description": "用于搜索附近地点和推荐旅行路线",
-      "benefits": ["搜索附近地点", "旅行路线推荐", "基于位置的功能"]
+      "benefits": [
+        "搜索附近地点",
+        "旅行路线推荐",
+        "基于位置的功能"
+      ]
     },
     "notification": {
       "title": "接收通知",
       "description": "接收旅行提醒和分享通知",
-      "benefits": ["旅行提醒", "分享通知", "重要更新"]
+      "benefits": [
+        "旅行提醒",
+        "分享通知",
+        "重要更新"
+      ]
     },
     "photo": {
       "title": "照片访问权限",
       "description": "用于上传个人资料照片和旅行照片",
-      "benefits": ["上传个人资料图片", "分享旅行照片"]
+      "benefits": [
+        "上传个人资料图片",
+        "分享旅行照片"
+      ]
     },
     "marketing": {
       "title": "营销信息接收",
       "description": "接收促销优惠和新功能公告",
-      "benefits": ["促销优惠", "新功能公告", "活动通知"]
+      "benefits": [
+        "促销优惠",
+        "新功能公告",
+        "活动通知"
+      ]
     }
   },
   "errors": {

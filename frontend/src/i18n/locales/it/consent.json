@@ -17,37 +17,53 @@
     "terms": {
       "title": "Termini di servizio",
       "description": "Necessario per utilizzare il servizio",
-      "benefits": ["Diritti di utilizzo del servizio"]
+      "benefits": [
+        "Diritti di utilizzo del servizio"
+      ]
     },
     "privacy_required": {
-      "title": "Informativa sulla privacy (obbligatorio)",
+      "title": "Informativa sulla privacy",
       "description": "Necessario per la gestione dell'account e l'erogazione del servizio",
-      "benefits": ["Creazione e gestione dell'account", "Erogazione del servizio", "Assistenza clienti"]
-    },
-    "privacy_optional": {
-      "title": "Informativa sulla privacy (facoltativo)",
-      "description": "Utilizzato per migliorare l'esperienza utente",
-      "benefits": ["Raccomandazioni personalizzate", "Miglioramento dell'esperienza"]
+      "benefits": [
+        "Creazione e gestione dell'account",
+        "Erogazione del servizio",
+        "Assistenza clienti"
+      ]
     },
     "location": {
       "title": "Utilizzo delle informazioni sulla posizione",
       "description": "Utilizzato per cercare luoghi nelle vicinanze e suggerire itinerari di viaggio",
-      "benefits": ["Cerca luoghi nelle vicinanze", "Suggerimenti di itinerari", "Funzionalità basate sulla posizione"]
+      "benefits": [
+        "Cerca luoghi nelle vicinanze",
+        "Suggerimenti di itinerari",
+        "Funzionalità basate sulla posizione"
+      ]
     },
     "notification": {
       "title": "Notifiche push",
       "description": "Ricevi promemoria di viaggio e notifiche di condivisione",
-      "benefits": ["Promemoria di viaggio", "Notifiche di condivisione", "Aggiornamenti importanti"]
+      "benefits": [
+        "Promemoria di viaggio",
+        "Notifiche di condivisione",
+        "Aggiornamenti importanti"
+      ]
     },
     "photo": {
       "title": "Accesso alle foto",
       "description": "Utilizzato per caricare foto del profilo e di viaggio",
-      "benefits": ["Carica foto del profilo", "Condividi foto di viaggio"]
+      "benefits": [
+        "Carica foto del profilo",
+        "Condividi foto di viaggio"
+      ]
     },
     "marketing": {
       "title": "Comunicazioni di marketing",
       "description": "Ricevi offerte promozionali e annunci di nuove funzionalità",
-      "benefits": ["Offerte promozionali", "Annunci di nuove funzionalità", "Notifiche eventi"]
+      "benefits": [
+        "Offerte promozionali",
+        "Annunci di nuove funzionalità",
+        "Notifiche eventi"
+      ]
     }
   },
   "errors": {

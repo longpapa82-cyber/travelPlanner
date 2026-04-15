@@ -120,11 +120,14 @@ export class AdminController {
   }
 
   @Get('api-usage/daily')
-  getApiUsageDaily(
-    @Query('from') from?: string,
-    @Query('to') to?: string,
-  ) {
-    const fromDate = from ? new Date(from) : (() => { const d = new Date(); d.setDate(d.getDate() - 7); return d; })();
+  getApiUsageDaily(@Query('from') from?: string, @Query('to') to?: string) {
+    const fromDate = from
+      ? new Date(from)
+      : (() => {
+          const d = new Date();
+          d.setDate(d.getDate() - 7);
+          return d;
+        })();
     const toDate = to ? new Date(to + 'T23:59:59.999Z') : new Date();
     return this.apiUsageService.getApiUsageDaily(fromDate, toDate);
   }
@@ -245,9 +248,42 @@ export class AnnouncementsPublicController {
 export class ErrorLogController {
   constructor(private readonly adminService: AdminService) {}
 
+  /**
+   * V115 (V114-7): Expected-flow error messages that the client should NOT
+   * persist to the error_logs table. These are business-rule outcomes
+   * (quota reached, user-initiated cancel, rate limit) — noise that drowns
+   * out real signals in the admin dashboard.
+   *
+   * Matched as case-insensitive substring to tolerate minor wording drift.
+   */
+  // V115 (Gate 5 H1 fix): lowercase every pattern since isExpectedFlowError()
+  // lowercases the incoming message before substring matching — a mixed-case
+  // literal would never match.
+  private static readonly IGNORED_PATTERNS = [
+    'monthly ai generation limit',
+    'ai 생성 제한',
+    'trip creation cancelled',
+    '여행 생성 취소',
+    'throttlerexception',
+    'too many requests',
+    'paywallerror',
+    'aborterror',
+    'request cancelled',
+  ];
+
+  private isExpectedFlowError(message: string): boolean {
+    const m = message.toLowerCase();
+    return ErrorLogController.IGNORED_PATTERNS.some((p) => m.includes(p));
+  }
+
   @Post()
   @Throttle({ short: { ttl: 60000, limit: 30 } })
   createErrorLog(@Req() req: any, @Body() dto: CreateErrorLogDto) {
+    // Silently drop expected-flow errors. Return 201 so the client's
+    // fire-and-forget logger doesn't retry or surface a failure toast.
+    if (this.isExpectedFlowError(dto.errorMessage ?? '')) {
+      return { filtered: true };
+    }
     const ua = req.headers['user-agent'] as string | undefined;
     return this.adminService.createErrorLog({
       errorMessage: dto.errorMessage,

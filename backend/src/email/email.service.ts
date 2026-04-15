@@ -79,7 +79,8 @@ export class EmailService {
     token: string,
     lang: SupportedLang = 'ko',
   ): Promise<void> {
-    const verificationUrl = `${this.frontendUrl}/verify-email?token=${token}`;
+    // V115: /app/* 경로는 App Links 전용 — 앱으로만 열리며 웹에서는 "앱 다운로드" 안내로 리다이렉트
+    const verificationUrl = `${this.frontendUrl}/app/verify?token=${token}`;
     const subjects: Record<SupportedLang, string> = {
       ko: '[MyTravel] 이메일 인증을 완료해주세요',
       en: '[MyTravel] Please verify your email',
@@ -220,7 +221,8 @@ export class EmailService {
     token: string,
     lang: SupportedLang = 'ko',
   ): Promise<void> {
-    const resetUrl = `${this.frontendUrl}/reset-password?token=${token}`;
+    // V115: /app/* 경로는 App Links 전용 — 앱으로만 열리며 웹에서는 "앱 다운로드" 안내로 리다이렉트
+    const resetUrl = `${this.frontendUrl}/app/reset?token=${token}`;
     const subjects: Record<SupportedLang, string> = {
       ko: '[MyTravel] 비밀번호 재설정',
       en: '[MyTravel] Reset your password',

@@ -17,37 +17,53 @@
     "terms": {
       "title": "Điều khoản dịch vụ",
       "description": "Cần thiết để sử dụng dịch vụ",
-      "benefits": ["Quyền sử dụng dịch vụ"]
+      "benefits": [
+        "Quyền sử dụng dịch vụ"
+      ]
     },
     "privacy_required": {
-      "title": "Chính sách bảo mật (bắt buộc)",
+      "title": "Chính sách bảo mật",
       "description": "Cần thiết cho quản lý tài khoản và cung cấp dịch vụ",
-      "benefits": ["Tạo và quản lý tài khoản", "Cung cấp dịch vụ", "Hỗ trợ khách hàng"]
-    },
-    "privacy_optional": {
-      "title": "Chính sách bảo mật (tùy chọn)",
-      "description": "Được sử dụng để cải thiện trải nghiệm người dùng",
-      "benefits": ["Đề xuất cá nhân hóa", "Cải thiện trải nghiệm người dùng"]
+      "benefits": [
+        "Tạo và quản lý tài khoản",
+        "Cung cấp dịch vụ",
+        "Hỗ trợ khách hàng"
+      ]
     },
     "location": {
       "title": "Sử dụng thông tin vị trí",
       "description": "Được sử dụng để tìm kiếm địa điểm gần đó và đề xuất tuyến đường du lịch",
-      "benefits": ["Tìm kiếm địa điểm gần đó", "Đề xuất tuyến đường du lịch", "Tính năng dựa trên vị trí"]
+      "benefits": [
+        "Tìm kiếm địa điểm gần đó",
+        "Đề xuất tuyến đường du lịch",
+        "Tính năng dựa trên vị trí"
+      ]
     },
     "notification": {
       "title": "Thông báo đẩy",
       "description": "Nhận nhắc nhở du lịch và thông báo chia sẻ",
-      "benefits": ["Nhắc nhở du lịch", "Thông báo chia sẻ", "Cập nhật quan trọng"]
+      "benefits": [
+        "Nhắc nhở du lịch",
+        "Thông báo chia sẻ",
+        "Cập nhật quan trọng"
+      ]
     },
     "photo": {
       "title": "Quyền truy cập ảnh",
       "description": "Được sử dụng để tải lên ảnh hồ sơ và ảnh du lịch",
-      "benefits": ["Tải lên ảnh hồ sơ", "Chia sẻ ảnh du lịch"]
+      "benefits": [
+        "Tải lên ảnh hồ sơ",
+        "Chia sẻ ảnh du lịch"
+      ]
     },
     "marketing": {
       "title": "Thông tin tiếp thị",
       "description": "Nhận ưu đãi khuyến mãi và thông báo tính năng mới",
-      "benefits": ["Ưu đãi khuyến mãi", "Thông báo tính năng mới", "Thông báo sự kiện"]
+      "benefits": [
+        "Ưu đãi khuyến mãi",
+        "Thông báo tính năng mới",
+        "Thông báo sự kiện"
+      ]
     }
   },
   "errors": {

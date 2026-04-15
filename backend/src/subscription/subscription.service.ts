@@ -15,17 +15,13 @@ import {
   SubscriptionTier,
   SubscriptionPlatform,
 } from '../users/entities/user.entity';
-import {
-  AI_TRIPS_FREE_LIMIT,
-  AI_TRIPS_PREMIUM_LIMIT,
-} from './constants';
+import { AI_TRIPS_FREE_LIMIT, AI_TRIPS_PREMIUM_LIMIT } from './constants';
 import { SubscriptionStatusDto } from './dto/subscription-status.dto';
 
 const PREMIUM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 const SANDBOX_YEARLY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-const ADMIN_EMAILS: string[] = (
-  process.env.ADMIN_EMAILS || 'a090723@naver.com,longpapa82@gmail.com'
-)
+// V115 (Gate 7 H-1 fix): no hardcoded fallback. Mirror admin.guard.ts.
+const ADMIN_EMAILS: string[] = (process.env.ADMIN_EMAILS ?? '')
   .split(',')
   .map((e) => e.trim().toLowerCase())
   .filter(Boolean);
@@ -96,7 +92,8 @@ export class SubscriptionService {
       };
     }
 
-    const isAdmin = !!user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+    const isAdmin =
+      !!user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
     const isPremium = this.isUserPremium(user);
     const effectiveLimit = isPremium
       ? this.aiTripsPremiumLimit

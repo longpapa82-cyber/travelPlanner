@@ -31,6 +31,7 @@ import { TutorialProvider } from './src/contexts/TutorialContext';
 import WelcomeModal from './src/components/tutorial/WelcomeModal';
 import GDPRConsentBanner from './src/components/GDPRConsentBanner';
 import apiService from './src/services/api';
+import WebAppRedirectScreen from './src/screens/web/WebAppRedirectScreen';
 
 // Initialize Sentry before app renders
 initSentry();
@@ -279,6 +280,30 @@ function App() {
   // Render lightweight callback handler instead of full app
   if (isWebOAuthCallback) {
     return <WebOAuthCallbackHandler />;
+  }
+
+  /*
+   * V115 (V114-1 fix, CRITICAL):
+   *
+   * Expo web 빌드가 www.mytravel-planner.com에서 서빙되며 React Native Web을
+   * 통해 로그인/가입/AI 생성 등 전체 앱 기능을 그대로 사용할 수 있던 것이
+   * V112~V114 전체에서 반복된 "웹에서 서비스 이용 가능" CRITICAL 이슈였다.
+   *
+   * 정책은 "앱에서만 서비스 제공"이므로 웹 빌드는 "앱 다운로드 안내" 한 장으로
+   * 전부 대체한다. nginx는 SEO 정적 페이지(/landing.html, /guides/*, /blog/*,
+   * /privacy.html, /terms.html 등)를 index.html 이전에 매칭시키므로 이 가드가
+   * 랜딩/가이드/약관 트래픽을 잡아먹지 않는다. OAuth 콜백(/auth/callback)은
+   * 위 isWebOAuthCallback 분기에서 이미 처리됐다.
+   *
+   * 결과: 웹에서는 AuthProvider/RootNavigator가 아예 mount되지 않아
+   * 토큰 저장·API 호출·로그인 자체가 불가능해진다.
+   */
+  if (Platform.OS === 'web') {
+    return (
+      <SafeAreaProvider>
+        <WebAppRedirectScreen />
+      </SafeAreaProvider>
+    );
   }
 
   return (

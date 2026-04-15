@@ -20,6 +20,7 @@ import {
   Platform,
   ScrollView,
   ImageBackground,
+  Alert,
 } from 'react-native';
 import AuthLegalModal from '../../components/legal/AuthLegalModal';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -44,7 +45,7 @@ interface Props {
 }
 
 const RegisterScreen: React.FC<Props> = ({ navigation }) => {
-  const { register } = useAuth();
+  const { register, registerForce, clearPendingVerification } = useAuth();
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('auth');
   const { showToast } = useToast();
@@ -94,17 +95,92 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
     }
 
     setIsLoading(true);
+    let keepLoading = false;
     try {
       await register(email, password, name);
     } catch (error: any) {
-      // V112 Wave 5: EmailNotVerifiedError is the happy path for register —
-      // AuthContext has already stored the resumeToken and RootNavigator
-      // will swap to EmailVerificationCodeScreen on the next render.
-      // Nothing to show; the transition is the feedback.
-      if (error instanceof EmailNotVerifiedError) return;
+      /*
+       * V115 (V114-8 fix):
+       *
+       * EmailNotVerifiedError is the happy path — the backend created or
+       * refreshed a pending-verification row and the RootNavigator is about
+       * to swap to the verification code screen.
+       *
+       * If the backend reported `action: 'refreshed'`, it means an earlier
+       * signup with this email was abandoned mid-verification. Interrupt
+       * the silent transition with a 2-way dialog so the user explicitly
+       * decides:
+       *
+       *   • "인증 이어가기"     → fall through to code screen (current state).
+       *   • "처음부터 다시 가입" → POST /auth/register-force (hard-deletes
+       *                             the stale row, then re-creates).
+       *
+       * The `created` path is untouched — brand-new signups go straight to
+       * the code screen as before.
+       *
+       * V115 (Gate 5 C1 fix): discriminator comes off the error, NOT state.
+       * V115 (Gate 10 HIGH-4 fix): while the Alert is open, keep the form
+       *   disabled (isLoading stays true) — otherwise the user could tap
+       *   Submit again and fire a duplicate register request behind the
+       *   dialog. We signal this with `keepLoading` so the finally block
+       *   skips setIsLoading(false); loading is released by the Alert's
+       *   onPress callback (or by the RootNavigator unmounting this screen
+       *   on the "continue" path).
+       */
+      if (error instanceof EmailNotVerifiedError) {
+        const action = error.action;
+        if (action === 'refreshed') {
+          keepLoading = true;
+          Alert.alert(
+            t('register.refreshed.title', { defaultValue: '인증을 완료하지 못한 계정이에요' }),
+            t('register.refreshed.message', {
+              defaultValue:
+                '이전에 이 이메일로 회원가입을 시작했지만 인증을 마치지 못했어요.\n인증을 이어가시겠어요, 아니면 처음부터 다시 가입하시겠어요?',
+            }),
+            [
+              {
+                text: t('register.refreshed.continue', { defaultValue: '인증 이어가기' }),
+                style: 'default',
+                onPress: () => {
+                  // RootNavigator will swap to the verification code screen
+                  // on the next render because pendingVerification is set.
+                  // Release the loading lock as a safety net in case this
+                  // screen stays mounted longer than expected.
+                  setIsLoading(false);
+                },
+              },
+              {
+                text: t('register.refreshed.startOver', { defaultValue: '처음부터 다시 가입' }),
+                style: 'destructive',
+                onPress: async () => {
+                  clearPendingVerification();
+                  try {
+                    await registerForce(email, password, name);
+                  } catch (innerError: any) {
+                    if (innerError instanceof EmailNotVerifiedError) {
+                      // Happy path — RootNavigator will transition.
+                      return;
+                    }
+                    showToast({
+                      type: 'error',
+                      message: innerError.response?.data?.message || t('register.alerts.networkError'),
+                      position: 'top',
+                    });
+                  } finally {
+                    setIsLoading(false);
+                  }
+                },
+              },
+            ],
+            { cancelable: false },
+          );
+        }
+        // action === 'created' (or undefined/legacy) → silent happy path
+        return;
+      }
       showToast({ type: 'error', message: error.response?.data?.message || t('register.alerts.networkError'), position: 'top' });
     } finally {
-      setIsLoading(false);
+      if (!keepLoading) setIsLoading(false);
     }
   };
 

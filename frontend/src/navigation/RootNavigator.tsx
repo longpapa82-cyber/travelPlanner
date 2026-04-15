@@ -36,7 +36,12 @@ const linking: LinkingOptions<RootStackParamList> = {
         path: 'announcements/:announcementId',
       },
       AnnouncementList: 'announcements',
-      VerifyEmail: 'verify-email',
+      // V115 (V114-1 fix): App Links path. Backend V115 emits /app/verify
+      // as the email verification link. Legacy /verify-email emails may
+      // still be in user inboxes during the rollout but the email template
+      // change is safe — old URLs simply 404 and the user can request a
+      // new verification code from inside the app.
+      VerifyEmail: 'app/verify',
       Main: {
         screens: {
           Home: 'home',
@@ -56,7 +61,8 @@ const linking: LinkingOptions<RootStackParamList> = {
           Login: 'login',
           Onboarding: 'onboarding',
           ForgotPassword: 'forgot-password',
-          ResetPassword: 'reset-password',
+          // V115 (V114-1 fix): App Links path. See note on VerifyEmail above.
+          ResetPassword: 'app/reset',
         },
       },
     },

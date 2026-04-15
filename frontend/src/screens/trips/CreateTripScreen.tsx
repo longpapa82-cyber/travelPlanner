@@ -455,12 +455,27 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           });
           return;
         }
-        // Pre-warning: only show for free/non-admin users when crossing from 2 → 1 remaining
+        // V115 (V114-5 fix): Pre-warning on the 2 → 1 transition for free users.
+        //
+        // The old key 'create.aiInfo.remaining' is a *status* string ("이번 달
+        // AI 자동 생성 1/3회 남음") that was being reused as a post-hoc
+        // warning. Users who saw the toast *after* generating reported it
+        // as an "incorrect counter on manual creation" — the toast lingered
+        // 4s and visually collided with the manual creation screen.
+        //
+        // Fix: use a dedicated pre-warning key that reads as an advisory
+        // ("다음 생성 시 마지막 1회가 됩니다"), and pass the actual post-
+        // generation remaining count computed from current state — no hardcode.
         if (!isPremium && !isAdmin && aiTripsRemaining === 2) {
           const total = aiTripsLimit > 0 ? aiTripsLimit : 3;
+          const postGenRemaining = Math.max(0, aiTripsRemaining - 1);
           showToast({
             type: 'info',
-            message: t('create.aiInfo.remaining', { remaining: 1, total }),
+            message: t('create.aiInfo.preWarning', {
+              defaultValue: '다음 AI 자동 생성 후 {{remaining}}/{{total}}회가 남습니다.',
+              remaining: postGenRemaining,
+              total,
+            }),
             position: 'top',
             duration: 4000,
           });
@@ -622,7 +637,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           defaultValue: '잠시 후 다시 시도해주세요. (요청이 너무 많습니다)',
         });
       } else if (serverMsg.includes('AI generation limit')) {
-        message = t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 });
+        message = t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : (isPremium ? 30 : 3) });
       } else {
         message = serverMsg || t('create.alerts.createFailed');
       }
@@ -844,7 +859,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 </Text>
                 {isAiLimitReached && (
                   <Text style={[styles.modeCardDesc, { color: colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600', fontSize: 11 }]}>
-                    {t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 })}
+                    {t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : (isPremium ? 30 : 3) })}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -1581,11 +1596,27 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>
                 {t('create.aiInfo.description')}
               </Text>
-              {isPremium || isAdmin ? (
+              {/*
+                * V115 (V114-6b fix, revised for Gate 5 H2/H3):
+                *
+                * Before: free saw "X/3회 남음", premium saw static "월 30회
+                * AI 자동 생성 가능" — inconsistent format, and manual entry
+                * showed "1/3" fallback due to hardcoded default.
+                *
+                * After: everyone sees the unified "X/Y회 남음" format. But
+                * premium identity still needs to be visually present (user
+                * requested uniformity without losing the upsell cue), so
+                * we prepend a "프리미엄" prefix for premium users. Admin
+                * gets a simple "무제한" label since they have no quota.
+                *
+                * PremiumContext guarantees aiTripsLimit is either 3 (free)
+                * or 30 (premium/admin) once profile is loaded, and
+                * aiTripsRemaining is -1 only while the profile is still
+                * loading on a free-tier user (premium/admin skip loading).
+                */}
+              {isAdmin ? (
                 <Text style={[styles.infoText, { color: theme.colors.primary, marginTop: 4, fontWeight: '600' }]}>
-                  {isAdmin
-                    ? t('create.aiInfo.admin', { defaultValue: '관리자: 무제한 AI 자동 생성' })
-                    : t('create.aiInfo.premium', { defaultValue: '프리미엄: 월 30회 AI 자동 생성 가능' })}
+                  {t('create.aiInfo.admin', { defaultValue: '관리자: 무제한 AI 자동 생성' })}
                 </Text>
               ) : aiTripsRemaining === -1 ? (
                 <Text style={[styles.infoText, { color: theme.colors.textSecondary, marginTop: 4, fontWeight: '600' }]}>
@@ -1593,9 +1624,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 </Text>
               ) : (
                 <Text style={[styles.infoText, { color: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600' }]}>
+                  {isPremium ? '프리미엄: ' : ''}
                   {aiTripsRemaining > 0
-                    ? t('create.aiInfo.remaining', { remaining: aiTripsRemaining, total: aiTripsLimit > 0 ? aiTripsLimit : 3 })
-                    : t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : 3 })}
+                    ? t('create.aiInfo.remaining', { remaining: aiTripsRemaining, total: aiTripsLimit })
+                    : t('create.aiInfo.limitReached', { total: aiTripsLimit })}
                 </Text>
               )}
             </View>

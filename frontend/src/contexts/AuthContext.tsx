@@ -38,14 +38,25 @@ export class EmailNotVerifiedError extends Error {
     email: string | null;
     name: string;
   };
+  /*
+   * V115 (V114-8, Gate 5 C1 fix): carry the register-path discriminator on
+   * the error instance itself. Reading `pendingVerification.action` from
+   * state in the catch handler was captured from a stale render closure
+   * and always came back as null — the 2-way dialog never fired. Error
+   * objects are synchronous values, so threading `action` through here is
+   * the only reliable channel.
+   */
+  action?: 'created' | 'refreshed';
   constructor(
     resumeToken: string,
     user: { id: string; email: string | null; name: string },
+    action?: 'created' | 'refreshed',
   ) {
     super('Email verification required');
     this.name = 'EmailNotVerifiedError';
     this.resumeToken = resumeToken;
     this.user = user;
+    this.action = action;
   }
 }
 
@@ -56,6 +67,15 @@ export interface PendingVerification {
     email: string | null;
     name: string;
   };
+  /*
+   * V115 (V114-8 fix): discriminator from the backend response.
+   *  - 'created'   → brand-new signup; the code screen is the happy path.
+   *  - 'refreshed' → the user previously abandoned verification with this
+   *                  email. RegisterScreen should offer a 2-way choice
+   *                  (continue vs. start over) before handing off.
+   * Absent on legacy responses or login-triggered pending states.
+   */
+  action?: 'created' | 'refreshed';
 }
 
 interface AuthContextType {
@@ -76,6 +96,10 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   completeTwoFactorLogin: (tempToken: string, code: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
+  // V115 (V114-8): hard-reset register — deletes a stale unverified row
+  // and starts a fresh signup with the same email. Only call after user
+  // confirmation.
+  registerForce: (email: string, password: string, name: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithApple: () => Promise<void>;
   loginWithKakao: () => Promise<void>;
@@ -351,19 +375,73 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       trackEvent('register', { method: 'email' });
 
       if (response?.resumeToken && response?.user) {
+        const action = response.action;
         setPendingVerification({
           resumeToken: response.resumeToken,
           user: response.user,
+          action,
         });
-        throw new EmailNotVerifiedError(response.resumeToken, response.user);
+        // V115 (V114-8, Gate 5 C1 fix): thread `action` through the error
+        // so catch handlers read a synchronous value instead of reaching
+        // into state that hasn't flushed yet.
+        throw new EmailNotVerifiedError(response.resumeToken, response.user, action);
       }
 
       // Backwards-compat: if an older backend still returns full tokens,
       // keep the legacy path alive so a staged rollout does not brick clients.
+      // The legacy payload carries a richer User shape; the getProfile() call
+      // below replaces it with the canonical one regardless, so the cast is
+      // a controlled narrowing of the transitional state.
       if (response?.accessToken && response?.refreshToken) {
         await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
         await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
-        setUser(response.user);
+        setUser(response.user as unknown as User);
+        await setSessionFlag(true);
+        registerPushAfterLogin();
+        try {
+          const profile = await apiService.getProfile();
+          if (profile) setUser(profile);
+        } catch {
+          // Best-effort — profile will be fetched on next app focus
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  /*
+   * V115 (V114-8 fix): hard-reset register path.
+   *
+   * Only call this after the user confirmed "start over" in the RegisterScreen
+   * 2-way dialog. Mirrors register() but hits /auth/register-force, which
+   * deletes the existing unverified row server-side before re-creating.
+   */
+  const registerForce = async (email: string, password: string, name: string) => {
+    try {
+      const response = await apiService.registerForce(email, password, name);
+      // Reuse 'register' event with a different method tag — the analytics
+      // schema has a fixed event set and a new name would be rejected.
+      trackEvent('register', { method: 'email_force' });
+      if (response?.resumeToken && response?.user) {
+        const action: 'created' | 'refreshed' = response.action ?? 'created';
+        setPendingVerification({
+          resumeToken: response.resumeToken,
+          user: response.user,
+          action,
+        });
+        throw new EmailNotVerifiedError(response.resumeToken, response.user, action);
+      }
+
+      // Backwards-compat: if an older backend still returns full tokens,
+      // keep the legacy path alive so a staged rollout does not brick clients.
+      // The legacy payload carries a richer User shape; the getProfile() call
+      // below replaces it with the canonical one regardless, so the cast is
+      // a controlled narrowing of the transitional state.
+      if (response?.accessToken && response?.refreshToken) {
+        await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
+        await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
+        setUser(response.user as unknown as User);
         await setSessionFlag(true);
         registerPushAfterLogin();
 
@@ -541,6 +619,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     completeTwoFactorLogin,
     register,
+    registerForce,
     loginWithGoogle,
     loginWithApple,
     loginWithKakao,

@@ -81,7 +81,7 @@ describe('EmailService', () => {
         template: 'verify-email-ko',
         context: {
           name: 'User',
-          verificationUrl: 'http://localhost:8081/verify-email?token=token123',
+          verificationUrl: 'http://localhost:8081/app/verify?token=token123',
         },
       });
     });
@@ -144,7 +144,7 @@ describe('EmailService', () => {
         expect.objectContaining({
           context: expect.objectContaining({
             verificationUrl:
-              'http://localhost:8081/verify-email?token=abc-token',
+              'http://localhost:8081/app/verify?token=abc-token',
           }),
         }),
       );
@@ -213,7 +213,7 @@ describe('EmailService', () => {
         template: 'reset-password-ko',
         context: {
           name: 'User',
-          resetUrl: 'http://localhost:8081/reset-password?token=reset-token',
+          resetUrl: 'http://localhost:8081/app/reset?token=reset-token',
         },
       });
     });
@@ -260,7 +260,7 @@ describe('EmailService', () => {
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           context: expect.objectContaining({
-            resetUrl: 'http://localhost:8081/reset-password?token=xyz-token',
+            resetUrl: 'http://localhost:8081/app/reset?token=xyz-token',
           }),
         }),
       );
