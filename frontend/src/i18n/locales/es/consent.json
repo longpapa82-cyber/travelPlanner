@@ -12,7 +12,7 @@
   "allAgreeDescription": "Acepto todos los elementos obligatorios y opcionales",
   "confirmButtonEnabled": "Aceptar y empezar",
   "confirmButtonDisabled": "Acepta los elementos obligatorios",
-  "jitNote": "Los permisos de ubicación, notificaciones y fotos se solicitarán cuando uses esas funciones",
+  "jitNote": "Los permisos de ubicación, notificaciones y fotos se solicitarán cuando uses esas funciones.",
   "types": {
     "terms": {
       "title": "Términos de servicio",

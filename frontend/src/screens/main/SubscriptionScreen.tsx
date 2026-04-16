@@ -164,7 +164,7 @@ const SubscriptionScreen = () => {
         </TouchableOpacity>
       )}
 
-      {/* AI Trip Usage */}
+      {/* AI Trip Usage — show for non-premium users (including admin without subscription) */}
       {!isPremium && (
         <View style={[styles.section, { backgroundColor: isDark ? colors.neutral[800] : '#FFF' }]}>
           <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
@@ -176,14 +176,14 @@ const SubscriptionScreen = () => {
                 style={[
                   styles.usageBarFill,
                   {
-                    width: `${Math.min(100, (aiTripsUsed / 3) * 100)}%`,
+                    width: `${Math.min(100, (aiTripsUsed / aiTripsLimit) * 100)}%`,
                     backgroundColor: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444',
                   },
                 ]}
               />
             </View>
             <Text style={[styles.usageText, { color: theme.colors.textSecondary }]}>
-              {aiTripsUsed} / 3 {t('paywall.aiUsed')}
+              {aiTripsUsed} / {aiTripsLimit} {t('paywall.aiUsed')}
             </Text>
           </View>
         </View>

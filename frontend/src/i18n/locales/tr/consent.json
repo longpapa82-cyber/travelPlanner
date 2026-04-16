@@ -12,7 +12,7 @@
   "allAgreeDescription": "Tüm zorunlu ve isteğe bağlı maddeleri kabul ediyorum",
   "confirmButtonEnabled": "Kabul et ve başla",
   "confirmButtonDisabled": "Lütfen zorunlu maddeleri kabul edin",
-  "jitNote": "Konum, bildirim ve fotoğraf izinleri ilgili özellikleri kullandığınızda istenecektir",
+  "jitNote": "Konum, bildirim ve fotoğraf izinleri ilgili özellikleri kullandığınızda istenecektir.",
   "types": {
     "terms": {
       "title": "Hizmet şartları",

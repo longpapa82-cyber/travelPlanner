@@ -12,7 +12,7 @@
   "allAgreeDescription": "필수 및 선택 항목에 모두 동의합니다",
   "confirmButtonEnabled": "동의하고 시작하기",
   "confirmButtonDisabled": "필수 항목에 동의해주세요",
-  "jitNote": "위치, 알림, 사진 권한은 해당 기능 사용 시 별도로 안내됩니다",
+  "jitNote": "위치, 알림, 사진 권한은 해당 기능 사용 시 별도로 안내됩니다.",
   "types": {
     "terms": {
       "title": "서비스 이용약관",

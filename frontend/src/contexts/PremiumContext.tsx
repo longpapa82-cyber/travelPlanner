@@ -22,7 +22,6 @@ const AI_TRIPS_FREE_LIMIT = 3;
  * (admin billing datetime) to silently no-op for that account.
  */
 const ADMIN_EMAILS = [
-  'a090723@naver.com',
   'longpapa82@gmail.com',
   'hoonjae723@gmail.com',
 ];

@@ -12,7 +12,7 @@
   "allAgreeDescription": "Đồng ý tất cả các mục bắt buộc và tùy chọn",
   "confirmButtonEnabled": "Đồng ý và bắt đầu",
   "confirmButtonDisabled": "Vui lòng đồng ý các mục bắt buộc",
-  "jitNote": "Quyền truy cập vị trí, thông báo và ảnh sẽ được yêu cầu khi bạn sử dụng các tính năng đó",
+  "jitNote": "Quyền truy cập vị trí, thông báo và ảnh sẽ được yêu cầu khi bạn sử dụng các tính năng đó.",
   "types": {
     "terms": {
       "title": "Điều khoản dịch vụ",
@@ -34,7 +34,7 @@
       "title": "Sử dụng thông tin vị trí",
       "description": "Được sử dụng để tìm kiếm địa điểm gần đó và đề xuất tuyến đường du lịch",
       "benefits": [
-        "Tìm kiếm địa điểm gần đó",
+        "Tìm kiếm địa điểm gần đó.",
         "Đề xuất tuyến đường du lịch",
         "Tính năng dựa trên vị trí"
       ]

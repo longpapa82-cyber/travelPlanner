@@ -24,7 +24,7 @@ import {
   useWindowDimensions,
   Share,
 } from 'react-native';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -50,7 +50,6 @@ import apiService from '../../services/api';
 import { AdBanner } from '../../components/ads';
 import { getDestinationImageUrl, getHeroImageUrl } from '../../utils/images';
 import { useTutorial } from '../../contexts/TutorialContext';
-import CoachMark from '../../components/tutorial/CoachMark';
 import WelcomeModal from '../../components/tutorial/WelcomeModal';
 
 type HomeScreenNavigationProp = CompositeNavigationProp<
@@ -124,19 +123,14 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { user } = useAuth();
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('home');
-  const { t: tTutorial } = useTranslation('tutorial');
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const CARD_WIDTH = SCREEN_WIDTH * 0.75;
   const [stats, setStats] = useState({ completed: 0, ongoing: 0, upcoming: 0 });
   const [isStatsLoading, setIsStatsLoading] = useState(true);
   const FEATURED_DESTINATIONS = getFeaturedDestinations(t);
 
-  // Tutorial: CoachMark for "Create Trip" button
-  const isFocused = useIsFocused();
-  const { showCoachMark, completeCoach, navigateToCreateTrip, clearNavigateFlag } = useTutorial();
+  const { navigateToCreateTrip, clearNavigateFlag } = useTutorial();
   const createTripRef = useRef<View>(null);
-  const [createTripLayout, setCreateTripLayout] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
-  // Track entrance animation completion so coachmark measurement waits for final layout
   const [animationDone, setAnimationDone] = useState(false);
 
   useEffect(() => {
@@ -145,25 +139,6 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       navigation.navigate('Trips', { screen: 'CreateTrip' });
     }
   }, [navigateToCreateTrip, clearNavigateFlag, navigation]);
-
-  // Measure the create-trip button ONLY after entrance animation has committed
-  // its final frame. Prior timer-based approaches (500/800/1500ms) were flaky
-  // because slow devices can delay animation start beyond any fixed timeout.
-  useEffect(() => {
-    if (!showCoachMark || !animationDone) return;
-    const node = createTripRef.current;
-    if (!node) return;
-
-    // Use rAF to ensure we read the layout AFTER the next paint commit.
-    const rafId = requestAnimationFrame(() => {
-      node.measureInWindow((x, y, width, height) => {
-        if (width > 0 && height > 0) {
-          setCreateTripLayout({ x, y, width, height });
-        }
-      });
-    });
-    return () => cancelAnimationFrame(rafId);
-  }, [showCoachMark, animationDone]);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -221,12 +196,12 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 800,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
         duration: 600,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }),
     ]).start(() => markDone());
     const fallback = setTimeout(markDone, 1500);
@@ -550,16 +525,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       {/* Bottom Spacing */}
       <View style={{ height: 40 }} />
 
-      {/* Tutorial: Welcome Modal + CoachMark */}
       <WelcomeModal />
-      <CoachMark
-        visible={showCoachMark && isFocused}
-        targetLayout={createTripLayout}
-        message={tTutorial('coach.createTrip')}
-        position="above"
-        onNext={completeCoach}
-        onDismiss={completeCoach}
-      />
     </ScrollView>
   );
 

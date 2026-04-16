@@ -12,7 +12,7 @@
   "allAgreeDescription": "Allen erforderlichen und optionalen Punkten zustimmen",
   "confirmButtonEnabled": "Zustimmen und starten",
   "confirmButtonDisabled": "Bitte stimme den Pflichtfeldern zu",
-  "jitNote": "Standort-, Benachrichtigungs- und Fotoberechtigungen werden bei Nutzung der jeweiligen Funktionen angefragt",
+  "jitNote": "Standort-, Benachrichtigungs- und Fotoberechtigungen werden bei Nutzung der jeweiligen Funktionen angefragt.",
   "types": {
     "terms": {
       "title": "Nutzungsbedingungen",

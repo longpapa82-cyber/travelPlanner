@@ -1612,7 +1612,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 </Text>
               ) : (
                 <Text style={[styles.infoText, { color: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600' }]}>
-                  {isAdmin ? '관리자: ' : isPremium ? '프리미엄: ' : ''}
                   {aiTripsRemaining > 0
                     ? t('create.aiInfo.remaining', { remaining: aiTripsRemaining, total: aiTripsLimit })
                     : t('create.aiInfo.limitReached', { total: aiTripsLimit })}

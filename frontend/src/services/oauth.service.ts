@@ -47,7 +47,9 @@ export async function signInWithOAuth(
     // Mobile: use Expo's WebBrowser — the redirect URI tells the browser
     // which URL scheme to watch for to auto-dismiss.
     const redirectUri = makeRedirectUri();
-    const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
+    const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri, {
+      showInRecents: false,
+    });
 
     // Android: clean up browser connection
     if (Platform.OS === 'android') {

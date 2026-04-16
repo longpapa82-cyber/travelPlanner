@@ -271,7 +271,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
           {t('jitNote', '위치, 알림, 사진 권한은 해당 기능 사용 시 별도로 안내됩니다.')}
         </Text>
 
-        <View style={{ paddingTop: 16, paddingBottom: 24 }}>
+        <View style={{ paddingTop: 8, paddingBottom: 24 }}>
 
           <Button
             onPress={handleSubmit}
@@ -385,8 +385,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
     textAlign: 'center',
-    marginTop: 12,
-    marginBottom: 24,
+    marginTop: 8,
+    marginBottom: 4,
   },
   footer: {
     paddingTop: 24,
