@@ -268,7 +268,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
 
         {/* JIT notice */}
         <Text style={[styles.jitNotice, { color: textSecondary }]}>
-          {t('jitNote', '위치, 알림, 사진 권한은 해당 기능 사용 시 별도로 안내됩니다.')}
+          {t('jitNote', '알림, 사진 권한은 해당 기능 사용 시, 별도로 안내됩니다.')}
         </Text>
 
         <View style={{ paddingTop: 8, paddingBottom: 24 }}>
@@ -385,8 +385,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
     textAlign: 'center',
-    marginTop: 8,
-    marginBottom: 4,
+    marginTop: 4,
+    marginBottom: 2,
   },
   footer: {
     paddingTop: 24,

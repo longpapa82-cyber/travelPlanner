@@ -12,7 +12,7 @@
   "allAgreeDescription": "同意所有必填和可选项目",
   "confirmButtonEnabled": "同意并开始",
   "confirmButtonDisabled": "请同意必填项目",
-  "jitNote": "位置、通知和照片权限将在您使用相关功能时请求。",
+  "jitNote": "通知和照片权限将在您使用相关功能时请求。",
   "types": {
     "terms": {
       "title": "服务条款",
@@ -54,6 +54,13 @@
       "benefits": [
         "上传个人资料图片",
         "分享旅行照片"
+      ]
+    },
+    "age_verification": {
+      "title": "确认年满14岁",
+      "description": "根据法律规定，仅14岁以上用户可以使用本服务",
+      "benefits": [
+        "年龄验证（14岁以上）"
       ]
     },
     "marketing": {

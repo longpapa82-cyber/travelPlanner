@@ -12,7 +12,7 @@
   "allAgreeDescription": "Setuju dengan semua item wajib dan opsional",
   "confirmButtonEnabled": "Setuju dan mulai",
   "confirmButtonDisabled": "Silakan setujui item wajib",
-  "jitNote": "Izin lokasi, notifikasi, dan foto akan diminta saat Anda menggunakan fitur tersebut.",
+  "jitNote": "Izin notifikasi dan foto akan diminta saat Anda menggunakan fitur tersebut.",
   "types": {
     "terms": {
       "title": "Ketentuan layanan",
@@ -54,6 +54,13 @@
       "benefits": [
         "Unggah foto profil",
         "Berbagi foto perjalanan"
+      ]
+    },
+    "age_verification": {
+      "title": "Konfirmasi usia 14 tahun atau lebih",
+      "description": "Sesuai hukum, hanya pengguna berusia 14 tahun ke atas yang dapat menggunakan layanan ini",
+      "benefits": [
+        "Verifikasi usia (14+)"
       ]
     },
     "marketing": {

@@ -12,7 +12,7 @@
   "allAgreeDescription": "Agree to all required and optional items",
   "confirmButtonEnabled": "Agree and Start",
   "confirmButtonDisabled": "Please agree to required items",
-  "jitNote": "Location, notification, and photo permissions will be requested when you use those features.",
+  "jitNote": "Notification and photo permissions will be requested when you use those features.",
   "types": {
     "terms": {
       "title": "Terms of Service",
@@ -54,6 +54,13 @@
       "benefits": [
         "Profile image upload",
         "Travel photo sharing"
+      ]
+    },
+    "age_verification": {
+      "title": "Confirmation of age 14 or older",
+      "description": "In accordance with applicable law, only users aged 14 and above may use this service",
+      "benefits": [
+        "Age verification (14+)"
       ]
     },
     "marketing": {

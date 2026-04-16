@@ -134,15 +134,6 @@ export class SubscriptionService {
     allowed: boolean;
     remaining: number;
   }> {
-    // Admin users are exempt from AI trip limits (unlimited gate)
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      select: ['id', 'email'],
-    });
-    if (user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-      return { allowed: true, remaining: Number.MAX_SAFE_INTEGER };
-    }
-
     const status = await this.getSubscriptionStatus(userId);
 
     return {

@@ -21,6 +21,7 @@ export enum ConsentType {
   NOTIFICATION = 'notification',        // 알림 수신
   PHOTO = 'photo',                      // 사진 접근
   MARKETING = 'marketing',              // 마케팅 정보 수신 (선택)
+  AGE_VERIFICATION = 'age_verification', // 만 14세 이상 확인 (필수)
 }
 
 /**

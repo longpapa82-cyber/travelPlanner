@@ -12,7 +12,7 @@
   "allAgreeDescription": "Tüm zorunlu ve isteğe bağlı maddeleri kabul ediyorum",
   "confirmButtonEnabled": "Kabul et ve başla",
   "confirmButtonDisabled": "Lütfen zorunlu maddeleri kabul edin",
-  "jitNote": "Konum, bildirim ve fotoğraf izinleri ilgili özellikleri kullandığınızda istenecektir.",
+  "jitNote": "Bildirim ve fotoğraf izinleri ilgili özellikleri kullandığınızda istenecektir.",
   "types": {
     "terms": {
       "title": "Hizmet şartları",
@@ -54,6 +54,13 @@
       "benefits": [
         "Profil fotoğrafı yükle",
         "Seyahat fotoğraflarını paylaş"
+      ]
+    },
+    "age_verification": {
+      "title": "14 yaş ve üzeri onayı",
+      "description": "Yasalara göre, yalnızca 14 yaş ve üzeri kullanıcılar bu hizmeti kullanabilir",
+      "benefits": [
+        "Yaş doğrulama (14+)"
       ]
     },
     "marketing": {

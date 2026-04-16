@@ -12,7 +12,7 @@
   "allAgreeDescription": "Bersetuju dengan semua perkara wajib dan pilihan",
   "confirmButtonEnabled": "Setuju dan mula",
   "confirmButtonDisabled": "Sila bersetuju dengan perkara wajib",
-  "jitNote": "Kebenaran lokasi, pemberitahuan dan foto akan diminta apabila anda menggunakan ciri-ciri tersebut.",
+  "jitNote": "Kebenaran pemberitahuan dan foto akan diminta apabila anda menggunakan ciri-ciri tersebut.",
   "types": {
     "terms": {
       "title": "Syarat perkhidmatan",
@@ -54,6 +54,13 @@
       "benefits": [
         "Muat naik foto profil",
         "Kongsi foto perjalanan"
+      ]
+    },
+    "age_verification": {
+      "title": "Pengesahan umur 14 tahun atau lebih",
+      "description": "Mengikut undang-undang, hanya pengguna berumur 14 tahun ke atas boleh menggunakan perkhidmatan ini",
+      "benefits": [
+        "Pengesahan umur (14+)"
       ]
     },
     "marketing": {

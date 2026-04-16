@@ -39,7 +39,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
-  const { isPremium, showPaywall, aiTripsRemaining, aiTripsLimit, aiTripsUsed, markLoggingOut } = usePremium();
+  const { isPremium, isServiceAdmin, showPaywall, aiTripsRemaining, aiTripsLimit, aiTripsUsed, markLoggingOut } = usePremium();
   const { t: tPremium } = useTranslation('premium');
   const { t: tTutorial } = useTranslation('tutorial');
   const { resetTutorial } = useTutorial();
@@ -282,8 +282,6 @@ const ProfileScreen = ({ navigation }: any) => {
   };
 
   const isSocialAccount = user?.provider && user.provider !== 'email';
-  const ADMIN_EMAILS = ['longpapa82@gmail.com', 'hoonjae723@gmail.com'];
-  const isAdmin = !!(user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase()));
 
   const styles = React.useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
@@ -470,7 +468,7 @@ const ProfileScreen = ({ navigation }: any) => {
         {PREMIUM_ENABLED && (
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => (isPremium || isAdmin) ? navigation.navigate('Subscription') : showPaywall('general')}
+            onPress={() => isPremium ? navigation.navigate('Subscription') : showPaywall('general')}
             accessibilityRole="button"
             accessibilityLabel={tPremium('menu.subscription')}
           >
@@ -486,7 +484,7 @@ const ProfileScreen = ({ navigation }: any) => {
                 </Text>
               )}
             </View>
-            {(isPremium || isAdmin) ? (
+            {isPremium ? (
               <PremiumBadge size="small" />
             ) : (
               <View style={styles.upgradeBadge}>
@@ -536,7 +534,7 @@ const ProfileScreen = ({ navigation }: any) => {
         </View>
       </View>
 
-      {isAdmin && (
+      {isServiceAdmin && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('sections.admin')}</Text>
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdminDashboard')} accessibilityRole="button" accessibilityLabel={t('menu.admin')}>

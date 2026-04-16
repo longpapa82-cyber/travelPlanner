@@ -25,6 +25,7 @@ const ADMIN_EMAILS = [
   'longpapa82@gmail.com',
   'hoonjae723@gmail.com',
 ];
+const SERVICE_ADMIN_EMAILS = ['longpapa82@gmail.com'];
 
 export type PaywallContext = 'ai_limit' | 'general';
 
@@ -36,6 +37,7 @@ interface PremiumContextType {
   aiTripsLimit: number;
   isAiLimitReached: boolean;
   isAdmin: boolean;
+  isServiceAdmin: boolean;
   expiresAt?: string;
   startedAt?: string;
   planType?: 'monthly' | 'yearly';
@@ -137,16 +139,17 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const isAdmin = !!(
     user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())
   );
-  // Profile loading state: aiTripsUsedThisMonth is undefined until profile is fetched
+  const isServiceAdmin = !!(
+    user?.email && SERVICE_ADMIN_EMAILS.includes(user.email.toLowerCase())
+  );
   const isProfileLoaded = user?.aiTripsUsedThisMonth !== undefined;
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
   const AI_TRIPS_PREMIUM_LIMIT = 30;
-  const aiTripsLimit = (isPremium || isAdmin) ? AI_TRIPS_PREMIUM_LIMIT : AI_TRIPS_FREE_LIMIT;
-  // Premium/admin: show actual usage out of 30. Free: show usage out of 3 (or loading if not fetched)
-  const aiTripsRemaining = (isPremium || isAdmin)
+  const aiTripsLimit = isPremium ? AI_TRIPS_PREMIUM_LIMIT : AI_TRIPS_FREE_LIMIT;
+  const aiTripsRemaining = isPremium
     ? (isProfileLoaded ? Math.max(0, AI_TRIPS_PREMIUM_LIMIT - aiTripsUsed) : AI_TRIPS_PREMIUM_LIMIT)
     : (isProfileLoaded ? Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed) : -1);
-  const isAiLimitReached = !isPremium && !isAdmin && isProfileLoaded && aiTripsRemaining <= 0;
+  const isAiLimitReached = !isPremium && isProfileLoaded && aiTripsRemaining <= 0;
 
   const showPaywall = useCallback((context: PaywallContext = 'general') => {
     if (!PREMIUM_ENABLED) return;
@@ -173,6 +176,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const value = useMemo<PremiumContextType>(() => ({
     isPremium,
     isAdmin,
+    isServiceAdmin,
     subscriptionTier: isPremium ? 'premium' : 'free',
     aiTripsRemaining,
     aiTripsUsed,
@@ -189,7 +193,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     refreshStatus,
     markPremium,
     markLoggingOut,
-  }), [isPremium, isAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, user?.subscriptionStartedAt, user?.subscriptionPlanType, user?.subscriptionPlatform, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
+  }), [isPremium, isAdmin, isServiceAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, user?.subscriptionExpiresAt, user?.subscriptionStartedAt, user?.subscriptionPlanType, user?.subscriptionPlatform, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
 
   return (
     <PremiumContext.Provider value={value}>

@@ -833,12 +833,14 @@ export class UsersService {
     [ConsentType.NOTIFICATION]: '1.0.0',
     [ConsentType.PHOTO]: '1.0.0',
     [ConsentType.MARKETING]: '1.0.0',
+    [ConsentType.AGE_VERIFICATION]: '1.0.0',
   };
 
   // Required consent types (must be granted for app usage)
   private readonly REQUIRED_CONSENTS: ConsentType[] = [
     ConsentType.TERMS,
     ConsentType.PRIVACY_REQUIRED,
+    ConsentType.AGE_VERIFICATION,
   ];
 
   /**
@@ -1037,6 +1039,7 @@ export class UsersService {
       [ConsentType.NOTIFICATION]: 'Push Notification Permission',
       [ConsentType.PHOTO]: 'Photo Access Permission',
       [ConsentType.MARKETING]: 'Marketing Communications',
+      [ConsentType.AGE_VERIFICATION]: 'Age Verification (14+)',
     };
     return descriptions[type];
   }
@@ -1070,6 +1073,7 @@ export class UsersService {
         'New feature announcements',
         'Event notifications',
       ],
+      [ConsentType.AGE_VERIFICATION]: ['Age verification (14+)'],
     };
     return benefits[type];
   }

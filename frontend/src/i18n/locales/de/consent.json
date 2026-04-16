@@ -12,7 +12,7 @@
   "allAgreeDescription": "Allen erforderlichen und optionalen Punkten zustimmen",
   "confirmButtonEnabled": "Zustimmen und starten",
   "confirmButtonDisabled": "Bitte stimme den Pflichtfeldern zu",
-  "jitNote": "Standort-, Benachrichtigungs- und Fotoberechtigungen werden bei Nutzung der jeweiligen Funktionen angefragt.",
+  "jitNote": "Benachrichtigungs- und Fotoberechtigungen werden bei Nutzung der jeweiligen Funktionen angefragt.",
   "types": {
     "terms": {
       "title": "Nutzungsbedingungen",
@@ -54,6 +54,13 @@
       "benefits": [
         "Profilbild hochladen",
         "Reisefotos teilen"
+      ]
+    },
+    "age_verification": {
+      "title": "Bestätigung: 14 Jahre oder älter",
+      "description": "Gemäß den gesetzlichen Bestimmungen dürfen nur Nutzer ab 14 Jahren diesen Dienst nutzen",
+      "benefits": [
+        "Altersbestätigung (14+)"
       ]
     },
     "marketing": {

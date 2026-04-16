@@ -12,7 +12,7 @@
   "allAgreeDescription": "Đồng ý tất cả các mục bắt buộc và tùy chọn",
   "confirmButtonEnabled": "Đồng ý và bắt đầu",
   "confirmButtonDisabled": "Vui lòng đồng ý các mục bắt buộc",
-  "jitNote": "Quyền truy cập vị trí, thông báo và ảnh sẽ được yêu cầu khi bạn sử dụng các tính năng đó.",
+  "jitNote": "Quyền truy cập thông báo và ảnh sẽ được yêu cầu khi bạn sử dụng các tính năng đó.",
   "types": {
     "terms": {
       "title": "Điều khoản dịch vụ",
@@ -54,6 +54,13 @@
       "benefits": [
         "Tải lên ảnh hồ sơ",
         "Chia sẻ ảnh du lịch"
+      ]
+    },
+    "age_verification": {
+      "title": "Xác nhận từ 14 tuổi trở lên",
+      "description": "Theo quy định pháp luật, chỉ người dùng từ 14 tuổi trở lên mới có thể sử dụng dịch vụ này",
+      "benefits": [
+        "Xác minh độ tuổi (14+)"
       ]
     },
     "marketing": {

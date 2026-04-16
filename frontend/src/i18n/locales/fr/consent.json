@@ -12,7 +12,7 @@
   "allAgreeDescription": "Accepter tous les éléments obligatoires et facultatifs",
   "confirmButtonEnabled": "Accepter et commencer",
   "confirmButtonDisabled": "Veuillez accepter les éléments obligatoires",
-  "jitNote": "Les autorisations de localisation, notifications et photos seront demandées lors de l'utilisation de ces fonctionnalités.",
+  "jitNote": "Les autorisations de notifications et photos seront demandées lors de l'utilisation de ces fonctionnalités.",
   "types": {
     "terms": {
       "title": "Conditions d'utilisation",
@@ -54,6 +54,13 @@
       "benefits": [
         "Télécharger une photo de profil",
         "Partager des photos de voyage"
+      ]
+    },
+    "age_verification": {
+      "title": "Confirmation d'âge de 14 ans ou plus",
+      "description": "Conformément à la loi, seuls les utilisateurs âgés de 14 ans ou plus peuvent utiliser ce service",
+      "benefits": [
+        "Vérification de l'âge (14+)"
       ]
     },
     "marketing": {
