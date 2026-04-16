@@ -231,7 +231,7 @@ describe('AllExceptionsFilter', () => {
       expect(mockResponse.json).toHaveBeenCalledWith({
         statusCode: 429,
         error: 'HttpException',
-        message: ['Too Many Requests'],
+        message: ['요청이 너무 많습니다. 잠시 후 다시 시도해주세요.'],
         timestamp: expect.any(String),
         path: '/api/auth/register',
       });

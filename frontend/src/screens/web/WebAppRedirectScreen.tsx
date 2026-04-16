@@ -17,12 +17,13 @@
  * 앱이 열리고, 미설치 시 여기로 와서 Play Store 다운로드로 유도된다.
  */
 
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, Linking, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Linking, TextInput, ActivityIndicator } from 'react-native';
 
 const PLAY_STORE_URL =
   'https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner';
 const APP_STORE_URL = 'https://apps.apple.com/app/mytravel/id0000000000'; // placeholder
+const API_BASE = 'https://mytravel-planner.com/api';
 
 function isResetOrVerifyPath(): { kind: 'reset' | 'verify' | null; token: string | null } {
   if (typeof window === 'undefined') return { kind: null, token: null };
@@ -37,20 +38,124 @@ function isResetOrVerifyPath(): { kind: 'reset' | 'verify' | null; token: string
   return { kind: null, token: null };
 }
 
+const WebResetPasswordForm: React.FC<{ token: string }> = ({ token }) => {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState<'success' | 'error' | null>(null);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleSubmit = async () => {
+    if (!newPassword || newPassword.length < 8) {
+      setErrorMsg('비밀번호는 8자 이상이어야 합니다.');
+      setResult('error');
+      return;
+    }
+    if (!/(?=.*[A-Za-z])(?=.*\d)/.test(newPassword)) {
+      setErrorMsg('비밀번호에 영문자와 숫자가 각각 하나 이상 포함되어야 합니다.');
+      setResult('error');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setErrorMsg('비밀번호가 일치하지 않습니다.');
+      setResult('error');
+      return;
+    }
+    setIsLoading(true);
+    setResult(null);
+    try {
+      const res = await fetch(`${API_BASE}/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, newPassword }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || '비밀번호 재설정에 실패했습니다.');
+      }
+      setResult('success');
+    } catch (e: any) {
+      setErrorMsg(e.message || '비밀번호 재설정에 실패했습니다.');
+      setResult('error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (result === 'success') {
+    return (
+      <View style={styles.card}>
+        <Text style={styles.title}>MyTravel</Text>
+        <Text style={styles.successIcon}>✓</Text>
+        <Text style={styles.headline}>비밀번호가 변경되었습니다</Text>
+        <Text style={styles.subline}>새 비밀번호로 앱에서 로그인해 주세요.</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.card}>
+      <Text style={styles.title}>MyTravel</Text>
+      <Text style={styles.headline}>새 비밀번호 설정</Text>
+      <Text style={styles.subline}>새로운 비밀번호를 입력해 주세요.</Text>
+
+      {result === 'error' && (
+        <Text style={styles.errorText}>{errorMsg}</Text>
+      )}
+
+      <TextInput
+        style={styles.webInput}
+        placeholder="새 비밀번호 (영문+숫자 포함 8자 이상)"
+        secureTextEntry
+        value={newPassword}
+        onChangeText={(v) => { setNewPassword(v); setResult(null); }}
+        editable={!isLoading}
+        autoComplete="new-password"
+      />
+      <TextInput
+        style={styles.webInput}
+        placeholder="비밀번호 확인"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={(v) => { setConfirmPassword(v); setResult(null); }}
+        editable={!isLoading}
+        autoComplete="new-password"
+      />
+
+      <TouchableOpacity
+        style={[styles.primaryBtn, isLoading && { opacity: 0.6 }]}
+        onPress={handleSubmit}
+        disabled={isLoading}
+        activeOpacity={0.85}
+      >
+        {isLoading ? (
+          <ActivityIndicator color="#FFFFFF" />
+        ) : (
+          <Text style={styles.primaryBtnText}>비밀번호 변경</Text>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 const WebAppRedirectScreen: React.FC = () => {
-  const { kind } = isResetOrVerifyPath();
+  const { kind, token } = isResetOrVerifyPath();
+
+  if (kind === 'reset' && token) {
+    return (
+      <View style={styles.container}>
+        <WebResetPasswordForm token={token} />
+      </View>
+    );
+  }
 
   const headline =
-    kind === 'reset'
-      ? '비밀번호 재설정은 앱에서 진행됩니다'
-      : kind === 'verify'
+    kind === 'verify'
       ? '이메일 인증은 앱에서 진행됩니다'
       : 'MyTravel은 모바일 앱에서 이용하실 수 있습니다';
 
   const subline =
-    kind === 'reset'
-      ? 'MyTravel 앱이 설치되어 있다면 이 링크가 앱으로 열리지 않을 때 아래 버튼으로 앱을 실행해 주세요. 앱이 없다면 Play 스토어에서 설치 후 다시 시도해 주세요.'
-      : kind === 'verify'
+    kind === 'verify'
       ? '이메일 인증 링크는 앱에서 안전하게 처리됩니다. 아래 버튼으로 앱을 실행하거나 Play 스토어에서 설치해 주세요.'
       : '여행 계획, 일정 관리, AI 자동 생성 등 모든 기능은 전용 모바일 앱에서 제공됩니다. 아래 버튼으로 앱을 받아보세요.';
 
@@ -158,6 +263,29 @@ const styles = StyleSheet.create({
   },
   legalSep: {
     color: '#CBD5E1',
+  },
+  webInput: {
+    width: '100%',
+    height: 48,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    fontSize: 15,
+    color: '#0F172A',
+    backgroundColor: '#F8FAFC',
+    marginBottom: 12,
+  },
+  errorText: {
+    color: '#EF4444',
+    fontSize: 14,
+    marginBottom: 12,
+    textAlign: 'center' as const,
+  },
+  successIcon: {
+    fontSize: 48,
+    color: '#22C55E',
+    marginBottom: 16,
   },
 });
 

@@ -141,10 +141,14 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     // Don't override if response already sent
     if (response.headersSent) return;
 
+    const userFriendlyMessage = this.toUserFriendlyMessage(message);
+
     response.status(status).json({
       statusCode: status,
       error,
-      message: Array.isArray(message) ? message : [message],
+      message: Array.isArray(userFriendlyMessage)
+        ? userFriendlyMessage
+        : [userFriendlyMessage],
       ...(code ? { code } : {}),
       ...extra,
       timestamp: new Date().toISOString(),
@@ -212,6 +216,86 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
    * Fatal is reserved for truly catastrophic conditions (out-of-memory,
    * DB pool exhaustion); plain 5xx are error; rate-limit and 4xx are warn.
    */
+  private static readonly MESSAGE_MAP: Record<string, string> = {
+    // Rate limiting
+    'throttlerexception: too many requests':
+      '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.',
+    'too many requests': '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.',
+    // Auth
+    'incorrect password': '비밀번호가 올바르지 않습니다.',
+    'invalid credentials': '이메일 또는 비밀번호가 올바르지 않습니다.',
+    unauthorized: '인증이 필요합니다. 다시 로그인해주세요.',
+    'authentication required': '인증이 필요합니다. 다시 로그인해주세요.',
+    forbidden: '접근 권한이 없습니다.',
+    'admin access required': '관리자 권한이 필요합니다.',
+    'user not found': '사용자를 찾을 수 없습니다.',
+    'refresh token revoked': '세션이 만료되었습니다. 다시 로그인해주세요.',
+    'invalid refresh token': '세션이 만료되었습니다. 다시 로그인해주세요.',
+    'account has been deleted': '삭제된 계정입니다.',
+    'invalid or expired oauth code':
+      '소셜 로그인에 실패했습니다. 다시 시도해주세요.',
+    'invalid google id token':
+      'Google 로그인에 실패했습니다. 다시 시도해주세요.',
+    'invalid or expired token': '유효하지 않거나 만료된 인증 정보입니다.',
+    'invalid or expired resume token':
+      '인증 정보가 만료되었습니다. 다시 시도해주세요.',
+    'premium subscription required': '프리미엄 구독이 필요합니다.',
+    // 2FA
+    '2fa is already enabled': '이미 2단계 인증이 활성화되어 있습니다.',
+    'setup 2fa first': '먼저 2단계 인증을 설정해주세요.',
+    'invalid 2fa code': '유효하지 않은 인증 코드입니다.',
+    '2fa is not enabled': '2단계 인증이 활성화되지 않았습니다.',
+    // Trips
+    'trip not found': '여행을 찾을 수 없습니다.',
+    'itinerary not found': '일정을 찾을 수 없습니다.',
+    'only the trip owner can delete this trip':
+      '여행 소유자만 삭제할 수 있습니다.',
+    'only the trip owner or editors can modify this trip':
+      '여행 소유자 또는 편집자만 수정할 수 있습니다.',
+    'cannot modify completed trips. completed trips are read-only.':
+      '완료된 여행은 수정할 수 없습니다.',
+    'only trip owner can add collaborators':
+      '여행 소유자만 협력자를 추가할 수 있습니다.',
+    'only trip owner can remove collaborators':
+      '여행 소유자만 협력자를 제거할 수 있습니다.',
+    'cannot add yourself as a collaborator':
+      '자신을 협력자로 추가할 수 없습니다.',
+    'user not found with this email':
+      '해당 이메일로 사용자를 찾을 수 없습니다.',
+    'collaborator not found': '협력자를 찾을 수 없습니다.',
+    'you are not a collaborator of this trip': '이 여행의 협력자가 아닙니다.',
+    'only trip owner can update roles':
+      '여행 소유자만 역할을 변경할 수 있습니다.',
+    // Expenses
+    'expense not found': '경비를 찾을 수 없습니다.',
+    'you do not have access to this trip': '이 여행에 접근할 수 없습니다.',
+    'no split found for this user on this expense':
+      '이 경비에 대한 정산 내역을 찾을 수 없습니다.',
+    'this split is already settled': '이미 정산이 완료되었습니다.',
+    // Social
+    'cannot follow yourself': '자신을 팔로우할 수 없습니다.',
+    'cannot like a private trip': '비공개 여행에 좋아요를 할 수 없습니다.',
+    // Files
+    'file is not a valid image': '유효하지 않은 이미지 파일입니다.',
+    'image processing failed': '이미지 처리에 실패했습니다.',
+    // Share
+    'invalid share token format': '유효하지 않은 공유 링크입니다.',
+    // General
+    'an unexpected error occurred':
+      '예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+  };
+
+  private toUserFriendlyMessage(msg: string | string[]): string | string[] {
+    const convert = (s: string): string => {
+      const lower = s.toLowerCase().trim();
+      return AllExceptionsFilter.MESSAGE_MAP[lower] || s;
+    };
+    if (Array.isArray(msg)) {
+      return msg.map(convert);
+    }
+    return convert(msg);
+  }
+
   private getSeverity(status: number): 'error' | 'warning' | 'fatal' {
     if (status >= 500) return 'error';
     if (status === 429) return 'warning'; // Rate limiting

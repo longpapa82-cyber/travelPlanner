@@ -268,31 +268,22 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
 
         {/* JIT notice */}
         <Text style={[styles.jitNotice, { color: textSecondary }]}>
-          {t('jitNote', '위치, 알림, 사진 권한은 해당 기능 사용 시 별도로 안내됩니다')}
+          {t('jitNote', '위치, 알림, 사진 권한은 해당 기능 사용 시 별도로 안내됩니다.')}
         </Text>
-      </ScrollView>
 
-      <View
-        style={[
-          styles.footer,
-          {
-            backgroundColor,
-            borderTopColor: borderColor,
-            paddingTop: 24,
-            paddingBottom: Math.max(insets.bottom, 16) + 20,
-          },
-        ]}
-      >
-        <Button
-          onPress={handleSubmit}
-          loading={submitting}
-          disabled={submitting || !hasAllRequired}
-        >
-          {hasAllRequired
-            ? t('confirmButtonEnabled', '동의하고 시작하기')
-            : t('confirmButtonDisabled', '필수 항목에 동의해주세요')}
-        </Button>
-      </View>
+        <View style={{ paddingTop: 16, paddingBottom: 24 }}>
+
+          <Button
+            onPress={handleSubmit}
+            loading={submitting}
+            disabled={submitting || !hasAllRequired}
+          >
+            {hasAllRequired
+              ? t('confirmButtonEnabled', '동의하고 시작하기')
+              : t('confirmButtonDisabled', '필수 항목에 동의해주세요')}
+          </Button>
+        </View>
+      </ScrollView>
     </View>
   );
 };

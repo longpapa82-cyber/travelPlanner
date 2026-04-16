@@ -1098,14 +1098,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                       console.log('[CreateTripScreen] Reward earned, unlocking insights');
                       setInsightsUnlocked(true);
                       setIsShowingRewardedAd(false);
-                      showToast({
-                        type: 'success',
-                        message: t('create.rewardedAd.success', {
-                          defaultValue: '상세 인사이트가 잠금 해제되었습니다!',
-                        }),
-                        position: 'top',
-                        duration: 2000,
-                      });
                     }).catch((error) => {
                       console.error('[CreateTripScreen] Rewarded ad error:', error);
                       setIsShowingRewardedAd(false);
@@ -1614,17 +1606,13 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 * aiTripsRemaining is -1 only while the profile is still
                 * loading on a free-tier user (premium/admin skip loading).
                 */}
-              {isAdmin ? (
-                <Text style={[styles.infoText, { color: theme.colors.primary, marginTop: 4, fontWeight: '600' }]}>
-                  {t('create.aiInfo.admin', { defaultValue: '관리자: 무제한 AI 자동 생성' })}
-                </Text>
-              ) : aiTripsRemaining === -1 ? (
+              {aiTripsRemaining === -1 ? (
                 <Text style={[styles.infoText, { color: theme.colors.textSecondary, marginTop: 4, fontWeight: '600' }]}>
                   {t('create.aiInfo.loading', { defaultValue: '생성 가능 횟수 확인 중...' })}
                 </Text>
               ) : (
                 <Text style={[styles.infoText, { color: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600' }]}>
-                  {isPremium ? '프리미엄: ' : ''}
+                  {isAdmin ? '관리자: ' : isPremium ? '프리미엄: ' : ''}
                   {aiTripsRemaining > 0
                     ? t('create.aiInfo.remaining', { remaining: aiTripsRemaining, total: aiTripsLimit })
                     : t('create.aiInfo.limitReached', { total: aiTripsLimit })}

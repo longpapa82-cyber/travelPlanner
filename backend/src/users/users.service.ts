@@ -357,14 +357,16 @@ export class UsersService {
     // Email users must re-authenticate with password
     if (user.provider === AuthProvider.EMAIL) {
       if (!password) {
-        throw new BadRequestException('Password required to delete account');
+        throw new BadRequestException(
+          '계정 삭제를 위해 비밀번호를 입력해주세요.',
+        );
       }
       if (!user.passwordHash) {
-        throw new BadRequestException('Account has no password set');
+        throw new BadRequestException('비밀번호가 설정되지 않은 계정입니다.');
       }
       const valid = await bcrypt.compare(password, user.passwordHash);
       if (!valid) {
-        throw new BadRequestException('Incorrect password');
+        throw new BadRequestException('비밀번호가 올바르지 않습니다.');
       }
     }
 
@@ -673,7 +675,14 @@ export class UsersService {
         );
       }
 
-      // Hash new password (CPU-intensive, but within transaction lock)
+      // Increment attempt counter before bcrypt to defend against partial failures
+      await queryRunner.manager.increment(
+        User,
+        { id: user.id },
+        'passwordResetAttempts',
+        1,
+      );
+
       const newHash = await bcrypt.hash(newPassword, 12);
 
       // Atomically update password and invalidate token

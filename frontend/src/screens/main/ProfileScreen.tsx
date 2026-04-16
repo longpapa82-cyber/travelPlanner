@@ -282,8 +282,8 @@ const ProfileScreen = ({ navigation }: any) => {
   };
 
   const isSocialAccount = user?.provider && user.provider !== 'email';
-  const ADMIN_EMAILS = ['a090723@naver.com', 'longpapa82@gmail.com'];
-  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email);
+  const ADMIN_EMAILS = ['a090723@naver.com', 'longpapa82@gmail.com', 'hoonjae723@gmail.com'];
+  const isAdmin = !!(user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase()));
 
   const styles = createStyles(theme, isDark);
 
@@ -470,24 +470,28 @@ const ProfileScreen = ({ navigation }: any) => {
         {PREMIUM_ENABLED && (
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => isPremium ? navigation.navigate('Subscription') : showPaywall('general')}
+            onPress={() => (isPremium || isAdmin) ? navigation.navigate('Subscription') : showPaywall('general')}
             accessibilityRole="button"
             accessibilityLabel={tPremium('menu.subscription')}
           >
             <Icon name="crown" size={24} color="#F59E0B" />
             <View style={{ flex: 1, marginLeft: theme.spacing.md }}>
               <Text style={[styles.menuText, { marginLeft: 0 }]}>{tPremium('menu.subscription')}</Text>
-              {!isPremium && (
+              {!isPremium && !isAdmin && (
                 <Text style={{ fontSize: 12, color: theme.colors.textSecondary, marginTop: 2 }}>
-                  {/* V115 (V114-5/6b fix): derive total from PremiumContext instead of hardcoding 3. */}
                   {tPremium('menu.aiRemaining', {
                     remaining: aiTripsRemaining >= 0 ? aiTripsRemaining : '\u221E',
                     total: aiTripsLimit > 0 ? aiTripsLimit : 3,
                   })}
                 </Text>
               )}
+              {isAdmin && !isPremium && (
+                <Text style={{ fontSize: 12, color: theme.colors.textSecondary, marginTop: 2 }}>
+                  {`관리자: AI ${aiTripsRemaining >= 0 ? aiTripsRemaining : 30}/${aiTripsLimit}회 남음`}
+                </Text>
+              )}
             </View>
-            {isPremium ? (
+            {(isPremium || isAdmin) ? (
               <PremiumBadge size="small" />
             ) : (
               <View style={styles.upgradeBadge}>

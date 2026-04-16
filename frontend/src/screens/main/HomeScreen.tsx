@@ -221,12 +221,12 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 800,
-        useNativeDriver: Platform.OS !== 'web',
+        useNativeDriver: false,
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
         duration: 600,
-        useNativeDriver: Platform.OS !== 'web',
+        useNativeDriver: false,
       }),
     ]).start(() => markDone());
     const fallback = setTimeout(markDone, 1500);
