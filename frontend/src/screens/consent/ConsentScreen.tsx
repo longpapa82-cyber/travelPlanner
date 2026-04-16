@@ -26,6 +26,7 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../../components/core/Button';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
+import AuthLegalModal from '../../components/legal/AuthLegalModal';
 import api from '../../services/api';
 import type { ConsentsStatus, ConsentResponse, UpdateConsentsDto } from '../../types';
 
@@ -46,6 +47,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
   const [submitting, setSubmitting] = useState(false);
   const [allConsents, setAllConsents] = useState<ConsentResponse[]>([]);
   const [selectedConsents, setSelectedConsents] = useState<Record<string, boolean>>({});
+  const [legalModalType, setLegalModalType] = useState<'terms' | 'privacy' | null>(null);
 
   // Filter: only show initial consent items (exclude JIT types)
   const visibleConsents = allConsents.filter(
@@ -199,29 +201,42 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
             const isSelected = selectedConsents[consent.type];
             const translationKey = `types.${consent.type}`;
             const isLast = index === requiredConsents.length - 1;
+            const hasDetail = consent.type === 'terms' || consent.type === 'privacy_required';
 
             return (
-              <TouchableOpacity
+              <View
                 key={consent.type}
                 style={[
                   styles.consentRow,
                   !isLast && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: borderColor },
                 ]}
-                onPress={() => toggleConsent(consent.type)}
-                activeOpacity={0.7}
               >
-                <Icon
-                  name={isSelected ? 'checkbox-marked' : 'checkbox-blank-outline'}
-                  size={22}
-                  color={isSelected ? colors.primary[500] : textSecondary}
-                />
-                <Text style={[styles.consentLabel, { color: textPrimary, flex: 1 }]}>
-                  {t(`${translationKey}.title`)}
-                </Text>
+                <TouchableOpacity
+                  style={styles.consentCheckArea}
+                  onPress={() => toggleConsent(consent.type)}
+                  activeOpacity={0.7}
+                >
+                  <Icon
+                    name={isSelected ? 'checkbox-marked' : 'checkbox-blank-outline'}
+                    size={22}
+                    color={isSelected ? colors.primary[500] : textSecondary}
+                  />
+                  <Text style={[styles.consentLabel, { color: textPrimary, flex: 1 }]}>
+                    {t(`${translationKey}.title`)}
+                  </Text>
+                </TouchableOpacity>
                 <View style={[styles.requiredBadge, { backgroundColor: colors.error.main }]}>
                   <Text style={styles.requiredText}>{t('required')}</Text>
                 </View>
-              </TouchableOpacity>
+                {hasDetail && (
+                  <TouchableOpacity
+                    onPress={() => setLegalModalType(consent.type === 'terms' ? 'terms' : 'privacy')}
+                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                  >
+                    <Icon name="chevron-right" size={20} color={textSecondary} />
+                  </TouchableOpacity>
+                )}
+              </View>
             );
           })}
         </View>
@@ -253,9 +268,14 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
                       size={22}
                       color={isSelected ? colors.primary[500] : textSecondary}
                     />
-                    <Text style={[styles.consentLabel, { color: textPrimary, flex: 1 }]}>
-                      {t(`${translationKey}.title`)}
-                    </Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.consentLabel, { color: textPrimary }]}>
+                        {t(`${translationKey}.title`)}
+                      </Text>
+                      <Text style={[styles.consentDescription, { color: textSecondary }]}>
+                        {t(`${translationKey}.description`)}
+                      </Text>
+                    </View>
                     <Text style={[styles.optionalTag, { color: textSecondary }]}>
                       {t('optional')}
                     </Text>
@@ -284,6 +304,12 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
           </Button>
         </View>
       </ScrollView>
+
+      <AuthLegalModal
+        visible={legalModalType !== null}
+        onClose={() => setLegalModalType(null)}
+        type={legalModalType ?? 'terms'}
+      />
     </View>
   );
 };
@@ -351,7 +377,7 @@ const styles = StyleSheet.create({
   sectionCard: {
     borderRadius: 12,
     borderWidth: 1,
-    marginBottom: 20,
+    marginBottom: 12,
     overflow: 'hidden',
   },
   consentRow: {
@@ -361,9 +387,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 12,
   },
+  consentCheckArea: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 12,
+  },
   consentLabel: {
     fontSize: 15,
     fontWeight: '500',
+  },
+  consentDescription: {
+    fontSize: 12,
+    marginTop: 2,
   },
   requiredBadge: {
     paddingHorizontal: 8,

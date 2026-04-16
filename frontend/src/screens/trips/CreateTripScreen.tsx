@@ -135,7 +135,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
     // Preload rewarded ad on screen mount
     if (!isRewardedLoaded) {
-      console.log('[CreateTripScreen] Preloading rewarded ad on mount');
       reloadRewardedAd();
     }
   }, []);
@@ -160,8 +159,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     doCreateTripRef.current?.();
   }, []);
 
-  const POPULAR_DESTINATIONS = getPopularDestinations(t);
-  const DURATION_OPTIONS = getDurationOptions(t);
+  const POPULAR_DESTINATIONS = useMemo(() => getPopularDestinations(t), [t]);
+  const DURATION_OPTIONS = useMemo(() => getDurationOptions(t), [t]);
 
   // 여행 생성 시 최소 출발일은 내일부터
   const minStartDate = useMemo(() => {
@@ -170,7 +169,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     d.setHours(0, 0, 0, 0);
     return d;
   }, []);
-  const TRAVELER_OPTIONS = getTravelerOptions(t);
+  const TRAVELER_OPTIONS = useMemo(() => getTravelerOptions(t), [t]);
 
   // Auto-fill preferences from user profile
   useEffect(() => {
@@ -211,20 +210,20 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     ]).start();
   }, []);
 
-  const toggleInterest = (interest: string) => {
+  const toggleInterest = useCallback((interest: string) => {
     setPrefInterests((prev) =>
       prev.includes(interest)
         ? prev.filter((i) => i !== interest)
         : [...prev, interest],
     );
-  };
+  }, []);
 
-  const handleSelectDestination = (dest: string) => {
+  const handleSelectDestination = useCallback((dest: string) => {
     setDestination(dest);
     if (dest.trim()) setFieldErrors(prev => ({ ...prev, destination: undefined }));
-  };
+  }, []);
 
-  const handleSelectDuration = (days: number) => {
+  const handleSelectDuration = useCallback((days: number) => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const start = new Date(tomorrow);
@@ -234,19 +233,19 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     setStartDate(start.toISOString().split('T')[0]);
     setEndDate(end.toISOString().split('T')[0]);
     setFieldErrors(prev => ({ ...prev, dates: undefined }));
-  };
+  }, []);
 
-  const handleSelectTravelers = (count: number) => {
+  const handleSelectTravelers = useCallback((count: number) => {
     setNumberOfTravelers(Math.min(count, 50));
-  };
+  }, []);
 
-  const calculateDuration = (): number | null => {
+  const calculateDuration = useCallback((): number | null => {
     if (!startDate || !endDate) return null;
     const start = new Date(startDate);
     const end = new Date(endDate);
     const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
     return diff + 1;
-  };
+  }, [startDate, endDate]);
 
   const handleCreateTrip = async () => {
     // ✅ FIX: Prevent duplicate requests from double-tap
@@ -423,7 +422,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
       // Ensure tripId exists before navigation
       if (!trip?.id) {
-        console.error('[CreateTripScreen] Trip created but no ID received:', trip);
         showToast({
           type: 'error',
           message: t('create.alerts.createFailed'),
@@ -502,7 +500,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       if (destination) AsyncStorage.removeItem(`@insights_unlocked_${destination}`).catch(() => {});
 
       // Navigate immediately — don't wait for ad
-      console.log('[CreateTripScreen] Navigating to TripDetail with tripId:', trip.id);
       try {
         navigation.reset({
           index: 1,
@@ -512,7 +509,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           ],
         });
       } catch (navError) {
-        console.warn('[CreateTripScreen] Navigation reset failed:', navError);
         navigation.navigate('TripList' as any);
       }
 
@@ -578,7 +574,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               setTimeout(async () => {
                 // Ensure tripId exists before navigation
                 if (!latestTrip?.id) {
-                  console.error('[CreateTripScreen] Latest trip found but no ID:', latestTrip);
                   navigation.navigate('TripList');
                   setIsLoading(false);
                   isCreatingRef.current = false;
@@ -588,14 +583,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 // Show ad in parallel with navigation (non-blocking)
                 if (!isPremium && !isAdmin && isAdLoaded) {
                   // Don't await - let ad show in parallel with navigation
-                  showInterstitial().catch((error) => {
-                    console.warn('[CreateTripScreen] Interstitial ad failed:', error);
-                    // Continue with navigation even if ad fails
-                  });
+                  showInterstitial().catch(() => {});
                 }
 
                 // Navigate immediately, don't wait for ad
-                console.log('[CreateTripScreen] Navigating to TripDetail with tripId:', latestTrip.id);
                 navigation.navigate('TripDetail', { tripId: latestTrip.id });
 
                 // Reset guards after successful navigation
@@ -729,7 +720,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     return unsubscribe;
   }, [navigation]);
 
-  const formatDateForDisplay = (dateString: string): string => {
+  const formatDateForDisplay = useCallback((dateString: string): string => {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString(undefined, {
@@ -737,11 +728,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       month: 'long',
       day: 'numeric',
     });
-  };
+  }, []);
 
   const duration = calculateDuration();
 
-  const styles = createStyles(theme, isDark);
+  const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
   return (
     <KeyboardAvoidingView
@@ -1024,20 +1015,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 ]}
                 onPress={async () => {
                   if (isShowingRewardedAd) {
-                    console.log('[CreateTripScreen] Already showing rewarded ad, ignoring click');
                     return;
                   }
 
-                  console.log('[CreateTripScreen] Rewarded ad button clicked', {
-                    isLoaded: isRewardedLoaded,
-                    isShowingAd: isShowingRewardedAd,
-                    isDev: __DEV__,
-                    platform: Platform.OS
-                  });
-
                   // Enhanced error handling with better user feedback
                   if (!isRewardedLoaded) {
-                    console.log('[CreateTripScreen] Ad not loaded, handling fallback');
 
                     // Development/Web fallback - unlock insights without ad
                     if (__DEV__ || Platform.OS === 'web') {
@@ -1054,7 +1036,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     }
 
                     // Production: Try to reload the ad with user feedback
-                    console.log('[CreateTripScreen] Production mode: attempting to reload ad');
                     showToast({
                       type: 'info',
                       message: t('create.rewardedAd.loading', {
@@ -1084,7 +1065,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   }
 
                   try {
-                    console.log('[CreateTripScreen] Starting to show rewarded ad');
                     setIsShowingRewardedAd(true);
 
                     // Persist form state before ad — Android may destroy Activity
@@ -1095,11 +1075,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     // causing the await to never resolve or resolve in wrong context.
                     // The reward callback handles everything we need.
                     showRewarded(() => {
-                      console.log('[CreateTripScreen] Reward earned, unlocking insights');
                       setInsightsUnlocked(true);
                       setIsShowingRewardedAd(false);
-                    }).catch((error) => {
-                      console.error('[CreateTripScreen] Rewarded ad error:', error);
+                    }).catch(() => {
                       setIsShowingRewardedAd(false);
                       showToast({
                         type: 'warning',
@@ -1112,8 +1090,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                       // Clean up persisted state since ad was not shown
                       AsyncStorage.removeItem('@rewarded_ad_destination').catch(() => {});
                     });
-                  } catch (error) {
-                    console.error('[CreateTripScreen] Rewarded ad sync error:', error);
+                  } catch {
                     setIsShowingRewardedAd(false);
                     AsyncStorage.removeItem('@rewarded_ad_destination').catch(() => {});
                   }

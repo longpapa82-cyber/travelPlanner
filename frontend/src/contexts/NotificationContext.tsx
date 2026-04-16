@@ -8,6 +8,7 @@ import { Trip } from '../types';
 import i18next from 'i18next';
 import apiService from '../services/api';
 import { setPushRegistrationCallback } from './AuthContext';
+import { useConsent } from './ConsentContext';
 import PrePermissionNotificationModal from '../components/PrePermissionNotificationModal';
 
 const NOTIFICATION_PREPERM_KEY = '@travelplanner:notification_preperm_shown';
@@ -91,11 +92,13 @@ function getLabel(key: string, vars?: Record<string, string | number>): string {
 }
 
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { needsConsentScreen } = useConsent();
   const [hasPermission, setHasPermission] = useState(false);
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
   const [lastNotificationResponse, setLastNotificationResponse] =
     useState<Notifications.NotificationResponse | null>(null);
   const [showPrePermissionModal, setShowPrePermissionModal] = useState(false);
+  const [pendingPrePermission, setPendingPrePermission] = useState(false);
   const notificationListener = useRef<EventSubscription | null>(null);
   const responseListener = useRef<EventSubscription | null>(null);
 
@@ -203,22 +206,35 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         registerForPushNotifications();
         return;
       }
-      // If already granted, just register
       const { status } = await Notifications.getPermissionsAsync();
       if (status === 'granted') {
         registerForPushNotifications();
         return;
       }
-      // Check if pre-permission was already shown
       const shown = await AsyncStorage.getItem(NOTIFICATION_PREPERM_KEY);
       if (shown === 'true') return;
-      // Show pre-permission modal
-      setShowPrePermissionModal(true);
+      if (needsConsentScreen) {
+        setPendingPrePermission(true);
+      } else {
+        setShowPrePermissionModal(true);
+      }
     });
     return () => {
       setPushRegistrationCallback(null);
     };
-  }, [registerForPushNotifications]);
+  }, [registerForPushNotifications, needsConsentScreen]);
+
+  // Show pending notification modal after ConsentScreen completes
+  useEffect(() => {
+    if (pendingPrePermission && !needsConsentScreen) {
+      const timer = setTimeout(() => {
+        setPendingPrePermission(false);
+        setShowPrePermissionModal(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [pendingPrePermission, needsConsentScreen]);
 
   const scheduleTripReminders = async (trip: Trip) => {
     if (!hasPermission) {

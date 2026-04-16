@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { InteractionManager } from 'react-native';
 import { useAuth } from './AuthContext';
 import { useConsent } from './ConsentContext';
 
@@ -60,8 +61,28 @@ export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) 
   // Only show tutorial after BOTH email verification AND consent are complete
   const isFullyVerified = user?.provider !== 'email' || user?.isEmailVerified === true;
   const isFullyOnboarded = isFullyVerified && !needsConsentScreen;
-  const showWelcome = loaded && isAuthenticated && isFullyOnboarded && !welcomeCompleted;
-  const showCoachMark = loaded && isAuthenticated && isFullyOnboarded && welcomeCompleted && !coachCompleted;
+
+  // Delay tutorial display after onboarding completes to prevent flash
+  // during ConsentScreen → HomeScreen navigation transition
+  const [onboardingSettled, setOnboardingSettled] = useState(false);
+  const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (isFullyOnboarded && loaded && isAuthenticated) {
+      const handle = InteractionManager.runAfterInteractions(() => {
+        settledTimerRef.current = setTimeout(() => setOnboardingSettled(true), 400);
+      });
+      return () => {
+        handle.cancel();
+        if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
+      };
+    }
+    setOnboardingSettled(false);
+    return undefined;
+  }, [isFullyOnboarded, loaded, isAuthenticated]);
+
+  const showWelcome = onboardingSettled && !welcomeCompleted;
+  const showCoachMark = onboardingSettled && welcomeCompleted && !coachCompleted;
 
   const completeWelcome = useCallback((navigate = false) => {
     setWelcomeCompleted(true);

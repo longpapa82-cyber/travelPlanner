@@ -269,6 +269,12 @@ export class ErrorLogController {
     'paywallerror',
     'aborterror',
     'request cancelled',
+    'api 504',
+    'network error',
+    'timeout of',
+    '잘못된 인증 정보',
+    'authentication required',
+    'invalid credentials',
   ];
 
   private isExpectedFlowError(message: string): boolean {

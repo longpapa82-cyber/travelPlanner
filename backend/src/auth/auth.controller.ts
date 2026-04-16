@@ -331,14 +331,7 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const code = await this.authService.createOAuthTempCode(req.user);
-    const redirectUrl = this.buildOAuthRedirectUrl(req.query?.state as string, code);
-    const platform = req.query?.state as string;
-    if (platform === 'ios' || platform === 'android') {
-      res.setHeader('Content-Type', 'text/html');
-      res.send(`<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><script>window.location.href="${redirectUrl}";</script></body></html>`);
-      return;
-    }
-    res.redirect(redirectUrl);
+    res.redirect(this.buildOAuthRedirectUrl(req.query?.state as string, code));
   }
 
   /**

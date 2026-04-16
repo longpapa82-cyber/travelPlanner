@@ -43,7 +43,7 @@ const CATEGORY_KEYS = [
 ] as const;
 
 const FAQ_ITEM_KEYS: Record<string, string[]> = {
-  gettingStarted: ['signup', 'createTrip', 'aiPlan', 'appTour'],
+  gettingStarted: ['signup', 'createTrip', 'aiPlan', 'appTour', 'ageRequirement', 'webAccess'],
   tripManagement: ['editPlan', 'tripStatus', 'mapView', 'weather', 'socialFeatures', 'collaborators', 'linkSharing', 'photos', 'budget'],
   accountSettings: ['editProfile', 'changePassword', 'twoFactor', 'notifications', 'deleteAccount', 'gdprExport', 'darkMode', 'language'],
   offlineSync: ['offlineUse', 'syncStatus', 'syncError'],
