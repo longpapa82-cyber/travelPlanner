@@ -129,5 +129,21 @@
     "noData": "Nessun dato disponibile ancora",
     "adminOnly": "Accesso admin necessario",
     "loadError": "Caricamento dati fallito"
+  },
+  "settings": {
+    "notifications": {
+      "title": "Impostazioni notifiche",
+      "alreadyEnabled": "Le notifiche sono già attive. Puoi modificare questa impostazione nelle impostazioni di sistema.",
+      "enabled": "Le notifiche sono state attivate",
+      "denied": "Il permesso per le notifiche è stato negato. Attivalo nelle impostazioni di sistema.",
+      "openSettings": "Apri impostazioni"
+    },
+    "photos": {
+      "title": "Impostazioni accesso foto",
+      "alreadyEnabled": "L'accesso alle foto è già attivo. Puoi modificare questa impostazione nelle impostazioni di sistema.",
+      "enabled": "L'accesso alle foto è stato attivato",
+      "denied": "Il permesso di accesso alle foto è stato negato. Attivalo nelle impostazioni di sistema.",
+      "openSettings": "Apri impostazioni"
+    }
   }
 }

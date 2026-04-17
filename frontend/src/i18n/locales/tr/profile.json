@@ -129,5 +129,21 @@
     "noData": "Henüz veri yok",
     "adminOnly": "Yönetici erişimi gerekli",
     "loadError": "Veriler yüklenemedi"
+  },
+  "settings": {
+    "notifications": {
+      "title": "Bildirim Ayarları",
+      "alreadyEnabled": "Bildirimler zaten etkin. Bunu sistem ayarlarından değiştirebilirsiniz.",
+      "enabled": "Bildirimler etkinleştirildi",
+      "denied": "Bildirim izni reddedildi. Lütfen sistem ayarlarından etkinleştirin.",
+      "openSettings": "Ayarları Aç"
+    },
+    "photos": {
+      "title": "Fotoğraf Erişim Ayarları",
+      "alreadyEnabled": "Fotoğraf erişimi zaten etkin. Bunu sistem ayarlarından değiştirebilirsiniz.",
+      "enabled": "Fotoğraf erişimi etkinleştirildi",
+      "denied": "Fotoğraf erişim izni reddedildi. Lütfen sistem ayarlarından etkinleştirin.",
+      "openSettings": "Ayarları Aç"
+    }
   }
 }

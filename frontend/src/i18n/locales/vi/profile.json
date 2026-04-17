@@ -129,5 +129,21 @@
     "noData": "Chưa có dữ liệu",
     "adminOnly": "Cần quyền quản trị",
     "loadError": "Không thể tải dữ liệu"
+  },
+  "settings": {
+    "notifications": {
+      "title": "Cài đặt thông báo",
+      "alreadyEnabled": "Thông báo đã được bật. Bạn có thể thay đổi trong cài đặt hệ thống.",
+      "enabled": "Đã bật thông báo",
+      "denied": "Quyền thông báo bị từ chối. Vui lòng bật trong cài đặt hệ thống.",
+      "openSettings": "Mở cài đặt"
+    },
+    "photos": {
+      "title": "Cài đặt quyền truy cập ảnh",
+      "alreadyEnabled": "Quyền truy cập ảnh đã được bật. Bạn có thể thay đổi trong cài đặt hệ thống.",
+      "enabled": "Đã bật quyền truy cập ảnh",
+      "denied": "Quyền truy cập ảnh bị từ chối. Vui lòng bật trong cài đặt hệ thống.",
+      "openSettings": "Mở cài đặt"
+    }
   }
 }

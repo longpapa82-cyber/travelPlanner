@@ -21,6 +21,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ImageBackground,
@@ -211,6 +212,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   }, []);
 
   const toggleInterest = useCallback((interest: string) => {
+    Keyboard.dismiss();
     setPrefInterests((prev) =>
       prev.includes(interest)
         ? prev.filter((i) => i !== interest)
@@ -224,6 +226,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   }, []);
 
   const handleSelectDuration = useCallback((days: number) => {
+    Keyboard.dismiss();
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const start = new Date(tomorrow);
@@ -236,6 +239,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   }, []);
 
   const handleSelectTravelers = useCallback((count: number) => {
+    Keyboard.dismiss();
     setNumberOfTravelers(Math.min(count, 50));
   }, []);
 
@@ -743,6 +747,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
+        onScrollBeginDrag={Keyboard.dismiss}
         showsVerticalScrollIndicator={false}
       >
         {/* Hero Section */}

@@ -129,5 +129,21 @@
     "noData": "Aucune donnée disponible pour le moment",
     "adminOnly": "Accès administrateur requis",
     "loadError": "Impossible de charger les données"
+  },
+  "settings": {
+    "notifications": {
+      "title": "Paramètres de notifications",
+      "alreadyEnabled": "Les notifications sont déjà activées. Vous pouvez modifier cela dans les paramètres système.",
+      "enabled": "Les notifications ont été activées",
+      "denied": "L'autorisation de notifications a été refusée. Veuillez l'activer dans les paramètres système.",
+      "openSettings": "Ouvrir les paramètres"
+    },
+    "photos": {
+      "title": "Paramètres d'accès aux photos",
+      "alreadyEnabled": "L'accès aux photos est déjà activé. Vous pouvez modifier cela dans les paramètres système.",
+      "enabled": "L'accès aux photos a été activé",
+      "denied": "L'autorisation d'accès aux photos a été refusée. Veuillez l'activer dans les paramètres système.",
+      "openSettings": "Ouvrir les paramètres"
+    }
   }
 }

@@ -129,5 +129,21 @@
     "noData": "Aún no hay datos disponibles",
     "adminOnly": "Acceso de administrador requerido",
     "loadError": "Error al cargar datos"
+  },
+  "settings": {
+    "notifications": {
+      "title": "Configuración de notificaciones",
+      "alreadyEnabled": "Las notificaciones ya están activadas. Puedes cambiar esto en los ajustes del sistema.",
+      "enabled": "Las notificaciones han sido activadas",
+      "denied": "El permiso de notificaciones fue denegado. Por favor, actívalo en los ajustes del sistema.",
+      "openSettings": "Abrir ajustes"
+    },
+    "photos": {
+      "title": "Configuración de acceso a fotos",
+      "alreadyEnabled": "El acceso a fotos ya está activado. Puedes cambiar esto en los ajustes del sistema.",
+      "enabled": "El acceso a fotos ha sido activado",
+      "denied": "El permiso de acceso a fotos fue denegado. Por favor, actívalo en los ajustes del sistema.",
+      "openSettings": "Abrir ajustes"
+    }
   }
 }

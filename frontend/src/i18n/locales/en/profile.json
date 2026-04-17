@@ -129,5 +129,21 @@
     "noData": "No data available yet",
     "adminOnly": "Admin access required",
     "loadError": "Failed to load data"
+  },
+  "settings": {
+    "notifications": {
+      "title": "Notification Settings",
+      "alreadyEnabled": "Notifications are already enabled. You can change this in system settings.",
+      "enabled": "Notifications have been enabled",
+      "denied": "Notification permission was denied. Please enable it in system settings.",
+      "openSettings": "Open Settings"
+    },
+    "photos": {
+      "title": "Photo Access Settings",
+      "alreadyEnabled": "Photo access is already enabled. You can change this in system settings.",
+      "enabled": "Photo access has been enabled",
+      "denied": "Photo access permission was denied. Please enable it in system settings.",
+      "openSettings": "Open Settings"
+    }
   }
 }

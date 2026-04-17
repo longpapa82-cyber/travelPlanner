@@ -225,7 +225,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
                     {t(`${translationKey}.title`)}
                   </Text>
                 </TouchableOpacity>
-                <View style={[styles.requiredBadge, { backgroundColor: colors.error.main }]}>
+                <View style={[styles.requiredBadge, { backgroundColor: colors.primary[500] }]}>
                   <Text style={styles.requiredText}>{t('required')}</Text>
                 </View>
                 {hasDetail ? (

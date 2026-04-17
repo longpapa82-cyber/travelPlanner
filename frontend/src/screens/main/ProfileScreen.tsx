@@ -31,6 +31,7 @@ import { usePremium } from '../../contexts/PremiumContext';
 import { PREMIUM_ENABLED } from '../../constants/config';
 import apiService from '../../services/api';
 import { useTutorial } from '../../contexts/TutorialContext';
+import * as Notifications from 'expo-notifications';
 import { ensureAbsoluteUrl } from '../../utils/images';
 
 const ProfileScreen = ({ navigation }: any) => {
@@ -546,6 +547,79 @@ const ProfileScreen = ({ navigation }: any) => {
             accessibilityRole="switch"
           />
         </View>
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={async () => {
+            if (Platform.OS === 'web') return;
+            const { status } = await Notifications.getPermissionsAsync();
+            if (status === 'granted') {
+              Alert.alert(
+                t('settings.notifications.title', '알림 설정'),
+                t('settings.notifications.alreadyEnabled', '알림이 이미 활성화되어 있습니다. 시스템 설정에서 변경할 수 있습니다.'),
+                [
+                  { text: tCommon('ok', '확인'), style: 'cancel' },
+                  { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+                ],
+              );
+            } else {
+              const { status: newStatus } = await Notifications.requestPermissionsAsync();
+              if (newStatus === 'granted') {
+                showToast({ type: 'success', message: t('settings.notifications.enabled', '알림이 활성화되었습니다'), position: 'top' });
+              } else {
+                Alert.alert(
+                  t('settings.notifications.title', '알림 설정'),
+                  t('settings.notifications.denied', '알림 권한이 거부되었습니다. 시스템 설정에서 허용해주세요.'),
+                  [
+                    { text: tCommon('ok', '확인'), style: 'cancel' },
+                    { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+                  ],
+                );
+              }
+            }
+          }}
+          accessibilityRole="button"
+        >
+          <Icon name="bell-outline" size={24} color={theme.colors.textSecondary} />
+          <Text style={styles.menuText}>{t('settings.notifications.title', '알림 설정')}</Text>
+          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={async () => {
+            const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+            if (status === 'granted') {
+              Alert.alert(
+                t('settings.photos.title', '사진 접근 설정'),
+                t('settings.photos.alreadyEnabled', '사진 접근이 이미 허용되어 있습니다. 시스템 설정에서 변경할 수 있습니다.'),
+                [
+                  { text: tCommon('ok', '확인'), style: 'cancel' },
+                  { text: t('settings.photos.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+                ],
+              );
+            } else {
+              const { status: newStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (newStatus === 'granted') {
+                showToast({ type: 'success', message: t('settings.photos.enabled', '사진 접근이 허용되었습니다'), position: 'top' });
+              } else {
+                Alert.alert(
+                  t('settings.photos.title', '사진 접근 설정'),
+                  t('settings.photos.denied', '사진 접근 권한이 거부되었습니다. 시스템 설정에서 허용해주세요.'),
+                  [
+                    { text: tCommon('ok', '확인'), style: 'cancel' },
+                    { text: t('settings.photos.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+                  ],
+                );
+              }
+            }
+          }}
+          accessibilityRole="button"
+        >
+          <Icon name="image-outline" size={24} color={theme.colors.textSecondary} />
+          <Text style={styles.menuText}>{t('settings.photos.title', '사진 접근 설정')}</Text>
+          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+        </TouchableOpacity>
       </View>
 
       {isServiceAdmin && (

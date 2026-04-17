@@ -129,5 +129,21 @@
     "noData": "暂无数据",
     "adminOnly": "仅管理员可用",
     "loadError": "数据加载失败"
+  },
+  "settings": {
+    "notifications": {
+      "title": "通知设置",
+      "alreadyEnabled": "通知已启用。您可以在系统设置中更改。",
+      "enabled": "通知已启用",
+      "denied": "通知权限被拒绝。请在系统设置中启用。",
+      "openSettings": "打开设置"
+    },
+    "photos": {
+      "title": "照片访问设置",
+      "alreadyEnabled": "照片访问已启用。您可以在系统设置中更改。",
+      "enabled": "照片访问已启用",
+      "denied": "照片访问权限被拒绝。请在系统设置中启用。",
+      "openSettings": "打开设置"
+    }
   }
 }

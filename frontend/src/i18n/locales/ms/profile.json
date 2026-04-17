@@ -129,5 +129,21 @@
     "noData": "Belum ada data tersedia",
     "adminOnly": "Akses pentadbir diperlukan",
     "loadError": "Gagal memuatkan data"
+  },
+  "settings": {
+    "notifications": {
+      "title": "Tetapan Pemberitahuan",
+      "alreadyEnabled": "Pemberitahuan sudah diaktifkan. Anda boleh menukarnya dalam tetapan sistem.",
+      "enabled": "Pemberitahuan telah diaktifkan",
+      "denied": "Kebenaran pemberitahuan ditolak. Sila aktifkan dalam tetapan sistem.",
+      "openSettings": "Buka Tetapan"
+    },
+    "photos": {
+      "title": "Tetapan Akses Foto",
+      "alreadyEnabled": "Akses foto sudah diaktifkan. Anda boleh menukarnya dalam tetapan sistem.",
+      "enabled": "Akses foto telah diaktifkan",
+      "denied": "Kebenaran akses foto ditolak. Sila aktifkan dalam tetapan sistem.",
+      "openSettings": "Buka Tetapan"
+    }
   }
 }

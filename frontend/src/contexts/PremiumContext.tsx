@@ -154,12 +154,11 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const isProfileLoaded = user?.aiTripsUsedThisMonth !== undefined;
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
   const AI_TRIPS_PREMIUM_LIMIT = 30;
-  const effectivePremium = isPremium || isAdmin;
-  const aiTripsLimit = effectivePremium ? AI_TRIPS_PREMIUM_LIMIT : AI_TRIPS_FREE_LIMIT;
-  const aiTripsRemaining = effectivePremium
+  const aiTripsLimit = isPremium ? AI_TRIPS_PREMIUM_LIMIT : AI_TRIPS_FREE_LIMIT;
+  const aiTripsRemaining = isPremium
     ? (isProfileLoaded ? Math.max(0, AI_TRIPS_PREMIUM_LIMIT - aiTripsUsed) : AI_TRIPS_PREMIUM_LIMIT)
     : (isProfileLoaded ? Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed) : -1);
-  const isAiLimitReached = !effectivePremium && isProfileLoaded && aiTripsRemaining <= 0;
+  const isAiLimitReached = !isPremium && !isAdmin && isProfileLoaded && aiTripsRemaining <= 0;
 
   const showPaywall = useCallback((context: PaywallContext = 'general') => {
     if (!PREMIUM_ENABLED) return;

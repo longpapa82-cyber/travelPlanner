@@ -129,5 +129,21 @@
     "noData": "Noch keine Daten verfügbar",
     "adminOnly": "Admin-Zugriff erforderlich",
     "loadError": "Daten konnten nicht geladen werden"
+  },
+  "settings": {
+    "notifications": {
+      "title": "Benachrichtigungseinstellungen",
+      "alreadyEnabled": "Benachrichtigungen sind bereits aktiviert. Sie können dies in den Systemeinstellungen ändern.",
+      "enabled": "Benachrichtigungen wurden aktiviert",
+      "denied": "Die Berechtigung für Benachrichtigungen wurde verweigert. Bitte aktivieren Sie sie in den Systemeinstellungen.",
+      "openSettings": "Einstellungen öffnen"
+    },
+    "photos": {
+      "title": "Fotozugriff-Einstellungen",
+      "alreadyEnabled": "Der Fotozugriff ist bereits aktiviert. Sie können dies in den Systemeinstellungen ändern.",
+      "enabled": "Der Fotozugriff wurde aktiviert",
+      "denied": "Die Berechtigung für den Fotozugriff wurde verweigert. Bitte aktivieren Sie sie in den Systemeinstellungen.",
+      "openSettings": "Einstellungen öffnen"
+    }
   }
 }

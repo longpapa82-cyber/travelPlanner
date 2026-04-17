@@ -577,7 +577,8 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: theme.spacing.lg,
+    marginTop: theme.spacing.lg + 8,
+    paddingVertical: 12,
     gap: 8,
   },
   legalFooterLink: {
