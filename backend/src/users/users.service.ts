@@ -853,6 +853,7 @@ export class UsersService {
    */
   private readonly DEPRECATED_CONSENTS: ConsentType[] = [
     ConsentType.PRIVACY_OPTIONAL,
+    ConsentType.MARKETING,
   ];
 
   /**

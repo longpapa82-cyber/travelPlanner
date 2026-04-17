@@ -42,6 +42,11 @@
       "photoSuccess": "プロフィール写真が更新されました",
       "photoFailed": "プロフィール写真の更新に失敗しました",
       "permissionDenied": "写真へのアクセス許可が必要です"
+    },
+    "photoPermission": {
+      "title": "写真アクセス許可",
+      "message": "プロフィール写真を変更するには、フォトライブラリへのアクセス許可が必要です。設定で許可してください。",
+      "openSettings": "設定を開く"
     }
   },
   "changePassword": {

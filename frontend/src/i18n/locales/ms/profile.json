@@ -40,6 +40,11 @@
       "photoFailed": "Gagal mengemas kini foto profil",
       "permissionDenied": "Kebenaran akses foto diperlukan"
     },
+    "photoPermission": {
+      "title": "Akses Foto",
+      "message": "Akses galeri foto diperlukan untuk menukar foto profil anda. Sila aktifkan dalam Tetapan.",
+      "openSettings": "Buka Tetapan"
+    },
     "previewTitle": "Tetapkan foto profil",
     "previewHint": "Adakah anda ingin menetapkan foto ini sebagai foto profil?",
     "confirmPhoto": "Tetapkan"

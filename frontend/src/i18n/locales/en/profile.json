@@ -42,6 +42,11 @@
       "photoSuccess": "Profile photo updated",
       "photoFailed": "Failed to update profile photo",
       "permissionDenied": "Photo access permission required"
+    },
+    "photoPermission": {
+      "title": "Photo Access",
+      "message": "Photo library access is required to change your profile photo. Please enable it in Settings.",
+      "openSettings": "Open Settings"
     }
   },
   "changePassword": {

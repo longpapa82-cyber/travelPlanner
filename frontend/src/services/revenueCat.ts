@@ -85,3 +85,9 @@ export async function logOut(): Promise<void> {
     console.warn('[RevenueCat] Failed to log out:', error);
   }
 }
+
+export function addCustomerInfoUpdateListener(
+  listener: (info: CustomerInfo) => void,
+): void {
+  Purchases.addCustomerInfoUpdateListener(listener);
+}

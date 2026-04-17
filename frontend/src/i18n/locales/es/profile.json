@@ -40,6 +40,11 @@
       "photoFailed": "Error al actualizar foto de perfil",
       "permissionDenied": "Se requiere permiso de acceso a fotos"
     },
+    "photoPermission": {
+      "title": "Acceso a fotos",
+      "message": "Se necesita acceso a la galería de fotos para cambiar tu foto de perfil. Actívalo en Configuración.",
+      "openSettings": "Abrir Configuración"
+    },
     "previewTitle": "Establecer foto de perfil",
     "previewHint": "¿Desea establecer esta foto como su foto de perfil?",
     "confirmPhoto": "Establecer"

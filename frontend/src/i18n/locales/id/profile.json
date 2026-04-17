@@ -40,6 +40,11 @@
       "photoFailed": "Gagal memperbarui foto profil",
       "permissionDenied": "Izin akses foto diperlukan"
     },
+    "photoPermission": {
+      "title": "Akses Foto",
+      "message": "Akses galeri foto diperlukan untuk mengubah foto profil Anda. Silakan aktifkan di Pengaturan.",
+      "openSettings": "Buka Pengaturan"
+    },
     "previewTitle": "Atur foto profil",
     "previewHint": "Apakah Anda ingin mengatur foto ini sebagai foto profil?",
     "confirmPhoto": "Atur"

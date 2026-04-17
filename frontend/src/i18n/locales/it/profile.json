@@ -40,6 +40,11 @@
       "photoFailed": "Aggiornamento foto profilo fallito",
       "permissionDenied": "Permesso di accesso alle foto necessario"
     },
+    "photoPermission": {
+      "title": "Accesso alle foto",
+      "message": "Per cambiare la foto del profilo è necessario l'accesso alla galleria fotografica. Abilitalo nelle Impostazioni.",
+      "openSettings": "Apri Impostazioni"
+    },
     "previewTitle": "Imposta foto profilo",
     "previewHint": "Vuoi impostare questa foto come foto del profilo?",
     "confirmPhoto": "Imposta"

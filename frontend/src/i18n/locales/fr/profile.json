@@ -40,6 +40,11 @@
       "photoFailed": "Échec de la mise à jour de la photo de profil",
       "permissionDenied": "Autorisation d'accès aux photos requise"
     },
+    "photoPermission": {
+      "title": "Accès aux photos",
+      "message": "L'accès à la photothèque est nécessaire pour changer votre photo de profil. Veuillez l'activer dans les Réglages.",
+      "openSettings": "Ouvrir les Réglages"
+    },
     "previewTitle": "Définir la photo de profil",
     "previewHint": "Souhaitez-vous définir cette photo comme photo de profil ?",
     "confirmPhoto": "Définir"

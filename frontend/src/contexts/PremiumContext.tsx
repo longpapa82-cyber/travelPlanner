@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useMemo, useEf
 import { Platform } from 'react-native';
 import { useAuth } from './AuthContext';
 import { SubscriptionStatus } from '../types';
-import { initRevenueCat, logIn, logOut as rcLogOut, getCustomerInfo } from '../services/revenueCat';
+import { initRevenueCat, logIn, logOut as rcLogOut, getCustomerInfo, addCustomerInfoUpdateListener } from '../services/revenueCat';
 import { PREMIUM_ENABLED } from '../constants/config';
 
 const AI_TRIPS_FREE_LIMIT = 3;
@@ -105,12 +105,21 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
 
         if (hasActiveEntitlement && !localPremiumOverride) {
           setLocalPremiumOverride(true);
-          // Also refresh backend user data to sync subscription status
           refreshUser?.();
         }
       } catch {
         // Silent — premium detection is best-effort
       }
+
+      // Listen for purchase completions (handles app kill during payment flow)
+      addCustomerInfoUpdateListener((updatedInfo) => {
+        const hasActive = updatedInfo?.entitlements?.active &&
+          Object.keys(updatedInfo.entitlements.active).length > 0;
+        if (hasActive && !localPremiumOverride) {
+          setLocalPremiumOverride(true);
+          refreshUser?.();
+        }
+      });
     })();
   }, [user?.id]);
 
@@ -145,11 +154,12 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const isProfileLoaded = user?.aiTripsUsedThisMonth !== undefined;
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
   const AI_TRIPS_PREMIUM_LIMIT = 30;
-  const aiTripsLimit = isPremium ? AI_TRIPS_PREMIUM_LIMIT : AI_TRIPS_FREE_LIMIT;
-  const aiTripsRemaining = isPremium
+  const effectivePremium = isPremium || isAdmin;
+  const aiTripsLimit = effectivePremium ? AI_TRIPS_PREMIUM_LIMIT : AI_TRIPS_FREE_LIMIT;
+  const aiTripsRemaining = effectivePremium
     ? (isProfileLoaded ? Math.max(0, AI_TRIPS_PREMIUM_LIMIT - aiTripsUsed) : AI_TRIPS_PREMIUM_LIMIT)
     : (isProfileLoaded ? Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed) : -1);
-  const isAiLimitReached = !isPremium && isProfileLoaded && aiTripsRemaining <= 0;
+  const isAiLimitReached = !effectivePremium && isProfileLoaded && aiTripsRemaining <= 0;
 
   const showPaywall = useCallback((context: PaywallContext = 'general') => {
     if (!PREMIUM_ENABLED) return;

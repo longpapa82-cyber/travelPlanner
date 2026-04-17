@@ -40,6 +40,11 @@
       "photoFailed": "Profil fotoğrafı güncellenemedi",
       "permissionDenied": "Fotoğraf erişim izni gerekli"
     },
+    "photoPermission": {
+      "title": "Fotoğraf Erişimi",
+      "message": "Profil fotoğrafınızı değiştirmek için fotoğraf galerisi erişimi gereklidir. Lütfen Ayarlar'dan etkinleştirin.",
+      "openSettings": "Ayarları Aç"
+    },
     "previewTitle": "Profil fotoğrafını ayarla",
     "previewHint": "Bu fotoğrafı profil fotoğrafınız olarak ayarlamak ister misiniz?",
     "confirmPhoto": "Ayarla"

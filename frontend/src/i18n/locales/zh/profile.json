@@ -40,6 +40,11 @@
       "photoFailed": "头像更换失败",
       "permissionDenied": "需要相册访问权限"
     },
+    "photoPermission": {
+      "title": "相册访问",
+      "message": "更换头像需要相册访问权限，请在设置中开启。",
+      "openSettings": "打开设置"
+    },
     "previewTitle": "设置头像",
     "previewHint": "您想将此照片设为头像吗？",
     "confirmPhoto": "设置"

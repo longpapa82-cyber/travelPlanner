@@ -40,6 +40,11 @@
       "photoFailed": "Cập nhật ảnh đại diện thất bại",
       "permissionDenied": "Cần quyền truy cập ảnh"
     },
+    "photoPermission": {
+      "title": "Truy cập ảnh",
+      "message": "Cần quyền truy cập thư viện ảnh để thay đổi ảnh đại diện. Vui lòng bật trong Cài đặt.",
+      "openSettings": "Mở Cài đặt"
+    },
     "previewTitle": "Đặt ảnh hồ sơ",
     "previewHint": "Bạn có muốn đặt ảnh này làm ảnh hồ sơ không?",
     "confirmPhoto": "Đặt"

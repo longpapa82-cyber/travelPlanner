@@ -480,22 +480,13 @@ class ApiService {
     onProgress?: (step: string, message?: string) => void,
     signal?: AbortSignal,
   ): Promise<any> {
-    console.log('='.repeat(80));
-    console.log('🚀 POLLING-BASED TRIP CREATION v1.0');
-    console.log('Timestamp:', new Date().toISOString());
-    console.log('Solution: Railway SSE workaround via polling');
-    console.log('='.repeat(80));
-
     try {
-      // 1. 비동기 작업 시작 - jobId 즉시 반환
-      console.log('[POLLING] Starting async trip creation');
       const createResponse = await this.api.post('/trips/create-async', data, {
         timeout: 10000, // 10초 타임아웃 (빠른 응답 예상)
         signal,
       });
 
       const { jobId } = createResponse.data;
-      console.log('[POLLING] Job started, jobId:', jobId);
 
       if (!jobId) {
         throw new Error('Failed to start trip creation: no jobId received');
@@ -528,7 +519,6 @@ class ApiService {
           }
 
           pollCount++;
-          console.log(`[POLLING] Poll #${pollCount}, jobId: ${jobId}`);
 
           try {
             // 작업 상태 조회
@@ -538,7 +528,6 @@ class ApiService {
             });
 
             const status = statusResponse.data;
-            console.log('[POLLING] Status:', status.status, 'progress:', status.progress?.step);
 
             // 진행률 콜백 호출
             if (status.progress && onProgress) {
@@ -547,13 +536,11 @@ class ApiService {
 
             // 완료 처리
             if (status.status === 'completed' && status.tripId) {
-              console.log('[POLLING] Trip creation completed, tripId:', status.tripId);
               clearInterval(pollInterval);
 
               // 최종 여행 데이터 조회
               try {
                 const trip = await this.getTripById(status.tripId);
-                console.log('[POLLING] Trip fetched successfully');
                 resolve(trip);
               } catch (fetchError: any) {
                 console.error('[POLLING] Failed to fetch trip:', fetchError.message);
@@ -568,7 +555,6 @@ class ApiService {
 
             // V112 Wave 3: cancelled is a terminal state from DELETE /jobs/:id
             if (status.status === 'cancelled') {
-              console.log('[POLLING] Trip creation cancelled by user');
               clearInterval(pollInterval);
               const error: any = new Error('Trip creation cancelled');
               error.cancelled = true;

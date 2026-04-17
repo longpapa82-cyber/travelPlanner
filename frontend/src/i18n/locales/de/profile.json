@@ -40,6 +40,11 @@
       "photoFailed": "Profilbild konnte nicht aktualisiert werden",
       "permissionDenied": "Fotoberechtigungen erforderlich"
     },
+    "photoPermission": {
+      "title": "Fotozugriff",
+      "message": "Für die Änderung Ihres Profilfotos ist der Zugriff auf die Fotogalerie erforderlich. Bitte aktivieren Sie ihn in den Einstellungen.",
+      "openSettings": "Einstellungen öffnen"
+    },
     "previewTitle": "Profilbild festlegen",
     "previewHint": "Möchten Sie dieses Foto als Profilbild festlegen?",
     "confirmPhoto": "Festlegen"

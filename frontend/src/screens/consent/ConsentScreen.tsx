@@ -31,7 +31,7 @@ import api from '../../services/api';
 import type { ConsentsStatus, ConsentResponse, UpdateConsentsDto } from '../../types';
 
 // JIT consent types — shown at feature use time, not on initial screen
-const JIT_CONSENT_TYPES = ['location', 'notification', 'photo'];
+const JIT_CONSENT_TYPES = ['location'];
 
 interface Props {
   onComplete: () => void;
@@ -228,13 +228,15 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
                 <View style={[styles.requiredBadge, { backgroundColor: colors.error.main }]}>
                   <Text style={styles.requiredText}>{t('required')}</Text>
                 </View>
-                {hasDetail && (
+                {hasDetail ? (
                   <TouchableOpacity
                     onPress={() => setLegalModalType(consent.type === 'terms' ? 'terms' : 'privacy')}
                     hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                   >
                     <Icon name="chevron-right" size={20} color={textSecondary} />
                   </TouchableOpacity>
+                ) : (
+                  <View style={{ width: 20 }} />
                 )}
               </View>
             );
@@ -286,12 +288,7 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
           </>
         )}
 
-        {/* JIT notice */}
-        <Text style={[styles.jitNotice, { color: textSecondary }]}>
-          {t('jitNote', '알림, 사진 권한은 해당 기능 사용 시, 별도로 안내됩니다.')}
-        </Text>
-
-        <View style={{ paddingTop: 8, paddingBottom: 24 }}>
+        <View style={{ paddingTop: 16, paddingBottom: 24 }}>
 
           <Button
             onPress={handleSubmit}
@@ -413,16 +410,6 @@ const styles = StyleSheet.create({
   },
   optionalTag: {
     fontSize: 12,
-  },
-  // V115 (V114-4a): 'JIT 권한 별도 안내' 문구와 하단 버튼 footer 사이에
-  // 숨통 확보. 기존 marginBottom 8 / footer paddingTop 20 (28dp 총합) 이
-  // 실기기에서 '버튼이 바닥에 붙어 있음'으로 인식됐다.
-  jitNotice: {
-    fontSize: 12,
-    lineHeight: 18,
-    textAlign: 'center',
-    marginTop: 4,
-    marginBottom: 2,
   },
   footer: {
     paddingTop: 24,

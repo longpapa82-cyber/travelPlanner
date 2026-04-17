@@ -11,6 +11,7 @@ import {
   Modal,
   Platform,
   Linking,
+  Alert,
   ActivityIndicator,
   Image,
 } from 'react-native';
@@ -225,7 +226,20 @@ const ProfileScreen = ({ navigation }: any) => {
   const handlePickProfilePhoto = async () => {
     if (isUploadingPhoto) return;
     try {
-      // System picker (PHPicker / Photo Picker) — no permission required
+      if (Platform.OS === 'android') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert(
+            t('editProfile.photoPermission.title', '사진 접근 권한'),
+            t('editProfile.photoPermission.message', '프로필 사진 변경을 위해 사진 라이브러리 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.'),
+            [
+              { text: tCommon('cancel', '취소'), style: 'cancel' },
+              { text: t('editProfile.photoPermission.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+            ],
+          );
+          return;
+        }
+      }
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
         allowsEditing: false,
