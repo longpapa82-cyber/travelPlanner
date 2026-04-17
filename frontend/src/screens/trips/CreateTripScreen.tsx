@@ -87,7 +87,8 @@ const getTravelerOptions = (t: TFunction) => [
 ];
 
 const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
-  const [planningMode, setPlanningMode] = useState<'ai' | 'manual'>('ai');
+  const { isPremium, isAdmin, aiTripsRemaining, aiTripsLimit, isAiLimitReached, refreshStatus, showPaywall } = usePremium();
+  const [planningMode, setPlanningMode] = useState<'ai' | 'manual'>(isAiLimitReached ? 'manual' : 'ai');
   const [destination, setDestination] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -108,7 +109,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { scheduleTripReminders } = useNotifications();
   const { t } = useTranslation('trips');
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
-  const { isPremium, isAdmin, aiTripsRemaining, aiTripsLimit, isAiLimitReached, refreshStatus, showPaywall } = usePremium();
   const { show: showRewarded, isLoaded: isRewardedLoaded, reload: reloadRewardedAd } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
 

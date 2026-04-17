@@ -104,7 +104,7 @@ const SubscriptionScreen = () => {
               <Text style={[styles.planMetaText, { color: '#FFFFFFCC' }]}>
                 {t('status.startedOn', {
                   defaultValue: '시작일: {{date}}',
-                  date: formatDate(startedAt),
+                  date: formatBillingDate(startedAt),
                 })}
               </Text>
             </View>
@@ -162,6 +162,41 @@ const SubscriptionScreen = () => {
           </View>
           <Text style={[styles.cancelAnytimeText, { color: isDark ? '#FCD34D' : '#B45309' }]}>{t('promo.cancelAnytime')}</Text>
         </TouchableOpacity>
+      )}
+
+      {/* Expired subscription info — show previous subscription details when no longer active */}
+      {!isPremium && (startedAt || expiresAt || planType) && (
+        <View style={[styles.section, { backgroundColor: isDark ? colors.neutral[800] : '#FFF' }]}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+            {t('status.previousSubscription', { defaultValue: '이전 구독 정보' })}
+          </Text>
+          {planType && (
+            <View style={styles.expiredMetaRow}>
+              <Icon name="calendar-check" size={16} color={theme.colors.textSecondary} />
+              <Text style={[styles.expiredMetaText, { color: theme.colors.textSecondary }]}>
+                {planType === 'yearly'
+                  ? t('status.planYearly', { defaultValue: '연간 플랜' })
+                  : t('status.planMonthly', { defaultValue: '월간 플랜' })}
+              </Text>
+            </View>
+          )}
+          {startedAt && (
+            <View style={styles.expiredMetaRow}>
+              <Icon name="calendar-start" size={16} color={theme.colors.textSecondary} />
+              <Text style={[styles.expiredMetaText, { color: theme.colors.textSecondary }]}>
+                {t('status.startedOn', { defaultValue: '시작일: {{date}}', date: formatBillingDate(startedAt) })}
+              </Text>
+            </View>
+          )}
+          {expiresAt && (
+            <View style={styles.expiredMetaRow}>
+              <Icon name="calendar-end" size={16} color={theme.colors.textSecondary} />
+              <Text style={[styles.expiredMetaText, { color: theme.colors.textSecondary }]}>
+                {t('status.expiredOn', { defaultValue: '만료일: {{date}}', date: formatBillingDate(expiresAt) })}
+              </Text>
+            </View>
+          )}
+        </View>
       )}
 
       {/* AI Trip Usage — show for non-premium users (including admin without subscription) */}
@@ -292,6 +327,15 @@ const styles = StyleSheet.create({
   planMetaText: {
     fontSize: 13,
     fontWeight: '500',
+  },
+  expiredMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 6,
+  },
+  expiredMetaText: {
+    fontSize: 13,
   },
   section: {
     marginHorizontal: 16,

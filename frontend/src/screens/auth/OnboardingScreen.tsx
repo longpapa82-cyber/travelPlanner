@@ -154,6 +154,14 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
 
   const isLastSlide = currentIndex === SLIDES.length - 1;
 
+  // Interpolate controls background to match current slide gradient bottom color
+  const gradientEndColors = SLIDES.map((s) => s.gradient[1]);
+  const controlsBgColor = scrollX.interpolate({
+    inputRange: SLIDES.map((_, i) => i * SCREEN_WIDTH),
+    outputRange: gradientEndColors,
+    extrapolate: 'clamp',
+  });
+
   const isWeb = Platform.OS === 'web';
   const ControlsWrapper = isWeb ? View : SafeAreaView;
   const controlsProps = isWeb ? {} : { edges: ['bottom'] as const };
@@ -198,6 +206,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
       </View>
 
       <View style={styles.controlsSpacer} />
+      <Animated.View style={[styles.controlsBg, { backgroundColor: controlsBgColor }]}>
       <ControlsWrapper style={styles.controls} {...controlsProps}>
         {renderPagination()}
 
@@ -285,6 +294,8 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
         </View>
       </ControlsWrapper>
 
+      </Animated.View>
+
       <AuthLegalModal
         visible={legalModal !== null}
         onClose={() => setLegalModal(null)}
@@ -301,6 +312,9 @@ const styles = StyleSheet.create({
   },
   controlsSpacer: {
     flex: 1,
+  },
+  controlsBg: {
+    zIndex: 10,
   },
   slide: {
     flex: 1,
@@ -341,7 +355,6 @@ const styles = StyleSheet.create({
   controls: {
     paddingHorizontal: 24,
     paddingBottom: Platform.OS === 'web' ? 24 : 0,
-    zIndex: 10,
   },
   pagination: {
     flexDirection: 'row',

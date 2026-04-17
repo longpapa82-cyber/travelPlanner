@@ -14,6 +14,7 @@ import {
   Alert,
   ActivityIndicator,
   Image,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
@@ -827,7 +828,7 @@ const ProfileScreen = ({ navigation }: any) => {
 
       {/* Delete Account Password Confirmation Modal */}
       <Modal visible={showDeleteConfirm} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
             <View style={styles.modalHeader}>
               <Text style={[styles.modalTitle, { color: colors.error.main }]}>{t('deleteAccount.title')}</Text>
@@ -855,7 +856,7 @@ const ProfileScreen = ({ navigation }: any) => {
               </Button>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* Profile Photo Preview Modal */}
