@@ -225,8 +225,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     if (dest.trim()) setFieldErrors(prev => ({ ...prev, destination: undefined }));
   }, []);
 
-  const handleSelectDuration = useCallback((days: number) => {
-    Keyboard.dismiss();
+  const setDurationDays = useCallback((days: number) => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const start = new Date(tomorrow);
@@ -238,10 +237,19 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     setFieldErrors(prev => ({ ...prev, dates: undefined }));
   }, []);
 
-  const handleSelectTravelers = useCallback((count: number) => {
+  const handleSelectDuration = useCallback((days: number) => {
     Keyboard.dismiss();
+    setDurationDays(days);
+  }, [setDurationDays]);
+
+  const setTravelersCount = useCallback((count: number) => {
     setNumberOfTravelers(Math.min(count, 50));
   }, []);
+
+  const handleSelectTravelers = useCallback((count: number) => {
+    Keyboard.dismiss();
+    setTravelersCount(count);
+  }, [setTravelersCount]);
 
   const calculateDuration = useCallback((): number | null => {
     if (!startDate || !endDate) return null;
@@ -747,7 +755,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
-        onScrollBeginDrag={Keyboard.dismiss}
         showsVerticalScrollIndicator={false}
       >
         {/* Hero Section */}
@@ -996,12 +1003,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 destination={destination}
                 showEnhancedInsights={insightsUnlocked}
                 onRecommendationsLoaded={(recommendations) => {
-                  // Auto-fill recommended values
                   if (recommendations.recommendedDuration && !startDate && !endDate) {
-                    handleSelectDuration(Math.min(recommendations.recommendedDuration, 90));
+                    setDurationDays(Math.min(recommendations.recommendedDuration, 90));
                   }
                   if (recommendations.recommendedTravelers && numberOfTravelers === 1) {
-                    handleSelectTravelers(recommendations.recommendedTravelers);
+                    setTravelersCount(recommendations.recommendedTravelers);
                   }
                 }}
               />
@@ -1129,7 +1135,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
             {/* Duration Quick Picks */}
             <View style={styles.quickPicks}>
               {DURATION_OPTIONS.map((option, index) => {
-                const isSelected = calculateDuration() === option.days;
+                const isSelected = duration === option.days;
                 return (
                   <TouchableOpacity
                     key={index}
@@ -1540,7 +1546,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   value={totalBudget}
                   onChangeText={(text) => {
                     const cleaned = text.replace(/[^0-9.]/g, '');
-                    setTotalBudget(cleaned);
+                    const parts = cleaned.split('.');
+                    const sanitized = parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : cleaned;
+                    setTotalBudget(sanitized);
                   }}
                   keyboardType="decimal-pad"
                   editable={!isLoading}

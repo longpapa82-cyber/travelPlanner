@@ -35,7 +35,8 @@ export const DestinationInsights: React.FC<DestinationInsightsProps> = ({
 
   useEffect(() => {
     if (destination && destination.trim().length >= 2) {
-      loadRecommendations();
+      const timer = setTimeout(() => loadRecommendations(), 500);
+      return () => clearTimeout(timer);
     } else {
       setRecommendations(null);
     }

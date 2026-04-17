@@ -11,6 +11,8 @@ export function initSentry() {
     tracesSampleRate: __DEV__ ? 1.0 : 0.2,
     enableAutoSessionTracking: true,
     attachScreenshot: !__DEV__,
+    enableAppHangTracking: true,
+    appHangTimeoutInterval: 5,
     debug: false,
   });
 }

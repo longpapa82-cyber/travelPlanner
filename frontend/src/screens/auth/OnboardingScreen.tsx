@@ -421,7 +421,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 8,
-    marginBottom: 8,
+    marginTop: 8,
+    marginBottom: 20,
   },
   legalFooterLink: {
     fontSize: 12,
