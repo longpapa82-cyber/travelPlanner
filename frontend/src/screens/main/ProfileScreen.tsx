@@ -36,6 +36,7 @@ import apiService from '../../services/api';
 import { useTutorial } from '../../contexts/TutorialContext';
 import * as Notifications from 'expo-notifications';
 import { ensureAbsoluteUrl } from '../../utils/images';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ProfileScreen = ({ navigation }: any) => {
   const { t } = useTranslation('profile');
@@ -48,6 +49,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const { t: tPremium } = useTranslation('premium');
   const { t: tTutorial } = useTranslation('tutorial');
   const { resetTutorial } = useTutorial();
+  const insets = useSafeAreaInsets();
 
   // Modal states
   const [showEditProfile, setShowEditProfile] = useState(false);
@@ -854,9 +856,9 @@ const ProfileScreen = ({ navigation }: any) => {
       {/* Delete Account (회원 탈퇴) Password Confirmation Modal */}
       <Modal visible={showDeleteConfirm} transparent animationType="slide" onRequestClose={() => setShowDeleteConfirm(false)}>
         <Pressable style={styles.modalOverlay} onPress={() => Keyboard.dismiss()}>
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <KeyboardAvoidingView behavior="padding">
             <Pressable onPress={(e) => e.stopPropagation()}>
-              <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+              <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0], paddingBottom: Math.max(34, insets.bottom + 16) }]}>
                 <View style={styles.modalHeader}>
                   <Text style={[styles.modalTitle, { color: colors.error.main }]}>{t('deleteAccount.title')}</Text>
                   <TouchableOpacity onPress={() => setShowDeleteConfirm(false)}>

@@ -488,7 +488,11 @@ export class ExpensesService {
     tripId: string,
     expenseId: string,
     userId: string,
+    callerUserId?: string,
   ): Promise<ExpenseSplit> {
+    if (callerUserId) {
+      await this.verifyTripAccess(tripId, callerUserId);
+    }
     await this.verifyTripAccess(tripId, userId);
 
     const expense = await this.expenseRepository.findOne({

@@ -46,7 +46,14 @@
   "status": {
     "active": "Ativo",
     "expired": "Expirado",
-    "expiresOn": "Até {{date}}"
+    "expiresOn": "Até {{date}}",
+    "previousSubscription": "Assinatura anterior",
+    "expiredOn": "Expirado: {{date}}",
+    "platform": "Plataforma: {{platform}}",
+    "planMonthly": "Plano mensal",
+    "planYearly": "Plano anual",
+    "renewsOn": "Próxima cobrança: {{date}}",
+    "startedOn": "Iniciado: {{date}}"
   },
   "promo": {
     "title": "Desbloquear Premium",

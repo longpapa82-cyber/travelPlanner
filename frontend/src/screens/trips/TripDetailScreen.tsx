@@ -67,14 +67,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { confirm } = useConfirm();
   const { user } = useAuth();
 
-  // Enhanced debug logging
   useEffect(() => {
-    console.log('[TripDetailScreen] Component mounted with params:', {
-      fullParams: route.params,
-      tripId: tripId,
-      hasTripId: !!tripId,
-      typeOfTripId: typeof tripId,
-    });
   }, [tripId, route.params]);
 
   // Early return if tripId is missing
@@ -121,14 +114,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     }
 
     try {
-      console.log('[TripDetailScreen] Fetching trip details for:', tripId);
       const data = await apiService.getTripById(tripId);
-      console.log('[TripDetailScreen] Trip fetched successfully:', {
-        id: data?.id,
-        destination: data?.destination,
-        userRole: data?.userRole,
-        status: data?.status,
-      });
       setTrip(data);
       trackEvent('trip_viewed', { tripId });
     } catch (error: any) {

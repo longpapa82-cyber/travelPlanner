@@ -46,7 +46,14 @@
   "status": {
     "active": "Aktiv",
     "expired": "Abgelaufen",
-    "expiresOn": "Bis {{date}}"
+    "expiresOn": "Bis {{date}}",
+    "previousSubscription": "Vorheriges Abonnement",
+    "expiredOn": "Abgelaufen: {{date}}",
+    "platform": "Plattform: {{platform}}",
+    "planMonthly": "Monatsplan",
+    "planYearly": "Jahresplan",
+    "renewsOn": "Nächste Abrechnung: {{date}}",
+    "startedOn": "Gestartet: {{date}}"
   },
   "promo": {
     "title": "Premium freischalten",

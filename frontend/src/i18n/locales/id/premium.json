@@ -46,7 +46,14 @@
   "status": {
     "active": "Aktif",
     "expired": "Kedaluwarsa",
-    "expiresOn": "Hingga {{date}}"
+    "expiresOn": "Hingga {{date}}",
+    "previousSubscription": "Langganan sebelumnya",
+    "expiredOn": "Kedaluwarsa: {{date}}",
+    "platform": "Platform: {{platform}}",
+    "planMonthly": "Paket bulanan",
+    "planYearly": "Paket tahunan",
+    "renewsOn": "Tagihan berikutnya: {{date}}",
+    "startedOn": "Dimulai: {{date}}"
   },
   "promo": {
     "title": "Buka Premium",

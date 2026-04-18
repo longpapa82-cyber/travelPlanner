@@ -23,6 +23,11 @@
               "scheme": "https",
               "host": "mytravel-planner.com",
               "pathPrefix": "/auth"
+            },
+            {
+              "scheme": "https",
+              "host": "mytravel-planner.com",
+              "pathPrefix": "/app"
             }
           ],
           "category": [

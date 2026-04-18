@@ -46,7 +46,14 @@
   "status": {
     "active": "Aktif",
     "expired": "Süresi Doldu",
-    "expiresOn": "{{date}} tarihine kadar"
+    "expiresOn": "{{date}} tarihine kadar",
+    "previousSubscription": "Önceki abonelik",
+    "expiredOn": "Süresi doldu: {{date}}",
+    "platform": "Platform: {{platform}}",
+    "planMonthly": "Aylık plan",
+    "planYearly": "Yıllık plan",
+    "renewsOn": "Sonraki ödeme: {{date}}",
+    "startedOn": "Başlangıç: {{date}}"
   },
   "promo": {
     "title": "Premium'ı Aç",

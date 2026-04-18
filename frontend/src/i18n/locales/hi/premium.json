@@ -46,7 +46,14 @@
   "status": {
     "active": "सक्रिय",
     "expired": "समाप्त",
-    "expiresOn": "{{date}} तक"
+    "expiresOn": "{{date}} तक",
+    "previousSubscription": "पिछली सदस्यता",
+    "expiredOn": "समाप्त: {{date}}",
+    "platform": "प्लेटफ़ॉर्म: {{platform}}",
+    "planMonthly": "मासिक योजना",
+    "planYearly": "वार्षिक योजना",
+    "renewsOn": "अगला बिल: {{date}}",
+    "startedOn": "शुरू: {{date}}"
   },
   "promo": {
     "title": "Premium अनलॉक करें",

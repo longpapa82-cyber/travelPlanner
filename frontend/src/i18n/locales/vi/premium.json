@@ -46,7 +46,14 @@
   "status": {
     "active": "Đang hoạt động",
     "expired": "Đã hết hạn",
-    "expiresOn": "Đến {{date}}"
+    "expiresOn": "Đến {{date}}",
+    "previousSubscription": "Đăng ký trước",
+    "expiredOn": "Hết hạn: {{date}}",
+    "platform": "Nền tảng: {{platform}}",
+    "planMonthly": "Gói tháng",
+    "planYearly": "Gói năm",
+    "renewsOn": "Thanh toán tiếp: {{date}}",
+    "startedOn": "Bắt đầu: {{date}}"
   },
   "promo": {
     "title": "Mở khóa Cao cấp",

@@ -91,8 +91,7 @@ export class ExpensesController {
     @CurrentUser('userId') userId: string,
     @Body() body?: { targetUserId?: string },
   ) {
-    // If targetUserId provided, settle that user's split (creditor settling debtor)
     const settleForUserId = body?.targetUserId || userId;
-    return this.expensesService.settleUp(tripId, expenseId, settleForUserId);
+    return this.expensesService.settleUp(tripId, expenseId, settleForUserId, userId);
   }
 }

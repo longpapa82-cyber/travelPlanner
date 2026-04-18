@@ -50,7 +50,10 @@
     "startedOn": "Started: {{date}}",
     "renewsOn": "Next billing: {{date}}",
     "planMonthly": "Monthly plan",
-    "planYearly": "Annual plan"
+    "planYearly": "Annual plan",
+    "previousSubscription": "Previous Subscription",
+    "expiredOn": "Expired: {{date}}",
+    "platform": "Platform: {{platform}}"
   },
   "promo": {
     "title": "Unlock Premium",

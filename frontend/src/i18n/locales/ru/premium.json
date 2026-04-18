@@ -46,7 +46,14 @@
   "status": {
     "active": "Активна",
     "expired": "Истекла",
-    "expiresOn": "До {{date}}"
+    "expiresOn": "До {{date}}",
+    "previousSubscription": "Предыдущая подписка",
+    "expiredOn": "Истёк: {{date}}",
+    "platform": "Платформа: {{platform}}",
+    "planMonthly": "Месячный план",
+    "planYearly": "Годовой план",
+    "renewsOn": "Следующий платёж: {{date}}",
+    "startedOn": "Начало: {{date}}"
   },
   "promo": {
     "title": "Разблокировать Премиум",

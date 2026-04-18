@@ -46,7 +46,14 @@
   "status": {
     "active": "活跃",
     "expired": "已过期",
-    "expiresOn": "有效期至{{date}}"
+    "expiresOn": "有效期至{{date}}",
+    "previousSubscription": "之前的订阅",
+    "expiredOn": "到期日: {{date}}",
+    "platform": "平台: {{platform}}",
+    "planMonthly": "月度计划",
+    "planYearly": "年度计划",
+    "renewsOn": "下次扣款: {{date}}",
+    "startedOn": "开始日期: {{date}}"
   },
   "promo": {
     "title": "解锁高级版",

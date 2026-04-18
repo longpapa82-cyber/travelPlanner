@@ -46,7 +46,14 @@
   "status": {
     "active": "نشط",
     "expired": "منتهي الصلاحية",
-    "expiresOn": "حتى {{date}}"
+    "expiresOn": "حتى {{date}}",
+    "previousSubscription": "الاشتراك السابق",
+    "expiredOn": "انتهى: {{date}}",
+    "platform": "المنصة: {{platform}}",
+    "planMonthly": "خطة شهرية",
+    "planYearly": "خطة سنوية",
+    "renewsOn": "الفاتورة التالية: {{date}}",
+    "startedOn": "بدأ: {{date}}"
   },
   "promo": {
     "title": "فتح Premium",

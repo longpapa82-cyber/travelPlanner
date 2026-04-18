@@ -46,7 +46,14 @@
   "status": {
     "active": "Aktif",
     "expired": "Tamat Tempoh",
-    "expiresOn": "Sehingga {{date}}"
+    "expiresOn": "Sehingga {{date}}",
+    "previousSubscription": "Langganan sebelumnya",
+    "expiredOn": "Tamat: {{date}}",
+    "platform": "Platform: {{platform}}",
+    "planMonthly": "Pelan bulanan",
+    "planYearly": "Pelan tahunan",
+    "renewsOn": "Bil seterusnya: {{date}}",
+    "startedOn": "Bermula: {{date}}"
   },
   "promo": {
     "title": "Buka Kunci Premium",

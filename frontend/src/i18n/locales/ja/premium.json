@@ -46,7 +46,14 @@
   "status": {
     "active": "有効",
     "expired": "期限切れ",
-    "expiresOn": "{{date}}まで"
+    "expiresOn": "{{date}}まで",
+    "previousSubscription": "以前のサブスクリプション",
+    "expiredOn": "有効期限: {{date}}",
+    "platform": "プラットフォーム: {{platform}}",
+    "planMonthly": "月額プラン",
+    "planYearly": "年間プラン",
+    "renewsOn": "次回請求日: {{date}}",
+    "startedOn": "開始日: {{date}}"
   },
   "promo": {
     "title": "プレミアムを解除",

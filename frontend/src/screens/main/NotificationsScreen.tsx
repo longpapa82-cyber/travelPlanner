@@ -180,17 +180,6 @@ const NotificationsScreen = () => {
       'trip_liked',
     ];
 
-    // Enhanced debug logging
-    console.log('[NotificationsScreen] Notification pressed - Full details:', {
-      type: item.type,
-      normalizedType,
-      data: item.data,
-      tripId: item.data?.tripId,
-      hasTrip: !!item.data?.tripId,
-      typeMatches: tripTypes.includes(normalizedType),
-      fullItem: item,
-    });
-
     if (tripTypes.includes(normalizedType) && item.data?.tripId) {
       const tripId = item.data.tripId;
 
@@ -204,8 +193,6 @@ const NotificationsScreen = () => {
         });
         return;
       }
-
-      console.log('[NotificationsScreen] Navigating to trip:', tripId);
 
       // Use a more explicit navigation approach
       // First navigate to the Trips tab, then to TripDetail
@@ -236,7 +223,7 @@ const NotificationsScreen = () => {
         params: { userId: item.data.followerId },
       });
     } else {
-      console.log('[NotificationsScreen] No action for notification type:', normalizedType);
+      // No action for this notification type
     }
   };
 

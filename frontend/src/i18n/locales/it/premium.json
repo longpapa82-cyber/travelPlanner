@@ -46,7 +46,14 @@
   "status": {
     "active": "Attivo",
     "expired": "Scaduto",
-    "expiresOn": "Fino al {{date}}"
+    "expiresOn": "Fino al {{date}}",
+    "previousSubscription": "Abbonamento precedente",
+    "expiredOn": "Scaduto: {{date}}",
+    "platform": "Piattaforma: {{platform}}",
+    "planMonthly": "Piano mensile",
+    "planYearly": "Piano annuale",
+    "renewsOn": "Prossimo addebito: {{date}}",
+    "startedOn": "Iniziato: {{date}}"
   },
   "promo": {
     "title": "Sblocca Premium",

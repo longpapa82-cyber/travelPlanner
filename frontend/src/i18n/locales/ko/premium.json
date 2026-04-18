@@ -50,7 +50,10 @@
     "startedOn": "시작일: {{date}}",
     "renewsOn": "다음 결제일: {{date}}",
     "planMonthly": "월간 플랜",
-    "planYearly": "연간 플랜"
+    "planYearly": "연간 플랜",
+    "previousSubscription": "이전 구독 정보",
+    "expiredOn": "만료일: {{date}}",
+    "platform": "플랫폼: {{platform}}"
   },
   "promo": {
     "title": "프리미엄 잠금 해제",

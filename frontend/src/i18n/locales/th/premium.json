@@ -46,7 +46,14 @@
   "status": {
     "active": "ใช้งานอยู่",
     "expired": "หมดอายุ",
-    "expiresOn": "ถึง {{date}}"
+    "expiresOn": "ถึง {{date}}",
+    "previousSubscription": "การสมัครก่อนหน้า",
+    "expiredOn": "หมดอายุ: {{date}}",
+    "platform": "แพลตฟอร์ม: {{platform}}",
+    "planMonthly": "แผนรายเดือน",
+    "planYearly": "แผนรายปี",
+    "renewsOn": "เรียกเก็บถัดไป: {{date}}",
+    "startedOn": "เริ่มต้น: {{date}}"
   },
   "promo": {
     "title": "ปลดล็อกพรีเมียม",
