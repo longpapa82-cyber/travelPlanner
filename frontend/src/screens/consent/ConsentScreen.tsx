@@ -19,10 +19,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
+import * as ImagePicker from 'expo-image-picker';
 import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../../components/core/Button';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
@@ -123,6 +126,23 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
       };
 
       await api.updateConsents(dto);
+
+      // Request OS permissions sequentially after consent completion.
+      // These are fire-and-forget — user's choice does not block onComplete.
+      // Notification first, then photo, so user sees both OS dialogs.
+      if (Platform.OS !== 'web') {
+        try {
+          await Notifications.requestPermissionsAsync();
+        } catch {
+          // Swallow — permission denial is acceptable
+        }
+
+        try {
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        } catch {
+          // Swallow — permission denial is acceptable
+        }
+      }
 
       showToast({ message: t('toast.updateSuccess'), type: 'success' });
       onComplete();

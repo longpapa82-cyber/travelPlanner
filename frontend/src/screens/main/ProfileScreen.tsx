@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   Image,
   Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
@@ -812,42 +813,47 @@ const ProfileScreen = ({ navigation }: any) => {
 
       {/* Delete Account (회원 탈퇴) Password Confirmation Modal */}
       <Modal visible={showDeleteConfirm} transparent animationType="slide" onRequestClose={() => setShowDeleteConfirm(false)}>
-        <ScrollView
-          contentContainerStyle={styles.modalOverlay}
-          keyboardShouldPersistTaps="handled"
-          bounces={false}
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.error.main }]}>{t('deleteAccount.title')}</Text>
-              <TouchableOpacity onPress={() => setShowDeleteConfirm(false)}>
-                <Icon name="close" size={24} color={theme.colors.textSecondary} />
-              </TouchableOpacity>
+          <ScrollView
+            contentContainerStyle={styles.modalOverlay}
+            keyboardShouldPersistTaps="handled"
+            bounces={false}
+          >
+            <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+              <View style={styles.modalHeader}>
+                <Text style={[styles.modalTitle, { color: colors.error.main }]}>{t('deleteAccount.title')}</Text>
+                <TouchableOpacity onPress={() => setShowDeleteConfirm(false)}>
+                  <Icon name="close" size={24} color={theme.colors.textSecondary} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.modalBody}>
+                <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('deleteAccount.passwordConfirm')}</Text>
+                <TextInput
+                  style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
+                  value={deletePassword}
+                  onChangeText={setDeletePassword}
+                  placeholder={t('deleteAccount.passwordPlaceholder')}
+                  placeholderTextColor={theme.colors.textSecondary}
+                  secureTextEntry
+                  autoComplete="off"
+                  importantForAutofill="no"
+                  autoCapitalize="none"
+                  editable={!isDeleting}
+                  autoFocus
+                  returnKeyType="done"
+                  onSubmitEditing={handleConfirmDelete}
+                />
+                <Button variant="primary" fullWidth onPress={handleConfirmDelete} loading={isDeleting} disabled={isDeleting}
+                  style={{ backgroundColor: colors.error.main }}>
+                  {t('deleteAccount.button')}
+                </Button>
+              </View>
             </View>
-            <View style={styles.modalBody}>
-              <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('deleteAccount.passwordConfirm')}</Text>
-              <TextInput
-                style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
-                value={deletePassword}
-                onChangeText={setDeletePassword}
-                placeholder={t('deleteAccount.passwordPlaceholder')}
-                placeholderTextColor={theme.colors.textSecondary}
-                secureTextEntry
-                autoComplete="off"
-                importantForAutofill="no"
-                autoCapitalize="none"
-                editable={!isDeleting}
-                autoFocus
-                returnKeyType="done"
-                onSubmitEditing={handleConfirmDelete}
-              />
-              <Button variant="primary" fullWidth onPress={handleConfirmDelete} loading={isDeleting} disabled={isDeleting}
-                style={{ backgroundColor: colors.error.main }}>
-                {t('deleteAccount.button')}
-              </Button>
-            </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* Profile Photo Preview Modal */}
