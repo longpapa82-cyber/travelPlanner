@@ -2,103 +2,54 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-15) — V115 12-Phase 전수 수정 완료, Phase 12 배포 대기
+## 📍 현재 상태 (2026-04-18) — V139 프로덕션 출시 진행 중
 
 ### 핵심 상태
-- **버전**: V115 (다음 EAS 빌드 versionCode 115)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V112 배포 상태, V115 Pre-deploy
+- **버전**: V139 (Play Console Alpha 트랙 versionCode 139)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V139 배포 완료
 - **브랜치**: `main`
-- **Backend**: TypeScript 0 errors, Jest **435/435** (23/23 suites, +6 V115 regression)
 - **Frontend**: TypeScript 0 errors, Jest **204/204** active (14/14 active suites, ActivityModal 2 skipped)
-- **상세 게이트 요약**: `docs/v114/11-final-gate-summary.md`
+- **Backend**: TypeScript 0 errors, Jest **435/435** (23/23 suites)
+- **Play Console**: Alpha 트랙 versionCode 139, 프로덕션 출시 준비 중
 
-### V115 12-Phase 요약
+### V116~V137 Alpha 테스트 수정 이력
 
-| Phase | 내용 |
-|---|---|
-| 0 | 탐색/재현 — 14 이슈 인벤토리, 회귀 원인 분석 (`docs/v114/00~02`) |
-| 1 | Plan-Q RCA — Modal statusBarTranslucent 가설 확정 등 (`03-rca-and-plan.md`) |
-| 2 | Backend 수정 — email URL `/app/*`, register action discriminator, registerForce, RegisterForceDto, `/api/version`, error_log IGNORED_PATTERNS, ADMIN_EMAILS fallback 제거 |
-| 3 | Frontend 수정 — CoachMark statusBarTranslucent, 17개 언어 consent.json, CreateTripScreen 카운터 통합, ProfileScreen modal minHeight 제거, SubscriptionScreen formatBillingDate, register 2-way dialog via error.action |
-| 4 | 웹 로그인 차단 — `WebAppRedirectScreen` + App.tsx web 분기 |
-| 5 | auto-qa — P0 5건 전수 수정 (C1, H1~H4) |
-| 6 | Playwright — 실기기 smoke로 대체, harness 문서화 |
-| 7 | Security — CRITICAL 0, H-1 ADMIN_EMAILS 하드코딩 제거 |
-| 8 | final-qa — skip (Gate 5/7/10 전부 clean) |
-| 9 | Play Store — `08-play-store-checklist.md` |
-| 10 | Code review — CRITICAL 2건 + HIGH 4건 전수 수정 |
-| 11 | Regression harness — Backend `auth.service.spec.ts` +6 tests, 상시화 문서 |
+| 버전 | 날짜 | 주요 수정 |
+|------|------|----------|
+| V124 | 04-17 | admin quota, keyboard ANR, badge color, permission settings (5건) |
+| V122 | 04-17 | ANR, consent, payment, photo permission (10건) |
+| V120 | 04-17 | CreateTripScreen 크래시, 카카오 로그인, 동의 상세 모달 (12건) |
+| V132 | 04-18 | onboarding bg, 회원 탈퇴, consent JIT, card clipping (4건) |
+| V134 | 04-18 | 웹 허위정보 제거, 키보드 가림, JIT 권한, 법적 문서 갱신 (4건) |
+| V136 | 04-18 | 탈퇴 모달 jitter 근본 해결, JIT 권한 완전 전환 (2건) |
 
-### V115 핵심 수정 (V114 14 이슈 근본 해결)
+### V136 핵심 수정 (V137 빌드)
 
-| ID | 근본 원인 | 수정 위치 |
+| ID | 근본 원인 | 수정 |
 |---|---|---|
-| **V114-1** | Expo web 앱이 mytravel-planner.com에서 풀 서비스 | `App.tsx` web 분기 → `WebAppRedirectScreen`, email URL `/app/verify`·`/app/reset` |
-| **V114-2a** | `CoachMark.tsx` Modal에 `statusBarTranslucent` 누락 (**6회 회귀**의 근본 원인) | 한 줄 prop 추가 |
-| **V114-2b** | dismissBtn JSX 잔존 | 제거 |
-| **V114-3** | `modalContent.minHeight: 400` + `space-between` | 제거, 컨텐츠 크기 자동 |
-| **V114-4a** | ConsentScreen jitNotice 여백 부족 | marginTop 12, marginBottom 24, footer paddingTop 24 |
-| **V114-4b/4c** | `privacy_required.title`에 "(필수)" + `privacy_optional` 중복 | 17개 언어 i18n 일괄 + backend DEPRECATED_CONSENTS 필터 |
-| **V114-5** | 사전 경고 토스트가 상태 문자열 재사용 + `remaining: 1` 하드코딩 | `create.aiInfo.preWarning` 별도 키 + 동적 계산 |
-| **V114-6a** | SubscriptionScreen `formatDate()` 시간 미포함 | `formatBillingDate()` admin 분기 |
-| **V114-6b** | Premium 분기 정적 "월 30회" | `"프리미엄: X/30회 남음"` 통일 포맷 |
-| **V114-7** | error_logs에 quota/cancel/throttle 노이즈 | `ErrorLogController.IGNORED_PATTERNS` 서버 필터 |
-| **V114-8** | V112 `refreshUnverifiedRegistration` + 프론트 UX 미완성 | `action: 'created'\|'refreshed'` discriminator + `register-force` + 2-way dialog |
-| **V114-9** | 무중단 배포 구조 부재 | `/api/version` + minAppVersionCode 100 |
+| **탈퇴 모달 jitter** | KAV(behavior='height') + ScrollView(flex:1) 조합이 Android 키보드 해제 시 높이 재계산 jitter | Pressable overlay + Keyboard.dismiss() 패턴으로 전환 |
+| **JIT 권한 6버전 재발** | ConsentScreen에서 OS 권한(알림/사진)을 앱 동의와 묶어서 요청 | OS 권한 요청 완전 제거 → JIT 패턴 (기능 사용 시점에 요청) |
+| **사진 권한 불필요 팝업** | `requestMediaLibraryPermissionsAsync()` 무조건 호출 | get→request 2단계 (최초 1회만 OS 팝업) |
+| **알림 상태 불일치** | 정적 Alert만 표시, 실제 OS 권한 미확인 | `getPermissionsAsync()` 기반 3분기 (granted/undetermined/denied) |
 
-### V115 최종 계약 (Frontend ↔ Backend) — V112 계약 + 추가
+### V137 핵심 불변식 (V115 불변식 11건 유지 + 추가)
 
-| Flow | Request | Response |
-|---|---|---|
-| `POST /auth/register` (신규) | `{email, password, name}` | `201 {action: 'created', user, resumeToken, requiresEmailVerification: true}` |
-| `POST /auth/register` (미인증 재진입) | 동일 | `201 {action: 'refreshed', user, resumeToken, requiresEmailVerification: true}` |
-| `POST /auth/register` (기가입/비-EMAIL) | 동일 | `400 {code: 'EMAIL_EXISTS', message}` |
-| `POST /auth/register-force` 🆕 | `{email, password, name, confirmReset: true}` | 동일 (action='created'), rate limit 1/10min per IP |
-| `GET /api/version` 🆕 | — | `{apiVersion, minAppVersionCode: 100, recommendedAppVersionCode: 115, ...}` |
-| Email 재설정 URL 🆕 | — | `https://mytravel-planner.com/app/reset?token=...` (App Links) |
-| Email 인증 URL 🆕 | — | `https://mytravel-planner.com/app/verify?token=...` (App Links) |
+12. **OS 권한과 앱 동의 분리 원칙**: ConsentScreen에서는 앱 내 동의(consent)만 처리. OS 런타임 권한(알림, 사진, 위치)은 해당 기능 최초 사용 시점(JIT)에만 요청. ConsentScreen.tsx에 `requestPermissionsAsync()` 호출 금지.
 
-### V115 핵심 불변식 (V112 + 추가)
+### ⏭️ 프로덕션 출시 후 후속 작업
 
-V112 불변식 7건 전부 유지. 추가:
-
-8. **register-force 2중 가드**: controller에서 `@Equals(true)` DTO validator + service에서 verified/social 계정 BadRequestException. VPN rate limit 우회해도 verified row는 절대 삭제되지 않음
-9. **Error 객체로 discriminator 전달**: `EmailNotVerifiedError.action`은 catch 블록에서 stale React closure 없이 동기 읽기 가능. `pendingVerification` state는 RootNavigator 전환용, action 판단용 아님
-10. **Admin allowlist single source of truth**: backend `ADMIN_EMAILS` env var. fallback 금지. 프론트엔드 `PremiumContext.ADMIN_EMAILS`는 cold-start 용 fallback이며 반드시 lowercase로 비교
-11. **웹 차단 구조**: `Platform.OS === 'web'`에서 AuthProvider/RootNavigator mount 금지. 웹에서는 `WebAppRedirectScreen`만 렌더링. SEO 정적 페이지(`landing.html`, `guides/*`, `privacy.html`)는 nginx 직접 서빙
-
-### Gate 5/10/7에서 발견 → 수정된 P0 6건
-
-| ID | 설명 | 파일 |
-|---|---|---|
-| **C1** | `pendingVerification.action` stale closure → 2-way dialog no-op | `AuthContext.tsx`, `RegisterScreen.tsx` → error 객체 전달 |
-| **CRITICAL-2** | `forbidNonWhitelisted` → confirmReset 거부 → register-force DOA | `RegisterForceDto` 신설 |
-| **H1** | `'abortError'` 대소문자 오타 | `'aborterror'` |
-| **H2** | CreateTripScreen dead code (`-1`, `!isFinite`) | 분기 간소화 |
-| **H3** | Premium upsell 라벨 회귀 | `"프리미엄: "` prefix |
-| **H4** | Alert 중 isLoading race → 중복 submit | `keepLoading` flag |
-| **H-1 (Security)** | ADMIN_EMAILS 소스 하드코딩 | env 기반 + empty 경고 |
-| **M3** | PremiumContext ADMIN_EMAILS `.toLowerCase()` 누락 + `hoonjae723` 누락 | lowercase 비교 + 리스트 보강 |
-
-### ⚠️ 배포 주의 (V115)
-
-V115는 V112처럼 breaking 계약 변경 없음. 그러나:
-
-1. **email URL 변경**: 레거시 `/reset-password?token=` / `/verify-email?token=` 링크가 사용자 inbox에 남아 있음. 이 링크를 클릭하면 WebAppRedirectScreen이 뜨고 앱으로 deep link되지 않음. **사용자에게 새 메일 요청 필요**
-2. **웹 사용자 이탈**: V114까지는 웹에서 로그인 가능했으나 V115부터 불가. SEO 트래픽은 유지
-3. **Backend + Frontend 동시 배포 원칙** 유지
-
-### ⏭️ 다음 조치
-
-1. **Phase 12 배포** — 사용자 승인 후 `docs/v114/10-deployment-runbook.md` 실행
-2. **Alpha 테스터 검증** — 14 시나리오 재현 (`docs/v114/01-reproduction.md`)
-3. **Follow-up (V116)**: M1/M2/M4/M5/M6, i18n 17개 언어 신규 키 5세트, L1~L5
+1. **회원 탈퇴 모달 하단 여백**: 키보드 없을 때 모달 하단 빈 공간 노출 (기능 사용 가능, UX 개선 필요). `ProfileScreen.tsx` modalOverlay paddingBottom과 modalContent paddingBottom 조합 재조정 필요.
+2. **무중단 배포 체계**: nginx blue-green 또는 rolling update 구축
+3. **스테이징 환경**: 프로덕션과 동일한 테스트 환경 구축
+4. **npm audit HIGH 7건**: mjml 체인 (LiquidJS, lodash), path-to-regexp, picomatch
+5. **CSP unsafe-inline**: nonce 기반 전환 (AdSense/GTM 연동 고려)
+6. **register() 이메일 열거**: 응답 통일 또는 CAPTCHA 도입
+7. **Sentry 프론트엔드 크래시 수집**: Android native crash 포착용
+8. **sitemap.xml 영문 가이드 추가**: SEO 개선
 
 ### 상세 로그
-- V115 최종 게이트 요약: `docs/v114/11-final-gate-summary.md`
-- V114 14 이슈 인벤토리: `docs/v114/00-inventory.md`, `00-inventory-backend.md`
-- V115 배포 러너북: `docs/v114/10-deployment-runbook.md`
-- V112 이력: `docs/archive/claude-md-history-pre-v112.md`
+- V115 이전 이력: `docs/archive/claude-md-history-pre-v112.md`
+- V114 14 이슈: `docs/v114/00-inventory.md`
 
 ---
 
@@ -134,7 +85,7 @@ V115는 V112처럼 breaking 계약 변경 없음. 그러나:
 
 ## Google Play Console 상태
 
-- **트랙**: 비공개 테스트 (Alpha) 진행 중, versionCode 112
+- **트랙**: 비공개 테스트 (Alpha) 진행 중, versionCode 137
 - **앱 ID**: 4975949156119360543
 - **결제 프로필**: 카카오뱅크 계좌 확인 완료 (2026-03-11)
 - **앱 콘텐츠 선언**: 10개 전부 완료
@@ -235,6 +186,14 @@ curl https://mytravel-planner.com/api/health
 | V112 RCA #1~10 | 2026-04-14 | CRITICAL | Auth scope, cancel, quota, filter code drop 등 | 113 |
 | V114 #1~9 (14건) | 2026-04-15 | CRITICAL | CoachMark 6회 회귀 (statusBarTranslucent), 웹 로그인 차단, consent 중복, register refreshed UX, 카운터 통합, error_log 필터 | 115 |
 | V115 Gate5/10 P0 | 2026-04-15 | CRITICAL | C1 stale closure, RegisterForceDto whitelist, H1~H4, ADMIN_EMAILS 하드코딩 | 115 |
+| V120 Alpha | 2026-04-17 | HIGH | CreateTripScreen 크래시, 카카오 로그인, 동의 상세 모달 (12건) | 120 |
+| V122 Alpha | 2026-04-17 | HIGH | ANR, consent, payment, photo permission (10건) | 122 |
+| V124 Alpha | 2026-04-17 | HIGH | admin quota, keyboard ANR, badge color, permission settings (5건) | 124 |
+| V132 Alpha | 2026-04-18 | HIGH | onboarding bg, 회원 탈퇴, consent JIT, card clipping (4건) | 132 |
+| V134 Alpha | 2026-04-18 | HIGH | 웹 허위정보 제거, 키보드 가림, JIT 권한, 법적 문서 갱신 (4건) | 136 |
+| V136 Alpha | 2026-04-18 | HIGH | 탈퇴 모달 jitter 근본 해결, JIT 권한 완전 전환 (2건) | 137 |
+| V137 7단계 QA | 2026-04-18 | CRITICAL | expenses settleUp IDOR, i18n 17개 언어, 법적 문서, 딥링크 | 138 |
+| V138 Alpha | 2026-04-18 | LOW | 탈퇴 모달 SafeArea overlay 위임 (여백 미세 조정) | 139 |
 
 상세: `docs/archive/bug-history-2026-03.md`, `docs/archive/claude-md-history-pre-v112.md`
 
@@ -269,4 +228,4 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-04-15 (V115 12-Phase 수정 완료, Phase 12 배포 대기)
+**최종 업데이트**: 2026-04-18 (V137 Alpha 테스트 중, JIT 권한 근본 전환 완료)
