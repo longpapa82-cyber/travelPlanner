@@ -76,14 +76,14 @@
     "button": "Đăng xuất"
   },
   "deleteAccount": {
-    "title": "Xóa tài khoản",
-    "message": "Việc xóa tài khoản sẽ xóa vĩnh viễn toàn bộ dữ liệu. Bạn có chắc không?",
-    "button": "Xóa tài khoản",
-    "passwordConfirm": "Nhập mật khẩu để xác nhận xóa tài khoản",
+    "title": "Hủy tư cách thành viên",
+    "message": "Việc hủy tư cách thành viên sẽ xóa vĩnh viễn toàn bộ dữ liệu. Bạn có chắc không?",
+    "button": "Hủy",
+    "passwordConfirm": "Nhập mật khẩu để xác nhận hủy tư cách thành viên",
     "passwordPlaceholder": "Nhập mật khẩu",
     "alerts": {
-      "success": "Xóa tài khoản thành công",
-      "failed": "Xóa tài khoản thất bại",
+      "success": "Hủy tư cách thành viên thành công",
+      "failed": "Hủy tư cách thành viên thất bại",
       "passwordRequired": "Vui lòng nhập mật khẩu"
     }
   },

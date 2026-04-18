@@ -76,14 +76,14 @@
     "button": "Çıkış Yap"
   },
   "deleteAccount": {
-    "title": "Hesabı Sil",
-    "message": "Hesabınızı silmek tüm verileri kalıcı olarak kaldıracaktır. Emin misiniz?",
-    "button": "Hesabı Sil",
-    "passwordConfirm": "Hesap silme işlemini onaylamak için şifrenizi girin",
+    "title": "Üyelikten Ayrıl",
+    "message": "Üyelikten ayrılmak tüm verilerinizi kalıcı olarak silecektir. Emin misiniz?",
+    "button": "Ayrıl",
+    "passwordConfirm": "Üyelikten ayrılmayı onaylamak için şifrenizi girin",
     "passwordPlaceholder": "Şifrenizi girin",
     "alerts": {
-      "success": "Hesap başarıyla silindi",
-      "failed": "Hesap silinemedi",
+      "success": "Üyelik başarıyla sonlandırıldı",
+      "failed": "Üyelikten ayrılma başarısız",
       "passwordRequired": "Lütfen şifrenizi girin"
     }
   },

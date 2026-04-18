@@ -76,14 +76,14 @@
     "button": "Log Out"
   },
   "deleteAccount": {
-    "title": "Delete Account",
-    "message": "Deleting your account will permanently remove all data. Are you sure?",
-    "button": "Delete Account",
-    "passwordConfirm": "Enter your password to confirm account deletion",
+    "title": "Withdraw Membership",
+    "message": "Withdrawing will permanently delete all your data. Are you sure you want to proceed?",
+    "button": "Withdraw",
+    "passwordConfirm": "Enter your password to confirm withdrawal",
     "passwordPlaceholder": "Enter password",
     "alerts": {
-      "success": "Account deleted successfully",
-      "failed": "Failed to delete account",
+      "success": "Membership withdrawn successfully",
+      "failed": "Failed to withdraw membership",
       "passwordRequired": "Please enter your password"
     }
   },

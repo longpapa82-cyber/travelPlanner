@@ -76,14 +76,14 @@
     "button": "Esci"
   },
   "deleteAccount": {
-    "title": "Elimina account",
-    "message": "L'eliminazione dell'account rimuoverà permanentemente tutti i dati. Sei sicuro?",
-    "button": "Elimina account",
-    "passwordConfirm": "Inserisci la tua password per confermare l'eliminazione dell'account",
+    "title": "Cancellazione iscrizione",
+    "message": "La cancellazione eliminerà permanentemente tutti i tuoi dati. Sei sicuro?",
+    "button": "Cancellati",
+    "passwordConfirm": "Inserisci la tua password per confermare la cancellazione",
     "passwordPlaceholder": "Inserisci la password",
     "alerts": {
-      "success": "Account eliminato con successo",
-      "failed": "Eliminazione account fallita",
+      "success": "Cancellazione completata con successo",
+      "failed": "Cancellazione iscrizione fallita",
       "passwordRequired": "Inserisci la tua password"
     }
   },

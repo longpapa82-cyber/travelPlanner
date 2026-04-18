@@ -76,14 +76,14 @@
     "button": "Cerrar sesión"
   },
   "deleteAccount": {
-    "title": "Eliminar cuenta",
-    "message": "Eliminar tu cuenta eliminará permanentemente todos los datos. ¿Estás seguro?",
-    "button": "Eliminar cuenta",
-    "passwordConfirm": "Ingresa tu contraseña para confirmar la eliminación de la cuenta",
+    "title": "Darse de baja",
+    "message": "Darse de baja eliminará permanentemente todos tus datos. ¿Estás seguro?",
+    "button": "Darse de baja",
+    "passwordConfirm": "Ingresa tu contraseña para confirmar la baja",
     "passwordPlaceholder": "Ingresar contraseña",
     "alerts": {
-      "success": "Cuenta eliminada exitosamente",
-      "failed": "Error al eliminar cuenta",
+      "success": "Baja completada exitosamente",
+      "failed": "Error al darse de baja",
       "passwordRequired": "Por favor ingresa tu contraseña"
     }
   },

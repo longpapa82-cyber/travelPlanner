@@ -76,14 +76,14 @@
     "button": "Abmelden"
   },
   "deleteAccount": {
-    "title": "Konto löschen",
-    "message": "Das Löschen Ihres Kontos entfernt alle Daten dauerhaft. Sind Sie sicher?",
-    "button": "Konto löschen",
-    "passwordConfirm": "Geben Sie Ihr Passwort ein, um die Kontolöschung zu bestätigen",
+    "title": "Mitgliedschaft kündigen",
+    "message": "Die Kündigung löscht alle Ihre Daten dauerhaft. Sind Sie sicher?",
+    "button": "Kündigen",
+    "passwordConfirm": "Geben Sie Ihr Passwort ein, um die Kündigung zu bestätigen",
     "passwordPlaceholder": "Passwort eingeben",
     "alerts": {
-      "success": "Konto erfolgreich gelöscht",
-      "failed": "Konto konnte nicht gelöscht werden",
+      "success": "Mitgliedschaft erfolgreich gekündigt",
+      "failed": "Kündigung der Mitgliedschaft fehlgeschlagen",
       "passwordRequired": "Bitte geben Sie Ihr Passwort ein"
     }
   },

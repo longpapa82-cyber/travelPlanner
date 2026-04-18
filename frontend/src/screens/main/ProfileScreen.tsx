@@ -14,7 +14,7 @@ import {
   Alert,
   ActivityIndicator,
   Image,
-  KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
@@ -179,6 +179,7 @@ const ProfileScreen = ({ navigation }: any) => {
   };
 
   const handleConfirmDelete = async () => {
+    Keyboard.dismiss();
     if (!deletePassword.trim()) {
       showToast({ type: 'warning', message: t('deleteAccount.alerts.passwordRequired'), position: 'top' });
       return;
@@ -809,9 +810,13 @@ const ProfileScreen = ({ navigation }: any) => {
         </View>
       </Modal>
 
-      {/* Delete Account Password Confirmation Modal */}
-      <Modal visible={showDeleteConfirm} transparent animationType="slide">
-        <KeyboardAvoidingView style={styles.modalOverlay} behavior="padding">
+      {/* Delete Account (회원 탈퇴) Password Confirmation Modal */}
+      <Modal visible={showDeleteConfirm} transparent animationType="slide" onRequestClose={() => setShowDeleteConfirm(false)}>
+        <ScrollView
+          contentContainerStyle={styles.modalOverlay}
+          keyboardShouldPersistTaps="handled"
+          bounces={false}
+        >
           <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
             <View style={styles.modalHeader}>
               <Text style={[styles.modalTitle, { color: colors.error.main }]}>{t('deleteAccount.title')}</Text>
@@ -833,6 +838,8 @@ const ProfileScreen = ({ navigation }: any) => {
                 autoCapitalize="none"
                 editable={!isDeleting}
                 autoFocus
+                returnKeyType="done"
+                onSubmitEditing={handleConfirmDelete}
               />
               <Button variant="primary" fullWidth onPress={handleConfirmDelete} loading={isDeleting} disabled={isDeleting}
                 style={{ backgroundColor: colors.error.main }}>
@@ -840,7 +847,7 @@ const ProfileScreen = ({ navigation }: any) => {
               </Button>
             </View>
           </View>
-        </KeyboardAvoidingView>
+        </ScrollView>
       </Modal>
 
       {/* Profile Photo Preview Modal */}

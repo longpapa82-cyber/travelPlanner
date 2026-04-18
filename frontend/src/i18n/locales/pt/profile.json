@@ -76,14 +76,14 @@
     "button": "Sair"
   },
   "deleteAccount": {
-    "title": "Excluir Conta",
-    "message": "Excluir sua conta removerá permanentemente todos os dados. Tem certeza?",
-    "button": "Excluir Conta",
-    "passwordConfirm": "Digite sua senha para confirmar a exclusão da conta",
+    "title": "Cancelar inscrição",
+    "message": "O cancelamento excluirá permanentemente todos os seus dados. Tem certeza?",
+    "button": "Cancelar",
+    "passwordConfirm": "Digite sua senha para confirmar o cancelamento",
     "passwordPlaceholder": "Digite a senha",
     "alerts": {
-      "success": "Conta excluída com sucesso",
-      "failed": "Falha ao excluir conta",
+      "success": "Inscrição cancelada com sucesso",
+      "failed": "Falha ao cancelar inscrição",
       "passwordRequired": "Por favor, insira sua senha"
     }
   },

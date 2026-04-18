@@ -76,14 +76,14 @@
     "button": "ログアウト"
   },
   "deleteAccount": {
-    "title": "アカウント削除",
-    "message": "アカウントを削除すると、すべてのデータが完全に削除されます。本当に削除しますか？",
-    "button": "アカウントを削除",
-    "passwordConfirm": "アカウント削除を確認するためにパスワードを入力してください",
+    "title": "会員退会",
+    "message": "退会するとすべてのデータが完全に削除されます。本当に退会しますか？",
+    "button": "退会する",
+    "passwordConfirm": "退会を確認するためにパスワードを入力してください",
     "passwordPlaceholder": "パスワードを入力",
     "alerts": {
-      "success": "アカウントが削除されました",
-      "failed": "アカウントの削除に失敗しました",
+      "success": "退会が完了しました",
+      "failed": "退会処理に失敗しました",
       "passwordRequired": "パスワードを入力してください"
     }
   },

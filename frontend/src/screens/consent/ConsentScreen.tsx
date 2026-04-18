@@ -19,12 +19,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import * as Notifications from 'expo-notifications';
 import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../../components/core/Button';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
@@ -33,7 +31,9 @@ import api from '../../services/api';
 import type { ConsentsStatus, ConsentResponse, UpdateConsentsDto } from '../../types';
 
 // JIT consent types — shown at feature use time, not on initial screen
-const JIT_CONSENT_TYPES = ['location'];
+// Global benchmarking (Google Maps, Airbnb, TripAdvisor, Booking.com) confirms
+// photo/notification should use JIT pattern, not initial consent screen
+const JIT_CONSENT_TYPES = ['location', 'notification', 'photo'];
 
 interface Props {
   onComplete: () => void;
@@ -123,11 +123,6 @@ const ConsentScreen: React.FC<Props> = ({ onComplete }) => {
       };
 
       await api.updateConsents(dto);
-
-      // Request notification permission at consent time (photo permission is JIT — requested when user tries to pick a photo)
-      if (Platform.OS !== 'web' && selectedConsents['notification']) {
-        Notifications.requestPermissionsAsync().catch(() => {});
-      }
 
       showToast({ message: t('toast.updateSuccess'), type: 'success' });
       onComplete();

@@ -76,14 +76,14 @@
     "button": "Se déconnecter"
   },
   "deleteAccount": {
-    "title": "Supprimer le compte",
-    "message": "La suppression de votre compte entraînera la suppression définitive de toutes vos données. Êtes-vous sûr(e) ?",
-    "button": "Supprimer le compte",
-    "passwordConfirm": "Entrez votre mot de passe pour confirmer la suppression du compte",
+    "title": "Se désinscrire",
+    "message": "La désinscription supprimera définitivement toutes vos données. Êtes-vous sûr(e) ?",
+    "button": "Se désinscrire",
+    "passwordConfirm": "Entrez votre mot de passe pour confirmer la désinscription",
     "passwordPlaceholder": "Entrer le mot de passe",
     "alerts": {
-      "success": "Compte supprimé avec succès",
-      "failed": "Échec de la suppression du compte",
+      "success": "Désinscription effectuée avec succès",
+      "failed": "Échec de la désinscription",
       "passwordRequired": "Veuillez entrer votre mot de passe"
     }
   },

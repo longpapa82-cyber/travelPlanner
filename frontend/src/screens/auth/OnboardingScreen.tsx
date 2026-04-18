@@ -162,8 +162,14 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
   const webClick = (handler: () => void) =>
     isWeb ? { onClick: (e: any) => { e.stopPropagation(); handler(); } } : {};
 
+  const containerBg = scrollX.interpolate({
+    inputRange: SLIDES.map((_, i) => i * SCREEN_WIDTH),
+    outputRange: SLIDES.map((s) => s.gradient[1]),
+    extrapolate: 'clamp',
+  });
+
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { backgroundColor: containerBg }]}>
       <Animated.FlatList
         ref={flatListRef}
         data={SLIDES}
@@ -288,14 +294,13 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
         onClose={() => setLegalModal(null)}
         type={legalModal ?? 'terms'}
       />
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primary[700],
   },
   slide: {
     flex: 1,

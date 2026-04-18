@@ -76,14 +76,14 @@
     "button": "Log Keluar"
   },
   "deleteAccount": {
-    "title": "Padam Akaun",
-    "message": "Memadamkan akaun anda akan menghapuskan semua data secara kekal. Adakah anda pasti?",
-    "button": "Padam Akaun",
-    "passwordConfirm": "Masukkan kata laluan anda untuk mengesahkan pemadaman akaun",
+    "title": "Tarik Diri Keahlian",
+    "message": "Penarikan diri akan menghapuskan semua data anda secara kekal. Adakah anda pasti?",
+    "button": "Tarik Diri",
+    "passwordConfirm": "Masukkan kata laluan anda untuk mengesahkan penarikan diri keahlian",
     "passwordPlaceholder": "Masukkan kata laluan",
     "alerts": {
-      "success": "Akaun berjaya dipadamkan",
-      "failed": "Gagal memadam akaun",
+      "success": "Keahlian berjaya ditarik diri",
+      "failed": "Gagal menarik diri keahlian",
       "passwordRequired": "Sila masukkan kata laluan anda"
     }
   },

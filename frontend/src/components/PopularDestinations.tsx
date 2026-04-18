@@ -159,6 +159,7 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 20,
+    paddingBottom: 8,
     gap: 16,
   },
   card: {

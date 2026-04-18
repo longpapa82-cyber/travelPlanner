@@ -76,14 +76,14 @@
     "button": "Keluar"
   },
   "deleteAccount": {
-    "title": "Hapus Akun",
-    "message": "Menghapus akun Anda akan menghapus semua data secara permanen. Apakah Anda yakin?",
-    "button": "Hapus Akun",
-    "passwordConfirm": "Masukkan kata sandi Anda untuk mengonfirmasi penghapusan akun",
+    "title": "Berhenti Keanggotaan",
+    "message": "Berhenti keanggotaan akan menghapus semua data Anda secara permanen. Apakah Anda yakin?",
+    "button": "Berhenti",
+    "passwordConfirm": "Masukkan kata sandi Anda untuk mengonfirmasi pemberhentian keanggotaan",
     "passwordPlaceholder": "Masukkan kata sandi",
     "alerts": {
-      "success": "Akun berhasil dihapus",
-      "failed": "Gagal menghapus akun",
+      "success": "Keanggotaan berhasil diberhentikan",
+      "failed": "Gagal memberhentikan keanggotaan",
       "passwordRequired": "Silakan masukkan kata sandi Anda"
     }
   },
