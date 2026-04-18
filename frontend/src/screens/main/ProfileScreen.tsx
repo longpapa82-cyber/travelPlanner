@@ -553,31 +553,14 @@ const ProfileScreen = ({ navigation }: any) => {
           style={styles.menuItem}
           onPress={async () => {
             if (Platform.OS === 'web') return;
-            const { status } = await Notifications.getPermissionsAsync();
-            if (status === 'granted') {
-              Alert.alert(
-                t('settings.notifications.title', '알림 설정'),
-                t('settings.notifications.alreadyEnabled', '알림이 이미 활성화되어 있습니다. 시스템 설정에서 변경할 수 있습니다.'),
-                [
-                  { text: tCommon('ok', '확인'), style: 'cancel' },
-                  { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
-                ],
-              );
-            } else {
-              const { status: newStatus } = await Notifications.requestPermissionsAsync();
-              if (newStatus === 'granted') {
-                showToast({ type: 'success', message: t('settings.notifications.enabled', '알림이 활성화되었습니다'), position: 'top' });
-              } else {
-                Alert.alert(
-                  t('settings.notifications.title', '알림 설정'),
-                  t('settings.notifications.denied', '알림 권한이 거부되었습니다. 시스템 설정에서 허용해주세요.'),
-                  [
-                    { text: tCommon('ok', '확인'), style: 'cancel' },
-                    { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
-                  ],
-                );
-              }
-            }
+            Alert.alert(
+              t('settings.notifications.title', '알림 설정'),
+              t('settings.notifications.manageInSettings', '알림 설정은 시스템 설정에서 관리할 수 있습니다.'),
+              [
+                { text: tCommon('ok', '확인'), style: 'cancel' },
+                { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+              ],
+            );
           }}
           accessibilityRole="button"
         >
@@ -828,7 +811,7 @@ const ProfileScreen = ({ navigation }: any) => {
 
       {/* Delete Account Password Confirmation Modal */}
       <Modal visible={showDeleteConfirm} transparent animationType="slide">
-        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior="padding">
           <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
             <View style={styles.modalHeader}>
               <Text style={[styles.modalTitle, { color: colors.error.main }]}>{t('deleteAccount.title')}</Text>
@@ -849,6 +832,7 @@ const ProfileScreen = ({ navigation }: any) => {
                 importantForAutofill="no"
                 autoCapitalize="none"
                 editable={!isDeleting}
+                autoFocus
               />
               <Button variant="primary" fullWidth onPress={handleConfirmDelete} loading={isDeleting} disabled={isDeleting}
                 style={{ backgroundColor: colors.error.main }}>

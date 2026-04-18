@@ -154,14 +154,6 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
 
   const isLastSlide = currentIndex === SLIDES.length - 1;
 
-  // Interpolate controls background to match current slide gradient bottom color
-  const gradientEndColors = SLIDES.map((s) => s.gradient[1]);
-  const controlsBgColor = scrollX.interpolate({
-    inputRange: SLIDES.map((_, i) => i * SCREEN_WIDTH),
-    outputRange: gradientEndColors,
-    extrapolate: 'clamp',
-  });
-
   const isWeb = Platform.OS === 'web';
   const ControlsWrapper = isWeb ? View : SafeAreaView;
   const controlsProps = isWeb ? {} : { edges: ['bottom'] as const };
@@ -172,42 +164,39 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
 
   return (
     <View style={styles.container}>
-      <View style={[StyleSheet.absoluteFill, isWeb && { pointerEvents: 'auto' as const }]}>
-        <Animated.FlatList
-          ref={flatListRef}
-          data={SLIDES}
-          renderItem={renderSlide}
-          keyExtractor={(item) => item.id}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            {
-              useNativeDriver: false,
-              listener: isWeb ? (event: any) => {
-                clearTimeout(scrollTimeout.current);
-                scrollTimeout.current = setTimeout(() => {
-                  const x = event.nativeEvent.contentOffset.x;
-                  const index = Math.round(x / SCREEN_WIDTH);
-                  setCurrentIndex(index);
-                }, 150);
-              } : undefined,
-            }
-          )}
-          onMomentumScrollEnd={!isWeb ? (event) => {
-            const index = Math.round(
-              event.nativeEvent.contentOffset.x / SCREEN_WIDTH
-            );
-            setCurrentIndex(index);
-          } : undefined}
-          scrollEventThrottle={16}
-        />
-      </View>
+      <Animated.FlatList
+        ref={flatListRef}
+        data={SLIDES}
+        renderItem={renderSlide}
+        keyExtractor={(item) => item.id}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        style={StyleSheet.absoluteFill}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          {
+            useNativeDriver: false,
+            listener: isWeb ? (event: any) => {
+              clearTimeout(scrollTimeout.current);
+              scrollTimeout.current = setTimeout(() => {
+                const x = event.nativeEvent.contentOffset.x;
+                const index = Math.round(x / SCREEN_WIDTH);
+                setCurrentIndex(index);
+              }, 150);
+            } : undefined,
+          }
+        )}
+        onMomentumScrollEnd={!isWeb ? (event) => {
+          const index = Math.round(
+            event.nativeEvent.contentOffset.x / SCREEN_WIDTH
+          );
+          setCurrentIndex(index);
+        } : undefined}
+        scrollEventThrottle={16}
+      />
 
-      <View style={styles.controlsSpacer} />
-      <Animated.View style={[styles.controlsBg, { backgroundColor: controlsBgColor }]}>
-      <ControlsWrapper style={styles.controls} {...controlsProps}>
+      <ControlsWrapper style={styles.controls} {...controlsProps} pointerEvents="box-none">
         {renderPagination()}
 
         <View style={styles.buttonContainer}>
@@ -294,8 +283,6 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
         </View>
       </ControlsWrapper>
 
-      </Animated.View>
-
       <AuthLegalModal
         visible={legalModal !== null}
         onClose={() => setLegalModal(null)}
@@ -310,12 +297,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.primary[700],
   },
-  controlsSpacer: {
-    flex: 1,
-  },
-  controlsBg: {
-    zIndex: 10,
-  },
   slide: {
     flex: 1,
   },
@@ -323,7 +304,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 160,
+    paddingBottom: 180,
   },
   slideContent: {
     alignItems: 'center',
@@ -353,6 +334,10 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   controls: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     paddingHorizontal: 24,
     paddingBottom: Platform.OS === 'web' ? 24 : 0,
   },

@@ -140,9 +140,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   }, []);
 
-  // Auto-switch to manual mode when AI limit is reached
+  // Force manual mode when AI limit is reached (overrides state during async profile load)
+  const effectiveMode = isAiLimitReached ? 'manual' : planningMode;
   useEffect(() => {
-    if (isAiLimitReached && planningMode === 'ai') {
+    if (isAiLimitReached) {
       setPlanningMode('manual');
     }
   }, [isAiLimitReached]);
@@ -212,7 +213,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   }, []);
 
   const toggleInterest = useCallback((interest: string) => {
-    Keyboard.dismiss();
     setPrefInterests((prev) =>
       prev.includes(interest)
         ? prev.filter((i) => i !== interest)
@@ -290,13 +290,13 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     setFieldErrors({});
 
     // Check AI trip limit for free users — show paywall instead of toast
-    if (planningMode === 'ai' && isAiLimitReached) {
+    if (effectiveMode === 'ai' && isAiLimitReached) {
       showPaywall('ai_limit');
       return;
     }
 
     // Show AI consent modal on first AI usage (Apple App Store requirement)
-    if (planningMode === 'ai' && !aiConsentGiven) {
+    if (effectiveMode === 'ai' && !aiConsentGiven) {
       setShowAiConsent(true);
       return;
     }
@@ -347,7 +347,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     abortControllerRef.current = abortController;
 
     // Timeout warnings for AI mode
-    if (planningMode === 'ai') {
+    if (effectiveMode === 'ai') {
       Animated.timing(progressAnim, {
         toValue: 0.1,
         duration: 400,
@@ -389,7 +389,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         totalBudget: validBudget ? budgetNum : undefined,
         budgetCurrency: validBudget ? budgetCurrency : undefined,
         preferences: Object.keys(preferences).length > 0 ? preferences : undefined,
-        planningMode,
+        planningMode: effectiveMode,
       };
 
       // Use polling-based progress tracking (Railway SSE workaround)
@@ -821,13 +821,13 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 style={[
                   styles.modeCard,
                   {
-                    backgroundColor: planningMode === 'ai'
+                    backgroundColor: effectiveMode === 'ai'
                       ? `${theme.colors.primary}15`
                       : isDark ? colors.neutral[800] : colors.neutral[0],
-                    borderColor: planningMode === 'ai'
+                    borderColor: effectiveMode === 'ai'
                       ? theme.colors.primary
                       : theme.colors.border,
-                    borderWidth: planningMode === 'ai' ? 2 : 1,
+                    borderWidth: effectiveMode === 'ai' ? 2 : 1,
                     opacity: isAiLimitReached ? 0.5 : 1,
                   },
                 ]}
@@ -835,18 +835,18 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 disabled={isLoading || isAiLimitReached}
                 accessibilityRole="button"
                 accessibilityLabel={t('create.mode.ai')}
-                accessibilityState={{ selected: planningMode === 'ai', disabled: isAiLimitReached }}
+                accessibilityState={{ selected: effectiveMode === 'ai', disabled: isAiLimitReached }}
               >
                 <Icon
                   name="robot"
                   size={28}
-                  color={planningMode === 'ai' ? theme.colors.primary : theme.colors.textSecondary}
+                  color={effectiveMode === 'ai' ? theme.colors.primary : theme.colors.textSecondary}
                 />
                 <Text
                   style={[
                     styles.modeCardTitle,
                     {
-                      color: planningMode === 'ai' ? theme.colors.primary : theme.colors.text,
+                      color: effectiveMode === 'ai' ? theme.colors.primary : theme.colors.text,
                     },
                   ]}
                 >
@@ -872,31 +872,31 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 style={[
                   styles.modeCard,
                   {
-                    backgroundColor: planningMode === 'manual'
+                    backgroundColor: effectiveMode === 'manual'
                       ? `${theme.colors.primary}15`
                       : isDark ? colors.neutral[800] : colors.neutral[0],
-                    borderColor: planningMode === 'manual'
+                    borderColor: effectiveMode === 'manual'
                       ? theme.colors.primary
                       : theme.colors.border,
-                    borderWidth: planningMode === 'manual' ? 2 : 1,
+                    borderWidth: effectiveMode === 'manual' ? 2 : 1,
                   },
                 ]}
                 onPress={() => setPlanningMode('manual')}
                 disabled={isLoading}
                 accessibilityRole="button"
                 accessibilityLabel={t('create.mode.manual')}
-                accessibilityState={{ selected: planningMode === 'manual' }}
+                accessibilityState={{ selected: effectiveMode === 'manual' }}
               >
                 <Icon
                   name="pencil-ruler"
                   size={28}
-                  color={planningMode === 'manual' ? theme.colors.primary : theme.colors.textSecondary}
+                  color={effectiveMode === 'manual' ? theme.colors.primary : theme.colors.textSecondary}
                 />
                 <Text
                   style={[
                     styles.modeCardTitle,
                     {
-                      color: planningMode === 'manual' ? theme.colors.primary : theme.colors.text,
+                      color: effectiveMode === 'manual' ? theme.colors.primary : theme.colors.text,
                     },
                   ]}
                 >
@@ -1559,7 +1559,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
 
           {/* Info Box (AI mode only) */}
-          {planningMode === 'ai' && (
+          {effectiveMode === 'ai' && (
           <View
             style={[
               styles.infoBox,
@@ -1612,7 +1612,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           )}
 
           {/* Generation Progress (AI mode only) */}
-          {isLoading && planningMode === 'ai' && (
+          {isLoading && effectiveMode === 'ai' && (
             <View style={styles.progressContainer}>
               <View style={styles.progressBarBg}>
                 <Animated.View
@@ -1727,7 +1727,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               disabled={isLoading}
             >
               {isLoading
-                ? (planningMode === 'ai' ? t('create.generating') : t('create.mode.manualCreating'))
+                ? (effectiveMode === 'ai' ? t('create.generating') : t('create.mode.manualCreating'))
                 : t('create.submit')}
             </Button>
           </View>

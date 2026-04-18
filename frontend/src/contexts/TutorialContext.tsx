@@ -70,7 +70,7 @@ export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) 
   useEffect(() => {
     if (isFullyOnboarded && loaded && isAuthenticated) {
       const handle = InteractionManager.runAfterInteractions(() => {
-        settledTimerRef.current = setTimeout(() => setOnboardingSettled(true), 400);
+        settledTimerRef.current = setTimeout(() => setOnboardingSettled(true), 800);
       });
       return () => {
         handle.cancel();
