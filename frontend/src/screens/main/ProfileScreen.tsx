@@ -16,6 +16,7 @@ import {
   Image,
   Keyboard,
   KeyboardAvoidingView,
+  Pressable,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
@@ -230,9 +231,22 @@ const ProfileScreen = ({ navigation }: any) => {
   const handlePickProfilePhoto = async () => {
     if (isUploadingPhoto) return;
     try {
-      if (Platform.OS === 'android') {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+        if (status === 'undetermined') {
+          const { status: newStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (newStatus !== 'granted') {
+            Alert.alert(
+              t('editProfile.photoPermission.title', '사진 접근 권한'),
+              t('editProfile.photoPermission.message', '프로필 사진 변경을 위해 사진 라이브러리 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.'),
+              [
+                { text: tCommon('cancel', '취소'), style: 'cancel' },
+                { text: t('editProfile.photoPermission.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+              ],
+            );
+            return;
+          }
+        } else if (status !== 'granted') {
           Alert.alert(
             t('editProfile.photoPermission.title', '사진 접근 권한'),
             t('editProfile.photoPermission.message', '프로필 사진 변경을 위해 사진 라이브러리 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.'),
@@ -555,14 +569,40 @@ const ProfileScreen = ({ navigation }: any) => {
           style={styles.menuItem}
           onPress={async () => {
             if (Platform.OS === 'web') return;
-            Alert.alert(
-              t('settings.notifications.title', '알림 설정'),
-              t('settings.notifications.manageInSettings', '알림 설정은 시스템 설정에서 관리할 수 있습니다.'),
-              [
-                { text: tCommon('ok', '확인'), style: 'cancel' },
-                { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
-              ],
-            );
+            const { status } = await Notifications.getPermissionsAsync();
+            if (status === 'granted') {
+              Alert.alert(
+                t('settings.notifications.title', '알림 설정'),
+                t('settings.notifications.alreadyEnabled', '알림이 이미 허용되어 있습니다. 시스템 설정에서 변경할 수 있습니다.'),
+                [
+                  { text: tCommon('ok', '확인'), style: 'cancel' },
+                  { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+                ],
+              );
+            } else if (status === 'undetermined') {
+              const { status: newStatus } = await Notifications.requestPermissionsAsync();
+              if (newStatus === 'granted') {
+                showToast({ type: 'success', message: t('settings.notifications.enabled', '알림이 허용되었습니다'), position: 'top' });
+              } else {
+                Alert.alert(
+                  t('settings.notifications.title', '알림 설정'),
+                  t('settings.notifications.denied', '알림 권한이 거부되었습니다. 시스템 설정에서 허용해주세요.'),
+                  [
+                    { text: tCommon('ok', '확인'), style: 'cancel' },
+                    { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+                  ],
+                );
+              }
+            } else {
+              Alert.alert(
+                t('settings.notifications.title', '알림 설정'),
+                t('settings.notifications.denied', '알림 권한이 거부되었습니다. 시스템 설정에서 허용해주세요.'),
+                [
+                  { text: tCommon('ok', '확인'), style: 'cancel' },
+                  { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+                ],
+              );
+            }
           }}
           accessibilityRole="button"
         >
@@ -813,47 +853,42 @@ const ProfileScreen = ({ navigation }: any) => {
 
       {/* Delete Account (회원 탈퇴) Password Confirmation Modal */}
       <Modal visible={showDeleteConfirm} transparent animationType="slide" onRequestClose={() => setShowDeleteConfirm(false)}>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
-          <ScrollView
-            contentContainerStyle={styles.modalOverlay}
-            keyboardShouldPersistTaps="handled"
-            bounces={false}
-          >
-            <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
-              <View style={styles.modalHeader}>
-                <Text style={[styles.modalTitle, { color: colors.error.main }]}>{t('deleteAccount.title')}</Text>
-                <TouchableOpacity onPress={() => setShowDeleteConfirm(false)}>
-                  <Icon name="close" size={24} color={theme.colors.textSecondary} />
-                </TouchableOpacity>
+        <Pressable style={styles.modalOverlay} onPress={() => Keyboard.dismiss()}>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+            <Pressable onPress={(e) => e.stopPropagation()}>
+              <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+                <View style={styles.modalHeader}>
+                  <Text style={[styles.modalTitle, { color: colors.error.main }]}>{t('deleteAccount.title')}</Text>
+                  <TouchableOpacity onPress={() => setShowDeleteConfirm(false)}>
+                    <Icon name="close" size={24} color={theme.colors.textSecondary} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.modalBody}>
+                  <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('deleteAccount.passwordConfirm')}</Text>
+                  <TextInput
+                    style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
+                    value={deletePassword}
+                    onChangeText={setDeletePassword}
+                    placeholder={t('deleteAccount.passwordPlaceholder')}
+                    placeholderTextColor={theme.colors.textSecondary}
+                    secureTextEntry
+                    autoComplete="off"
+                    importantForAutofill="no"
+                    autoCapitalize="none"
+                    editable={!isDeleting}
+                    autoFocus
+                    returnKeyType="done"
+                    onSubmitEditing={handleConfirmDelete}
+                  />
+                  <Button variant="primary" fullWidth onPress={handleConfirmDelete} loading={isDeleting} disabled={isDeleting}
+                    style={{ backgroundColor: colors.error.main }}>
+                    {t('deleteAccount.button')}
+                  </Button>
+                </View>
               </View>
-              <View style={styles.modalBody}>
-                <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('deleteAccount.passwordConfirm')}</Text>
-                <TextInput
-                  style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
-                  value={deletePassword}
-                  onChangeText={setDeletePassword}
-                  placeholder={t('deleteAccount.passwordPlaceholder')}
-                  placeholderTextColor={theme.colors.textSecondary}
-                  secureTextEntry
-                  autoComplete="off"
-                  importantForAutofill="no"
-                  autoCapitalize="none"
-                  editable={!isDeleting}
-                  autoFocus
-                  returnKeyType="done"
-                  onSubmitEditing={handleConfirmDelete}
-                />
-                <Button variant="primary" fullWidth onPress={handleConfirmDelete} loading={isDeleting} disabled={isDeleting}
-                  style={{ backgroundColor: colors.error.main }}>
-                  {t('deleteAccount.button')}
-                </Button>
-              </View>
-            </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
+            </Pressable>
+          </KeyboardAvoidingView>
+        </Pressable>
       </Modal>
 
       {/* Profile Photo Preview Modal */}
