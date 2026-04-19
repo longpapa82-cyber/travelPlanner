@@ -127,7 +127,8 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: 20,
-    padding: 28,
+    paddingVertical: 28,
+    paddingHorizontal: 24,
     width: '100%',
     maxWidth: 380,
     alignItems: 'center',
@@ -154,19 +155,20 @@ const styles = StyleSheet.create({
   },
   benefits: {
     width: '100%',
-    gap: 16,
-    marginBottom: 28,
-    paddingHorizontal: 8,
+    gap: 14,
+    marginBottom: 24,
+    alignSelf: 'stretch',
   },
   benefitRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
+    gap: 12,
+    paddingHorizontal: 4,
   },
   benefitText: {
     fontSize: 15,
     flex: 1,
-    lineHeight: 21,
+    lineHeight: 22,
   },
 });
 

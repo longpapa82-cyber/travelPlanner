@@ -62,15 +62,20 @@ export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) 
   const isFullyVerified = user?.provider !== 'email' || user?.isEmailVerified === true;
   const isFullyOnboarded = isFullyVerified && !needsConsentScreen;
 
-  // Delay tutorial display after onboarding completes to prevent flash
-  // during ConsentScreen → HomeScreen navigation transition
   const [onboardingSettled, setOnboardingSettled] = useState(false);
   const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (isFullyOnboarded && loaded && isAuthenticated) {
       const handle = InteractionManager.runAfterInteractions(() => {
-        settledTimerRef.current = setTimeout(() => setOnboardingSettled(true), 800);
+        settledTimerRef.current = setTimeout(async () => {
+          const notifShown = await AsyncStorage.getItem('@travelplanner:notification_preperm_shown');
+          if (notifShown !== 'true') {
+            settledTimerRef.current = setTimeout(() => setOnboardingSettled(true), 3000);
+          } else {
+            setOnboardingSettled(true);
+          }
+        }, 800);
       });
       return () => {
         handle.cancel();
