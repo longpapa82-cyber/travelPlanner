@@ -159,6 +159,14 @@ const ProfileScreen = ({ navigation }: any) => {
 
   const handleDeleteAccount = async () => {
     if (user?.provider === 'email') {
+      const ok = await confirm({
+        title: t('deleteAccount.title'),
+        message: t('deleteAccount.warningMessage', { defaultValue: '회원 탈퇴 시 모든 여행 데이터, 프로필, 구독 정보가 영구 삭제되며 복구할 수 없습니다. 정말 탈퇴하시겠습니까?' }),
+        confirmText: tCommon('confirm'),
+        cancelText: tCommon('cancel'),
+        destructive: true,
+      });
+      if (!ok) return;
       setDeletePassword('');
       setShowDeleteConfirm(true);
       return;
@@ -853,12 +861,15 @@ const ProfileScreen = ({ navigation }: any) => {
         </View>
       </Modal>
 
-      {/* Delete Account (회원 탈퇴) Password Confirmation Modal */}
-      <Modal visible={showDeleteConfirm} transparent animationType="slide" onRequestClose={() => setShowDeleteConfirm(false)}>
-        <Pressable style={[styles.modalOverlay, { paddingBottom: insets.bottom }]} onPress={() => Keyboard.dismiss()}>
-          <KeyboardAvoidingView behavior="padding">
+      {/* Delete Account (회원 탈퇴) Password Confirmation Modal — center-positioned */}
+      <Modal visible={showDeleteConfirm} transparent animationType="fade" onRequestClose={() => setShowDeleteConfirm(false)}>
+        <Pressable
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: 20 }}
+          onPress={() => Keyboard.dismiss()}
+        >
+          <KeyboardAvoidingView behavior="padding" style={{ width: '100%' }}>
             <Pressable onPress={(e) => e.stopPropagation()}>
-              <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+              <View style={[styles.deleteModalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
                 <View style={styles.modalHeader}>
                   <Text style={[styles.modalTitle, { color: colors.error.main }]}>{t('deleteAccount.title')}</Text>
                   <TouchableOpacity onPress={() => setShowDeleteConfirm(false)}>
@@ -1073,6 +1084,14 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     borderTopRightRadius: 20,
     paddingBottom: 34,
     maxHeight: '90%',
+  },
+  // 회원 탈퇴 비밀번호 확인 — center-positioned modal (bottom-sheet 하단 여백 8회 재발 방지)
+  deleteModalContent: {
+    borderRadius: 16,
+    padding: 0,
+    maxWidth: 400,
+    width: '100%',
+    alignSelf: 'center' as const,
   },
   modalHeader: {
     flexDirection: 'row',

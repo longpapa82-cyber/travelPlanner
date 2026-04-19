@@ -83,7 +83,7 @@ const getTravelerOptions = (t: TFunction) => [
   { count: 1, label: t('create.travelers.options.solo'), icon: 'account' },
   { count: 2, label: t('create.travelers.options.two'), icon: 'account-multiple' },
   { count: 4, label: t('create.travelers.options.group'), icon: 'account-group' },
-  { count: 6, label: t('create.travelers.options.large'), icon: 'account-supervisor' },
+  { count: -1, label: t('create.travelers.options.large'), icon: 'account-supervisor' },
 ];
 
 const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
@@ -149,6 +149,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [isAiLimitReached]);
 
   const isMountedRef = useRef(true);
+  const customTravelersRef = useRef<TextInput>(null);
   useEffect(() => { return () => { isMountedRef.current = false; }; }, []);
 
   const doCreateTripRef = useRef<(() => Promise<void>) | null>(null);
@@ -189,9 +190,13 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   useEffect(() => {
     const params = route.params;
     if (!params) return;
+    const hasParams = params.destination || params.duration || params.travelers;
+    if (!hasParams) return;
     if (params.destination) handleSelectDestination(params.destination);
     if (params.duration) handleSelectDuration(params.duration);
     if (params.travelers) handleSelectTravelers(params.travelers);
+    // Consume params once — prevent re-fill on subsequent focus events
+    navigation.setParams({ destination: undefined, duration: undefined, travelers: undefined });
   }, [route.params]);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -243,12 +248,17 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [setDurationDays]);
 
   const setTravelersCount = useCallback((count: number) => {
-    setNumberOfTravelers(Math.min(count, 50));
+    setNumberOfTravelers(Math.min(count, 20));
   }, []);
 
   const handleSelectTravelers = useCallback((count: number) => {
-    Keyboard.dismiss();
-    setTravelersCount(count);
+    if (count === -1) {
+      setNumberOfTravelers(prev => (prev >= 5 ? prev : 5));
+      setTimeout(() => customTravelersRef.current?.focus(), 100);
+    } else {
+      Keyboard.dismiss();
+      setTravelersCount(count);
+    }
   }, [setTravelersCount]);
 
   const calculateDuration = useCallback((): number | null => {
@@ -728,6 +738,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       setPrefInterests([]);
       setPlanningMode('ai');
       setInsightsUnlocked(false);
+
+      // Clear navigation params so the route.params useEffect doesn't re-fill the form
+      navigation.setParams({ destination: undefined, duration: undefined, travelers: undefined });
     });
     return unsubscribe;
   }, [navigation]);
@@ -1238,53 +1251,49 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
             {/* Traveler Quick Picks */}
             <View style={styles.quickPicks}>
-              {TRAVELER_OPTIONS.map((option, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.quickPickChip,
-                    {
-                      backgroundColor:
-                        numberOfTravelers === option.count
+              {TRAVELER_OPTIONS.map((option, index) => {
+                const isSelected = option.count === -1
+                  ? numberOfTravelers >= 5
+                  : numberOfTravelers === option.count;
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.quickPickChip,
+                      {
+                        backgroundColor: isSelected
                           ? theme.colors.primary
                           : isDark
                           ? colors.neutral[800]
                           : colors.neutral[100],
-                      borderColor:
-                        numberOfTravelers === option.count
+                        borderColor: isSelected
                           ? theme.colors.primary
                           : theme.colors.border,
-                    },
-                  ]}
-                  onPress={() => handleSelectTravelers(option.count)}
-                  accessibilityRole="button"
-                  accessibilityLabel={option.label}
-                  accessibilityState={{ selected: numberOfTravelers === option.count }}
-                >
-                  <Icon
-                    name={option.icon}
-                    size={16}
-                    color={
-                      numberOfTravelers === option.count
-                        ? colors.neutral[0]
-                        : theme.colors.textSecondary
-                    }
-                  />
-                  <Text
-                    style={[
-                      styles.quickPickText,
-                      {
-                        color:
-                          numberOfTravelers === option.count
-                            ? colors.neutral[0]
-                            : theme.colors.text,
                       },
                     ]}
+                    onPress={() => handleSelectTravelers(option.count)}
+                    accessibilityRole="button"
+                    accessibilityLabel={option.label}
+                    accessibilityState={{ selected: isSelected }}
                   >
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Icon
+                      name={option.icon}
+                      size={16}
+                      color={isSelected ? colors.neutral[0] : theme.colors.textSecondary}
+                    />
+                    <Text
+                      style={[
+                        styles.quickPickText,
+                        {
+                          color: isSelected ? colors.neutral[0] : theme.colors.text,
+                        },
+                      ]}
+                    >
+                      {option.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
 
             {/* Custom Number Input */}
@@ -1293,14 +1302,15 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 <Icon name="account" size={20} color={theme.colors.textSecondary} />
               </View>
               <TextInput
+                ref={customTravelersRef}
                 style={[styles.input, { color: theme.colors.text }]}
-                placeholder={t('create.duration.custom')}
+                placeholder={t('create.travelers.customPlaceholder', { defaultValue: '직접 입력 (최대 20명)' })}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={numberOfTravelers.toString()}
                 onChangeText={(text) => {
                   const num = parseInt(text);
-                  if (!isNaN(num) && num > 0 && num <= 50) {
-                    setNumberOfTravelers(num);
+                  if (!isNaN(num)) {
+                    setNumberOfTravelers(Math.max(1, Math.min(num, 20)));
                   }
                 }}
                 keyboardType="number-pad"

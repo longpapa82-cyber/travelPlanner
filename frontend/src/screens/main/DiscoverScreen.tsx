@@ -23,15 +23,12 @@ import { trackEvent } from '../../services/eventTracker';
 import { APP_URL } from '../../constants/config';
 import { ensureAbsoluteUrl, getDestinationImageUrl } from '../../utils/images';
 
-type Tab = 'following' | 'trending';
-
 const DiscoverScreen = () => {
   const { t } = useTranslation('social');
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
   const navigation = useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
 
-  const [activeTab, setActiveTab] = useState<Tab>('trending');
   const [items, setItems] = useState<FeedTrip[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -40,9 +37,9 @@ const DiscoverScreen = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const fetchFeed = useCallback(
-    async (tab: Tab, pageNum = 1, append = false) => {
+    async (pageNum = 1, append = false) => {
       try {
-        const data = await apiService.getDiscoverFeed(tab, pageNum, 20);
+        const data = await apiService.getDiscoverFeed('trending', pageNum, 20);
         if (append) {
           setItems((prev) => [...prev, ...data.items]);
         } else {
@@ -66,29 +63,20 @@ const DiscoverScreen = () => {
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
-      fetchFeed(activeTab, 1);
-      trackEvent('feed_viewed', { tab: activeTab });
-    }, [fetchFeed, activeTab]),
+      fetchFeed(1);
+      trackEvent('feed_viewed', { tab: 'trending' });
+    }, [fetchFeed]),
   );
-
-  const switchTab = (tab: Tab) => {
-    if (tab === activeTab) return;
-    setActiveTab(tab);
-    setIsLoading(true);
-    setItems([]);
-    fetchFeed(tab, 1);
-    trackEvent('feed_viewed', { tab });
-  };
 
   const onRefresh = () => {
     setIsRefreshing(true);
-    fetchFeed(activeTab, 1);
+    fetchFeed(1);
   };
 
   const loadMore = () => {
     if (isLoadingMore || items.length >= total) return;
     setIsLoadingMore(true);
-    fetchFeed(activeTab, page + 1, true);
+    fetchFeed(page + 1, true);
   };
 
   const handleLikeToggle = async (trip: FeedTrip) => {
@@ -135,11 +123,6 @@ const DiscoverScreen = () => {
     }
   };
 
-  const navigateToProfile = (userId: string) => {
-    trackEvent('profile_viewed', { userId });
-    navigation.navigate('UserProfile', { userId });
-  };
-
   const handleTripPress = (tripId: string) => {
     trackEvent('trip_viewed', { tripId, source: 'discover' });
     (navigation as any).navigate('Trips', { screen: 'TripDetail', params: { tripId } });
@@ -148,7 +131,7 @@ const DiscoverScreen = () => {
   const handleShareTrip = async (trip: FeedTrip) => {
     try {
       await Share.share({
-        message: `${trip.destination}${trip.country ? `, ${trip.country}` : ''}\n${t('tripBy', { name: trip.user.name })}\n\n${APP_URL}`,
+        message: `${trip.destination}${trip.country ? `, ${trip.country}` : ''}\n\n${APP_URL}`,
       });
       trackEvent('trip_shared', { tripId: trip.id, source: 'discover' });
     } catch {
@@ -171,7 +154,7 @@ const DiscoverScreen = () => {
       onPress={() => handleTripPress(item.id)}
       activeOpacity={0.85}
       accessibilityRole="button"
-      accessibilityLabel={`${item.destination} - ${t('tripBy', { name: item.user.name })}`}
+      accessibilityLabel={item.destination}
     >
       <Image
         source={{
@@ -182,24 +165,6 @@ const DiscoverScreen = () => {
         style={styles.coverImage}
       />
       <View style={styles.cardBody}>
-        <View style={styles.cardHeader}>
-          <TouchableOpacity
-            style={styles.userInfo}
-            onPress={() => navigateToProfile(item.user.id)}
-          >
-            {item.user.profileImage ? (
-              <Image source={{ uri: ensureAbsoluteUrl(item.user.profileImage) }} style={styles.avatar} />
-            ) : (
-              <View style={[styles.avatar, styles.avatarPlaceholder]}>
-                <Icon name="account" size={18} color={colors.neutral[400]} />
-              </View>
-            )}
-            <Text style={[styles.userName, { color: theme.colors.text }]} numberOfLines={1}>
-              {item.user.name}
-            </Text>
-          </TouchableOpacity>
-        </View>
-
         <Text style={[styles.destination, { color: theme.colors.text }]} numberOfLines={1}>
           {item.destination}
           {item.country ? `, ${item.country}` : ''}
@@ -249,41 +214,8 @@ const DiscoverScreen = () => {
     </TouchableOpacity>
   );
 
-  const emptyKey = activeTab === 'following' ? 'emptyFollowing' : 'emptyTrending';
-  const emptyMsgKey = activeTab === 'following' ? 'emptyFollowingMessage' : 'emptyTrendingMessage';
-
   return (
     <View style={styles.container}>
-      {/* Tab Selector */}
-      <View style={styles.tabBar}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'following' && styles.activeTab]}
-          onPress={() => switchTab('following')}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              { color: activeTab === 'following' ? theme.colors.primary : theme.colors.textSecondary },
-            ]}
-          >
-            {t('following')}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'trending' && styles.activeTab]}
-          onPress={() => switchTab('trending')}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              { color: activeTab === 'trending' ? theme.colors.primary : theme.colors.textSecondary },
-            ]}
-          >
-            {t('trending')}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
       {isLoading ? (
         <View style={[styles.container, styles.center]}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -317,16 +249,16 @@ const DiscoverScreen = () => {
                 ]}
               >
                 <Icon
-                  name={activeTab === 'following' ? 'account-group-outline' : 'compass-outline'}
+                  name="compass-outline"
                   size={60}
                   color={theme.colors.textSecondary}
                 />
               </View>
               <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>
-                {t(emptyKey)}
+                {t('emptyTrending')}
               </Text>
               <Text style={[styles.emptyMessage, { color: theme.colors.textSecondary }]}>
-                {t(emptyMsgKey)}
+                {t('emptyTrendingMessage')}
               </Text>
             </View>
           }
@@ -345,25 +277,6 @@ const createStyles = (theme: any, isDark: boolean) =>
     center: {
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    tabBar: {
-      flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.border,
-    },
-    tab: {
-      flex: 1,
-      paddingVertical: 14,
-      alignItems: 'center',
-      borderBottomWidth: 2,
-      borderBottomColor: 'transparent',
-    },
-    activeTab: {
-      borderBottomColor: theme.colors.primary,
-    },
-    tabText: {
-      fontSize: 15,
-      fontWeight: '600',
     },
     listContent: {
       paddingBottom: 20,
@@ -405,32 +318,6 @@ const createStyles = (theme: any, isDark: boolean) =>
     cardBody: {
       padding: 14,
       gap: 6,
-    },
-    cardHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    userInfo: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
-      flex: 1,
-    },
-    avatar: {
-      width: 28,
-      height: 28,
-      borderRadius: 14,
-    },
-    avatarPlaceholder: {
-      backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : colors.neutral[200],
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    userName: {
-      fontSize: 13,
-      fontWeight: '500',
-      flex: 1,
     },
     destination: {
       fontSize: 17,

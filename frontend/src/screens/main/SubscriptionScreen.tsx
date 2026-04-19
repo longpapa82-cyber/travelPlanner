@@ -64,8 +64,7 @@ const SubscriptionScreen = () => {
     return `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
   };
 
-  const formatBillingDate = (dateStr?: string) =>
-    isAdmin ? formatDateTime(dateStr) : formatDate(dateStr);
+  const formatBillingDate = (dateStr?: string) => formatDate(dateStr);
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>

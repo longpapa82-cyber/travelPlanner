@@ -92,7 +92,7 @@ function getLabel(key: string, vars?: Record<string, string | number>): string {
 }
 
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { needsConsentScreen } = useConsent();
+  const { needsConsentScreen, isCheckingConsent } = useConsent();
   const [hasPermission, setHasPermission] = useState(false);
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
   const [lastNotificationResponse, setLastNotificationResponse] =
@@ -200,6 +200,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
   // Bridge: AuthContext calls this after successful login
   // Instead of auto-requesting, show pre-permission modal (once)
+  // Always defer to pendingPrePermission — the useEffect below will
+  // show the modal after consent check completes.
   useEffect(() => {
     setPushRegistrationCallback(async () => {
       if (Platform.OS === 'web') {
@@ -213,20 +215,21 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       }
       const shown = await AsyncStorage.getItem(NOTIFICATION_PREPERM_KEY);
       if (shown === 'true') return;
-      if (needsConsentScreen) {
-        setPendingPrePermission(true);
-      } else {
-        setShowPrePermissionModal(true);
-      }
+      // Always set pending — the useEffect below will wait for
+      // consent check to finish before showing the modal.
+      setPendingPrePermission(true);
     });
     return () => {
       setPushRegistrationCallback(null);
     };
-  }, [registerForPushNotifications, needsConsentScreen]);
+  }, [registerForPushNotifications]);
 
-  // Show pending notification modal after ConsentScreen completes
+  // Show pending notification modal after consent check completes
+  // and ConsentScreen is either not needed or already dismissed.
+  // Wait for isCheckingConsent=false to avoid the race where
+  // needsConsentScreen is still false because the check hasn't finished.
   useEffect(() => {
-    if (pendingPrePermission && !needsConsentScreen) {
+    if (pendingPrePermission && !isCheckingConsent && !needsConsentScreen) {
       const timer = setTimeout(() => {
         setPendingPrePermission(false);
         setShowPrePermissionModal(true);
@@ -234,7 +237,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       return () => clearTimeout(timer);
     }
     return undefined;
-  }, [pendingPrePermission, needsConsentScreen]);
+  }, [pendingPrePermission, isCheckingConsent, needsConsentScreen]);
 
   const scheduleTripReminders = async (trip: Trip) => {
     if (!hasPermission) {
