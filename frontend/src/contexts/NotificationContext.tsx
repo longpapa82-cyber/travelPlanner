@@ -35,6 +35,7 @@ interface NotificationContextValue {
   lastNotificationResponse: Notifications.NotificationResponse | null;
   showPrePermissionModal: boolean;
   onPrePermissionDismiss: () => void;
+  triggerPrePermission: () => Promise<void>;
 }
 
 const NotificationContext = createContext<NotificationContextValue>({
@@ -48,6 +49,7 @@ const NotificationContext = createContext<NotificationContextValue>({
   lastNotificationResponse: null,
   showPrePermissionModal: false,
   onPrePermissionDismiss: () => {},
+  triggerPrePermission: async () => {},
 });
 
 export const useNotifications = () => useContext(NotificationContext);
@@ -198,6 +200,31 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     setShowPrePermissionModal(false);
   }, []);
 
+  /**
+   * Direct trigger for the pre-permission notification modal.
+   *
+   * V141 fix: The pushRegistrationCallback bridge has a race condition —
+   * AuthContext.checkAuthStatus() calls registerPushAfterLogin() during
+   * mount before NotificationProvider's useEffect registers the callback.
+   * This function provides a reliable, direct path that callers (e.g.
+   * ConsentScreen onComplete, or RootNavigator after consent dismissal)
+   * can invoke when the user has finished all blocking flows.
+   */
+  const triggerPrePermission = useCallback(async () => {
+    if (Platform.OS === 'web') {
+      await registerForPushNotifications();
+      return;
+    }
+    const { status } = await Notifications.getPermissionsAsync();
+    if (status === 'granted') {
+      await registerForPushNotifications();
+      return;
+    }
+    const shown = await AsyncStorage.getItem(NOTIFICATION_PREPERM_KEY);
+    if (shown === 'true') return;
+    setShowPrePermissionModal(true);
+  }, [registerForPushNotifications]);
+
   // Bridge: AuthContext calls this after successful login
   // Instead of auto-requesting, show pre-permission modal (once)
   // Always defer to pendingPrePermission — the useEffect below will
@@ -329,6 +356,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         lastNotificationResponse,
         showPrePermissionModal,
         onPrePermissionDismiss,
+        triggerPrePermission,
       }}
     >
       {children}

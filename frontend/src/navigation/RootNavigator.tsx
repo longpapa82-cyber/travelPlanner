@@ -1,9 +1,10 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { NavigationContainer, LinkingOptions, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
 import { useAuth } from '../contexts/AuthContext';
 import { useConsent } from '../contexts/ConsentContext';
+import { useNotifications } from '../contexts/NotificationContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTrackingTransparency } from '../hooks/useTrackingTransparency';
 import { RootStackParamList } from '../types';
@@ -80,8 +81,34 @@ const RootNavigator = () => {
     clearPendingVerification,
   } = useAuth();
   const { needsConsentScreen, isCheckingConsent, markConsentComplete } = useConsent();
+  const { triggerPrePermission } = useNotifications();
   const { theme, isDark } = useTheme();
   const { shouldShowPrePermission, sessionCount, requestTracking } = useTrackingTransparency();
+
+  // V141 fix: When the user is authenticated and doesn't need consent,
+  // the pushRegistrationCallback bridge may have been missed (race condition
+  // during mount). Trigger pre-permission directly once the user lands on
+  // the main screen. The triggerPrePermission function is idempotent —
+  // it checks permission status and AsyncStorage before showing the modal.
+  const hasTriggeredPrePermRef = useRef(false);
+  useEffect(() => {
+    if (
+      isAuthenticated &&
+      !isLoading &&
+      !isCheckingConsent &&
+      !needsConsentScreen &&
+      !pendingVerification &&
+      !hasTriggeredPrePermRef.current
+    ) {
+      hasTriggeredPrePermRef.current = true;
+      // Small delay to let the main screen render first
+      const timer = setTimeout(() => {
+        triggerPrePermission();
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [isAuthenticated, isLoading, isCheckingConsent, needsConsentScreen, pendingVerification, triggerPrePermission]);
 
   // ATT pre-permission modal state
   const [showATTModal, setShowATTModal] = useState(false);

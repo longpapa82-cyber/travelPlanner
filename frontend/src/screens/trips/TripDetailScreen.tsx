@@ -573,7 +573,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
           )}
 
           {/* Trip Description */}
-          {activeTab === 'itinerary' && trip.description && (
+          {activeTab === 'itinerary' && trip.description && trip.description.trim().length >= 10 && (
             <Animated.View
               style={[
                 styles.descriptionCard,
