@@ -87,6 +87,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [numberOfTravelers, setNumberOfTravelers] = useState(1);
+  const [travelerInputText, setTravelerInputText] = useState('');
   const [description, setDescription] = useState('');
   const [totalBudget, setTotalBudget] = useState('');
   const [budgetCurrency, setBudgetCurrency] = useState('USD');
@@ -134,6 +135,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       setStartDate(data.startDate.split('T')[0]);
       setEndDate(data.endDate.split('T')[0]);
       setNumberOfTravelers(data.numberOfTravelers || 1);
+      setTravelerInputText((data.numberOfTravelers || 1).toString());
       setDescription(data.description || '');
       setTotalBudget(data.totalBudget ? String(data.totalBudget) : '');
       setBudgetCurrency(data.budgetCurrency || 'USD');
@@ -152,10 +154,13 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleSelectTravelers = (count: number) => {
     if (count === -1) {
-      setNumberOfTravelers(prev => (prev >= 5 ? prev : 5));
+      const val = numberOfTravelers >= 5 ? numberOfTravelers : 5;
+      setNumberOfTravelers(val);
+      setTravelerInputText(val.toString());
       setTimeout(() => customTravelersRef.current?.focus(), 100);
     } else {
       setNumberOfTravelers(Math.min(count, 20));
+      setTravelerInputText('');
     }
   };
 
@@ -615,12 +620,30 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 style={[styles.input, { color: theme.colors.text }]}
                 placeholder={t('create.travelers.customPlaceholder', { defaultValue: '직접 입력 (최대 20명)' })}
                 placeholderTextColor={theme.colors.textSecondary}
-                value={numberOfTravelers.toString()}
+                value={travelerInputText || numberOfTravelers.toString()}
                 accessibilityLabel={t('edit.travelers.title')}
                 onChangeText={(text) => {
-                  const num = parseInt(text);
-                  if (!isNaN(num)) {
-                    setNumberOfTravelers(Math.max(1, Math.min(num, 20)));
+                  const cleaned = text.replace(/[^0-9]/g, '');
+                  setTravelerInputText(cleaned);
+                }}
+                onBlur={() => {
+                  const num = parseInt(travelerInputText);
+                  if (!isNaN(num) && num >= 1) {
+                    const clamped = Math.min(num, 20);
+                    setNumberOfTravelers(clamped);
+                    setTravelerInputText(clamped.toString());
+                  } else {
+                    setTravelerInputText(numberOfTravelers.toString());
+                  }
+                }}
+                onSubmitEditing={() => {
+                  const num = parseInt(travelerInputText);
+                  if (!isNaN(num) && num >= 1) {
+                    const clamped = Math.min(num, 20);
+                    setNumberOfTravelers(clamped);
+                    setTravelerInputText(clamped.toString());
+                  } else {
+                    setTravelerInputText(numberOfTravelers.toString());
                   }
                 }}
                 keyboardType="number-pad"

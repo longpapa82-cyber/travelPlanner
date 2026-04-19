@@ -15,6 +15,7 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
+  Pressable,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -276,21 +277,14 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
         }
 
         return (
-          <Modal visible={showCollabModal} transparent animationType="slide">
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <View style={styles.modalOverlay}>
-                <KeyboardAvoidingView
-                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                  style={styles.keyboardAvoidingView}
-                >
-                  <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-                    <View>
-                      {collabModalContent}
-                    </View>
-                  </TouchableWithoutFeedback>
-                </KeyboardAvoidingView>
-              </View>
-            </TouchableWithoutFeedback>
+          <Modal visible={showCollabModal} transparent animationType="fade" onRequestClose={() => setShowCollabModal(false)}>
+            <Pressable style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: 20 }} onPress={() => Keyboard.dismiss()}>
+              <KeyboardAvoidingView behavior="padding" style={{ width: '100%', maxWidth: 400 }}>
+                <Pressable onPress={(e) => e.stopPropagation()}>
+                  {collabModalContent}
+                </Pressable>
+              </KeyboardAvoidingView>
+            </Pressable>
           </Modal>
         );
       })()}
@@ -377,10 +371,8 @@ const createStyles = (theme: any, isDark: boolean, insets: any) =>
     },
     modalContent: {
       backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0],
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderRadius: 16,
       padding: 20,
-      paddingBottom: Math.max(34, insets.bottom + 20), // Account for Android navigation bar
     },
     modalHeader: {
       flexDirection: 'row',

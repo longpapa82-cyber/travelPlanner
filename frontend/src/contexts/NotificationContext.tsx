@@ -220,6 +220,10 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       await registerForPushNotifications();
       return;
     }
+    if (status === 'undetermined') {
+      setShowPrePermissionModal(true);
+      return;
+    }
     const shown = await AsyncStorage.getItem(NOTIFICATION_PREPERM_KEY);
     if (shown === 'true') return;
     setShowPrePermissionModal(true);
