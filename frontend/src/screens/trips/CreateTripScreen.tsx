@@ -1311,10 +1311,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 style={[styles.input, { color: theme.colors.text }]}
                 placeholder={t('create.travelers.customPlaceholder', { defaultValue: '직접 입력 (최대 20명)' })}
                 placeholderTextColor={theme.colors.textSecondary}
-                value={travelerInputText || numberOfTravelers.toString()}
+                value={travelerInputText}
                 onChangeText={(text) => {
-                  const cleaned = text.replace(/[^0-9]/g, '');
+                  const cleaned = text.replace(/[^0-9]/g, '').slice(0, 2);
                   setTravelerInputText(cleaned);
+                  const num = parseInt(cleaned);
+                  if (!isNaN(num) && num >= 1 && num <= 20) {
+                    setNumberOfTravelers(num);
+                  }
                 }}
                 onBlur={() => {
                   const num = parseInt(travelerInputText);
@@ -1322,7 +1326,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     const clamped = Math.min(num, 20);
                     setNumberOfTravelers(clamped);
                     setTravelerInputText(clamped.toString());
-                  } else {
+                  } else if (!travelerInputText) {
                     setTravelerInputText(numberOfTravelers.toString());
                   }
                 }}
