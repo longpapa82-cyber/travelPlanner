@@ -101,10 +101,9 @@ const RootNavigator = () => {
       !hasTriggeredPrePermRef.current
     ) {
       hasTriggeredPrePermRef.current = true;
-      // Small delay to let the main screen render first
       const timer = setTimeout(() => {
         triggerPrePermission();
-      }, 1200);
+      }, 300);
       return () => clearTimeout(timer);
     }
     return undefined;

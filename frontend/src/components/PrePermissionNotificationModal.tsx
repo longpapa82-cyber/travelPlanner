@@ -154,17 +154,19 @@ const styles = StyleSheet.create({
   },
   benefits: {
     width: '100%',
-    gap: 14,
-    marginBottom: 24,
+    gap: 16,
+    marginBottom: 28,
+    paddingHorizontal: 8,
   },
   benefitRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 14,
   },
   benefitText: {
-    fontSize: 14,
+    fontSize: 15,
     flex: 1,
+    lineHeight: 21,
   },
 });
 
