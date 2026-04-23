@@ -21,6 +21,13 @@ export const Loading: React.FC<LoadingProps> = ({
 }) => {
   const opacity = useRef(new Animated.Value(0)).current;
 
+  // Clean up animation on unmount
+  useEffect(() => {
+    return () => {
+      opacity.stopAnimation();
+    };
+  }, []);
+
   useEffect(() => {
     if (visible && overlay) {
       Animated.timing(opacity, {

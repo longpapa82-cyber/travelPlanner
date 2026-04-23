@@ -33,7 +33,7 @@ export async function nativeGoogleSignIn(): Promise<string | null> {
   ensureConfigured();
 
   if (!GoogleSignin) {
-    throw new Error('Google Sign-In native module not available');
+    throw new Error('GOOGLE_SIGNIN_UNAVAILABLE');
   }
 
   // Check if Google Play Services are available (Android)

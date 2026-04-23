@@ -100,8 +100,9 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}
+      enabled={Platform.OS === 'ios'}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}

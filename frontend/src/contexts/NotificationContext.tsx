@@ -34,6 +34,8 @@ interface NotificationContextValue {
   expoPushToken: string | null;
   lastNotificationResponse: Notifications.NotificationResponse | null;
   showPrePermissionModal: boolean;
+  isPrePermissionResolved: boolean;
+  pendingPrePermission: boolean;
   onPrePermissionDismiss: () => void;
   triggerPrePermission: () => Promise<void>;
 }
@@ -48,6 +50,8 @@ const NotificationContext = createContext<NotificationContextValue>({
   expoPushToken: null,
   lastNotificationResponse: null,
   showPrePermissionModal: false,
+  isPrePermissionResolved: false,
+  pendingPrePermission: false,
   onPrePermissionDismiss: () => {},
   triggerPrePermission: async () => {},
 });
@@ -100,6 +104,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   const [lastNotificationResponse, setLastNotificationResponse] =
     useState<Notifications.NotificationResponse | null>(null);
   const [showPrePermissionModal, setShowPrePermissionModal] = useState(false);
+  const [isPrePermissionResolved, setIsPrePermissionResolved] = useState(false);
   const [pendingPrePermission, setPendingPrePermission] = useState(false);
   const notificationListener = useRef<EventSubscription | null>(null);
   const responseListener = useRef<EventSubscription | null>(null);
@@ -211,8 +216,15 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
    * can invoke when the user has finished all blocking flows.
    */
   const triggerPrePermission = useCallback(async () => {
+    // V152 fix: Do NOT clear pendingPrePermission at the top.
+    // Clearing it before async work completes causes a 1-frame window where
+    // pendingPrePermission=false + isPrePermissionResolved=true, which lets
+    // TutorialContext briefly satisfy showWelcome conditions (WelcomeModal flash).
+    // Instead, clear it only after all async work is done in each branch.
     if (Platform.OS === 'web') {
       await registerForPushNotifications();
+      setPendingPrePermission(false);
+      setIsPrePermissionResolved(true);
       return;
     }
     const shown = await AsyncStorage.getItem(NOTIFICATION_PREPERM_KEY);
@@ -221,9 +233,13 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       if (status === 'granted') {
         await registerForPushNotifications();
       }
+      setPendingPrePermission(false);
+      setIsPrePermissionResolved(true);
       return;
     }
+    setPendingPrePermission(false);
     setShowPrePermissionModal(true);
+    setIsPrePermissionResolved(true);
   }, [registerForPushNotifications]);
 
   // Bridge: AuthContext calls this after successful login
@@ -234,17 +250,23 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     setPushRegistrationCallback(async () => {
       if (Platform.OS === 'web') {
         registerForPushNotifications();
+        setIsPrePermissionResolved(true);
         return;
       }
       const { status } = await Notifications.getPermissionsAsync();
       if (status === 'granted') {
         registerForPushNotifications();
+        setIsPrePermissionResolved(true);
         return;
       }
       const shown = await AsyncStorage.getItem(NOTIFICATION_PREPERM_KEY);
-      if (shown === 'true') return;
+      if (shown === 'true') {
+        setIsPrePermissionResolved(true);
+        return;
+      }
       // Always set pending — the useEffect below will wait for
       // consent check to finish before showing the modal.
+      // Do NOT set isPrePermissionResolved here — decision is still pending.
       setPendingPrePermission(true);
     });
     return () => {
@@ -261,6 +283,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       const timer = setTimeout(() => {
         setPendingPrePermission(false);
         setShowPrePermissionModal(true);
+        setIsPrePermissionResolved(true);
       }, 800);
       return () => clearTimeout(timer);
     }
@@ -356,6 +379,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         expoPushToken,
         lastNotificationResponse,
         showPrePermissionModal,
+        isPrePermissionResolved,
+        pendingPrePermission,
         onPrePermissionDismiss,
         triggerPrePermission,
       }}

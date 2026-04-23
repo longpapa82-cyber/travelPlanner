@@ -232,12 +232,14 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
     }, [])
   );
 
-  // Clean up search debounce timer on unmount
+  // Clean up search debounce timer and animations on unmount
   useEffect(() => {
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
+      fadeAnim.stopAnimation();
+      slideAnim.stopAnimation();
     };
   }, []);
 

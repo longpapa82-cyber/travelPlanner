@@ -34,7 +34,9 @@ import { usePremium } from '../../contexts/PremiumContext';
 import { PREMIUM_ENABLED } from '../../constants/config';
 import apiService from '../../services/api';
 import { useTutorial } from '../../contexts/TutorialContext';
+import { useNotifications } from '../../contexts/NotificationContext';
 import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ensureAbsoluteUrl } from '../../utils/images';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -49,6 +51,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const { t: tPremium } = useTranslation('premium');
   const { t: tTutorial } = useTranslation('tutorial');
   const { resetTutorial } = useTutorial();
+  const { triggerPrePermission } = useNotifications();
   const insets = useSafeAreaInsets();
 
   // Modal states
@@ -580,7 +583,13 @@ const ProfileScreen = ({ navigation }: any) => {
           onPress={async () => {
             if (Platform.OS === 'web') return;
             const { status } = await Notifications.getPermissionsAsync();
-            if (status === 'granted') {
+            // On Android 12 and below, status is always 'granted' because
+            // notifications don't require runtime permission. Check whether
+            // the user actually completed the in-app pre-permission flow.
+            const prePermShown = await AsyncStorage.getItem('@travelplanner:notification_preperm_shown');
+            const effectivelyGranted = status === 'granted' && prePermShown === 'true';
+
+            if (effectivelyGranted) {
               Alert.alert(
                 t('settings.notifications.title', '알림 설정'),
                 t('settings.notifications.alreadyEnabled', '알림이 이미 허용되어 있습니다. 시스템 설정에서 변경할 수 있습니다.'),
@@ -589,20 +598,9 @@ const ProfileScreen = ({ navigation }: any) => {
                   { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
                 ],
               );
-            } else if (status === 'undetermined') {
-              const { status: newStatus } = await Notifications.requestPermissionsAsync();
-              if (newStatus === 'granted') {
-                showToast({ type: 'success', message: t('settings.notifications.enabled', '알림이 허용되었습니다'), position: 'top' });
-              } else {
-                Alert.alert(
-                  t('settings.notifications.title', '알림 설정'),
-                  t('settings.notifications.denied', '알림 권한이 거부되었습니다. 시스템 설정에서 허용해주세요.'),
-                  [
-                    { text: tCommon('ok', '확인'), style: 'cancel' },
-                    { text: t('settings.notifications.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
-                  ],
-                );
-              }
+            } else if (status === 'undetermined' || (status === 'granted' && prePermShown !== 'true')) {
+              // User hasn't decided yet or skipped pre-permission — show the pre-permission modal
+              await triggerPrePermission();
             } else {
               Alert.alert(
                 t('settings.notifications.title', '알림 설정'),
@@ -867,7 +865,7 @@ const ProfileScreen = ({ navigation }: any) => {
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: 20 }}
           onPress={() => Keyboard.dismiss()}
         >
-          <KeyboardAvoidingView behavior="padding" style={{ width: '100%' }}>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} enabled={Platform.OS === 'ios'} style={{ width: '100%' }}>
             <Pressable onPress={(e) => e.stopPropagation()}>
               <View style={[styles.deleteModalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
                 <View style={styles.modalHeader}>

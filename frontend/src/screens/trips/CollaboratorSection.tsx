@@ -59,15 +59,34 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
   const [collabRole, setCollabRole] = useState<'viewer' | 'editor'>('viewer');
   const [isInviting, setIsInviting] = useState(false);
 
+  // Detect Korean jamo in email input and warn user to switch keyboard
+  const KOREAN_REGEX = /[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF]/;
+
+  const handleEmailChange = (text: string) => {
+    if (KOREAN_REGEX.test(text)) {
+      showToast({ type: 'warning', message: t('detail.collaboration.switchToEnglish', '영문 키보드로 전환해주세요'), position: 'top' });
+    }
+    setCollabEmail(text);
+  };
+
   const handleInviteCollaborator = async () => {
-    if (!collabEmail.trim()) return;
+    const trimmedEmail = collabEmail.trim();
+    if (!trimmedEmail) return;
+
+    // V152 fix: Validate email format before sending to prevent
+    // Korean jamo (auto-converted characters) from being submitted
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!EMAIL_REGEX.test(trimmedEmail)) {
+      showToast({ type: 'error', message: t('detail.collaboration.invalidEmail'), position: 'top' });
+      return;
+    }
 
     // Dismiss keyboard before starting
     Keyboard.dismiss();
 
     try {
       setIsInviting(true);
-      await apiService.addCollaborator(tripId, collabEmail.trim(), collabRole);
+      await apiService.addCollaborator(tripId, trimmedEmail, collabRole);
       setCollabEmail('');
       setShowCollabModal(false); // Close modal on success
       onRefreshCollaborators();
@@ -183,10 +202,12 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
               placeholder={t('detail.collaboration.emailPlaceholder')}
               placeholderTextColor={theme.colors.textSecondary}
               value={collabEmail}
-              onChangeText={setCollabEmail}
+              onChangeText={handleEmailChange}
               keyboardType="email-address"
               autoCapitalize="none"
+              autoCorrect={false}
               autoComplete="email"
+              inputMode="email"
               returnKeyType="send"
               onSubmitEditing={handleInviteCollaborator}
               blurOnSubmit={true}
@@ -279,7 +300,7 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
         return (
           <Modal visible={showCollabModal} transparent animationType="fade" onRequestClose={() => setShowCollabModal(false)}>
             <Pressable style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: 20 }} onPress={() => Keyboard.dismiss()}>
-              <KeyboardAvoidingView behavior="padding" style={{ width: '100%', maxWidth: 400 }}>
+              <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} enabled={Platform.OS === 'ios'} style={{ width: '100%', maxWidth: 400 }}>
                 <Pressable onPress={(e) => e.stopPropagation()}>
                   {collabModalContent}
                 </Pressable>

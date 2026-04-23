@@ -14,6 +14,14 @@ export const ScaleIn: React.FC<ScaleInProps> = ({
   const scale = useRef(new Animated.Value(initialScale)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
+  // Clean up animations on unmount
+  useEffect(() => {
+    return () => {
+      scale.stopAnimation();
+      opacity.stopAnimation();
+    };
+  }, []);
+
   useEffect(() => {
     if (visible) {
       scale.setValue(initialScale);

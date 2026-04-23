@@ -105,8 +105,9 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
 
         if (hasActiveEntitlement && !localPremiumOverride) {
           setLocalPremiumOverride(true);
-          refreshUser?.();
         }
+        // Always refresh server state so isPremium can reconcile
+        refreshUser?.();
       } catch {
         // Silent — premium detection is best-effort
       }
@@ -117,8 +118,8 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
           Object.keys(updatedInfo.entitlements.active).length > 0;
         if (hasActive && !localPremiumOverride) {
           setLocalPremiumOverride(true);
-          refreshUser?.();
         }
+        refreshUser?.();
       });
     })();
   }, [user?.id]);
@@ -131,10 +132,25 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     }
   }, [user]);
 
+  // Reconcile localPremiumOverride with server state: if the server says
+  // the subscription is expired (tier=free or expiresAt in the past),
+  // clear the override so RevenueCat stale cache can't keep premium alive.
+  useEffect(() => {
+    if (!localPremiumOverride || !user) return;
+    const serverExpired =
+      user.subscriptionTier === 'free' ||
+      (user.subscriptionExpiresAt && new Date(user.subscriptionExpiresAt) < new Date());
+    if (serverExpired) {
+      setLocalPremiumOverride(false);
+    }
+  }, [user?.subscriptionTier, user?.subscriptionExpiresAt, localPremiumOverride]);
+
   const isPremium = useMemo(() => {
     // During logout, maintain premium to prevent ad flash
     if (isLoggingOut) return true;
     // Local override from recent purchase (before backend webhook arrives)
+    // After server refresh, the reconciliation effect above will clear this
+    // if the server reports the subscription as expired.
     if (localPremiumOverride) return true;
     if (!user?.subscriptionTier) return false;
     if (user.subscriptionTier !== 'premium') return false;

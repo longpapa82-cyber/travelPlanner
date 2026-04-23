@@ -205,7 +205,11 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       }),
     ]).start(() => markDone());
     const fallback = setTimeout(markDone, 1500);
-    return () => clearTimeout(fallback);
+    return () => {
+      clearTimeout(fallback);
+      fadeAnim.stopAnimation();
+      slideAnim.stopAnimation();
+    };
   }, []);
 
   const handleCreateTrip = () => {

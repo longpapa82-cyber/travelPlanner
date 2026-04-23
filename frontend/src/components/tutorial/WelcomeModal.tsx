@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -39,6 +39,13 @@ const WelcomeModal: React.FC = () => {
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
 
+  // Clean up animation on unmount
+  useEffect(() => {
+    return () => {
+      scrollX.stopAnimation();
+    };
+  }, []);
+
   // Clamp slide width to modal container width (maxWidth: 400)
   const slideWidth = Math.min(SCREEN_WIDTH - 64, MODAL_MAX_WIDTH);
 
@@ -63,6 +70,20 @@ const WelcomeModal: React.FC = () => {
       setCurrentIndex(currentIndex + 1);
     }
   }, [currentIndex, slideWidth]);
+
+  // V152 fix: Debounce guard — showWelcome must remain true for 200ms
+  // before actually rendering the modal. Prevents 1-frame flash caused by
+  // transient state during async NotificationContext operations.
+  const [stableShow, setStableShow] = useState(false);
+
+  useEffect(() => {
+    if (showWelcome) {
+      const timer = setTimeout(() => setStableShow(true), 200);
+      return () => clearTimeout(timer);
+    }
+    setStableShow(false);
+    return undefined;
+  }, [showWelcome]);
 
   const isLastSlide = currentIndex === SLIDES.length - 1;
 
@@ -112,7 +133,7 @@ const WelcomeModal: React.FC = () => {
     </View>
   );
 
-  if (!showWelcome) return null;
+  if (!showWelcome || !stableShow) return null;
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={handleSkip}>

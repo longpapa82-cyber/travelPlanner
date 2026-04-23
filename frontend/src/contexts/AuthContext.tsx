@@ -461,7 +461,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const handleOAuthResult = async (result: OAuthResult | null) => {
     if (!result) {
-      throw new Error('OAuth authentication failed');
+      throw new Error('OAUTH_FAILED');
     }
 
     // Exchange the one-time code for JWT tokens via secure API call
@@ -490,7 +490,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (Platform.OS !== 'web') {
       try {
         const idToken = await nativeGoogleSignIn();
-        if (!idToken) throw new Error('Google Sign-In cancelled');
+        if (!idToken) throw new Error('GOOGLE_SIGNIN_CANCELLED');
 
         const authResponse: AuthResponse = await apiService.exchangeGoogleIdToken(idToken);
         await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, authResponse.accessToken);

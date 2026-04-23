@@ -12,6 +12,13 @@ export const FadeIn: React.FC<FadeInProps> = ({
 }) => {
   const opacity = useRef(new Animated.Value(0)).current;
 
+  // Clean up animation on unmount
+  useEffect(() => {
+    return () => {
+      opacity.stopAnimation();
+    };
+  }, []);
+
   useEffect(() => {
     if (visible) {
       Animated.timing(opacity, {

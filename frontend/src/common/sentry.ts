@@ -1,5 +1,15 @@
 import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
+import { AppState, Platform } from 'react-native';
+
+/** Threshold in ms — API calls slower than this get a Sentry breadcrumb */
+const SLOW_API_THRESHOLD_MS = 10_000;
+
+let _sentryInitialized = false;
+
+export function isSentryInitialized(): boolean {
+  return _sentryInitialized;
+}
 
 export function initSentry() {
   const dsn = Constants.expoConfig?.extra?.sentryDsn;
@@ -13,6 +23,49 @@ export function initSentry() {
     attachScreenshot: !__DEV__,
     enableAppHangTracking: true,
     appHangTimeoutInterval: 5,
+    enableNativeCrashHandling: true,
+    enableCaptureFailedRequests: true,
+    maxBreadcrumbs: 100,
     debug: false,
+  });
+
+  _sentryInitialized = true;
+
+  // Capture memory warnings on native platforms
+  if (Platform.OS !== 'web') {
+    AppState.addEventListener('memoryWarning', () => {
+      Sentry.captureMessage('OS Memory Warning received', 'warning');
+      Sentry.addBreadcrumb({
+        category: 'device',
+        message: 'Memory warning from OS',
+        level: 'warning',
+      });
+    });
+  }
+}
+
+/**
+ * Record a Sentry breadcrumb when an API call exceeds SLOW_API_THRESHOLD_MS.
+ * Call this from the API service response interceptor.
+ */
+export function recordSlowApiCall(
+  url: string,
+  method: string,
+  durationMs: number,
+  statusCode?: number,
+): void {
+  if (!_sentryInitialized) return;
+  if (durationMs < SLOW_API_THRESHOLD_MS) return;
+
+  Sentry.addBreadcrumb({
+    category: 'http.slow',
+    message: `Slow API: ${method.toUpperCase()} ${url} took ${durationMs}ms`,
+    level: 'warning',
+    data: {
+      url,
+      method,
+      durationMs,
+      statusCode,
+    },
   });
 }

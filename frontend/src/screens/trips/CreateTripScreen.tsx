@@ -70,8 +70,8 @@ const getPopularDestinations = (t: TFunction) => [
 
 // Duration quick picks (in days)
 const getDurationOptions = (t: TFunction) => [
-  { days: 1, label: t('create.duration.options.1day', { defaultValue: '당일' }), icon: 'calendar-today' },
-  { days: 2, label: t('create.duration.options.2days', { defaultValue: '1박 2일' }), icon: 'calendar-range' },
+  { days: 1, label: t('create.duration.options.1day'), icon: 'calendar-today' },
+  { days: 2, label: t('create.duration.options.2days'), icon: 'calendar-range' },
   { days: 3, label: t('create.duration.options.3days'), icon: 'calendar-week' },
   { days: 7, label: t('create.duration.options.1week'), icon: 'calendar-week-begin' },
   { days: 14, label: t('create.duration.options.2weeks'), icon: 'calendar-month' },
@@ -135,8 +135,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       if (val === 'true') setAiConsentGiven(true);
     }).catch(() => {});
 
-    // Preload rewarded ad on screen mount
-    if (!isRewardedLoaded) {
+    // Preload rewarded ad on screen mount (skip for premium — no ads shown)
+    if (!isRewardedLoaded && !isPremium) {
       reloadRewardedAd();
     }
   }, []);
@@ -261,7 +261,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     } else {
       Keyboard.dismiss();
       setTravelersCount(count);
-      setTravelerInputText('');
+      setTravelerInputText(count.toString());
     }
   }, [setTravelersCount]);
 
@@ -292,7 +292,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (start <= today) {
-        errors.dates = t('create.alerts.startDateFuture', { defaultValue: '출발일은 내일 이후여야 합니다.' });
+        errors.dates = t('create.alerts.startDateFuture');
       } else if (start > end) {
         errors.dates = t('create.alerts.startDateRequired');
       }
@@ -373,7 +373,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         if (abortController.signal.aborted) return;
         showToast({
           type: 'warning',
-          message: t('create.progress.takingLong', { defaultValue: 'AI generation is taking longer than usual...' }),
+          message: t('create.progress.takingLong'),
           position: 'top',
           duration: 5000,
         });
@@ -410,6 +410,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       const trip = await apiService.createTripWithPolling(
         tripData,
         (step: string) => {
+          if (!isMountedRef.current) return;
           const stepIndex = STEP_MAP[step] ?? 0;
           setGenerationStep(stepIndex);
           const progress = (stepIndex + 1) / 5;
@@ -473,7 +474,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         if (trip.aiStatus === 'failed') {
           showToast({
             type: 'warning',
-            message: t('create.aiFallbackWarning', { defaultValue: 'AI 일정 생성에 실패했습니다. 수동으로 활동을 추가해주세요.' }),
+            message: t('create.aiFallbackWarning'),
             position: 'top',
             duration: 4000,
           });
@@ -496,7 +497,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
           showToast({
             type: 'info',
             message: t('create.aiInfo.preWarning', {
-              defaultValue: '다음 AI 자동 생성 후 {{remaining}}/{{total}}회가 남습니다.',
               remaining: postGenRemaining,
               total,
             }),
@@ -551,13 +551,15 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         error?.cancelled === true ||
         error?.message === 'Trip creation cancelled'
       ) {
-        showToast({
-          type: 'info',
-          message: t('create.progress.cancelled', { defaultValue: 'Trip creation cancelled' }),
-          position: 'top',
-          duration: 3000,
-        });
-        setIsLoading(false);
+        if (isMountedRef.current) {
+          showToast({
+            type: 'info',
+            message: t('create.progress.cancelled'),
+            position: 'top',
+            duration: 3000,
+          });
+          setIsLoading(false);
+        }
         isCreatingRef.current = false;
         return;
       }
@@ -598,6 +600,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
               // Show interstitial ad after trip creation (skip for premium), then navigate
               setTimeout(async () => {
+                if (!isMountedRef.current) return;
                 // Ensure tripId exists before navigation
                 if (!latestTrip?.id) {
                   navigation.navigate('TripList');
@@ -629,14 +632,13 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         // If we couldn't find the trip, show warning and navigate to TripList
         showToast({
           type: 'warning',
-          message: t('create.alerts.streamInterrupted', {
-            defaultValue: 'Trip created but connection interrupted. Please check your trips list.'
-          }),
+          message: t('create.alerts.streamInterrupted'),
           position: 'top',
           duration: 5000,
         });
         // Navigate to trips list after short delay
         setTimeout(() => {
+          if (!isMountedRef.current) return;
           navigation.navigate('TripList');
           // Reset guards after navigation
           setIsLoading(false);
@@ -650,9 +652,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       // Map backend errors to friendly i18n messages
       let message: string;
       if (statusCode === 429 || /too many requests|throttler/i.test(serverMsg)) {
-        message = t('create.alerts.tooManyRequests', {
-          defaultValue: '잠시 후 다시 시도해주세요. (요청이 너무 많습니다)',
-        });
+        message = t('create.alerts.tooManyRequests');
       } else if (serverMsg.includes('AI generation limit')) {
         message = t('create.aiInfo.limitReached', { total: aiTripsLimit > 0 ? aiTripsLimit : (isPremium ? 30 : 3) });
       } else {
@@ -670,30 +670,34 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       // Refresh subscription status so AI remaining count is accurate
       await refreshStatus();
 
-      showToast({
-        type: 'error',
-        message,
-        position: 'top',
-        duration: 4000,
-      });
+      if (isMountedRef.current) {
+        showToast({
+          type: 'error',
+          message,
+          position: 'top',
+          duration: 4000,
+        });
 
-      // Reset guards after error shown
-      setIsLoading(false);
+        // Reset guards after error shown
+        setIsLoading(false);
+      }
       isCreatingRef.current = false;
     } finally {
       // Clean up resources but DON'T reset guards here
       // Guards are reset only in specific places above (success/error/cancel)
       if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
       abortControllerRef.current = null;
-      setGenerationStep(0);
-      setShowCancelConfirm(false);
+      if (isMountedRef.current) {
+        setGenerationStep(0);
+        setShowCancelConfirm(false);
+      }
     }
   };
 
   // Keep ref in sync so handleAiConsentAccept always calls latest doCreateTrip
   doCreateTripRef.current = doCreateTrip;
 
-  // Clean up timers and abort controller on unmount
+  // Clean up timers, animations, and abort controller on unmount
   useEffect(() => {
     return () => {
       if (timeoutWarningRef.current) clearTimeout(timeoutWarningRef.current);
@@ -702,6 +706,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         postAdToastTimerRef.current = null;
       }
       abortControllerRef.current?.abort();
+      // Stop any in-flight Animated.timing to prevent setState on unmounted component
+      progressAnim.stopAnimation();
+      fadeAnim.stopAnimation();
+      slideAnim.stopAnimation();
     };
   }, []);
 
@@ -766,8 +774,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}
+      enabled={Platform.OS === 'ios'}
     >
       <ScrollView
         style={styles.scrollView}
@@ -778,7 +787,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         {/* Hero Section */}
         <ImageBackground
           source={{
-            uri: getHeroImageUrl('createTrip', { width: 1200 }),
+            uri: getHeroImageUrl('createTrip', { width: 600 }),
           }}
           style={styles.hero}
         >
@@ -1309,7 +1318,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <TextInput
                 ref={customTravelersRef}
                 style={[styles.input, { color: theme.colors.text }]}
-                placeholder={t('create.travelers.customPlaceholder', { defaultValue: '직접 입력 (최대 20명)' })}
+                placeholder={t('create.travelers.customPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={travelerInputText}
                 onChangeText={(text) => {
@@ -1635,7 +1644,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 */}
               {aiTripsRemaining === -1 ? (
                 <Text style={[styles.infoText, { color: theme.colors.textSecondary, marginTop: 4, fontWeight: '600' }]}>
-                  {t('create.aiInfo.loading', { defaultValue: '생성 가능 횟수 확인 중...' })}
+                  {t('create.aiInfo.loading')}
                 </Text>
               ) : (
                 <Text style={[styles.infoText, { color: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600' }]}>
@@ -1708,7 +1717,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               >
                 <Icon name="close" size={16} color={theme.colors.textSecondary} />
                 <Text style={[styles.cancelButtonText, { color: theme.colors.textSecondary }]}>
-                  {t('create.progress.cancel', { defaultValue: 'Cancel' })}
+                  {t('create.progress.cancel')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -1725,10 +1734,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
               <View style={[styles.modalContent, { backgroundColor: theme.colors.surface }]}>
                 <Icon name="clock-alert-outline" size={40} color={theme.colors.primary} />
                 <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
-                  {t('create.progress.takingLong', { defaultValue: 'AI generation is taking longer than usual...' })}
+                  {t('create.progress.takingLong')}
                 </Text>
                 <Text style={[styles.modalBody, { color: theme.colors.textSecondary }]}>
-                  {t('create.progress.cancelAndManual', { defaultValue: 'Would you like to cancel and add activities manually?' })}
+                  {t('create.progress.cancelAndManual')}
                 </Text>
                 <View style={styles.modalActions}>
                   <TouchableOpacity
@@ -1736,7 +1745,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     onPress={() => setShowCancelConfirm(false)}
                   >
                     <Text style={[styles.modalButtonText, { color: theme.colors.text }]}>
-                      {t('create.progress.keepWaiting', { defaultValue: 'Keep waiting' })}
+                      {t('create.progress.keepWaiting')}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -1744,7 +1753,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     onPress={handleCancelCreation}
                   >
                     <Text style={[styles.modalButtonText, { color: '#FFFFFF' }]}>
-                      {t('create.progress.cancelCreate', { defaultValue: 'Cancel & go manual' })}
+                      {t('create.progress.cancelCreate')}
                     </Text>
                   </TouchableOpacity>
                 </View>

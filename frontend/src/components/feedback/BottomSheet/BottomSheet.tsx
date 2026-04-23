@@ -30,6 +30,14 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
+  // Clean up animations on unmount
+  useEffect(() => {
+    return () => {
+      translateY.stopAnimation();
+      opacity.stopAnimation();
+    };
+  }, []);
+
   const getSheetHeight = (height: BottomSheetHeight | number): number => {
     if (typeof height === 'number') return height;
 

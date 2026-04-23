@@ -16,6 +16,15 @@ export const SlideIn: React.FC<SlideInProps> = ({
   const translateY = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
+  // Clean up animations on unmount
+  useEffect(() => {
+    return () => {
+      translateX.stopAnimation();
+      translateY.stopAnimation();
+      opacity.stopAnimation();
+    };
+  }, []);
+
   const getInitialTransform = (direction: SlideInDirection, distance: number) => {
     switch (direction) {
       case 'top':

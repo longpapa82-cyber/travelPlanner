@@ -120,9 +120,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       if (error instanceof EmailNotVerifiedError) {
         showToast({
           type: 'info',
-          message: t('login.alerts.emailNotVerified', {
-            defaultValue: '회원가입이 아직 완료되지 않았습니다. 이메일 인증을 이어갑니다.',
-          }),
+          message: t('login.alerts.emailNotVerified'),
           position: 'top',
           duration: 4000,
         });
@@ -134,12 +132,26 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
+  // Map error codes thrown by AuthContext / googleNativeSignIn to i18n keys.
+  // Unknown codes fall back to the generic networkError message.
+  const AUTH_ERROR_I18N: Record<string, string> = {
+    GOOGLE_SIGNIN_CANCELLED: 'login.alerts.googleCancelled',
+    OAUTH_FAILED: 'login.alerts.oauthFailed',
+    GOOGLE_SIGNIN_UNAVAILABLE: 'login.alerts.googleUnavailable',
+  };
+
+  const getAuthErrorMessage = (error: any): string => {
+    const code = error?.message ?? '';
+    const i18nKey = AUTH_ERROR_I18N[code];
+    return i18nKey ? t(i18nKey) : t('login.alerts.networkError');
+  };
+
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     try {
       await loginWithGoogle();
     } catch (error: any) {
-      showToast({ type: 'error', message: error.message || t('login.alerts.networkError'), position: 'top' });
+      showToast({ type: 'error', message: getAuthErrorMessage(error), position: 'top' });
     } finally {
       setIsLoading(false);
     }
@@ -150,7 +162,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await loginWithApple();
     } catch (error: any) {
-      showToast({ type: 'error', message: error.message || t('login.alerts.networkError'), position: 'top' });
+      showToast({ type: 'error', message: getAuthErrorMessage(error), position: 'top' });
     } finally {
       setIsLoading(false);
     }
@@ -161,7 +173,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await loginWithKakao();
     } catch (error: any) {
-      showToast({ type: 'error', message: error.message || t('login.alerts.networkError'), position: 'top' });
+      showToast({ type: 'error', message: getAuthErrorMessage(error), position: 'top' });
     } finally {
       setIsLoading(false);
     }
@@ -171,8 +183,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}
+      enabled={Platform.OS === 'ios'}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}

@@ -22,29 +22,18 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api",
         "EXPO_PUBLIC_APP_URL": "https://mytravel-planner.com",
-        "REVENUECAT_ANDROID_KEY": "goog_BeyiIKXfhmqtbtzaEGMRICChtQd"
+        "REVENUECAT_ANDROID_KEY": "goog_BeyiIKXfhmqtbtzaEGMRICChtQd",
+        "SENTRY_DSN": "https://350b24245c83bb14bc60b074844878d3@o4511263608471552.ingest.de.sentry.io/4511263624265808"
       }
     },
     "production": {
       "env": {
         "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api",
         "EXPO_PUBLIC_APP_URL": "https://mytravel-planner.com",
-        "REVENUECAT_ANDROID_KEY": "goog_BeyiIKXfhmqtbtzaEGMRICChtQd"
+        "REVENUECAT_ANDROID_KEY": "goog_BeyiIKXfhmqtbtzaEGMRICChtQd",
+        "SENTRY_DSN": "https://350b24245c83bb14bc60b074844878d3@o4511263608471552.ingest.de.sentry.io/4511263624265808"
       },
       "autoIncrement": true
-    }
-  },
-  "submit": {
-    "production": {
-      "ios": {
-        "appleId": "a090723@naver.com"
-      },
-      "android": {
-        "serviceAccountKeyPath": "./google-play-service-account.json",
-        "track": "production",
-        "releaseStatus": "draft",
-        "changesNotSentForReview": false
-      }
     }
   }
 }

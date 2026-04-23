@@ -356,7 +356,7 @@ describe('AuthContext', () => {
         act(async () => {
           await result.current.loginWithGoogle();
         }),
-      ).rejects.toThrow('Google Sign-In cancelled');
+      ).rejects.toThrow('GOOGLE_SIGNIN_CANCELLED');
     });
   });
 

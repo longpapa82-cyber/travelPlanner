@@ -97,6 +97,14 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const slideAnim = useRef(new Animated.Value(30)).current;
   const customTravelersRef = useRef<TextInput>(null);
 
+  // Clean up animations on unmount
+  useEffect(() => {
+    return () => {
+      fadeAnim.stopAnimation();
+      slideAnim.stopAnimation();
+    };
+  }, []);
+
   useEffect(() => {
     fetchTripDetails();
   }, [tripId]);
@@ -335,8 +343,9 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}
+      enabled={Platform.OS === 'ios'}
     >
       <ScrollView
         style={styles.scrollView}

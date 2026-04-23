@@ -24,6 +24,13 @@ const PremiumPromoBanner: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  // Clean up animation on unmount
+  useEffect(() => {
+    return () => {
+      fadeAnim.stopAnimation();
+    };
+  }, []);
+
   useEffect(() => {
     if (isPremium || !PREMIUM_ENABLED) return;
 

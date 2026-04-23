@@ -31,6 +31,14 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   const opacity = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.9)).current;
 
+  // Clean up animations on unmount
+  useEffect(() => {
+    return () => {
+      opacity.stopAnimation();
+      scale.stopAnimation();
+    };
+  }, []);
+
   useEffect(() => {
     if (visible) {
       Animated.parallel([

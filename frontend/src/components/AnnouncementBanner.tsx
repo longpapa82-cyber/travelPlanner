@@ -39,6 +39,14 @@ const AnnouncementBanner: React.FC = () => {
   const [containerWidth, setContainerWidth] = useState(screenWidth);
   const cardWidth = containerWidth - 32; // 16px margin each side (marginHorizontal: 16)
 
+  // Clean up animations on unmount
+  useEffect(() => {
+    return () => {
+      slideAnim.stopAnimation();
+      fadeAnim.stopAnimation();
+    };
+  }, []);
+
   useEffect(() => {
     fetchAnnouncements();
   }, []);

@@ -27,7 +27,9 @@
         "3days": "3 days",
         "1week": "1 week",
         "2weeks": "2 weeks",
-        "1month": "1 month"
+        "1month": "1 month",
+        "1day": "Day trip",
+        "2days": "2 days"
       },
       "custom": "Custom",
       "totalDays": "{{days}}-day trip"
@@ -39,7 +41,8 @@
         "two": "2 people",
         "group": "3-4 people",
         "large": "5+ people"
-      }
+      },
+      "customPlaceholder": "Enter manually (max 20)"
     },
     "dates": {
       "title": "When are you leaving?",
@@ -62,7 +65,9 @@
       "title": "AI Auto-Generation",
       "description": "AI will create the optimal travel plan based on your destination and schedule",
       "remaining": "{{remaining}}/{{total}} AI generations left this month",
-      "limitReached": "Monthly AI limit ({{total}}) reached. Use manual creation."
+      "limitReached": "Monthly AI limit ({{total}}) reached. Use manual creation.",
+      "loading": "Checking available AI generations...",
+      "preWarning": "After this generation, {{remaining}}/{{total}} remaining."
     },
     "rewardedAd": {
       "label": "Watch ad for detailed travel insights"
@@ -121,7 +126,10 @@
       "destinationRequired": "Please enter a destination",
       "datesRequired": "Please select travel dates",
       "createFailed": "Failed to create trip",
-      "startDateRequired": "Please select a departure date"
+      "startDateRequired": "Please select a departure date",
+      "startDateFuture": "Departure date must be after tomorrow.",
+      "streamInterrupted": "Trip created but connection interrupted. Please check your trips list.",
+      "tooManyRequests": "Please try again later. (Too many requests)"
     },
     "aiConsent": {
       "title": "AI Travel Planning",
@@ -357,7 +365,9 @@
       "leaveMessage": "Are you sure you want to leave this trip? You will no longer have access to it.",
       "leaveConfirm": "Leave",
       "leaveSuccess": "You have left the trip",
-      "leaveFailed": "Failed to leave the trip"
+      "leaveFailed": "Failed to leave the trip",
+      "invalidEmail": "Please enter a valid email address",
+      "switchToEnglish": "Please switch to English keyboard"
     },
     "expenses": {
       "title": "Expenses",

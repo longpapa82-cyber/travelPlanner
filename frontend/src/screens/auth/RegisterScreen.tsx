@@ -196,8 +196,9 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}
+      enabled={Platform.OS === 'ios'}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}

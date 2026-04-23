@@ -68,6 +68,14 @@ const InlineToast: React.FC<{
   const translateY = useRef(new Animated.Value(-100)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
+  // Clean up animations on unmount
+  useEffect(() => {
+    return () => {
+      translateY.stopAnimation();
+      opacity.stopAnimation();
+    };
+  }, []);
+
   useEffect(() => {
     if (visible) {
       Animated.parallel([

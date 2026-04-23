@@ -314,8 +314,8 @@ function App() {
             <AuthProvider>
               <ConsentProvider>
                 <PremiumProvider>
-                  <TutorialProvider>
-                    <NotificationProvider>
+                  <NotificationProvider>
+                    <TutorialProvider>
                       <ToastProvider>
                         <ConfirmDialogProvider>
                           <AppContent />
@@ -323,8 +323,8 @@ function App() {
                           <WelcomeModal />
                         </ConfirmDialogProvider>
                       </ToastProvider>
-                    </NotificationProvider>
-                  </TutorialProvider>
+                    </TutorialProvider>
+                  </NotificationProvider>
                 </PremiumProvider>
               </ConsentProvider>
             </AuthProvider>

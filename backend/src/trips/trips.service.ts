@@ -27,7 +27,17 @@ import { SubscriptionService } from '../subscription/subscription.service';
 import { updateItinerariesCompletionStatus } from './helpers/trip-progress.helper';
 import { QueryTripsDto, SortBy, SortOrder } from './dto/query-trips.dto';
 import { getErrorMessage } from '../common/types/request.types';
+import { ErrorLog } from '../admin/entities/error-log.entity';
 import { Subject } from 'rxjs';
+
+/** Thresholds (ms) above which a trip-creation phase is considered slow. */
+const SLOW_THRESHOLDS: Record<string, number> = {
+  validating: 5_000,
+  weather: 5_000,
+  ai_generating: 60_000,
+  saving: 3_000,
+  total: 60_000,
+};
 
 export type TripCreationStep =
   | 'validating'
@@ -77,6 +87,38 @@ export class TripsService {
     private readonly dataSource: DataSource,
   ) {}
 
+  /**
+   * Record a slow trip-creation phase to ErrorLog so admins can spot bottlenecks.
+   * Fire-and-forget — never blocks the pipeline.
+   */
+  private logSlowPhase(
+    phase: string,
+    elapsed: number,
+    threshold: number,
+    tripId: string,
+    userId: string,
+  ): void {
+    this.dataSource
+      .getRepository(ErrorLog)
+      .save({
+        userId,
+        errorMessage:
+          `[TripCreation] SLOW: ${phase} took ${elapsed}ms (threshold: ${threshold}ms, tripId: ${tripId})`.slice(
+            0,
+            500,
+          ),
+        severity: 'warning' as const,
+        screen: `TripCreation/${phase}`,
+        platform: 'web' as const,
+        isResolved: false,
+      })
+      .catch((err) => {
+        this.logger.warn(
+          `Failed to persist slow-phase log: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      });
+  }
+
   async create(
     userId: string,
     createTripDto: CreateTripDto,
@@ -91,6 +133,9 @@ export class TripsService {
         throw new TripCancelledError();
       }
     };
+
+    const pipelineStart = Date.now();
+
     // Calculate number of days
     const startDate = new Date(createTripDto.startDate);
     const endDate = new Date(createTripDto.endDate);
@@ -217,6 +262,9 @@ export class TripsService {
       throwIfCancelled();
       progress$?.next({ step: 'validating' });
 
+      // ── Phase: validating (location + timezone lookup) ──
+      const validatingStart = Date.now();
+
       // Get location information for timezone and weather (with 5s timeout to prevent long waits)
       type TimezoneResult = {
         timezone: string;
@@ -273,6 +321,23 @@ export class TripsService {
         );
       }
 
+      const validatingElapsed = Date.now() - validatingStart;
+      this.logger.log(
+        `[TripCreation] validating completed in ${validatingElapsed}ms (trip: ${savedTrip.id})`,
+      );
+      if (validatingElapsed > SLOW_THRESHOLDS.validating) {
+        this.logger.warn(
+          `[TripCreation] SLOW: validating took ${validatingElapsed}ms (threshold: ${SLOW_THRESHOLDS.validating}ms)`,
+        );
+        this.logSlowPhase(
+          'validating',
+          validatingElapsed,
+          SLOW_THRESHOLDS.validating,
+          savedTrip.id,
+          userId,
+        );
+      }
+
       // Helper: fetch weather with 5s timeout to prevent long waits
       const fetchWeatherMap = async () => {
         if (!locationInfo) {
@@ -326,9 +391,45 @@ export class TripsService {
         // Manual mode: skip AI, create empty day cards with weather/timezone
         throwIfCancelled();
         progress$?.next({ step: 'weather' });
+        const weatherStart = Date.now();
         const weatherMap = await fetchWeatherMap();
+        const weatherElapsed = Date.now() - weatherStart;
+        this.logger.log(
+          `[TripCreation] weather completed in ${weatherElapsed}ms (trip: ${savedTrip.id})`,
+        );
+        if (weatherElapsed > SLOW_THRESHOLDS.weather) {
+          this.logger.warn(
+            `[TripCreation] SLOW: weather took ${weatherElapsed}ms (threshold: ${SLOW_THRESHOLDS.weather}ms)`,
+          );
+          this.logSlowPhase(
+            'weather',
+            weatherElapsed,
+            SLOW_THRESHOLDS.weather,
+            savedTrip.id,
+            userId,
+          );
+        }
+
         throwIfCancelled();
+        const savingStart = Date.now();
         const itineraries = await createEmptyItineraries(weatherMap);
+        const savingElapsed = Date.now() - savingStart;
+        this.logger.log(
+          `[TripCreation] saving completed in ${savingElapsed}ms (trip: ${savedTrip.id})`,
+        );
+        if (savingElapsed > SLOW_THRESHOLDS.saving) {
+          this.logger.warn(
+            `[TripCreation] SLOW: saving took ${savingElapsed}ms (threshold: ${SLOW_THRESHOLDS.saving}ms)`,
+          );
+          this.logSlowPhase(
+            'saving',
+            savingElapsed,
+            SLOW_THRESHOLDS.saving,
+            savedTrip.id,
+            userId,
+          );
+        }
+
         this.logger.log(
           `Created ${itineraries.length} empty itineraries (manual mode) for trip ${savedTrip.id}`,
         );
@@ -338,6 +439,7 @@ export class TripsService {
         try {
           throwIfCancelled();
           progress$?.next({ step: 'ai_generating' });
+          const aiStart = Date.now();
           const aiPromise = this.aiService.generateAllItineraries(
             {
               destination: createTripDto.destination,
@@ -354,15 +456,49 @@ export class TripsService {
 
           // Fetch weather in parallel while AI generates
           progress$?.next({ step: 'weather' });
+          const weatherStart = Date.now();
           const weatherMap = await fetchWeatherMap();
+          const weatherElapsed = Date.now() - weatherStart;
+          this.logger.log(
+            `[TripCreation] weather completed in ${weatherElapsed}ms (trip: ${savedTrip.id})`,
+          );
+          if (weatherElapsed > SLOW_THRESHOLDS.weather) {
+            this.logger.warn(
+              `[TripCreation] SLOW: weather took ${weatherElapsed}ms (threshold: ${SLOW_THRESHOLDS.weather}ms)`,
+            );
+            this.logSlowPhase(
+              'weather',
+              weatherElapsed,
+              SLOW_THRESHOLDS.weather,
+              savedTrip.id,
+              userId,
+            );
+          }
           throwIfCancelled();
 
           // Wait for AI generation to complete
           const aiItineraries = await aiPromise;
+          const aiElapsed = Date.now() - aiStart;
+          this.logger.log(
+            `[TripCreation] ai_generating completed in ${aiElapsed}ms (trip: ${savedTrip.id})`,
+          );
+          if (aiElapsed > SLOW_THRESHOLDS.ai_generating) {
+            this.logger.warn(
+              `[TripCreation] SLOW: ai_generating took ${aiElapsed}ms (threshold: ${SLOW_THRESHOLDS.ai_generating}ms)`,
+            );
+            this.logSlowPhase(
+              'ai_generating',
+              aiElapsed,
+              SLOW_THRESHOLDS.ai_generating,
+              savedTrip.id,
+              userId,
+            );
+          }
           throwIfCancelled();
 
           // Combine AI results with weather data
           progress$?.next({ step: 'saving' });
+          const savingStart = Date.now();
           const itineraries: Itinerary[] = [];
           for (const aiItinerary of aiItineraries) {
             const itinerary = queryRunner.manager.create(Itinerary, {
@@ -381,6 +517,22 @@ export class TripsService {
           await queryRunner.manager.update(Trip, savedTrip.id, {
             aiStatus: 'success',
           });
+          const savingElapsed = Date.now() - savingStart;
+          this.logger.log(
+            `[TripCreation] saving completed in ${savingElapsed}ms (trip: ${savedTrip.id})`,
+          );
+          if (savingElapsed > SLOW_THRESHOLDS.saving) {
+            this.logger.warn(
+              `[TripCreation] SLOW: saving took ${savingElapsed}ms (threshold: ${SLOW_THRESHOLDS.saving}ms)`,
+            );
+            this.logSlowPhase(
+              'saving',
+              savingElapsed,
+              SLOW_THRESHOLDS.saving,
+              savedTrip.id,
+              userId,
+            );
+          }
           this.logger.log(
             `Successfully generated ${itineraries.length} AI itineraries with weather data for trip ${savedTrip.id}`,
           );
@@ -418,6 +570,24 @@ export class TripsService {
       throwIfCancelled();
       // CRITICAL FIX: Commit transaction only after ALL operations complete
       await queryRunner.commitTransaction();
+
+      const totalElapsed = Date.now() - pipelineStart;
+      this.logger.log(
+        `[TripCreation] total pipeline completed in ${totalElapsed}ms (trip: ${savedTrip.id}, mode: ${isManualMode ? 'manual' : 'AI'})`,
+      );
+      if (totalElapsed > SLOW_THRESHOLDS.total) {
+        this.logger.warn(
+          `[TripCreation] SLOW: total pipeline took ${totalElapsed}ms (threshold: ${SLOW_THRESHOLDS.total}ms)`,
+        );
+        this.logSlowPhase(
+          'total',
+          totalElapsed,
+          SLOW_THRESHOLDS.total,
+          savedTrip.id,
+          userId,
+        );
+      }
+
       this.logger.log(
         `Successfully committed transaction for trip ${savedTrip.id}`,
       );
@@ -1406,7 +1576,7 @@ export class TripsService {
     const collaborators = await this.collaboratorRepository
       .createQueryBuilder('collab')
       .leftJoin('collab.user', 'user')
-      .addSelect(['user.id', 'user.name', 'user.profileImage'])
+      .addSelect(['user.id', 'user.name', 'user.email', 'user.profileImage'])
       .where('collab.tripId = :tripId', { tripId })
       .orderBy('collab.createdAt', 'ASC')
       .getMany();

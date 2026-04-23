@@ -13,7 +13,7 @@
  * </Button>
  */
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -47,6 +47,13 @@ const Button: React.FC<ButtonProps> = React.memo(({
 }) => {
   const { isDark } = useTheme();
   const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  // Clean up animation on unmount
+  useEffect(() => {
+    return () => {
+      scaleAnim.stopAnimation();
+    };
+  }, []);
 
   // Get variant and size styles
   const variantStyles = getVariantStyles(variant, isDark);

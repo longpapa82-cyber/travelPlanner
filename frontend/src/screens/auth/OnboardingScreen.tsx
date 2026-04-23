@@ -8,7 +8,7 @@
  * - 모바일 최적화
  */
 
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -78,6 +78,13 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
   const scrollX = useRef(new Animated.Value(0)).current;
   const scrollTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const SLIDES = getSlides(t);
+
+  // Clean up animation on unmount
+  useEffect(() => {
+    return () => {
+      scrollX.stopAnimation();
+    };
+  }, []);
 
   const markOnboardingSeen = useCallback(async () => {
     await AsyncStorage.setItem(ONBOARDING_KEY, 'true');

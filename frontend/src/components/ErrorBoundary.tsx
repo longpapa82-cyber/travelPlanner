@@ -79,6 +79,11 @@ class ErrorBoundary extends Component<Props, State> {
     }
   }
 
+  componentWillUnmount() {
+    this.fadeAnim.stopAnimation();
+    this.slideAnim.stopAnimation();
+  }
+
   handleRetry = () => {
     this.retryCount++;
     this.fadeAnim.setValue(0);

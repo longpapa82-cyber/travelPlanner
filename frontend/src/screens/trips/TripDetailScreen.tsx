@@ -156,6 +156,14 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     fetchTripDetails();
   }, [fetchTripDetails]);
 
+  // Clean up animations on unmount
+  useEffect(() => {
+    return () => {
+      fadeAnim.stopAnimation();
+      slideAnim.stopAnimation();
+    };
+  }, []);
+
   // Auto-refresh every 5 minutes for ongoing trips
   useEffect(() => {
     if (!trip || trip.status !== 'ongoing') return;

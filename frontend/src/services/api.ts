@@ -6,6 +6,7 @@ import { secureStorage } from '../utils/storage';
 import { getCurrentLanguage } from '../i18n';
 import { offlineCache } from './offlineCache';
 import { offlineMutationQueue } from './offlineMutationQueue';
+import { recordSlowApiCall } from '../common/sentry';
 
 function isNetworkError(error: any): boolean {
   if (!error) return false;
@@ -81,7 +82,7 @@ class ApiService {
   }
 
   private setupInterceptors() {
-    // Request interceptor - Add auth token
+    // Request interceptor - Add auth token + stamp request start time
     this.api.interceptors.request.use(
       async (config) => {
         try {
@@ -96,6 +97,9 @@ class ApiService {
         } catch (error) {
           // Silent fail — proceed without auth token
         }
+
+        // Stamp start time for slow API detection
+        (config as any)._requestStartMs = Date.now();
 
         return config;
       },
@@ -227,6 +231,36 @@ class ApiService {
       }
       return Promise.reject(error);
     });
+
+    // Slow API breadcrumb interceptor — records to Sentry when >10s
+    this.api.interceptors.response.use(
+      (response) => {
+        const startMs = (response.config as any)?._requestStartMs;
+        if (startMs) {
+          const durationMs = Date.now() - startMs;
+          recordSlowApiCall(
+            response.config.url || 'unknown',
+            response.config.method || 'unknown',
+            durationMs,
+            response.status,
+          );
+        }
+        return response;
+      },
+      (error: AxiosError) => {
+        const startMs = (error.config as any)?._requestStartMs;
+        if (startMs) {
+          const durationMs = Date.now() - startMs;
+          recordSlowApiCall(
+            error.config?.url || 'unknown',
+            error.config?.method || 'unknown',
+            durationMs,
+            error.response?.status,
+          );
+        }
+        return Promise.reject(error);
+      },
+    );
   }
 
   public getInstance(): AxiosInstance {
@@ -489,7 +523,7 @@ class ApiService {
       const { jobId } = createResponse.data;
 
       if (!jobId) {
-        throw new Error('Failed to start trip creation: no jobId received');
+        throw new Error('TRIP_CREATION_NO_JOB');
       }
 
       // 2. 상태 폴링 (1초마다)
@@ -545,7 +579,7 @@ class ApiService {
               } catch (fetchError: any) {
                 console.error('[POLLING] Failed to fetch trip:', fetchError.message);
                 // 여행은 생성됐지만 조회 실패 - 에러에 tripId 포함
-                const error: any = new Error('Trip created but failed to fetch details');
+                const error: any = new Error('TRIP_FETCH_FAILED');
                 error.tripId = status.tripId;
                 error.tripCreated = true;
                 reject(error);
@@ -566,7 +600,7 @@ class ApiService {
             if (status.status === 'error') {
               console.error('[POLLING] Trip creation failed:', status.error);
               clearInterval(pollInterval);
-              reject(new Error(status.error || 'Trip creation failed'));
+              reject(new Error(status.error || 'TRIP_CREATION_FAILED'));
               return;
             }
 
@@ -574,7 +608,7 @@ class ApiService {
             if (pollCount >= maxPolls) {
               console.error('[POLLING] Timeout: exceeded maximum polling duration');
               clearInterval(pollInterval);
-              reject(new Error('Trip creation timeout - please check your trips list'));
+              reject(new Error('TRIP_CREATION_TIMEOUT'));
               return;
             }
 
@@ -602,7 +636,7 @@ class ApiService {
       }
 
       // 작업 시작 실패 - 백엔드 에러 또는 네트워크 문제
-      throw new Error(error.response?.data?.message || 'Failed to start trip creation');
+      throw new Error(error.response?.data?.message || 'TRIP_CREATION_START_FAILED');
     }
   }
 

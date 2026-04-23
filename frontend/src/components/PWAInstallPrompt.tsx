@@ -35,6 +35,13 @@ export const PWAInstallPrompt: React.FC = () => {
 
   const mobile = isMobileWeb();
 
+  // Clean up animation on unmount
+  useEffect(() => {
+    return () => {
+      slideAnim.stopAnimation();
+    };
+  }, []);
+
   useEffect(() => {
     if (Platform.OS !== 'web') return undefined;
 

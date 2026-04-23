@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { InteractionManager } from 'react-native';
 import { useAuth } from './AuthContext';
 import { useConsent } from './ConsentContext';
+import { useNotifications } from './NotificationContext';
 
 const TUTORIAL_KEYS = {
   WELCOME: '@travelplanner:tutorial_welcome',
@@ -36,6 +37,7 @@ interface TutorialProviderProps {
 export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
   const { needsConsentScreen } = useConsent();
+  const { showPrePermissionModal, isPrePermissionResolved, pendingPrePermission } = useNotifications();
   const [welcomeCompleted, setWelcomeCompleted] = useState(true);
   const [coachCompleted, setCoachCompleted] = useState(true);
   const [loaded, setLoaded] = useState(false);
@@ -65,17 +67,15 @@ export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) 
   const [onboardingSettled, setOnboardingSettled] = useState(false);
   const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // State-based: wait until notification pre-permission modal is dismissed.
+  // Now that NotificationProvider wraps TutorialProvider, we can directly
+  // subscribe to showPrePermissionModal instead of polling AsyncStorage.
   useEffect(() => {
-    if (isFullyOnboarded && loaded && isAuthenticated) {
+    if (isFullyOnboarded && loaded && isAuthenticated && isPrePermissionResolved && !showPrePermissionModal && !pendingPrePermission) {
       const handle = InteractionManager.runAfterInteractions(() => {
-        settledTimerRef.current = setTimeout(async () => {
-          const notifShown = await AsyncStorage.getItem('@travelplanner:notification_preperm_shown');
-          if (notifShown !== 'true') {
-            settledTimerRef.current = setTimeout(() => setOnboardingSettled(true), 3000);
-          } else {
-            setOnboardingSettled(true);
-          }
-        }, 800);
+        settledTimerRef.current = setTimeout(() => {
+          setOnboardingSettled(true);
+        }, 500);
       });
       return () => {
         handle.cancel();
@@ -84,7 +84,7 @@ export const TutorialProvider: React.FC<TutorialProviderProps> = ({ children }) 
     }
     setOnboardingSettled(false);
     return undefined;
-  }, [isFullyOnboarded, loaded, isAuthenticated]);
+  }, [isFullyOnboarded, loaded, isAuthenticated, isPrePermissionResolved, showPrePermissionModal, pendingPrePermission]);
 
   const showWelcome = onboardingSettled && !welcomeCompleted;
   const showCoachMark = onboardingSettled && welcomeCompleted && !coachCompleted;

@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     width: '100%',
     maxWidth: 380,
-    alignItems: 'center',
   },
   iconWrap: {
     width: 72,
@@ -139,6 +138,7 @@ const styles = StyleSheet.create({
     borderRadius: 36,
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
     marginBottom: 20,
   },
   title: {

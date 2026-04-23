@@ -47,6 +47,13 @@ const CoachMark: React.FC<CoachMarkProps> = ({
   const { width: screenWidth } = useWindowDimensions();
   const [tooltipHeight, setTooltipHeight] = React.useState(0);
 
+  // Clean up animation on unmount
+  useEffect(() => {
+    return () => {
+      fadeAnim.stopAnimation();
+    };
+  }, []);
+
   useEffect(() => {
     if (visible && targetLayout) {
       Animated.timing(fadeAnim, {
