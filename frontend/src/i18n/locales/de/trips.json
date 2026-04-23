@@ -357,7 +357,8 @@
       "leaveMessage": "Möchten Sie diese Reise wirklich verlassen? Sie haben danach keinen Zugriff mehr.",
       "leaveConfirm": "Verlassen",
       "leaveSuccess": "Sie haben die Reise verlassen",
-      "leaveFailed": "Fehler beim Verlassen der Reise"
+      "leaveFailed": "Fehler beim Verlassen der Reise",
+      "autoConverted": "Koreanische Zeichen wurden automatisch ins Englische umgewandelt"
     },
     "expenses": {
       "title": "Ausgaben",

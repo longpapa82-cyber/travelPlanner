@@ -357,7 +357,8 @@
       "leaveMessage": "この旅行から退出しますか？以後、この旅行にアクセスできなくなります。",
       "leaveConfirm": "退出",
       "leaveSuccess": "旅行から退出しました",
-      "leaveFailed": "旅行からの退出に失敗しました"
+      "leaveFailed": "旅行からの退出に失敗しました",
+      "autoConverted": "韓国語が自動的に英語に変換されました"
     },
     "expenses": {
       "title": "経費",

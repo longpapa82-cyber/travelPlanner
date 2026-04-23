@@ -357,7 +357,8 @@
       "leaveMessage": "确定要退出此旅行吗？退出后将无法再访问。",
       "leaveConfirm": "退出",
       "leaveSuccess": "已退出旅行",
-      "leaveFailed": "退出旅行失败"
+      "leaveFailed": "退出旅行失败",
+      "autoConverted": "韩文字符已自动转换为英文"
     },
     "expenses": {
       "title": "费用",

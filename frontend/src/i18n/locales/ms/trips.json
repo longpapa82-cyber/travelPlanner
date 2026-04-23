@@ -357,7 +357,8 @@
       "leaveMessage": "Adakah anda pasti mahu meninggalkan perjalanan ini? Anda tidak akan mempunyai akses lagi.",
       "leaveConfirm": "Tinggalkan",
       "leaveSuccess": "Anda telah meninggalkan perjalanan",
-      "leaveFailed": "Gagal meninggalkan perjalanan"
+      "leaveFailed": "Gagal meninggalkan perjalanan",
+      "autoConverted": "Aksara Korea ditukar secara automatik ke bahasa Inggeris"
     },
     "expenses": {
       "title": "Perbelanjaan",

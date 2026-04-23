@@ -367,7 +367,8 @@
       "leaveSuccess": "여행에서 나갔습니다",
       "leaveFailed": "여행 나가기에 실패했습니다",
       "invalidEmail": "유효한 이메일 주소를 입력해주세요",
-      "switchToEnglish": "영문 키보드로 전환해주세요"
+      "switchToEnglish": "영문 키보드로 전환해주세요",
+      "autoConverted": "한글이 영문으로 자동 변환되었습니다"
     },
     "expenses": {
       "title": "경비",

@@ -357,7 +357,8 @@
       "leaveMessage": "Tem certeza de que deseja sair desta viagem? Você não terá mais acesso.",
       "leaveConfirm": "Sair",
       "leaveSuccess": "Você saiu da viagem",
-      "leaveFailed": "Falha ao sair da viagem"
+      "leaveFailed": "Falha ao sair da viagem",
+      "autoConverted": "Caracteres coreanos foram convertidos automaticamente para inglês"
     },
     "expenses": {
       "title": "Despesas",

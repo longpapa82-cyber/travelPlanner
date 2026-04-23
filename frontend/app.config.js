@@ -39,6 +39,7 @@ export default ({ config }) => ({
       backgroundColor: '#4A90D9',
     },
     edgeToEdgeEnabled: true,
+    softwareKeyboardLayoutMode: 'pan',
     package: 'com.longpapa82.travelplanner',
     versionCode: config.android?.versionCode ?? 42,
     intentFilters: [

@@ -357,7 +357,8 @@
       "leaveMessage": "Bạn có chắc chắn muốn rời chuyến đi này không? Bạn sẽ không thể truy cập nữa.",
       "leaveConfirm": "Rời",
       "leaveSuccess": "Bạn đã rời chuyến đi",
-      "leaveFailed": "Không thể rời chuyến đi"
+      "leaveFailed": "Không thể rời chuyến đi",
+      "autoConverted": "Ký tự tiếng Hàn đã được tự động chuyển sang tiếng Anh"
     },
     "expenses": {
       "title": "Chi phí",

@@ -357,7 +357,8 @@
       "leaveMessage": "Apakah Anda yakin ingin keluar dari perjalanan ini? Anda tidak akan bisa mengaksesnya lagi.",
       "leaveConfirm": "Keluar",
       "leaveSuccess": "Anda telah keluar dari perjalanan",
-      "leaveFailed": "Gagal keluar dari perjalanan"
+      "leaveFailed": "Gagal keluar dari perjalanan",
+      "autoConverted": "Karakter Korea dikonversi otomatis ke bahasa Inggris"
     },
     "expenses": {
       "title": "Pengeluaran",

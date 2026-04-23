@@ -357,7 +357,8 @@
       "leaveMessage": "Bu geziden ayrılmak istediğinizden emin misiniz? Artık bu geziye erişiminiz olmayacaktır.",
       "leaveConfirm": "Ayrıl",
       "leaveSuccess": "Geziden ayrıldınız",
-      "leaveFailed": "Geziden ayrılma başarısız"
+      "leaveFailed": "Geziden ayrılma başarısız",
+      "autoConverted": "Korece karakterler otomatik olarak İngilizceye dönüştürüldü"
     },
     "expenses": {
       "title": "Harcamalar",

@@ -367,7 +367,8 @@
       "leaveSuccess": "You have left the trip",
       "leaveFailed": "Failed to leave the trip",
       "invalidEmail": "Please enter a valid email address",
-      "switchToEnglish": "Please switch to English keyboard"
+      "switchToEnglish": "Please switch to English keyboard",
+      "autoConverted": "Korean characters were auto-converted to English"
     },
     "expenses": {
       "title": "Expenses",
