@@ -93,7 +93,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [numberOfTravelers, setNumberOfTravelers] = useState(1);
-  const [travelerInputText, setTravelerInputText] = useState('');
+  const [travelerInputText, setTravelerInputText] = useState('1');
   const [description, setDescription] = useState('');
   const [totalBudget, setTotalBudget] = useState('');
   const [budgetCurrency, setBudgetCurrency] = useState('USD');

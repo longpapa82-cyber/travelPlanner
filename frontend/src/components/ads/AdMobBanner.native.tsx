@@ -6,9 +6,11 @@
  * IMPORTANT: AdMob policy requires that ad containers maintain stable dimensions.
  * Never return null or change container size after an ad has been requested.
  * On error, keep the container with the same height but hide the ad content.
+ *
+ * Retry limit prevents infinite ad request loops when SDK is in a bad state.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -41,6 +43,9 @@ const BANNER_MIN_HEIGHT: Record<AdMobBannerSize, number> = {
   adaptive: 60,
 };
 
+/** Max consecutive failures before giving up ad requests for this mount */
+const MAX_FAIL_COUNT = 2;
+
 const AdMobBannerComponent: React.FC<AdMobBannerProps> = ({
   adUnitId,
   size = 'adaptive',
@@ -49,6 +54,13 @@ const AdMobBannerComponent: React.FC<AdMobBannerProps> = ({
 }) => {
   const { isDark } = useTheme();
   const [adError, setAdError] = useState(false);
+  const mountedRef = useRef(true);
+  const failCountRef = useRef(0);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
 
   const useTestAds = __DEV__ || process.env.EXPO_PUBLIC_USE_TEST_ADS === 'true';
   const unitId = useTestAds
@@ -62,16 +74,26 @@ const AdMobBannerComponent: React.FC<AdMobBannerProps> = ({
   const minHeight = BANNER_MIN_HEIGHT[size] || 60;
 
   // Always render the container to maintain stable frame dimensions (AdMob policy).
-  // On error, keep the container but hide the ad content.
+  // On error or after exceeding retry limit, keep the container but hide the ad content.
   return (
     <View style={[styles.container, isDark && styles.containerDark, { minHeight }, style]}>
-      {!adError && (
+      {!adError && failCountRef.current < MAX_FAIL_COUNT && (
         <BannerAd
           unitId={unitId}
           size={adSize}
           requestOptions={{ requestNonPersonalizedAdsOnly }}
-          onAdLoaded={() => setAdError(false)}
-          onAdFailedToLoad={() => setAdError(true)}
+          onAdLoaded={() => {
+            if (mountedRef.current) {
+              setAdError(false);
+              failCountRef.current = 0;
+            }
+          }}
+          onAdFailedToLoad={() => {
+            if (mountedRef.current) {
+              failCountRef.current += 1;
+              setAdError(true);
+            }
+          }}
         />
       )}
     </View>

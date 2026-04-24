@@ -40,6 +40,7 @@ import Button from '../../components/core/Button';
 import { Card } from '../../components/core/Card';
 import { getHeroImageUrl } from '../../utils/images';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { convertKoreanToEnglish } from '../../utils/koreanToEnglish';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -64,7 +65,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const handleEmailChange = (value: string) => {
-    setEmail(value);
+    setEmail(convertKoreanToEnglish(value));
     if (emailError) setEmailError('');
     if (loginError) setLoginError('');
   };

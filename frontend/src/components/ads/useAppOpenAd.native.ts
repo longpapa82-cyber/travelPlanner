@@ -1,9 +1,12 @@
 /**
  * App Open Ad Hook - Native (iOS/Android)
  *
- * Shows an ad when the app returns to the foreground after >=3 minutes.
+ * Shows an ad when the app returns to the foreground after >=30s.
  * Uses react-native-google-mobile-ads AppOpenAd.
  * Frequency-capped via adFrequency utility.
+ *
+ * IMPORTANT: Creates ONE ad instance per mount to prevent native SDK resource
+ * accumulation. Reload after CLOSED is delayed to avoid rapid memory churn.
  */
 
 import { useEffect, useRef, useCallback } from 'react';
@@ -25,6 +28,9 @@ const APP_OPEN_UNIT_ID = __DEV__
     ? extra.admob?.appOpenAdUnitId?.ios || ''
     : extra.admob?.appOpenAdUnitId?.android || '';
 
+/** Delay before reloading after ad close to prevent rapid native SDK resource churn */
+const RELOAD_DELAY_MS = 10000;
+
 export function useAppOpenAd() {
   // Hook must be called unconditionally (Rules of Hooks)
   const { isPremium } = usePremium();
@@ -32,25 +38,33 @@ export function useAppOpenAd() {
   const adRef = useRef<AppOpenAd | null>(null);
   const isLoadedRef = useRef(false);
   const backgroundTimestamp = useRef(0);
+  const mountedRef = useRef(true);
+  const reloadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadAd = useCallback(() => {
     if (!APP_OPEN_UNIT_ID || isPremium) return;
 
+    // Create ONE instance per mount — reuse via load() for subsequent requests
     const appOpen = AppOpenAd.createForAdRequest(APP_OPEN_UNIT_ID, {
       requestNonPersonalizedAdsOnly: true,
     });
 
     const loadedUnsub = appOpen.addAdEventListener(AdEventType.LOADED, () => {
-      isLoadedRef.current = true;
+      if (mountedRef.current) isLoadedRef.current = true;
     });
 
     const closedUnsub = appOpen.addAdEventListener(AdEventType.CLOSED, () => {
-      isLoadedRef.current = false;
-      appOpen.load();
+      if (mountedRef.current) isLoadedRef.current = false;
+      // Delay reload to prevent rapid SDK resource churn
+      reloadTimerRef.current = setTimeout(() => {
+        if (mountedRef.current && adRef.current) {
+          adRef.current.load();
+        }
+      }, RELOAD_DELAY_MS);
     });
 
     const errorUnsub = appOpen.addAdEventListener(AdEventType.ERROR, () => {
-      isLoadedRef.current = false;
+      if (mountedRef.current) isLoadedRef.current = false;
     });
 
     adRef.current = appOpen;
@@ -64,6 +78,7 @@ export function useAppOpenAd() {
   }, [isPremium]);
 
   useEffect(() => {
+    mountedRef.current = true;
     const cleanup = loadAd();
 
     const handleAppState = async (nextState: AppStateStatus) => {
@@ -89,8 +104,11 @@ export function useAppOpenAd() {
     const subscription = AppState.addEventListener('change', handleAppState);
 
     return () => {
+      mountedRef.current = false;
+      if (reloadTimerRef.current) clearTimeout(reloadTimerRef.current);
       cleanup?.();
       subscription.remove();
+      adRef.current = null;
     };
   }, [loadAd]);
 }

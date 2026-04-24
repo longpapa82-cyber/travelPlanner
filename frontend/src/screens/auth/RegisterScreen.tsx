@@ -37,6 +37,7 @@ import Button from '../../components/core/Button';
 import { Card } from '../../components/core/Card';
 import { getHeroImageUrl } from '../../utils/images';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
+import { convertKoreanToEnglish, KOREAN_REGEX } from '../../utils/koreanToEnglish';
 
 type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
 
@@ -249,7 +250,10 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 placeholder={t('register.namePlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={name}
-                onChangeText={setName}
+                onChangeText={(text) => {
+                  const converted = convertKoreanToEnglish(text);
+                  setName(converted);
+                }}
                 autoCapitalize="words"
                 autoComplete="name"
                 editable={!isLoading}
@@ -265,11 +269,12 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 placeholder={t('register.emailPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => setEmail(convertKoreanToEnglish(text))}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
                 autoComplete="email"
+                inputMode="email"
                 editable={!isLoading}
                 accessibilityLabel={t('register.email')}
               />
