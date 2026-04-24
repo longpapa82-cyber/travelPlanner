@@ -61,13 +61,14 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
   const [isInviting, setIsInviting] = useState(false);
 
   const handleEmailChange = (text: string) => {
+    // Always attempt Korean → English conversion for dubeolsik keyboard users
     const converted = convertKoreanToEnglish(text);
     if (converted !== text) {
       showToast({ type: 'info', message: t('detail.collaboration.autoConverted'), position: 'top' });
-      setCollabEmail(converted);
-    } else {
-      setCollabEmail(text);
     }
+    // Strip any remaining non-ASCII characters that conversion couldn't handle
+    const ascii = converted.replace(/[^\x20-\x7E]/g, '');
+    setCollabEmail(ascii);
   };
 
   const handleInviteCollaborator = async () => {

@@ -263,7 +263,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       setTravelersCount(count);
       setTravelerInputText(count.toString());
     }
-  }, [setTravelersCount]);
+  }, [setTravelersCount, numberOfTravelers]);
 
   const calculateDuration = useCallback((): number | null => {
     if (!startDate || !endDate) return null;
@@ -1338,9 +1338,12 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 onChangeText={(text) => {
                   const cleaned = text.replace(/[^0-9]/g, '').slice(0, 2);
                   setTravelerInputText(cleaned);
+                  if (cleaned === '') return;
                   const num = parseInt(cleaned);
                   if (!isNaN(num) && num >= 1 && num <= 20) {
                     setNumberOfTravelers(num);
+                  } else if (num === 0) {
+                    setTravelerInputText('');
                   }
                 }}
                 onBlur={() => {
@@ -2189,6 +2192,7 @@ const createStyles = (theme: any, isDark: boolean) =>
     modalSecondaryButton: {
       flex: 1,
       paddingVertical: 12,
+      paddingHorizontal: 16,
       borderRadius: 10,
       borderWidth: 1,
       alignItems: 'center',
@@ -2196,6 +2200,7 @@ const createStyles = (theme: any, isDark: boolean) =>
     modalPrimaryButton: {
       flex: 1,
       paddingVertical: 12,
+      paddingHorizontal: 16,
       borderRadius: 10,
       alignItems: 'center',
     },
