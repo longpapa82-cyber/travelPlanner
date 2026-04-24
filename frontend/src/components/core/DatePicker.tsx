@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
 import { getDateLocale } from '../../utils/dateLocale';
+import { formatLocalYmd } from '../../utils/dateFormat';
 
 interface DatePickerProps {
   label: string;
@@ -54,8 +55,8 @@ const DatePickerField: React.FC<DatePickerProps> = ({
           type="date"
           value={value}
           onChange={(e: any) => onChange(e.target.value)}
-          min={minimumDate?.toISOString().split('T')[0]}
-          max={maximumDate?.toISOString().split('T')[0]}
+          min={minimumDate ? formatLocalYmd(minimumDate) : undefined}
+          max={maximumDate ? formatLocalYmd(maximumDate) : undefined}
           disabled={disabled}
           style={{
             fontSize: 16,

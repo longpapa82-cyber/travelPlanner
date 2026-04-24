@@ -21,14 +21,10 @@ import {
   PLAN_TYPE_BY_PRODUCT_ID,
 } from './constants';
 import { SubscriptionStatusDto } from './dto/subscription-status.dto';
+import { isOperationalAdmin } from '../common/utils/admin-check';
 
 const PREMIUM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 const SANDBOX_YEARLY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-// V115 (Gate 7 H-1 fix): no hardcoded fallback. Mirror admin.guard.ts.
-const ADMIN_EMAILS: string[] = (process.env.ADMIN_EMAILS ?? '')
-  .split(',')
-  .map((e) => e.trim().toLowerCase())
-  .filter(Boolean);
 
 @Injectable()
 export class SubscriptionService {
@@ -75,6 +71,7 @@ export class SubscriptionService {
       select: [
         'id',
         'email',
+        'role',
         'subscriptionTier',
         'subscriptionPlatform',
         'subscriptionExpiresAt',
@@ -96,8 +93,11 @@ export class SubscriptionService {
       };
     }
 
-    const isAdmin =
-      !!user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+    // V172 (B-2): unified operational-admin check (DB role OR env email).
+    // Used here purely as a UI flag and to drive `aiTripsLimit` for admins.
+    // Security gates (AdminGuard, throttler exemption) intentionally use
+    // `isSecurityAdmin` (DB role only) instead.
+    const isAdmin = isOperationalAdmin(user.email, user.role);
     const isPremium = this.isUserPremium(user);
     const effectiveLimit = isPremium
       ? this.aiTripsPremiumLimit
@@ -152,6 +152,26 @@ export class SubscriptionService {
       'aiTripsUsedThisMonth',
       1,
     );
+  }
+
+  /**
+   * V172 (B-1): Saga compensation for `incrementAiTripCount`.
+   *
+   * Called by `TripsService.restoreAiQuota` after an AI trip creation
+   * fails (Phase B fallback to empty, Phase C save error, or user cancel).
+   * `GREATEST(... - 1, 0)` is the safety net — even if a future caller
+   * forgets the `quotaRefunded` idempotency check, the counter can never
+   * go below zero. The monthly cron then resets to 0 normally.
+   */
+  async decrementAiTripCount(userId: string): Promise<void> {
+    await this.userRepository
+      .createQueryBuilder()
+      .update('users')
+      .set({
+        aiTripsUsedThisMonth: () => 'GREATEST("aiTripsUsedThisMonth" - 1, 0)',
+      })
+      .where('id = :userId', { userId })
+      .execute();
   }
 
   async handleRevenueCatEvent(event: Record<string, any>): Promise<void> {

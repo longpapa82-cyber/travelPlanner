@@ -41,6 +41,7 @@ import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import apiService from '../../services/api';
 import { trackEvent } from '../../services/eventTracker';
+import { formatLocalYmd, addDaysLocal, localMidnightToday } from '../../utils/dateFormat';
 import { useNotifications } from '../../contexts/NotificationContext';
 import Button from '../../components/core/Button';
 import DatePickerField from '../../components/core/DatePicker';
@@ -167,13 +168,15 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const POPULAR_DESTINATIONS = useMemo(() => getPopularDestinations(t), [t]);
   const DURATION_OPTIONS = useMemo(() => getDurationOptions(t), [t]);
 
-  // 여행 생성 시 최소 출발일은 내일부터
-  const minStartDate = useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 1);
-    d.setHours(0, 0, 0, 0);
-    return d;
-  }, []);
+  // V172 (F-1): 최소 출발일은 항상 "오늘+1" — 자정 경계를 넘어가도 stale
+  // 되지 않도록 useState로 보관하고 focus 시 갱신. 과거 useMemo([], )는
+  // mount 시점에 고정되어 사용자가 자정 직후 진입하면 어제 날짜를 반환했음.
+  const [minStartDate, setMinStartDate] = useState<Date>(() => addDaysLocal(1));
+  useEffect(() => {
+    const refresh = () => setMinStartDate(addDaysLocal(1));
+    const sub = navigation.addListener('focus', refresh);
+    return sub;
+  }, [navigation]);
   const TRAVELER_OPTIONS = useMemo(() => getTravelerOptions(t), [t]);
 
   // Auto-fill preferences from user profile
@@ -233,14 +236,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   }, []);
 
   const setDurationDays = useCallback((days: number) => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const start = new Date(tomorrow);
-    const end = new Date(tomorrow);
-    end.setDate(end.getDate() + days - 1);
-
-    setStartDate(start.toISOString().split('T')[0]);
-    setEndDate(end.toISOString().split('T')[0]);
+    // V172 (F-1): 사용자가 보는 로컬 캘린더 기준의 "내일"을 기본 시작일로.
+    // 과거 toISOString().split('T')[0]는 UTC 기준이라, 한국에서 자정~오전
+    // 9시 사이 이 함수가 호출되면 startDate가 "오늘"로 직렬화되어 검증
+    // (`start <= today`)에서 차단되었음. formatLocalYmd로 timezone drift 제거.
+    const start = addDaysLocal(1);
+    const end = addDaysLocal(days);
+    setStartDate(formatLocalYmd(start));
+    setEndDate(formatLocalYmd(end));
     setFieldErrors(prev => ({ ...prev, dates: undefined }));
   }, []);
 
@@ -288,10 +291,12 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     if (!startDate || !endDate) {
       errors.dates = t('create.alerts.datesRequired');
     } else {
+      // V172 (F-1): both sides parsed as local time so the comparison
+      // matches the user's calendar, not UTC's. `+ 'T00:00:00'` makes the
+      // YYYY-MM-DD string parse as a local-time Date.
       const start = new Date(startDate + 'T00:00:00');
       const end = new Date(endDate + 'T00:00:00');
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const today = localMidnightToday();
       if (start <= today) {
         errors.dates = t('create.alerts.startDateFuture');
       } else if (start > end) {

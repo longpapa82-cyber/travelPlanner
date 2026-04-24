@@ -83,6 +83,17 @@ export class Trip {
   @Column({ type: 'varchar', length: 20, default: 'none' })
   aiStatus: string;
 
+  /**
+   * V172 (B-1): Idempotency guard for the AI quota saga.
+   *
+   * Set to true after a refund has been applied for this trip so that
+   * concurrent failure paths (Phase B AI catch + outer pipeline catch +
+   * Phase C save error) cannot double-refund the same user. Refund logic
+   * uses an atomic UPDATE that flips this flag in the same statement.
+   */
+  @Column({ type: 'boolean', default: false })
+  quotaRefunded: boolean;
+
   @Column({ type: 'boolean', default: false })
   isPublic: boolean;
 

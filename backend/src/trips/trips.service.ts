@@ -28,6 +28,7 @@ import { updateItinerariesCompletionStatus } from './helpers/trip-progress.helpe
 import { QueryTripsDto, SortBy, SortOrder } from './dto/query-trips.dto';
 import { getErrorMessage } from '../common/types/request.types';
 import { ErrorLog } from '../admin/entities/error-log.entity';
+import { isOperationalAdmin } from '../common/utils/admin-check';
 import { Subject } from 'rxjs';
 
 /** Thresholds (ms) above which a trip-creation phase is considered slow. */
@@ -119,6 +120,79 @@ export class TripsService {
       });
   }
 
+  /**
+   * V172 (B-1): Compensating action for the Phase A AI counter increment.
+   *
+   * Called from every Phase B / Phase C / outer-pipeline failure branch so a
+   * free user is not billed (in quota terms) for an AI generation that never
+   * produced a usable itinerary. Idempotency is enforced at the SQL layer by
+   * an atomic `UPDATE trips SET quotaRefunded=true WHERE quotaRefunded=false`
+   * — only the first refund call gets a non-zero affected row count, so a
+   * race between (e.g.) the Phase B AI catch and the outer pipeline catch
+   * can never double-refund.
+   *
+   * Admin users are skipped because Phase A also skips the increment for
+   * them (see L214). Manual-mode trips never enter this code path because
+   * the caller short-circuits in their own branch.
+   */
+  private async restoreAiQuota(
+    tripId: string,
+    userId: string,
+    reason: string,
+  ): Promise<void> {
+    try {
+      // Atomic flip: set quotaRefunded=true only if it was false. This is the
+      // sole guard against double-refunds across concurrent failure paths.
+      const result = await this.dataSource
+        .createQueryBuilder()
+        .update(Trip)
+        .set({ quotaRefunded: true })
+        .where('id = :tripId AND "quotaRefunded" = :prev', {
+          tripId,
+          prev: false,
+        })
+        .execute();
+
+      if ((result.affected ?? 0) === 0) {
+        // Either already refunded, or trip is gone. Either way, no-op.
+        return;
+      }
+
+      // Re-check operational-admin status at refund time. If Phase A took
+      // the admin bypass branch (no increment), we must NOT decrement here
+      // either. V172 (B-2): mirror Phase A by checking BOTH env email and
+      // DB role — using the same isOperationalAdmin helper keeps the two
+      // sites in lockstep.
+      const userRow = await this.dataSource
+        .createQueryBuilder()
+        .select(['users.email', 'users.role'])
+        .from('users', 'users')
+        .where('users.id = :userId', { userId })
+        .getRawOne<{ users_email: string; users_role: string }>();
+      if (
+        userRow &&
+        isOperationalAdmin(userRow.users_email, userRow.users_role)
+      ) {
+        this.logger.log(
+          `[QuotaSaga] trip=${tripId} user=${userId} — admin (env or role), skip decrement (Phase A had no increment)`,
+        );
+        return;
+      }
+
+      await this.subscriptionService.decrementAiTripCount(userId);
+      this.logger.log(
+        `[QuotaSaga] Refunded AI quota for trip=${tripId} user=${userId} reason="${reason}"`,
+      );
+    } catch (err) {
+      // Refund must never crash the request — at worst we log and the user
+      // is over-charged in counter terms. Better than throwing on top of the
+      // original failure that brought us here.
+      this.logger.error(
+        `[QuotaSaga] Refund failed for trip=${tripId} user=${userId}: ${getErrorMessage(err)}`,
+      );
+    }
+  }
+
   async create(
     userId: string,
     createTripDto: CreateTripDto,
@@ -164,6 +238,7 @@ export class TripsService {
           .createQueryBuilder()
           .select([
             'users.id',
+            'users.email',
             'users.aiTripsUsedThisMonth',
             'users.subscriptionTier',
             'users.role',
@@ -178,9 +253,17 @@ export class TripsService {
         }
 
         const currentCount = user.users_aiTripsUsedThisMonth || 0;
+        // V172 (B-2): use the unified operational-admin helper so the env
+        // ADMIN_EMAILS list and DB role agree. Previously only the DB role
+        // bypassed quota, which meant a user listed in env saw "관리자" in
+        // the UI but still got their counter incremented (the V171 silent
+        // bug for longpapa82@gmail.com).
+        const isAdminUser = isOperationalAdmin(
+          user.users_email,
+          user.users_role,
+        );
 
-        // Admin users have unlimited AI generations
-        if (user.users_role === 'admin') {
+        if (isAdminUser) {
           // No limit check for admins, proceed with trip creation
         } else {
           // Determine the AI trip limit based on subscription tier
@@ -210,8 +293,8 @@ export class TripsService {
         }
 
         // CRITICAL: Increment quota BEFORE creating trip (inside transaction)
-        // Skip incrementing for admin users as they have unlimited access
-        if (user.users_role !== 'admin') {
+        // V172 (B-2): unified admin check covers env-listed and role=admin.
+        if (!isAdminUser) {
           await phaseARunner.manager
             .createQueryBuilder()
             .update('users')
@@ -220,7 +303,7 @@ export class TripsService {
             .execute();
         }
 
-        if (user.users_role === 'admin') {
+        if (isAdminUser) {
           this.logger.log(
             `Admin user ${userId} creating AI trip (unlimited access, current count: ${currentCount})`,
           );
@@ -528,6 +611,14 @@ export class TripsService {
           // Cancellation must propagate — mark trip as failed and re-throw.
           if (error instanceof TripCancelledError || signal?.aborted) {
             await markTripFailed('User cancelled');
+            // V172 (B-1): refund the Phase A increment on cancel.
+            if (!isManualMode) {
+              await this.restoreAiQuota(
+                savedTrip.id,
+                userId,
+                'cancelled during AI generation',
+              );
+            }
             throw error instanceof TripCancelledError
               ? error
               : new TripCancelledError();
@@ -545,6 +636,18 @@ export class TripsService {
             step: 'error',
             message: 'AI generation failed, creating empty itineraries',
           });
+
+          // V172 (B-1): AI generation failed and we are about to save an
+          // empty-itinerary fallback trip. Refund the user's monthly AI quota
+          // — they paid (in counter terms) for an AI itinerary they did not
+          // get. The trip itself stays so the user can edit manually.
+          if (!isManualMode) {
+            await this.restoreAiQuota(
+              savedTrip.id,
+              userId,
+              'AI generation failed, fallback to empty itineraries',
+            );
+          }
 
           // Fallback: Create empty itineraries with weather
           const weatherMap = await fetchWeatherMap();
@@ -612,6 +715,14 @@ export class TripsService {
         await markTripFailed(
           `Phase C save failed: ${getErrorMessage(saveError)}`,
         );
+        // V172 (B-1): Phase C save failure also burns quota — refund.
+        if (!isManualMode) {
+          await this.restoreAiQuota(
+            savedTrip.id,
+            userId,
+            'Phase C save failed',
+          );
+        }
         throw saveError;
       } finally {
         await phaseCRunner.release();
@@ -638,11 +749,20 @@ export class TripsService {
         `Successfully completed trip creation pipeline for trip ${savedTrip.id}`,
       );
     } catch (error) {
-      // Phase A is already committed — quota stays decremented (correct behavior).
-      // Trip is already persisted with aiStatus: 'generating' or 'failed'.
-      // If this is a cancellation, the trip was already marked failed above.
+      // V172 (B-1): Phase A's quota increment is committed, but failure here
+      // means the user did not get the AI itinerary they paid (in counter
+      // terms) for. Refund. The atomic `quotaRefunded` flag makes this safe
+      // to call even if Phase B / Phase C already refunded — the second
+      // call short-circuits at the SQL level.
       if (!(error instanceof TripCancelledError)) {
         await markTripFailed(`Pipeline error: ${getErrorMessage(error)}`);
+      }
+      if (!isManualMode) {
+        await this.restoreAiQuota(
+          savedTrip.id,
+          userId,
+          `pipeline error (idempotent): ${getErrorMessage(error)}`,
+        );
       }
       this.logger.error(
         `Failed during trip creation pipeline for trip ${savedTrip.id}: ${getErrorMessage(error)}`,
