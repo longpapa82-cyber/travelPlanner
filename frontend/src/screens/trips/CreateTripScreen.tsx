@@ -1320,7 +1320,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 style={[styles.input, { color: theme.colors.text }]}
                 placeholder={t('create.travelers.customPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
-                value={travelerInputText}
+                value={travelerInputText || numberOfTravelers.toString()}
                 onChangeText={(text) => {
                   const cleaned = text.replace(/[^0-9]/g, '').slice(0, 2);
                   setTravelerInputText(cleaned);

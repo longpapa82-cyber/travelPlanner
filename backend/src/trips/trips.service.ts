@@ -146,10 +146,13 @@ export class TripsService {
 
     const isManualMode = createTripDto.planningMode === 'manual';
 
-    // ✅ FIX: Use transaction to atomically check+increment quota, then create trip
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    // ────────────────────────────────────────────────────────────
+    // Phase A: SHORT transaction — quota check + trip creation
+    // Holds the DB connection for <2 seconds, then releases it.
+    // ────────────────────────────────────────────────────────────
+    const phaseARunner = this.dataSource.createQueryRunner();
+    await phaseARunner.connect();
+    await phaseARunner.startTransaction();
 
     let savedTrip: Trip;
 
@@ -157,7 +160,7 @@ export class TripsService {
       // Check AI trip limit with row-level locking (prevents race conditions)
       if (!isManualMode) {
         // Lock user row to prevent concurrent quota checks
-        const user = await queryRunner.manager
+        const user = await phaseARunner.manager
           .createQueryBuilder()
           .select([
             'users.id',
@@ -206,10 +209,10 @@ export class TripsService {
           }
         }
 
-        // ✅ CRITICAL: Increment quota BEFORE creating trip (inside transaction)
+        // CRITICAL: Increment quota BEFORE creating trip (inside transaction)
         // Skip incrementing for admin users as they have unlimited access
         if (user.users_role !== 'admin') {
-          await queryRunner.manager
+          await phaseARunner.manager
             .createQueryBuilder()
             .update('users')
             .set({ aiTripsUsedThisMonth: () => 'aiTripsUsedThisMonth + 1' })
@@ -228,36 +231,60 @@ export class TripsService {
         }
       }
 
-      // Create trip (after quota check and increment)
-      const trip = queryRunner.manager.create(Trip, {
+      // Create trip with aiStatus: 'generating' for AI mode
+      // Trip is visible to frontend immediately after Phase A commit
+      const trip = phaseARunner.manager.create(Trip, {
         userId,
         ...createTripDto,
         numberOfTravelers: createTripDto.numberOfTravelers || 1,
+        ...(isManualMode ? {} : { aiStatus: 'generating' }),
       });
 
-      savedTrip = await queryRunner.manager.save(trip);
+      savedTrip = await phaseARunner.manager.save(trip);
+
+      // Commit Phase A — quota and trip are now persisted
+      await phaseARunner.commitTransaction();
 
       this.logger.log(
-        `Successfully created trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode (transaction started)`,
+        `[Phase A] Committed trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode (${Date.now() - pipelineStart}ms)`,
       );
-
-      // CRITICAL FIX: Keep transaction open for entire trip creation process
-      // Do NOT commit here - moved to the end of the method
     } catch (error) {
       // Rollback on any error (quota increment is also rolled back)
-      await queryRunner.rollbackTransaction();
-      await queryRunner.release();
+      await phaseARunner.rollbackTransaction();
       this.logger.error(
-        `Failed to create trip, transaction rolled back: ${getErrorMessage(error)}`,
+        `[Phase A] Failed to create trip, transaction rolled back: ${getErrorMessage(error)}`,
       );
       throw error;
+    } finally {
+      await phaseARunner.release();
     }
 
+    // ────────────────────────────────────────────────────────────
+    // Phase B: External API calls — NO transaction held
+    // AI generation (10-144s) + weather fetch run outside any
+    // transaction so they cannot cause "current transaction is
+    // aborted" errors or exhaust the connection pool.
+    // ────────────────────────────────────────────────────────────
     this.logger.log(
-      `Creating trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode`,
+      `[Phase B] Starting external API calls for trip ${savedTrip.id} in ${isManualMode ? 'manual' : 'AI'} mode`,
     );
 
-    // CRITICAL FIX: Wrap ALL operations in try-catch for proper rollback
+    // Helper to mark trip as failed without a transaction (single UPDATE)
+    const markTripFailed = async (reason: string) => {
+      try {
+        await this.tripRepository.update(savedTrip.id, {
+          aiStatus: 'failed',
+        });
+        this.logger.warn(
+          `Marked trip ${savedTrip.id} as failed: ${reason}`,
+        );
+      } catch (markErr) {
+        this.logger.error(
+          `Failed to mark trip ${savedTrip.id} as failed: ${getErrorMessage(markErr)}`,
+        );
+      }
+    };
+
     try {
       throwIfCancelled();
       progress$?.next({ step: 'validating' });
@@ -365,27 +392,28 @@ export class TripsService {
         }
       };
 
-      // Helper: create empty day-card itineraries with weather/timezone
-      const createEmptyItineraries = async (weatherMap: Map<number, any>) => {
-        const itineraries: Itinerary[] = [];
+      // Helper: build itinerary entities (no DB save — just creates objects)
+      const buildEmptyItineraries = (weatherMap: Map<number, any>): Partial<Itinerary>[] => {
+        const itineraries: Partial<Itinerary>[] = [];
         for (let i = 0; i < numberOfDays; i++) {
           const date = new Date(startDate);
           date.setDate(date.getDate() + i);
-          itineraries.push(
-            queryRunner.manager.create(Itinerary, {
-              tripId: savedTrip.id,
-              date,
-              dayNumber: i + 1,
-              activities: [],
-              timezone: timezoneInfo?.timezoneId,
-              timezoneOffset: timezoneInfo?.timezoneOffset,
-              weather: weatherMap.get(i + 1) ?? undefined,
-            }),
-          );
+          itineraries.push({
+            tripId: savedTrip.id,
+            date,
+            dayNumber: i + 1,
+            activities: [],
+            timezone: timezoneInfo?.timezoneId,
+            timezoneOffset: timezoneInfo?.timezoneOffset,
+            weather: weatherMap.get(i + 1) ?? undefined,
+          });
         }
-        await queryRunner.manager.save(itineraries);
         return itineraries;
       };
+
+      // Collect itinerary data and aiStatus to persist in Phase C
+      let itineraryData: Partial<Itinerary>[] = [];
+      let finalAiStatus: string | undefined;
 
       if (isManualMode) {
         // Manual mode: skip AI, create empty day cards with weather/timezone
@@ -411,30 +439,12 @@ export class TripsService {
         }
 
         throwIfCancelled();
-        const savingStart = Date.now();
-        const itineraries = await createEmptyItineraries(weatherMap);
-        const savingElapsed = Date.now() - savingStart;
-        this.logger.log(
-          `[TripCreation] saving completed in ${savingElapsed}ms (trip: ${savedTrip.id})`,
-        );
-        if (savingElapsed > SLOW_THRESHOLDS.saving) {
-          this.logger.warn(
-            `[TripCreation] SLOW: saving took ${savingElapsed}ms (threshold: ${SLOW_THRESHOLDS.saving}ms)`,
-          );
-          this.logSlowPhase(
-            'saving',
-            savingElapsed,
-            SLOW_THRESHOLDS.saving,
-            savedTrip.id,
-            userId,
-          );
-        }
+        itineraryData = buildEmptyItineraries(weatherMap);
 
         this.logger.log(
-          `Created ${itineraries.length} empty itineraries (manual mode) for trip ${savedTrip.id}`,
+          `Prepared ${itineraryData.length} empty itineraries (manual mode) for trip ${savedTrip.id}`,
         );
       } else {
-        // ✅ Note: AI trip count already incremented in transaction above
         // AI mode: generate itineraries with AI + weather in parallel
         try {
           throwIfCancelled();
@@ -496,12 +506,9 @@ export class TripsService {
           }
           throwIfCancelled();
 
-          // Combine AI results with weather data
-          progress$?.next({ step: 'saving' });
-          const savingStart = Date.now();
-          const itineraries: Itinerary[] = [];
+          // Combine AI results with weather data (in-memory only)
           for (const aiItinerary of aiItineraries) {
-            const itinerary = queryRunner.manager.create(Itinerary, {
+            itineraryData.push({
               tripId: savedTrip.id,
               date: aiItinerary.date,
               dayNumber: aiItinerary.dayNumber,
@@ -510,37 +517,17 @@ export class TripsService {
               timezoneOffset: timezoneInfo?.timezoneOffset,
               weather: weatherMap.get(aiItinerary.dayNumber) ?? undefined,
             });
-            itineraries.push(itinerary);
           }
+          finalAiStatus = 'success';
 
-          await queryRunner.manager.save(itineraries);
-          await queryRunner.manager.update(Trip, savedTrip.id, {
-            aiStatus: 'success',
-          });
-          const savingElapsed = Date.now() - savingStart;
           this.logger.log(
-            `[TripCreation] saving completed in ${savingElapsed}ms (trip: ${savedTrip.id})`,
-          );
-          if (savingElapsed > SLOW_THRESHOLDS.saving) {
-            this.logger.warn(
-              `[TripCreation] SLOW: saving took ${savingElapsed}ms (threshold: ${SLOW_THRESHOLDS.saving}ms)`,
-            );
-            this.logSlowPhase(
-              'saving',
-              savingElapsed,
-              SLOW_THRESHOLDS.saving,
-              savedTrip.id,
-              userId,
-            );
-          }
-          this.logger.log(
-            `Successfully generated ${itineraries.length} AI itineraries with weather data for trip ${savedTrip.id}`,
+            `Successfully generated ${itineraryData.length} AI itineraries with weather data for trip ${savedTrip.id}`,
           );
         } catch (error) {
           // V112 fix #4: never mask a cancellation with the fallback path.
-          // Cancellation must propagate so the outer catch rolls back the
-          // transaction (quota + trip) instead of committing an empty trip.
+          // Cancellation must propagate — mark trip as failed and re-throw.
           if (error instanceof TripCancelledError || signal?.aborted) {
+            await markTripFailed('User cancelled');
             throw error instanceof TripCancelledError
               ? error
               : new TripCancelledError();
@@ -553,9 +540,7 @@ export class TripsService {
             `Falling back to empty itineraries for trip ${savedTrip.id}`,
           );
 
-          await queryRunner.manager.update(Trip, savedTrip.id, {
-            aiStatus: 'failed',
-          });
+          finalAiStatus = 'failed';
           progress$?.next({
             step: 'error',
             message: 'AI generation failed, creating empty itineraries',
@@ -563,13 +548,66 @@ export class TripsService {
 
           // Fallback: Create empty itineraries with weather
           const weatherMap = await fetchWeatherMap();
-          await createEmptyItineraries(weatherMap);
+          itineraryData = buildEmptyItineraries(weatherMap);
         }
       }
 
       throwIfCancelled();
-      // CRITICAL FIX: Commit transaction only after ALL operations complete
-      await queryRunner.commitTransaction();
+
+      // ────────────────────────────────────────────────────────────
+      // Phase C: SHORT transaction — save itineraries + update trip
+      // Uses a NEW connection from the pool, holds it for <2 seconds.
+      // ────────────────────────────────────────────────────────────
+      progress$?.next({ step: 'saving' });
+      const savingStart = Date.now();
+
+      const phaseCRunner = this.dataSource.createQueryRunner();
+      await phaseCRunner.connect();
+      await phaseCRunner.startTransaction();
+
+      try {
+        // Bulk-create itinerary entities and save
+        const itineraries = itineraryData.map((data) =>
+          phaseCRunner.manager.create(Itinerary, data),
+        );
+        await phaseCRunner.manager.save(itineraries);
+
+        // Update trip aiStatus if applicable
+        if (finalAiStatus) {
+          await phaseCRunner.manager.update(Trip, savedTrip.id, {
+            aiStatus: finalAiStatus,
+          });
+        }
+
+        await phaseCRunner.commitTransaction();
+
+        const savingElapsed = Date.now() - savingStart;
+        this.logger.log(
+          `[Phase C] saving completed in ${savingElapsed}ms (trip: ${savedTrip.id})`,
+        );
+        if (savingElapsed > SLOW_THRESHOLDS.saving) {
+          this.logger.warn(
+            `[TripCreation] SLOW: saving took ${savingElapsed}ms (threshold: ${SLOW_THRESHOLDS.saving}ms)`,
+          );
+          this.logSlowPhase(
+            'saving',
+            savingElapsed,
+            SLOW_THRESHOLDS.saving,
+            savedTrip.id,
+            userId,
+          );
+        }
+      } catch (saveError) {
+        await phaseCRunner.rollbackTransaction();
+        this.logger.error(
+          `[Phase C] Failed to save itineraries: ${getErrorMessage(saveError)}`,
+        );
+        // Mark trip as failed so the user knows something went wrong
+        await markTripFailed(`Phase C save failed: ${getErrorMessage(saveError)}`);
+        throw saveError;
+      } finally {
+        await phaseCRunner.release();
+      }
 
       const totalElapsed = Date.now() - pipelineStart;
       this.logger.log(
@@ -589,17 +627,19 @@ export class TripsService {
       }
 
       this.logger.log(
-        `Successfully committed transaction for trip ${savedTrip.id}`,
+        `Successfully completed trip creation pipeline for trip ${savedTrip.id}`,
       );
     } catch (error) {
-      // Rollback EVERYTHING including AI counter if ANY error occurs
-      await queryRunner.rollbackTransaction();
+      // Phase A is already committed — quota stays decremented (correct behavior).
+      // Trip is already persisted with aiStatus: 'generating' or 'failed'.
+      // If this is a cancellation, the trip was already marked failed above.
+      if (!(error instanceof TripCancelledError)) {
+        await markTripFailed(`Pipeline error: ${getErrorMessage(error)}`);
+      }
       this.logger.error(
-        `Failed to create trip, rolling back all changes including AI counter: ${getErrorMessage(error)}`,
+        `Failed during trip creation pipeline for trip ${savedTrip.id}: ${getErrorMessage(error)}`,
       );
       throw error;
-    } finally {
-      await queryRunner.release();
     }
 
     // Return trip with itineraries

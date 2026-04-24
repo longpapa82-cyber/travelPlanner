@@ -40,9 +40,19 @@ export function useAppOpenAd() {
   const backgroundTimestamp = useRef(0);
   const mountedRef = useRef(true);
   const reloadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Ref to access latest isPremium in async handlers without stale closure
+  const isPremiumRef = useRef(isPremium);
+  isPremiumRef.current = isPremium;
 
   const loadAd = useCallback(() => {
-    if (!APP_OPEN_UNIT_ID || isPremium) return;
+    if (!APP_OPEN_UNIT_ID || isPremium) {
+      // Clear any existing ad instance when user becomes premium
+      if (adRef.current) {
+        isLoadedRef.current = false;
+        adRef.current = null;
+      }
+      return;
+    }
 
     // Create ONE instance per mount — reuse via load() for subsequent requests
     const appOpen = AppOpenAd.createForAdRequest(APP_OPEN_UNIT_ID, {
@@ -94,7 +104,7 @@ export function useAppOpenAd() {
         backgroundTimestamp.current = 0;
         if (bgDuration < 30000) return; // Skip if background < 30s (ad transition)
         const canShow = await canShowFullScreenAd();
-        if (canShow && isLoadedRef.current && adRef.current) {
+        if (canShow && isLoadedRef.current && adRef.current && !isPremiumRef.current) {
           await adRef.current.show();
           await recordFullScreenAdShown();
         }
