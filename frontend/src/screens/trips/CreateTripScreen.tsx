@@ -48,6 +48,7 @@ import DestinationInsights from '../../components/DestinationInsights';
 import { useInterstitialAd, useRewardedAd } from '../../components/ads';
 import { usePremium } from '../../contexts/PremiumContext';
 import { getHeroImageUrl } from '../../utils/images';
+import * as Sentry from '@sentry/react-native';
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
 
@@ -408,11 +409,15 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       if (prefInterests.length > 0) preferences.interests = prefInterests;
 
       const validBudget = budgetNum && Number.isFinite(budgetNum) && budgetNum > 0;
+      // Sanitize numberOfTravelers to prevent NaN reaching the server
+      const safeTravelers = Number.isFinite(numberOfTravelers) && numberOfTravelers >= 1
+        ? Math.min(numberOfTravelers, 20)
+        : 1;
       const tripData = {
         destination: destination.trim(),
         startDate,
         endDate,
-        numberOfTravelers,
+        numberOfTravelers: safeTravelers,
         description: description.trim() || undefined,
         totalBudget: validBudget ? budgetNum : undefined,
         budgetCurrency: validBudget ? budgetCurrency : undefined,
@@ -680,6 +685,12 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         severity: 'error',
         stackTrace: error.stack,
       }).catch(() => {});
+
+      // Report to Sentry for crash analytics
+      Sentry.captureException(error, {
+        tags: { screen: 'CreateTripScreen', action: 'createTrip' },
+        extra: { destination: destination.trim(), duration: calculateDuration(), mode: effectiveMode, statusCode },
+      });
 
       // Refresh subscription status so AI remaining count is accurate
       await refreshStatus();
@@ -1334,7 +1345,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 style={[styles.input, { color: theme.colors.text }]}
                 placeholder={t('create.travelers.customPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
-                value={travelerInputText || numberOfTravelers.toString()}
+                value={travelerInputText}
                 onChangeText={(text) => {
                   const cleaned = text.replace(/[^0-9]/g, '').slice(0, 2);
                   setTravelerInputText(cleaned);
@@ -1342,21 +1353,30 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   const num = parseInt(cleaned);
                   if (!isNaN(num) && num >= 1 && num <= 20) {
                     setNumberOfTravelers(num);
-                  } else if (num === 0) {
-                    setTravelerInputText('');
+                  } else if (num > 20) {
+                    setNumberOfTravelers(20);
+                    setTravelerInputText('20');
                   }
                 }}
                 onBlur={() => {
+                  if (!travelerInputText || travelerInputText === '0') {
+                    setTravelerInputText(numberOfTravelers.toString());
+                    return;
+                  }
                   const num = parseInt(travelerInputText);
                   if (!isNaN(num) && num >= 1) {
                     const clamped = Math.min(num, 20);
                     setNumberOfTravelers(clamped);
                     setTravelerInputText(clamped.toString());
-                  } else if (!travelerInputText) {
+                  } else {
                     setTravelerInputText(numberOfTravelers.toString());
                   }
                 }}
                 onSubmitEditing={() => {
+                  if (!travelerInputText || travelerInputText === '0') {
+                    setTravelerInputText(numberOfTravelers.toString());
+                    return;
+                  }
                   const num = parseInt(travelerInputText);
                   if (!isNaN(num) && num >= 1) {
                     const clamped = Math.min(num, 20);
