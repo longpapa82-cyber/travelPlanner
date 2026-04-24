@@ -275,9 +275,7 @@ export class TripsService {
         await this.tripRepository.update(savedTrip.id, {
           aiStatus: 'failed',
         });
-        this.logger.warn(
-          `Marked trip ${savedTrip.id} as failed: ${reason}`,
-        );
+        this.logger.warn(`Marked trip ${savedTrip.id} as failed: ${reason}`);
       } catch (markErr) {
         this.logger.error(
           `Failed to mark trip ${savedTrip.id} as failed: ${getErrorMessage(markErr)}`,
@@ -393,7 +391,9 @@ export class TripsService {
       };
 
       // Helper: build itinerary entities (no DB save — just creates objects)
-      const buildEmptyItineraries = (weatherMap: Map<number, any>): Partial<Itinerary>[] => {
+      const buildEmptyItineraries = (
+        weatherMap: Map<number, any>,
+      ): Partial<Itinerary>[] => {
         const itineraries: Partial<Itinerary>[] = [];
         for (let i = 0; i < numberOfDays; i++) {
           const date = new Date(startDate);
@@ -598,12 +598,20 @@ export class TripsService {
           );
         }
       } catch (saveError) {
-        await phaseCRunner.rollbackTransaction();
+        try {
+          await phaseCRunner.rollbackTransaction();
+        } catch (rollbackErr) {
+          this.logger.error(
+            `[Phase C] Rollback also failed: ${getErrorMessage(rollbackErr)}`,
+          );
+        }
         this.logger.error(
           `[Phase C] Failed to save itineraries: ${getErrorMessage(saveError)}`,
         );
         // Mark trip as failed so the user knows something went wrong
-        await markTripFailed(`Phase C save failed: ${getErrorMessage(saveError)}`);
+        await markTripFailed(
+          `Phase C save failed: ${getErrorMessage(saveError)}`,
+        );
         throw saveError;
       } finally {
         await phaseCRunner.release();

@@ -4,13 +4,13 @@
     "slug": "travel-planner",
     "version": "1.0.0",
     "android": {
-      "versionCode": 162,
+      "versionCode": 165,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4A90D9"
       },
       "edgeToEdgeEnabled": true,
-      "softwareKeyboardLayoutMode": "pan",
+      "softwareKeyboardLayoutMode": "resize",
       "package": "com.longpapa82.travelplanner",
       "intentFilters": [
         {

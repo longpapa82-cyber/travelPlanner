@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, useMemo, useEffect, ReactNode } from 'react';
-import { Platform } from 'react-native';
+import React, { createContext, useContext, useState, useCallback, useMemo, useEffect, useRef, ReactNode } from 'react';
+import { Platform, AppState, AppStateStatus } from 'react-native';
 import { useAuth } from './AuthContext';
 import { SubscriptionStatus } from '../types';
 import { initRevenueCat, logIn, logOut as rcLogOut, getCustomerInfo, addCustomerInfoUpdateListener } from '../services/revenueCat';
@@ -123,6 +123,44 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
       });
     })();
   }, [user?.id]);
+
+  // V165: Re-check RevenueCat entitlements when app returns to foreground.
+  // Without this, the subscription state only updates on user?.id change
+  // (initial mount). If the subscription expires while the app is in the
+  // background (common with Google Play License Tester's 5-min renewal
+  // cycles), the client stays stale until the next full profile fetch.
+  // This also catches the reverse case: a subscription purchased on another
+  // device that RevenueCat has synced but the server webhook hasn't arrived yet.
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    if (!user?.id) return;
+
+    const appStateRef = { current: AppState.currentState };
+
+    const subscription = AppState.addEventListener('change', async (nextState: AppStateStatus) => {
+      if (appStateRef.current.match(/inactive|background/) && nextState === 'active') {
+        try {
+          const info = await getCustomerInfo();
+          const hasActive = info?.entitlements?.active &&
+            Object.keys(info.entitlements.active).length > 0;
+
+          if (hasActive && !localPremiumOverride) {
+            setLocalPremiumOverride(true);
+          }
+          // If no active entitlements, let the reconciliation effect below
+          // handle downgrade when the server profile arrives (via silentRefresh
+          // in AuthContext). Don't force-clear localPremiumOverride here because
+          // the RevenueCat local cache may be stale — the server is the source
+          // of truth for expiration.
+        } catch {
+          // Silent — RevenueCat check is best-effort
+        }
+      }
+      appStateRef.current = nextState;
+    });
+
+    return () => subscription.remove();
+  }, [user?.id, localPremiumOverride]);
 
   // Clear local premium override and logout state when user changes
   useEffect(() => {

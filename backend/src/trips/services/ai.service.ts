@@ -706,6 +706,7 @@ Return JSON:
     signal?: AbortSignal,
   ): Promise<{ dayNumber: number; date: Date; activities: ActivityDto[] }[]> {
     const BATCH_SIZE = 5;
+    let failedDays = 0;
     const itineraries: {
       dayNumber: number;
       date: Date;
@@ -740,9 +741,42 @@ Return JSON:
         if (result.status === 'fulfilled') {
           itineraries.push(result.value);
         } else {
+          failedDays++;
           this.logger.warn(`Parallel day generation failed: ${result.reason}`);
         }
       }
+
+      // Add delay between batches to avoid rate limiting
+      if (batchStart + BATCH_SIZE < totalDays) {
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+    }
+
+    // Log failure rate for monitoring
+    if (failedDays > 0) {
+      const failureRate = Math.round((failedDays / totalDays) * 100);
+      this.logger.warn(
+        `Parallel generation: ${failedDays}/${totalDays} days failed (${failureRate}%)`,
+      );
+      // Fire-and-forget: log high failure rate for dashboard
+      if (failureRate >= 50) {
+        this.apiUsageService
+          .logApiUsage({
+            provider: 'openai',
+            feature: 'ai_trip',
+            status: 'error',
+            errorCode: `parallel_failure_${failureRate}pct_${failedDays}of${totalDays}`,
+            latencyMs: 0,
+          })
+          .catch(() => {});
+      }
+    }
+
+    // If more than 50% of days failed, throw to trigger fallback in caller
+    if (failedDays > totalDays * 0.5) {
+      throw new Error(
+        `Too many days failed in parallel generation: ${failedDays}/${totalDays}`,
+      );
     }
 
     // Sort by day number (parallel results may arrive out of order)
@@ -766,7 +800,7 @@ Return JSON:
     }
 
     this.logger.log(
-      `Generated ${totalDays}-day itinerary via parallel batches (batch size: ${BATCH_SIZE})`,
+      `Generated ${totalDays}-day itinerary via parallel batches (batch size: ${BATCH_SIZE}, failed: ${failedDays})`,
     );
     return result;
   }

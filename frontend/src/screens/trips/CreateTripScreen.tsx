@@ -360,6 +360,20 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
 
+    // Long trip warning: 15+ days AI generation takes significantly longer
+    const duration = calculateDuration();
+    if (effectiveMode === 'ai' && duration && duration > 14) {
+      showToast({
+        type: 'info',
+        message: t('create.progress.longTripWarning', {
+          defaultValue: '{{days}}일 여행은 AI 생성에 시간이 걸릴 수 있습니다. 잠시만 기다려 주세요.',
+          days: duration,
+        }),
+        position: 'top',
+        duration: 5000,
+      });
+    }
+
     // Timeout warnings for AI mode
     if (effectiveMode === 'ai') {
       Animated.timing(progressAnim, {
@@ -742,7 +756,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       setStartDate('');
       setEndDate('');
       setNumberOfTravelers(1);
-      setTravelerInputText('');
+      setTravelerInputText('1');
       setDescription('');
       setTotalBudget('');
       setBudgetCurrency('USD');
