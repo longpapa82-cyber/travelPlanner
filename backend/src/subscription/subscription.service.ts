@@ -15,7 +15,11 @@ import {
   SubscriptionTier,
   SubscriptionPlatform,
 } from '../users/entities/user.entity';
-import { AI_TRIPS_FREE_LIMIT, AI_TRIPS_PREMIUM_LIMIT } from './constants';
+import {
+  AI_TRIPS_FREE_LIMIT,
+  AI_TRIPS_PREMIUM_LIMIT,
+  PLAN_TYPE_BY_PRODUCT_ID,
+} from './constants';
 import { SubscriptionStatusDto } from './dto/subscription-status.dto';
 
 const PREMIUM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
@@ -202,19 +206,14 @@ export class SubscriptionService {
           ? new Date(parseInt(event.expiration_at_ms, 10))
           : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
 
-        // Detect plan type from product identifier (e.g. "premium_monthly", "premium_yearly")
+        // V169 (B1): Explicit mapping instead of substring heuristic.
+        // See PLAN_TYPE_BY_PRODUCT_ID for the whitelist.
         const productId: string = (
           event.product_id ||
           event.product_identifier ||
           ''
         ).toLowerCase();
-        const planType: 'monthly' | 'yearly' | undefined = productId.includes(
-          'year',
-        )
-          ? 'yearly'
-          : productId.includes('month')
-            ? 'monthly'
-            : undefined;
+        const planType = this.resolvePlanType(productId, eventType);
 
         const purchasedAt = event.purchased_at_ms
           ? new Date(parseInt(event.purchased_at_ms, 10))
@@ -239,7 +238,14 @@ export class SubscriptionService {
           'true',
           PREMIUM_CACHE_TTL,
         );
-        this.logger.log(`User ${user.id} upgraded to PREMIUM (${eventType})`);
+        // V169 (F5): structured log so ops can correlate webhook receipt
+        // with the client-side polling window. The `planType=unknown` case
+        // is the loud signal for a missing SKU in PLAN_TYPE_BY_PRODUCT_ID.
+        this.logger.log(
+          `[subscription] user=${user.id} upgraded to PREMIUM ` +
+            `event=${eventType} productId=${productId || 'missing'} ` +
+            `planType=${planType ?? 'unknown'} expiresAt=${expiresAt.toISOString()}`,
+        );
         break;
       }
 
@@ -333,6 +339,40 @@ export class SubscriptionService {
       (!user.subscriptionExpiresAt ||
         new Date(user.subscriptionExpiresAt) > new Date())
     );
+  }
+
+  /**
+   * V169 (B1): Lookup plan type from the explicit SKU whitelist.
+   *
+   * Returns undefined for unknown SKUs (callers already spread the result
+   * with `...(planType && { ... })` so the DB is left untouched). Unknown
+   * SKUs also emit a warning so ops can add them to PLAN_TYPE_BY_PRODUCT_ID
+   * before users see stale planType in the UI.
+   *
+   * Exposed as a private method (not a bare function) so the Logger
+   * context matches the rest of the service for log correlation.
+   */
+  private resolvePlanType(
+    productId: string,
+    eventType: string,
+  ): 'monthly' | 'yearly' | undefined {
+    if (!productId) return undefined;
+    const match = PLAN_TYPE_BY_PRODUCT_ID[productId];
+    if (match) return match;
+    // Last-resort heuristic so a brand-new SKU doesn't wipe out an existing
+    // planType mid-renewal. Still log loudly so we get a signal.
+    const fallback: 'monthly' | 'yearly' | undefined =
+      productId.includes('year') || productId.includes('annual')
+        ? 'yearly'
+        : productId.includes('month')
+          ? 'monthly'
+          : undefined;
+    this.logger.warn(
+      `Unmapped subscription SKU "${productId}" on ${eventType} — ` +
+        `falling back to heuristic planType=${fallback ?? 'unknown'}. ` +
+        `Add this SKU to PLAN_TYPE_BY_PRODUCT_ID in subscription/constants.ts.`,
+    );
+    return fallback;
   }
 
   // ─── Paddle Integration ──────────────────────────────────

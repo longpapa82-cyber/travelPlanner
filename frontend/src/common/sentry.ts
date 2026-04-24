@@ -45,6 +45,26 @@ export function initSentry() {
 }
 
 /**
+ * V169 (F5): Generic breadcrumb helper for subscription state transitions.
+ * No-ops when Sentry is not initialized so we can sprinkle call sites
+ * without guarding at every invocation.
+ */
+export function addBreadcrumb(args: {
+  category: string;
+  message: string;
+  level?: 'info' | 'warning' | 'error';
+  data?: Record<string, unknown>;
+}): void {
+  if (!_sentryInitialized) return;
+  Sentry.addBreadcrumb({
+    category: args.category,
+    message: args.message,
+    level: args.level || 'info',
+    data: args.data,
+  });
+}
+
+/**
  * Record a Sentry breadcrumb when an API call exceeds SLOW_API_THRESHOLD_MS.
  * Call this from the API service response interceptor.
  */

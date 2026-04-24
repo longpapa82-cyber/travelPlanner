@@ -79,5 +79,18 @@
     "purchaseFailed": "購入に失敗しました。もう一度お試しください。",
     "restoreFailed": "復元に失敗しました。もう一度お試しください。",
     "checkoutFailed": "チェックアウトの開始に失敗しました。もう一度お試しください。"
+  },
+  "guards": {
+    "alreadySubscribedTitle": "既に購読中",
+    "alreadySubscribedSameplan": "既に{{plan}}プランを購読中です。重複課金を防ぐため、購入を中止しました。",
+    "planSwitchConfirmTitle": "プラン変更",
+    "planSwitchConfirmMessage": "現在{{currentPlan}}を購読中です。{{newPlan}}プランに変更しますか？次回請求日に新しいプランに切り替わります。",
+    "planSwitchConfirmYes": "変更する",
+    "planSwitchConfirmNo": "キャンセル",
+    "syncingAfterPurchase": "決済を確認中..."
+  },
+  "planNames": {
+    "monthly": "月額",
+    "yearly": "年額"
   }
 }

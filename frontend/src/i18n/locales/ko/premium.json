@@ -79,5 +79,18 @@
     "purchaseFailed": "구매에 실패했습니다. 다시 시도해주세요.",
     "restoreFailed": "복원에 실패했습니다. 다시 시도해주세요.",
     "checkoutFailed": "결제 시작에 실패했습니다. 다시 시도해주세요."
+  },
+  "guards": {
+    "alreadySubscribedTitle": "이미 구독 중",
+    "alreadySubscribedSameplan": "이미 {{plan}} 플랜을 구독 중입니다. 중복 결제되지 않도록 결제를 중단했습니다.",
+    "planSwitchConfirmTitle": "플랜 변경",
+    "planSwitchConfirmMessage": "현재 {{currentPlan}} 구독 중입니다. {{newPlan}} 플랜으로 변경하시겠습니까? 다음 결제일에 새 플랜으로 전환됩니다.",
+    "planSwitchConfirmYes": "변경하기",
+    "planSwitchConfirmNo": "취소",
+    "syncingAfterPurchase": "결제 확인 중..."
+  },
+  "planNames": {
+    "monthly": "월간",
+    "yearly": "연간"
   }
 }

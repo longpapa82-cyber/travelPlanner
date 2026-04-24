@@ -79,5 +79,18 @@
     "purchaseFailed": "Purchase failed. Please try again.",
     "restoreFailed": "Restore failed. Please try again.",
     "checkoutFailed": "Failed to start checkout. Please try again."
+  },
+  "guards": {
+    "alreadySubscribedTitle": "Already Subscribed",
+    "alreadySubscribedSameplan": "You're already on the {{plan}} plan. Purchase was blocked to prevent duplicate billing.",
+    "planSwitchConfirmTitle": "Switch Plan",
+    "planSwitchConfirmMessage": "You're currently on {{currentPlan}}. Switch to {{newPlan}}? Your new plan will take effect at the next billing date.",
+    "planSwitchConfirmYes": "Switch",
+    "planSwitchConfirmNo": "Cancel",
+    "syncingAfterPurchase": "Confirming payment..."
+  },
+  "planNames": {
+    "monthly": "Monthly",
+    "yearly": "Yearly"
   }
 }

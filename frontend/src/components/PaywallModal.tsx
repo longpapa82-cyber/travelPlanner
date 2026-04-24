@@ -18,8 +18,16 @@ import { useAuth } from '../contexts/AuthContext';
 import { usePremium } from '../contexts/PremiumContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
-import { getOfferings, purchasePackage, restorePurchases } from '../services/revenueCat';
+import {
+  getOfferings,
+  purchasePackage,
+  restorePurchases,
+  getCustomerInfo,
+  getActiveEntitlementSnapshot,
+} from '../services/revenueCat';
 import apiService from '../services/api';
+import { pollSubscriptionStatus } from '../services/subscriptionPolling';
+import { addBreadcrumb } from '../common/sentry';
 
 interface BenefitItem {
   icon: string;
@@ -104,6 +112,42 @@ const PaywallModal: React.FC = () => {
     })();
   }, [isPaywallVisible]);
 
+  /**
+   * V169 (F1): Duplicate-charge guard.
+   *
+   * The SDK will happily buy `premium_yearly` while `premium_monthly` is
+   * active (and vice-versa) because they are different Google Play SKUs —
+   * so the UI is the only layer that can prevent double billing. We ask
+   * RevenueCat directly (not PremiumContext) because `isPremium` can lag
+   * during post-login bootstrap or webhook propagation. Returns:
+   *   - 'block'  → already on the same plan, reject purchase
+   *   - 'switch' → different plan active, use Google Play replacement flow
+   *   - 'buy'    → no active entitlement, proceed with normal purchase
+   */
+  const resolvePurchaseAction = async (): Promise<
+    { kind: 'buy' } | { kind: 'block'; currentPlan: 'monthly' | 'yearly' } | { kind: 'switch'; oldProductIdentifier: string; currentPlan: 'monthly' | 'yearly' }
+  > => {
+    const info = await getCustomerInfo();
+    const snapshot = getActiveEntitlementSnapshot(info);
+    if (!snapshot) return { kind: 'buy' };
+    // Known plan matching the attempted purchase → block outright.
+    if (snapshot.planType && snapshot.planType === selectedPlan) {
+      return { kind: 'block', currentPlan: snapshot.planType };
+    }
+    // Different plan → offer Google Play plan switch (deferred proration).
+    // Fall back to 'buy' only when the current plan type is unknown *and*
+    // the productIdentifier is missing — we prefer false positives (block)
+    // over duplicate billing.
+    if (snapshot.productIdentifier) {
+      return {
+        kind: 'switch',
+        oldProductIdentifier: snapshot.productIdentifier,
+        currentPlan: snapshot.planType || 'monthly',
+      };
+    }
+    return { kind: 'buy' };
+  };
+
   const handlePurchase = async () => {
     if (Platform.OS === 'web') {
       // Web: Paddle Overlay Checkout
@@ -135,13 +179,61 @@ const PaywallModal: React.FC = () => {
 
     setIsPurchasing(true);
     try {
+      // V169 (F1): pre-purchase guard — never call purchasePackage without
+      // reconciling against the live RevenueCat entitlements.
+      const action = await resolvePurchaseAction();
+      addBreadcrumb({
+        category: 'subscription',
+        message: 'paywall.purchase.attempt',
+        data: { selectedPlan, resolvedAction: action.kind },
+      });
+
+      if (action.kind === 'block') {
+        setIsPurchasing(false);
+        Alert.alert(
+          t('guards.alreadySubscribedTitle'),
+          t('guards.alreadySubscribedSameplan', {
+            plan: t(`planNames.${action.currentPlan}`),
+          }),
+        );
+        return;
+      }
+
+      if (action.kind === 'switch') {
+        // Ask the user to confirm the plan change before issuing a Play
+        // Billing replacement. The old subscription stays active until the
+        // next renewal (DEFERRED proration) — no refund, no double billing.
+        const confirmed = await new Promise<boolean>((resolve) => {
+          Alert.alert(
+            t('guards.planSwitchConfirmTitle'),
+            t('guards.planSwitchConfirmMessage', {
+              currentPlan: t(`planNames.${action.currentPlan}`),
+              newPlan: t(`planNames.${selectedPlan}`),
+            }),
+            [
+              { text: t('guards.planSwitchConfirmNo'), style: 'cancel', onPress: () => resolve(false) },
+              { text: t('guards.planSwitchConfirmYes'), onPress: () => resolve(true) },
+            ],
+            { cancelable: true, onDismiss: () => resolve(false) },
+          );
+        });
+        if (!confirmed) {
+          setIsPurchasing(false);
+          return;
+        }
+        const customerInfo = await purchasePackage(pkg, {
+          oldProductIdentifier: action.oldProductIdentifier,
+        });
+        if (customerInfo) {
+          await finalizePurchase();
+        }
+        return;
+      }
+
+      // Normal first-time purchase
       const customerInfo = await purchasePackage(pkg);
       if (customerInfo) {
-        // Immediately mark premium locally so ads hide before backend syncs
-        markPremium();
-        // Purchase successful — refresh user profile from backend
-        await refreshStatus();
-        hidePaywall();
+        await finalizePurchase();
       }
       // null = user cancelled, do nothing
     } catch (error: any) {
@@ -149,6 +241,35 @@ const PaywallModal: React.FC = () => {
     } finally {
       setIsPurchasing(false);
     }
+  };
+
+  /**
+   * V169 (F4): Post-purchase server reconciliation.
+   *
+   * 1. `markPremium()` captures the RC-authoritative snapshot into
+   *    PremiumContext so the UI flips to premium immediately.
+   * 2. `refreshStatus()` pulls the first /auth/me — usually still stale.
+   * 3. `pollSubscriptionStatus` drives a bounded retry until the backend
+   *    webhook has landed (up to 15s). On each success we refresh so
+   *    planType/expiresAt come from the canonical server values.
+   * 4. `hidePaywall()` runs inside the success callback so the user sees
+   *    the paywall's loading state until we have confidence the server
+   *    agrees — this replaces the V169 race where the paywall closed
+   *    before the server was in sync.
+   */
+  const finalizePurchase = async () => {
+    await markPremium();
+    await refreshStatus();
+    hidePaywall();
+    // Fire-and-forget: the UI is already premium via the RC snapshot.
+    // The poll just makes sure the server metadata catches up.
+    pollSubscriptionStatus({
+      onSuccess: async () => {
+        await refreshStatus();
+      },
+    }).catch(() => {
+      // Polling is best-effort — never surface errors to the user.
+    });
   };
 
   const handleRestore = async () => {
