@@ -41,7 +41,8 @@
     "termsLink": "Kullanım koşulları",
     "privacyLink": "Gizlilik politikası",
     "restoreSuccess": "Abonelik başarıyla geri yüklendi!",
-    "restoreNone": "Aktif abonelik bulunamadı."
+    "restoreNone": "Aktif abonelik bulunamadı.",
+    "aiUnlimited": "∞ Sınırsız"
   },
   "status": {
     "active": "Aktif",
@@ -71,7 +72,8 @@
     "subscription": "Abonelik",
     "upgradePremium": "Premium'a Yükselt",
     "managePlan": "Planı yönet",
-    "aiRemaining": "AI: {{remaining}}/{{total}} kalan"
+    "aiRemaining": "AI: {{remaining}}/{{total}} kalan",
+    "aiUnlimited": "∞ Sınırsız"
   },
   "errors": {
     "title": "Hata",

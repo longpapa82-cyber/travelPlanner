@@ -62,7 +62,8 @@
       "title": "AI tự động lập kế hoạch",
       "description": "AI sẽ tạo kế hoạch du lịch tối ưu dựa trên điểm đến và lịch trình của bạn",
       "remaining": "Còn {{remaining}}/{{total}} lượt tạo AI trong tháng",
-      "limitReached": "Đã đạt giới hạn AI tháng ({{total}}). Hãy sử dụng tạo thủ công."
+      "limitReached": "Đã đạt giới hạn AI tháng ({{total}}). Hãy sử dụng tạo thủ công.",
+      "unlimited": "∞ Không giới hạn (admin)"
     },
     "rewardedAd": {
       "label": "Xem quảng cáo để nhận thông tin chi tiết về chuyến đi"

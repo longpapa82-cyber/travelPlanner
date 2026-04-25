@@ -41,7 +41,8 @@
     "termsLink": "Termos de serviço",
     "privacyLink": "Política de privacidade",
     "restoreSuccess": "Assinatura restaurada com sucesso!",
-    "restoreNone": "Nenhuma assinatura ativa encontrada."
+    "restoreNone": "Nenhuma assinatura ativa encontrada.",
+    "aiUnlimited": "∞ Ilimitado"
   },
   "status": {
     "active": "Ativo",
@@ -71,7 +72,8 @@
     "subscription": "Assinatura",
     "upgradePremium": "Upgrade para Premium",
     "managePlan": "Gerenciar plano",
-    "aiRemaining": "AI: {{remaining}}/{{total}} restantes"
+    "aiRemaining": "AI: {{remaining}}/{{total}} restantes",
+    "aiUnlimited": "∞ Ilimitado"
   },
   "errors": {
     "title": "Erro",

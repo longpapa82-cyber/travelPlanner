@@ -41,7 +41,8 @@
     "termsLink": "Условия использования",
     "privacyLink": "Политика конфиденциальности",
     "restoreSuccess": "Подписка успешно восстановлена!",
-    "restoreNone": "Активная подписка не найдена."
+    "restoreNone": "Активная подписка не найдена.",
+    "aiUnlimited": "∞ Без ограничений"
   },
   "status": {
     "active": "Активна",
@@ -71,7 +72,8 @@
     "subscription": "Подписка",
     "upgradePremium": "Перейти на Премиум",
     "managePlan": "Управление тарифом",
-    "aiRemaining": "AI: {{remaining}}/{{total}} осталось"
+    "aiRemaining": "AI: {{remaining}}/{{total}} осталось",
+    "aiUnlimited": "∞ Без ограничений"
   },
   "errors": {
     "title": "Ошибка",

@@ -198,8 +198,9 @@ const SubscriptionScreen = () => {
         </View>
       )}
 
-      {/* AI Trip Usage — show for non-premium users (including admin without subscription) */}
-      {!isPremium && (
+      {/* AI Trip Usage — show for non-premium users; admin sees a flat
+          "unlimited" line instead of the misleading 0 / 9999 progress bar. */}
+      {!isPremium && !isAdmin && (
         <View style={[styles.section, { backgroundColor: isDark ? colors.neutral[800] : '#FFF' }]}>
           <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
             {t('paywall.aiLimitTitle')}
@@ -220,6 +221,16 @@ const SubscriptionScreen = () => {
               {aiTripsUsed} / {aiTripsLimit} {t('paywall.aiUsed')}
             </Text>
           </View>
+        </View>
+      )}
+      {isAdmin && (
+        <View style={[styles.section, { backgroundColor: isDark ? colors.neutral[800] : '#FFF' }]}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+            {t('paywall.aiLimitTitle')}
+          </Text>
+          <Text style={[styles.usageText, { color: theme.colors.textSecondary, marginTop: 8 }]}>
+            {t('paywall.aiUnlimited')}
+          </Text>
         </View>
       )}
 

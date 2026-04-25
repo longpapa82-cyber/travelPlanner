@@ -41,7 +41,8 @@
     "termsLink": "이용약관",
     "privacyLink": "개인정보 처리방침",
     "restoreSuccess": "구독이 복원되었습니다!",
-    "restoreNone": "활성 구독을 찾을 수 없습니다."
+    "restoreNone": "활성 구독을 찾을 수 없습니다.",
+    "aiUnlimited": "∞ 무제한"
   },
   "status": {
     "active": "활성",
@@ -71,7 +72,8 @@
     "subscription": "구독",
     "upgradePremium": "프리미엄 업그레이드",
     "managePlan": "플랜 관리",
-    "aiRemaining": "AI: {{remaining}}/{{total}}회 남음"
+    "aiRemaining": "AI: {{remaining}}/{{total}}회 남음",
+    "aiUnlimited": "∞ 무제한"
   },
   "errors": {
     "title": "오류",

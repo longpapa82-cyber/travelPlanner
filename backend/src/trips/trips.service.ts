@@ -230,6 +230,16 @@ export class TripsService {
 
     let savedTrip: Trip;
 
+    // V176: defensive integer coercion for numberOfTravelers — V175 logs
+    // showed `invalid input syntax for type integer: "5.5"` reaching the DB
+    // INSERT despite `@IsInt()` on the DTO. Truncating + clamping here is
+    // cheap insurance and mirrors the frontend's clamp(1, 20). Declared at
+    // method scope so both Phase A (insert) and AI generation paths share it.
+    const safeTravelers = Math.max(
+      1,
+      Math.min(20, Math.floor(Number(createTripDto.numberOfTravelers) || 1)),
+    );
+
     try {
       // Check AI trip limit with row-level locking (prevents race conditions)
       if (!isManualMode) {
@@ -319,7 +329,7 @@ export class TripsService {
       const trip = phaseARunner.manager.create(Trip, {
         userId,
         ...createTripDto,
-        numberOfTravelers: createTripDto.numberOfTravelers || 1,
+        numberOfTravelers: safeTravelers,
         ...(isManualMode ? {} : { aiStatus: 'generating' }),
       });
 
@@ -540,7 +550,7 @@ export class TripsService {
               city: createTripDto.city,
               startDate,
               endDate,
-              numberOfTravelers: createTripDto.numberOfTravelers || 1,
+              numberOfTravelers: safeTravelers,
               preferences: createTripDto.preferences,
               language,
             },

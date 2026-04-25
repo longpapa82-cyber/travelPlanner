@@ -41,7 +41,8 @@
     "termsLink": "شروط الخدمة",
     "privacyLink": "سياسة الخصوصية",
     "restoreSuccess": "تم استعادة الاشتراك بنجاح!",
-    "restoreNone": "لم يتم العثور على اشتراك نشط."
+    "restoreNone": "لم يتم العثور على اشتراك نشط.",
+    "aiUnlimited": "∞ غير محدود"
   },
   "status": {
     "active": "نشط",
@@ -71,7 +72,8 @@
     "subscription": "الاشتراك",
     "upgradePremium": "الترقية إلى Premium",
     "managePlan": "إدارة الخطة",
-    "aiRemaining": "AI: {{remaining}}/{{total}} متبقي"
+    "aiRemaining": "AI: {{remaining}}/{{total}} متبقي",
+    "aiUnlimited": "∞ غير محدود"
   },
   "errors": {
     "title": "خطأ",

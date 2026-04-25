@@ -41,7 +41,8 @@
     "termsLink": "सेवा की शर्तें",
     "privacyLink": "गोपनीयता नीति",
     "restoreSuccess": "सदस्यता सफलतापूर्वक पुनर्स्थापित!",
-    "restoreNone": "कोई सक्रिय सदस्यता नहीं मिली।"
+    "restoreNone": "कोई सक्रिय सदस्यता नहीं मिली।",
+    "aiUnlimited": "∞ असीमित"
   },
   "status": {
     "active": "सक्रिय",
@@ -71,7 +72,8 @@
     "subscription": "सदस्यता",
     "upgradePremium": "Premium में अपग्रेड करें",
     "managePlan": "योजना प्रबंधित करें",
-    "aiRemaining": "AI: {{remaining}}/{{total}} शेष"
+    "aiRemaining": "AI: {{remaining}}/{{total}} शेष",
+    "aiUnlimited": "∞ असीमित"
   },
   "errors": {
     "title": "त्रुटि",

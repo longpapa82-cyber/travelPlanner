@@ -71,13 +71,7 @@ export class ErrorLog {
    * breadcrumb contract so we can cross-reference without re-ingesting.
    */
   @Column({ type: 'jsonb', nullable: true })
-  breadcrumbs?: Array<{
-    category?: string;
-    message?: string;
-    level?: string;
-    timestamp?: number;
-    data?: Record<string, unknown>;
-  }>;
+  breadcrumbs?: Array<Record<string, unknown>>;
 
   /**
    * V174 (P1): HTTP status code, promoted out of `errorMessage` so it

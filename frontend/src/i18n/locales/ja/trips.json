@@ -62,7 +62,8 @@
       "title": "AI自動生成",
       "description": "目的地とスケジュールに合わせてAIが最適な旅行プランを自動生成します",
       "remaining": "今月のAI自動生成 残り{{remaining}}/{{total}}回",
-      "limitReached": "今月のAI上限({{total}}回)に達しました。手動作成をご利用ください。"
+      "limitReached": "今月のAI上限({{total}}回)に達しました。手動作成をご利用ください。",
+      "unlimited": "∞ 無制限(管理者)"
     },
     "rewardedAd": {
       "label": "広告を見て詳しい旅行インサイトをゲット"

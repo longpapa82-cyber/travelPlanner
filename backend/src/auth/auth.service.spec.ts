@@ -31,6 +31,14 @@ describe('AuthService', () => {
     profileImage: null,
     isEmailVerified: false,
     isTwoFactorEnabled: false,
+    // V174 (P0-3): subscription/quota fields consumed by getProfile().
+    subscriptionTier: 'free' as const,
+    subscriptionPlatform: undefined,
+    subscriptionExpiresAt: undefined,
+    subscriptionStartedAt: undefined,
+    subscriptionPlanType: undefined,
+    aiTripsUsedThisMonth: 0,
+    role: 'user',
     createdAt: new Date(),
     updatedAt: new Date(),
   };

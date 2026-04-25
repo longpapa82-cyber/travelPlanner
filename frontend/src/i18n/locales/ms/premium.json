@@ -41,7 +41,8 @@
     "termsLink": "Syarat perkhidmatan",
     "privacyLink": "Dasar privasi",
     "restoreSuccess": "Langganan berjaya dipulihkan!",
-    "restoreNone": "Tiada langganan aktif ditemui."
+    "restoreNone": "Tiada langganan aktif ditemui.",
+    "aiUnlimited": "∞ Tanpa had"
   },
   "status": {
     "active": "Aktif",
@@ -71,7 +72,8 @@
     "subscription": "Langganan",
     "upgradePremium": "Naik Taraf ke Premium",
     "managePlan": "Urus pelan",
-    "aiRemaining": "AI: {{remaining}}/{{total}} baki"
+    "aiRemaining": "AI: {{remaining}}/{{total}} baki",
+    "aiUnlimited": "∞ Tanpa had"
   },
   "errors": {
     "title": "Ralat",

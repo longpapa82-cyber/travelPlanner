@@ -41,7 +41,8 @@
     "termsLink": "Conditions d'utilisation",
     "privacyLink": "Politique de confidentialité",
     "restoreSuccess": "Abonnement restauré avec succès !",
-    "restoreNone": "Aucun abonnement actif trouvé."
+    "restoreNone": "Aucun abonnement actif trouvé.",
+    "aiUnlimited": "∞ Illimité"
   },
   "status": {
     "active": "Actif",
@@ -71,7 +72,8 @@
     "subscription": "Abonnement",
     "upgradePremium": "Passer à Premium",
     "managePlan": "Gérer le forfait",
-    "aiRemaining": "AI : {{remaining}}/{{total}} restants"
+    "aiRemaining": "AI : {{remaining}}/{{total}} restants",
+    "aiUnlimited": "∞ Illimité"
   },
   "errors": {
     "title": "Erreur",

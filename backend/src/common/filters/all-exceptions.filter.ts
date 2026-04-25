@@ -152,7 +152,13 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
           isResolved: false,
         })
         .catch((err) => {
-          this.logger.warn(`Failed to persist error log: ${err.message}`);
+          // V176: elevate from warn to error so SRE dashboards page on
+          // diagnostic-data loss. Include the inbound stack snippet so the
+          // failure can be traced to the originating request without
+          // round-tripping back to the (now broken) error_logs table.
+          this.logger.error(
+            `[ErrorLogPersist] failed: ${err.message} (origin=${request.method} ${request.path})`,
+          );
         });
     }
 

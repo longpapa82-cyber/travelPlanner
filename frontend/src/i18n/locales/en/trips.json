@@ -67,7 +67,8 @@
       "remaining": "{{remaining}}/{{total}} AI generations left this month",
       "limitReached": "Monthly AI limit ({{total}}) reached. Use manual creation.",
       "loading": "Checking available AI generations...",
-      "preWarning": "After this generation, {{remaining}}/{{total}} remaining."
+      "preWarning": "After this generation, {{remaining}}/{{total}} remaining.",
+      "unlimited": "∞ Unlimited (admin)"
     },
     "rewardedAd": {
       "label": "Watch ad for detailed travel insights"

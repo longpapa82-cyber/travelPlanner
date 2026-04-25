@@ -62,7 +62,8 @@
       "title": "Generazione automatica AI",
       "description": "L'AI creerà il piano di viaggio ottimale in base alla tua destinazione e al tuo programma",
       "remaining": "{{remaining}}/{{total}} generazioni AI rimaste questo mese",
-      "limitReached": "Limite mensile AI ({{total}}) raggiunto. Usa la creazione manuale."
+      "limitReached": "Limite mensile AI ({{total}}) raggiunto. Usa la creazione manuale.",
+      "unlimited": "∞ Illimitato (admin)"
     },
     "rewardedAd": {
       "label": "Guarda un annuncio per approfondimenti dettagliati sul viaggio"

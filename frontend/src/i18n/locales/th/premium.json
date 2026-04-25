@@ -41,7 +41,8 @@
     "termsLink": "ข้อกำหนดการใช้งาน",
     "privacyLink": "นโยบายความเป็นส่วนตัว",
     "restoreSuccess": "กู้คืนการสมัครสมาชิกสำเร็จ!",
-    "restoreNone": "ไม่พบการสมัครสมาชิกที่ใช้งานอยู่"
+    "restoreNone": "ไม่พบการสมัครสมาชิกที่ใช้งานอยู่",
+    "aiUnlimited": "∞ ไม่จำกัด"
   },
   "status": {
     "active": "ใช้งานอยู่",
@@ -71,7 +72,8 @@
     "subscription": "การสมัครสมาชิก",
     "upgradePremium": "อัปเกรดเป็นพรีเมียม",
     "managePlan": "จัดการแผน",
-    "aiRemaining": "AI: {{remaining}}/{{total}} เหลือ"
+    "aiRemaining": "AI: {{remaining}}/{{total}} เหลือ",
+    "aiUnlimited": "∞ ไม่จำกัด"
   },
   "errors": {
     "title": "ข้อผิดพลาด",

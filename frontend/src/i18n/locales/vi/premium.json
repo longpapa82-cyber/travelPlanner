@@ -41,7 +41,8 @@
     "termsLink": "Điều khoản dịch vụ",
     "privacyLink": "Chính sách bảo mật",
     "restoreSuccess": "Khôi phục đăng ký thành công!",
-    "restoreNone": "Không tìm thấy đăng ký hoạt động."
+    "restoreNone": "Không tìm thấy đăng ký hoạt động.",
+    "aiUnlimited": "∞ Không giới hạn"
   },
   "status": {
     "active": "Đang hoạt động",
@@ -71,7 +72,8 @@
     "subscription": "Đăng ký",
     "upgradePremium": "Nâng cấp Cao cấp",
     "managePlan": "Quản lý gói",
-    "aiRemaining": "AI: {{remaining}}/{{total}} còn lại"
+    "aiRemaining": "AI: {{remaining}}/{{total}} còn lại",
+    "aiUnlimited": "∞ Không giới hạn"
   },
   "errors": {
     "title": "Lỗi",

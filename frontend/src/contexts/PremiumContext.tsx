@@ -16,24 +16,18 @@ import { addBreadcrumb } from '../common/sentry';
 
 const AI_TRIPS_FREE_LIMIT = 3;
 /*
- * V115 (M3 fix): keep this list in sync with backend `ADMIN_EMAILS` env var.
+ * V176: server isAdmin is now the single source of truth. The previous
+ * frontend ADMIN_EMAILS fallback (V115/V114-6a) caused an Alpha-test
+ * observation bias — both Alpha test accounts were on the fallback list, so
+ * the QA team could not validate the non-admin (free/premium) quota path.
+ * Removing the fallback aligns frontend with the V174 backend isAdmin field
+ * already returned by /auth/me.
  *
- * Why a frontend copy at all? The backend's /subscription/status returns an
- * `isAdmin` boolean that should be the single source of truth, but the UI
- * needs to make admin decisions before that round-trip completes (e.g. to
- * avoid flashing the paywall on cold-start). This fallback list covers the
- * first render; once the API response lands, `user.isAdmin` from the server
- * takes precedence.
- *
- * Must be lowercased — emails in the user profile may come back in any case
- * (the backend normalizes, but client-side we defend). Also includes
- * hoonjae723@gmail.com which was previously missing and caused V114-6a
- * (admin billing datetime) to silently no-op for that account.
+ * SERVICE_ADMIN_EMAILS is kept for the security-admin-only screens (revenue
+ * dashboard, manual subscription override). Service admin is a stricter
+ * subset of operational admin — it gates the financial controls and is
+ * intentionally not derived from the env list.
  */
-const ADMIN_EMAILS = [
-  'longpapa82@gmail.com',
-  'hoonjae723@gmail.com',
-];
 const SERVICE_ADMIN_EMAILS = ['longpapa82@gmail.com'];
 
 export type PaywallContext = 'ai_limit' | 'general';
@@ -281,14 +275,13 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     return false;
   }, [user?.subscriptionTier, user?.subscriptionExpiresAt, rcEntitlement, isLoggingOut]);
 
-  // V174 (P0-3): prefer the server's `isAdmin` flag (mirrors
-  // backend ADMIN_EMAILS + DB role via isOperationalAdmin helper). Falls
-  // back to the local env list for the first cold-start render before
-  // `/auth/me` lands — this keeps the UI from flashing paywall for admins
-  // on boot. Once the profile is loaded, the server value is canonical.
-  const isAdmin =
-    user?.isAdmin === true ||
-    !!(user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase()));
+  // V176: server `isAdmin` (computed via isOperationalAdmin on the backend)
+  // is the only source of truth. The local fallback list was removed because
+  // it caused all Alpha test accounts to be classified as admin, hiding the
+  // non-admin quota path from QA. The brief flash window before /auth/me
+  // lands is harmless — the paywall and aiTripsLimit UI gate on
+  // isProfileLoaded, so admins see neutral state during cold start.
+  const isAdmin = user?.isAdmin === true;
   const isServiceAdmin = !!(
     user?.email && SERVICE_ADMIN_EMAILS.includes(user.email.toLowerCase())
   );

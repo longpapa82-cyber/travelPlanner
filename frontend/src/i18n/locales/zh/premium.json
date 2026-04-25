@@ -41,7 +41,8 @@
     "termsLink": "服务条款",
     "privacyLink": "隐私政策",
     "restoreSuccess": "订阅已恢复！",
-    "restoreNone": "未找到有效订阅。"
+    "restoreNone": "未找到有效订阅。",
+    "aiUnlimited": "∞ 无限制"
   },
   "status": {
     "active": "活跃",
@@ -71,7 +72,8 @@
     "subscription": "订阅",
     "upgradePremium": "升级高级版",
     "managePlan": "管理方案",
-    "aiRemaining": "AI: {{remaining}}/{{total}}次剩余"
+    "aiRemaining": "AI: {{remaining}}/{{total}}次剩余",
+    "aiUnlimited": "∞ 无限制"
   },
   "errors": {
     "title": "错误",

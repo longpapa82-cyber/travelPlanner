@@ -1712,6 +1712,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                 <Text style={[styles.infoText, { color: theme.colors.textSecondary, marginTop: 4, fontWeight: '600' }]}>
                   {t('create.aiInfo.loading')}
                 </Text>
+              ) : isAdmin ? (
+                <Text style={[styles.infoText, { color: theme.colors.primary, marginTop: 4, fontWeight: '600' }]}>
+                  {t('create.aiInfo.unlimited')}
+                </Text>
               ) : (
                 <Text style={[styles.infoText, { color: aiTripsRemaining > 0 ? theme.colors.primary : colors.error?.main || '#EF4444', marginTop: 4, fontWeight: '600' }]}>
                   {aiTripsRemaining > 0

@@ -41,7 +41,8 @@
     "termsLink": "利用規約",
     "privacyLink": "プライバシーポリシー",
     "restoreSuccess": "サブスクリプションが復元されました！",
-    "restoreNone": "有効なサブスクリプションが見つかりません。"
+    "restoreNone": "有効なサブスクリプションが見つかりません。",
+    "aiUnlimited": "∞ 無制限"
   },
   "status": {
     "active": "有効",
@@ -71,7 +72,8 @@
     "subscription": "サブスクリプション",
     "upgradePremium": "プレミアムにアップグレード",
     "managePlan": "プラン管理",
-    "aiRemaining": "AI: {{remaining}}/{{total}}回残り"
+    "aiRemaining": "AI: {{remaining}}/{{total}}回残り",
+    "aiUnlimited": "∞ 無制限"
   },
   "errors": {
     "title": "エラー",

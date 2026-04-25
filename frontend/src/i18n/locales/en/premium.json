@@ -41,7 +41,8 @@
     "termsLink": "Terms of Service",
     "privacyLink": "Privacy Policy",
     "restoreSuccess": "Subscription restored successfully!",
-    "restoreNone": "No active subscription found."
+    "restoreNone": "No active subscription found.",
+    "aiUnlimited": "∞ Unlimited"
   },
   "status": {
     "active": "Active",
@@ -71,7 +72,8 @@
     "subscription": "Subscription",
     "upgradePremium": "Upgrade to Premium",
     "managePlan": "Manage plan",
-    "aiRemaining": "AI: {{remaining}}/{{total}} remaining"
+    "aiRemaining": "AI: {{remaining}}/{{total}} remaining",
+    "aiUnlimited": "∞ Unlimited"
   },
   "errors": {
     "title": "Error",

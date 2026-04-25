@@ -47,7 +47,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
-  const { isPremium, isServiceAdmin, showPaywall, aiTripsRemaining, aiTripsLimit, aiTripsUsed, markLoggingOut } = usePremium();
+  const { isPremium, isAdmin, isServiceAdmin, showPaywall, aiTripsRemaining, aiTripsLimit, aiTripsUsed, markLoggingOut } = usePremium();
   const { t: tPremium } = useTranslation('premium');
   const { t: tTutorial } = useTranslation('tutorial');
   const { resetTutorial } = useTutorial();
@@ -321,6 +321,21 @@ const ProfileScreen = ({ navigation }: any) => {
     });
   };
 
+  // V176: keep users inside the app for in-app reference content (licenses,
+  // changelog, etc.). Custom Tabs / SFSafariViewController dismisses cleanly
+  // back to the calling screen. We dynamic-require so the import does not
+  // break the web platform bundle if expo-web-browser native code is absent.
+  const openInAppBrowser = async (url: string) => {
+    try {
+      const WebBrowser = require('expo-web-browser');
+      await WebBrowser.openBrowserAsync(url);
+    } catch {
+      Linking.openURL(url).catch(() => {
+        showToast({ type: 'error', message: tCommon('error'), position: 'top' });
+      });
+    }
+  };
+
   const handleLanguageChange = async (lang: SupportedLanguage) => {
     await changeLanguage(lang);
     setShowLanguageSelector(false);
@@ -520,12 +535,17 @@ const ProfileScreen = ({ navigation }: any) => {
             <Icon name="crown" size={24} color="#F59E0B" />
             <View style={{ flex: 1, marginLeft: theme.spacing.md }}>
               <Text style={[styles.menuText, { marginLeft: 0 }]}>{tPremium('menu.subscription')}</Text>
-              {!isPremium && (
+              {!isPremium && !isAdmin && (
                 <Text style={{ fontSize: 12, color: theme.colors.textSecondary, marginTop: 2 }}>
                   {tPremium('menu.aiRemaining', {
                     remaining: aiTripsRemaining >= 0 ? aiTripsRemaining : '\u221E',
                     total: aiTripsLimit > 0 ? aiTripsLimit : 3,
                   })}
+                </Text>
+              )}
+              {isAdmin && (
+                <Text style={{ fontSize: 12, color: theme.colors.textSecondary, marginTop: 2 }}>
+                  {tPremium('menu.aiUnlimited')}
                 </Text>
               )}
             </View>
@@ -688,7 +708,7 @@ const ProfileScreen = ({ navigation }: any) => {
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://mytravel-planner.com/licenses.html')} accessibilityRole="button" accessibilityLabel={t('menu.licenses')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => openInAppBrowser('https://mytravel-planner.com/licenses.html')} accessibilityRole="button" accessibilityLabel={t('menu.licenses')}>
           <Icon name="code-tags" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.licenses')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />

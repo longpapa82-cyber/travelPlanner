@@ -216,7 +216,11 @@ describe('PremiumContext — V169 merge rules', () => {
     expect(result.current.isAiLimitReached).toBe(false);
   });
 
-  test('V174: admin from hardcoded email list → unlimited quota', async () => {
+  test('V176: admin email without server isAdmin flag → NOT admin (no client fallback)', async () => {
+    // V176 removed the hardcoded ADMIN_EMAILS fallback. Even an email that
+    // matches the operational admin list on the server must wait for the
+    // server isAdmin flag to be set — otherwise QA cannot validate the
+    // non-admin quota path with their own admin emails.
     mockAuthUser = {
       ...freshFreeUser(),
       email: 'longpapa82@gmail.com',
@@ -227,8 +231,8 @@ describe('PremiumContext — V169 merge rules', () => {
 
     const { result } = renderHook(() => usePremium(), { wrapper });
     await waitFor(() => expect(mockInitRevenueCat).toHaveBeenCalled());
-    expect(result.current.isAdmin).toBe(true);
-    expect(result.current.aiTripsLimit).toBe(9999);
+    expect(result.current.isAdmin).toBe(false);
+    expect(result.current.aiTripsLimit).toBe(3);
   });
 
   test('V174: non-admin free user stays on 3-trip free limit', async () => {

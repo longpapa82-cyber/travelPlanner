@@ -62,7 +62,8 @@
       "title": "Generación automática con IA",
       "description": "La IA creará el plan de viaje óptimo basado en tu destino y horario",
       "remaining": "{{remaining}}/{{total}} generaciones IA restantes este mes",
-      "limitReached": "Límite mensual de IA ({{total}}) alcanzado. Usa la creación manual."
+      "limitReached": "Límite mensual de IA ({{total}}) alcanzado. Usa la creación manual.",
+      "unlimited": "∞ Ilimitado (admin)"
     },
     "rewardedAd": {
       "label": "Ver anuncio para obtener información detallada del viaje"

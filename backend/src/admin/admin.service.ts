@@ -182,15 +182,11 @@ export class AdminService {
     platform?: 'web' | 'ios' | 'android';
     userAgent?: string;
     // V174 (P1): expanded fields forwarded to DB verbatim.
+    // V176: breadcrumbs accept any object shape — DTO no longer enforces
+    // Sentry-specific keys, the admin UI renders whatever the client sends.
     errorName?: string;
     routeName?: string;
-    breadcrumbs?: Array<{
-      category?: string;
-      message?: string;
-      level?: string;
-      timestamp?: number;
-      data?: Record<string, unknown>;
-    }>;
+    breadcrumbs?: Array<Record<string, unknown>>;
     httpStatus?: number;
     deviceModel?: string;
   }) {

@@ -1122,18 +1122,33 @@ class ApiService {
     // V174 (P1): expanded context — see backend/src/admin/dto/create-error-log.dto.ts
     errorName?: string;
     routeName?: string;
-    breadcrumbs?: Array<{
-      category?: string;
-      message?: string;
-      level?: string;
-      timestamp?: number;
-      data?: Record<string, unknown>;
-    }>;
+    breadcrumbs?: Array<Record<string, unknown>>;
     httpStatus?: number;
     deviceModel?: string;
   }) {
-    const response = await this.api.post('/error-logs', data);
-    return response.data;
+    try {
+      const response = await this.api.post('/error-logs', data);
+      return response.data;
+    } catch (err: any) {
+      // V176: V174's expanded payload was being rejected with 400 when the
+      // server-side ValidationPipe forbid unknown breadcrumb keys (Sentry
+      // sometimes emits keys like `event_id` / `type`). Result: error_logs
+      // had ZERO new-payload rows for 3 days. We now retry with a stripped
+      // legacy payload so diagnostic data still lands in the table.
+      if (err?.response?.status === 400 && data.breadcrumbs) {
+        const minimal = {
+          errorMessage: data.errorMessage,
+          stackTrace: data.stackTrace,
+          screen: data.screen,
+          severity: data.severity,
+          deviceOS: data.deviceOS,
+          appVersion: data.appVersion,
+        };
+        const retry = await this.api.post('/error-logs', minimal);
+        return retry.data;
+      }
+      throw err;
+    }
   }
 
   // ─── Social ─────────────────────────────────
