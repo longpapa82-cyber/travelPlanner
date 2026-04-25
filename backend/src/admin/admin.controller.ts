@@ -302,6 +302,12 @@ export class ErrorLogController {
       userEmail: req.user?.email,
       platform: detectPlatform(ua),
       userAgent: ua?.slice(0, 1000),
+      // V174 (P1): forward expanded client context.
+      errorName: dto.errorName,
+      routeName: dto.routeName,
+      breadcrumbs: dto.breadcrumbs,
+      httpStatus: dto.httpStatus,
+      deviceModel: dto.deviceModel,
     });
   }
 }

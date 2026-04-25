@@ -464,6 +464,16 @@ describe('AuthService', () => {
         profileImage: mockUser.profileImage,
         isEmailVerified: mockUser.isEmailVerified,
         isTwoFactorEnabled: mockUser.isTwoFactorEnabled,
+        // V174 (P0-3): getProfile now includes the operational-admin flag
+        // and the other subscription/quota fields consumed by the client.
+        // mockUser has no admin role/email, so isAdmin is false.
+        isAdmin: false,
+        subscriptionTier: mockUser.subscriptionTier,
+        subscriptionPlatform: mockUser.subscriptionPlatform,
+        subscriptionExpiresAt: mockUser.subscriptionExpiresAt,
+        subscriptionStartedAt: mockUser.subscriptionStartedAt,
+        subscriptionPlanType: mockUser.subscriptionPlanType,
+        aiTripsUsedThisMonth: mockUser.aiTripsUsedThisMonth,
         createdAt: mockUser.createdAt,
         updatedAt: mockUser.updatedAt,
       });

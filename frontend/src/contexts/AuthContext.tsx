@@ -593,6 +593,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Silent — Google sign-out is best-effort
       }
 
+      // V174 (P0-1): Sign out from RevenueCat so the SDK's device-level
+      // anonymous appUserID cache is reset. Without this, the next user's
+      // `Purchases.logIn(newId)` aliases against the prior session — which
+      // in sandbox flows reproducibly causes the V173 "이미 연간 플랜
+      // 구독 중" phantom entitlement even after account deletion. Dynamic
+      // require mirrors the Google sign-out pattern above so the web build
+      // (which uses revenueCat.web.ts) stays safe.
+      try {
+        const { logOut: rcLogOut } = require('../services/revenueCat');
+        await rcLogOut();
+      } catch {
+        // Silent — RC sign-out is best-effort; the next mount effect will
+        // re-configure with the new user anyway.
+      }
+
       // Clear tokens and cached data
       await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
       await secureStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);

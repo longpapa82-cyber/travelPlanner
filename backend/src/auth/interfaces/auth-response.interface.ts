@@ -6,6 +6,8 @@ export interface AuthResponse {
     provider: string;
     profileImage?: string | null;
     isEmailVerified?: boolean;
+    /** V174 (P0-3): operational admin flag (env ADMIN_EMAILS OR DB role). */
+    isAdmin?: boolean;
     subscriptionTier?: string;
     subscriptionPlatform?: string | null;
     subscriptionExpiresAt?: Date | string | null;

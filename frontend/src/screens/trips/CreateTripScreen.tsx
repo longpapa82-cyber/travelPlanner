@@ -30,7 +30,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
@@ -94,6 +94,12 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [destination, setDestination] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  // V174 (P0-4): numberOfTravelers is the single source of truth.
+  // `travelerInputText` is used ONLY while the custom number input has
+  // focus and may transiently hold '' (mid-typing / backspace). On blur
+  // or chip tap it snaps back to String(numberOfTravelers). Prior V140~V171
+  // carried these as two independent states; every regression round left
+  // a new desync path (V173: chip [3~4명] selected while input shows "1").
   const [numberOfTravelers, setNumberOfTravelers] = useState(1);
   const [travelerInputText, setTravelerInputText] = useState('1');
   const [description, setDescription] = useState('');
@@ -252,20 +258,24 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     setDurationDays(days);
   }, [setDurationDays]);
 
+  // V174 (P0-4): every state mutation must keep the two traveler states
+  // in lockstep. Callers must use THIS setter rather than calling
+  // `setNumberOfTravelers` directly so there is one single path that
+  // guarantees the chip highlight and the input field never disagree.
   const setTravelersCount = useCallback((count: number) => {
-    setNumberOfTravelers(Math.min(count, 20));
+    const clamped = Math.max(1, Math.min(count, 20));
+    setNumberOfTravelers(clamped);
+    setTravelerInputText(clamped.toString());
   }, []);
 
   const handleSelectTravelers = useCallback((count: number) => {
     if (count === -1) {
       const val = numberOfTravelers >= 5 ? numberOfTravelers : 5;
-      setNumberOfTravelers(val);
-      setTravelerInputText(val.toString());
+      setTravelersCount(val);
       setTimeout(() => customTravelersRef.current?.focus(), 100);
     } else {
       Keyboard.dismiss();
       setTravelersCount(count);
-      setTravelerInputText(count.toString());
     }
   }, [setTravelersCount, numberOfTravelers]);
 
@@ -743,50 +753,64 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     };
   }, []);
 
-  // Reset form state AND transient error/loading state when screen regains focus.
-  // Ensures a fresh form each time user enters the create trip flow.
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      // Reset transient state
-      setFieldErrors({});
-      setIsLoading(false);
-      setGenerationStep(0);
-      setShowCancelConfirm(false);
-      isCreatingRef.current = false;
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-        abortControllerRef.current = null;
-      }
-      if (timeoutWarningRef.current) {
-        clearTimeout(timeoutWarningRef.current);
-        timeoutWarningRef.current = null;
-      }
-      if (postAdToastTimerRef.current) {
-        clearTimeout(postAdToastTimerRef.current);
-        postAdToastTimerRef.current = null;
-      }
+  // V174 (P0-4): Form reset on every focus — incl. same-mount re-focus.
+  //
+  // Previous versions (V140~V171) used `navigation.addListener('focus', ...)`
+  // inside a plain `useEffect`. In a tab-nested Native Stack that listener
+  // does NOT fire on every visual re-focus (modal close, tab return without
+  // unmount, re-navigation to the already-mounted route). `useFocusEffect`
+  // is the React Navigation idiom that covers all of those paths, and is
+  // already used elsewhere in this codebase (MainNavigator tab focus).
+  //
+  // The reset is expressed as a plain function so it can be reused by unit
+  // tests and so the params-clear step is explicit.
+  const resetForm = useCallback(() => {
+    setFieldErrors({});
+    setIsLoading(false);
+    setGenerationStep(0);
+    setShowCancelConfirm(false);
+    isCreatingRef.current = false;
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    if (timeoutWarningRef.current) {
+      clearTimeout(timeoutWarningRef.current);
+      timeoutWarningRef.current = null;
+    }
+    if (postAdToastTimerRef.current) {
+      clearTimeout(postAdToastTimerRef.current);
+      postAdToastTimerRef.current = null;
+    }
 
-      // Reset form inputs so user starts fresh each time
-      // (previously: destination/dates/budget/etc. persisted across navigation)
-      setDestination('');
-      setStartDate('');
-      setEndDate('');
-      setNumberOfTravelers(1);
-      setTravelerInputText('1');
-      setDescription('');
-      setTotalBudget('');
-      setBudgetCurrency('USD');
-      setPrefBudget('');
-      setPrefStyle('');
-      setPrefInterests([]);
-      setPlanningMode('ai');
-      setInsightsUnlocked(false);
+    setDestination('');
+    setStartDate('');
+    setEndDate('');
+    setNumberOfTravelers(1);
+    setTravelerInputText('1');
+    setDescription('');
+    setTotalBudget('');
+    setBudgetCurrency('USD');
+    setPrefBudget('');
+    setPrefStyle('');
+    setPrefInterests([]);
+    setPlanningMode('ai');
+    setInsightsUnlocked(false);
 
-      // Clear navigation params so the route.params useEffect doesn't re-fill the form
-      navigation.setParams({ destination: undefined, duration: undefined, travelers: undefined });
+    navigation.setParams({
+      destination: undefined,
+      duration: undefined,
+      travelers: undefined,
     });
-    return unsubscribe;
   }, [navigation]);
+
+  useFocusEffect(
+    useCallback(() => {
+      resetForm();
+      // No cleanup — reset is forward-only on focus.
+      return undefined;
+    }, [resetForm]),
+  );
 
   const formatDateForDisplay = useCallback((dateString: string): string => {
     if (!dateString) return '';

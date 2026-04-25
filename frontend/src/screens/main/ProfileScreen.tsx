@@ -688,7 +688,7 @@ const ProfileScreen = ({ navigation }: any) => {
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://mytravel-planner.com/licenses')} accessibilityRole="button" accessibilityLabel={t('menu.licenses')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => openUrl('https://mytravel-planner.com/licenses.html')} accessibilityRole="button" accessibilityLabel={t('menu.licenses')}>
           <Icon name="code-tags" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.licenses')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />

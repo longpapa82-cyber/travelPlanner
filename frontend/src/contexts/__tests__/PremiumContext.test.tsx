@@ -196,4 +196,53 @@ describe('PremiumContext — V169 merge rules', () => {
     await waitFor(() => expect(mockInitRevenueCat).toHaveBeenCalled());
     expect(result.current.isPremium).toBe(false);
   });
+
+  // ── V174 (P0-2/3): admin account quota branch ──
+
+  test('V174: admin from server flag → unlimited quota (9999 sentinel)', async () => {
+    mockAuthUser = {
+      ...freshFreeUser(),
+      isAdmin: true,
+      aiTripsUsedThisMonth: 0,
+    };
+    mockGetCustomerInfo.mockResolvedValue(buildInfoEmpty());
+    mockRestorePurchases.mockResolvedValue(buildInfoEmpty());
+
+    const { result } = renderHook(() => usePremium(), { wrapper });
+    await waitFor(() => expect(mockInitRevenueCat).toHaveBeenCalled());
+    expect(result.current.isAdmin).toBe(true);
+    expect(result.current.aiTripsLimit).toBe(9999);
+    expect(result.current.aiTripsRemaining).toBe(9999);
+    expect(result.current.isAiLimitReached).toBe(false);
+  });
+
+  test('V174: admin from hardcoded email list → unlimited quota', async () => {
+    mockAuthUser = {
+      ...freshFreeUser(),
+      email: 'longpapa82@gmail.com',
+      isAdmin: undefined,
+    };
+    mockGetCustomerInfo.mockResolvedValue(buildInfoEmpty());
+    mockRestorePurchases.mockResolvedValue(buildInfoEmpty());
+
+    const { result } = renderHook(() => usePremium(), { wrapper });
+    await waitFor(() => expect(mockInitRevenueCat).toHaveBeenCalled());
+    expect(result.current.isAdmin).toBe(true);
+    expect(result.current.aiTripsLimit).toBe(9999);
+  });
+
+  test('V174: non-admin free user stays on 3-trip free limit', async () => {
+    mockAuthUser = {
+      ...freshFreeUser(),
+      aiTripsUsedThisMonth: 2,
+    };
+    mockGetCustomerInfo.mockResolvedValue(buildInfoEmpty());
+    mockRestorePurchases.mockResolvedValue(buildInfoEmpty());
+
+    const { result } = renderHook(() => usePremium(), { wrapper });
+    await waitFor(() => expect(mockInitRevenueCat).toHaveBeenCalled());
+    expect(result.current.isAdmin).toBe(false);
+    expect(result.current.aiTripsLimit).toBe(3);
+    expect(result.current.aiTripsRemaining).toBe(1);
+  });
 });

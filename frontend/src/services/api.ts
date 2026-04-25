@@ -219,6 +219,10 @@ class ApiService {
               if (now - v > 60_000) this.errorReportTimestamps.delete(k);
             }
           }
+          // V174 (P1): promote httpStatus and errorName out of the message
+          // string so admin can filter + group. `routeName` placeholder is
+          // populated elsewhere where a navigation ref is available; for
+          // the pure interceptor path we can at least tag the endpoint.
           this.reportError({
             errorMessage: `[API ${status}] ${error.config?.method?.toUpperCase()} ${url}`,
             stackTrace: (error.response?.data as any)?.message || error.message,
@@ -226,6 +230,9 @@ class ApiService {
             severity: 'error',
             deviceOS: Platform.OS,
             appVersion: Constants.expoConfig?.version,
+            errorName: error?.name || 'ApiError',
+            routeName: url,
+            httpStatus: typeof status === 'number' ? status : undefined,
           }).catch(() => {});
         }
       }
@@ -1105,7 +1112,26 @@ class ApiService {
     return response.data;
   }
 
-  async reportError(data: { errorMessage: string; stackTrace?: string; screen?: string; severity?: string; deviceOS?: string; appVersion?: string }) {
+  async reportError(data: {
+    errorMessage: string;
+    stackTrace?: string;
+    screen?: string;
+    severity?: string;
+    deviceOS?: string;
+    appVersion?: string;
+    // V174 (P1): expanded context — see backend/src/admin/dto/create-error-log.dto.ts
+    errorName?: string;
+    routeName?: string;
+    breadcrumbs?: Array<{
+      category?: string;
+      message?: string;
+      level?: string;
+      timestamp?: number;
+      data?: Record<string, unknown>;
+    }>;
+    httpStatus?: number;
+    deviceModel?: string;
+  }) {
     const response = await this.api.post('/error-logs', data);
     return response.data;
   }

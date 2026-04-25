@@ -281,23 +281,41 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     return false;
   }, [user?.subscriptionTier, user?.subscriptionExpiresAt, rcEntitlement, isLoggingOut]);
 
-  // V115 (M3 fix): lowercase both sides before compare. The old path
-  // `ADMIN_EMAILS.includes(user.email)` silently failed for any profile that
-  // arrived with a differently-cased email (e.g. "Hoonjae723@gmail.com").
-  const isAdmin = !!(
-    user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())
-  );
+  // V174 (P0-3): prefer the server's `isAdmin` flag (mirrors
+  // backend ADMIN_EMAILS + DB role via isOperationalAdmin helper). Falls
+  // back to the local env list for the first cold-start render before
+  // `/auth/me` lands — this keeps the UI from flashing paywall for admins
+  // on boot. Once the profile is loaded, the server value is canonical.
+  const isAdmin =
+    user?.isAdmin === true ||
+    !!(user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase()));
   const isServiceAdmin = !!(
     user?.email && SERVICE_ADMIN_EMAILS.includes(user.email.toLowerCase())
   );
   const isProfileLoaded = user?.aiTripsUsedThisMonth !== undefined;
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
   const AI_TRIPS_PREMIUM_LIMIT = 30;
-  const aiTripsLimit = isPremium ? AI_TRIPS_PREMIUM_LIMIT : AI_TRIPS_FREE_LIMIT;
-  const aiTripsRemaining = isPremium
-    ? (isProfileLoaded ? Math.max(0, AI_TRIPS_PREMIUM_LIMIT - aiTripsUsed) : AI_TRIPS_PREMIUM_LIMIT)
-    : (isProfileLoaded ? Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed) : -1);
-  const isAiLimitReached = !isPremium && isProfileLoaded && aiTripsRemaining <= 0;
+  // V174 (P0-2): sentinel value for "unlimited" — used by admin accounts.
+  // We use a big finite number rather than Infinity so JSON serialization,
+  // Number formatting in i18n, and progress bars all behave deterministically.
+  const AI_TRIPS_ADMIN_LIMIT = 9999;
+  // V174 (P0-2): admin users bypass the quota entirely on the backend
+  // (`trips.service.ts` never increments `aiTripsUsedThisMonth` for them),
+  // so the V173 UI showing "3/3" (free) while the server allows unlimited
+  // generations created a dangerous mismatch — users saw "limit reached"
+  // but refresh showed the counter never moved. Explicit branch fixes this.
+  const aiTripsLimit = isAdmin
+    ? AI_TRIPS_ADMIN_LIMIT
+    : isPremium
+      ? AI_TRIPS_PREMIUM_LIMIT
+      : AI_TRIPS_FREE_LIMIT;
+  const aiTripsRemaining = isAdmin
+    ? AI_TRIPS_ADMIN_LIMIT
+    : isPremium
+      ? (isProfileLoaded ? Math.max(0, AI_TRIPS_PREMIUM_LIMIT - aiTripsUsed) : AI_TRIPS_PREMIUM_LIMIT)
+      : (isProfileLoaded ? Math.max(0, AI_TRIPS_FREE_LIMIT - aiTripsUsed) : -1);
+  // Admins never hit the limit — backend also doesn't enforce one for them.
+  const isAiLimitReached = !isAdmin && !isPremium && isProfileLoaded && aiTripsRemaining <= 0;
 
   const showPaywall = useCallback((context: PaywallContext = 'general') => {
     if (!PREMIUM_ENABLED) return;

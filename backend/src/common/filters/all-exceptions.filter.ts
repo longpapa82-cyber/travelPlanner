@@ -10,6 +10,7 @@ import { Request, Response } from 'express';
 import * as Sentry from '@sentry/nestjs';
 import { DataSource } from 'typeorm';
 import { ErrorLog } from '../../admin/entities/error-log.entity';
+import { detectPlatform } from '../utils/platform-detector';
 
 /**
  * Global exception filter that:
@@ -122,15 +123,32 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         errorMessage = 'Unknown error';
       }
 
+      // V174 (P1): real context instead of hardcoded placeholders.
+      // Previously `userId`/`userEmail` stayed null and `platform` was
+      // always `'web'` regardless of the real caller — so error logs
+      // could not be joined against users or filtered per-platform.
+      const jwtUser = (request as any).user as
+        | { userId?: string; email?: string }
+        | undefined;
+      const ua = request.headers['user-agent'];
+
       this.dataSource
         .getRepository(ErrorLog)
         .save({
+          userId: jwtUser?.userId,
+          userEmail: jwtUser?.email,
           errorMessage: errorMessage.slice(0, 500),
+          errorName:
+            exception instanceof Error
+              ? exception.name?.slice(0, 100)
+              : undefined,
           stackTrace: exception instanceof Error ? exception.stack : undefined,
           severity: this.getSeverity(status),
-          platform: 'web',
+          platform: detectPlatform(ua),
           screen: `${request.method} ${request.path}`.slice(0, 200),
-          userAgent: request.headers['user-agent']?.slice(0, 500),
+          routeName: `${request.method} ${request.route?.path ?? request.path}`.slice(0, 150),
+          httpStatus: status,
+          userAgent: ua?.slice(0, 500),
           isResolved: false,
         })
         .catch((err) => {

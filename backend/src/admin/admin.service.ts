@@ -181,6 +181,18 @@ export class AdminService {
     appVersion?: string;
     platform?: 'web' | 'ios' | 'android';
     userAgent?: string;
+    // V174 (P1): expanded fields forwarded to DB verbatim.
+    errorName?: string;
+    routeName?: string;
+    breadcrumbs?: Array<{
+      category?: string;
+      message?: string;
+      level?: string;
+      timestamp?: number;
+      data?: Record<string, unknown>;
+    }>;
+    httpStatus?: number;
+    deviceModel?: string;
   }) {
     const log = this.errorLogRepository.create(data);
     return this.errorLogRepository.save(log);

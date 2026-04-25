@@ -99,13 +99,19 @@ export class SubscriptionService {
     // `isSecurityAdmin` (DB role only) instead.
     const isAdmin = isOperationalAdmin(user.email, user.role);
     const isPremium = this.isUserPremium(user);
-    const effectiveLimit = isPremium
-      ? this.aiTripsPremiumLimit
-      : this.aiTripsFreeLimit;
-    const aiTripsRemaining = Math.max(
-      0,
-      effectiveLimit - user.aiTripsUsedThisMonth,
-    );
+    // V174 (P0-3): admin users bypass the counter entirely in
+    // `trips.service.ts` (no increment, no limit check). The frontend
+    // needs a matching unlimited-sentinel here so the UI does not keep
+    // showing "3/3 remaining" while the server lets generations continue.
+    const ADMIN_UNLIMITED = 9999;
+    const effectiveLimit = isAdmin
+      ? ADMIN_UNLIMITED
+      : isPremium
+        ? this.aiTripsPremiumLimit
+        : this.aiTripsFreeLimit;
+    const aiTripsRemaining = isAdmin
+      ? ADMIN_UNLIMITED
+      : Math.max(0, effectiveLimit - user.aiTripsUsedThisMonth);
 
     // Sandbox detection: Google Play License Tester accelerates yearly
     // subscriptions to ~30-minute cycles. If a yearly plan's lifespan from

@@ -25,6 +25,7 @@ import {
   TokenPayload,
 } from './interfaces/auth-response.interface';
 import { t, SupportedLang } from '../common/i18n';
+import { isOperationalAdmin } from '../common/utils/admin-check';
 import { getErrorMessage } from '../common/types/request.types';
 import { AuditService } from '../admin/audit.service';
 import { AuditAction } from '../admin/entities/audit-log.entity';
@@ -424,6 +425,13 @@ export class AuthService {
 
   async getProfile(userId: string) {
     const user = await this.usersService.findById(userId);
+    // V174 (P0-3): return isAdmin so the frontend has a single source of
+    // truth. Previously the frontend derived isAdmin from a hardcoded
+    // ADMIN_EMAILS list that could diverge from backend env — V173's
+    // "3/3 표기 + 무제한 생성" mismatch was the visible symptom of that
+    // divergence. `isOperationalAdmin` mirrors the quota-bypass check in
+    // `trips.service.ts` and the UI flag in `subscription.service.ts`.
+    const isAdmin = isOperationalAdmin(user.email, user.role);
     return {
       id: user.id,
       email: user.email,
@@ -432,6 +440,7 @@ export class AuthService {
       profileImage: user.profileImage,
       isEmailVerified: user.isEmailVerified,
       isTwoFactorEnabled: user.isTwoFactorEnabled,
+      isAdmin,
       subscriptionTier: user.subscriptionTier,
       subscriptionPlatform: user.subscriptionPlatform,
       subscriptionExpiresAt: user.subscriptionExpiresAt,

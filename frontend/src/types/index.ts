@@ -9,6 +9,8 @@ export interface User {
   profileImage?: string;
   isEmailVerified?: boolean;
   isTwoFactorEnabled?: boolean;
+  /** V174 (P0-3): server-side operational admin flag (env OR DB role). */
+  isAdmin?: boolean;
   travelPreferences?: TripPreferences;
   subscriptionTier?: SubscriptionTier;
   subscriptionPlatform?: string;
