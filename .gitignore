@@ -74,3 +74,22 @@ deploy-backend.sh
 
 # Database backups
 backups/
+
+# bkit / PDCA auto-generated state (transient, regenerated each session)
+.bkit/
+docs/.bkit-memory.json
+docs/.pdca-status.json
+docs/.pdca-snapshots/
+docs/obsidian-graph/
+.claude/agents/
+
+# EAS local builds (uploaded to EAS cloud or shared via Play Console)
+frontend/build-*.apk
+frontend/build-*.aab
+*.apk
+*.aab
+
+# Test report screenshots dropped at project root
+# (testResult.md references these by relative path; keep them in scratch/)
+/image.png
+/image-*.png
