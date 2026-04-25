@@ -2,16 +2,17 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-25) — V176 Alpha 빌드 중
+## 📍 현재 상태 (2026-04-25 21:44 KST) — V180 Alpha 제출 진행 중
 
 ### 핵심 상태
-- **버전**: V176 (versionCode 177로 EAS auto-increment, AAB 빌드 진행 중)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V176 백엔드 배포 완료 ✅
-- **브랜치**: `main` (커밋 `c202bb0e`)
+- **버전**: V180 (versionCode 181로 EAS auto-increment, AAB 빌드 완료, Alpha 제출 중)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V180 백엔드 배포 완료 ✅
+- **브랜치**: `main` (커밋 `f06cfc80`)
 - **Frontend**: TypeScript 0 errors, Jest **223/223** PASS (16/18 suites)
 - **Backend**: TypeScript 0 errors, Jest **444/444** PASS (24/24 suites)
-- **Play Console**: V174 versionCode 175 Alpha 출시 완료, V176 Alpha 제출 대기 중
+- **Play Console**: V178 versionCode 179 Alpha 출시 완료, V180 Alpha 제출 진행 중
 - **Sentry**: DSN 설정 완료 (aisoft-p7.sentry.io)
+- **법적 문서**: 17개 언어 점검 완료 — GDPR/PIPA/CCPA P0 위반 5건 V180에서 모두 수정
 
 ### V139~V176 Alpha 테스트 수정 이력
 
@@ -33,6 +34,8 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | V172 | 04-24 | RC SDK device cache, Play Billing plan switch, isOperationalAdmin 통일, webhook 폴링 (4건) |
 | V174 | 04-25 | RC logOut 누락 + admin quota 분기 추가 + CreateTrip useFocusEffect 전환 + ErrorLog 컬럼 5개 확장 (5건) |
 | V176 | 04-25 | **PremiumContext 하드코딩 ADMIN_EMAILS 제거**, 라이선스 인앱 표시, **ErrorLog DTO 완화 (4/25 0건 데이터 손실 해결)**, 5.5 소수 가드 (4건) |
+| V178 | 04-25 | **double-logout race**(handleLogout await + isLoggingOutRef + RC 5s timeout), **데이터 내보내기 V178**(expo-file-system 정식 dep + @Res 제거), **네이티브 LicensesScreen**(외부 의존성 0), **silentRefresh 60s throttle**(429 → setUser(null) 차단) (4건) |
+| V180 | 04-25 | **RC isInitialized 리셋 + PremiumContext userId 추적**(탈퇴-재가입 phantom 구독 차단), **expo-file-system/legacy 전환**(modular API breaking change 우회), **법적 P0 5건**(11개 언어 art3/국외이전 + 90일 purge cron + 사업자정보 + CCPA), **ErrorLog 자동 컨텍스트 + 5.5 가드 강화** (10건) |
 
 ### V159 핵심 수정
 
@@ -55,6 +58,29 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **CreateTrip 진입 초기화 누락** | `navigation.addListener('focus')`가 tab-nested Native Stack에서 firstFocus 이후 fire 안 함 | `useFocusEffect` + `resetForm()` 콜백으로 전환, `setTravelersCount`가 numberOfTravelers + travelerInputText 동시 업데이트 (single source of truth) |
 | **ErrorLog 정보 부족** | userId/platform/route/httpStatus 누락으로 RCA 불가 | error_logs 컬럼 5개 추가 (errorName, routeName, breadcrumbs jsonb, httpStatus, deviceModel), filter에서 req.user/ua-detect/status 추출 |
 
+### V180 핵심 수정 (2026-04-25) — V179 RCA + 법적 P0 5건
+
+| ID | 근본 원인 | 수정 |
+|---|---|---|
+| **Phantom 구독 (탈퇴-재가입)** | `revenueCat.ts:18` 모듈 레벨 `isInitialized` 플래그가 logout 시 리셋 안 됨 → register 후 `initRevenueCat`이 early-return → SDK가 옛 user 컨텍스트로 잠긴 상태에서 `Purchases.logIn(newUserId)` 호출 → device-level entitlement가 새 userId에 alias | revenueCat.ts에 `configuredUserId` 추적, logOut 시 reset, init이 새 userId 받으면 자동 `Purchases.logIn`. PremiumContext에 `prevUserIdRef`로 user.id 변경 시 RC snapshot 무효화 + mount-restore source는 server premium 시에만 신뢰 |
+| **데이터 내보내기 FILE_SYSTEM_UNAVAILABLE** | `expo-file-system v19` modular rewrite로 `documentDirectory`가 main entry에서 제거됨 → V178 가드 즉시 throw | `import('expo-file-system/legacy')`로 1줄 전환 |
+| **ErrorLog V174 컬럼 채움률 7%** | reportError 호출자들이 deviceModel/breadcrumbs 누락 | api.ts reportError에 자동 컨텍스트 첨부 (Device.modelName 동적 require, deviceOS, appVersion) |
+| **인원수 5.5 NaN 가드 우회** | DB error_logs 7건 `invalid input syntax for type integer: "5.5"` 발생 — V169 NaN 가드가 소수 차단 못함 | CreateTripScreen `setTravelersCount`에 `Math.floor + clamp(1, 20)` |
+| **법적 P0-A**: 11개 언어 art3 Sentry/RC 누락 | GDPR Art. 13(1)(e), PIPA 제17조 위반 | ar/de/es/fr/hi/id/ja/pt/th/vi/zh art3에 Sentry/RevenueCat 행 추가 |
+| **법적 P0-B**: 11개 언어 국외 이전 누락 | GDPR Art. 44, PIPA 제28조 위반 | 11개 locale에 art15 (or 다음 인덱스) "국외 데이터 이전" 신규 추가 (OpenAI/Google/RC/Sentry 미국 명시) |
+| **법적 P0-C**: error_logs 무기한 잔류 | V174로 userEmail/deviceModel/breadcrumbs 추가됐으나 purge 스케줄러 없음 → PIPA 제21조, GDPR Art. 5(1)(e) 위반 | admin.service.ts cleanupOldErrorLogs Cron (매일 04:30, 90일 보관) + 17개 언어 art5에 정책 명시 |
+| **법적 P0-D**: 사업자 정보 미게재 | PIPA 제39조의6, 전기통신사업법 제39조 위반 | 17개 언어 terms에 "서비스 제공자" article 추가 (AI Soft, longpapa82@gmail.com, 사업자번호 placeholder) |
+| **법적 P0-E**: 앱 내 CCPA 섹션 없음 | California 사용자 권리 행사 경로 부재 | 17개 언어 privacy.ccpa 섹션 신규 추가 (§ 1798.100~.125) |
+
+### V178 핵심 수정 (2026-04-25) — V177 RCA
+
+| ID | 근본 원인 | 수정 |
+|---|---|---|
+| **간헐적 double-logout (V174 회귀)** | ProfileScreen.handleLogout이 logout()을 await 하지 않아 V174의 `Purchases.logOut()` (200~800ms) 진행 중에 confirm 닫히고 사용자 두 번째 클릭 | handleLogout에 await + isLoggingOutRef in-flight guard, AuthContext.logout RC sign-out에 Promise.race(rcLogOut, 5s timeout) |
+| **데이터 내보내기 실패** | (a) expo-file-system이 package.json 직접 dep 미등록 (b) 백엔드 @Res() + res.send 직렬화 → axios가 raw string 받아 이중 직렬화 | `npx expo install expo-file-system` 정식 dep + 백엔드 @Res() 제거 plain return + null 가드 + Sentry 보고 |
+| **라이선스 외부 브라우저 (V176 회귀)** | 테스터 기기 V176/V177 빌드 미수령 + WebBrowser Custom Tabs를 외부 브라우저로 인식 | 새 LicensesScreen 네이티브 화면 (Privacy/Terms 패턴 재사용) + 17개 언어 i18n + versionCode 표시 |
+| **홈 → foreground 시 메뉴 잃음** | foreground마다 silentRefresh 폭발 → 4/25 ThrottlerException 429 발생 → 매 setUser(profile) 새 reference로 cascade | silentRefresh 60s throttle + setUser prev 비교로 reference 안정화 + 429 explicit handling |
+
 ### V176 핵심 수정 (2026-04-25) — V175 RCA
 
 | ID | 근본 원인 | 수정 |
@@ -64,7 +90,13 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **4/25 ErrorLog 0건 + V174 신규 컬럼 3일간 100% NULL** | DTO `ValidateNested + Type(ErrorLogBreadcrumbDto) + global forbidNonWhitelisted: true`가 breadcrumb의 unknown 키(Sentry event_id 등)에 요청 전체 400 reject. 클라이언트 `.catch(() => {})`로 사일런트 누락 | DTO에서 ValidateNested 제거, `IsObject({each:true}) + ArrayMaxSize(50)`. 클라이언트 reportError 400 응답 시 minimal payload retry. 서버 persist 실패 warn → error 승격 (origin route 포함) |
 | **5.5 소수 인원수 → DB INSERT 실패** | `@IsInt()`를 우회한 5.5가 `invalid input syntax for type integer` 발생 | trips.service.ts에서 `Math.floor + clamp(1, 20)` 가드 (Phase A insert + AI generation 모두) |
 
-### V176 핵심 불변식 (V137 불변식 12건 + V159 3건 + V174 3건 + V176 4건 = 22건)
+### V180 핵심 불변식 (V137 12건 + V159 3건 + V174 3건 + V176 4건 + V178 0건 + V180 5건 = 27건)
+
+23. **RC SDK userId 추적 원칙**: revenueCat.ts에 `configuredUserId` 모듈 변수 유지. `logOut()`에서 reset + `initRevenueCat(userId)`이 새 userId 받으면 `Purchases.logIn` 자동 호출. 단순 `isInitialized` boolean으로는 user 변경을 감지하지 못해 phantom 구독 alias 발생.
+24. **mount-restore는 server premium gate**: PremiumContext에서 `mount-restore` source는 `user.subscriptionTier === 'premium'`일 때만 신뢰. 서버 free 사용자에게 RC stale entitlement가 phantom premium을 부여하는 경로 차단.
+25. **expo-file-system은 legacy 경로**: SDK 54+ modular rewrite가 main entry에서 `documentDirectory` 등 제거. `import('expo-file-system/legacy')` 사용. 새 `File`/`Paths` API로 마이그레이션은 별도 작업.
+26. **PII 포함 진단 데이터는 보관 기한 명시 + 자동 purge**: error_logs/audit_logs 등 userEmail/deviceModel 포함 테이블은 반드시 Cron purge 스케줄러 필수 (현재 90/30일). 처리방침 art5에 보관 기간 명시 의무.
+27. **17개 언어 법적 문서 일관성 검증**: 새 외부 처리자 추가 시 17개 locale legal.json art3(제3자 제공) + 국외이전 article 모두 동시 갱신. python3 grep으로 누락 검증 자동화.
 
 13. **Android KAV 금지 원칙**: Android에서 `KeyboardAvoidingView behavior="height"`를 사용하지 않음. `edgeToEdgeEnabled: true` 환경에서 레이아웃 재계산 폭풍으로 OOM 크래시 발생. iOS에서만 `behavior="padding"` 사용, Android는 `enabled={Platform.OS === 'ios'}`로 비활성화.
 14. **Animated cleanup 원칙**: `Animated.Value`를 사용하는 모든 컴포넌트는 unmount 시 `stopAnimation()`을 호출하는 cleanup useEffect 필수.
@@ -265,6 +297,8 @@ curl https://mytravel-planner.com/api/health
 | V170~V172 | 2026-04-24 | HIGH | RC SDK device cache, Play Billing plan switch, isOperationalAdmin 통일, webhook 폴링 | 172 |
 | V173~V174 | 2026-04-25 | HIGH | RC logOut 누락 phantom 구독 수정, admin 9999 quota 분기, useFocusEffect 전환, ErrorLog 컬럼 5개 확장 | 174 (175 빌드) |
 | V175~V176 | 2026-04-25 | **CRITICAL** | **PremiumContext 하드코딩 ADMIN_EMAILS 제거 (관측 편향 해소)**, 라이선스 인앱, **ErrorLog DTO 완화 (4/25 0건 데이터 손실 해결)**, 5.5 소수 가드 | 176 (177 빌드) |
+| V177~V178 | 2026-04-25 | HIGH | double-logout race(V174 회귀), 데이터 내보내기 실패, 네이티브 LicensesScreen, foreground reset (silentRefresh 60s throttle) | 178 (179 빌드) |
+| V179~V180 | 2026-04-25 | **CRITICAL** | **RC isInitialized 리셋 + PremiumContext userId 추적 (탈퇴-재가입 phantom 구독)**, expo-file-system/legacy 전환, **법적 P0 5건 수정** (11개 언어 art3+국외이전, 90일 purge cron, 사업자정보, CCPA), ErrorLog 자동 컨텍스트 + 5.5 가드 강화 | 180 (181 빌드) |
 
 상세: `docs/archive/bug-history-2026-04.md`, `docs/archive/claude-md-history-pre-v112.md`, `testResult.md`
 
@@ -300,4 +334,4 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-04-25 (V176 Alpha 빌드 중 — V175 RCA 4건 수정: ADMIN_EMAILS 관측 편향 해소, 라이선스 인앱, ErrorLog DTO 완화로 4/25 0건 데이터 손실 해결, 5.5 소수 가드)
+**최종 업데이트**: 2026-04-25 21:44 KST (V180 Alpha 제출 진행 중 — V179 RCA 2건 + 법적 P0 5건 + ErrorLog 컨텍스트 + 5.5 가드 강화. RC isInitialized 리셋으로 탈퇴-재가입 phantom 구독 차단, expo-file-system/legacy로 데이터 내보내기 복구, 11개 언어 art3/국외이전 추가 + error_logs 90일 purge + 사업자정보 + CCPA로 GDPR/PIPA/CCPA 위반 위험 0건)
