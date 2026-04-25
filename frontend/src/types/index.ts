@@ -254,6 +254,7 @@ export type ProfileStackParamList = {
   Help: undefined;
   Terms: undefined;
   PrivacyPolicy: undefined;
+  Licenses: undefined;
   UserProfile: { userId: string };
 };
 

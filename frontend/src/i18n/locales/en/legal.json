@@ -282,5 +282,13 @@
         "content": "Changes will be notified at least 7 days before taking effect via in-app notices.\n\nThis policy is effective from March 1, 2026."
       }
     }
+  },
+  "licenses": {
+    "title": "Open Source Licenses",
+    "subtitle": "MyTravel uses the following open source software",
+    "notice": "This application is built with open source software. We are grateful to the developers and communities who contribute to these projects.",
+    "summary": "License Summary",
+    "packages": "{{count}} packages",
+    "footer": "© 2024-2026 AI Soft. For licensing questions, contact longpapa82@gmail.com"
   }
 }

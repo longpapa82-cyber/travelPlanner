@@ -282,5 +282,13 @@
         "content": "Değişiklikler yürürlüğe girmeden en az 7 gün önce uygulama içi bildirimler aracılığıyla duyurulacaktır.\n\nBu politika 1 Mart 2026 tarihinden itibaren yürürlüktedir."
       }
     }
+  },
+  "licenses": {
+    "title": "Açık Kaynak Lisansları",
+    "subtitle": "MyTravel aşağıdaki açık kaynak yazılımı kullanmaktadır",
+    "notice": "Bu uygulama açık kaynak yazılım ile inşa edilmiştir. Bu projelere katkıda bulunan geliştiricilere ve topluluklara minnettarız.",
+    "summary": "Lisans Özeti",
+    "packages": "{{count}} paket",
+    "footer": "© 2024-2026 AI Soft. Sorular için: longpapa82@gmail.com"
   }
 }

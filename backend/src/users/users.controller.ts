@@ -145,23 +145,23 @@ export class UsersController {
     return this.usersService.updateTravelPreferences(userId, dto);
   }
 
+  // V178 (Issue 2): the previous `@Res()` + `res.send(JSON.stringify(...))`
+  // shape made axios deserialize the body as a raw string instead of a
+  // parsed object, so the client then JSON.stringify'd it again and
+  // produced a doubly-quoted file. Worse, the client's expo-file-system
+  // dynamic import was failing in production because the module was not a
+  // direct dependency. Returning a plain object lets NestJS's
+  // ClassSerializerInterceptor handle serialization and lets axios parse
+  // the response into the same shape the web/native code paths consume.
   @UseGuards(JwtAuthGuard)
   @Throttle({ short: { ttl: 60000, limit: 3 } })
   @Post('me/export')
-  async exportData(
-    @CurrentUser('userId') userId: string,
-    @Res() res: Response,
-  ) {
+  async exportData(@CurrentUser('userId') userId: string) {
     const data = await this.usersService.exportUserData(userId);
     this.auditService
       .log({ userId, action: AuditAction.DATA_EXPORT })
       .catch(() => {});
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="travelplanner-data-${new Date().toISOString().split('T')[0]}.json"`,
-    );
-    res.send(JSON.stringify(data, null, 2));
+    return data;
   }
 
   @UseGuards(JwtAuthGuard)

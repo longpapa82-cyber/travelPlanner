@@ -14,6 +14,7 @@ import ApiUsageDashboardScreen from '../screens/main/ApiUsageDashboardScreen';
 import HelpScreen from '../screens/main/HelpScreen';
 import TermsScreen from '../screens/main/TermsScreen';
 import PrivacyPolicyScreen from '../screens/main/PrivacyPolicyScreen';
+import LicensesScreen from '../screens/main/LicensesScreen';
 import UserProfileScreen from '../screens/main/UserProfileScreen';
 import SubscriptionScreen from '../screens/main/SubscriptionScreen';
 import { useTheme } from '../contexts/ThemeContext';
@@ -109,6 +110,11 @@ const ProfileNavigator = () => {
         name="PrivacyPolicy"
         component={PrivacyPolicyScreen}
         options={{ title: tLegal('privacy.title') }}
+      />
+      <Stack.Screen
+        name="Licenses"
+        component={LicensesScreen}
+        options={{ title: tLegal('licenses.title') }}
       />
       <Stack.Screen
         name="UserProfile"

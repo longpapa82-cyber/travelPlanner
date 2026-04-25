@@ -171,11 +171,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuthStatus();
   }, []);
 
-  // T6: Refresh tokens when app returns to foreground
+  // T6: Refresh tokens when app returns to foreground.
+  // V178 (Issue 5): throttle to at most one refresh per 60s. Without this,
+  // rapid background↔foreground toggles (e.g. quickly checking the home
+  // screen) hammered /api/auth/me, hit ThrottlerException 429, the 401
+  // interceptor treated 429 as auth failure, setUser(null) fired, and the
+  // RootNavigator Auth/Main toggle remounted the entire stack — wiping
+  // navigation history and dropping the user back to the home tab.
+  const lastSilentRefreshAt = useRef<number>(0);
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextState: AppStateStatus) => {
       if (appState.current.match(/inactive|background/) && nextState === 'active') {
-        silentRefresh();
+        const now = Date.now();
+        if (now - lastSilentRefreshAt.current > 60_000) {
+          lastSilentRefreshAt.current = now;
+          silentRefresh();
+        }
       }
       appState.current = nextState;
     });
@@ -272,17 +283,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Delegates to getProfile() which triggers the interceptor's auto-refresh
   // if the access token is expired. This avoids a race condition where
   // silentRefresh and the interceptor both consume the one-time-use refresh token.
+  //
+  // V178 (Issue 5): two safety nets to prevent navigation-history wipeout.
+  //   1. setUser(prev) reference stability — if every field on the profile
+  //      matches the previous user, keep the existing reference so deps that
+  //      key on `user` (PremiumContext, ConsentContext, navigators) do not
+  //      cascade-rerun their effects on every foreground.
+  //   2. Treat 429 (rate limit on /auth/me itself) as a "skip", not a fatal
+  //      auth failure. The previous code's bare catch silently dropped the
+  //      error but the api.ts interceptor's 401 path had already fired
+  //      onAuthExpired by that point, so setUser(null) propagated.
   const silentRefresh = async () => {
     try {
       const hasRefresh = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
       if (!hasRefresh) return;
 
-      // getProfile() will auto-refresh via the 401 interceptor if needed.
-      // The interceptor handles token storage and retry atomically.
       const profile = await apiService.getProfile();
-      setUser(profile);
-    } catch {
-      // Silent fail — don't disrupt the user on foreground
+      setUser((prev) => {
+        if (!prev || prev.id !== profile.id) return profile;
+        // Same user — only swap reference when something visible changed.
+        const sameTier =
+          prev.subscriptionTier === profile.subscriptionTier &&
+          prev.subscriptionExpiresAt === profile.subscriptionExpiresAt &&
+          prev.aiTripsUsedThisMonth === profile.aiTripsUsedThisMonth &&
+          prev.isAdmin === profile.isAdmin &&
+          prev.name === profile.name &&
+          prev.profileImage === profile.profileImage;
+        return sameTier ? prev : profile;
+      });
+    } catch (err: any) {
+      // Status 429 means we hammered /auth/me — not an auth failure. Don't
+      // let the bare catch mask the distinction; treat 429 as a no-op so
+      // the navigator stack stays mounted.
+      const status = err?.response?.status;
+      if (status === 429) return;
+      // Any other error (network, 500, etc.) — silent fail per existing
+      // contract. The 401 interceptor handles token expiry separately.
     }
   };
 
@@ -600,9 +636,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // 구독 중" phantom entitlement even after account deletion. Dynamic
       // require mirrors the Google sign-out pattern above so the web build
       // (which uses revenueCat.web.ts) stays safe.
+      // V178 (Issue 1): cap RC sign-out at 5s so a hung SDK call cannot
+      // delay setUser(null) — the V174 logOut introduced 200~800ms latency
+      // and produced an "intermittent double-logout" race where the user
+      // tapped logout twice because the first tap appeared to do nothing.
       try {
         const { logOut: rcLogOut } = require('../services/revenueCat');
-        await rcLogOut();
+        const rcTimeout = new Promise<void>((resolve) =>
+          setTimeout(resolve, 5000),
+        );
+        await Promise.race([rcLogOut(), rcTimeout]);
       } catch {
         // Silent — RC sign-out is best-effort; the next mount effect will
         // re-configure with the new user anyway.

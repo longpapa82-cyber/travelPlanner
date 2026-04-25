@@ -282,5 +282,13 @@
         "content": "本政策如有变更，将在生效日7天前通过应用内通知告知。\n\n本政策自2026年3月1日起生效。"
       }
     }
+  },
+  "licenses": {
+    "title": "开源许可证",
+    "subtitle": "MyTravel 使用以下开源软件",
+    "notice": "此应用基于开源软件构建。我们对为这些项目作出贡献的开发者和社区表示感谢。",
+    "summary": "许可证摘要",
+    "packages": "{{count}} 个包",
+    "footer": "© 2024-2026 AI Soft. 如有疑问: longpapa82@gmail.com"
   }
 }

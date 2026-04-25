@@ -282,5 +282,13 @@
         "content": "Alteracoes serao notificadas com pelo menos 7 dias de antecedencia. Esta politica entra em vigor em 1 de marco de 2026."
       }
     }
+  },
+  "licenses": {
+    "title": "Licenças de Código Aberto",
+    "subtitle": "MyTravel usa o seguinte software de código aberto",
+    "notice": "Este aplicativo é construído com software de código aberto. Somos gratos aos desenvolvedores e comunidades que contribuem para esses projetos.",
+    "summary": "Resumo de Licenças",
+    "packages": "{{count}} pacotes",
+    "footer": "© 2024-2026 AI Soft. Para questões, contate longpapa82@gmail.com"
   }
 }

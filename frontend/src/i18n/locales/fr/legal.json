@@ -282,5 +282,13 @@
         "content": "Les modifications seront notifiees au moins 7 jours avant leur entree en vigueur. Cette politique entre en vigueur le 1er mars 2026."
       }
     }
+  },
+  "licenses": {
+    "title": "Licences open source",
+    "subtitle": "MyTravel utilise les logiciels open source suivants",
+    "notice": "Cette application est construite avec des logiciels open source. Nous sommes reconnaissants aux développeurs et communautés qui contribuent à ces projets.",
+    "summary": "Résumé des licences",
+    "packages": "{{count}} paquets",
+    "footer": "© 2024-2026 AI Soft. Pour les questions, contactez longpapa82@gmail.com"
   }
 }

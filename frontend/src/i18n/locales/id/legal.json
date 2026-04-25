@@ -282,5 +282,13 @@
         "content": "Perubahan akan diberitahukan setidaknya 7 hari sebelum berlaku. Kebijakan ini berlaku mulai 1 Maret 2026."
       }
     }
+  },
+  "licenses": {
+    "title": "Lisensi Sumber Terbuka",
+    "subtitle": "MyTravel menggunakan perangkat lunak sumber terbuka berikut",
+    "notice": "Aplikasi ini dibangun dengan perangkat lunak sumber terbuka. Kami berterima kasih kepada pengembang dan komunitas yang berkontribusi pada proyek-proyek ini.",
+    "summary": "Ringkasan Lisensi",
+    "packages": "{{count}} paket",
+    "footer": "© 2024-2026 AI Soft. Untuk pertanyaan, hubungi longpapa82@gmail.com"
   }
 }

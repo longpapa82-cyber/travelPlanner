@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -96,16 +96,28 @@ const ProfileScreen = ({ navigation }: any) => {
     setIsRefreshing(false);
   }, [fetchStats, refreshUser]);
 
+  // V178 (Issue 1): logout chain has variable latency since V174 added
+  // Purchases.logOut() (200~800ms RC SDK call). The previous fire-and-forget
+  // call let the confirm dialog dismiss before setUser(null) landed, so the
+  // user saw "logout did nothing" and tapped again. Two-stage guard:
+  //   1. await the full logout chain so handleLogout doesn't return early
+  //   2. isLoggingOutRef blocks repeat invocations during the in-flight window
+  const isLoggingOutRef = useRef(false);
   const handleLogout = async () => {
+    if (isLoggingOutRef.current) return;
     const ok = await confirm({
       title: t('logout.title'),
       message: t('logout.message'),
       confirmText: tCommon('confirm'),
       cancelText: tCommon('cancel'),
     });
-    if (ok) {
-      markLoggingOut(); // Suppress ads during logout transition
-      logout();
+    if (!ok) return;
+    isLoggingOutRef.current = true;
+    markLoggingOut();
+    try {
+      await logout();
+    } finally {
+      isLoggingOutRef.current = false;
     }
   };
 
@@ -226,15 +238,33 @@ const ProfileScreen = ({ navigation }: any) => {
         a.click();
         URL.revokeObjectURL(url);
       } else {
+        // V178 (Issue 2): expo-file-system was previously a transitive dep
+        // of expo, so dynamic import worked in dev but the production AAB
+        // sometimes failed to resolve it — silently surfacing as a toast
+        // failure with no diagnostic. We pinned it as a direct dep and
+        // assert documentDirectory is reachable before writing.
         const { shareAsync } = await import('expo-sharing');
-        // eslint-disable-next-line import/no-unresolved
-        const { writeAsStringAsync, documentDirectory } = await import('expo-file-system');
-        const filePath = `${documentDirectory}mytravel-data-${new Date().toISOString().split('T')[0]}.json`;
-        await writeAsStringAsync(filePath, JSON.stringify(data, null, 2));
+        const FileSystem = await import('expo-file-system');
+        if (!FileSystem.documentDirectory) {
+          throw new Error('FILE_SYSTEM_UNAVAILABLE');
+        }
+        const filePath = `${FileSystem.documentDirectory}mytravel-data-${new Date().toISOString().split('T')[0]}.json`;
+        await FileSystem.writeAsStringAsync(filePath, JSON.stringify(data, null, 2));
         await shareAsync(filePath, { mimeType: 'application/json' });
       }
       showToast({ type: 'success', message: t('exportData.success'), position: 'top' });
     } catch (error: any) {
+      // V178 (Issue 2): emit a Sentry breadcrumb so future export failures
+      // arrive with route + actual error name, not just the generic toast.
+      apiService
+        .reportError({
+          errorMessage: error?.message || 'exportData failed',
+          errorName: error?.name || 'ExportDataError',
+          screen: 'ProfileScreen',
+          severity: 'error',
+          deviceOS: Platform.OS,
+        })
+        .catch(() => {});
       showToast({ type: 'error', message: error?.response?.data?.message || t('exportData.failed'), position: 'top' });
     } finally {
       setIsExporting(false);
@@ -321,20 +351,9 @@ const ProfileScreen = ({ navigation }: any) => {
     });
   };
 
-  // V176: keep users inside the app for in-app reference content (licenses,
-  // changelog, etc.). Custom Tabs / SFSafariViewController dismisses cleanly
-  // back to the calling screen. We dynamic-require so the import does not
-  // break the web platform bundle if expo-web-browser native code is absent.
-  const openInAppBrowser = async (url: string) => {
-    try {
-      const WebBrowser = require('expo-web-browser');
-      await WebBrowser.openBrowserAsync(url);
-    } catch {
-      Linking.openURL(url).catch(() => {
-        showToast({ type: 'error', message: tCommon('error'), position: 'top' });
-      });
-    }
-  };
+  // V178 (Issue 3): the V176 openInAppBrowser helper was removed when the
+  // license button moved to a fully native LicensesScreen — no remaining
+  // call sites needed Custom Tabs / SFSafariViewController.
 
   const handleLanguageChange = async (lang: SupportedLanguage) => {
     await changeLanguage(lang);
@@ -708,7 +727,7 @@ const ProfileScreen = ({ navigation }: any) => {
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => openInAppBrowser('https://mytravel-planner.com/licenses.html')} accessibilityRole="button" accessibilityLabel={t('menu.licenses')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Licenses')} accessibilityRole="button" accessibilityLabel={t('menu.licenses')}>
           <Icon name="code-tags" size={24} color={theme.colors.textSecondary} />
           <Text style={styles.menuText}>{t('menu.licenses')}</Text>
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />

@@ -282,5 +282,13 @@
         "content": "Perubahan akan dimaklumkan sekurang-kurangnya 7 hari sebelum berkuat kuasa melalui notis dalam aplikasi.\n\nDasar ini berkuat kuasa mulai 1 Mac 2026."
       }
     }
+  },
+  "licenses": {
+    "title": "Lesen Sumber Terbuka",
+    "subtitle": "MyTravel menggunakan perisian sumber terbuka berikut",
+    "notice": "Aplikasi ini dibina dengan perisian sumber terbuka. Kami berterima kasih kepada pembangun dan komuniti yang menyumbang kepada projek-projek ini.",
+    "summary": "Ringkasan Lesen",
+    "packages": "{{count}} pakej",
+    "footer": "© 2024-2026 AI Soft. Untuk pertanyaan, hubungi longpapa82@gmail.com"
   }
 }

@@ -282,5 +282,13 @@
         "content": "Aenderungen werden mindestens 7 Tage vor Inkrafttreten ueber In-App-Benachrichtigungen mitgeteilt. Diese Richtlinie tritt am 1. Maerz 2026 in Kraft."
       }
     }
+  },
+  "licenses": {
+    "title": "Open-Source-Lizenzen",
+    "subtitle": "MyTravel verwendet die folgende Open-Source-Software",
+    "notice": "Diese Anwendung basiert auf Open-Source-Software. Wir sind den Entwicklern und Communities dankbar, die zu diesen Projekten beitragen.",
+    "summary": "Lizenzübersicht",
+    "packages": "{{count}} Pakete",
+    "footer": "© 2024-2026 AI Soft. Bei Fragen wenden Sie sich an longpapa82@gmail.com"
   }
 }

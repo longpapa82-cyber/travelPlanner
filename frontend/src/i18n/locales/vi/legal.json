@@ -282,5 +282,13 @@
         "content": "Thay doi se duoc thong bao truoc it nhat 7 ngay. Chinh sach nay co hieu luc tu ngay 1 thang 3 nam 2026."
       }
     }
+  },
+  "licenses": {
+    "title": "Giấy phép Mã nguồn mở",
+    "subtitle": "MyTravel sử dụng phần mềm mã nguồn mở sau",
+    "notice": "Ứng dụng này được xây dựng bằng phần mềm mã nguồn mở. Chúng tôi cảm ơn các nhà phát triển và cộng đồng đã đóng góp vào các dự án này.",
+    "summary": "Tóm tắt giấy phép",
+    "packages": "{{count}} gói",
+    "footer": "© 2024-2026 AI Soft. Câu hỏi: longpapa82@gmail.com"
   }
 }
