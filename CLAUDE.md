@@ -2,17 +2,18 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-25 21:44 KST) — V180 Alpha 제출 진행 중
+## 📍 현재 상태 (2026-04-25 23:15 KST) — V182 Alpha 제출 진행 중 (근본 해결)
 
 ### 핵심 상태
-- **버전**: V180 (versionCode 181로 EAS auto-increment, AAB 빌드 완료, Alpha 제출 중)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V180 백엔드 배포 완료 ✅
-- **브랜치**: `main` (커밋 `f06cfc80`)
+- **버전**: V182 (versionCode 183으로 EAS auto-increment, AAB 빌드 완료, Alpha 제출 중)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V182 백엔드 배포 완료 ✅
+- **브랜치**: `main` (커밋 `ee4fd2c5`)
 - **Frontend**: TypeScript 0 errors, Jest **223/223** PASS (16/18 suites)
 - **Backend**: TypeScript 0 errors, Jest **444/444** PASS (24/24 suites)
-- **Play Console**: V178 versionCode 179 Alpha 출시 완료, V180 Alpha 제출 진행 중
+- **Play Console**: V180 versionCode 181 Alpha 출시 완료, V182 Alpha 제출 진행 중
 - **Sentry**: DSN 설정 완료 (aisoft-p7.sentry.io)
-- **법적 문서**: 17개 언어 점검 완료 — GDPR/PIPA/CCPA P0 위반 5건 V180에서 모두 수정
+- **법적 문서**: 17개 언어 일관성 자동 검증 (`scripts/validate-legal.py`) — PASS
+- **V182 핵심**: phantom 구독(V173/V179/V181 3회 회귀) + double-logout(V177/V181 2회 회귀) **근본 해결**
 
 ### V139~V176 Alpha 테스트 수정 이력
 
@@ -36,6 +37,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | V176 | 04-25 | **PremiumContext 하드코딩 ADMIN_EMAILS 제거**, 라이선스 인앱 표시, **ErrorLog DTO 완화 (4/25 0건 데이터 손실 해결)**, 5.5 소수 가드 (4건) |
 | V178 | 04-25 | **double-logout race**(handleLogout await + isLoggingOutRef + RC 5s timeout), **데이터 내보내기 V178**(expo-file-system 정식 dep + @Res 제거), **네이티브 LicensesScreen**(외부 의존성 0), **silentRefresh 60s throttle**(429 → setUser(null) 차단) (4건) |
 | V180 | 04-25 | **RC isInitialized 리셋 + PremiumContext userId 추적**(탈퇴-재가입 phantom 구독 차단), **expo-file-system/legacy 전환**(modular API breaking change 우회), **법적 P0 5건**(11개 언어 art3/국외이전 + 90일 purge cron + 사업자정보 + CCPA), **ErrorLog 자동 컨텍스트 + 5.5 가드 강화** (10건) |
+| V182 | 04-25 | **PaywallModal server-tier 가드**(V173/V179/V181 phantom 구독 3회 회귀 근본 해결), **ConfirmDialog 큐 기반 + handleLogout 가드 선행**(V177/V181 double-logout race 근본 해결), **admin 페이월 차단**(showPaywall에서 isAdmin 즉시 return), **법적 일관성**(11개 locale OpenWeather + fr/ru art5 + 17개 사업자 placeholder 명확화 + effectiveDate 통일), **`scripts/validate-legal.py` 자동 검증** (10건) |
 
 ### V159 핵심 수정
 
@@ -57,6 +59,18 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **ADMIN_EMAILS 분산** | 프론트(env)와 백엔드(env+role) 판정 로직 다름 | `/auth/me`에 `isAdmin` 플래그 반환 (`isOperationalAdmin(email, role)`), 프론트는 server flag 우선 |
 | **CreateTrip 진입 초기화 누락** | `navigation.addListener('focus')`가 tab-nested Native Stack에서 firstFocus 이후 fire 안 함 | `useFocusEffect` + `resetForm()` 콜백으로 전환, `setTravelersCount`가 numberOfTravelers + travelerInputText 동시 업데이트 (single source of truth) |
 | **ErrorLog 정보 부족** | userId/platform/route/httpStatus 누락으로 RCA 불가 | error_logs 컬럼 5개 추가 (errorName, routeName, breadcrumbs jsonb, httpStatus, deviceModel), filter에서 req.user/ua-detect/status 추출 |
+
+### V182 핵심 수정 (2026-04-25 23:15) — V181 RCA: 회귀 우회 경로 근본 차단
+
+**V181 회귀가 의미하는 것**: V174→V178→V180 3회의 fix 모두 PremiumContext + AuthContext의 한 경로만 보호. PaywallModal과 ConfirmDialogContext의 **우회 경로**를 발견 못해 같은 증상이 재발. V182는 우회 경로 자체를 제거.
+
+| ID | 근본 원인 | 수정 |
+|---|---|---|
+| **Phantom 구독 (V173/V179/V181 3회 회귀)** | `PaywallModal.resolvePurchaseAction`이 PremiumContext 가드(prevUserIdRef, mount-restore server-premium gate, RC isInitialized) 모두 우회하고 `getCustomerInfo()` 직접 호출 → server가 free라고 정확히 보고해도 RC SDK device cache 또는 RC backend alias chain이 stale entitlement 반환 → "이미 연간 구독 중" alert | PaywallModal에 server-tier authoritative gate: `if (user?.subscriptionTier !== 'premium') return { kind: 'buy' };` — RC SDK를 신뢰하지 않고 server를 신뢰. Google Play 자체가 double-billing 최종 가드 |
+| **Double-logout race (V177/V181 2회 회귀)** | (a) handleLogout이 `isLoggingOutRef`를 `await confirm()` 후에 set → dialog 윈도우 무방비. (b) ConfirmDialogContext의 단일 `resolveRef` 슬롯이 두 번째 호출 시 첫 호출 resolver를 덮어씀 → 첫 promise 영원히 pending → "버튼이 안 먹는다"고 인식 | (a) handleLogout에서 `isLoggingOutRef.current = true`를 `await confirm()` 전으로 이동, (b) ConfirmDialogContext를 큐 기반으로 리팩토링 (동시 호출 순서대로 처리, 애니메이션 충돌 방지 setTimeout(0) drain) |
+| **admin 페이월 노출 (V179/V181 phantom 혼란 원인)** | admin은 무제한 + 광고 비노출인데 페이월 진입 가능 → RC SDK stale entitlement 반환 시 "이미 구독 중" alert로 사용자 혼란 | PremiumContext.showPaywall: `if (isAdmin) return;` — admin은 페이월 자체 차단 |
+| **법적 P0/P1 일관성** | 11개 locale art3에 OpenWeather 누락, fr/ru art5에 90일 조항 누락, 사업자번호 17개 locale 모호 placeholder, effectiveDate locale별 상이 | OpenWeather 11개 추가, fr/ru 90일 추가, 사업자번호 placeholder를 "발급 진행 중" 명확화, 17개 effectiveDate `2026-04-26` 통일 |
+| **자동 검증 누락** | 17개 locale 일관성 사후 발견에 의존 → V180에서 OpenWeather 등 누락 미감지 | `scripts/validate-legal.py` 신규: P0 4건(사업자정보/art3 5처리자/ccpa 5조항/art12 국외이전) + P1 2건(art5 90일/effectiveDate 연도 일치) 자동 검증, 종료 코드로 CI 통합 가능. V182 시점 결과 PASS |
 
 ### V180 핵심 수정 (2026-04-25) — V179 RCA + 법적 P0 5건
 
@@ -90,7 +104,12 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **4/25 ErrorLog 0건 + V174 신규 컬럼 3일간 100% NULL** | DTO `ValidateNested + Type(ErrorLogBreadcrumbDto) + global forbidNonWhitelisted: true`가 breadcrumb의 unknown 키(Sentry event_id 등)에 요청 전체 400 reject. 클라이언트 `.catch(() => {})`로 사일런트 누락 | DTO에서 ValidateNested 제거, `IsObject({each:true}) + ArrayMaxSize(50)`. 클라이언트 reportError 400 응답 시 minimal payload retry. 서버 persist 실패 warn → error 승격 (origin route 포함) |
 | **5.5 소수 인원수 → DB INSERT 실패** | `@IsInt()`를 우회한 5.5가 `invalid input syntax for type integer` 발생 | trips.service.ts에서 `Math.floor + clamp(1, 20)` 가드 (Phase A insert + AI generation 모두) |
 
-### V180 핵심 불변식 (V137 12건 + V159 3건 + V174 3건 + V176 4건 + V178 0건 + V180 5건 = 27건)
+### V182 핵심 불변식 (V137 12 + V159 3 + V174 3 + V176 4 + V180 5 + V182 4 = 31건)
+
+28. **Server tier authoritative for paywall**: PaywallModal 등 결제 진입점에서 RC SDK를 신뢰하지 말고 `user.subscriptionTier === 'premium'` 일 때만 RC duplicate guard 적용. RC device cache + backend alias chain은 user identity 변경 시 stale entitlement 반환 가능. server tier가 free면 RC가 무엇이든 `buy` 진행. Google Play가 double-billing 최종 가드.
+29. **Confirm dialog는 큐 기반**: ConfirmDialogContext는 단일 resolveRef 슬롯 사용 금지. 다중 호출 시 두 번째 호출이 첫 호출 resolver 덮어쓰면 첫 promise 영원히 pending → race window 발생. queue + sequential drain 패턴 필수.
+30. **In-flight guard는 await 전 set**: 비동기 dialog/network 호출이 있는 핸들러에서 `isXxxRef.current = true`는 반드시 `await` *전*에 set. await 후에 set하면 그 사이 진입한 두 번째 호출이 race window를 통과.
+31. **법적 문서 자동 검증 CI**: 17개 locale legal.json은 `scripts/validate-legal.py`로 P0(사업자정보, 5개 처리자, ccpa, 국외이전) + P1(90일, effectiveDate) 자동 검증. 신규 외부 처리자 추가 또는 effectiveDate 갱신 후 반드시 실행. 향후 CI 통합 가능.
 
 23. **RC SDK userId 추적 원칙**: revenueCat.ts에 `configuredUserId` 모듈 변수 유지. `logOut()`에서 reset + `initRevenueCat(userId)`이 새 userId 받으면 `Purchases.logIn` 자동 호출. 단순 `isInitialized` boolean으로는 user 변경을 감지하지 못해 phantom 구독 alias 발생.
 24. **mount-restore는 server premium gate**: PremiumContext에서 `mount-restore` source는 `user.subscriptionTier === 'premium'`일 때만 신뢰. 서버 free 사용자에게 RC stale entitlement가 phantom premium을 부여하는 경로 차단.
@@ -299,6 +318,7 @@ curl https://mytravel-planner.com/api/health
 | V175~V176 | 2026-04-25 | **CRITICAL** | **PremiumContext 하드코딩 ADMIN_EMAILS 제거 (관측 편향 해소)**, 라이선스 인앱, **ErrorLog DTO 완화 (4/25 0건 데이터 손실 해결)**, 5.5 소수 가드 | 176 (177 빌드) |
 | V177~V178 | 2026-04-25 | HIGH | double-logout race(V174 회귀), 데이터 내보내기 실패, 네이티브 LicensesScreen, foreground reset (silentRefresh 60s throttle) | 178 (179 빌드) |
 | V179~V180 | 2026-04-25 | **CRITICAL** | **RC isInitialized 리셋 + PremiumContext userId 추적 (탈퇴-재가입 phantom 구독)**, expo-file-system/legacy 전환, **법적 P0 5건 수정** (11개 언어 art3+국외이전, 90일 purge cron, 사업자정보, CCPA), ErrorLog 자동 컨텍스트 + 5.5 가드 강화 | 180 (181 빌드) |
+| V181~V182 | 2026-04-25 | **CRITICAL** | **PaywallModal server-tier 가드 (V173/V179/V181 phantom 구독 3회 회귀 근본 해결)**, **ConfirmDialog 큐 기반 + handleLogout 가드 선행 (V177/V181 double-logout race 근본 해결)**, admin 페이월 차단, 법적 일관성 (11개 locale OpenWeather + fr/ru art5 + 17개 사업자 placeholder + effectiveDate 통일), `scripts/validate-legal.py` 자동 검증 | 182 (183 빌드) |
 
 상세: `docs/archive/bug-history-2026-04.md`, `docs/archive/claude-md-history-pre-v112.md`, `testResult.md`
 
@@ -334,4 +354,4 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-04-25 21:44 KST (V180 Alpha 제출 진행 중 — V179 RCA 2건 + 법적 P0 5건 + ErrorLog 컨텍스트 + 5.5 가드 강화. RC isInitialized 리셋으로 탈퇴-재가입 phantom 구독 차단, expo-file-system/legacy로 데이터 내보내기 복구, 11개 언어 art3/국외이전 추가 + error_logs 90일 purge + 사업자정보 + CCPA로 GDPR/PIPA/CCPA 위반 위험 0건)
+**최종 업데이트**: 2026-04-25 23:15 KST (V182 Alpha 제출 진행 중 — V181 회귀 근본 해결. PaywallModal server-tier 가드로 V173/V179/V181 phantom 구독 3회 회귀 종결, ConfirmDialog 큐 + handleLogout 가드 선행으로 V177/V181 double-logout race 종결, admin 페이월 차단, 법적 일관성 자동 검증 스크립트 도입. 핵심 불변식 27→31건. PaywallModal/ConfirmDialog 우회 경로 자체를 제거하여 동일 회귀 재발 방지)
