@@ -90,6 +90,58 @@ def validate_locale(locale: str) -> tuple[list[str], list[str]]:
     if not art12:
         p0_failures.append('privacy.art12 (international transfer) missing')
 
+    # V184 P0-E: international-transfer table (art12 OR art15) must include
+    # OpenWeather. Catches the V183 finding where art3 listed OpenWeather
+    # as a third party but the international-transfer table omitted it
+    # (GDPR Art. 44 / PIPA §28 violation).
+    art15_content = (
+        data.get('privacy', {})
+        .get('articles', {})
+        .get('art15', {})
+        .get('content', '')
+        .lower()
+    )
+    art12_content = (
+        data.get('privacy', {})
+        .get('articles', {})
+        .get('art12', {})
+        .get('content', '')
+        .lower()
+    )
+    transfer_combined = art12_content + art15_content
+    if 'openweather' not in transfer_combined:
+        p0_failures.append(
+            'international-transfer table (art12/art15) missing OpenWeather row'
+        )
+
+    # V184 P0-F: privacy.art3 must NOT advertise affiliate partners while
+    # the affiliate program is not running. Catches the V183 inconsistency
+    # where revenue dashboard removed affiliate but art3 still claimed
+    # active partnerships (정통망법 §22의2 — collection consent accuracy).
+    art3_lower = art3_content  # already lowercased above
+    forbidden_affiliate_keywords = [
+        'affiliate partner',
+        'affiliate-partner',
+        '제휴 파트너',
+        'booking.com, klook',
+        'klook, getyourguide',
+    ]
+    for kw in forbidden_affiliate_keywords:
+        if kw in art3_lower:
+            p0_failures.append(
+                f'privacy.art3 still advertises non-running affiliate program ("{kw}")'
+            )
+            break
+
+    # V184 P0-G: no Paddle reference anywhere (decision: 2026-04-21
+    # discontinue web payment, IAP-only). Catches V183 finding where
+    # privacy/terms still mentioned Paddle as a processor.
+    legal_str_lower = json.dumps(data, ensure_ascii=False).lower()
+    if 'paddle' in legal_str_lower:
+        p0_failures.append(
+            'legal.json mentions "Paddle" — web payment was discontinued 2026-04-21'
+        )
+
     # P1-A: privacy.art5 retention mentions "90".
     art5_content = (
         data.get('privacy', {})
@@ -99,6 +151,20 @@ def validate_locale(locale: str) -> tuple[list[str], list[str]]:
     )
     if '90' not in art5_content:
         p1_failures.append('privacy.art5 missing 90-day error_logs retention line')
+
+    # V184 P1-B: licenses.footer copyright sanity — must contain a year
+    # >= founding year (2026) and not a fabricated multi-year span.
+    # Catches the V183 finding where footer claimed "© 2024-2026 AI Soft"
+    # despite AI Soft being founded in 2026.
+    licenses_footer = (
+        data.get('licenses', {}).get('footer', '')
+    )
+    if licenses_footer:
+        years = [int(y) for y in re.findall(r'20\d{2}', licenses_footer)]
+        if any(y < 2026 for y in years):
+            p1_failures.append(
+                f'licenses.footer references year < 2026 (AI Soft founding): "{licenses_footer}"'
+            )
 
     return p0_failures, p1_failures
 

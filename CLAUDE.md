@@ -2,18 +2,18 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-25 23:15 KST) — V182 Alpha 제출 진행 중 (근본 해결)
+## 📍 현재 상태 (2026-04-26 KST) — V184 Phase 0 완료 (V183 RCA 근본 해결)
 
 ### 핵심 상태
-- **버전**: V182 (versionCode 183으로 EAS auto-increment, AAB 빌드 완료, Alpha 제출 중)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V182 백엔드 배포 완료 ✅
-- **브랜치**: `main` (커밋 `ee4fd2c5`)
-- **Frontend**: TypeScript 0 errors, Jest **223/223** PASS (16/18 suites)
-- **Backend**: TypeScript 0 errors, Jest **444/444** PASS (24/24 suites)
-- **Play Console**: V180 versionCode 181 Alpha 출시 완료, V182 Alpha 제출 진행 중
+- **버전**: V184 (다음 EAS Build versionCode 184, V183 회귀 8건 + 자동 검증 2건 신설)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V182 백엔드 배포 완료, V184는 frontend/static만 변경
+- **브랜치**: `main` (V184 변경 unstaged, commit 대기)
+- **Frontend**: TypeScript 0 errors, Jest **223/223** PASS (16/18 suites — 동일 baseline)
+- **Backend**: TypeScript 0 errors, Backend src 0 변경 (V184는 frontend/HTML/i18n/scripts만)
+- **자동 검증**: `npm run validate:static` (validate-legal + validate-content) PASS
+- **Play Console**: V180 versionCode 181 Alpha 출시 완료, V182 Alpha 제출 후 V183 보고 → V184로 재제출 예정
 - **Sentry**: DSN 설정 완료 (aisoft-p7.sentry.io)
-- **법적 문서**: 17개 언어 일관성 자동 검증 (`scripts/validate-legal.py`) — PASS
-- **V182 핵심**: phantom 구독(V173/V179/V181 3회 회귀) + double-logout(V177/V181 2회 회귀) **근본 해결**
+- **V184 핵심**: V183 admin 결제 무반응 (V182 회귀) + 51 HTML/17 locale 저작권 허위 표기 + Paddle 잔존 + i18n art12 OpenWeather 누락 + 제휴 파트너 약관 잔존 + 사업자 정보 미게재 + iCal 미구현 표기 — **자동 검증 2건으로 차기 회귀 차단 (lead time 0)**
 
 ### V139~V176 Alpha 테스트 수정 이력
 
@@ -38,6 +38,28 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | V178 | 04-25 | **double-logout race**(handleLogout await + isLoggingOutRef + RC 5s timeout), **데이터 내보내기 V178**(expo-file-system 정식 dep + @Res 제거), **네이티브 LicensesScreen**(외부 의존성 0), **silentRefresh 60s throttle**(429 → setUser(null) 차단) (4건) |
 | V180 | 04-25 | **RC isInitialized 리셋 + PremiumContext userId 추적**(탈퇴-재가입 phantom 구독 차단), **expo-file-system/legacy 전환**(modular API breaking change 우회), **법적 P0 5건**(11개 언어 art3/국외이전 + 90일 purge cron + 사업자정보 + CCPA), **ErrorLog 자동 컨텍스트 + 5.5 가드 강화** (10건) |
 | V182 | 04-25 | **PaywallModal server-tier 가드**(V173/V179/V181 phantom 구독 3회 회귀 근본 해결), **ConfirmDialog 큐 기반 + handleLogout 가드 선행**(V177/V181 double-logout race 근본 해결), **admin 페이월 차단**(showPaywall에서 isAdmin 즉시 return), **법적 일관성**(11개 locale OpenWeather + fr/ru art5 + 17개 사업자 placeholder 명확화 + effectiveDate 통일), **`scripts/validate-legal.py` 자동 검증** (10건) |
+| V184 | 04-26 | **admin 페이월 가드 제거**(V183 결제 무반응 회귀 — V182 isAdmin return의 부작용으로 결제 회귀 검증 자체 불능 → server-tier gate에 위임), **저작권 51 HTML+17 locale 일괄 수정**(© 2024-2026 → © 2026, AI Soft 2026 설립 사실 반영), **Paddle 잔존 6곳 완전 제거**(2026-04-21 제공 중단 결정 후 미반영), **17 locale art12 OpenWeather 추가**(art3에는 있으나 국외이전 표 누락 — GDPR Art. 44/PIPA §28), **제휴 파트너 약관·i18n 5 locale 일괄 제거**(미운영 기능 약속 — 정통망법 §22의2), **iCal 미구현 표기 제거**(about/landing → JSON 데이터 내보내기), **사업자 정보 4개 HTML 추가**(PIPA §39의6), **effectiveDate 2024-01-01 → 2026-04-26 통일**, **`scripts/validate-content.py` 신설**(56 HTML 정적 콘텐츠 자동 검증 — 도입 즉시 25건 잠복 회귀 발견·수정), **validate-legal.py 보강**(P0-E art12 OpenWeather + P0-F no-affiliate + P0-G no-Paddle + P1-B 저작권 연도 sanity), **`npm run validate:static`** 통합 (11건 + 자동 검증 2건) |
+
+### V184 핵심 수정 (2026-04-26) — V183 RCA + 정적 콘텐츠 자동 검증
+
+**V183 회귀가 의미하는 것**: V182의 phantom 구독 fix(`if(isAdmin) return`)가 admin 결제 진입을 silent block → 결제 회귀 검증 lead time 무한대. 또한 5회의 fix-and-regress(V174→V178→V180→V182→V184)가 모두 코드 가드만 추가했지 **정적 콘텐츠(HTML, i18n footer)는 검증 영역 밖**. V184는 두 패턴을 동시에 끊는다 — 단일 플래그 과부하 해체 + 정적 콘텐츠 자동 검증 도입.
+
+| ID | 근본 원인 | 수정 |
+|---|---|---|
+| **Admin 결제 버튼 무반응 (V182 직접 회귀)** | V182에서 `PremiumContext.showPaywall`에 `if(isAdmin) return;` 추가 → admin인 longpapa82/hoonjae723이 ProfileScreen 결제 버튼 클릭 시 silent return. 사용자 핵심 우려: "결제 테스트 자체를 할 수가 없음". 단일 `isAdmin` 플래그가 quota 면제 + 광고 차단 + 페이월 차단 3가지 권한을 동시 게이팅 (단일 플래그 과부하) | `PremiumContext.tsx:357` `if(isAdmin) return;` 삭제 + useCallback deps에서 `isAdmin` 제거 (admin 판정 race condition도 동시 해결). phantom 구독 차단은 **`PaywallModal.tsx:147` server-tier authoritative gate가 단독 책임** — server `subscriptionTier === 'free'`면 RC SDK 무엇이든 buy 진행. 실결제 차단은 **Play Console 라이선스 테스터 등록**이 최종 가드 |
+| **저작권 "© 2024-2026 AI Soft" 허위 표기** | AI Soft는 2026년 설립인데 51 HTML + 17 locale legal.json `licenses.footer`에 2024년부터 운영한 것처럼 표기. 자동 검증 외 수작업 의존 → 1회성 fix(V134 웹 허위정보 제거) 후 재발 | `© 2024-2026 MyTravel/AI Soft` → `© 2026 AI Soft` (52 HTML + 17 locale 일괄 sed). 동시에 `scripts/validate-content.py`에 `single-year < 2026` 패턴 가드 추가로 차기 회귀 차단 |
+| **Paddle 잔존 6곳 (privacy/terms HTML + licenses 패키지)** | 2026-04-21 Paddle 제공 중단 결정 후 i18n legal.json은 갱신됐으나 웹 HTML 4개 + licenses.html `@paddle/paddle-js` 행 미동기화. 약관에 미존재 결제수단 표기 = 전자상거래법 §13 위반 | terms/terms-en은 "Google Play IAP 단일화 + iOS 출시 시 추가" 문구로 통일. privacy 표 4개 행 제거 + OpenWeather 행으로 대체. licenses.html `@paddle/paddle-js` 패키지 행 제거. validate-legal.py P0-G로 차기 추가 차단 |
+| **17 locale art12/art15 국외이전 표 OpenWeather 누락** | art3(제3자 제공 목록)에는 17 locale 모두 OpenWeather 있으나 art12/art15(국외 이전 표)에는 0건. GDPR Art. 44 / PIPA §28 위반. validate-legal.py 검증 범위 갭 | Python 일괄 스크립트로 17 locale 자국어 OpenWeather 행을 art12 또는 art15(국외이전 테이블이 위치한 곳, Sentry 행 다음)에 정확히 삽입. validate-legal.py P0-E 신설로 차기 회귀 차단 |
+| **제휴 파트너 약관·i18n 잔존** | 수익 대시보드에서 affiliate 영역 제거(2026-03-12 `cbb5e59`)됐으나 약관 13조 + 8조 + i18n 5 locale art3에 "Booking.com, Klook, GetYourGuide, Agoda, Trip.com, Amazon 제휴 마케팅 참여" 표기 잔존. 미운영 기능 약속 = 정통망법 §22의2 위반 | terms.html 13조 박스 + 8조 광고 조항 + 5 locale art3 행 일괄 제거. validate-legal.py P0-F + validate-content.py affiliate 패턴 가드로 차기 회귀 차단 |
+| **사업자 정보 웹 HTML 4개 누락** | i18n legal.json은 V180에서 추가됐으나 privacy/privacy-en/terms/terms-en HTML에 사업자 정보 부재. PIPA §39의6, 전기통신사업법 §39 위반 | 4개 HTML 모두에 "AI Soft + 박훈재 + longpapa82@gmail.com + 사업자번호 placeholder" 블록 추가 |
+| **iCal/Apple 캘린더 미구현 표기** | about.html, landing.html, landing-en.html에 "iCal로 내보내기 / Apple 캘린더에 추가" 표기. 코드에 ical 구현 0건 (JSON 내보내기만 존재) | "JSON 데이터 내보내기"로 변경. validate-content.py 패턴 가드로 차기 회귀 차단 |
+| **JSON-LD datePublished 25개 잠복 회귀** | 사용자 미보고 — guides/ 26개 가이드 HTML 중 25개가 `"datePublished": "2025-..."` (AI Soft 설립 전 연도). validate-content.py 도입 즉시 발견 | 일괄 sed `2025-` → `2026-`. **validate-content.py가 도입 1회로 25건 잠복 회귀 발견** — 진짜 가치는 여기 |
+| **effectiveDate 2024-01-01 (4 HTML)** | i18n은 2026-04-26으로 V182에서 통일됐으나 웹 4개 HTML 부칙은 미동기화 | 일괄 sed로 통일 |
+
+### V184 핵심 불변식 (V137 12 + V159 3 + V174 3 + V176 4 + V180 5 + V182 4 + V184 2 = 33건)
+
+32. **단일 플래그 과부하 금지**: `isAdmin` 같은 권한 플래그가 (a) quota 면제 (b) 광고 차단 (c) 결제 진입 차단 등 3가지 이상 axis를 동시 게이팅하지 않는다. 결제 진입 차단은 `subscriptionTier === 'premium'` server-tier gate에 단독 위임. 보호와 검증을 동시에 만족시키려면 **각 axis마다 별도 가드**를 두고, "결제 회귀 검증" 같은 운영 요구는 별도 경로(라이선스 테스터, dev 메뉴)로 보장한다.
+33. **정적 콘텐츠 사실 검증 자동화**: 저작권 연도, 회사 정보, 외부 처리자, 미구현 기능 약속, JSON-LD datePublished 등 정적 HTML/i18n 콘텐츠는 `npm run validate:static` (validate-legal.py + validate-content.py)로 매 PR마다 검증. 1회성 수작업 fix는 회귀 카테고리(V134→V183)이므로 금지. 신규 외부 처리자 추가, 운영 변경(처리자 중단/affiliate 토글), 사업자 정보 갱신은 동반 자동 검증 패턴 추가가 필수.
 
 ### V159 핵심 수정
 
@@ -319,6 +341,7 @@ curl https://mytravel-planner.com/api/health
 | V177~V178 | 2026-04-25 | HIGH | double-logout race(V174 회귀), 데이터 내보내기 실패, 네이티브 LicensesScreen, foreground reset (silentRefresh 60s throttle) | 178 (179 빌드) |
 | V179~V180 | 2026-04-25 | **CRITICAL** | **RC isInitialized 리셋 + PremiumContext userId 추적 (탈퇴-재가입 phantom 구독)**, expo-file-system/legacy 전환, **법적 P0 5건 수정** (11개 언어 art3+국외이전, 90일 purge cron, 사업자정보, CCPA), ErrorLog 자동 컨텍스트 + 5.5 가드 강화 | 180 (181 빌드) |
 | V181~V182 | 2026-04-25 | **CRITICAL** | **PaywallModal server-tier 가드 (V173/V179/V181 phantom 구독 3회 회귀 근본 해결)**, **ConfirmDialog 큐 기반 + handleLogout 가드 선행 (V177/V181 double-logout race 근본 해결)**, admin 페이월 차단, 법적 일관성 (11개 locale OpenWeather + fr/ru art5 + 17개 사업자 placeholder + effectiveDate 통일), `scripts/validate-legal.py` 자동 검증 | 182 (183 빌드) |
+| V183~V184 | 2026-04-26 | **CRITICAL** | **admin 페이월 가드 제거 (V182 단일 플래그 과부하 회귀 — 결제 회귀 검증 lead time 무한대 → server-tier gate 위임)**, **저작권 51 HTML+17 locale 일괄 수정** (© 2024-2026 → © 2026, AI Soft 2026 설립 사실 반영), **Paddle 잔존 6곳 완전 제거** (전자상거래법 §13), **17 locale art12 OpenWeather 추가** (GDPR Art. 44/PIPA §28), **제휴 파트너 약관·5 locale 일괄 제거** (정통망법 §22의2), **iCal 미구현 표기 제거**, **사업자 정보 4 HTML 추가** (PIPA §39의6), **effectiveDate 통일**, **`validate-content.py` 신설** (도입 즉시 25건 잠복 회귀 발견·수정), **validate-legal.py 보강** (P0-E/F/G + P1-B), **`npm run validate:static`** 통합 (11건 + 자동 검증 2건) | 184 (185 빌드 예정) |
 
 상세: `docs/archive/bug-history-2026-04.md`, `docs/archive/claude-md-history-pre-v112.md`, `testResult.md`
 
@@ -354,4 +377,4 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-04-25 23:15 KST (V182 Alpha 제출 진행 중 — V181 회귀 근본 해결. PaywallModal server-tier 가드로 V173/V179/V181 phantom 구독 3회 회귀 종결, ConfirmDialog 큐 + handleLogout 가드 선행으로 V177/V181 double-logout race 종결, admin 페이월 차단, 법적 일관성 자동 검증 스크립트 도입. 핵심 불변식 27→31건. PaywallModal/ConfirmDialog 우회 경로 자체를 제거하여 동일 회귀 재발 방지)
+**최종 업데이트**: 2026-04-26 KST (V184 Phase 0 완료 — V183 회귀 근본 해결. admin 페이월 가드 제거로 V182 단일 플래그 과부하 종결, 저작권/Paddle/제휴 파트너/iCal/사업자정보/effectiveDate 일괄 정합화로 정적 콘텐츠 사실 위배 8건 종결, 17 locale art12 OpenWeather 추가로 GDPR Art. 44 누락 종결, **validate-content.py 신설로 도입 즉시 잠복 회귀 25건 발견·수정** — 자동 검증이 회귀 발견 lead time을 0으로 단축. 핵심 불변식 31→33건 — 32(단일 플래그 과부하 금지) + 33(정적 콘텐츠 자동 검증). `npm run validate:static`이 차기 회귀의 1차 방어선)

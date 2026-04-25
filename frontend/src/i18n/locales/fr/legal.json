@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Partage avec des tiers",
-        "content": "Nous ne partageons pas les informations personnelles, sauf :\n\n| Destinataire | Données | Finalité |\n| OpenAI | Destination, dates, préférences | Génération d'itinéraires par IA |\n| Google (AdSense/AdMob) | Identifiant publicitaire, habitudes d'utilisation | Diffusion de publicités |\n| Partenaires affiliés | Événements de clic (anonymisés) | Services d'affiliation |\n| Sentry | Données d'erreur, contexte utilisateur, modèle d'appareil | Surveillance des erreurs |\n| RevenueCat | ID utilisateur de l'application, informations d'abonnement | Traitement du paiement de l'abonnement |\n| OpenWeather | Coordonnées de latitude et longitude | Informations météorologiques |\n\n※ Avec le consentement explicite de l'utilisateur\n※ Lorsque la loi l'exige"
+        "content": "Nous ne partageons pas les informations personnelles, sauf :\n\n| Destinataire | Données | Finalité |\n| OpenAI | Destination, dates, préférences | Génération d'itinéraires par IA |\n| Google (AdSense/AdMob) | Identifiant publicitaire, habitudes d'utilisation | Diffusion de publicités |\n| Sentry | Données d'erreur, contexte utilisateur, modèle d'appareil | Surveillance des erreurs |\n| RevenueCat | ID utilisateur de l'application, informations d'abonnement | Traitement du paiement de l'abonnement |\n| OpenWeather | Coordonnées de latitude et longitude | Informations météorologiques |\n\n※ Avec le consentement explicite de l'utilisateur\n※ Lorsque la loi l'exige"
       },
       "art4": {
         "title": "4. Délégation du traitement des données",
@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Transfert international de données",
-        "content": "Pour exploiter le service, les informations personnelles de l'utilisateur peuvent être transférées à l'étranger comme suit :\n\n| Destinataire | Emplacement | Éléments transférés | Objectif |\n| OpenAI | États-Unis | Données de voyage | Génération d'itinéraire IA |\n| Google | États-Unis | ID publicitaire, modèles d'utilisation | Publicité |\n| RevenueCat | États-Unis | Informations d'abonnement | Traitement des paiements |\n| Sentry | États-Unis | Données d'erreur, modèle d'appareil | Surveillance des erreurs |\n\nChaque service prend des mesures appropriées de protection des données personnelles, et le transfert s'effectue avec le consentement de l'utilisateur conformément aux lois applicables."
+        "content": "Pour exploiter le service, les informations personnelles de l'utilisateur peuvent être transférées à l'étranger comme suit :\n\n| Destinataire | Emplacement | Éléments transférés | Objectif |\n| OpenAI | États-Unis | Données de voyage | Génération d'itinéraire IA |\n| Google | États-Unis | ID publicitaire, modèles d'utilisation | Publicité |\n| RevenueCat | États-Unis | Informations d'abonnement | Traitement des paiements |\n| Sentry | États-Unis | Données d'erreur, modèle d'appareil | Surveillance des erreurs |\n\n| OpenWeather | États-Unis | Coordonnées latitude/longitude | Informations météorologiques |\nChaque service prend des mesures appropriées de protection des données personnelles, et le transfert s'effectue avec le consentement de l'utilisateur conformément aux lois applicables."
       },
       "ccpa": {
         "title": "Droits du consommateur CCPA (Californie)",
@@ -301,6 +301,6 @@
     "notice": "Cette application est construite avec des logiciels open source. Nous sommes reconnaissants aux développeurs et communautés qui contribuent à ces projets.",
     "summary": "Résumé des licences",
     "packages": "{{count}} paquets",
-    "footer": "© 2024-2026 AI Soft. Pour les questions, contactez longpapa82@gmail.com"
+    "footer": "© 2026 AI Soft. Pour les questions, contactez longpapa82@gmail.com"
   }
 }

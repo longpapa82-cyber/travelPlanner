@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Condivisione con terze parti",
-        "content": "Non condividiamo informazioni personali ad eccezione di:\n\n| Destinatario | Dati | Scopo |\n| OpenAI | Destinazione, date, preferenze | Generazione itinerario AI |\n| Google (AdSense/AdMob) | ID pubblicitario, pattern di utilizzo | Distribuzione pubblicità |\n| RevenueCat | ID utente app, informazioni abbonamento | Elaborazione pagamenti abbonamento |\n| Google Maps API | Query di ricerca, token di sessione | Ricerca luoghi |\n| OpenWeather API | Coordinate latitudine, longitudine | Informazioni meteo |\n| Sentry | Dati errore, contesto utente | Monitoraggio errori |\n| Partner affiliati | Eventi clic, indirizzo IP, User Agent | Connessione servizio affiliato e tracciamento conversioni |\n| App Store / Google Play | Dati di acquisto | Elaborazione acquisti in-app |\n\n※ Con consenso esplicito dell'utente\n※ Quando richiesto dalla legge"
+        "content": "Non condividiamo informazioni personali ad eccezione di:\n\n| Destinatario | Dati | Scopo |\n| OpenAI | Destinazione, date, preferenze | Generazione itinerario AI |\n| Google (AdSense/AdMob) | ID pubblicitario, pattern di utilizzo | Distribuzione pubblicità |\n| RevenueCat | ID utente app, informazioni abbonamento | Elaborazione pagamenti abbonamento |\n| Google Maps API | Query di ricerca, token di sessione | Ricerca luoghi |\n| OpenWeather API | Coordinate latitudine, longitudine | Informazioni meteo |\n| Sentry | Dati errore, contesto utente | Monitoraggio errori |\n| App Store / Google Play | Dati di acquisto | Elaborazione acquisti in-app |\n\n※ Con consenso esplicito dell'utente\n※ Quando richiesto dalla legge"
       },
       "art4": {
         "title": "4. Delega dell'elaborazione dati",
@@ -275,7 +275,7 @@
       },
       "art12": {
         "title": "12. Trasferimento transfrontaliero dei dati",
-        "content": "Le tue informazioni personali possono essere trasferite al di fuori della Corea per il funzionamento del servizio:\n\n| Destinatario | Località | Dati | Scopo |\n| OpenAI | USA | Dati di viaggio | Generazione itinerario AI |\n| Google | USA | ID pubblicitario, pattern di utilizzo | Distribuzione pubblicità |\n| RevenueCat | USA | Informazioni abbonamento | Elaborazione pagamenti |\n| Sentry | USA | Dati errore | Monitoraggio errori |\n\nOgni servizio mantiene misure appropriate di protezione dei dati, e i trasferimenti vengono effettuati con il consenso dell'utente in conformità con le leggi applicabili."
+        "content": "Le tue informazioni personali possono essere trasferite al di fuori della Corea per il funzionamento del servizio:\n\n| Destinatario | Località | Dati | Scopo |\n| OpenAI | USA | Dati di viaggio | Generazione itinerario AI |\n| Google | USA | ID pubblicitario, pattern di utilizzo | Distribuzione pubblicità |\n| RevenueCat | USA | Informazioni abbonamento | Elaborazione pagamenti |\n| Sentry | USA | Dati errore | Monitoraggio errori |\n\n| OpenWeather | Stati Uniti | Coordinate latitudine/longitudine | Informazioni meteo |\nOgni servizio mantiene misure appropriate di protezione dei dati, e i trasferimenti vengono effettuati con il consenso dell'utente in conformità con le leggi applicabili."
       },
       "art13": {
         "title": "13. Notifica di violazione dei dati",
@@ -297,6 +297,6 @@
     "notice": "Questa applicazione è costruita con software open source. Siamo grati agli sviluppatori e alle comunità che contribuiscono a questi progetti.",
     "summary": "Riepilogo licenze",
     "packages": "{{count}} pacchetti",
-    "footer": "© 2024-2026 AI Soft. Per domande, contatta longpapa82@gmail.com"
+    "footer": "© 2026 AI Soft. Per domande, contatta longpapa82@gmail.com"
   }
 }

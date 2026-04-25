@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Chuyển dữ liệu quốc tế",
-        "content": "Để vận hành dịch vụ, thông tin cá nhân của người dùng có thể được chuyển ra nước ngoài như sau:\n\n| Bên nhận | Vị trí | Mục được chuyển | Mục đích |\n| OpenAI | Hoa Kỳ | Dữ liệu du lịch | Tạo lịch trình AI |\n| Google | Hoa Kỳ | ID quảng cáo, mẫu sử dụng | Quảng cáo |\n| RevenueCat | Hoa Kỳ | Thông tin đăng ký | Xử lý thanh toán |\n| Sentry | Hoa Kỳ | Dữ liệu lỗi, mẫu thiết bị | Giám sát lỗi |\n\nMỗi dịch vụ thực hiện các biện pháp bảo vệ dữ liệu cá nhân thích hợp, và việc chuyển dữ liệu được thực hiện với sự đồng ý của người dùng theo luật pháp hiện hành."
+        "content": "Để vận hành dịch vụ, thông tin cá nhân của người dùng có thể được chuyển ra nước ngoài như sau:\n\n| Bên nhận | Vị trí | Mục được chuyển | Mục đích |\n| OpenAI | Hoa Kỳ | Dữ liệu du lịch | Tạo lịch trình AI |\n| Google | Hoa Kỳ | ID quảng cáo, mẫu sử dụng | Quảng cáo |\n| RevenueCat | Hoa Kỳ | Thông tin đăng ký | Xử lý thanh toán |\n| Sentry | Hoa Kỳ | Dữ liệu lỗi, mẫu thiết bị | Giám sát lỗi |\n\n| OpenWeather | Hoa Kỳ | Tọa độ vĩ độ/kinh độ | Thông tin thời tiết |\nMỗi dịch vụ thực hiện các biện pháp bảo vệ dữ liệu cá nhân thích hợp, và việc chuyển dữ liệu được thực hiện với sự đồng ý của người dùng theo luật pháp hiện hành."
       },
       "ccpa": {
         "title": "Quyền của người tiêu dùng CCPA (California)",
@@ -301,6 +301,6 @@
     "notice": "Ứng dụng này được xây dựng bằng phần mềm mã nguồn mở. Chúng tôi cảm ơn các nhà phát triển và cộng đồng đã đóng góp vào các dự án này.",
     "summary": "Tóm tắt giấy phép",
     "packages": "{{count}} gói",
-    "footer": "© 2024-2026 AI Soft. Câu hỏi: longpapa82@gmail.com"
+    "footer": "© 2026 AI Soft. Câu hỏi: longpapa82@gmail.com"
   }
 }

@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Weitergabe an Dritte",
-        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Affiliate-Partner | Klick-Events (anonymisiert) | Affiliate-Services |\n| Sentry | Fehlerdaten, Nutzerkontext, Gerätemodell | Fehlerüberwachung |\n| RevenueCat | App-Benutzer-ID, Abonnementinformationen | Abonnement-Zahlungsabwicklung |\n| OpenWeather | Breiten- und Längengrad-Koordinaten | Wetterinformationen |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
+        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Sentry | Fehlerdaten, Nutzerkontext, Gerätemodell | Fehlerüberwachung |\n| RevenueCat | App-Benutzer-ID, Abonnementinformationen | Abonnement-Zahlungsabwicklung |\n| OpenWeather | Breiten- und Längengrad-Koordinaten | Wetterinformationen |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
       },
       "art4": {
         "title": "4. Datenverarbeitungsdelegation",
@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Internationale Datenübermittlung",
-        "content": "Für den Betrieb des Dienstes können personenbezogene Daten des Nutzers wie folgt ins Ausland übermittelt werden:\n\n| Empfänger | Standort | Übermittelte Elemente | Zweck |\n| OpenAI | USA | Reisedaten | KI-Reiseplanerstellung |\n| Google | USA | Werbe-ID, Nutzungsmuster | Werbung |\n| RevenueCat | USA | Abonnementinformationen | Zahlungsabwicklung |\n| Sentry | USA | Fehlerdaten, Gerätemodell | Fehlerüberwachung |\n\nJeder Dienst trifft angemessene Datenschutzmaßnahmen, und die Übermittlung erfolgt mit Zustimmung des Nutzers gemäß den geltenden Gesetzen."
+        "content": "Für den Betrieb des Dienstes können personenbezogene Daten des Nutzers wie folgt ins Ausland übermittelt werden:\n\n| Empfänger | Standort | Übermittelte Elemente | Zweck |\n| OpenAI | USA | Reisedaten | KI-Reiseplanerstellung |\n| Google | USA | Werbe-ID, Nutzungsmuster | Werbung |\n| RevenueCat | USA | Abonnementinformationen | Zahlungsabwicklung |\n| Sentry | USA | Fehlerdaten, Gerätemodell | Fehlerüberwachung |\n\n| OpenWeather | USA | Breiten-/Längenkoordinaten | Wetterinformationen |\nJeder Dienst trifft angemessene Datenschutzmaßnahmen, und die Übermittlung erfolgt mit Zustimmung des Nutzers gemäß den geltenden Gesetzen."
       },
       "ccpa": {
         "title": "CCPA-Verbraucherrechte (Kalifornien)",
@@ -301,6 +301,6 @@
     "notice": "Diese Anwendung basiert auf Open-Source-Software. Wir sind den Entwicklern und Communities dankbar, die zu diesen Projekten beitragen.",
     "summary": "Lizenzübersicht",
     "packages": "{{count}} Pakete",
-    "footer": "© 2024-2026 AI Soft. Bei Fragen wenden Sie sich an longpapa82@gmail.com"
+    "footer": "© 2026 AI Soft. Bei Fragen wenden Sie sich an longpapa82@gmail.com"
   }
 }

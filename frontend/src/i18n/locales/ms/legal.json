@@ -275,7 +275,7 @@
       },
       "art12": {
         "title": "12. Pemindahan Data Rentas Sempadan",
-        "content": "Maklumat peribadi anda mungkin dipindahkan ke luar Korea untuk operasi perkhidmatan:\n\n| Penerima | Lokasi | Data | Tujuan |\n| OpenAI | AS | Data perjalanan | Penjanaan jadual perjalanan AI |\n| Google | AS | ID iklan, corak penggunaan | Penyampaian iklan |\n| RevenueCat | AS | Maklumat langganan | Pemprosesan pembayaran |\n| Sentry | AS | Data ralat | Pemantauan ralat |\n\nSetiap perkhidmatan mengekalkan langkah perlindungan data yang sewajarnya, dan pemindahan dibuat dengan persetujuan pengguna selaras dengan undang-undang yang terpakai."
+        "content": "Maklumat peribadi anda mungkin dipindahkan ke luar Korea untuk operasi perkhidmatan:\n\n| Penerima | Lokasi | Data | Tujuan |\n| OpenAI | AS | Data perjalanan | Penjanaan jadual perjalanan AI |\n| Google | AS | ID iklan, corak penggunaan | Penyampaian iklan |\n| RevenueCat | AS | Maklumat langganan | Pemprosesan pembayaran |\n| Sentry | AS | Data ralat | Pemantauan ralat |\n\n| OpenWeather | Amerika Syarikat | Koordinat latitud/longitud | Maklumat cuaca |\nSetiap perkhidmatan mengekalkan langkah perlindungan data yang sewajarnya, dan pemindahan dibuat dengan persetujuan pengguna selaras dengan undang-undang yang terpakai."
       },
       "art13": {
         "title": "13. Pemberitahuan Pelanggaran Data",
@@ -297,6 +297,6 @@
     "notice": "Aplikasi ini dibina dengan perisian sumber terbuka. Kami berterima kasih kepada pembangun dan komuniti yang menyumbang kepada projek-projek ini.",
     "summary": "Ringkasan Lesen",
     "packages": "{{count}} pakej",
-    "footer": "© 2024-2026 AI Soft. Untuk pertanyaan, hubungi longpapa82@gmail.com"
+    "footer": "© 2026 AI Soft. Untuk pertanyaan, hubungi longpapa82@gmail.com"
   }
 }

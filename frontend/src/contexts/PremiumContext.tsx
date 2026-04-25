@@ -348,16 +348,18 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     // directly), but this prevents the paywall from even rendering when the
     // state layer already knows the user is subscribed.
     if (isPremium) return;
-    // V182 (Issue 3): admin accounts already get unlimited quota and ad
-    // suppression. Showing the paywall to an admin is misleading and was
-    // a contributing factor to the V179/V181 phantom-subscription
-    // confusion (admin entered paywall → RC SDK reported a stale
-    // entitlement → "이미 구독 중" alert). Admins simply have no use case
-    // for the paywall; bail out silently.
-    if (isAdmin) return;
+    // V184 (Invariant 32): admin accounts MUST be able to enter the paywall
+    // for end-to-end payment regression verification. The V182 `if (isAdmin)
+    // return` guard was a direct cause of the V183 "buttons do nothing" bug
+    // — alpha admins (longpapa82, hoonjae723) couldn't reproduce phantom
+    // subscriptions or test new payment flows. The real phantom-subscription
+    // defense is the server-tier authoritative gate at PaywallModal:147,
+    // which rejects RC SDK stale entitlements regardless of who initiated
+    // the purchase. Real money is not at risk because Play Console license
+    // tester registration prevents actual charging for these accounts.
     setPaywallContext(context);
     setIsPaywallVisible(true);
-  }, [isPremium, isAdmin]);
+  }, [isPremium]);
 
   const hidePaywall = useCallback(() => {
     setIsPaywallVisible(false);

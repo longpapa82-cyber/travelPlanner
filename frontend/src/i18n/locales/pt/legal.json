@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Transferência internacional de dados",
-        "content": "Para operar o serviço, as informações pessoais do usuário podem ser transferidas para o exterior da seguinte forma:\n\n| Destinatário | Localização | Itens transferidos | Finalidade |\n| OpenAI | Estados Unidos | Dados de viagem | Geração de itinerário com IA |\n| Google | Estados Unidos | ID de publicidade, padrões de uso | Publicidade |\n| RevenueCat | Estados Unidos | Informações de assinatura | Processamento de pagamentos |\n| Sentry | Estados Unidos | Dados de erro, modelo do dispositivo | Monitoramento de erros |\n\nCada serviço toma medidas adequadas de proteção de dados pessoais, e a transferência é realizada com o consentimento do usuário de acordo com as leis aplicáveis."
+        "content": "Para operar o serviço, as informações pessoais do usuário podem ser transferidas para o exterior da seguinte forma:\n\n| Destinatário | Localização | Itens transferidos | Finalidade |\n| OpenAI | Estados Unidos | Dados de viagem | Geração de itinerário com IA |\n| Google | Estados Unidos | ID de publicidade, padrões de uso | Publicidade |\n| RevenueCat | Estados Unidos | Informações de assinatura | Processamento de pagamentos |\n| Sentry | Estados Unidos | Dados de erro, modelo do dispositivo | Monitoramento de erros |\n\n| OpenWeather | Estados Unidos | Coordenadas de latitude/longitude | Informações meteorológicas |\nCada serviço toma medidas adequadas de proteção de dados pessoais, e a transferência é realizada com o consentimento do usuário de acordo com as leis aplicáveis."
       },
       "ccpa": {
         "title": "Direitos do consumidor CCPA (Califórnia)",
@@ -301,6 +301,6 @@
     "notice": "Este aplicativo é construído com software de código aberto. Somos gratos aos desenvolvedores e comunidades que contribuem para esses projetos.",
     "summary": "Resumo de Licenças",
     "packages": "{{count}} pacotes",
-    "footer": "© 2024-2026 AI Soft. Para questões, contate longpapa82@gmail.com"
+    "footer": "© 2026 AI Soft. Para questões, contate longpapa82@gmail.com"
   }
 }

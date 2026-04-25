@@ -21,7 +21,10 @@
     "test:prod": "PROD_TEST=1 npx playwright test --config=tests/playwright.prod.config.ts",
     "test:prod:t1": "PROD_TEST=1 npx playwright test --config=tests/playwright.prod.config.ts tests/e2e/01-onboarding-register.spec.ts tests/e2e/02-login-home.spec.ts tests/e2e/03-trip-creation.spec.ts tests/e2e/04-trip-list.spec.ts tests/e2e/05-trip-detail-activities.spec.ts",
     "test:prod:t2": "PROD_TEST=1 npx playwright test --config=tests/playwright.prod.config.ts tests/e2e/06-edit-profile.spec.ts tests/e2e/07-share-i18n.spec.ts tests/e2e/10-user-journey-new.spec.ts tests/e2e/11-user-journey-returning.spec.ts tests/e2e/12-trip-lifecycle.spec.ts",
-    "test:prod:report": "npx playwright show-report"
+    "test:prod:report": "npx playwright show-report",
+    "validate:legal": "python3 scripts/validate-legal.py",
+    "validate:content": "python3 scripts/validate-content.py",
+    "validate:static": "npm run validate:legal && npm run validate:content"
   },
   "keywords": [],
   "author": "",

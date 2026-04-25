@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Third-Party Sharing",
-        "content": "We do not share personal info except:\n\n| Recipient | Data | Purpose |\n| OpenAI | Destination, dates, preferences | AI itinerary generation |\n| Google (AdSense/AdMob) | Ad ID, usage patterns | Ad delivery |\n| RevenueCat | App user ID, subscription info | Subscription payment processing |\n| Google Maps API | Search queries, session tokens | Place search |\n| OpenWeather API | Latitude, longitude coordinates | Weather information |\n| Sentry | Error data, user context | Error monitoring |\n| Affiliate partners | Click events, IP address, User Agent | Affiliate service connection and conversion tracking |\n| App Store / Google Play | Purchase data | In-app purchase processing |\n\n※ With explicit user consent\n※ When required by law"
+        "content": "We do not share personal info except:\n\n| Recipient | Data | Purpose |\n| OpenAI | Destination, dates, preferences | AI itinerary generation |\n| Google (AdSense/AdMob) | Ad ID, usage patterns | Ad delivery |\n| RevenueCat | App user ID, subscription info | Subscription payment processing |\n| Google Maps API | Search queries, session tokens | Place search |\n| OpenWeather API | Latitude, longitude coordinates | Weather information |\n| Sentry | Error data, user context | Error monitoring |\n| App Store / Google Play | Purchase data | In-app purchase processing |\n\n※ With explicit user consent\n※ When required by law"
       },
       "art4": {
         "title": "4. Data Processing Delegation",
@@ -275,7 +275,7 @@
       },
       "art12": {
         "title": "12. Cross-Border Data Transfer",
-        "content": "Your personal information may be transferred outside of Korea for service operation:\n\n| Recipient | Location | Data | Purpose |\n| OpenAI | USA | Travel data | AI itinerary generation |\n| Google | USA | Ad ID, usage patterns | Ad delivery |\n| RevenueCat | USA | Subscription info | Payment processing |\n| Sentry | USA | Error data | Error monitoring |\n\nEach service maintains appropriate data protection measures, and transfers are made with user consent in accordance with applicable laws."
+        "content": "Your personal information may be transferred outside of Korea for service operation:\n\n| Recipient | Location | Data | Purpose |\n| OpenAI | USA | Travel data | AI itinerary generation |\n| Google | USA | Ad ID, usage patterns | Ad delivery |\n| RevenueCat | USA | Subscription info | Payment processing |\n| Sentry | USA | Error data | Error monitoring |\n\n| OpenWeather | United States | Latitude/longitude coordinates | Weather information |\nEach service maintains appropriate data protection measures, and transfers are made with user consent in accordance with applicable laws."
       },
       "art13": {
         "title": "13. Data Breach Notification",
@@ -297,6 +297,6 @@
     "notice": "This application is built with open source software. We are grateful to the developers and communities who contribute to these projects.",
     "summary": "License Summary",
     "packages": "{{count}} packages",
-    "footer": "© 2024-2026 AI Soft. For licensing questions, contact longpapa82@gmail.com"
+    "footer": "© 2026 AI Soft. For licensing questions, contact longpapa82@gmail.com"
   }
 }
