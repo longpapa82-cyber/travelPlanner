@@ -218,6 +218,10 @@
       "art17": {
         "title": "Madde 17 (Ek Hüküm)",
         "content": "Bu Koşullar 1 Mart 2026 tarihinden itibaren yürürlüktedir."
+      },
+      "art18": {
+        "title": "Hizmet Sağlayıcı",
+        "content": "• Şirket adı: AI Soft\n• Temsilci: Hoon-jae Park\n• İletişim e-postası: longpapa82@gmail.com\n• İşletme kayıt numarası: prodüksiyon yayını sırasında güncellenecek"
       }
     }
   },
@@ -243,7 +247,7 @@
       },
       "art5": {
         "title": "5. Veri Saklama",
-        "content": "• Hesap silme: 30 gün içinde imha edilir\n• E-ticaret yasası: İşlem kayıtları 5 yıl saklanır\n• Telekomünikasyon yasası: Erişim kayıtları 3 ay saklanır\n• Denetim kayıtları: 30 gün saklanır ve ardından otomatik olarak silinir\n• Yasaların gerektirdiği bilgiler, gerekli süre boyunca ayrı olarak saklanır ve ardından imha edilir."
+        "content": "• Hesap silme: 30 gün içinde imha edilir\n• E-ticaret yasası: İşlem kayıtları 5 yıl saklanır\n• Telekomünikasyon yasası: Erişim kayıtları 3 ay saklanır\n• Denetim kayıtları: 30 gün saklanır ve ardından otomatik olarak silinir\n• Yasaların gerektirdiği bilgiler, gerekli süre boyunca ayrı olarak saklanır ve ardından imha edilir.\n• Hata kayıtları (kullanıcı e-postası, cihaz modeli, eylem olayları dahil): 90 gün saklanır, ardından otomatik olarak silinir"
       },
       "art6": {
         "title": "6. Haklarınız",
@@ -280,6 +284,10 @@
       "art14": {
         "title": "14. Politika Değişiklikleri",
         "content": "Değişiklikler yürürlüğe girmeden en az 7 gün önce uygulama içi bildirimler aracılığıyla duyurulacaktır.\n\nBu politika 1 Mart 2026 tarihinden itibaren yürürlüktedir."
+      },
+      "ccpa": {
+        "title": "CCPA Tüketici Hakları (Kaliforniya)",
+        "content": "California Tüketici Gizlilik Yasası (CCPA / CPRA) uyarınca, Kaliforniya'da ikamet eden kullanıcılar aşağıdaki haklara sahiptir:\n• Bilme hakkı (§ 1798.100): toplanan kişisel bilgi kategorilerini bilme\n• Silme hakkı (§ 1798.105): kişisel bilgilerin silinmesini talep etme\n• Erişim hakkı (§ 1798.110): verilerinizin bir kopyasını talep etme\n• Satıştan vazgeçme hakkı (§ 1798.120): MyTravel kişisel bilgileri satmaz\n• Ayrımcılık yapılmaması (§ 1798.125): kullanıcılar haklarını kullandıkları için ayrımcılığa maruz kalmaz\n\nBu hakları kullanmak için lütfen longpapa82@gmail.com adresinden bizimle iletişime geçin"
       }
     }
   },

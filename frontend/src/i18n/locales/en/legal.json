@@ -218,6 +218,10 @@
       "art17": {
         "title": "Article 17 (Addendum)",
         "content": "These Terms are effective from March 1, 2026."
+      },
+      "art18": {
+        "title": "Service Provider",
+        "content": "• Company name: AI Soft\n• Representative: Hoon-jae Park\n• Inquiry email: longpapa82@gmail.com\n• Business registration number: to be updated on production release"
       }
     }
   },
@@ -243,7 +247,7 @@
       },
       "art5": {
         "title": "5. Data Retention",
-        "content": "• Account deletion: Destroyed within 30 days\n• E-commerce law: Transaction records retained for 5 years\n• Telecom law: Access logs retained for 3 months\n• Audit logs: Retained for 30 days then automatically deleted\n• Information required by law is stored separately for the required period then destroyed."
+        "content": "• Account deletion: Destroyed within 30 days\n• E-commerce law: Transaction records retained for 5 years\n• Telecom law: Access logs retained for 3 months\n• Audit logs: Retained for 30 days then automatically deleted\n• Information required by law is stored separately for the required period then destroyed.\n• Error logs (including user email, device model, action breadcrumbs): retained for 90 days, then automatically deleted"
       },
       "art6": {
         "title": "6. Your Rights",
@@ -280,6 +284,10 @@
       "art14": {
         "title": "14. Policy Changes",
         "content": "Changes will be notified at least 7 days before taking effect via in-app notices.\n\nThis policy is effective from March 1, 2026."
+      },
+      "ccpa": {
+        "title": "CCPA Consumer Rights (California)",
+        "content": "Under the California Consumer Privacy Act (CCPA / CPRA), users residing in California have the following rights:\n• Right to know (§ 1798.100): know the categories of personal information collected\n• Right to delete (§ 1798.105): request deletion of personal information\n• Right of access (§ 1798.110): request a copy of your data\n• Right to opt-out of sale (§ 1798.120): MyTravel does not sell personal information\n• Non-discrimination (§ 1798.125): users are not discriminated against for exercising their rights\n\nTo exercise these rights, contact us at longpapa82@gmail.com"
       }
     }
   },

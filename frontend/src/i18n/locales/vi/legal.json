@@ -218,6 +218,10 @@
       "art17": {
         "title": "Dieu 17 (Phu luc)",
         "content": "Cac dieu khoan nay co hieu luc tu ngay 1 thang 3 nam 2026."
+      },
+      "art18": {
+        "title": "Nhà cung cấp dịch vụ",
+        "content": "• Tên công ty: AI Soft\n• Người đại diện: Hoon-jae Park\n• Email liên hệ: longpapa82@gmail.com\n• Số đăng ký kinh doanh: sẽ cập nhật khi phát hành chính thức"
       }
     }
   },
@@ -235,7 +239,7 @@
       },
       "art3": {
         "title": "3. Chia sẻ với bên thứ ba",
-        "content": "Chúng tôi không chia sẻ thông tin cá nhân ngoại trừ:\n\n| Người nhận | Dữ liệu | Mục đích |\n| OpenAI | Điểm đến, ngày, sở thích | Tạo lịch trình AI |\n| Google (AdSense/AdMob) | ID quảng cáo, mô hình sử dụng | Phân phối quảng cáo |\n| Đối tác liên kết | Sự kiện nhấp (ẩn danh) | Dịch vụ liên kết |\n\n※ Với sự đồng ý rõ ràng của người dùng\n※ Khi luật pháp yêu cầu"
+        "content": "Chúng tôi không chia sẻ thông tin cá nhân ngoại trừ:\n\n| Người nhận | Dữ liệu | Mục đích |\n| OpenAI | Điểm đến, ngày, sở thích | Tạo lịch trình AI |\n| Google (AdSense/AdMob) | ID quảng cáo, mô hình sử dụng | Phân phối quảng cáo |\n| Đối tác liên kết | Sự kiện nhấp (ẩn danh) | Dịch vụ liên kết |\n| Sentry | Dữ liệu lỗi, ngữ cảnh người dùng, mẫu thiết bị | Giám sát lỗi |\n| RevenueCat | ID người dùng ứng dụng, thông tin đăng ký | Xử lý thanh toán đăng ký |\n\n※ Với sự đồng ý rõ ràng của người dùng\n※ Khi luật pháp yêu cầu"
       },
       "art4": {
         "title": "4. Ủy thác xử lý dữ liệu",
@@ -243,7 +247,7 @@
       },
       "art5": {
         "title": "5. Lưu giữ dữ liệu",
-        "content": "• Xóa tài khoản: Hủy trong vòng 30 ngày\n• Luật thương mại điện tử: Hồ sơ giao dịch lưu 5 năm\n• Luật viễn thông: Nhật ký truy cập lưu 3 tháng\n• Thông tin bắt buộc theo luật được lưu riêng trong thời gian quy định rồi hủy."
+        "content": "• Xóa tài khoản: Hủy trong vòng 30 ngày\n• Luật thương mại điện tử: Hồ sơ giao dịch lưu 5 năm\n• Luật viễn thông: Nhật ký truy cập lưu 3 tháng\n• Thông tin bắt buộc theo luật được lưu riêng trong thời gian quy định rồi hủy.\n• Nhật ký lỗi (bao gồm email người dùng, mẫu thiết bị, sự kiện hành động): giữ trong 90 ngày, sau đó tự động xóa"
       },
       "art6": {
         "title": "6. Quyền của bạn",
@@ -280,6 +284,14 @@
       "art14": {
         "title": "14. Thay doi chinh sach",
         "content": "Thay doi se duoc thong bao truoc it nhat 7 ngay. Chinh sach nay co hieu luc tu ngay 1 thang 3 nam 2026."
+      },
+      "art15": {
+        "title": "15. Chuyển dữ liệu quốc tế",
+        "content": "Để vận hành dịch vụ, thông tin cá nhân của người dùng có thể được chuyển ra nước ngoài như sau:\n\n| Bên nhận | Vị trí | Mục được chuyển | Mục đích |\n| OpenAI | Hoa Kỳ | Dữ liệu du lịch | Tạo lịch trình AI |\n| Google | Hoa Kỳ | ID quảng cáo, mẫu sử dụng | Quảng cáo |\n| RevenueCat | Hoa Kỳ | Thông tin đăng ký | Xử lý thanh toán |\n| Sentry | Hoa Kỳ | Dữ liệu lỗi, mẫu thiết bị | Giám sát lỗi |\n\nMỗi dịch vụ thực hiện các biện pháp bảo vệ dữ liệu cá nhân thích hợp, và việc chuyển dữ liệu được thực hiện với sự đồng ý của người dùng theo luật pháp hiện hành."
+      },
+      "ccpa": {
+        "title": "Quyền của người tiêu dùng CCPA (California)",
+        "content": "Theo Đạo luật Quyền riêng tư của Người tiêu dùng California (CCPA / CPRA), người dùng cư trú tại California có các quyền sau:\n• Quyền được biết (§ 1798.100): biết các loại thông tin cá nhân được thu thập\n• Quyền xóa (§ 1798.105): yêu cầu xóa thông tin cá nhân\n• Quyền truy cập (§ 1798.110): yêu cầu bản sao dữ liệu của bạn\n• Quyền từ chối bán (§ 1798.120): MyTravel không bán thông tin cá nhân\n• Không phân biệt đối xử (§ 1798.125): người dùng không bị phân biệt khi thực hiện quyền của mình\n\nĐể thực hiện các quyền này, vui lòng liên hệ với chúng tôi tại longpapa82@gmail.com"
       }
     }
   },

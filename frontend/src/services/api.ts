@@ -1126,8 +1126,19 @@ class ApiService {
     httpStatus?: number;
     deviceModel?: string;
   }) {
+    // V180 (Issue 3): DB analysis showed deviceModel=NULL for 100% of
+    // 4/24~4/25 rows because every reportError caller hand-built the
+    // payload and forgot the new V174 fields. Auto-fill the platform
+    // context here so missing fields never block triage. Caller-provided
+    // values still win (so an interceptor can override deviceOS, etc.).
+    const enriched = {
+      ...data,
+      deviceOS: data.deviceOS ?? Platform.OS,
+      appVersion: data.appVersion ?? Constants.expoConfig?.version,
+      deviceModel: data.deviceModel ?? this.getDeviceModelSafe(),
+    };
     try {
-      const response = await this.api.post('/error-logs', data);
+      const response = await this.api.post('/error-logs', enriched);
       return response.data;
     } catch (err: any) {
       // V176: V174's expanded payload was being rejected with 400 when the
@@ -1135,19 +1146,32 @@ class ApiService {
       // sometimes emits keys like `event_id` / `type`). Result: error_logs
       // had ZERO new-payload rows for 3 days. We now retry with a stripped
       // legacy payload so diagnostic data still lands in the table.
-      if (err?.response?.status === 400 && data.breadcrumbs) {
+      if (err?.response?.status === 400 && enriched.breadcrumbs) {
         const minimal = {
-          errorMessage: data.errorMessage,
-          stackTrace: data.stackTrace,
-          screen: data.screen,
-          severity: data.severity,
-          deviceOS: data.deviceOS,
-          appVersion: data.appVersion,
+          errorMessage: enriched.errorMessage,
+          stackTrace: enriched.stackTrace,
+          screen: enriched.screen,
+          severity: enriched.severity,
+          deviceOS: enriched.deviceOS,
+          appVersion: enriched.appVersion,
         };
         const retry = await this.api.post('/error-logs', minimal);
         return retry.data;
       }
       throw err;
+    }
+  }
+
+  // V180 (Issue 3): defensive lookup — expo-device may be unavailable in web
+  // builds or before the native module loads. We swallow any failure and
+  // return undefined so the report still goes through.
+  private getDeviceModelSafe(): string | undefined {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const Device = require('expo-device');
+      return Device?.modelName ?? undefined;
+    } catch {
+      return undefined;
     }
   }
 

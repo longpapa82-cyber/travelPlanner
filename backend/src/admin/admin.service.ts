@@ -1,12 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, LessThan } from 'typeorm';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { User } from '../users/entities/user.entity';
 import { Trip } from '../trips/entities/trip.entity';
 import { ErrorLog } from './entities/error-log.entity';
 
 @Injectable()
 export class AdminService {
+  private readonly logger = new Logger(AdminService.name);
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -15,6 +18,30 @@ export class AdminService {
     @InjectRepository(ErrorLog)
     private readonly errorLogRepository: Repository<ErrorLog>,
   ) {}
+
+  // V180 (Issue 3 / Legal P0): error_logs auto-purge.
+  //
+  // V174 expanded the error_logs schema with userEmail, deviceModel, and
+  // breadcrumbs jsonb — collectively making the table a PII repository.
+  // The privacy policy art5 declares "30-day retention for audit logs"
+  // but error_logs had no scheduler at all, so PII would persist
+  // indefinitely. We purge anything older than 90 days. The window is
+  // longer than audit_logs (30 days) because error triage often spans
+  // multiple Alpha test cycles, but bounded so PII does not accumulate.
+  // Runs daily at 4:30 AM (offset from audit cleanup at 4:00).
+  @Cron('30 4 * * *')
+  async cleanupOldErrorLogs(): Promise<void> {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 90);
+    const result = await this.errorLogRepository.delete({
+      createdAt: LessThan(cutoff),
+    });
+    if (result.affected && result.affected > 0) {
+      this.logger.log(
+        `Purged ${result.affected} error_logs older than 90 days`,
+      );
+    }
+  }
 
   // ─── User Management ───────────────────────────
 

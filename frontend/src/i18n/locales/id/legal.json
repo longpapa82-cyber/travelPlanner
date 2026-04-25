@@ -218,6 +218,10 @@
       "art17": {
         "title": "Pasal 17 (Tambahan)",
         "content": "Ketentuan ini berlaku mulai 1 Maret 2026."
+      },
+      "art18": {
+        "title": "Penyedia Layanan",
+        "content": "• Nama perusahaan: AI Soft\n• Perwakilan: Hoon-jae Park\n• Email pertanyaan: longpapa82@gmail.com\n• Nomor registrasi bisnis: akan diperbarui pada rilis produksi"
       }
     }
   },
@@ -235,7 +239,7 @@
       },
       "art3": {
         "title": "3. Berbagi dengan Pihak Ketiga",
-        "content": "Kami tidak membagikan info pribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Tujuan, tanggal, preferensi | Pembuatan jadwal AI |\n| Google (AdSense/AdMob) | ID iklan, pola penggunaan | Penayangan iklan |\n| Mitra afiliasi | Event klik (anonim) | Layanan afiliasi |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Ketika diwajibkan oleh hukum"
+        "content": "Kami tidak membagikan info pribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Tujuan, tanggal, preferensi | Pembuatan jadwal AI |\n| Google (AdSense/AdMob) | ID iklan, pola penggunaan | Penayangan iklan |\n| Mitra afiliasi | Event klik (anonim) | Layanan afiliasi |\n| Sentry | Data kesalahan, konteks pengguna, model perangkat | Pemantauan kesalahan |\n| RevenueCat | ID pengguna aplikasi, informasi langganan | Pemrosesan pembayaran langganan |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Ketika diwajibkan oleh hukum"
       },
       "art4": {
         "title": "4. Delegasi Pemrosesan Data",
@@ -243,7 +247,7 @@
       },
       "art5": {
         "title": "5. Retensi Data",
-        "content": "• Penghapusan akun: Dihancurkan dalam 30 hari\n• Hukum e-commerce: Catatan transaksi disimpan selama 5 tahun\n• Hukum telekomunikasi: Log akses disimpan selama 3 bulan\n• Informasi yang diwajibkan hukum disimpan terpisah selama periode yang diperlukan lalu dihancurkan."
+        "content": "• Penghapusan akun: Dihancurkan dalam 30 hari\n• Hukum e-commerce: Catatan transaksi disimpan selama 5 tahun\n• Hukum telekomunikasi: Log akses disimpan selama 3 bulan\n• Informasi yang diwajibkan hukum disimpan terpisah selama periode yang diperlukan lalu dihancurkan.\n• Log kesalahan (termasuk email pengguna, model perangkat, peristiwa tindakan): disimpan selama 90 hari, kemudian dihapus otomatis"
       },
       "art6": {
         "title": "6. Hak Anda",
@@ -280,6 +284,14 @@
       "art14": {
         "title": "14. Perubahan Kebijakan",
         "content": "Perubahan akan diberitahukan setidaknya 7 hari sebelum berlaku. Kebijakan ini berlaku mulai 1 Maret 2026."
+      },
+      "art15": {
+        "title": "15. Transfer Data Internasional",
+        "content": "Untuk mengoperasikan layanan, informasi pribadi pengguna dapat ditransfer ke luar negeri sebagai berikut:\n\n| Penerima | Lokasi | Item yang ditransfer | Tujuan |\n| OpenAI | Amerika Serikat | Data perjalanan | Pembuatan rencana perjalanan AI |\n| Google | Amerika Serikat | ID iklan, pola penggunaan | Iklan |\n| RevenueCat | Amerika Serikat | Informasi langganan | Pemrosesan pembayaran |\n| Sentry | Amerika Serikat | Data kesalahan, model perangkat | Pemantauan kesalahan |\n\nSetiap layanan mengambil tindakan perlindungan data pribadi yang sesuai, dan transfer dilakukan dengan persetujuan pengguna sesuai dengan hukum yang berlaku."
+      },
+      "ccpa": {
+        "title": "Hak Konsumen CCPA (California)",
+        "content": "Berdasarkan California Consumer Privacy Act (CCPA / CPRA), pengguna yang tinggal di California memiliki hak berikut:\n• Hak untuk tahu (§ 1798.100): mengetahui kategori informasi pribadi yang dikumpulkan\n• Hak untuk menghapus (§ 1798.105): meminta penghapusan informasi pribadi\n• Hak akses (§ 1798.110): meminta salinan data Anda\n• Hak untuk menolak penjualan (§ 1798.120): MyTravel tidak menjual informasi pribadi\n• Non-diskriminasi (§ 1798.125): pengguna tidak didiskriminasi karena menggunakan hak mereka\n\nUntuk menggunakan hak ini, hubungi kami di longpapa82@gmail.com"
       }
     }
   },

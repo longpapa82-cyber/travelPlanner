@@ -238,13 +238,19 @@ const ProfileScreen = ({ navigation }: any) => {
         a.click();
         URL.revokeObjectURL(url);
       } else {
-        // V178 (Issue 2): expo-file-system was previously a transitive dep
-        // of expo, so dynamic import worked in dev but the production AAB
-        // sometimes failed to resolve it — silently surfacing as a toast
-        // failure with no diagnostic. We pinned it as a direct dep and
-        // assert documentDirectory is reachable before writing.
+        // V180 (Issue 2): expo-file-system v19 (Expo SDK 54+) restructured
+        // its API into a modular shape — `documentDirectory`,
+        // `writeAsStringAsync`, etc. moved to the `legacy` subpath. The
+        // V178 fix added the package as a direct dep but kept the legacy
+        // import path, which made the modern entry resolve to an object
+        // without `documentDirectory`. The new V178 guard then threw
+        // FILE_SYSTEM_UNAVAILABLE on every attempt — DB confirmed two
+        // such errors at 2026-04-25 11:45. Switching to `expo-file-system/legacy`
+        // restores the legacy surface until we migrate to the new
+        // `File`/`Paths` API in a dedicated refactor.
         const { shareAsync } = await import('expo-sharing');
-        const FileSystem = await import('expo-file-system');
+        // eslint-disable-next-line import/no-unresolved
+        const FileSystem = await import('expo-file-system/legacy');
         if (!FileSystem.documentDirectory) {
           throw new Error('FILE_SYSTEM_UNAVAILABLE');
         }

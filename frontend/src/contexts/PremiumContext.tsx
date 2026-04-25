@@ -229,6 +229,26 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     }
   }, [user]);
 
+  // V180 (Issue 1, defense-in-depth): when the active user *changes*
+  // (delete + re-register on the same device, or account switch), wipe the
+  // previous RC snapshot before any new mount-restore can land. Without
+  // this, the stale entitlement from the previous identity remained in
+  // state long enough for `mount-restore` to be classified as trustworthy
+  // and grant phantom premium to the new account.
+  const prevUserIdRef = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    const currentId = user?.id;
+    if (prevUserIdRef.current && currentId && prevUserIdRef.current !== currentId) {
+      addBreadcrumb({
+        category: 'subscription',
+        message: 'rc.snapshot.user-changed',
+        data: { from: prevUserIdRef.current, to: currentId },
+      });
+      setRcEntitlement(null);
+    }
+    prevUserIdRef.current = currentId;
+  }, [user?.id]);
+
   // V155 downgrade reconciliation (preserved): if the server reports the
   // subscription as expired or free, drop the local snapshot so RC's stale
   // cache can't keep premium alive.
@@ -263,10 +283,21 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     // premium *only* if the source is trustworthy (actual purchase or
     // RC listener push). `foreground-sync` is intentionally excluded —
     // its stale cache was the root cause of V169 "갑자기 월간 결제" flips.
+    // V180 (Issue 1): `mount-restore` is now gated on the server having
+    // explicitly told us this user is premium. This closes the V179
+    // "탈퇴-재가입 phantom 구독" path — when register lands the server
+    // returns subscriptionTier='free', so even if RC SDK still has stale
+    // entitlement from the previous identity, mount-restore cannot grant
+    // premium to a fresh account.
     if (rcEntitlement) {
       if (rcEntitlement.source === 'purchase' ||
-          rcEntitlement.source === 'listener' ||
-          rcEntitlement.source === 'mount-restore') {
+          rcEntitlement.source === 'listener') {
+        if (rcEntitlement.expiresAtMs === null || rcEntitlement.expiresAtMs > Date.now()) {
+          return true;
+        }
+      }
+      if (rcEntitlement.source === 'mount-restore' &&
+          user?.subscriptionTier === 'premium') {
         if (rcEntitlement.expiresAtMs === null || rcEntitlement.expiresAtMs > Date.now()) {
           return true;
         }

@@ -218,6 +218,10 @@
       "art17": {
         "title": "Articolo 17 (Disposizioni aggiuntive)",
         "content": "I presenti Termini sono in vigore dal 1 marzo 2026."
+      },
+      "art18": {
+        "title": "Fornitore del servizio",
+        "content": "• Nome dell'azienda: AI Soft\n• Rappresentante: Hoon-jae Park\n• Email di contatto: longpapa82@gmail.com\n• Numero di registrazione aziendale: sarà aggiornato al rilascio in produzione"
       }
     }
   },
@@ -243,7 +247,7 @@
       },
       "art5": {
         "title": "5. Conservazione dei dati",
-        "content": "• Eliminazione account: Distruzione entro 30 giorni\n• Legge sul commercio elettronico: Registrazioni delle transazioni conservate per 5 anni\n• Legge sulle telecomunicazioni: Log di accesso conservati per 3 mesi\n• Log di audit: Conservati per 30 giorni poi eliminati automaticamente\n• Le informazioni richieste dalla legge vengono archiviate separatamente per il periodo richiesto e poi distrutte."
+        "content": "• Eliminazione account: Distruzione entro 30 giorni\n• Legge sul commercio elettronico: Registrazioni delle transazioni conservate per 5 anni\n• Legge sulle telecomunicazioni: Log di accesso conservati per 3 mesi\n• Log di audit: Conservati per 30 giorni poi eliminati automaticamente\n• Le informazioni richieste dalla legge vengono archiviate separatamente per il periodo richiesto e poi distrutte.\n• Registri errori (inclusi email utente, modello dispositivo, eventi azione): conservati 90 giorni, poi cancellati automaticamente"
       },
       "art6": {
         "title": "6. I tuoi diritti",
@@ -280,6 +284,10 @@
       "art14": {
         "title": "14. Modifiche all'informativa",
         "content": "Le modifiche verranno notificate almeno 7 giorni prima dell'entrata in vigore tramite avvisi in-app.\n\nLa presente informativa è in vigore dal 1 marzo 2026."
+      },
+      "ccpa": {
+        "title": "Diritti del consumatore CCPA (California)",
+        "content": "Ai sensi del California Consumer Privacy Act (CCPA / CPRA), gli utenti residenti in California hanno i seguenti diritti:\n• Diritto di sapere (§ 1798.100): conoscere le categorie di informazioni personali raccolte\n• Diritto alla cancellazione (§ 1798.105): richiedere la cancellazione delle informazioni personali\n• Diritto di accesso (§ 1798.110): richiedere una copia dei propri dati\n• Diritto di opporsi alla vendita (§ 1798.120): MyTravel non vende informazioni personali\n• Non discriminazione (§ 1798.125): gli utenti non vengono discriminati per aver esercitato i propri diritti\n\nPer esercitare questi diritti, contattaci a longpapa82@gmail.com"
       }
     }
   },

@@ -218,6 +218,10 @@
       "art17": {
         "title": "Article 17 (Addendum)",
         "content": "Les presentes conditions entrent en vigueur le 1er mars 2026."
+      },
+      "art18": {
+        "title": "Fournisseur de services",
+        "content": "• Nom de l'entreprise : AI Soft\n• Représentant : Hoon-jae Park\n• Email de contact : longpapa82@gmail.com\n• Numéro d'enregistrement commercial : sera mis à jour lors de la sortie en production"
       }
     }
   },
@@ -235,7 +239,7 @@
       },
       "art3": {
         "title": "3. Partage avec des tiers",
-        "content": "Nous ne partageons pas les informations personnelles, sauf :\n\n| Destinataire | Données | Finalité |\n| OpenAI | Destination, dates, préférences | Génération d'itinéraires par IA |\n| Google (AdSense/AdMob) | Identifiant publicitaire, habitudes d'utilisation | Diffusion de publicités |\n| Partenaires affiliés | Événements de clic (anonymisés) | Services d'affiliation |\n\n※ Avec le consentement explicite de l'utilisateur\n※ Lorsque la loi l'exige"
+        "content": "Nous ne partageons pas les informations personnelles, sauf :\n\n| Destinataire | Données | Finalité |\n| OpenAI | Destination, dates, préférences | Génération d'itinéraires par IA |\n| Google (AdSense/AdMob) | Identifiant publicitaire, habitudes d'utilisation | Diffusion de publicités |\n| Partenaires affiliés | Événements de clic (anonymisés) | Services d'affiliation |\n| Sentry | Données d'erreur, contexte utilisateur, modèle d'appareil | Surveillance des erreurs |\n| RevenueCat | ID utilisateur de l'application, informations d'abonnement | Traitement du paiement de l'abonnement |\n\n※ Avec le consentement explicite de l'utilisateur\n※ Lorsque la loi l'exige"
       },
       "art4": {
         "title": "4. Délégation du traitement des données",
@@ -280,6 +284,14 @@
       "art14": {
         "title": "14. Modifications de la politique",
         "content": "Les modifications seront notifiees au moins 7 jours avant leur entree en vigueur. Cette politique entre en vigueur le 1er mars 2026."
+      },
+      "art15": {
+        "title": "15. Transfert international de données",
+        "content": "Pour exploiter le service, les informations personnelles de l'utilisateur peuvent être transférées à l'étranger comme suit :\n\n| Destinataire | Emplacement | Éléments transférés | Objectif |\n| OpenAI | États-Unis | Données de voyage | Génération d'itinéraire IA |\n| Google | États-Unis | ID publicitaire, modèles d'utilisation | Publicité |\n| RevenueCat | États-Unis | Informations d'abonnement | Traitement des paiements |\n| Sentry | États-Unis | Données d'erreur, modèle d'appareil | Surveillance des erreurs |\n\nChaque service prend des mesures appropriées de protection des données personnelles, et le transfert s'effectue avec le consentement de l'utilisateur conformément aux lois applicables."
+      },
+      "ccpa": {
+        "title": "Droits du consommateur CCPA (Californie)",
+        "content": "En vertu du California Consumer Privacy Act (CCPA / CPRA), les utilisateurs résidant en Californie disposent des droits suivants :\n• Droit de savoir (§ 1798.100) : connaître les catégories d'informations personnelles collectées\n• Droit à la suppression (§ 1798.105) : demander la suppression des informations personnelles\n• Droit d'accès (§ 1798.110) : demander une copie de vos données\n• Droit de refuser la vente (§ 1798.120) : MyTravel ne vend pas d'informations personnelles\n• Non-discrimination (§ 1798.125) : les utilisateurs ne sont pas discriminés pour avoir exercé leurs droits\n\nPour exercer ces droits, contactez-nous à longpapa82@gmail.com"
       }
     }
   },

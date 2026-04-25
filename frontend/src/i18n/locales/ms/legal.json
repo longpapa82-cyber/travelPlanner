@@ -218,6 +218,10 @@
       "art17": {
         "title": "Perkara 17 (Tambahan)",
         "content": "Terma ini berkuat kuasa mulai 1 Mac 2026."
+      },
+      "art18": {
+        "title": "Penyedia Perkhidmatan",
+        "content": "• Nama syarikat: AI Soft\n• Wakil: Hoon-jae Park\n• E-mel pertanyaan: longpapa82@gmail.com\n• Nombor pendaftaran perniagaan: akan dikemas kini pada keluaran pengeluaran"
       }
     }
   },
@@ -243,7 +247,7 @@
       },
       "art5": {
         "title": "5. Penyimpanan Data",
-        "content": "• Pemadaman akaun: Dihapuskan dalam tempoh 30 hari\n• Undang-undang e-dagang: Rekod transaksi disimpan selama 5 tahun\n• Undang-undang telekomunikasi: Log akses disimpan selama 3 bulan\n• Log audit: Disimpan selama 30 hari kemudian dihapuskan secara automatik\n• Maklumat yang diperlukan oleh undang-undang disimpan secara berasingan untuk tempoh yang diperlukan kemudian dihapuskan."
+        "content": "• Pemadaman akaun: Dihapuskan dalam tempoh 30 hari\n• Undang-undang e-dagang: Rekod transaksi disimpan selama 5 tahun\n• Undang-undang telekomunikasi: Log akses disimpan selama 3 bulan\n• Log audit: Disimpan selama 30 hari kemudian dihapuskan secara automatik\n• Maklumat yang diperlukan oleh undang-undang disimpan secara berasingan untuk tempoh yang diperlukan kemudian dihapuskan.\n• Log ralat (termasuk e-mel pengguna, model peranti, peristiwa tindakan): disimpan selama 90 hari, kemudian dihapuskan secara automatik"
       },
       "art6": {
         "title": "6. Hak Anda",
@@ -280,6 +284,10 @@
       "art14": {
         "title": "14. Perubahan Dasar",
         "content": "Perubahan akan dimaklumkan sekurang-kurangnya 7 hari sebelum berkuat kuasa melalui notis dalam aplikasi.\n\nDasar ini berkuat kuasa mulai 1 Mac 2026."
+      },
+      "ccpa": {
+        "title": "Hak Pengguna CCPA (California)",
+        "content": "Di bawah Akta Privasi Pengguna California (CCPA / CPRA), pengguna yang menetap di California mempunyai hak berikut:\n• Hak untuk tahu (§ 1798.100): tahu kategori maklumat peribadi yang dikumpulkan\n• Hak untuk memadam (§ 1798.105): meminta pemadaman maklumat peribadi\n• Hak akses (§ 1798.110): meminta salinan data anda\n• Hak menolak jualan (§ 1798.120): MyTravel tidak menjual maklumat peribadi\n• Tiada diskriminasi (§ 1798.125): pengguna tidak didiskriminasi kerana melaksanakan hak mereka\n\nUntuk melaksanakan hak ini, hubungi kami di longpapa82@gmail.com"
       }
     }
   },

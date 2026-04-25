@@ -263,7 +263,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   // `setNumberOfTravelers` directly so there is one single path that
   // guarantees the chip highlight and the input field never disagree.
   const setTravelersCount = useCallback((count: number) => {
-    const clamped = Math.max(1, Math.min(count, 20));
+    // V180: floor at the single setter so any caller (chip, input parser,
+    // recommendation hook) cannot push a fractional value into the paired
+    // state. Mirrors the server-side coercion in trips.service.ts.
+    const intCount = Math.floor(Number(count) || 1);
+    const clamped = Math.max(1, Math.min(intCount, 20));
     setNumberOfTravelers(clamped);
     setTravelerInputText(clamped.toString());
   }, []);
@@ -424,9 +428,12 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       if (prefInterests.length > 0) preferences.interests = prefInterests;
 
       const validBudget = budgetNum && Number.isFinite(budgetNum) && budgetNum > 0;
-      // Sanitize numberOfTravelers to prevent NaN reaching the server
+      // V180: floor + clamp prevents fractional values from reaching the
+      // backend INT column. The 4/24 ErrorLog showed seven `invalid input
+      // syntax for type integer: "5.5"` rows — that path slipped past the
+      // V169 NaN guard because Math.min was applied without flooring.
       const safeTravelers = Number.isFinite(numberOfTravelers) && numberOfTravelers >= 1
-        ? Math.min(numberOfTravelers, 20)
+        ? Math.max(1, Math.min(20, Math.floor(numberOfTravelers)))
         : 1;
       const tripData = {
         destination: destination.trim(),

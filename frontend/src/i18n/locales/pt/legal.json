@@ -218,6 +218,10 @@
       "art17": {
         "title": "Artigo 17 (Adendo)",
         "content": "Estes Termos entram em vigor em 1 de marco de 2026."
+      },
+      "art18": {
+        "title": "Provedor de serviço",
+        "content": "• Nome da empresa: AI Soft\n• Representante: Hoon-jae Park\n• Email de contato: longpapa82@gmail.com\n• Número de registro comercial: será atualizado no lançamento de produção"
       }
     }
   },
@@ -235,7 +239,7 @@
       },
       "art3": {
         "title": "3. Compartilhamento com Terceiros",
-        "content": "Não compartilhamos informações pessoais exceto:\n\n| Destinatário | Dados | Finalidade |\n| OpenAI | Destino, datas, preferências | Geração de itinerário com IA |\n| Google (AdSense/AdMob) | ID de anúncio, padrões de uso | Entrega de anúncios |\n| Parceiros afiliados | Eventos de clique (anonimizados) | Serviços de afiliados |\n\n※ Com consentimento explícito do usuário\n※ Quando exigido por lei"
+        "content": "Não compartilhamos informações pessoais exceto:\n\n| Destinatário | Dados | Finalidade |\n| OpenAI | Destino, datas, preferências | Geração de itinerário com IA |\n| Google (AdSense/AdMob) | ID de anúncio, padrões de uso | Entrega de anúncios |\n| Parceiros afiliados | Eventos de clique (anonimizados) | Serviços de afiliados |\n| Sentry | Dados de erro, contexto do usuário, modelo do dispositivo | Monitoramento de erros |\n| RevenueCat | ID do usuário do aplicativo, informações de assinatura | Processamento de pagamento de assinatura |\n\n※ Com consentimento explícito do usuário\n※ Quando exigido por lei"
       },
       "art4": {
         "title": "4. Delegação de Processamento de Dados",
@@ -243,7 +247,7 @@
       },
       "art5": {
         "title": "5. Retenção de Dados",
-        "content": "• Exclusão de conta: Destruído dentro de 30 dias\n• Lei do comércio eletrônico: Registros de transações retidos por 5 anos\n• Lei de telecomunicações: Logs de acesso retidos por 3 meses\n• Informações exigidas por lei são armazenadas separadamente pelo período necessário e depois destruídas."
+        "content": "• Exclusão de conta: Destruído dentro de 30 dias\n• Lei do comércio eletrônico: Registros de transações retidos por 5 anos\n• Lei de telecomunicações: Logs de acesso retidos por 3 meses\n• Informações exigidas por lei são armazenadas separadamente pelo período necessário e depois destruídas.\n• Registros de erros (incluindo email do usuário, modelo do dispositivo, eventos de ação): retidos por 90 dias, depois deletados automaticamente"
       },
       "art6": {
         "title": "6. Seus Direitos",
@@ -280,6 +284,14 @@
       "art14": {
         "title": "14. Alteracoes na Politica",
         "content": "Alteracoes serao notificadas com pelo menos 7 dias de antecedencia. Esta politica entra em vigor em 1 de marco de 2026."
+      },
+      "art15": {
+        "title": "15. Transferência internacional de dados",
+        "content": "Para operar o serviço, as informações pessoais do usuário podem ser transferidas para o exterior da seguinte forma:\n\n| Destinatário | Localização | Itens transferidos | Finalidade |\n| OpenAI | Estados Unidos | Dados de viagem | Geração de itinerário com IA |\n| Google | Estados Unidos | ID de publicidade, padrões de uso | Publicidade |\n| RevenueCat | Estados Unidos | Informações de assinatura | Processamento de pagamentos |\n| Sentry | Estados Unidos | Dados de erro, modelo do dispositivo | Monitoramento de erros |\n\nCada serviço toma medidas adequadas de proteção de dados pessoais, e a transferência é realizada com o consentimento do usuário de acordo com as leis aplicáveis."
+      },
+      "ccpa": {
+        "title": "Direitos do consumidor CCPA (Califórnia)",
+        "content": "De acordo com o California Consumer Privacy Act (CCPA / CPRA), usuários residentes na Califórnia têm os seguintes direitos:\n• Direito de saber (§ 1798.100): conhecer as categorias de informações pessoais coletadas\n• Direito de excluir (§ 1798.105): solicitar a exclusão de informações pessoais\n• Direito de acesso (§ 1798.110): solicitar uma cópia dos seus dados\n• Direito de optar por não vender (§ 1798.120): MyTravel não vende informações pessoais\n• Não discriminação (§ 1798.125): os usuários não são discriminados por exercer seus direitos\n\nPara exercer esses direitos, entre em contato pelo longpapa82@gmail.com"
       }
     }
   },

@@ -218,6 +218,10 @@
       "art17": {
         "title": "Artikel 17 (Nachtrag)",
         "content": "Diese Bedingungen treten am 1. Maerz 2026 in Kraft."
+      },
+      "art18": {
+        "title": "Dienstanbieter",
+        "content": "• Firmenname: AI Soft\n• Vertreter: Hoon-jae Park\n• Anfrage-E-Mail: longpapa82@gmail.com\n• Geschäftsregistrierungsnummer: wird bei Produktionsfreigabe aktualisiert"
       }
     }
   },
@@ -235,7 +239,7 @@
       },
       "art3": {
         "title": "3. Weitergabe an Dritte",
-        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Affiliate-Partner | Klick-Events (anonymisiert) | Affiliate-Services |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
+        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Affiliate-Partner | Klick-Events (anonymisiert) | Affiliate-Services |\n| Sentry | Fehlerdaten, Nutzerkontext, Gerätemodell | Fehlerüberwachung |\n| RevenueCat | App-Benutzer-ID, Abonnementinformationen | Abonnement-Zahlungsabwicklung |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
       },
       "art4": {
         "title": "4. Datenverarbeitungsdelegation",
@@ -243,7 +247,7 @@
       },
       "art5": {
         "title": "5. Datenspeicherung",
-        "content": "• Kontolöschung: Vernichtung innerhalb von 30 Tagen\n• E-Commerce-Gesetz: Transaktionsdaten werden 5 Jahre aufbewahrt\n• Telekommunikationsgesetz: Zugriffsprotokolle werden 3 Monate aufbewahrt\n• Gesetzlich erforderliche Informationen werden separat für den erforderlichen Zeitraum gespeichert und dann vernichtet."
+        "content": "• Kontolöschung: Vernichtung innerhalb von 30 Tagen\n• E-Commerce-Gesetz: Transaktionsdaten werden 5 Jahre aufbewahrt\n• Telekommunikationsgesetz: Zugriffsprotokolle werden 3 Monate aufbewahrt\n• Gesetzlich erforderliche Informationen werden separat für den erforderlichen Zeitraum gespeichert und dann vernichtet.\n• Fehlerprotokolle (einschließlich Benutzer-E-Mail, Gerätemodell, Aktionsereignisse): 90 Tage Aufbewahrung, dann automatisches Löschen"
       },
       "art6": {
         "title": "6. Ihre Rechte",
@@ -280,6 +284,14 @@
       "art14": {
         "title": "14. Aenderungen der Richtlinie",
         "content": "Aenderungen werden mindestens 7 Tage vor Inkrafttreten ueber In-App-Benachrichtigungen mitgeteilt. Diese Richtlinie tritt am 1. Maerz 2026 in Kraft."
+      },
+      "art15": {
+        "title": "15. Internationale Datenübermittlung",
+        "content": "Für den Betrieb des Dienstes können personenbezogene Daten des Nutzers wie folgt ins Ausland übermittelt werden:\n\n| Empfänger | Standort | Übermittelte Elemente | Zweck |\n| OpenAI | USA | Reisedaten | KI-Reiseplanerstellung |\n| Google | USA | Werbe-ID, Nutzungsmuster | Werbung |\n| RevenueCat | USA | Abonnementinformationen | Zahlungsabwicklung |\n| Sentry | USA | Fehlerdaten, Gerätemodell | Fehlerüberwachung |\n\nJeder Dienst trifft angemessene Datenschutzmaßnahmen, und die Übermittlung erfolgt mit Zustimmung des Nutzers gemäß den geltenden Gesetzen."
+      },
+      "ccpa": {
+        "title": "CCPA-Verbraucherrechte (Kalifornien)",
+        "content": "Gemäß dem California Consumer Privacy Act (CCPA / CPRA) haben Nutzer mit Wohnsitz in Kalifornien folgende Rechte:\n• Recht auf Kenntnis (§ 1798.100): Kategorien der erhobenen personenbezogenen Daten kennen\n• Recht auf Löschung (§ 1798.105): Löschung personenbezogener Daten anfordern\n• Recht auf Zugriff (§ 1798.110): Kopie Ihrer Daten anfordern\n• Recht auf Widerspruch gegen Verkauf (§ 1798.120): MyTravel verkauft keine personenbezogenen Daten\n• Nicht-Diskriminierung (§ 1798.125): Nutzer werden für die Ausübung ihrer Rechte nicht diskriminiert\n\nUm diese Rechte auszuüben, kontaktieren Sie uns unter longpapa82@gmail.com"
       }
     }
   },

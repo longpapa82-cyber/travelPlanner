@@ -15,20 +15,46 @@ const REVENUECAT_IOS_KEY = Constants.expoConfig?.extra?.revenueCatIosKey || '';
 const REVENUECAT_ANDROID_KEY = Constants.expoConfig?.extra?.revenueCatAndroidKey || '';
 import { Platform } from 'react-native';
 
+// V180 (Issue 1): track the configured user so subsequent calls can detect
+// a userId change and re-configure the SDK. Without this, the V174 logOut
+// fix is undone — the module-level `isInitialized` boolean stayed true
+// across logout, so `initRevenueCat(newUserId)` early-returned and the SDK
+// remained pinned to the previous user's anonymous device cache. The next
+// `Purchases.logIn(newUserId)` then aliased the old entitlement onto the
+// new user, surfacing the V179 "탈퇴-재가입 phantom 구독" bug.
 let isInitialized = false;
+let configuredUserId: string | undefined;
 
 export async function initRevenueCat(userId?: string): Promise<void> {
-  if (isInitialized) return;
-
   const apiKey = Platform.OS === 'ios' ? REVENUECAT_IOS_KEY : REVENUECAT_ANDROID_KEY;
   if (!apiKey) {
     console.warn('[RevenueCat] No API key configured for', Platform.OS);
     return;
   }
 
-  Purchases.setLogLevel(LOG_LEVEL.WARN);
-  Purchases.configure({ apiKey, appUserID: userId || undefined });
-  isInitialized = true;
+  // First-time setup.
+  if (!isInitialized) {
+    Purchases.setLogLevel(LOG_LEVEL.WARN);
+    Purchases.configure({ apiKey, appUserID: userId || undefined });
+    isInitialized = true;
+    configuredUserId = userId;
+    return;
+  }
+
+  // Already initialized but userId changed (different account). RC SDK does
+  // not support re-configure on the same instance reliably, so we issue a
+  // logIn to alias to the new identity. The SDK guarantees logOut→logIn
+  // sequence has been called by AuthContext for fresh-account flows; this
+  // path is a defense-in-depth for the rare case where init fires twice
+  // with different ids (e.g. fast account-switch on a single device).
+  if (userId && userId !== configuredUserId) {
+    try {
+      await Purchases.logIn(userId);
+      configuredUserId = userId;
+    } catch (err) {
+      console.warn('[RevenueCat] Failed to switch user during init:', err);
+    }
+  }
 }
 
 export async function getOfferings(): Promise<PurchasesOfferings | null> {
@@ -156,6 +182,7 @@ export async function getCustomerInfo(): Promise<CustomerInfo | null> {
 export async function logIn(userId: string): Promise<void> {
   try {
     await Purchases.logIn(userId);
+    configuredUserId = userId;
   } catch (error) {
     console.warn('[RevenueCat] Failed to log in:', error);
   }
@@ -166,6 +193,12 @@ export async function logOut(): Promise<void> {
     await Purchases.logOut();
   } catch (error) {
     console.warn('[RevenueCat] Failed to log out:', error);
+  } finally {
+    // V180: clear the configured user marker so the next initRevenueCat
+    // for a new account is treated as a fresh identity, not as an
+    // already-configured no-op. The SDK itself stays initialized
+    // (isInitialized remains true) — re-configuring the API key is unsafe.
+    configuredUserId = undefined;
   }
 }
 
