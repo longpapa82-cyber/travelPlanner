@@ -40,11 +40,11 @@
 ```
 travelPlanner/
 ├── backend/           # NestJS 백엔드 API
-├── frontend/          # React Native 모바일 앱
-├── docs/              # 추가 문서
+├── frontend/          # React Native 모바일 앱 (Expo)
+├── docs/              # 가이드 + 운영 ADR + 아카이브 (docs/README.md 참조)
 ├── scripts/           # 유틸리티 스크립트
-├── claudedocs/        # 개발 계획 및 분석 문서
-└── claude.md          # 프로젝트 요구사항
+├── testResult.md      # Alpha 테스트 결과 (역시간순 누적)
+└── CLAUDE.md          # 프로젝트 SSOT — 인프라/계정/이력/불변식
 ```
 
 ## 🚀 시작하기
@@ -78,19 +78,19 @@ npm start
 
 ## 📚 문서
 
-상세한 개발 계획 및 아키텍처는 [`claudedocs/comprehensive_development_plan.md`](./claudedocs/comprehensive_development_plan.md)를 참고하세요.
+- 프로젝트 SSOT: [`CLAUDE.md`](./CLAUDE.md) — 인프라/자격증명/버전 이력/핵심 불변식
+- 가이드: [`docs/guides/`](./docs/guides/) — 배포, OAuth 게시, IAP 테스트 등
+- 운영 결정: [`docs/operations/`](./docs/operations/) — 폴링 아키텍처 등 ADR
+- 아카이브: [`docs/archive/`](./docs/archive/) — V0~V112 RCA, 릴리스 노트 통합본
 
-## 🗓️ 개발 로드맵
+## 🗓️ 개발 현황
 
-- [x] Phase 0: 기획 및 준비 (2주)
-- [ ] Phase 1: MVP 개발 (8주)
-  - [ ] Week 1-2: 인증 시스템
-  - [ ] Week 3-4: AI 여행 계획 생성
-  - [ ] Week 5-6: 날씨 및 시차 정보
-  - [ ] Week 7-8: 여행 진행 상황 추적
-  - [ ] Week 9-10: 여행 히스토리
-- [ ] Phase 2: 베타 출시 (4주)
-- [ ] Phase 3: 정식 출시 (2주)
+- [x] **Phase 0**: 기획 및 준비
+- [x] **Phase 1**: MVP 개발 (인증, AI 여행 생성, 날씨/시차, 진행 추적, 히스토리)
+- [x] **Phase 2**: Alpha 비공개 테스트 (Play Console Alpha 트랙, V124~V178 진행)
+- [ ] **Phase 3**: 프로덕션 트랙 단계적 출시 (1% → 5% → 20% → 50% → 100%)
+
+상세 진행 상황은 [`CLAUDE.md`](./CLAUDE.md)의 "현재 상태" 섹션 참조.
 
 ## 📄 라이선스
 

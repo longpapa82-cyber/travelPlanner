@@ -2,17 +2,18 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-18) — V139 프로덕션 출시 진행 중
+## 📍 현재 상태 (2026-04-25) — V176 Alpha 빌드 중
 
 ### 핵심 상태
-- **버전**: V139 (Play Console Alpha 트랙 versionCode 139)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V139 배포 완료
-- **브랜치**: `main`
-- **Frontend**: TypeScript 0 errors, Jest **204/204** active (14/14 active suites, ActivityModal 2 skipped)
-- **Backend**: TypeScript 0 errors, Jest **435/435** (23/23 suites)
-- **Play Console**: Alpha 트랙 versionCode 139, 프로덕션 출시 준비 중
+- **버전**: V176 (versionCode 177로 EAS auto-increment, AAB 빌드 진행 중)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V176 백엔드 배포 완료 ✅
+- **브랜치**: `main` (커밋 `c202bb0e`)
+- **Frontend**: TypeScript 0 errors, Jest **223/223** PASS (16/18 suites)
+- **Backend**: TypeScript 0 errors, Jest **444/444** PASS (24/24 suites)
+- **Play Console**: V174 versionCode 175 Alpha 출시 완료, V176 Alpha 제출 대기 중
+- **Sentry**: DSN 설정 완료 (aisoft-p7.sentry.io)
 
-### V116~V137 Alpha 테스트 수정 이력
+### V139~V176 Alpha 테스트 수정 이력
 
 | 버전 | 날짜 | 주요 수정 |
 |------|------|----------|
@@ -22,34 +23,96 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | V132 | 04-18 | onboarding bg, 회원 탈퇴, consent JIT, card clipping (4건) |
 | V134 | 04-18 | 웹 허위정보 제거, 키보드 가림, JIT 권한, 법적 문서 갱신 (4건) |
 | V136 | 04-18 | 탈퇴 모달 jitter 근본 해결, JIT 권한 완전 전환 (2건) |
+| V148 | 04-20 | 알림 모달 정렬, "나중에" 상태 불일치, Provider 순서 변경 (3건) |
+| V150 | 04-20 | isPrePermissionResolved 플래그, WelcomeModal 플래시 수정 (1건) |
+| V152 | 04-21 | pendingPrePermission 경쟁 조건 수정, 인원수 미반영, 이메일 검증 (4건) |
+| V155 | 04-22 | 구독 만료 미반영 (PremiumContext reconciliation) (1건) |
+| V157 | 04-22 | Sentry 크래시 수집, 메모리 누수 5건, i18n 14건, 백엔드 성능 로깅 (4분야) |
+| V159 | 04-23 | **Android KAV 크래시 근본 해결** (9개 파일), Animated cleanup 전수 (19개), 이메일 한글 감지 (3건) |
+| V169 | 04-24 | 인원수 입력 근본 수정, NaN 서버 전달 차단, Sentry 에러 보고, source-tagged RC snapshot (4건) |
+| V172 | 04-24 | RC SDK device cache, Play Billing plan switch, isOperationalAdmin 통일, webhook 폴링 (4건) |
+| V174 | 04-25 | RC logOut 누락 + admin quota 분기 추가 + CreateTrip useFocusEffect 전환 + ErrorLog 컬럼 5개 확장 (5건) |
+| V176 | 04-25 | **PremiumContext 하드코딩 ADMIN_EMAILS 제거**, 라이선스 인앱 표시, **ErrorLog DTO 완화 (4/25 0건 데이터 손실 해결)**, 5.5 소수 가드 (4건) |
 
-### V136 핵심 수정 (V137 빌드)
+### V159 핵심 수정
 
 | ID | 근본 원인 | 수정 |
 |---|---|---|
-| **탈퇴 모달 jitter** | KAV(behavior='height') + ScrollView(flex:1) 조합이 Android 키보드 해제 시 높이 재계산 jitter | Pressable overlay + Keyboard.dismiss() 패턴으로 전환 |
-| **JIT 권한 6버전 재발** | ConsentScreen에서 OS 권한(알림/사진)을 앱 동의와 묶어서 요청 | OS 권한 요청 완전 제거 → JIT 패턴 (기능 사용 시점에 요청) |
-| **사진 권한 불필요 팝업** | `requestMediaLibraryPermissionsAsync()` 무조건 호출 | get→request 2단계 (최초 1회만 OS 팝업) |
-| **알림 상태 불일치** | 정적 Alert만 표시, 실제 OS 권한 미확인 | `getPermissionsAsync()` 기반 3분기 (granted/undetermined/denied) |
+| **Android 키보드 OOM 크래시** | `edgeToEdgeEnabled: true` + `KAV behavior="height"` 조합이 매 키보드 이벤트마다 WindowInsets 재계산 폭풍 → 네이티브 메모리 누적 | Android에서 KAV behavior를 `undefined`로 변경 + `enabled={Platform.OS === 'ios'}` (9개 파일) |
+| **Animated 메모리 누적** | 19개 컴포넌트에서 unmount 시 `stopAnimation()` 미호출 → 네이티브 애니메이션 노드 누적 | 전수 cleanup 적용 |
+| **WelcomeModal 0.1초 플래시** | NotificationContext의 `pendingPrePermission`/`isPrePermissionResolved` 비동기 경쟁 조건 | async 완료 후에만 state 변경 + WelcomeModal 200ms debounce |
+| **구독 만료 미반영** | RevenueCat SDK stale cache가 `localPremiumOverride`를 유지 → 서버의 `free` 상태 무시 | PremiumContext에 서버 상태 reconciliation effect 추가 |
+| **하드코딩 영어 메시지** | `error.message`가 i18n `t()` 보다 우선 (14건) | 에러 코드 패턴으로 전환 + AUTH_ERROR_I18N 매핑 |
+| **이메일 한글 자모** | 한글 IME 활성 상태에서 영문 타이핑 | `inputMode="email"` + 한글 자모 실시간 감지 경고 + 서버 email 반환 |
 
-### V137 핵심 불변식 (V115 불변식 11건 유지 + 추가)
+### V174 핵심 수정 (2026-04-25)
 
-12. **OS 권한과 앱 동의 분리 원칙**: ConsentScreen에서는 앱 내 동의(consent)만 처리. OS 런타임 권한(알림, 사진, 위치)은 해당 기능 최초 사용 시점(JIT)에만 요청. ConsentScreen.tsx에 `requestPermissionsAsync()` 호출 금지.
+| ID | 근본 원인 | 수정 |
+|---|---|---|
+| **RC logOut 누락 → 환불/탈퇴 후 phantom 구독** | AuthContext.logout()이 RevenueCat `Purchases.logOut()`을 호출하지 않아 device-level anonymous appUserID가 다음 로그인까지 유지 | AuthContext.logout()에 dynamic require로 `rcLogOut()` 추가 (web 안전) |
+| **admin이 3/3 표시 + 무제한 생성** | 백엔드는 admin quota skip이지만 프론트는 free 3/3 표시 → UI/server 불일치 | PremiumContext에 `AI_TRIPS_ADMIN_LIMIT=9999` sentinel 추가, isAdmin 분기로 limit/remaining/isAiLimitReached 모두 9999 |
+| **ADMIN_EMAILS 분산** | 프론트(env)와 백엔드(env+role) 판정 로직 다름 | `/auth/me`에 `isAdmin` 플래그 반환 (`isOperationalAdmin(email, role)`), 프론트는 server flag 우선 |
+| **CreateTrip 진입 초기화 누락** | `navigation.addListener('focus')`가 tab-nested Native Stack에서 firstFocus 이후 fire 안 함 | `useFocusEffect` + `resetForm()` 콜백으로 전환, `setTravelersCount`가 numberOfTravelers + travelerInputText 동시 업데이트 (single source of truth) |
+| **ErrorLog 정보 부족** | userId/platform/route/httpStatus 누락으로 RCA 불가 | error_logs 컬럼 5개 추가 (errorName, routeName, breadcrumbs jsonb, httpStatus, deviceModel), filter에서 req.user/ua-detect/status 추출 |
+
+### V176 핵심 수정 (2026-04-25) — V175 RCA
+
+| ID | 근본 원인 | 수정 |
+|---|---|---|
+| **모든 사용자 9999/9999 표시 (관측 편향)** | PremiumContext의 하드코딩 ADMIN_EMAILS fallback이 두 Alpha 테스트 계정(hoonjae723, longpapa82)을 모두 admin으로 분류 → 진짜 무료/프리미엄 quota 검증 불가 | 하드코딩 ADMIN_EMAILS 제거, **server isAdmin only**, "9999/9999" 대신 "∞ 무제한" i18n (17개 언어) |
+| **오픈소스 라이선스 외부 브라우저 이탈** | `Linking.openURL()`이 외부 Chrome/Safari 호출 (Privacy/Terms는 인앱 navigation) | `expo-web-browser`의 `WebBrowser.openBrowserAsync()` (Custom Tabs/SFSafariViewController, dynamic require로 web 안전) |
+| **4/25 ErrorLog 0건 + V174 신규 컬럼 3일간 100% NULL** | DTO `ValidateNested + Type(ErrorLogBreadcrumbDto) + global forbidNonWhitelisted: true`가 breadcrumb의 unknown 키(Sentry event_id 등)에 요청 전체 400 reject. 클라이언트 `.catch(() => {})`로 사일런트 누락 | DTO에서 ValidateNested 제거, `IsObject({each:true}) + ArrayMaxSize(50)`. 클라이언트 reportError 400 응답 시 minimal payload retry. 서버 persist 실패 warn → error 승격 (origin route 포함) |
+| **5.5 소수 인원수 → DB INSERT 실패** | `@IsInt()`를 우회한 5.5가 `invalid input syntax for type integer` 발생 | trips.service.ts에서 `Math.floor + clamp(1, 20)` 가드 (Phase A insert + AI generation 모두) |
+
+### V176 핵심 불변식 (V137 불변식 12건 + V159 3건 + V174 3건 + V176 4건 = 22건)
+
+13. **Android KAV 금지 원칙**: Android에서 `KeyboardAvoidingView behavior="height"`를 사용하지 않음. `edgeToEdgeEnabled: true` 환경에서 레이아웃 재계산 폭풍으로 OOM 크래시 발생. iOS에서만 `behavior="padding"` 사용, Android는 `enabled={Platform.OS === 'ios'}`로 비활성화.
+14. **Animated cleanup 원칙**: `Animated.Value`를 사용하는 모든 컴포넌트는 unmount 시 `stopAnimation()`을 호출하는 cleanup useEffect 필수.
+15. **에러 메시지 i18n 원칙**: 사용자에게 표시되는 에러 메시지는 `throw new Error('ERROR_CODE')` 패턴 + 핸들러에서 에러 코드→i18n 키 매핑. `error.message` 직접 노출 금지.
+16. **로그아웃 시 RC logOut 동반**: AuthContext.logout()은 반드시 `Purchases.logOut()`을 dynamic require로 호출. 누락 시 device-level anonymous appUserID가 유지되어 다음 로그인 계정에 phantom 구독 표시.
+17. **useFocusEffect for screen reset (tab-nested Native Stack)**: 화면 진입 시 폼 초기화는 `navigation.addListener('focus')`가 아니라 `useFocusEffect(useCallback(...))` 사용. tab-nested Native Stack에서 first focus 이후 fire 안 됨.
+18. **Single source of truth for paired state**: 관련 상태 쌍(예: numberOfTravelers + travelerInputText)은 단일 setter를 통해서만 업데이트. setNumberOfTravelers(N) 호출 시 setTravelerInputText(N.toString())을 강제로 동반.
+19. **server isAdmin only (V176)**: 프론트엔드에 ADMIN_EMAILS fallback 리스트 보유 금지. `/auth/me`의 server `isAdmin` 플래그만 신뢰. 하드코딩 fallback은 QA 테스터 풀 편향(테스트 계정이 admin 리스트에 있으면 비admin 동작 검증 불가)을 유발.
+20. **Diagnostic data DTO는 permissive**: error_logs 등 진단 페이로드는 `forbidNonWhitelisted: true` 글로벌 ValidationPipe 환경에서 nested DTO 사용 금지. `IsObject({each:true}) + ArrayMaxSize(N)` 패턴으로 후퇴. 진단 데이터는 shape 검증보다 size cap이 적절.
+21. **Fire-and-forget 호출은 visibility 보장**: `apiService.X().catch(() => {})` 패턴은 silent failure 위험. 4xx 응답 시 minimal payload retry 또는 metric 노출 필수.
+22. **Server-side defensive coercion for numeric DB columns**: 클라이언트 검증을 신뢰하지 말고 INSERT 직전에 `Math.floor + clamp(min, max)` 적용. DTO `@IsInt()`를 우회하는 경로(직접 transform, AI 응답 등)가 존재할 수 있음.
+
+### ⏭️ 프로덕션 출시 계획
+
+**Phase 0 — Alpha 최종 검증 (현재)**
+- V176 Alpha 빌드 진행 중 (versionCode 177)
+- Critical Path: 로그인 → 여행 생성 → 일정 확인 → 구독 → 광고 제거
+- V176 검증 시나리오:
+  1. **비admin 무료 계정 신규 발급** → AI 횟수 3/3 정상 표시 확인 (V176 단일 진실 검증)
+  2. admin 계정 → "∞ 무제한" 표시 (9999/9999 아님)
+  3. 라이선스 버튼 → 인앱 Custom Tabs 표시 (외부 브라우저 X)
+  4. 4/25 이후 ErrorLog → V174 신규 컬럼(errorName, routeName, breadcrumbs, httpStatus, deviceModel) NOT NULL 채워지는지 확인
+  5. 인원수 5.5 같은 비정상 값 입력 시도 → 5로 floor 처리
+
+**Phase 1 — 프로덕션 트랙 제출**
+- Alpha 테스트 통과 후 프로덕션 트랙에 AAB 제출
+- 단계적 출시 1% 선택
+- Google 심사 대기 (1-7일)
+
+**Phase 2 — 단계적 확대 (D+3~D+14)**
+- 1% → 5% → 20% → 50% → 100%
+- 롤백 기준: ANR >2%, 크래시율 >1%, Sentry P0 발생
 
 ### ⏭️ 프로덕션 출시 후 후속 작업
 
-1. **회원 탈퇴 모달 하단 여백**: 키보드 없을 때 모달 하단 빈 공간 노출 (기능 사용 가능, UX 개선 필요). `ProfileScreen.tsx` modalOverlay paddingBottom과 modalContent paddingBottom 조합 재조정 필요.
+1. **회원 탈퇴 모달 하단 여백**: UX 개선 (기능 정상)
 2. **무중단 배포 체계**: nginx blue-green 또는 rolling update 구축
 3. **스테이징 환경**: 프로덕션과 동일한 테스트 환경 구축
 4. **npm audit HIGH 7건**: mjml 체인 (LiquidJS, lodash), path-to-regexp, picomatch
 5. **CSP unsafe-inline**: nonce 기반 전환 (AdSense/GTM 연동 고려)
 6. **register() 이메일 열거**: 응답 통일 또는 CAPTCHA 도입
-7. **Sentry 프론트엔드 크래시 수집**: Android native crash 포착용
-8. **sitemap.xml 영문 가이드 추가**: SEO 개선
+7. **sitemap.xml 영문 가이드 추가**: SEO 개선
+8. **console.log 정리**: 프로덕션 코드 ~210건 → `__DEV__` 가드 또는 제거
 
 ### 상세 로그
 - V115 이전 이력: `docs/archive/claude-md-history-pre-v112.md`
-- V114 14 이슈: `docs/v114/00-inventory.md`
+- V114 14 이슈: `docs/archive/v114/00-inventory.md`
+- V139~V177 테스트 결과: `testResult.md`
 
 ---
 
@@ -63,8 +126,9 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 **아카이브**:
 - `docs/archive/claude-md-history-pre-v112.md` — V111 및 이전 버전 이력
-- `docs/archive/deployment-history.md` — 상세 배포 로그
-- `docs/archive/bug-history-2026-03.md` — 초기 버그 상세
+- `docs/archive/release-notes-history.md` — V33~V114 통합 릴리스 노트
+- `docs/archive/bug-history-2026-04.md` — V49~V112 버그 RCA 인덱스
+- `docs/archive/deployment-logs/` — Railway 시절 배포 로그 (2026-03)
 
 ---
 
@@ -85,7 +149,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 ## Google Play Console 상태
 
-- **트랙**: 비공개 테스트 (Alpha) 진행 중, versionCode 137
+- **트랙**: 비공개 테스트 (Alpha) 진행 중, versionCode 159
 - **앱 ID**: 4975949156119360543
 - **결제 프로필**: 카카오뱅크 계좌 확인 완료 (2026-03-11)
 - **앱 콘텐츠 선언**: 10개 전부 완료
@@ -138,11 +202,10 @@ Phase 1 최적화: OpenAI Prompt Caching, 템플릿 워밍업 확대(50목적지
 - **현재 Alpha**: `EXPO_PUBLIC_USE_TEST_ADS=true` 환경변수로 테스트 광고 사용
 - **프로덕션 출시 시 반드시**: `eas.json`에서 `EXPO_PUBLIC_USE_TEST_ADS` 제거 + 새 빌드
 
-## Paddle 프로덕션 계정
+## Paddle 프로덕션 계정 (제공 중단)
 
-- **대시보드**: vendors.paddle.com (비즈니스명: AI Soft)
-- **도메인**: mytravel-planner.com
-- **상태**: 사업자 인증 완료 대기 → env 교체 (API Key, Webhook Secret, Price IDs, Client Token)
+- ~~**대시보드**: vendors.paddle.com (비즈니스명: AI Soft)~~
+- **상태**: 제공하지 않기로 결정 (2026-04-21). 웹 결제는 미제공, 앱 결제(Google Play IAP)만 운영.
 
 ## 프로덕션 서버 인프라 (Hetzner VPS)
 
@@ -194,8 +257,16 @@ curl https://mytravel-planner.com/api/health
 | V136 Alpha | 2026-04-18 | HIGH | 탈퇴 모달 jitter 근본 해결, JIT 권한 완전 전환 (2건) | 137 |
 | V137 7단계 QA | 2026-04-18 | CRITICAL | expenses settleUp IDOR, i18n 17개 언어, 법적 문서, 딥링크 | 138 |
 | V138 Alpha | 2026-04-18 | LOW | 탈퇴 모달 SafeArea overlay 위임 (여백 미세 조정) | 139 |
+| V146~V148 | 2026-04-20 | HIGH | 알림 모달 정렬, WelcomeModal 플래시, Provider 순서 변경, isPrePermissionResolved | 148 |
+| V150~V152 | 2026-04-21 | HIGH | pendingPrePermission 경쟁 조건, 인원수 미반영, 이메일 검증, 구독 만료 미반영 | 152 |
+| V155~V157 | 2026-04-22 | HIGH | Sentry 설정, 메모리 누수 5건, i18n 14건, 백엔드 성능 로깅 | 157 |
+| V158~V159 | 2026-04-23 | **CRITICAL** | **Android KAV OOM 크래시 근본 해결** (9파일), Animated cleanup 전수 (19파일), 이메일 한글 감지 | 159 |
+| V162~V169 | 2026-04-24 | HIGH | 한글 IME 폭발, 인원수 NaN 서버 전달 차단, source-tagged RC snapshot, Sentry 가시화 | 169 |
+| V170~V172 | 2026-04-24 | HIGH | RC SDK device cache, Play Billing plan switch, isOperationalAdmin 통일, webhook 폴링 | 172 |
+| V173~V174 | 2026-04-25 | HIGH | RC logOut 누락 phantom 구독 수정, admin 9999 quota 분기, useFocusEffect 전환, ErrorLog 컬럼 5개 확장 | 174 (175 빌드) |
+| V175~V176 | 2026-04-25 | **CRITICAL** | **PremiumContext 하드코딩 ADMIN_EMAILS 제거 (관측 편향 해소)**, 라이선스 인앱, **ErrorLog DTO 완화 (4/25 0건 데이터 손실 해결)**, 5.5 소수 가드 | 176 (177 빌드) |
 
-상세: `docs/archive/bug-history-2026-03.md`, `docs/archive/claude-md-history-pre-v112.md`
+상세: `docs/archive/bug-history-2026-04.md`, `docs/archive/claude-md-history-pre-v112.md`, `testResult.md`
 
 ---
 
@@ -225,7 +296,8 @@ curl https://mytravel-planner.com/api/health
 2. **Access**: Rate limiting all auth endpoints + AdminGuard (email-based) + 2FA lockout + PendingVerificationGuard
 3. **Transport**: HSTS preload + CSP (no unsafe-eval) + Referrer-Policy + CORS whitelist
 4. **Data**: SELECT FOR UPDATE on password reset, SQL-level share token expiry filter, Stored XSS 방지 (stripHtml DTO), uploads/ .gitignore 패턴
+5. **Monitoring**: Sentry (aisoft-p7.sentry.io) — 네이티브 크래시, JS 에러, 메모리 경고, 느린 API (>10s) breadcrumb, ANR 감지
 
 ---
 
-**최종 업데이트**: 2026-04-18 (V137 Alpha 테스트 중, JIT 권한 근본 전환 완료)
+**최종 업데이트**: 2026-04-25 (V176 Alpha 빌드 중 — V175 RCA 4건 수정: ADMIN_EMAILS 관측 편향 해소, 라이선스 인앱, ErrorLog DTO 완화로 4/25 0건 데이터 손실 해결, 5.5 소수 가드)
