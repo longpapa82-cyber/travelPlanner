@@ -127,6 +127,27 @@ const PaywallModal: React.FC = () => {
   const resolvePurchaseAction = async (): Promise<
     { kind: 'buy' } | { kind: 'block'; currentPlan: 'monthly' | 'yearly' } | { kind: 'switch'; oldProductIdentifier: string; currentPlan: 'monthly' | 'yearly' }
   > => {
+    // V182 (Issue 1): server-tier authoritative gate. Without this, the
+    // V174/V178/V180 PremiumContext defenses (prevUserIdRef, mount-restore
+    // server-premium gate, RC isInitialized reset) were all bypassed
+    // because PaywallModal called getCustomerInfo() directly. When a user
+    // deletes their account and re-registers on the same device, the
+    // backend correctly returns subscriptionTier='free' but the RC SDK
+    // device cache or backend alias chain still surfaces the previous
+    // identity's entitlement — leading to the V173/V179/V181 "이미 연간
+    // 플랜 구독 중" phantom that recurred across three fix cycles.
+    //
+    // We trust the server's subscriptionTier as the single source of
+    // truth: if server says 'free', allow the purchase regardless of what
+    // RC reports. This means we accept a small risk of duplicate billing
+    // in the rare edge case where the webhook hasn't yet reconciled a
+    // legitimate purchase (server free, RC premium for the SAME identity)
+    // — but Google Play itself is the final guard against double-billing
+    // for the same Google account, so this is acceptable.
+    if (user?.subscriptionTier !== 'premium') {
+      return { kind: 'buy' };
+    }
+
     const info = await getCustomerInfo();
     const snapshot = getActiveEntitlementSnapshot(info);
     if (!snapshot) return { kind: 'buy' };

@@ -348,9 +348,16 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     // directly), but this prevents the paywall from even rendering when the
     // state layer already knows the user is subscribed.
     if (isPremium) return;
+    // V182 (Issue 3): admin accounts already get unlimited quota and ad
+    // suppression. Showing the paywall to an admin is misleading and was
+    // a contributing factor to the V179/V181 phantom-subscription
+    // confusion (admin entered paywall → RC SDK reported a stale
+    // entitlement → "이미 구독 중" alert). Admins simply have no use case
+    // for the paywall; bail out silently.
+    if (isAdmin) return;
     setPaywallContext(context);
     setIsPaywallVisible(true);
-  }, [isPremium]);
+  }, [isPremium, isAdmin]);
 
   const hidePaywall = useCallback(() => {
     setIsPaywallVisible(false);

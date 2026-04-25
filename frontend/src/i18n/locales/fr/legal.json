@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Conditions d'utilisation",
-    "effectiveDate": "En vigueur à compter du : 13 mars 2026",
+    "effectiveDate": "26 avril 2026",
     "articles": {
       "art1": {
         "title": "Article 1 (Objet)",
@@ -221,13 +221,13 @@
       },
       "art18": {
         "title": "Fournisseur de services",
-        "content": "• Nom de l'entreprise : AI Soft\n• Représentant : Hoon-jae Park\n• Email de contact : longpapa82@gmail.com\n• Numéro d'enregistrement commercial : sera mis à jour lors de la sortie en production"
+        "content": "• Nom de l'entreprise : AI Soft\n• Représentant : Hoon-jae Park\n• Email de contact : longpapa82@gmail.com\n• Numéro d'enregistrement commercial : En cours — sera mis à jour avant le lancement commercial officiel"
       }
     }
   },
   "privacy": {
     "title": "Politique de confidentialité",
-    "effectiveDate": "En vigueur à compter du : 13 mars 2026",
+    "effectiveDate": "26 avril 2026",
     "articles": {
       "art1": {
         "title": "1. Informations que nous collectons",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Partage avec des tiers",
-        "content": "Nous ne partageons pas les informations personnelles, sauf :\n\n| Destinataire | Données | Finalité |\n| OpenAI | Destination, dates, préférences | Génération d'itinéraires par IA |\n| Google (AdSense/AdMob) | Identifiant publicitaire, habitudes d'utilisation | Diffusion de publicités |\n| Partenaires affiliés | Événements de clic (anonymisés) | Services d'affiliation |\n| Sentry | Données d'erreur, contexte utilisateur, modèle d'appareil | Surveillance des erreurs |\n| RevenueCat | ID utilisateur de l'application, informations d'abonnement | Traitement du paiement de l'abonnement |\n\n※ Avec le consentement explicite de l'utilisateur\n※ Lorsque la loi l'exige"
+        "content": "Nous ne partageons pas les informations personnelles, sauf :\n\n| Destinataire | Données | Finalité |\n| OpenAI | Destination, dates, préférences | Génération d'itinéraires par IA |\n| Google (AdSense/AdMob) | Identifiant publicitaire, habitudes d'utilisation | Diffusion de publicités |\n| Partenaires affiliés | Événements de clic (anonymisés) | Services d'affiliation |\n| Sentry | Données d'erreur, contexte utilisateur, modèle d'appareil | Surveillance des erreurs |\n| RevenueCat | ID utilisateur de l'application, informations d'abonnement | Traitement du paiement de l'abonnement |\n| OpenWeather | Coordonnées de latitude et longitude | Informations météorologiques |\n\n※ Avec le consentement explicite de l'utilisateur\n※ Lorsque la loi l'exige"
       },
       "art4": {
         "title": "4. Délégation du traitement des données",
@@ -247,7 +247,7 @@
       },
       "art5": {
         "title": "5. Conservation des données",
-        "content": "• Suppression du compte : destruction dans un délai de 30 jours\n• Loi sur le commerce électronique : registres de transactions conservés pendant 5 ans\n• Loi sur les télécommunications : journaux d'accès conservés pendant 3 mois\n• Les informations requises par la loi sont stockées séparément pendant la période requise, puis détruites."
+        "content": "• Suppression du compte : destruction dans un délai de 30 jours\n• Loi sur le commerce électronique : registres de transactions conservés pendant 5 ans\n• Loi sur les télécommunications : journaux d'accès conservés pendant 3 mois\n• Les informations requises par la loi sont stockées séparément pendant la période requise, puis détruites.\n• Journaux d'erreurs (y compris l'email de l'utilisateur, le modèle d'appareil, les événements d'action) : conservés 90 jours puis supprimés automatiquement"
       },
       "art6": {
         "title": "6. Vos droits",

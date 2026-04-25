@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Điều khoản dịch vụ",
-    "effectiveDate": "Có hiệu lực: 13 tháng 3, 2026",
+    "effectiveDate": "26 tháng 4 năm 2026",
     "articles": {
       "art1": {
         "title": "Điều 1 (Mục đích)",
@@ -221,13 +221,13 @@
       },
       "art18": {
         "title": "Nhà cung cấp dịch vụ",
-        "content": "• Tên công ty: AI Soft\n• Người đại diện: Hoon-jae Park\n• Email liên hệ: longpapa82@gmail.com\n• Số đăng ký kinh doanh: sẽ cập nhật khi phát hành chính thức"
+        "content": "• Tên công ty: AI Soft\n• Người đại diện: Hoon-jae Park\n• Email liên hệ: longpapa82@gmail.com\n• Số đăng ký kinh doanh: Đang xử lý — sẽ cập nhật trước khi ra mắt thương mại chính thức"
       }
     }
   },
   "privacy": {
     "title": "Chính sách quyền riêng tư",
-    "effectiveDate": "Có hiệu lực: 13 tháng 3, 2026",
+    "effectiveDate": "26 tháng 4 năm 2026",
     "articles": {
       "art1": {
         "title": "1. Thông tin chúng tôi thu thập",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Chia sẻ với bên thứ ba",
-        "content": "Chúng tôi không chia sẻ thông tin cá nhân ngoại trừ:\n\n| Người nhận | Dữ liệu | Mục đích |\n| OpenAI | Điểm đến, ngày, sở thích | Tạo lịch trình AI |\n| Google (AdSense/AdMob) | ID quảng cáo, mô hình sử dụng | Phân phối quảng cáo |\n| Đối tác liên kết | Sự kiện nhấp (ẩn danh) | Dịch vụ liên kết |\n| Sentry | Dữ liệu lỗi, ngữ cảnh người dùng, mẫu thiết bị | Giám sát lỗi |\n| RevenueCat | ID người dùng ứng dụng, thông tin đăng ký | Xử lý thanh toán đăng ký |\n\n※ Với sự đồng ý rõ ràng của người dùng\n※ Khi luật pháp yêu cầu"
+        "content": "Chúng tôi không chia sẻ thông tin cá nhân ngoại trừ:\n\n| Người nhận | Dữ liệu | Mục đích |\n| OpenAI | Điểm đến, ngày, sở thích | Tạo lịch trình AI |\n| Google (AdSense/AdMob) | ID quảng cáo, mô hình sử dụng | Phân phối quảng cáo |\n| Đối tác liên kết | Sự kiện nhấp (ẩn danh) | Dịch vụ liên kết |\n| Sentry | Dữ liệu lỗi, ngữ cảnh người dùng, mẫu thiết bị | Giám sát lỗi |\n| RevenueCat | ID người dùng ứng dụng, thông tin đăng ký | Xử lý thanh toán đăng ký |\n| OpenWeather | Tọa độ vĩ độ và kinh độ | Thông tin thời tiết |\n\n※ Với sự đồng ý rõ ràng của người dùng\n※ Khi luật pháp yêu cầu"
       },
       "art4": {
         "title": "4. Ủy thác xử lý dữ liệu",

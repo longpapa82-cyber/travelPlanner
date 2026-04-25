@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Ketentuan Layanan",
-    "effectiveDate": "Berlaku: 13 Maret 2026",
+    "effectiveDate": "26 April 2026",
     "articles": {
       "art1": {
         "title": "Pasal 1 (Tujuan)",
@@ -221,13 +221,13 @@
       },
       "art18": {
         "title": "Penyedia Layanan",
-        "content": "• Nama perusahaan: AI Soft\n• Perwakilan: Hoon-jae Park\n• Email pertanyaan: longpapa82@gmail.com\n• Nomor registrasi bisnis: akan diperbarui pada rilis produksi"
+        "content": "• Nama perusahaan: AI Soft\n• Perwakilan: Hoon-jae Park\n• Email pertanyaan: longpapa82@gmail.com\n• Nomor registrasi bisnis: Sedang diproses — akan diperbarui sebelum peluncuran komersial resmi"
       }
     }
   },
   "privacy": {
     "title": "Kebijakan Privasi",
-    "effectiveDate": "Berlaku: 13 Maret 2026",
+    "effectiveDate": "26 April 2026",
     "articles": {
       "art1": {
         "title": "1. Informasi yang Kami Kumpulkan",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Berbagi dengan Pihak Ketiga",
-        "content": "Kami tidak membagikan info pribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Tujuan, tanggal, preferensi | Pembuatan jadwal AI |\n| Google (AdSense/AdMob) | ID iklan, pola penggunaan | Penayangan iklan |\n| Mitra afiliasi | Event klik (anonim) | Layanan afiliasi |\n| Sentry | Data kesalahan, konteks pengguna, model perangkat | Pemantauan kesalahan |\n| RevenueCat | ID pengguna aplikasi, informasi langganan | Pemrosesan pembayaran langganan |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Ketika diwajibkan oleh hukum"
+        "content": "Kami tidak membagikan info pribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Tujuan, tanggal, preferensi | Pembuatan jadwal AI |\n| Google (AdSense/AdMob) | ID iklan, pola penggunaan | Penayangan iklan |\n| Mitra afiliasi | Event klik (anonim) | Layanan afiliasi |\n| Sentry | Data kesalahan, konteks pengguna, model perangkat | Pemantauan kesalahan |\n| RevenueCat | ID pengguna aplikasi, informasi langganan | Pemrosesan pembayaran langganan |\n| OpenWeather | Koordinat lintang dan bujur | Informasi cuaca |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Ketika diwajibkan oleh hukum"
       },
       "art4": {
         "title": "4. Delegasi Pemrosesan Data",

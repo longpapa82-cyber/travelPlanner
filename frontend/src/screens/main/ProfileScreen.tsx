@@ -102,22 +102,39 @@ const ProfileScreen = ({ navigation }: any) => {
   // user saw "logout did nothing" and tapped again. Two-stage guard:
   //   1. await the full logout chain so handleLogout doesn't return early
   //   2. isLoggingOutRef blocks repeat invocations during the in-flight window
+  // V182 (Issue 2): in-flight guard set BEFORE awaiting the confirm
+  // dialog. The previous V178 fix set the ref after `await confirm()`
+  // returned, leaving the dialog-display window unguarded — a quick second
+  // tap entered handleLogout again, the second confirm() call queued (or
+  // overwrote the resolveRef in the old single-slot impl), and produced
+  // the V177/V181 "first tap doesn't log out, second tap does" symptom.
+  // The ConfirmDialogContext is now queue-based, but we still want to
+  // prevent the user from accumulating multiple "Are you sure?" dialogs
+  // for the same destructive action — the early return is the friendliest
+  // UX. Reset on cancel so the user can try again later.
   const isLoggingOutRef = useRef(false);
   const handleLogout = async () => {
     if (isLoggingOutRef.current) return;
-    const ok = await confirm({
-      title: t('logout.title'),
-      message: t('logout.message'),
-      confirmText: tCommon('confirm'),
-      cancelText: tCommon('cancel'),
-    });
-    if (!ok) return;
     isLoggingOutRef.current = true;
-    markLoggingOut();
     try {
+      const ok = await confirm({
+        title: t('logout.title'),
+        message: t('logout.message'),
+        confirmText: tCommon('confirm'),
+        cancelText: tCommon('cancel'),
+      });
+      if (!ok) {
+        isLoggingOutRef.current = false;
+        return;
+      }
+      markLoggingOut();
       await logout();
-    } finally {
+      // setUser(null) inside logout() unmounts ProfileScreen, so the
+      // finally below will not execute — that is fine, the ref is
+      // captured in a now-orphan closure and garbage collected.
+    } catch (err) {
       isLoggingOutRef.current = false;
+      throw err;
     }
   };
 

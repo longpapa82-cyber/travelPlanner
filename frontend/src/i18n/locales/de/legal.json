@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Nutzungsbedingungen",
-    "effectiveDate": "Gültig ab: 13. März 2026",
+    "effectiveDate": "26. April 2026",
     "articles": {
       "art1": {
         "title": "Artikel 1 (Zweck)",
@@ -221,13 +221,13 @@
       },
       "art18": {
         "title": "Dienstanbieter",
-        "content": "• Firmenname: AI Soft\n• Vertreter: Hoon-jae Park\n• Anfrage-E-Mail: longpapa82@gmail.com\n• Geschäftsregistrierungsnummer: wird bei Produktionsfreigabe aktualisiert"
+        "content": "• Firmenname: AI Soft\n• Vertreter: Hoon-jae Park\n• Anfrage-E-Mail: longpapa82@gmail.com\n• Geschäftsregistrierungsnummer: In Bearbeitung — wird vor offizieller kommerzieller Freigabe aktualisiert"
       }
     }
   },
   "privacy": {
     "title": "Datenschutzrichtlinie",
-    "effectiveDate": "Gültig ab: 13. März 2026",
+    "effectiveDate": "26. April 2026",
     "articles": {
       "art1": {
         "title": "1. Erhobene Informationen",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Weitergabe an Dritte",
-        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Affiliate-Partner | Klick-Events (anonymisiert) | Affiliate-Services |\n| Sentry | Fehlerdaten, Nutzerkontext, Gerätemodell | Fehlerüberwachung |\n| RevenueCat | App-Benutzer-ID, Abonnementinformationen | Abonnement-Zahlungsabwicklung |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
+        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Affiliate-Partner | Klick-Events (anonymisiert) | Affiliate-Services |\n| Sentry | Fehlerdaten, Nutzerkontext, Gerätemodell | Fehlerüberwachung |\n| RevenueCat | App-Benutzer-ID, Abonnementinformationen | Abonnement-Zahlungsabwicklung |\n| OpenWeather | Breiten- und Längengrad-Koordinaten | Wetterinformationen |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
       },
       "art4": {
         "title": "4. Datenverarbeitungsdelegation",

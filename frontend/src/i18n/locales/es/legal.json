@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "Términos de servicio",
-    "effectiveDate": "Vigente desde: 13 de marzo de 2026",
+    "effectiveDate": "26 de abril de 2026",
     "articles": {
       "art1": {
         "title": "Artículo 1 (Propósito)",
@@ -221,13 +221,13 @@
       },
       "art18": {
         "title": "Proveedor de servicios",
-        "content": "• Nombre de la empresa: AI Soft\n• Representante: Hoon-jae Park\n• Correo de consulta: longpapa82@gmail.com\n• Número de registro mercantil: se actualizará en el lanzamiento de producción"
+        "content": "• Nombre de la empresa: AI Soft\n• Representante: Hoon-jae Park\n• Correo de consulta: longpapa82@gmail.com\n• Número de registro mercantil: En proceso — se actualizará antes del lanzamiento comercial oficial"
       }
     }
   },
   "privacy": {
     "title": "Política de privacidad",
-    "effectiveDate": "Vigente desde: 13 de marzo de 2026",
+    "effectiveDate": "26 de abril de 2026",
     "articles": {
       "art1": {
         "title": "1. Información que recopilamos",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Compartir con terceros",
-        "content": "No compartimos información personal excepto:\n\n| Receptor | Datos | Propósito |\n| OpenAI | Destino, fechas, preferencias | Generación de itinerarios con IA |\n| Google (AdSense/AdMob) | ID de anuncio, patrones de uso | Entrega de anuncios |\n| Socios afiliados | Eventos de clic (anónimos) | Servicios de afiliados |\n| Sentry | Datos de errores, contexto de usuario, modelo de dispositivo | Monitoreo de errores |\n| RevenueCat | ID de usuario de la app, información de suscripción | Procesamiento de pago de suscripción |\n\n※ Con consentimiento explícito del usuario\n※ Cuando lo exija la ley"
+        "content": "No compartimos información personal excepto:\n\n| Receptor | Datos | Propósito |\n| OpenAI | Destino, fechas, preferencias | Generación de itinerarios con IA |\n| Google (AdSense/AdMob) | ID de anuncio, patrones de uso | Entrega de anuncios |\n| Socios afiliados | Eventos de clic (anónimos) | Servicios de afiliados |\n| Sentry | Datos de errores, contexto de usuario, modelo de dispositivo | Monitoreo de errores |\n| RevenueCat | ID de usuario de la app, información de suscripción | Procesamiento de pago de suscripción |\n| OpenWeather | Coordenadas de latitud y longitud | Información meteorológica |\n\n※ Con consentimiento explícito del usuario\n※ Cuando lo exija la ley"
       },
       "art4": {
         "title": "4. Delegación del procesamiento de datos",

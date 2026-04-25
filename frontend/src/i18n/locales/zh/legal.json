@@ -149,7 +149,7 @@
   },
   "terms": {
     "title": "服务条款",
-    "effectiveDate": "生效日期：2026年3月13日",
+    "effectiveDate": "2026年4月26日",
     "articles": {
       "art1": {
         "title": "第一条（目的）",
@@ -221,13 +221,13 @@
       },
       "art18": {
         "title": "服务提供者",
-        "content": "• 公司名称: AI Soft\n• 代表: Hoon-jae Park (朴勳宰)\n• 咨询邮箱: longpapa82@gmail.com\n• 营业执照号码: 将在正式发布时更新"
+        "content": "• 公司名称: AI Soft\n• 代表: Hoon-jae Park (朴勳宰)\n• 咨询邮箱: longpapa82@gmail.com\n• 营业执照号码: 处理中 — 将在正式商业发布前更新"
       }
     }
   },
   "privacy": {
     "title": "隐私政策",
-    "effectiveDate": "生效日期：2026年3月13日",
+    "effectiveDate": "2026年4月26日",
     "articles": {
       "art1": {
         "title": "第一条（收集的个人信息）",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "第三条（向第三方提供个人信息）",
-        "content": "除以下情况外，不向第三方提供个人信息：\n\n| 接收方 | 数据 | 目的 |\n| OpenAI | 目的地、日期、偏好 | AI行程生成 |\n| Google (AdSense/AdMob) | 广告ID、使用模式 | 广告投放 |\n| 合作伙伴 | 点击事件（匿名化） | 合作服务 |\n| Sentry | 错误数据、用户上下文、设备型号 | 错误监控 |\n| RevenueCat | 应用用户 ID、订阅信息 | 订阅付款处理 |\n\n※ 经用户明确同意\n※ 法律要求时"
+        "content": "除以下情况外，不向第三方提供个人信息：\n\n| 接收方 | 数据 | 目的 |\n| OpenAI | 目的地、日期、偏好 | AI行程生成 |\n| Google (AdSense/AdMob) | 广告ID、使用模式 | 广告投放 |\n| 合作伙伴 | 点击事件（匿名化） | 合作服务 |\n| Sentry | 错误数据、用户上下文、设备型号 | 错误监控 |\n| RevenueCat | 应用用户 ID、订阅信息 | 订阅付款处理 |\n| OpenWeather | 纬度、经度坐标 | 天气信息 |\n\n※ 经用户明确同意\n※ 法律要求时"
       },
       "art4": {
         "title": "第四条（个人信息处理委托）",
