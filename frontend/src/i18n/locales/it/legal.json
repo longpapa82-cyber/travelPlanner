@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "L'utilizzo del servizio è a pagamento?",
-        "a": "MyTravel è gratuito con fino a 3 generazioni di viaggi AI al mese. L'abbonamento Premium (3,99$/mese o 29,99$/anno) sblocca la generazione AI illimitata, un'esperienza senza pubblicità e funzionalità avanzate. Gli utenti gratuiti vedranno pubblicità per supportare le operazioni del servizio."
+        "a": "MyTravel è gratuito con fino a 3 generazioni di viaggi AI al mese. L'abbonamento Premium (3,99$/mese o 29,99$/anno) sblocca la 30 generazioni AI al mese, un'esperienza senza pubblicità e funzionalità avanzate. Gli utenti gratuiti vedranno pubblicità per supportare le operazioni del servizio."
       },
       "adInfo": {
         "q": "Come vengono mostrate le pubblicità?",
@@ -129,7 +129,7 @@
       },
       "premium": {
         "q": "Cos'è l'abbonamento Premium?",
-        "a": "Premium (3,99$/mese o 29,99$/anno) ti offre generazione di viaggi AI illimitata, esperienza senza pubblicità e funzionalità avanzate. Gli utenti gratuiti possono creare fino a 3 viaggi AI al mese. Puoi annullare in qualsiasi momento e il tuo piano tornerà gratuito alla fine del periodo di fatturazione."
+        "a": "Premium (3,99$/mese o 29,99$/anno) ti offre 30 generazioni di viaggi AI al mese, esperienza senza pubblicità e funzionalità avanzate. Gli utenti gratuiti possono creare fino a 3 viaggi AI al mese. Puoi annullare in qualsiasi momento e il tuo piano tornerà gratuito alla fine del periodo di fatturazione."
       },
       "premiumCancel": {
         "q": "Come annullo l'abbonamento Premium?",
@@ -161,7 +161,7 @@
       },
       "art3": {
         "title": "Articolo 3 (Descrizione del servizio)",
-        "content": "Il Servizio fornisce:\n• Generazione automatica di piani di viaggio tramite AI\n• Gestione di modifica, aggiunta ed eliminazione dei piani di viaggio\n• Informazioni su meteo locale e fusi orari\n• Monitoraggio dei progressi di viaggio\n• Visualizzazione dello storico dei viaggi passati\n• Accesso offline all'itinerario e sincronizzazione\n• Gestione del budget e monitoraggio delle spese\n• Caricamento e gestione delle foto di viaggio\n• Funzioni social (scoperta viaggi, follow, mi piace)\n• Condivisione viaggi (condivisione tramite link, inviti per collaboratori)\n• Abbonamento Premium (AI illimitata, senza pubblicità)\n• Supporto multilingue (17 lingue)\n• Servizi di notifica"
+        "content": "Il Servizio fornisce:\n• Generazione automatica di piani di viaggio tramite AI\n• Gestione di modifica, aggiunta ed eliminazione dei piani di viaggio\n• Informazioni su meteo locale e fusi orari\n• Monitoraggio dei progressi di viaggio\n• Visualizzazione dello storico dei viaggi passati\n• Accesso offline all'itinerario e sincronizzazione\n• Gestione del budget e monitoraggio delle spese\n• Caricamento e gestione delle foto di viaggio\n• Funzioni social (scoperta viaggi, follow, mi piace)\n• Condivisione viaggi (condivisione tramite link, inviti per collaboratori)\n• Abbonamento Premium (AI 30 al mese, senza pubblicità)\n• Supporto multilingue (17 lingue)\n• Servizi di notifica"
       },
       "art4": {
         "title": "Articolo 4 (Registrazione dell'account)",
@@ -173,7 +173,7 @@
       },
       "art6": {
         "title": "Articolo 6 (Termini del servizio AI)",
-        "content": "① L'accuratezza, la sicurezza e l'idoneità dei piani di viaggio generati dall'AI non sono garantite.\n② I dati vengono elaborati tramite l'API di OpenAI per la generazione dell'itinerario, come descritto nella nostra Informativa sulla privacy.\n③ I dati di viaggio inseriti dagli utenti non vengono utilizzati per l'addestramento del modello AI.\n④ I servizi AI possono essere temporaneamente limitati per circostanze tecniche.\n⑤ Gli utenti gratuiti sono limitati a 3 generazioni di viaggi AI al mese; gli abbonati Premium hanno accesso illimitato."
+        "content": "① L'accuratezza, la sicurezza e l'idoneità dei piani di viaggio generati dall'AI non sono garantite.\n② I dati vengono elaborati tramite l'API di OpenAI per la generazione dell'itinerario, come descritto nella nostra Informativa sulla privacy.\n③ I dati di viaggio inseriti dagli utenti non vengono utilizzati per l'addestramento del modello AI.\n④ I servizi AI possono essere temporaneamente limitati per circostanze tecniche.\n⑤ Gli utenti gratuiti sono limitati a 3 generazioni di viaggi AI al mese; gli abbonati Premium ottengono 30 generazioni al mese."
       },
       "art7": {
         "title": "Articolo 7 (Attività vietate)",
@@ -185,7 +185,7 @@
       },
       "art9": {
         "title": "Articolo 9 (Abbonamento Premium)",
-        "content": "① L'abbonamento Premium è disponibile in piani mensili (3,99$/mese) o annuali (29,99$/anno).\n② Premium fornisce generazione di viaggi AI illimitata, rimozione delle pubblicità e funzionalità avanzate.\n③ Gli abbonamenti si rinnovano automaticamente alla data di fatturazione. Annulla almeno 24 ore prima del rinnovo per evitare addebiti.\n④ L'annullamento viene gestito tramite le impostazioni dell'abbonamento di Apple App Store o Google Play Store.\n⑤ Dopo l'annullamento, le funzionalità Premium rimangono disponibili fino alla fine del periodo di fatturazione corrente.\n⑥ Le politiche di rimborso seguono le rispettive politiche degli app store di Apple e Google.\n⑦ I pagamenti vengono elaborati tramite RevenueCat. Le informazioni della carta di credito non vengono memorizzate direttamente dal Servizio."
+        "content": "① L'abbonamento Premium è disponibile in piani mensili (3,99$/mese) o annuali (29,99$/anno).\n② Premium fornisce 30 generazioni di viaggi AI al mese, rimozione delle pubblicità e funzionalità avanzate.\n③ Gli abbonamenti si rinnovano automaticamente alla data di fatturazione. Annulla almeno 24 ore prima del rinnovo per evitare addebiti.\n④ L'annullamento viene gestito tramite le impostazioni dell'abbonamento di Apple App Store o Google Play Store.\n⑤ Dopo l'annullamento, le funzionalità Premium rimangono disponibili fino alla fine del periodo di fatturazione corrente.\n⑥ Le politiche di rimborso seguono le rispettive politiche degli app store di Apple e Google.\n⑦ I pagamenti vengono elaborati tramite RevenueCat. Le informazioni della carta di credito non vengono memorizzate direttamente dal Servizio."
       },
       "art10": {
         "title": "Articolo 10 (Contenuti degli utenti e condivisione)",
@@ -217,7 +217,7 @@
       },
       "art17": {
         "title": "Articolo 17 (Disposizioni aggiuntive)",
-        "content": "I presenti Termini sono in vigore dal 1 marzo 2026."
+        "content": "I presenti Termini sono in vigore dal 26 aprile 2026."
       },
       "art18": {
         "title": "Fornitore del servizio",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Condivisione con terze parti",
-        "content": "Non condividiamo informazioni personali ad eccezione di:\n\n| Destinatario | Dati | Scopo |\n| OpenAI | Destinazione, date, preferenze | Generazione itinerario AI |\n| Google (AdSense/AdMob) | ID pubblicitario, pattern di utilizzo | Distribuzione pubblicità |\n| RevenueCat | ID utente app, informazioni abbonamento | Elaborazione pagamenti abbonamento |\n| Google Maps API | Query di ricerca, token di sessione | Ricerca luoghi |\n| OpenWeather API | Coordinate latitudine, longitudine | Informazioni meteo |\n| Sentry | Dati errore, contesto utente | Monitoraggio errori |\n| App Store / Google Play | Dati di acquisto | Elaborazione acquisti in-app |\n\n※ Con consenso esplicito dell'utente\n※ Quando richiesto dalla legge"
+        "content": "Non condividiamo informazioni personali ad eccezione di:\n\n| Destinatario | Dati | Scopo |\n| OpenAI | Destinazione, date, preferenze | Generazione itinerario AI |\n| Google (AdSense/AdMob) | ID pubblicitario, pattern di utilizzo | Distribuzione pubblicità |\n| RevenueCat | ID utente app, informazioni abbonamento | Elaborazione pagamenti abbonamento |\n| Google Maps API | Query di ricerca, token di sessione | Ricerca luoghi |\n| OpenWeather API | Coordinate latitudine, longitudine | Informazioni meteo |\n| Sentry | Dati errore, contesto utente | Monitoraggio errori |\n| Mapbox | Query di ricerca | Ricerca di luoghi |\n| LocationIQ | Query di ricerca | Geocodifica |\n| Expo | Token push, info dispositivo | Notifiche push |\n| App Store / Google Play | Dati di acquisto | Elaborazione acquisti in-app |\n\n※ Con consenso esplicito dell'utente\n※ Quando richiesto dalla legge"
       },
       "art4": {
         "title": "4. Delega dell'elaborazione dati",
@@ -283,7 +283,7 @@
       },
       "art14": {
         "title": "14. Modifiche all'informativa",
-        "content": "Le modifiche verranno notificate almeno 7 giorni prima dell'entrata in vigore tramite avvisi in-app.\n\nLa presente informativa è in vigore dal 1 marzo 2026."
+        "content": "Le modifiche verranno notificate almeno 7 giorni prima dell'entrata in vigore tramite avvisi in-app.\n\nLa presente informativa è in vigore dal 26 aprile 2026."
       },
       "ccpa": {
         "title": "Diritti del consumatore CCPA (California)",

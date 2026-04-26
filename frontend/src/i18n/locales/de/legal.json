@@ -129,7 +129,7 @@
       },
       "premium": {
         "q": "Was ist das Premium-Abonnement?",
-        "a": "Premium ($3,99/Monat oder $29,99/Jahr) bietet unbegrenzte KI-Reiseplanung, werbefreies Erlebnis und erweiterte Funktionen. Kostenlose Nutzer können bis zu 3 KI-Reisen pro Monat erstellen. Jederzeit kündbar."
+        "a": "Premium ($3,99/Monat oder $29,99/Jahr) bietet monatlich 30 KI-Reiseplanung, werbefreies Erlebnis und erweiterte Funktionen. Kostenlose Nutzer können bis zu 3 KI-Reisen pro Monat erstellen. Jederzeit kündbar."
       },
       "premiumCancel": {
         "q": "Wie kündige ich Premium?",
@@ -181,7 +181,7 @@
       },
       "art8": {
         "title": "Artikel 8 (Werbung und Affiliates)",
-        "content": "① Der Service kann Anzeigen über Google AdSense, AdMob und Affiliate-Programme anzeigen.\n② Die Verantwortung für Anzeigeninhalte liegt bei den jeweiligen Werbetreibenden.\n③ Bei Buchungen über Affiliate-Links können separate Bedingungen gelten."
+        "content": "② Die Verantwortung für Anzeigeninhalte liegt bei den jeweiligen Werbetreibenden.\n③ Bei Buchungen über Affiliate-Links können separate Bedingungen gelten."
       },
       "art9": {
         "title": "Artikel 9 (Geistiges Eigentum)",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Weitergabe an Dritte",
-        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Sentry | Fehlerdaten, Nutzerkontext, Gerätemodell | Fehlerüberwachung |\n| RevenueCat | App-Benutzer-ID, Abonnementinformationen | Abonnement-Zahlungsabwicklung |\n| OpenWeather | Breiten- und Längengrad-Koordinaten | Wetterinformationen |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
+        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Sentry | Fehlerdaten, Nutzerkontext, Gerätemodell | Fehlerüberwachung |\n| Mapbox | Suchanfragen | Ortssuche |\n| LocationIQ | Suchanfragen | Geocoding |\n| Expo | Push-Token, Geräteinformationen | Push-Benachrichtigungen |\n| RevenueCat | App-Benutzer-ID, Abonnementinformationen | Abonnement-Zahlungsabwicklung |\n| OpenWeather | Breiten- und Längengrad-Koordinaten | Wetterinformationen |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
       },
       "art4": {
         "title": "4. Datenverarbeitungsdelegation",

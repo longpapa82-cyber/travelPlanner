@@ -129,7 +129,7 @@
       },
       "premium": {
         "q": "Qu'est-ce que l'abonnement Premium ?",
-        "a": "Premium (3,99 $/mois ou 29,99 $/an) offre la génération illimitée de voyages IA, une expérience sans publicité et des fonctionnalités améliorées. Les utilisateurs gratuits peuvent créer jusqu'à 3 voyages IA par mois. Annulable à tout moment."
+        "a": "Premium (3,99 $/mois ou 29,99 $/an) offre la 30 générations de voyages IA par mois, une expérience sans publicité et des fonctionnalités améliorées. Les utilisateurs gratuits peuvent créer jusqu'à 3 voyages IA par mois. Annulable à tout moment."
       },
       "premiumCancel": {
         "q": "Comment annuler Premium ?",
@@ -217,7 +217,7 @@
       },
       "art17": {
         "title": "Article 17 (Addendum)",
-        "content": "Les presentes conditions entrent en vigueur le 1er mars 2026."
+        "content": "Les presentes conditions entrent en vigueur le 26 avril 2026."
       },
       "art18": {
         "title": "Fournisseur de services",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Partage avec des tiers",
-        "content": "Nous ne partageons pas les informations personnelles, sauf :\n\n| Destinataire | Données | Finalité |\n| OpenAI | Destination, dates, préférences | Génération d'itinéraires par IA |\n| Google (AdSense/AdMob) | Identifiant publicitaire, habitudes d'utilisation | Diffusion de publicités |\n| Sentry | Données d'erreur, contexte utilisateur, modèle d'appareil | Surveillance des erreurs |\n| RevenueCat | ID utilisateur de l'application, informations d'abonnement | Traitement du paiement de l'abonnement |\n| OpenWeather | Coordonnées de latitude et longitude | Informations météorologiques |\n\n※ Avec le consentement explicite de l'utilisateur\n※ Lorsque la loi l'exige"
+        "content": "Nous ne partageons pas les informations personnelles, sauf :\n\n| Destinataire | Données | Finalité |\n| OpenAI | Destination, dates, préférences | Génération d'itinéraires par IA |\n| Google (AdSense/AdMob) | Identifiant publicitaire, habitudes d'utilisation | Diffusion de publicités |\n| Sentry | Données d'erreur, contexte utilisateur, modèle d'appareil | Surveillance des erreurs |\n| Mapbox | Requêtes de recherche | Recherche de lieux |\n| LocationIQ | Requêtes de recherche | Géocodage |\n| Expo | Jeton push, informations sur l'appareil | Notifications push |\n| RevenueCat | ID utilisateur de l'application, informations d'abonnement | Traitement du paiement de l'abonnement |\n| OpenWeather | Coordonnées de latitude et longitude | Informations météorologiques |\n\n※ Avec le consentement explicite de l'utilisateur\n※ Lorsque la loi l'exige"
       },
       "art4": {
         "title": "4. Délégation du traitement des données",
@@ -283,7 +283,7 @@
       },
       "art14": {
         "title": "14. Modifications de la politique",
-        "content": "Les modifications seront notifiees au moins 7 jours avant leur entree en vigueur. Cette politique entre en vigueur le 1er mars 2026."
+        "content": "Les modifications seront notifiees au moins 7 jours avant leur entree en vigueur. Cette politique entre en vigueur le 26 avril 2026."
       },
       "art15": {
         "title": "15. Transfert international de données",

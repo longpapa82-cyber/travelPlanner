@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Adakah terdapat bayaran untuk menggunakan perkhidmatan ini?",
-        "a": "MyTravel adalah percuma dengan sehingga 3 penjanaan perjalanan AI sebulan. Langganan Premium ($3.99/bulan atau $29.99/tahun) membuka kunci penjanaan AI tanpa had, pengalaman tanpa iklan, dan ciri yang dipertingkatkan. Pengguna percuma akan melihat iklan untuk menyokong operasi perkhidmatan."
+        "a": "MyTravel adalah percuma dengan sehingga 3 penjanaan perjalanan AI sebulan. Langganan Premium ($3.99/bulan atau $29.99/tahun) membuka kunci 30 penjanaan AI sebulan, pengalaman tanpa iklan, dan ciri yang dipertingkatkan. Pengguna percuma akan melihat iklan untuk menyokong operasi perkhidmatan."
       },
       "adInfo": {
         "q": "Bagaimana iklan dipaparkan?",
@@ -129,7 +129,7 @@
       },
       "premium": {
         "q": "Apakah langganan Premium?",
-        "a": "Premium ($3.99/bulan atau $29.99/tahun) memberikan anda penjanaan perjalanan AI tanpa had, pengalaman tanpa iklan, dan ciri yang dipertingkatkan. Pengguna percuma boleh mencipta sehingga 3 perjalanan AI sebulan. Anda boleh membatalkan pada bila-bila masa, dan pelan anda akan kembali kepada percuma pada akhir tempoh pengebilan."
+        "a": "Premium ($3.99/bulan atau $29.99/tahun) memberikan anda penjanaan 30 perjalanan AI sebulan, pengalaman tanpa iklan, dan ciri yang dipertingkatkan. Pengguna percuma boleh mencipta sehingga 3 perjalanan AI sebulan. Anda boleh membatalkan pada bila-bila masa, dan pelan anda akan kembali kepada percuma pada akhir tempoh pengebilan."
       },
       "premiumCancel": {
         "q": "Bagaimana cara membatalkan Premium?",
@@ -161,7 +161,7 @@
       },
       "art3": {
         "title": "Perkara 3 (Penerangan Perkhidmatan)",
-        "content": "Perkhidmatan ini menyediakan:\n• Penjanaan pelan perjalanan automatik berkuasa AI\n• Pengurusan pengeditan, penambahan, dan pemadaman pelan perjalanan\n• Maklumat cuaca tempatan dan zon waktu\n• Penjejakan kemajuan perjalanan\n• Melihat sejarah perjalanan lepas\n• Akses jadual perjalanan luar talian dan segerak\n• Pengurusan bajet dan penjejakan perbelanjaan\n• Muat naik dan pengurusan foto perjalanan\n• Ciri sosial (penemuan perjalanan, ikuti, suka)\n• Perkongsian perjalanan (perkongsian berasaskan pautan, jemputan kolaborator)\n• Langganan Premium (AI tanpa had, tanpa iklan)\n• Sokongan pelbagai bahasa (17 bahasa)\n• Perkhidmatan pemberitahuan"
+        "content": "Perkhidmatan ini menyediakan:\n• Penjanaan pelan perjalanan automatik berkuasa AI\n• Pengurusan pengeditan, penambahan, dan pemadaman pelan perjalanan\n• Maklumat cuaca tempatan dan zon waktu\n• Penjejakan kemajuan perjalanan\n• Melihat sejarah perjalanan lepas\n• Akses jadual perjalanan luar talian dan segerak\n• Pengurusan bajet dan penjejakan perbelanjaan\n• Muat naik dan pengurusan foto perjalanan\n• Ciri sosial (penemuan perjalanan, ikuti, suka)\n• Perkongsian perjalanan (perkongsian berasaskan pautan, jemputan kolaborator)\n• Langganan Premium (AI 30 sebulan, tanpa iklan)\n• Sokongan pelbagai bahasa (17 bahasa)\n• Perkhidmatan pemberitahuan"
       },
       "art4": {
         "title": "Perkara 4 (Pendaftaran Akaun)",
@@ -173,7 +173,7 @@
       },
       "art6": {
         "title": "Perkara 6 (Terma Perkhidmatan AI)",
-        "content": "① Ketepatan, keselamatan, dan kesesuaian pelan perjalanan yang dijana AI tidak dijamin.\n② Data diproses melalui API OpenAI untuk penjanaan jadual perjalanan, seperti yang diterangkan dalam Dasar Privasi kami.\n③ Data perjalanan yang dimasukkan pengguna tidak digunakan untuk latihan model AI.\n④ Perkhidmatan AI mungkin dihadkan sementara atas sebab teknikal.\n⑤ Pengguna percuma dihadkan kepada 3 penjanaan perjalanan AI sebulan; pelanggan Premium mempunyai akses tanpa had."
+        "content": "① Ketepatan, keselamatan, dan kesesuaian pelan perjalanan yang dijana AI tidak dijamin.\n② Data diproses melalui API OpenAI untuk penjanaan jadual perjalanan, seperti yang diterangkan dalam Dasar Privasi kami.\n③ Data perjalanan yang dimasukkan pengguna tidak digunakan untuk latihan model AI.\n④ Perkhidmatan AI mungkin dihadkan sementara atas sebab teknikal.\n⑤ Pengguna percuma dihadkan kepada 3 penjanaan perjalanan AI sebulan; pelanggan Premium mendapat 30 penjanaan sebulan."
       },
       "art7": {
         "title": "Perkara 7 (Aktiviti Dilarang)",
@@ -181,11 +181,11 @@
       },
       "art8": {
         "title": "Perkara 8 (Pengiklanan dan Afiliasi)",
-        "content": "① Perkhidmatan boleh memaparkan iklan melalui Google AdSense, AdMob, dan program afiliasi.\n② Tanggungjawab untuk kandungan iklan terletak pada pengiklan masing-masing.\n③ Terma berasingan mungkin terpakai apabila membuat tempahan melalui pautan afiliasi.\n④ Pelanggan Premium tidak melihat iklan."
+        "content": "② Tanggungjawab untuk kandungan iklan terletak pada pengiklan masing-masing.\n③ Terma berasingan mungkin terpakai apabila membuat tempahan melalui pautan afiliasi.\n④ Pelanggan Premium tidak melihat iklan."
       },
       "art9": {
         "title": "Perkara 9 (Langganan Premium)",
-        "content": "① Langganan Premium tersedia sebagai pelan bulanan ($3.99/bulan) atau tahunan ($29.99/tahun).\n② Premium menyediakan penjanaan perjalanan AI tanpa had, penyingkiran iklan, dan ciri yang dipertingkatkan.\n③ Langganan diperbaharui secara automatik pada tarikh pengebilan. Batalkan sekurang-kurangnya 24 jam sebelum pembaharuan untuk mengelakkan caj.\n④ Pembatalan diuruskan melalui tetapan langganan Apple App Store atau Google Play Store.\n⑤ Selepas pembatalan, ciri Premium kekal tersedia sehingga akhir tempoh pengebilan semasa.\n⑥ Dasar bayaran balik mengikut dasar gedung aplikasi Apple dan Google masing-masing.\n⑦ Pembayaran diproses melalui RevenueCat. Maklumat kad kredit tidak disimpan secara langsung oleh Perkhidmatan."
+        "content": "① Langganan Premium tersedia sebagai pelan bulanan ($3.99/bulan) atau tahunan ($29.99/tahun).\n② Premium menyediakan penjanaan 30 perjalanan AI sebulan, penyingkiran iklan, dan ciri yang dipertingkatkan.\n③ Langganan diperbaharui secara automatik pada tarikh pengebilan. Batalkan sekurang-kurangnya 24 jam sebelum pembaharuan untuk mengelakkan caj.\n④ Pembatalan diuruskan melalui tetapan langganan Apple App Store atau Google Play Store.\n⑤ Selepas pembatalan, ciri Premium kekal tersedia sehingga akhir tempoh pengebilan semasa.\n⑥ Dasar bayaran balik mengikut dasar gedung aplikasi Apple dan Google masing-masing.\n⑦ Pembayaran diproses melalui RevenueCat. Maklumat kad kredit tidak disimpan secara langsung oleh Perkhidmatan."
       },
       "art10": {
         "title": "Perkara 10 (Kandungan Pengguna dan Perkongsian)",
@@ -217,7 +217,7 @@
       },
       "art17": {
         "title": "Perkara 17 (Tambahan)",
-        "content": "Terma ini berkuat kuasa mulai 1 Mac 2026."
+        "content": "Terma ini berkuat kuasa mulai 26 April 2026."
       },
       "art18": {
         "title": "Penyedia Perkhidmatan",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Perkongsian Dengan Pihak Ketiga",
-        "content": "Kami tidak berkongsi maklumat peribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Destinasi, tarikh, pilihan | Penjanaan jadual perjalanan AI |\n| Google (AdSense/AdMob) | ID iklan, corak penggunaan | Penyampaian iklan |\n| RevenueCat | ID pengguna aplikasi, maklumat langganan | Pemprosesan pembayaran langganan |\n| Google Maps API | Pertanyaan carian, token sesi | Carian tempat |\n| OpenWeather API | Koordinat latitud, longitud | Maklumat cuaca |\n| Sentry | Data ralat, konteks pengguna | Pemantauan ralat |\n| Rakan kongsi afiliasi | Peristiwa klik, alamat IP, Ejen Pengguna | Sambungan perkhidmatan afiliasi dan penjejakan penukaran |\n| App Store / Google Play | Data pembelian | Pemprosesan pembelian dalam aplikasi |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Apabila dikehendaki oleh undang-undang"
+        "content": "Kami tidak berkongsi maklumat peribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Destinasi, tarikh, pilihan | Penjanaan jadual perjalanan AI |\n| Google (AdSense/AdMob) | ID iklan, corak penggunaan | Penyampaian iklan |\n| RevenueCat | ID pengguna aplikasi, maklumat langganan | Pemprosesan pembayaran langganan |\n| Google Maps API | Pertanyaan carian, token sesi | Carian tempat |\n| OpenWeather API | Koordinat latitud, longitud | Maklumat cuaca |\n| Sentry | Data ralat, konteks pengguna | Pemantauan ralat |\n| Mapbox | Pertanyaan carian | Carian tempat |\n| LocationIQ | Pertanyaan carian | Geocoding |\n| Expo | Token push, info peranti | Pemberitahuan push |\n| Rakan kongsi afiliasi | Peristiwa klik, alamat IP, Ejen Pengguna | Sambungan perkhidmatan afiliasi dan penjejakan penukaran |\n| App Store / Google Play | Data pembelian | Pemprosesan pembelian dalam aplikasi |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Apabila dikehendaki oleh undang-undang"
       },
       "art4": {
         "title": "4. Delegasi Pemprosesan Data",
@@ -283,7 +283,7 @@
       },
       "art14": {
         "title": "14. Perubahan Dasar",
-        "content": "Perubahan akan dimaklumkan sekurang-kurangnya 7 hari sebelum berkuat kuasa melalui notis dalam aplikasi.\n\nDasar ini berkuat kuasa mulai 1 Mac 2026."
+        "content": "Perubahan akan dimaklumkan sekurang-kurangnya 7 hari sebelum berkuat kuasa melalui notis dalam aplikasi.\n\nDasar ini berkuat kuasa mulai 26 April 2026."
       },
       "ccpa": {
         "title": "Hak Pengguna CCPA (California)",

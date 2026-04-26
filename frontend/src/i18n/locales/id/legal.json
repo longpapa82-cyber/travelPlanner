@@ -181,7 +181,7 @@
       },
       "art8": {
         "title": "Pasal 8 (Iklan dan Afiliasi)",
-        "content": "① Layanan dapat menampilkan iklan melalui Google AdSense, AdMob, dan program afiliasi.\n② Tanggung jawab atas konten iklan ada pada pengiklan masing-masing.\n③ Ketentuan terpisah mungkin berlaku saat memesan melalui tautan afiliasi."
+        "content": "② Tanggung jawab atas konten iklan ada pada pengiklan masing-masing.\n③ Ketentuan terpisah mungkin berlaku saat memesan melalui tautan afiliasi."
       },
       "art9": {
         "title": "Pasal 9 (Kekayaan Intelektual)",
@@ -217,7 +217,7 @@
       },
       "art17": {
         "title": "Pasal 17 (Tambahan)",
-        "content": "Ketentuan ini berlaku mulai 1 Maret 2026."
+        "content": "Ketentuan ini berlaku mulai 26 April 2026."
       },
       "art18": {
         "title": "Penyedia Layanan",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Berbagi dengan Pihak Ketiga",
-        "content": "Kami tidak membagikan info pribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Tujuan, tanggal, preferensi | Pembuatan jadwal AI |\n| Google (AdSense/AdMob) | ID iklan, pola penggunaan | Penayangan iklan |\n| Mitra afiliasi | Event klik (anonim) | Layanan afiliasi |\n| Sentry | Data kesalahan, konteks pengguna, model perangkat | Pemantauan kesalahan |\n| RevenueCat | ID pengguna aplikasi, informasi langganan | Pemrosesan pembayaran langganan |\n| OpenWeather | Koordinat lintang dan bujur | Informasi cuaca |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Ketika diwajibkan oleh hukum"
+        "content": "Kami tidak membagikan info pribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Tujuan, tanggal, preferensi | Pembuatan jadwal AI |\n| Google (AdSense/AdMob) | ID iklan, pola penggunaan | Penayangan iklan |\n| Mitra afiliasi | Event klik (anonim) | Layanan afiliasi |\n| Sentry | Data kesalahan, konteks pengguna, model perangkat | Pemantauan kesalahan |\n| Mapbox | Kueri pencarian | Pencarian tempat |\n| LocationIQ | Kueri pencarian | Geocoding |\n| Expo | Token push, info perangkat | Notifikasi push |\n| RevenueCat | ID pengguna aplikasi, informasi langganan | Pemrosesan pembayaran langganan |\n| OpenWeather | Koordinat lintang dan bujur | Informasi cuaca |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Ketika diwajibkan oleh hukum"
       },
       "art4": {
         "title": "4. Delegasi Pemrosesan Data",
@@ -283,7 +283,7 @@
       },
       "art14": {
         "title": "14. Perubahan Kebijakan",
-        "content": "Perubahan akan diberitahukan setidaknya 7 hari sebelum berlaku. Kebijakan ini berlaku mulai 1 Maret 2026."
+        "content": "Perubahan akan diberitahukan setidaknya 7 hari sebelum berlaku. Kebijakan ini berlaku mulai 26 April 2026."
       },
       "art15": {
         "title": "15. Transfer Data Internasional",

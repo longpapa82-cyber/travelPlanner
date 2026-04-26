@@ -202,7 +202,12 @@ class ApiService {
     this.api.interceptors.response.use(undefined, (error: AxiosError) => {
       const status = error.response?.status;
       if (status && status >= 500) {
-        const url = error.config?.url || 'unknown';
+        const rawUrl = error.config?.url || 'unknown';
+        // V185 (Invariant 35): strip query string before reporting to avoid
+        // persisting PII (email, search query, share token) in error_logs.
+        // Path-only is sufficient for grouping/filtering; query content
+        // belongs in Sentry breadcrumbs (separate retention policy) only.
+        const url = rawUrl.split('?')[0];
         // Don't report errors from the error-reporting endpoint itself
         if (url.includes('/error-logs')) {
           return Promise.reject(error);

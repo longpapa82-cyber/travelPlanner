@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Hizmetin kullanım ücreti var mı?",
-        "a": "MyTravel, ayda 3 AI gezi oluşturma hakkıyla ücretsiz kullanılabilir. Premium abonelik (aylık 3,99$ veya yıllık 29,99$) sınırsız AI oluşturma, reklamsız deneyim ve gelişmiş özellikler sunar. Ücretsiz kullanıcılar, hizmet devamlılığını desteklemek için reklamlar görecektir."
+        "a": "MyTravel, ayda 3 AI gezi oluşturma hakkıyla ücretsiz kullanılabilir. Premium abonelik (aylık 3,99$ veya yıllık 29,99$) aylık 30 AI oluşturma, reklamsız deneyim ve gelişmiş özellikler sunar. Ücretsiz kullanıcılar, hizmet devamlılığını desteklemek için reklamlar görecektir."
       },
       "adInfo": {
         "q": "Reklamlar nasıl gösterilir?",
@@ -129,7 +129,7 @@
       },
       "premium": {
         "q": "Premium abonelik nedir?",
-        "a": "Premium (aylık 3,99$ veya yıllık 29,99$) sınırsız AI gezi oluşturma, reklamsız deneyim ve gelişmiş özellikler sunar. Ücretsiz kullanıcılar ayda 3 AI gezisi oluşturabilir. İstediğiniz zaman iptal edebilirsiniz; planınız fatura döneminin sonunda ücretsiz plana dönecektir."
+        "a": "Premium (aylık 3,99$ veya yıllık 29,99$) aylık 30 AI gezi oluşturma, reklamsız deneyim ve gelişmiş özellikler sunar. Ücretsiz kullanıcılar ayda 3 AI gezisi oluşturabilir. İstediğiniz zaman iptal edebilirsiniz; planınız fatura döneminin sonunda ücretsiz plana dönecektir."
       },
       "premiumCancel": {
         "q": "Premium'u nasıl iptal ederim?",
@@ -161,7 +161,7 @@
       },
       "art3": {
         "title": "Madde 3 (Hizmet Açıklaması)",
-        "content": "Hizmet şunları sağlar:\n• AI destekli otomatik seyahat planı oluşturma\n• Seyahat planı düzenleme, ekleme ve silme yönetimi\n• Yerel hava durumu ve saat dilimi bilgileri\n• Seyahat ilerleme takibi\n• Geçmiş seyahat geçmişi görüntüleme\n• Çevrimdışı güzergah erişimi ve senkronizasyon\n• Bütçe yönetimi ve harcama takibi\n• Gezi fotoğrafı yükleme ve yönetimi\n• Sosyal özellikler (gezi keşfi, takip, beğeni)\n• Gezi paylaşımı (bağlantı tabanlı paylaşım, işbirlikçi davetleri)\n• Premium abonelik (sınırsız AI, reklamsız)\n• Çoklu dil desteği (17 dil)\n• Bildirim hizmetleri"
+        "content": "Hizmet şunları sağlar:\n• AI destekli otomatik seyahat planı oluşturma\n• Seyahat planı düzenleme, ekleme ve silme yönetimi\n• Yerel hava durumu ve saat dilimi bilgileri\n• Seyahat ilerleme takibi\n• Geçmiş seyahat geçmişi görüntüleme\n• Çevrimdışı güzergah erişimi ve senkronizasyon\n• Bütçe yönetimi ve harcama takibi\n• Gezi fotoğrafı yükleme ve yönetimi\n• Sosyal özellikler (gezi keşfi, takip, beğeni)\n• Gezi paylaşımı (bağlantı tabanlı paylaşım, işbirlikçi davetleri)\n• Premium abonelik (aylık 30 AI, reklamsız)\n• Çoklu dil desteği (17 dil)\n• Bildirim hizmetleri"
       },
       "art4": {
         "title": "Madde 4 (Hesap Kaydı)",
@@ -173,7 +173,7 @@
       },
       "art6": {
         "title": "Madde 6 (AI Hizmet Koşulları)",
-        "content": "① AI tarafından oluşturulan seyahat planlarının doğruluğu, güvenliği ve uygunluğu garanti edilmez.\n② Güzergah oluşturma için veriler, Gizlilik Politikamızda açıklandığı şekilde OpenAI API aracılığıyla işlenir.\n③ Kullanıcı tarafından girilen seyahat verileri AI model eğitimi için kullanılmaz.\n④ AI hizmetleri teknik koşullar nedeniyle geçici olarak sınırlandırılabilir.\n⑤ Ücretsiz kullanıcılar aylık 3 AI gezi oluşturma ile sınırlıdır; Premium abonelerin sınırsız erişimi vardır."
+        "content": "① AI tarafından oluşturulan seyahat planlarının doğruluğu, güvenliği ve uygunluğu garanti edilmez.\n② Güzergah oluşturma için veriler, Gizlilik Politikamızda açıklandığı şekilde OpenAI API aracılığıyla işlenir.\n③ Kullanıcı tarafından girilen seyahat verileri AI model eğitimi için kullanılmaz.\n④ AI hizmetleri teknik koşullar nedeniyle geçici olarak sınırlandırılabilir.\n⑤ Ücretsiz kullanıcılar aylık 3 AI gezi oluşturma ile sınırlıdır; Premium aboneler aylık 30 oluşturma alır."
       },
       "art7": {
         "title": "Madde 7 (Yasak Faaliyetler)",
@@ -185,7 +185,7 @@
       },
       "art9": {
         "title": "Madde 9 (Premium Abonelik)",
-        "content": "① Premium abonelik, aylık (3,99$/ay) veya yıllık (29,99$/yıl) plan olarak sunulmaktadır.\n② Premium, sınırsız AI gezi oluşturma, reklam kaldırma ve gelişmiş özellikler sunar.\n③ Abonelikler fatura tarihinde otomatik olarak yenilenir. Ücret alınmaması için yenilemeden en az 24 saat önce iptal edin.\n④ İptal işlemi Apple App Store veya Google Play Store abonelik ayarlarından yapılır.\n⑤ İptalden sonra Premium özellikler mevcut fatura döneminin sonuna kadar kullanılabilir.\n⑥ İade politikaları Apple ve Google'ın ilgili uygulama mağazası politikalarına tabidir.\n⑦ Ödemeler RevenueCat aracılığıyla işlenir. Kredi kartı bilgileri doğrudan Hizmet tarafından saklanmaz."
+        "content": "① Premium abonelik, aylık (3,99$/ay) veya yıllık (29,99$/yıl) plan olarak sunulmaktadır.\n② Premium, aylık 30 AI gezi oluşturma, reklam kaldırma ve gelişmiş özellikler sunar.\n③ Abonelikler fatura tarihinde otomatik olarak yenilenir. Ücret alınmaması için yenilemeden en az 24 saat önce iptal edin.\n④ İptal işlemi Apple App Store veya Google Play Store abonelik ayarlarından yapılır.\n⑤ İptalden sonra Premium özellikler mevcut fatura döneminin sonuna kadar kullanılabilir.\n⑥ İade politikaları Apple ve Google'ın ilgili uygulama mağazası politikalarına tabidir.\n⑦ Ödemeler RevenueCat aracılığıyla işlenir. Kredi kartı bilgileri doğrudan Hizmet tarafından saklanmaz."
       },
       "art10": {
         "title": "Madde 10 (Kullanıcı İçeriği ve Paylaşım)",
@@ -217,7 +217,7 @@
       },
       "art17": {
         "title": "Madde 17 (Ek Hüküm)",
-        "content": "Bu Koşullar 1 Mart 2026 tarihinden itibaren yürürlüktedir."
+        "content": "Bu Koşullar 26 Nisan 2026 tarihinden itibaren yürürlüktedir."
       },
       "art18": {
         "title": "Hizmet Sağlayıcı",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Üçüncü Taraf Paylaşımı",
-        "content": "Aşağıdaki durumlar dışında kişisel bilgi paylaşmıyoruz:\n\n| Alıcı | Veri | Amaç |\n| OpenAI | Destinasyon, tarihler, tercihler | AI güzergah oluşturma |\n| Google (AdSense/AdMob) | Reklam kimliği, kullanım kalıpları | Reklam sunumu |\n| RevenueCat | Uygulama kullanıcı kimliği, abonelik bilgileri | Abonelik ödeme işleme |\n| Google Maps API | Arama sorguları, oturum jetonları | Yer arama |\n| OpenWeather API | Enlem, boylam koordinatları | Hava durumu bilgileri |\n| Sentry | Hata verileri, kullanıcı bağlamı | Hata izleme |\n| Ortaklık iş ortakları | Tıklama olayları, IP adresi, Kullanıcı Aracısı | Ortaklık hizmeti bağlantısı ve dönüşüm takibi |\n| App Store / Google Play | Satın alma verileri | Uygulama içi satın alma işleme |\n\n※ Kullanıcının açık onayı ile\n※ Yasaların gerektirdiği durumlarda"
+        "content": "Aşağıdaki durumlar dışında kişisel bilgi paylaşmıyoruz:\n\n| Alıcı | Veri | Amaç |\n| OpenAI | Destinasyon, tarihler, tercihler | AI güzergah oluşturma |\n| Google (AdSense/AdMob) | Reklam kimliği, kullanım kalıpları | Reklam sunumu |\n| RevenueCat | Uygulama kullanıcı kimliği, abonelik bilgileri | Abonelik ödeme işleme |\n| Google Maps API | Arama sorguları, oturum jetonları | Yer arama |\n| OpenWeather API | Enlem, boylam koordinatları | Hava durumu bilgileri |\n| Sentry | Hata verileri, kullanıcı bağlamı | Hata izleme |\n| Mapbox | Arama sorguları | Yer arama |\n| LocationIQ | Arama sorguları | Coğrafi kodlama |\n| Expo | Push token, cihaz bilgisi | Push bildirimleri |\n| Ortaklık iş ortakları | Tıklama olayları, IP adresi, Kullanıcı Aracısı | Ortaklık hizmeti bağlantısı ve dönüşüm takibi |\n| App Store / Google Play | Satın alma verileri | Uygulama içi satın alma işleme |\n\n※ Kullanıcının açık onayı ile\n※ Yasaların gerektirdiği durumlarda"
       },
       "art4": {
         "title": "4. Veri İşleme Delegasyonu",
@@ -283,7 +283,7 @@
       },
       "art14": {
         "title": "14. Politika Değişiklikleri",
-        "content": "Değişiklikler yürürlüğe girmeden en az 7 gün önce uygulama içi bildirimler aracılığıyla duyurulacaktır.\n\nBu politika 1 Mart 2026 tarihinden itibaren yürürlüktedir."
+        "content": "Değişiklikler yürürlüğe girmeden en az 7 gün önce uygulama içi bildirimler aracılığıyla duyurulacaktır.\n\nBu politika 26 Nisan 2026 tarihinden itibaren yürürlüktedir."
       },
       "ccpa": {
         "title": "CCPA Tüketici Hakları (Kaliforniya)",

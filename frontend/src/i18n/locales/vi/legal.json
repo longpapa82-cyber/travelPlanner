@@ -129,7 +129,7 @@
       },
       "premium": {
         "q": "Đăng ký Premium là gì?",
-        "a": "Premium ($3,99/tháng hoặc $29,99/năm) cung cấp tạo chuyến đi AI không giới hạn, không quảng cáo và các tính năng nâng cao. Người dùng miễn phí có thể tạo tối đa 3 chuyến đi AI mỗi tháng. Có thể hủy bất cứ lúc nào."
+        "a": "Premium ($3,99/tháng hoặc $29,99/năm) cung cấp 30 lần tạo chuyến đi AI mỗi tháng, không quảng cáo và các tính năng nâng cao. Người dùng miễn phí có thể tạo tối đa 3 chuyến đi AI mỗi tháng. Có thể hủy bất cứ lúc nào."
       },
       "premiumCancel": {
         "q": "Làm sao để hủy Premium?",
@@ -181,7 +181,7 @@
       },
       "art8": {
         "title": "Điều 8 (Quảng cáo và đối tác liên kết)",
-        "content": "① Dịch vụ có thể hiển thị quảng cáo qua Google AdSense, AdMob và chương trình liên kết.\n② Trách nhiệm về nội dung quảng cáo thuộc về các nhà quảng cáo tương ứng.\n③ Các điều khoản riêng có thể áp dụng khi đặt chỗ qua liên kết đối tác."
+        "content": "② Trách nhiệm về nội dung quảng cáo thuộc về các nhà quảng cáo tương ứng.\n③ Các điều khoản riêng có thể áp dụng khi đặt chỗ qua liên kết đối tác."
       },
       "art9": {
         "title": "Điều 9 (Sở hữu trí tuệ)",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Chia sẻ với bên thứ ba",
-        "content": "Chúng tôi không chia sẻ thông tin cá nhân ngoại trừ:\n\n| Người nhận | Dữ liệu | Mục đích |\n| OpenAI | Điểm đến, ngày, sở thích | Tạo lịch trình AI |\n| Google (AdSense/AdMob) | ID quảng cáo, mô hình sử dụng | Phân phối quảng cáo |\n| Đối tác liên kết | Sự kiện nhấp (ẩn danh) | Dịch vụ liên kết |\n| Sentry | Dữ liệu lỗi, ngữ cảnh người dùng, mẫu thiết bị | Giám sát lỗi |\n| RevenueCat | ID người dùng ứng dụng, thông tin đăng ký | Xử lý thanh toán đăng ký |\n| OpenWeather | Tọa độ vĩ độ và kinh độ | Thông tin thời tiết |\n\n※ Với sự đồng ý rõ ràng của người dùng\n※ Khi luật pháp yêu cầu"
+        "content": "Chúng tôi không chia sẻ thông tin cá nhân ngoại trừ:\n\n| Người nhận | Dữ liệu | Mục đích |\n| OpenAI | Điểm đến, ngày, sở thích | Tạo lịch trình AI |\n| Google (AdSense/AdMob) | ID quảng cáo, mô hình sử dụng | Phân phối quảng cáo |\n| Đối tác liên kết | Sự kiện nhấp (ẩn danh) | Dịch vụ liên kết |\n| Sentry | Dữ liệu lỗi, ngữ cảnh người dùng, mẫu thiết bị | Giám sát lỗi |\n| Mapbox | Truy vấn tìm kiếm | Tìm kiếm địa điểm |\n| LocationIQ | Truy vấn tìm kiếm | Mã hóa địa lý |\n| Expo | Mã thông báo push, thông tin thiết bị | Thông báo push |\n| RevenueCat | ID người dùng ứng dụng, thông tin đăng ký | Xử lý thanh toán đăng ký |\n| OpenWeather | Tọa độ vĩ độ và kinh độ | Thông tin thời tiết |\n\n※ Với sự đồng ý rõ ràng của người dùng\n※ Khi luật pháp yêu cầu"
       },
       "art4": {
         "title": "4. Ủy thác xử lý dữ liệu",

@@ -129,7 +129,7 @@
       },
       "premium": {
         "q": "O que é a assinatura Premium?",
-        "a": "O Premium (R$19,99/mês ou R$149,99/ano) oferece geração ilimitada de viagens com IA, experiência sem anúncios e recursos aprimorados. Usuários gratuitos podem criar até 3 viagens com IA por mês. Você pode cancelar a qualquer momento, e seu plano reverterá para gratuito no final do período de cobrança."
+        "a": "O Premium (R$19,99/mês ou R$149,99/ano) oferece 30 gerações mensais de viagens com IA, experiência sem anúncios e recursos aprimorados. Usuários gratuitos podem criar até 3 viagens com IA por mês. Você pode cancelar a qualquer momento, e seu plano reverterá para gratuito no final do período de cobrança."
       },
       "premiumCancel": {
         "q": "Como cancelo o Premium?",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Compartilhamento com Terceiros",
-        "content": "Não compartilhamos informações pessoais exceto:\n\n| Destinatário | Dados | Finalidade |\n| OpenAI | Destino, datas, preferências | Geração de itinerário com IA |\n| Google (AdSense/AdMob) | ID de anúncio, padrões de uso | Entrega de anúncios |\n| Parceiros afiliados | Eventos de clique (anonimizados) | Serviços de afiliados |\n| Sentry | Dados de erro, contexto do usuário, modelo do dispositivo | Monitoramento de erros |\n| RevenueCat | ID do usuário do aplicativo, informações de assinatura | Processamento de pagamento de assinatura |\n| OpenWeather | Coordenadas de latitude e longitude | Informações meteorológicas |\n\n※ Com consentimento explícito do usuário\n※ Quando exigido por lei"
+        "content": "Não compartilhamos informações pessoais exceto:\n\n| Destinatário | Dados | Finalidade |\n| OpenAI | Destino, datas, preferências | Geração de itinerário com IA |\n| Google (AdSense/AdMob) | ID de anúncio, padrões de uso | Entrega de anúncios |\n| Parceiros afiliados | Eventos de clique (anonimizados) | Serviços de afiliados |\n| Sentry | Dados de erro, contexto do usuário, modelo do dispositivo | Monitoramento de erros |\n| Mapbox | Consultas de pesquisa | Pesquisa de locais |\n| LocationIQ | Consultas de pesquisa | Geocodificação |\n| Expo | Token push, informações do dispositivo | Notificações push |\n| RevenueCat | ID do usuário do aplicativo, informações de assinatura | Processamento de pagamento de assinatura |\n| OpenWeather | Coordenadas de latitude e longitude | Informações meteorológicas |\n\n※ Com consentimento explícito do usuário\n※ Quando exigido por lei"
       },
       "art4": {
         "title": "4. Delegação de Processamento de Dados",

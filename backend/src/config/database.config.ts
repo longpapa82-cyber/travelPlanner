@@ -2,6 +2,25 @@ import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as fs from 'fs';
 
+/**
+ * V185 (Invariant 34): production fail-fast for required secrets.
+ * Catches the V184 finding where DB_PASSWORD silently fell back to
+ * 'postgres' default in misconfigured production environments. Without
+ * this guard, a deploy with missing env would have started successfully
+ * and connected to a non-existent local Postgres → silent crash on first
+ * query. We fail loudly at module load instead.
+ */
+function requireEnvInProduction(name: string): string {
+  const value = process.env[name];
+  if (process.env.NODE_ENV === 'production' && (!value || value.trim() === '')) {
+    throw new Error(
+      `[Config] Required env "${name}" is missing or empty in production. ` +
+        `Refusing to start with insecure defaults.`,
+    );
+  }
+  return value || '';
+}
+
 function buildSslConfig():
   | false
   | { rejectUnauthorized: boolean; ca?: string } {
@@ -25,11 +44,11 @@ export default registerAs(
   'database',
   (): TypeOrmModuleOptions => ({
     type: 'postgres',
-    host: process.env.DB_HOST || 'localhost',
+    host: requireEnvInProduction('DB_HOST') || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    username: process.env.DB_USERNAME || 'postgres',
-    password: process.env.DB_PASSWORD || 'postgres',
-    database: process.env.DB_DATABASE || 'travelplanner',
+    username: requireEnvInProduction('DB_USERNAME') || 'postgres',
+    password: requireEnvInProduction('DB_PASSWORD') || 'postgres',
+    database: requireEnvInProduction('DB_DATABASE') || 'travelplanner',
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     migrations: [__dirname + '/../migrations/*{.ts,.js}'],
     synchronize:

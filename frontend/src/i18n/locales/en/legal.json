@@ -161,7 +161,7 @@
       },
       "art3": {
         "title": "Article 3 (Service Description)",
-        "content": "The Service provides:\n• AI-powered automatic travel plan generation\n• Travel plan editing, adding, and deletion management\n• Local weather and time zone information\n• Travel progress tracking\n• Past travel history viewing\n• Offline itinerary access and sync\n• Budget management and expense tracking\n• Trip photo upload and management\n• Social features (trip discovery, follow, likes)\n• Trip sharing (link-based sharing, collaborator invitations)\n• Premium subscription (unlimited AI, ad-free)\n• Multi-language support (17 languages)\n• Notification services"
+        "content": "The Service provides:\n• AI-powered automatic travel plan generation\n• Travel plan editing, adding, and deletion management\n• Local weather and time zone information\n• Travel progress tracking\n• Past travel history viewing\n• Offline itinerary access and sync\n• Budget management and expense tracking\n• Trip photo upload and management\n• Social features (trip discovery, follow, likes)\n• Trip sharing (link-based sharing, collaborator invitations)\n• Premium subscription (30 AI generations/month, ad-free)\n• Multi-language support (17 languages)\n• Notification services"
       },
       "art4": {
         "title": "Article 4 (Account Registration)",
@@ -173,7 +173,7 @@
       },
       "art6": {
         "title": "Article 6 (AI Service Terms)",
-        "content": "① The accuracy, safety, and suitability of AI-generated travel plans are not guaranteed.\n② Data is processed through the OpenAI API for itinerary generation, as described in our Privacy Policy.\n③ User-entered travel data is not used for AI model training.\n④ AI services may be temporarily limited due to technical circumstances.\n⑤ Free users are limited to 3 AI trip generations per month; Premium subscribers have unlimited access."
+        "content": "① The accuracy, safety, and suitability of AI-generated travel plans are not guaranteed.\n② Data is processed through the OpenAI API for itinerary generation, as described in our Privacy Policy.\n③ User-entered travel data is not used for AI model training.\n④ AI services may be temporarily limited due to technical circumstances.\n⑤ Free users are limited to 3 AI trip generations per month; Premium subscribers get 30 AI generations per month."
       },
       "art7": {
         "title": "Article 7 (Prohibited Activities)",
@@ -181,11 +181,11 @@
       },
       "art8": {
         "title": "Article 8 (Advertising and Affiliates)",
-        "content": "① The Service may display ads through Google AdSense, AdMob, and affiliate programs.\n② Responsibility for ad content lies with the respective advertisers.\n③ Separate terms may apply when booking through affiliate links.\n④ Premium subscribers do not see advertisements."
+        "content": "② Responsibility for ad content lies with the respective advertisers.\n④ Premium subscribers do not see advertisements."
       },
       "art9": {
         "title": "Article 9 (Premium Subscription)",
-        "content": "① Premium subscription is available as monthly ($3.99/month) or annual ($29.99/year) plans.\n② Premium provides unlimited AI trip generation, ad removal, and enhanced features.\n③ Subscriptions auto-renew on the billing date. Cancel at least 24 hours before renewal to avoid charges.\n④ Cancellation is managed through Apple App Store or Google Play Store subscription settings.\n⑤ After cancellation, Premium features remain available until the end of the current billing period.\n⑥ Refund policies follow Apple and Google's respective app store policies.\n⑦ Payments are processed through RevenueCat. Credit card information is not stored directly by the Service."
+        "content": "① Premium subscription is available as monthly ($3.99/month) or annual ($29.99/year) plans.\n② Premium provides monthly 30 AI trip generations, ad removal, and enhanced features.\n③ Subscriptions auto-renew on the billing date. Cancel at least 24 hours before renewal to avoid charges.\n④ Cancellation is managed through Apple App Store or Google Play Store subscription settings.\n⑤ After cancellation, Premium features remain available until the end of the current billing period.\n⑥ Refund policies follow Apple and Google's respective app store policies.\n⑦ Payments are processed through RevenueCat. Credit card information is not stored directly by the Service."
       },
       "art10": {
         "title": "Article 10 (User Content and Sharing)",
@@ -217,7 +217,7 @@
       },
       "art17": {
         "title": "Article 17 (Addendum)",
-        "content": "These Terms are effective from March 1, 2026."
+        "content": "These Terms are effective from April 26, 2026."
       },
       "art18": {
         "title": "Service Provider",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Third-Party Sharing",
-        "content": "We do not share personal info except:\n\n| Recipient | Data | Purpose |\n| OpenAI | Destination, dates, preferences | AI itinerary generation |\n| Google (AdSense/AdMob) | Ad ID, usage patterns | Ad delivery |\n| RevenueCat | App user ID, subscription info | Subscription payment processing |\n| Google Maps API | Search queries, session tokens | Place search |\n| OpenWeather API | Latitude, longitude coordinates | Weather information |\n| Sentry | Error data, user context | Error monitoring |\n| App Store / Google Play | Purchase data | In-app purchase processing |\n\n※ With explicit user consent\n※ When required by law"
+        "content": "We do not share personal info except:\n\n| Recipient | Data | Purpose |\n| OpenAI | Destination, dates, preferences | AI itinerary generation |\n| Google (AdSense/AdMob) | Ad ID, usage patterns | Ad delivery |\n| RevenueCat | App user ID, subscription info | Subscription payment processing |\n| Google Maps API | Search queries, session tokens | Place search |\n| OpenWeather API | Latitude, longitude coordinates | Weather information |\n| Sentry | Error data, user context | Error monitoring |\n| Mapbox | Search queries | Place search |\n| LocationIQ | Search queries | Geocoding |\n| Expo | Push token, device info | Push notifications |\n| App Store / Google Play | Purchase data | In-app purchase processing |\n\n※ With explicit user consent\n※ When required by law"
       },
       "art4": {
         "title": "4. Data Processing Delegation",
@@ -283,7 +283,7 @@
       },
       "art14": {
         "title": "14. Policy Changes",
-        "content": "Changes will be notified at least 7 days before taking effect via in-app notices.\n\nThis policy is effective from March 1, 2026."
+        "content": "Changes will be notified at least 7 days before taking effect via in-app notices.\n\nThis policy is effective from April 26, 2026."
       },
       "ccpa": {
         "title": "CCPA Consumer Rights (California)",

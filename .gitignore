@@ -82,6 +82,8 @@ docs/.pdca-status.json
 docs/.pdca-snapshots/
 docs/obsidian-graph/
 .claude/agents/
+.claude/agent-memory/
+.claude/scheduled_tasks.lock
 
 # EAS local builds (uploaded to EAS cloud or shared via Play Console)
 frontend/build-*.apk
