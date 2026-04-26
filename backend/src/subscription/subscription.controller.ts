@@ -89,7 +89,11 @@ export class SubscriptionController {
     @Body() dto: RevenueCatWebhookDto,
     @Headers('authorization') authHeader: string,
   ) {
-    // Verify webhook secret — mandatory in production
+    // Verify webhook secret — mandatory in production.
+    // H-3 rotation schedule: rotate REVENUECAT_WEBHOOK_SECRET every 90 days
+    // via RevenueCat Dashboard → Webhooks → edit → regenerate secret, then
+    // update the env var on the server before the old secret expires.
+    // Next rotation due: 2026-07-25 (set from 2026-04-26 baseline).
     const webhookSecret = this.configService.get<string>(
       'REVENUECAT_WEBHOOK_SECRET',
     );

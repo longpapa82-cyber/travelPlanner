@@ -1085,6 +1085,32 @@ export class UsersService {
   }
 
   /**
+   * GDPR Art.7(3): Revoke all optional (non-required) consents in one call.
+   * Provides a dedicated withdrawal path so revocation is as easy as granting.
+   */
+  async revokeOptionalConsents(
+    userId: string,
+    ipAddress?: string,
+    userAgent?: string,
+  ): Promise<void> {
+    const optionalTypes = (Object.values(ConsentType) as ConsentType[]).filter(
+      (t) =>
+        !this.REQUIRED_CONSENTS.includes(t) &&
+        !this.DEPRECATED_CONSENTS.includes(t),
+    );
+
+    const dto = {
+      consents: optionalTypes.map((type) => ({
+        type,
+        version: this.CONSENT_VERSIONS[type],
+        isConsented: false,
+      })),
+    };
+
+    await this.updateConsents(userId, dto as UpdateConsentsDto, ipAddress, userAgent);
+  }
+
+  /**
    * Log consent change for audit trail (GDPR compliance)
    */
   private async logConsentChange(data: {

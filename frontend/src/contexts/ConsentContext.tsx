@@ -39,7 +39,11 @@ interface ConsentProviderProps {
 export const ConsentProvider: React.FC<ConsentProviderProps> = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
   const [consentsStatus, setConsentsStatus] = useState<ConsentsStatus | null>(null);
-  const [isCheckingConsent, setIsCheckingConsent] = useState(false);
+  // V189 task#13: initialize isCheckingConsent=true when authenticated to prevent
+  // the one-frame gap where isCheckingConsent=false (effect hasn't fired yet)
+  // causes RootNavigator:240 to skip the loading spinner and briefly flash
+  // the main screen before ConsentScreen appears.
+  const [isCheckingConsent, setIsCheckingConsent] = useState(isAuthenticated && !!user);
   const [needsConsentScreen, setNeedsConsentScreen] = useState(false);
 
   // Check consent status when user becomes authenticated
@@ -47,11 +51,15 @@ export const ConsentProvider: React.FC<ConsentProviderProps> = ({ children }) =>
   // to prevent re-firing on every refreshUser() call
   useEffect(() => {
     if (isAuthenticated && user) {
+      // Ensure isCheckingConsent is true before the async call fires
+      // (handles the case where provider mounts with isAuthenticated=true)
+      setIsCheckingConsent(true);
       checkConsentStatus();
     } else {
       // Reset consent state when logged out
       setConsentsStatus(null);
       setNeedsConsentScreen(false);
+      setIsCheckingConsent(false);
     }
   }, [isAuthenticated, user?.id]);
 

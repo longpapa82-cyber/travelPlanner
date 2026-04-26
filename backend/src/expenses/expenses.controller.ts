@@ -16,6 +16,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ExpensesService } from './expenses.service';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
+import { SettleExpenseDto } from './dto/settle-expense.dto';
 
 @Controller('trips/:tripId/expenses')
 @UseGuards(JwtAuthGuard)
@@ -89,9 +90,9 @@ export class ExpensesController {
     @Param('tripId', ParseUUIDPipe) tripId: string,
     @Param('expenseId', ParseUUIDPipe) expenseId: string,
     @CurrentUser('userId') userId: string,
-    @Body() body?: { targetUserId?: string },
+    @Body() dto: SettleExpenseDto,
   ) {
-    const settleForUserId = body?.targetUserId || userId;
+    const settleForUserId = dto.targetUserId || userId;
     return this.expensesService.settleUp(tripId, expenseId, settleForUserId, userId);
   }
 }

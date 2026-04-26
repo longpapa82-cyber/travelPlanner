@@ -19,6 +19,28 @@ export class AdminService {
     private readonly errorLogRepository: Repository<ErrorLog>,
   ) {}
 
+  // H-2: Detect error_logs silent failure (0 entries in 24h during active usage).
+  // V176 DTO fix caused 4/25 zero-count data loss — this cron catches recurrences.
+  // Runs at 09:00 daily (after overnight traffic accumulates). If no entries
+  // arrived in 24h but the app is in active testing, something is swallowing
+  // errors upstream. Logs a WARN so Sentry/infra monitoring can alert.
+  @Cron('0 9 * * *')
+  async checkErrorLogsHealthcheck(): Promise<void> {
+    const since = new Date();
+    since.setDate(since.getDate() - 1);
+    const count = await this.errorLogRepository
+      .createQueryBuilder('el')
+      .where('el.createdAt >= :since', { since })
+      .getCount();
+    if (count === 0) {
+      this.logger.warn(
+        '[HealthCheck] error_logs: 0 entries in the last 24h — possible silent failure in the reporting pipeline',
+      );
+    } else {
+      this.logger.log(`[HealthCheck] error_logs: ${count} entries in last 24h`);
+    }
+  }
+
   // V180 (Issue 3 / Legal P0): error_logs auto-purge.
   //
   // V174 expanded the error_logs schema with userEmail, deviceModel, and

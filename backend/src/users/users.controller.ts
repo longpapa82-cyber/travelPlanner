@@ -1,6 +1,9 @@
 import {
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Patch,
   Post,
   Param,
@@ -201,11 +204,25 @@ export class UsersController {
     @Headers('x-real-ip') xRealIp?: string,
     @Headers('user-agent') userAgent?: string,
   ) {
-    // Extract IP address (prefer x-forwarded-for, fallback to x-real-ip)
     const ipAddress = xForwardedFor?.split(',')[0]?.trim() || xRealIp;
-
     await this.usersService.updateConsents(userId, dto, ipAddress, userAgent);
     return { message: 'Consents updated successfully' };
+  }
+
+  // GDPR Art.7(3): dedicated withdrawal endpoint so revocation is as easy as granting.
+  // Revokes all optional (non-required) consents in a single call.
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Throttle({ short: { ttl: 60000, limit: 5 } })
+  @Delete('me/consents/optional')
+  async revokeOptionalConsents(
+    @CurrentUser('userId') userId: string,
+    @Headers('x-forwarded-for') xForwardedFor?: string,
+    @Headers('x-real-ip') xRealIp?: string,
+    @Headers('user-agent') userAgent?: string,
+  ) {
+    const ipAddress = xForwardedFor?.split(',')[0]?.trim() || xRealIp;
+    await this.usersService.revokeOptionalConsents(userId, ipAddress, userAgent);
   }
 
   @UseGuards(JwtAuthGuard)
