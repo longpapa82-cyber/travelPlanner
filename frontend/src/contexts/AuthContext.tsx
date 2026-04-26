@@ -106,6 +106,24 @@ interface AuthContextType {
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   registerPushAfterLogin: () => void;
+  /**
+   * V185 (Invariant 36): cross-context logout lock. True from the moment
+   * handleLogout enters until setUser(null) commits. All other contexts'
+   * AppState/silentRefresh handlers MUST gate on this — without it, the
+   * V184 100%-reproducible "first tap does nothing" race re-occurs:
+   *
+   *   1. user taps logout
+   *   2. AuthContext.logout starts (RC sign-out 200~800ms)
+   *   3. AppState transitions inactive→active (e.g. Android nav anim)
+   *   4. PremiumContext/AuthContext AppState handler fires silentRefresh
+   *   5. /auth/me returns profile → setUser(profile) overrides setUser(null)
+   *   6. user perceives "logout did nothing", taps again
+   *
+   * This flag is the single point of truth that any background refresh
+   * must respect. ProfileScreen's local `isLoggingOutRef` (V178) was
+   * insufficient because other contexts had no visibility into it.
+   */
+  isLoggingOut: boolean;
 }
 
 // Push token registration callback — set by NotificationContext bridge
@@ -134,6 +152,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [pendingVerification, setPendingVerification] =
     useState<PendingVerification | null>(null);
   const appState = useRef<AppStateStatus>(AppState.currentState);
+  // V185 (Invariant 36): cross-context logout lock. See AuthContextType
+  // doc above for the V184-reproducible race this prevents. We use both
+  // useState (for context consumers) and a ref (for synchronous access
+  // inside silentRefresh, which can run before React commits the state).
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const isLoggingOutRef = useRef(false);
 
   const clearPendingVerification = () => setPendingVerification(null);
 
@@ -182,6 +206,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextState: AppStateStatus) => {
       if (appState.current.match(/inactive|background/) && nextState === 'active') {
+        // V185 (Invariant 36): cross-context logout lock. Skip silentRefresh
+        // entirely if a logout is in flight — this is the V184-reported
+        // 100%-reproducible "first tap does nothing" race fix.
+        if (isLoggingOutRef.current) {
+          appState.current = nextState;
+          return;
+        }
         const now = Date.now();
         if (now - lastSilentRefreshAt.current > 60_000) {
           lastSilentRefreshAt.current = now;
@@ -294,11 +325,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   //      error but the api.ts interceptor's 401 path had already fired
   //      onAuthExpired by that point, so setUser(null) propagated.
   const silentRefresh = async () => {
+    // V185 (Invariant 36): cross-context logout lock check at function entry.
+    // The AppState handler also gates, but silentRefresh is called from
+    // multiple paths (manual refresh, post-login, etc.) — checking here
+    // means *every* refresh path respects the logout in progress, not just
+    // the foreground transition path.
+    if (isLoggingOutRef.current) return;
     try {
       const hasRefresh = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
       if (!hasRefresh) return;
 
       const profile = await apiService.getProfile();
+      // V185: re-check after the await — logout may have started while
+      // we were waiting on the network. Don't override setUser(null).
+      if (isLoggingOutRef.current) return;
       setUser((prev) => {
         if (!prev || prev.id !== profile.id) return profile;
         // Same user — only swap reference when something visible changed.
@@ -609,6 +649,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = async () => {
+    // V185 (Invariant 36): set the cross-context logout lock BEFORE any
+    // await — this is the same "ref-before-await" pattern V182 applied
+    // to ProfileScreen.handleLogout, but elevated to the global Auth
+    // layer so PremiumContext/AppState handlers also see it. Without
+    // setting both ref (synchronous) and state (React commit), a concurrent
+    // AppState 'change' handler could read a stale value during the React
+    // commit window and still fire silentRefresh.
+    isLoggingOutRef.current = true;
+    setIsLoggingOut(true);
+
     try {
       // Track logout and flush pending events before clearing auth
       trackEvent('logout');
@@ -664,6 +714,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await setSessionFlag(false);
       setUser(null);
       setPendingVerification(null);
+    } finally {
+      // V185 (Invariant 36): release the lock only after setUser(null)
+      // has committed. Use a microtask delay so React's state batching
+      // is guaranteed to have settled before any new silentRefresh can
+      // fire from a foreground transition.
+      setTimeout(() => {
+        isLoggingOutRef.current = false;
+        setIsLoggingOut(false);
+      }, 0);
     }
   };
 
@@ -684,6 +743,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     refreshUser,
     registerPushAfterLogin,
+    isLoggingOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

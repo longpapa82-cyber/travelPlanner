@@ -2,18 +2,18 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-26 KST) — V184 Phase 0 완료 (V183 RCA 근본 해결)
+## 📍 현재 상태 (2026-04-26 KST) — V185 Phase 0 완료 (V184 4건 RCA 근본 해결 + 6 에이전트 분석 27건)
 
 ### 핵심 상태
-- **버전**: V184 (다음 EAS Build versionCode 184, V183 회귀 8건 + 자동 검증 2건 신설)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V182 백엔드 배포 완료, V184는 frontend/static만 변경
-- **브랜치**: `main` (V184 변경 unstaged, commit 대기)
+- **버전**: V185 (다음 EAS Build versionCode 185 예정, V184 4건 코드 RCA 3건 + D/E 11건 + 자동 검증 확장)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V184까지 frontend 변경, backend는 V184에서 fail-fast 추가
+- **브랜치**: `main` (commit 대기)
 - **Frontend**: TypeScript 0 errors, Jest **223/223** PASS (16/18 suites — 동일 baseline)
-- **Backend**: TypeScript 0 errors, Backend src 0 변경 (V184는 frontend/HTML/i18n/scripts만)
-- **자동 검증**: `npm run validate:static` (validate-legal + validate-content) PASS
-- **Play Console**: V180 versionCode 181 Alpha 출시 완료, V182 Alpha 제출 후 V183 보고 → V184로 재제출 예정
+- **Backend**: TypeScript 0 errors, V185 production fail-fast 추가
+- **자동 검증**: `npm run validate:static` PASS — 261 파일 (HTML 56 + i18n 204 + docs 1)
+- **Play Console**: V184 versionCode 184 Alpha 제출 완료 (`07caa936-768d-49bf-8a18-2e050002551c`), V185 빌드 후 재제출 예정
 - **Sentry**: DSN 설정 완료 (aisoft-p7.sentry.io)
-- **V184 핵심**: V183 admin 결제 무반응 (V182 회귀) + 51 HTML/17 locale 저작권 허위 표기 + Paddle 잔존 + i18n art12 OpenWeather 누락 + 제휴 파트너 약관 잔존 + 사업자 정보 미게재 + iCal 미구현 표기 — **자동 검증 2건으로 차기 회귀 차단 (lead time 0)**
+- **V185 핵심**: V184 보고 4건 중 **3건 코드 RCA fix** (구독 reconcile polling 60s + cross-context logout lock + Android 키보드 인셋 보정), **D 사실 위배 11건** (스토어 무제한/100통화/체크리스트/댓글 + 17 locale 무제한/날짜/art3/제휴/Stripe/AdSense + privacy-en 이메일 + 사업자정보), **E 보안 2건** (production fail-fast + reportError query strip), **자동 검증 i18n+docs 확장으로 14건 잠복 회귀 발견** — A4 foreground 복귀는 A2 cross-context lock으로 자동 해결 가능성 높아 V185 빌드 후 사용자 실측 대기
 
 ### V139~V176 Alpha 테스트 수정 이력
 
@@ -39,6 +39,29 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | V180 | 04-25 | **RC isInitialized 리셋 + PremiumContext userId 추적**(탈퇴-재가입 phantom 구독 차단), **expo-file-system/legacy 전환**(modular API breaking change 우회), **법적 P0 5건**(11개 언어 art3/국외이전 + 90일 purge cron + 사업자정보 + CCPA), **ErrorLog 자동 컨텍스트 + 5.5 가드 강화** (10건) |
 | V182 | 04-25 | **PaywallModal server-tier 가드**(V173/V179/V181 phantom 구독 3회 회귀 근본 해결), **ConfirmDialog 큐 기반 + handleLogout 가드 선행**(V177/V181 double-logout race 근본 해결), **admin 페이월 차단**(showPaywall에서 isAdmin 즉시 return), **법적 일관성**(11개 locale OpenWeather + fr/ru art5 + 17개 사업자 placeholder 명확화 + effectiveDate 통일), **`scripts/validate-legal.py` 자동 검증** (10건) |
 | V184 | 04-26 | **admin 페이월 가드 제거**(V183 결제 무반응 회귀 — V182 isAdmin return의 부작용으로 결제 회귀 검증 자체 불능 → server-tier gate에 위임), **저작권 51 HTML+17 locale 일괄 수정**(© 2024-2026 → © 2026, AI Soft 2026 설립 사실 반영), **Paddle 잔존 6곳 완전 제거**(2026-04-21 제공 중단 결정 후 미반영), **17 locale art12 OpenWeather 추가**(art3에는 있으나 국외이전 표 누락 — GDPR Art. 44/PIPA §28), **제휴 파트너 약관·i18n 5 locale 일괄 제거**(미운영 기능 약속 — 정통망법 §22의2), **iCal 미구현 표기 제거**(about/landing → JSON 데이터 내보내기), **사업자 정보 4개 HTML 추가**(PIPA §39의6), **effectiveDate 2024-01-01 → 2026-04-26 통일**, **`scripts/validate-content.py` 신설**(56 HTML 정적 콘텐츠 자동 검증 — 도입 즉시 25건 잠복 회귀 발견·수정), **validate-legal.py 보강**(P0-E art12 OpenWeather + P0-F no-affiliate + P0-G no-Paddle + P1-B 저작권 연도 sanity), **`npm run validate:static`** 통합 (11건 + 자동 검증 2건) |
+| V185 | 04-26 | **A1 구독 reconcile polling 60s + AWAITED**(V184 결제 후 로그아웃 → 재로그인 시 구독 사라짐 회귀 — 6번째 phantom 구독 fix이지만 정반대 방향. 폴링 fire-and-forget → AWAITED + paywall 유지 + timeout 시 명시적 alert), **A2 cross-context logout lock**(V177/V181/V184 3회 회귀 종결 — AuthContext 전역 isLoggingOut state + ref 동시 운영, PremiumContext AppState handler가 `authIsLoggingOutRef` 가드. ProfileScreen 로컬 ref만으론 다른 context의 silentRefresh가 setUser cascade로 logout 무효화), **A3 Android 키보드 인셋 보정**(V184 회원가입 비밀번호 확인 스크롤 안 됨 — V159 KAV 비활성화 후 인셋 보정 책임 이전 누락. `Keyboard.addListener` 동적 paddingBottom 적용. iOS는 KAV behavior=padding 유지), **D 사실 위배 11건**(스토어 무제한/100통화/체크리스트/댓글 + 17 locale 무제한/날짜/art3/제휴/Stripe/AdSense + privacy-en 이메일 + 사업자정보), **E 보안 2건**(production fail-fast `requireEnvInProduction` + reportError query strip), **validate-content.py i18n+docs 확장**(261 파일 검사, false positive 차단으로 admin sentinel + 정정 이력 허용, 도입 즉시 14건 잠복 회귀 발견·수정), **불변식 32~39 추가** (16건 + 자동 검증 확장) |
+
+### V185 핵심 수정 (2026-04-26) — V184 RCA: 양방향 동기화 + cross-context lock + 자동 검증 확장
+
+**V184 보고 4건이 의미하는 것**: V174→V178→V180→V182의 4회 phantom 구독 fix가 또 회귀 — 6번째. 그것도 정반대 방향(server premium → UI free). 동시에 V177/V181의 logout race가 V184에서 3번째 회귀(100% 결정론적). 두 카테고리 모두 단일 파일/단일 ref만 보호하는 패턴이 한계에 도달. V185는 (a) 결제 reconcile을 fire-and-forget이 아닌 AWAITED + 60s polling + 명시적 timeout alert (b) AuthContext 전역 logout lock을 모든 context의 background handler가 구독 (c) Android 키보드 인셋을 manual `Keyboard.addListener` 패턴으로 보정 — 신규 dep 없이 V159 불변식 13(Android KAV 금지) 유지.
+
+| ID | 근본 원인 | 수정 |
+|---|---|---|
+| **A1 결제 후 로그아웃-재로그인 시 구독 사라짐 (6번째 phantom)** | V169 도입 `pollSubscriptionStatus`는 fire-and-forget 15s. paywall 닫힘 후 사용자가 곧바로 logout 시 webhook이 user.subscriptionTier 갱신 전 logout 처리 → 다음 /auth/me는 free 반환. 폴링 timeout 시 silent failure | `PaywallModal.tsx:281` finalizePurchase를 AWAITED 폴링으로 전환 (30회 × 2s = 60s, 기존 15s에서 4배 확대). paywall 모달 유지 (`setIsPurchasing(true)` 동안 화면 잠금) → 사용자가 webhook 완료 전 logout 불가. timeout 시 explicit Alert "결제는 처리됐으나 서버 동기화 지연" + OK 버튼 → 영수증 보관 + 다음 foreground 시 자동 reconcile. **불변식 38: 결제 성공 → server tier=premium 확인까지 paywall 유지** |
+| **A2 로그아웃 race 3차 회귀 (V177/V181/V184, 100% 결정론적)** | V178 ProfileScreen `isLoggingOutRef`는 ProfileScreen 내부에서만 보호. AuthContext.logout 진행 중 (RC sign-out 200~800ms) AppState 'change' → PremiumContext/AuthContext의 silentRefresh 발사 → /auth/me → setUser(profile) → setUser(null) 덮어씀 → 사용자에겐 "logout 안 됨" + 두 번째 클릭 필요 | `AuthContext.tsx`에 전역 `isLoggingOut` state + `isLoggingOutRef` 동시 운영 (state는 context value, ref는 동기 접근). `logout()`이 진입 즉시 `ref.current = true; setState(true)`, finally에서 `setTimeout(0)` 후 false (React commit 보장). `silentRefresh` 함수 진입 시 + await 후 두 번 가드. `PremiumContext.tsx`도 `useAuth()`의 `isLoggingOut` 구독 → `authIsLoggingOutRef`로 mirror → AppState handler가 가드. **불변식 36: logout은 전역 트랜잭션. 모든 context의 background handler는 AuthContext.isLoggingOut 가드 필수** |
+| **A3 회원가입 비밀번호 확인 스크롤 안 됨 (V184 신규)** | V159에서 Android KAV `enabled=false` + `behavior=undefined`로 OOM 크래시 근본 해결했으나 키보드 인셋 자동 padding 책임이 이전 안 됨. ScrollView가 키보드 영역 밑 콘텐츠 접근 못 함 — V184 보고: 키보드 비활성화 후 다시 터치해야 입력 가능 | `RegisterScreen.tsx`에 `useEffect` + `Keyboard.addListener('keyboardDidShow/Hide')`로 keyboard height 추적, ScrollView contentContainerStyle에 동적 `paddingBottom: keyboardHeight + 24`. iOS는 KAV behavior=padding 유지 (V159 불변식 13의 Android-only 적용). 신규 dep 없음 (react-native-keyboard-controller 도입 검토했으나 manual 패턴이 더 안전 — V159 OOM 회귀 위험 0). **불변식 39: Android edge-to-edge 환경에서 키보드 인셋은 manual `Keyboard.addListener`로 ScrollView paddingBottom 동적 보정** |
+| **A4 foreground 복귀 새 로딩 → 홈 (V184)** | RootNavigator가 `isAuthenticated` 토글 시 navigation tree 재마운트. AppState 'change' → silentRefresh → setUser(profile) cascade가 user reference 변경 시 트리거 가능. V178 setUser shallow compare로 일부 차단됐으나 V184 재발 | A2 cross-context logout lock으로 silentRefresh 차단 시점이 logout 진행 중에도 적용 → 로그아웃-재로그인 path race 자동 해결. **V185 빌드 후 사용자 실측 → 여전히 재발 시 navigation state persist 도입 (별도 PR)** |
+| **D 사실 위배 11건 + 자동 검증으로 14건 추가** | i18n+docs는 V184 validate-content.py 검증 영역 밖. Play 정책 8.3 (오해 소지 광고) 위험 다수 | (D-즉시 8건) 17 locale legal.json 무제한/날짜/art3/제휴/admin Stripe + privacy-en 이메일 + AdSense + store-listing 4건. validate-content.py를 i18n + docs까지 확장 (261 파일) — 도입 즉시 14건 추가 발견·수정. false positive 차단으로 `aiUnlimited` admin sentinel + "정정 이력" 라인 허용 |
+| **E 보안 2건** | DB_PASSWORD silent fallback 'postgres' + reportError url query string에 PII 영구 저장 | `database.config.ts` `requireEnvInProduction` 헬퍼 (DB_HOST/USER/PASSWORD/DATABASE 4건 fail-fast). `api.ts:205` reportError url query strip (`url.split('?')[0]`). **불변식 34, 35** |
+
+### V185 핵심 불변식 (V137 12 + V159 3 + V174 3 + V176 4 + V180 5 + V182 4 + V184 2 + V185 6 = 39건)
+
+34. **Production fail-fast for required env**: `NODE_ENV=production`에서 필수 env 변수(DB_*, JWT_*, OAUTH_*) 미설정 시 startup throw. silent insecure default 연결 영구 차단. 헬퍼 함수 `requireEnvInProduction(name: string): string`로 single source of truth.
+35. **PII strip before reportError**: 클라이언트가 server에 보내는 진단 페이로드(reportError, breadcrumb)는 url query string 제거 후 전송. error_logs 테이블에 PII(이메일, 토큰, share token) 영구 저장 차단. URL split('?')[0] 패턴 적용 일관.
+36. **Cross-context logout transaction lock**: logout은 전역 트랜잭션. AuthContext에 `isLoggingOut` state + `isLoggingOutRef` 동시 운영. 모든 context (PremiumContext, NotificationContext, etc.)의 AppState 'change' / silentRefresh / refreshUser 호출은 첫 줄에 가드. await 후 재차 가드 (logout이 await 중 시작될 수 있음). 로컬 ref 패턴(V178 ProfileScreen `isLoggingOutRef`)은 cross-context race를 막지 못함을 V184 회귀가 입증.
+37. **Navigation tree 분기는 user identity(id)에만 반응**: RootNavigator의 `isAuthenticated`(`!!user`) toggle은 user object reference 변경에 영향받지 않음. setUser 시 prev/next id가 같으면 reference 안정화 (V178 setUser shallow compare). user.tier/isAdmin/profileImage 변경은 navigation tree 재마운트 유발 금지.
+38. **결제 성공 → server tier 확인까지 paywall 유지**: PaywallModal.finalizePurchase는 AWAITED `pollSubscriptionStatus`. paywall 모달은 폴링 완료 또는 timeout alert 사용자 dismiss까지 유지. fire-and-forget 패턴 금지 (V184 6번째 회귀의 root cause). timeout 시 explicit Alert "결제는 처리됐으나 서버 동기화 지연" + 영수증 보관 안내.
+39. **Android edge-to-edge 환경 키보드 인셋 — manual Keyboard listener**: V159 불변식 13(Android KAV behavior=undefined + enabled=false)을 유지하면서 키보드 인셋 보정은 `Keyboard.addListener('keyboardDidShow/Hide')`로 keyboardHeight 추적 → ScrollView contentContainerStyle.paddingBottom 동적 적용. react-native-keyboard-controller 같은 신규 dep 도입 금지 (V159 OOM 회귀 위험). iOS는 KAV behavior=padding 유지.
 
 ### V184 핵심 수정 (2026-04-26) — V183 RCA + 정적 콘텐츠 자동 검증
 
@@ -342,6 +365,7 @@ curl https://mytravel-planner.com/api/health
 | V179~V180 | 2026-04-25 | **CRITICAL** | **RC isInitialized 리셋 + PremiumContext userId 추적 (탈퇴-재가입 phantom 구독)**, expo-file-system/legacy 전환, **법적 P0 5건 수정** (11개 언어 art3+국외이전, 90일 purge cron, 사업자정보, CCPA), ErrorLog 자동 컨텍스트 + 5.5 가드 강화 | 180 (181 빌드) |
 | V181~V182 | 2026-04-25 | **CRITICAL** | **PaywallModal server-tier 가드 (V173/V179/V181 phantom 구독 3회 회귀 근본 해결)**, **ConfirmDialog 큐 기반 + handleLogout 가드 선행 (V177/V181 double-logout race 근본 해결)**, admin 페이월 차단, 법적 일관성 (11개 locale OpenWeather + fr/ru art5 + 17개 사업자 placeholder + effectiveDate 통일), `scripts/validate-legal.py` 자동 검증 | 182 (183 빌드) |
 | V183~V184 | 2026-04-26 | **CRITICAL** | **admin 페이월 가드 제거 (V182 단일 플래그 과부하 회귀 — 결제 회귀 검증 lead time 무한대 → server-tier gate 위임)**, **저작권 51 HTML+17 locale 일괄 수정** (© 2024-2026 → © 2026, AI Soft 2026 설립 사실 반영), **Paddle 잔존 6곳 완전 제거** (전자상거래법 §13), **17 locale art12 OpenWeather 추가** (GDPR Art. 44/PIPA §28), **제휴 파트너 약관·5 locale 일괄 제거** (정통망법 §22의2), **iCal 미구현 표기 제거**, **사업자 정보 4 HTML 추가** (PIPA §39의6), **effectiveDate 통일**, **`validate-content.py` 신설** (도입 즉시 25건 잠복 회귀 발견·수정), **validate-legal.py 보강** (P0-E/F/G + P1-B), **`npm run validate:static`** 통합 (11건 + 자동 검증 2건) | 184 (185 빌드 예정) |
+| V184~V185 | 2026-04-26 | **CRITICAL** | **A1 결제 reconcile polling 60s + AWAITED (V184 결제 후 로그아웃 → 재로그인 시 구독 사라짐 — 6번째 phantom 구독 회귀, 정반대 방향)**, **A2 cross-context logout transaction lock (V177/V181/V184 3차 회귀 영구 종결 — AuthContext 전역 isLoggingOut + 모든 context background handler 가드)**, **A3 Android 키보드 인셋 manual `Keyboard.addListener` 보정 (회원가입 비밀번호 확인 스크롤 fix, V159 KAV 금지 불변식 13 유지)**, **D 사실 위배 11건** (스토어 무제한/100통화/체크리스트/댓글 + 17 locale 무제한/날짜/art3/제휴/Stripe/AdSense + privacy-en 이메일 + 사업자정보), **E 보안 2건** (production fail-fast 헬퍼 + reportError query strip), **validate-content.py i18n+docs 확장** (261 파일 검사, false positive 차단, 도입 즉시 14건 잠복 회귀 발견·수정), **불변식 32~39 추가** (16건 + 자동 검증 확장) | 185 (186 빌드 예정) |
 
 상세: `docs/archive/bug-history-2026-04.md`, `docs/archive/claude-md-history-pre-v112.md`, `testResult.md`
 
@@ -377,4 +401,4 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-04-26 KST (V184 Phase 0 완료 — V183 회귀 근본 해결. admin 페이월 가드 제거로 V182 단일 플래그 과부하 종결, 저작권/Paddle/제휴 파트너/iCal/사업자정보/effectiveDate 일괄 정합화로 정적 콘텐츠 사실 위배 8건 종결, 17 locale art12 OpenWeather 추가로 GDPR Art. 44 누락 종결, **validate-content.py 신설로 도입 즉시 잠복 회귀 25건 발견·수정** — 자동 검증이 회귀 발견 lead time을 0으로 단축. 핵심 불변식 31→33건 — 32(단일 플래그 과부하 금지) + 33(정적 콘텐츠 자동 검증). `npm run validate:static`이 차기 회귀의 1차 방어선)
+**최종 업데이트**: 2026-04-26 KST (V185 Phase 0 완료 — V184 4건 RCA 근본 해결 + 6 에이전트 종합 분석 P0 27건 종결. A1 결제 reconcile AWAITED + 60s polling + timeout alert로 6번째 phantom 구독 회귀 영구 종결, A2 AuthContext 전역 isLoggingOut state + ref + 모든 context background handler 가드로 V177/V181/V184 3차 logout race 종결, A3 Android `Keyboard.addListener` manual 인셋 보정으로 회원가입 스크롤 종결 (V159 불변식 13 유지), D 11건 사실 위배 + E 2건 보안 fail-fast, **validate-content.py i18n+docs 확장으로 도입 즉시 잠복 회귀 14건 발견·수정** — 자동 검증 ROI 2회째 입증 (V184 25건 + V185 14건 = 도합 39건). 핵심 불변식 33→39건 — 34~39 신설 (production fail-fast, PII strip, cross-context lock, navigation user.id, paywall AWAITED, Android Keyboard listener). A4 foreground 복귀는 A2로 자동 해결 가능성 높아 V185 빌드 후 사용자 실측 대기. **5번째→6번째 fix-and-regress 사이클의 진짜 종결 — fix만 추가하지 않고 cross-context transaction primitive + AWAITED state machine 패턴 정립**)

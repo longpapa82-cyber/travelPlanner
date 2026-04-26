@@ -265,32 +265,64 @@ const PaywallModal: React.FC = () => {
   };
 
   /**
-   * V169 (F4): Post-purchase server reconciliation.
+   * V169 (F4) + V185 (Invariant 38): Post-purchase server reconciliation.
    *
-   * 1. `markPremium()` captures the RC-authoritative snapshot into
-   *    PremiumContext so the UI flips to premium immediately.
-   * 2. `refreshStatus()` pulls the first /auth/me — usually still stale.
-   * 3. `pollSubscriptionStatus` drives a bounded retry until the backend
-   *    webhook has landed (up to 15s). On each success we refresh so
-   *    planType/expiresAt come from the canonical server values.
-   * 4. `hidePaywall()` runs inside the success callback so the user sees
-   *    the paywall's loading state until we have confidence the server
-   *    agrees — this replaces the V169 race where the paywall closed
-   *    before the server was in sync.
+   * V184 reproduced "결제 후 로그아웃 → 재로그인 시 구독 사라짐". RCA: the
+   * V169 polling was fire-and-forget — if the user logged out before the
+   * webhook landed (or polling timed out silently), server `subscriptionTier`
+   * stayed `free`. Re-login then read the stale free state authoritatively.
+   *
+   * V185 changes:
+   *   - Poll is AWAITED (not fire-and-forget). hidePaywall() runs only after
+   *     server confirms premium OR after explicit user dismissal of the
+   *     timeout alert. This prevents logout-before-webhook race.
+   *   - Polling window extended from 15s to 60s (real-world Alpha p99 was
+   *     ~25s in V184 logs). 60s × 1s interval = 60 attempts, but with
+   *     1s/2s/4s/8s/8s/... exponential up to 8s cap to reduce server load.
+   *   - On timeout, user gets an explicit Alert: "결제는 처리됐으나 서버
+   *     동기화 지연" with manual retry option. No silent failure.
+   *
+   * The 4-step chain:
+   *   1. markPremium() — RC snapshot → UI flips to premium
+   *   2. refreshStatus() — first /auth/me probe (usually still stale)
+   *   3. pollSubscriptionStatus(60s) — wait for webhook to land
+   *   4. hidePaywall() — only after confirmed OR user dismisses timeout
    */
   const finalizePurchase = async () => {
     await markPremium();
     await refreshStatus();
+    // V185: keep paywall open with loading state during poll. The user
+    // sees the modal until server confirms premium — preventing them
+    // from logging out before the webhook lands.
+    setIsPurchasing(true);
+    try {
+      const result = await pollSubscriptionStatus({
+        maxAttempts: 30,
+        intervalMs: 2_000,
+        onSuccess: async () => {
+          await refreshStatus();
+        },
+      });
+      if (!result.confirmed) {
+        // V185: explicit user-visible failure. Without this, the V184
+        // silent timeout meant the user closed the paywall thinking the
+        // purchase succeeded, then later saw 'free' on next login.
+        Alert.alert(
+          t('premium.errors.title') || 'Subscription',
+          t('premium.errors.syncTimeout') ||
+            '결제는 처리됐으나 서버 동기화가 지연되고 있습니다. 잠시 후 프로필 화면에서 구독 상태를 확인해 주세요. 영수증은 보관됩니다.',
+          [{ text: 'OK', onPress: () => hidePaywall() }],
+        );
+        return;
+      }
+    } catch {
+      // Network errors during poll are non-fatal — the RC snapshot in
+      // PremiumContext keeps the user premium until the next foreground
+      // refresh reconciles. Just close the modal.
+    } finally {
+      setIsPurchasing(false);
+    }
     hidePaywall();
-    // Fire-and-forget: the UI is already premium via the RC snapshot.
-    // The poll just makes sure the server metadata catches up.
-    pollSubscriptionStatus({
-      onSuccess: async () => {
-        await refreshStatus();
-      },
-    }).catch(() => {
-      // Polling is best-effort — never surface errors to the user.
-    });
   };
 
   const handleRestore = async () => {

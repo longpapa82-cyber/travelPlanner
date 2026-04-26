@@ -96,7 +96,16 @@ interface RcEntitlementState extends ActiveEntitlementSnapshot {
 }
 
 export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) => {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, isLoggingOut: authIsLoggingOut } = useAuth();
+  // V185 (Invariant 36): mirror to ref for synchronous access inside
+  // AppState handler. Auth's authIsLoggingOut is a state value; React
+  // batching means a stale closure could be captured by the long-lived
+  // AppState subscription. The ref is updated below in a useEffect that
+  // tracks authIsLoggingOut.
+  const authIsLoggingOutRef = useRef(false);
+  useEffect(() => {
+    authIsLoggingOutRef.current = authIsLoggingOut;
+  }, [authIsLoggingOut]);
   const [isPaywallVisible, setIsPaywallVisible] = useState(false);
   const [paywallContext, setPaywallContext] = useState<PaywallContext>('general');
   // V169 (F2): Replaces `localPremiumOverride: boolean`.
@@ -203,6 +212,14 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
 
     const subscription = AppState.addEventListener('change', async (nextState: AppStateStatus) => {
       if (appStateRef.current.match(/inactive|background/) && nextState === 'active') {
+        // V185 (Invariant 36): cross-context logout lock. If AuthContext
+        // is mid-logout, do NOT touch RC SDK or refresh user — both can
+        // overwrite the in-progress setUser(null) and reproduce the V184
+        // 100%-deterministic "first tap does nothing" race.
+        if (authIsLoggingOutRef.current) {
+          appStateRef.current = nextState;
+          return;
+        }
         try {
           const info = await getCustomerInfo();
           const snapshot = getActiveEntitlementSnapshot(info);
@@ -212,6 +229,12 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
         }
         // V169 (F3): also pull the canonical server state. Without this the
         // server profile stays stale until next full auth cycle.
+        // V185: re-check after the RC await — logout may have started in
+        // the meantime.
+        if (authIsLoggingOutRef.current) {
+          appStateRef.current = nextState;
+          return;
+        }
         refreshUserRef.current?.();
       }
       appStateRef.current = nextState;

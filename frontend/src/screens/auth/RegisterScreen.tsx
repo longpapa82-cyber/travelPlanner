@@ -9,7 +9,7 @@
  * - 폼 검증 (이메일, 비밀번호 강도)
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,8 @@ import {
   ScrollView,
   ImageBackground,
   Alert,
+  Keyboard,
+  KeyboardEvent,
 } from 'react-native';
 import AuthLegalModal from '../../components/legal/AuthLegalModal';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -58,6 +60,29 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
+  // V185 (Invariant 39): Android keyboard inset compensation. V159
+  // disabled KeyboardAvoidingView on Android (edgeToEdge OOM crash root
+  // fix), but the side effect was that the password-confirm field at
+  // the bottom of the form became unreachable when the keyboard was up
+  // — V184 reported "비밀번호 확인 입력을 위해 하단으로 스크롤 해도
+  // 추가 스크롤이 되지 않음". We track keyboard height in JS and add
+  // it to ScrollView contentContainerStyle.paddingBottom so the field
+  // is always reachable. iOS uses KAV behavior=padding (KAV unchanged
+  // on iOS — the V159 ban applies only to Android).
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    const showSub = Keyboard.addListener('keyboardDidShow', (e: KeyboardEvent) => {
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardHeight(0);
+    });
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -202,8 +227,17 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
       enabled={Platform.OS === 'ios'}
     >
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          // V185: Android-only dynamic padding so the bottom field
+          // (confirm password) stays reachable behind the keyboard.
+          // iOS already gets this from KAV behavior=padding.
+          keyboardHeight > 0 && Platform.OS === 'android'
+            ? { paddingBottom: keyboardHeight + 24 }
+            : null,
+        ]}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
       >
         {/* Hero Header */}

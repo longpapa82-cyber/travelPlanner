@@ -12,7 +12,10 @@ import * as fs from 'fs';
  */
 function requireEnvInProduction(name: string): string {
   const value = process.env[name];
-  if (process.env.NODE_ENV === 'production' && (!value || value.trim() === '')) {
+  if (
+    process.env.NODE_ENV === 'production' &&
+    (!value || value.trim() === '')
+  ) {
     throw new Error(
       `[Config] Required env "${name}" is missing or empty in production. ` +
         `Refusing to start with insecure defaults.`,
