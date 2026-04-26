@@ -222,7 +222,11 @@ export class UsersController {
     @Headers('user-agent') userAgent?: string,
   ) {
     const ipAddress = xForwardedFor?.split(',')[0]?.trim() || xRealIp;
-    await this.usersService.revokeOptionalConsents(userId, ipAddress, userAgent);
+    await this.usersService.revokeOptionalConsents(
+      userId,
+      ipAddress,
+      userAgent,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

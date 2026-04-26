@@ -1107,7 +1107,12 @@ export class UsersService {
       })),
     };
 
-    await this.updateConsents(userId, dto as UpdateConsentsDto, ipAddress, userAgent);
+    await this.updateConsents(
+      userId,
+      dto as UpdateConsentsDto,
+      ipAddress,
+      userAgent,
+    );
   }
 
   /**

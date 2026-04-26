@@ -93,6 +93,11 @@ export class ExpensesController {
     @Body() dto: SettleExpenseDto,
   ) {
     const settleForUserId = dto.targetUserId || userId;
-    return this.expensesService.settleUp(tripId, expenseId, settleForUserId, userId);
+    return this.expensesService.settleUp(
+      tripId,
+      expenseId,
+      settleForUserId,
+      userId,
+    );
   }
 }
