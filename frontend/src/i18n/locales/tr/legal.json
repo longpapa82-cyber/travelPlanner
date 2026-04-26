@@ -275,7 +275,7 @@
       },
       "art12": {
         "title": "12. Sınır Ötesi Veri Aktarımı",
-        "content": "Kişisel bilgileriniz hizmet işletimi için Kore dışına aktarılabilir:\n\n| Alıcı | Konum | Veri | Amaç |\n| OpenAI | ABD | Seyahat verileri | AI güzergah oluşturma |\n| Google | ABD | Reklam kimliği, kullanım kalıpları | Reklam sunumu |\n| RevenueCat | ABD | Abonelik bilgileri | Ödeme işleme |\n| Sentry | ABD | Hata verileri | Hata izleme |\n\n| OpenWeather | Amerika Birleşik Devletleri | Enlem/boylam koordinatları | Hava durumu bilgisi |\nHer hizmet uygun veri koruma önlemlerini sürdürmektedir ve aktarımlar yürürlükteki yasalara uygun olarak kullanıcı onayı ile yapılmaktadır."
+        "content": "Kişisel bilgileriniz hizmet işletimi için Kore dışına aktarılabilir:\n\n| Alıcı | Konum | Veri | Amaç |\n| OpenAI | ABD | Seyahat verileri | AI güzergah oluşturma |\n| Google | ABD | Reklam kimliği, kullanım kalıpları | Reklam sunumu |\n| RevenueCat | ABD | Abonelik bilgileri | Ödeme işleme |\n| Sentry | Almanya | Hata verileri | Hata izleme |\n\n| OpenWeather | Amerika Birleşik Devletleri | Enlem/boylam koordinatları | Hava durumu bilgisi |\nHer hizmet uygun veri koruma önlemlerini sürdürmektedir ve aktarımlar yürürlükteki yasalara uygun olarak kullanıcı onayı ile yapılmaktadır."
       },
       "art13": {
         "title": "13. Veri İhlali Bildirimi",

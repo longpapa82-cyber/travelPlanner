@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "¿Hay algún costo por usar el servicio?",
-        "a": "Todas las funciones de MyTravel son gratuitas. Se pueden mostrar anuncios dentro de la app para apoyar las operaciones del servicio."
+        "a": "Puedes empezar a usar MyTravel de forma gratuita — el plan gratuito permite hasta 3 generaciones de itinerarios de IA al mes. La suscripción Premium (3,99 USD/mes o 29,99 USD/año) ofrece más generaciones y elimina los anuncios."
       },
       "adInfo": {
         "q": "¿Cómo se muestran los anuncios?",
@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Transferencia internacional de datos",
-        "content": "Para operar el servicio, la información personal del usuario puede transferirse al extranjero de la siguiente manera:\n\n| Destinatario | Ubicación | Elementos transferidos | Propósito |\n| OpenAI | EE. UU. | Datos de viaje | Generación de itinerarios con IA |\n| Google | EE. UU. | ID de publicidad, patrones de uso | Publicidad |\n| RevenueCat | EE. UU. | Información de suscripción | Procesamiento de pagos |\n| Sentry | EE. UU. | Datos de errores, modelo de dispositivo | Monitoreo de errores |\n\n| OpenWeather | Estados Unidos | Coordenadas de latitud/longitud | Información meteorológica |\nCada servicio toma medidas adecuadas de protección de datos personales, y la transferencia se realiza con el consentimiento del usuario de acuerdo con las leyes aplicables."
+        "content": "Para operar el servicio, la información personal del usuario puede transferirse al extranjero de la siguiente manera:\n\n| Destinatario | Ubicación | Elementos transferidos | Propósito |\n| OpenAI | EE. UU. | Datos de viaje | Generación de itinerarios con IA |\n| Google | EE. UU. | ID de publicidad, patrones de uso | Publicidad |\n| RevenueCat | EE. UU. | Información de suscripción | Procesamiento de pagos |\n| Sentry | Alemania | Datos de errores, modelo de dispositivo | Monitoreo de errores |\n\n| OpenWeather | Estados Unidos | Coordenadas de latitud/longitud | Información meteorológica |\nCada servicio toma medidas adecuadas de protección de datos personales, y la transferencia se realiza con el consentimiento del usuario de acuerdo con las leyes aplicables."
       },
       "ccpa": {
         "title": "Derechos del consumidor según la CCPA (California)",

@@ -63,7 +63,7 @@
       "description": "AI akan membuat rencana perjalanan optimal berdasarkan tujuan dan jadwal Anda",
       "remaining": "{{remaining}}/{{total}} pembuatan AI tersisa bulan ini",
       "limitReached": "Batas AI bulanan ({{total}}) tercapai. Gunakan pembuatan manual.",
-      "unlimited": "∞ Tanpa batas (admin)"
+      "unlimited": "∞ 30 kali per bulan (admin)"
     },
     "rewardedAd": {
       "label": "Tonton iklan untuk wawasan perjalanan detail"

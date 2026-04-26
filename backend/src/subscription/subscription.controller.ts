@@ -21,6 +21,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { SubscriptionService } from './subscription.service';
 import { RevenueCatWebhookDto } from './dto/revenuecat-webhook.dto';
 import { CreateCheckoutDto } from './dto/create-checkout.dto';
+import { PreflightPurchaseDto } from './dto/preflight-purchase.dto';
 
 @Controller('subscription')
 export class SubscriptionController {
@@ -72,9 +73,12 @@ export class SubscriptionController {
   @Post('preflight')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
+  // V187 P0-B: 10/min/IP limit prevents enumeration and DoS on payment entry.
+  // Default global throttle (200/min) is too lax for a checkout-adjacent path.
+  @Throttle({ short: { ttl: 60000, limit: 10 } })
   async preflight(
     @CurrentUser('userId') userId: string,
-    @Body() body: { sku?: string },
+    @Body() body: PreflightPurchaseDto,
   ) {
     return this.subscriptionService.preflightPurchase(userId, body?.sku);
   }

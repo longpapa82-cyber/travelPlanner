@@ -275,7 +275,7 @@
       },
       "art12": {
         "title": "12. Cross-Border Data Transfer",
-        "content": "Your personal information may be transferred outside of Korea for service operation:\n\n| Recipient | Location | Data | Purpose |\n| OpenAI | USA | Travel data | AI itinerary generation |\n| Google | USA | Ad ID, usage patterns | Ad delivery |\n| RevenueCat | USA | Subscription info | Payment processing |\n| Sentry | USA | Error data | Error monitoring |\n\n| OpenWeather | United States | Latitude/longitude coordinates | Weather information |\nEach service maintains appropriate data protection measures, and transfers are made with user consent in accordance with applicable laws."
+        "content": "Your personal information may be transferred outside of Korea for service operation:\n\n| Recipient | Location | Data | Purpose |\n| OpenAI | USA | Travel data | AI itinerary generation |\n| Google | USA | Ad ID, usage patterns | Ad delivery |\n| RevenueCat | USA | Subscription info | Payment processing |\n| Sentry | Germany | Error data | Error monitoring |\n\n| OpenWeather | United States | Latitude/longitude coordinates | Weather information |\nEach service maintains appropriate data protection measures, and transfers are made with user consent in accordance with applicable laws."
       },
       "art13": {
         "title": "13. Data Breach Notification",

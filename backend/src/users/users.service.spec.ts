@@ -63,8 +63,23 @@ describe('UsersService', () => {
       createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
     };
 
+    // V187 P0-C: remove() now wraps the destructive write in a transaction.
+    // V187 P1-C #1: also runs an UPDATE to anonymize error_logs PII first.
+    // The mock manager exposes both `delete` and a queryBuilder chain.
+    const mockManager = {
+      delete: jest.fn().mockResolvedValue({ affected: 1 }),
+      createQueryBuilder: jest.fn().mockReturnValue({
+        update: jest.fn().mockReturnThis(),
+        set: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        execute: jest.fn().mockResolvedValue(undefined),
+      }),
+    };
     const mockDataSource = {
       query: jest.fn().mockResolvedValue([]),
+      transaction: jest.fn(async (cb: (m: typeof mockManager) => unknown) => {
+        return cb(mockManager);
+      }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -473,11 +488,13 @@ describe('UsersService', () => {
   });
 
   describe('remove', () => {
-    it('should delete user and blacklist in cache', async () => {
-      // Arrange — OAuth user (no password required)
+    it('should delete user (via transaction) and blacklist in cache', async () => {
+      // V187 P0-C: the service now wraps the delete in a transaction
+      // (atomic with downstream cascading FK deletes). We verify the
+      // transaction was invoked and the call no longer hits
+      // repository.delete directly.
       const oauthUser = { ...mockUser, provider: AuthProvider.GOOGLE };
       repository.findOne.mockResolvedValue(oauthUser);
-      repository.delete.mockResolvedValue(undefined as any);
 
       // Act
       await service.remove(mockUser.id);
@@ -487,7 +504,13 @@ describe('UsersService', () => {
         where: { id: mockUser.id },
         select: ['id', 'provider', 'passwordHash'],
       });
-      expect(repository.delete).toHaveBeenCalledWith(mockUser.id);
+      // The transaction primitive replaced the direct repository.delete
+      // call; assert it was used by checking the mocked DataSource was
+      // exercised (its mock was wired in beforeEach).
+      const ds = (
+        service as unknown as { dataSource: { transaction: jest.Mock } }
+      ).dataSource;
+      expect(ds.transaction).toHaveBeenCalled();
     });
 
     it('should throw NotFoundException if user does not exist', async () => {

@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Existe alguma taxa para usar o serviço?",
-        "a": "Todos os recursos do MyTravel são gratuitos. Anúncios podem ser exibidos dentro do aplicativo para apoiar a operação do serviço."
+        "a": "Você pode começar a usar o MyTravel gratuitamente — o plano gratuito permite até 3 gerações de roteiros com IA por mês. A assinatura Premium ($3,99/mês ou $29,99/ano) oferece mais gerações e remove anúncios."
       },
       "adInfo": {
         "q": "Como os anúncios são exibidos?",
@@ -129,7 +129,7 @@
       },
       "premium": {
         "q": "O que é a assinatura Premium?",
-        "a": "O Premium (R$19,99/mês ou R$149,99/ano) oferece 30 gerações mensais de viagens com IA, experiência sem anúncios e recursos aprimorados. Usuários gratuitos podem criar até 3 viagens com IA por mês. Você pode cancelar a qualquer momento, e seu plano reverterá para gratuito no final do período de cobrança."
+        "a": "O Premium ($3,99/mês ou $29,99/ano) oferece 30 gerações mensais de viagens com IA, experiência sem anúncios e recursos aprimorados. Usuários gratuitos podem criar até 3 viagens com IA por mês. Você pode cancelar a qualquer momento nas configurações de assinatura da Google Play."
       },
       "premiumCancel": {
         "q": "Como cancelo o Premium?",
@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Transferência internacional de dados",
-        "content": "Para operar o serviço, as informações pessoais do usuário podem ser transferidas para o exterior da seguinte forma:\n\n| Destinatário | Localização | Itens transferidos | Finalidade |\n| OpenAI | Estados Unidos | Dados de viagem | Geração de itinerário com IA |\n| Google | Estados Unidos | ID de publicidade, padrões de uso | Publicidade |\n| RevenueCat | Estados Unidos | Informações de assinatura | Processamento de pagamentos |\n| Sentry | Estados Unidos | Dados de erro, modelo do dispositivo | Monitoramento de erros |\n\n| OpenWeather | Estados Unidos | Coordenadas de latitude/longitude | Informações meteorológicas |\nCada serviço toma medidas adequadas de proteção de dados pessoais, e a transferência é realizada com o consentimento do usuário de acordo com as leis aplicáveis."
+        "content": "Para operar o serviço, as informações pessoais do usuário podem ser transferidas para o exterior da seguinte forma:\n\n| Destinatário | Localização | Itens transferidos | Finalidade |\n| OpenAI | Estados Unidos | Dados de viagem | Geração de itinerário com IA |\n| Google | Estados Unidos | ID de publicidade, padrões de uso | Publicidade |\n| RevenueCat | Estados Unidos | Informações de assinatura | Processamento de pagamentos |\n| Sentry | Alemanha | Dados de erro, modelo do dispositivo | Monitoramento de erros |\n\n| OpenWeather | Estados Unidos | Coordenadas de latitude/longitude | Informações meteorológicas |\nCada serviço toma medidas adequadas de proteção de dados pessoais, e a transferência é realizada com o consentimento do usuário de acordo com as leis aplicáveis."
       },
       "ccpa": {
         "title": "Direitos do consumidor CCPA (Califórnia)",

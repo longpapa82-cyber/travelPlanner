@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Sử dụng dịch vụ có mất phí không?",
-        "a": "Tất cả tính năng của MyTravel đều miễn phí. Quảng cáo có thể được hiển thị trong ứng dụng để hỗ trợ vận hành dịch vụ."
+        "a": "Bạn có thể bắt đầu dùng MyTravel miễn phí — gói miễn phí cho phép tạo tối đa 3 lịch trình AI mỗi tháng. Gói Premium (3,99 USD/tháng hoặc 29,99 USD/năm) cho phép tạo nhiều hơn và loại bỏ quảng cáo."
       },
       "adInfo": {
         "q": "Quảng cáo được hiển thị như thế nào?",
@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Chuyển dữ liệu quốc tế",
-        "content": "Để vận hành dịch vụ, thông tin cá nhân của người dùng có thể được chuyển ra nước ngoài như sau:\n\n| Bên nhận | Vị trí | Mục được chuyển | Mục đích |\n| OpenAI | Hoa Kỳ | Dữ liệu du lịch | Tạo lịch trình AI |\n| Google | Hoa Kỳ | ID quảng cáo, mẫu sử dụng | Quảng cáo |\n| RevenueCat | Hoa Kỳ | Thông tin đăng ký | Xử lý thanh toán |\n| Sentry | Hoa Kỳ | Dữ liệu lỗi, mẫu thiết bị | Giám sát lỗi |\n\n| OpenWeather | Hoa Kỳ | Tọa độ vĩ độ/kinh độ | Thông tin thời tiết |\nMỗi dịch vụ thực hiện các biện pháp bảo vệ dữ liệu cá nhân thích hợp, và việc chuyển dữ liệu được thực hiện với sự đồng ý của người dùng theo luật pháp hiện hành."
+        "content": "Để vận hành dịch vụ, thông tin cá nhân của người dùng có thể được chuyển ra nước ngoài như sau:\n\n| Bên nhận | Vị trí | Mục được chuyển | Mục đích |\n| OpenAI | Hoa Kỳ | Dữ liệu du lịch | Tạo lịch trình AI |\n| Google | Hoa Kỳ | ID quảng cáo, mẫu sử dụng | Quảng cáo |\n| RevenueCat | Hoa Kỳ | Thông tin đăng ký | Xử lý thanh toán |\n| Sentry | Đức | Dữ liệu lỗi, mẫu thiết bị | Giám sát lỗi |\n\n| OpenWeather | Hoa Kỳ | Tọa độ vĩ độ/kinh độ | Thông tin thời tiết |\nMỗi dịch vụ thực hiện các biện pháp bảo vệ dữ liệu cá nhân thích hợp, và việc chuyển dữ liệu được thực hiện với sự đồng ý của người dùng theo luật pháp hiện hành."
       },
       "ccpa": {
         "title": "Quyền của người tiêu dùng CCPA (California)",

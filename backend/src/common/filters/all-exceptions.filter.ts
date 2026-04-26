@@ -146,7 +146,11 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
           severity: this.getSeverity(status),
           platform: detectPlatform(ua),
           screen: `${request.method} ${request.path}`.slice(0, 200),
-          routeName: `${request.method} ${request.route?.path ?? request.path}`.slice(0, 150),
+          routeName:
+            `${request.method} ${request.route?.path ?? request.path}`.slice(
+              0,
+              150,
+            ),
           httpStatus: status,
           userAgent: ua?.slice(0, 500),
           isResolved: false,
@@ -229,8 +233,30 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     // Log admin access attempts
     if (path.includes('/admin') && [401, 403].includes(status)) return true;
 
-    // Log subscription/payment errors — but not paywall/quota business rules
-    if (path.includes('/subscription') && status >= 500) return true;
+    // V187 P0-A: Diagnostic infrastructure recovery.
+    // V186 reported "error_logs 0건" while subscription/trip flows were failing.
+    // The previous filter only logged 5xx; the actual UX-blocking failures were
+    // 400/422 (DTO validation, business-rule rejection) and 401 (token expiry mid-flow).
+    // Without these, all client-side regressions become invisible.
+    if (path.includes('/subscription')) {
+      if ([400, 401, 403, 404, 409, 422].includes(status) || status >= 500)
+        return true;
+    }
+
+    // Manual trip creation, AI quota, places coordinate failures all surface as
+    // 4xx but were silently dropped. Logging these closes V186 #3 black hole.
+    if (path.includes('/trips')) {
+      if ([400, 401, 403, 404, 409, 422].includes(status) || status >= 500)
+        return true;
+    }
+
+    // Account deletion failures (FK cascade, transaction rollback) must be visible
+    // to detect V186 #4 "withdraw shows complete but logout-only" regression.
+    if (
+      path.match(/\/users\/(me|profile)/) &&
+      [400, 401, 403, 409, 500].includes(status)
+    )
+      return true;
 
     return false;
   }

@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Ist der Service kostenpflichtig?",
-        "a": "Alle MyTravel-Funktionen sind kostenlos. Zur Unterstützung des Service können Werbeanzeigen in der App erscheinen."
+        "a": "MyTravel kann kostenlos verwendet werden — der kostenlose Plan erlaubt bis zu 3 KI-Reiseplangenerierungen pro Monat. Das Premium-Abonnement (3,99 $/Monat oder 29,99 $/Jahr) bietet mehr Generierungen und entfernt Werbung."
       },
       "adInfo": {
         "q": "Wie werden Anzeigen dargestellt?",
@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Internationale Datenübermittlung",
-        "content": "Für den Betrieb des Dienstes können personenbezogene Daten des Nutzers wie folgt ins Ausland übermittelt werden:\n\n| Empfänger | Standort | Übermittelte Elemente | Zweck |\n| OpenAI | USA | Reisedaten | KI-Reiseplanerstellung |\n| Google | USA | Werbe-ID, Nutzungsmuster | Werbung |\n| RevenueCat | USA | Abonnementinformationen | Zahlungsabwicklung |\n| Sentry | USA | Fehlerdaten, Gerätemodell | Fehlerüberwachung |\n\n| OpenWeather | USA | Breiten-/Längenkoordinaten | Wetterinformationen |\nJeder Dienst trifft angemessene Datenschutzmaßnahmen, und die Übermittlung erfolgt mit Zustimmung des Nutzers gemäß den geltenden Gesetzen."
+        "content": "Für den Betrieb des Dienstes können personenbezogene Daten des Nutzers wie folgt ins Ausland übermittelt werden:\n\n| Empfänger | Standort | Übermittelte Elemente | Zweck |\n| OpenAI | USA | Reisedaten | KI-Reiseplanerstellung |\n| Google | USA | Werbe-ID, Nutzungsmuster | Werbung |\n| RevenueCat | USA | Abonnementinformationen | Zahlungsabwicklung |\n| Sentry | Deutschland | Fehlerdaten, Gerätemodell | Fehlerüberwachung |\n\n| OpenWeather | USA | Breiten-/Längenkoordinaten | Wetterinformationen |\nJeder Dienst trifft angemessene Datenschutzmaßnahmen, und die Übermittlung erfolgt mit Zustimmung des Nutzers gemäß den geltenden Gesetzen."
       },
       "ccpa": {
         "title": "CCPA-Verbraucherrechte (Kalifornien)",

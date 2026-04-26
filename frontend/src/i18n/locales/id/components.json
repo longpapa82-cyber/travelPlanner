@@ -56,7 +56,7 @@
     "info": "Siapa pun dengan tautan ini dapat melihat rencana perjalanan ini. Menonaktifkan tautan akan mencabut akses.",
     "expiry": {
       "title": "Masa Berlaku",
-      "none": "Tanpa batas waktu",
+      "none": "30 kali per bulan waktu",
       "7days": "7 hari",
       "30days": "30 hari",
       "90days": "90 hari"

@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "Apakah ada biaya untuk menggunakan layanan?",
-        "a": "Semua fitur MyTravel gratis. Iklan mungkin ditampilkan dalam aplikasi untuk mendukung operasional layanan."
+        "a": "MyTravel dapat digunakan gratis — paket gratis memungkinkan hingga 3 pembuatan rencana perjalanan AI per bulan. Langganan Premium ($3,99/bulan atau $29,99/tahun) memberi lebih banyak pembuatan dan menghapus iklan."
       },
       "adInfo": {
         "q": "Bagaimana iklan ditampilkan?",
@@ -129,7 +129,7 @@
       },
       "premium": {
         "q": "Apa itu langganan Premium?",
-        "a": "Premium ($3,99/bulan atau $29,99/tahun) memberi Anda pembuatan perjalanan AI tanpa batas, pengalaman bebas iklan, dan fitur yang ditingkatkan. Pengguna gratis dapat membuat hingga 3 perjalanan AI per bulan. Anda dapat membatalkan kapan saja, dan paket Anda akan kembali ke gratis di akhir periode penagihan."
+        "a": "Premium ($3,99/bulan atau $29,99/tahun) memberi Anda 30 pembuatan perjalanan AI per bulan, pengalaman bebas iklan, dan fitur yang ditingkatkan. Pengguna gratis dapat membuat hingga 3 perjalanan AI per bulan. Anda dapat membatalkan kapan saja melalui pengaturan langganan Google Play."
       },
       "premiumCancel": {
         "q": "Bagaimana cara membatalkan Premium?",
@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Transfer Data Internasional",
-        "content": "Untuk mengoperasikan layanan, informasi pribadi pengguna dapat ditransfer ke luar negeri sebagai berikut:\n\n| Penerima | Lokasi | Item yang ditransfer | Tujuan |\n| OpenAI | Amerika Serikat | Data perjalanan | Pembuatan rencana perjalanan AI |\n| Google | Amerika Serikat | ID iklan, pola penggunaan | Iklan |\n| RevenueCat | Amerika Serikat | Informasi langganan | Pemrosesan pembayaran |\n| Sentry | Amerika Serikat | Data kesalahan, model perangkat | Pemantauan kesalahan |\n\n| OpenWeather | Amerika Serikat | Koordinat lintang/bujur | Informasi cuaca |\nSetiap layanan mengambil tindakan perlindungan data pribadi yang sesuai, dan transfer dilakukan dengan persetujuan pengguna sesuai dengan hukum yang berlaku."
+        "content": "Untuk mengoperasikan layanan, informasi pribadi pengguna dapat ditransfer ke luar negeri sebagai berikut:\n\n| Penerima | Lokasi | Item yang ditransfer | Tujuan |\n| OpenAI | Amerika Serikat | Data perjalanan | Pembuatan rencana perjalanan AI |\n| Google | Amerika Serikat | ID iklan, pola penggunaan | Iklan |\n| RevenueCat | Amerika Serikat | Informasi langganan | Pemrosesan pembayaran |\n| Sentry | Jerman | Data kesalahan, model perangkat | Pemantauan kesalahan |\n\n| OpenWeather | Amerika Serikat | Koordinat lintang/bujur | Informasi cuaca |\nSetiap layanan mengambil tindakan perlindungan data pribadi yang sesuai, dan transfer dilakukan dengan persetujuan pengguna sesuai dengan hukum yang berlaku."
       },
       "ccpa": {
         "title": "Hak Konsumen CCPA (California)",

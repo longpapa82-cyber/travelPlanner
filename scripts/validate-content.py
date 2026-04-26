@@ -190,6 +190,77 @@ BANNED_PATTERNS: list[tuple[re.Pattern[str], str, str]] = [
         'absolute/superlative service ad ("완벽한 일정", "perfect itinerary") — Korean ad law §3',
         'all',
     ),
+    # V187 P1-B (CRITICAL #1): "all features are free" claim (Play 8.3
+    # misleading-content). Any locale that promises every feature for free
+    # while a paid premium plan exists is a direct policy violation.
+    # We allowlist factual phrases like "free to start" / "free with up to
+    # N AI generations" by requiring proximity to the unconditional words
+    # 모든/all/todas/tutte etc. WITHOUT a premium qualifier.
+    (
+        re.compile(
+            r'모든\s*(?:핵심)?\s*기능[은은이가]?\s*무료|'
+            r'all\s+(?:my)?features?\s+are\s+free|'
+            r'tutte\s+le\s+funzioni.{0,20}gratu|'
+            r'toutes\s+les\s+fonctionnalit.{0,20}gratu|'
+            r'todas\s+(?:as|las)\s+(?:funciones|funcionalidades).{0,20}gratu|'
+            r'alle\s+\w+-?funktionen\s+sind\s+kostenlos|'
+            r'jeden\s+bezpłatny|'
+            r'semua\s+fitur.{0,20}gratis|'
+            r'tất\s+cả\s+tính\s+năng.{0,20}miễn\s+phí|'
+            r'所有功能.{0,20}免费|'
+            r'すべての機能.{0,20}無料|'
+            r'все\s+функции.{0,20}бесплатн',
+            re.IGNORECASE,
+        ),
+        'unconditional "all features free" claim — Play 8.3 misleading content',
+        'all',
+    ),
+    # V187 P1-B (CRITICAL #5): unlimited AI generation in locales other
+    # than the V185-allowlisted "AI_TRIPS_ADMIN_LIMIT" sentinel. Premium
+    # is capped at 30/month, so "unlimited" is misleading.
+    (
+        re.compile(
+            r'\btanpa\s+batas\b|'  # id
+            r'безлимитн[ыа][ея]?\s*AI|'  # ru
+            r'\bvô\s+hạn\b.{0,20}AI|'  # vi
+            r'\bilimitad[ao]s?\b.{0,20}IA|'  # es / pt (avoid pre-existing factual mentions)
+            r'unbegrenzt(?:e|er)?\s+(?:KI|AI)',  # de
+            re.IGNORECASE,
+        ),
+        'unlimited AI claim — premium is 30/month, not unlimited',
+        'all',
+    ),
+    # V187 P1-B (CRITICAL #6): unregistered currency in pricing. Play
+    # Console only carries USD ($) and KRW (₩). Any other symbol in a
+    # premium-pricing context promises a price that does not exist.
+    (
+        re.compile(
+            r'(?:R\$|€|£|₹|¥(?!\s*\d))\s*\d+[,.]?\d*\s*'
+            r'(?:/(?:mês|mois|mes|月|meses|miesiąc|maand)|'
+            r'/(?:ano|année|año|year|年|year)|'
+            r'\bpor\s+mes|'
+            r'\bal\s+mese|'
+            r'\bpro\s+Monat)',
+            re.IGNORECASE,
+        ),
+        'unregistered currency in pricing claim (Play Console has only USD/KRW)',
+        'all',
+    ),
+    # V187 P1-B (HIGH): "in N seconds" / "instantly" trip-creation promises.
+    # Real OpenAI calls are 10-30s. Any "in 5 seconds" / "instantly" claim
+    # paired with an itinerary noun is a measurable factual breach.
+    (
+        re.compile(
+            r'in\s+\d+\s+seconds?\b(?!\s+with)|'
+            r'\binstantly\s+(?:creates?|generates?)\s+(?:your\s+)?(?:itinerary|trip|plan)|'
+            r'planning\s+in\s+seconds|'
+            r'수\s*초\s*안에\s*완성|'
+            r'\bperfect\s+(?:trip|day|itinerary|adventure|journey|getaway)',
+            re.IGNORECASE,
+        ),
+        'measurable time/superlative trip-creation claim (real latency 10-30s)',
+        'all',
+    ),
 ]
 
 # Copyright span check: e.g. "© 2024-2026 AI Soft" → 2024 < 2026 → fail.

@@ -811,12 +811,36 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     });
   }, [navigation]);
 
+  // V187 P0-F: never abort in-flight trip creation on focus events.
+  //
+  // V186 reported "white screen / home reset on app return". RCA: the
+  // previous useFocusEffect re-ran resetForm() on every focus — which
+  // includes background→foreground transitions if the OS recreated the
+  // navigation host. resetForm aborts the polling AbortController and
+  // clears every input, so when the user came back to a "currently
+  // generating trip" they saw an empty form (perceived as "reset to
+  // home"). The fix: reset is allowed only when no creation is active
+  // AND the screen is being entered from outside (initial mount or
+  // from another tab), not as a side effect of a foreground event.
+  const hasFocusedRef = useRef(false);
   useFocusEffect(
     useCallback(() => {
-      resetForm();
-      // No cleanup — reset is forward-only on focus.
+      // Skip if a generation is in flight — preserves user data and
+      // avoids cancelling a running poll.
+      if (isCreatingRef.current || isLoading) {
+        hasFocusedRef.current = true;
+        return undefined;
+      }
+      // Only reset on the FIRST focus per mount, or when re-entered from
+      // another tab (hasFocusedRef carries across blur/focus cycles
+      // within the same mounted instance, so a background→foreground
+      // re-focus on the same screen is a no-op).
+      if (!hasFocusedRef.current) {
+        resetForm();
+        hasFocusedRef.current = true;
+      }
       return undefined;
-    }, [resetForm]),
+    }, [resetForm, isLoading]),
   );
 
   const formatDateForDisplay = useCallback((dateString: string): string => {

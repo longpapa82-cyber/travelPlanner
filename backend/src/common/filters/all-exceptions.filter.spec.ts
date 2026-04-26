@@ -122,13 +122,44 @@ describe('AllExceptionsFilter', () => {
       );
     });
 
-    it('should NOT log 404 errors on non-sensitive endpoints', () => {
+    it('should NOT log 404 errors on truly non-sensitive endpoints', () => {
+      // V187 P0-A: /trips and /subscription 4xx are now logged (V186 #3
+      // RCA — manual trip failures were silently dropped, producing the
+      // "0 error_logs while users report failures" pattern). Use a path
+      // that intentionally has no diagnostic value.
       const exception = new HttpException('Not Found', HttpStatus.NOT_FOUND);
-      mockRequest.path = '/api/trips/123';
+      mockRequest.path = '/api/announcements/abc';
 
       filter.catch(exception, mockHost);
 
       expect(mockRepository.save).not.toHaveBeenCalled();
+    });
+
+    // V187 P0-A: trip / subscription / users-me 4xx must reach error_logs.
+    // The previous behavior masked V186's "구독 결제 오류 + 오류 로그 0건"
+    // and "수동 여행 생성 실패 + 오류 로그 0건" symptoms.
+    it('should log 4xx errors on /trips paths (V187 P0-A)', () => {
+      const exception = new HttpException(
+        'Validation failed',
+        HttpStatus.BAD_REQUEST,
+      );
+      mockRequest.path = '/api/trips/create-async';
+
+      filter.catch(exception, mockHost);
+
+      expect(mockRepository.save).toHaveBeenCalled();
+    });
+
+    it('should log 4xx errors on /subscription paths (V187 P0-A)', () => {
+      const exception = new HttpException(
+        'already_subscribed',
+        HttpStatus.CONFLICT,
+      );
+      mockRequest.path = '/api/subscription/preflight';
+
+      filter.catch(exception, mockHost);
+
+      expect(mockRepository.save).toHaveBeenCalled();
     });
 
     it('should always log 5xx errors', () => {

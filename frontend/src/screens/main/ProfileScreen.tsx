@@ -43,7 +43,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const ProfileScreen = ({ navigation }: any) => {
   const { t } = useTranslation('profile');
   const { t: tCommon } = useTranslation('common');
-  const { user, logout, refreshUser } = useAuth();
+  const { user, logout, refreshUser, markAccountTerminating } = useAuth();
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
@@ -212,9 +212,15 @@ const ProfileScreen = ({ navigation }: any) => {
       destructive: true,
     });
     if (!ok) return;
+    // V187 P0-C (Invariant 41): set the cross-context lock BEFORE the network
+    // call. V186 saw a 401 from another in-flight context fire setUser(null)
+    // between deleteAccount() resolving and logout() starting — the user saw
+    // "logout only", tapped again, and the second tap finally completed the
+    // deletion. Termination must be a single guarded transaction.
+    markAccountTerminating();
+    markLoggingOut();
     try {
       await apiService.deleteAccount();
-      markLoggingOut();
       await logout();
       showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
     } catch (error: any) {
@@ -229,10 +235,15 @@ const ProfileScreen = ({ navigation }: any) => {
       return;
     }
     setIsDeleting(true);
+    // V187 P0-C (Invariant 41): cross-context lock BEFORE the network call.
+    // Same rationale as handleDeleteAccount above — the entire termination
+    // transaction (network → DB delete → blacklist → logout) must be guarded
+    // as one atomic UX unit.
+    markAccountTerminating();
+    markLoggingOut();
     try {
       await apiService.deleteAccount(deletePassword);
       setShowDeleteConfirm(false);
-      markLoggingOut();
       await logout();
       showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
     } catch (error: any) {

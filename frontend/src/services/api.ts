@@ -1144,6 +1144,9 @@ class ApiService {
     };
     try {
       const response = await this.api.post('/error-logs', enriched);
+      // V187 P0-A: After successful send, drain any queued payloads from prior
+      // offline/auth-expiry windows so the diagnostic table catches up.
+      this.drainErrorLogQueue().catch(() => {});
       return response.data;
     } catch (err: any) {
       // V176: V174's expanded payload was being rejected with 400 when the
@@ -1160,11 +1163,74 @@ class ApiService {
           deviceOS: enriched.deviceOS,
           appVersion: enriched.appVersion,
         };
-        const retry = await this.api.post('/error-logs', minimal);
-        return retry.data;
+        try {
+          const retry = await this.api.post('/error-logs', minimal);
+          return retry.data;
+        } catch (retryErr) {
+          await this.queueErrorLog(minimal);
+          this.warnReportFailure(retryErr, 'minimal-retry');
+          throw retryErr;
+        }
       }
+      // V187 P0-A: 401/403/429/network errors no longer evaporate. Persist to
+      // a bounded queue (50 entries, FIFO eviction) and surface a warning so
+      // V186-style "0건" black holes become impossible.
+      await this.queueErrorLog(enriched);
+      this.warnReportFailure(err, 'primary');
       throw err;
     }
+  }
+
+  // V187 P0-A: 50-entry FIFO queue for failed reportError calls.
+  // Drained automatically after the next successful reportError or after login.
+  private static readonly ERROR_QUEUE_KEY = '__error_log_queue_v1';
+  private static readonly ERROR_QUEUE_MAX = 50;
+
+  private async queueErrorLog(payload: Record<string, unknown>): Promise<void> {
+    try {
+      const existing = await secureStorage.getItem(ApiService.ERROR_QUEUE_KEY);
+      const queue: Array<Record<string, unknown>> = existing ? JSON.parse(existing) : [];
+      queue.push({ ...payload, queuedAt: Date.now() });
+      const trimmed = queue.slice(-ApiService.ERROR_QUEUE_MAX);
+      await secureStorage.setItem(ApiService.ERROR_QUEUE_KEY, JSON.stringify(trimmed));
+    } catch {
+      // Storage failure should not cascade; we already surface the warning.
+    }
+  }
+
+  private async drainErrorLogQueue(): Promise<void> {
+    try {
+      const existing = await secureStorage.getItem(ApiService.ERROR_QUEUE_KEY);
+      if (!existing) return;
+      const queue: Array<Record<string, unknown>> = JSON.parse(existing);
+      if (queue.length === 0) return;
+      const remaining: Array<Record<string, unknown>> = [];
+      for (const item of queue) {
+        try {
+          await this.api.post('/error-logs', item);
+        } catch {
+          remaining.push(item);
+        }
+      }
+      if (remaining.length === 0) {
+        await secureStorage.removeItem(ApiService.ERROR_QUEUE_KEY);
+      } else {
+        await secureStorage.setItem(
+          ApiService.ERROR_QUEUE_KEY,
+          JSON.stringify(remaining.slice(-ApiService.ERROR_QUEUE_MAX)),
+        );
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  private warnReportFailure(err: unknown, phase: 'primary' | 'minimal-retry'): void {
+    if (!__DEV__) return;
+    const status = (err as { response?: { status?: number } })?.response?.status;
+    const message = err instanceof Error ? err.message : String(err);
+    // eslint-disable-next-line no-console
+    console.warn(`[reportError:${phase}] failed status=${status ?? 'n/a'} msg=${message}`);
   }
 
   // V180 (Issue 3): defensive lookup — expo-device may be unavailable in web

@@ -77,10 +77,65 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit
 
+  # V187 P2: Frontend Jest gate. Pins the V187 P1-A logoutRace integration
+  # test (V177/V181/V184/V186 4-cycle regression closure). Previously not
+  # in CI — that absence is why each cycle shipped a regression before the
+  # next manual Alpha test caught it.
+  test-frontend:
+    name: Frontend Unit & Integration Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+      - run: npx jest --ci --forceExit
+        env:
+          NODE_ENV: test
+
+  # V187 P2: static content factual-consistency gate. Closes the
+  # V184~V187 ~70-finding history of latent content regressions by
+  # failing PRs that introduce banned phrasing (Play 8.3 violations,
+  # GDPR Art. 13 inaccuracies, unregistered currencies, etc.).
+  validate-static:
+    name: Static Content Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci
+      - name: Validate legal i18n + static HTML + docs
+        run: npm run validate:static
+
   e2e-tests:
     name: E2E Tests (Playwright)
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck-backend, test-backend, lint-and-typecheck-frontend]
+    needs:
+      - lint-and-typecheck-backend
+      - test-backend
+      - lint-and-typecheck-frontend
+      - test-frontend
+      - validate-static
     timeout-minutes: 20
 
     services:
@@ -202,7 +257,12 @@ jobs:
   build-docker:
     name: Docker Compose Build
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck-backend, test-backend, lint-and-typecheck-frontend]
+    needs:
+      - lint-and-typecheck-backend
+      - test-backend
+      - lint-and-typecheck-frontend
+      - test-frontend
+      - validate-static
 
     steps:
       - uses: actions/checkout@v4

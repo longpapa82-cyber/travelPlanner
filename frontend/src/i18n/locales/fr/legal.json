@@ -117,7 +117,7 @@
     "adsPartners": {
       "freeService": {
         "q": "L'utilisation du service est-elle payante ?",
-        "a": "Toutes les fonctionnalités de MyTravel sont gratuites. Des publicités peuvent être affichées dans l'application pour soutenir le fonctionnement du service."
+        "a": "MyTravel est gratuit pour démarrer — le forfait gratuit permet jusqu'à 3 générations d'itinéraires IA par mois. L'abonnement Premium (3,99 $/mois ou 29,99 $/an) offre plus de générations et supprime les publicités."
       },
       "adInfo": {
         "q": "Comment les publicités sont-elles affichées ?",
@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Transfert international de données",
-        "content": "Pour exploiter le service, les informations personnelles de l'utilisateur peuvent être transférées à l'étranger comme suit :\n\n| Destinataire | Emplacement | Éléments transférés | Objectif |\n| OpenAI | États-Unis | Données de voyage | Génération d'itinéraire IA |\n| Google | États-Unis | ID publicitaire, modèles d'utilisation | Publicité |\n| RevenueCat | États-Unis | Informations d'abonnement | Traitement des paiements |\n| Sentry | États-Unis | Données d'erreur, modèle d'appareil | Surveillance des erreurs |\n\n| OpenWeather | États-Unis | Coordonnées latitude/longitude | Informations météorologiques |\nChaque service prend des mesures appropriées de protection des données personnelles, et le transfert s'effectue avec le consentement de l'utilisateur conformément aux lois applicables."
+        "content": "Pour exploiter le service, les informations personnelles de l'utilisateur peuvent être transférées à l'étranger comme suit :\n\n| Destinataire | Emplacement | Éléments transférés | Objectif |\n| OpenAI | États-Unis | Données de voyage | Génération d'itinéraire IA |\n| Google | États-Unis | ID publicitaire, modèles d'utilisation | Publicité |\n| RevenueCat | États-Unis | Informations d'abonnement | Traitement des paiements |\n| Sentry | Allemagne | Données d'erreur, modèle d'appareil | Surveillance des erreurs |\n\n| OpenWeather | États-Unis | Coordonnées latitude/longitude | Informations météorologiques |\nChaque service prend des mesures appropriées de protection des données personnelles, et le transfert s'effectue avec le consentement de l'utilisateur conformément aux lois applicables."
       },
       "ccpa": {
         "title": "Droits du consommateur CCPA (Californie)",

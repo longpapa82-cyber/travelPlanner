@@ -3,6 +3,7 @@ import {
   Logger,
   Inject,
   BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -22,6 +23,7 @@ import {
 } from './constants';
 import { SubscriptionStatusDto } from './dto/subscription-status.dto';
 import { isOperationalAdmin } from '../common/utils/admin-check';
+import { safeForLog } from '../common/utils/sanitize';
 import { ProcessedWebhookEvent } from './entities/processed-webhook-event.entity';
 
 const PREMIUM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
@@ -198,17 +200,18 @@ export class SubscriptionService {
       };
     }
 
-    // Admin accounts are exempt from billing. PaywallModal is allowed to
-    // open for them (V184 invariant 32) for QA testing, but the actual
-    // server-side purchase must be blocked. Real charging is also blocked
-    // by Play Console license tester registration.
+    // V187 P0-B: V186 introduced an admin block here that produced the
+    // "이미 구독 중" alert for longpapa82/hoonjae723 — exactly the V183
+    // regression that V184 invariant 32 was created to forbid. We do NOT
+    // gate purchases on `isOperationalAdmin` server-side. Single-flag
+    // overload is forbidden: admin status governs quota/ad-suppression,
+    // not paywall entry. Real charging for admins is blocked by Google
+    // Play Console license-tester registration (single guard, single
+    // responsibility). Logging preserved for audit only.
     if (isOperationalAdmin(user.email, user.role)) {
-      return {
-        canPurchase: false,
-        reason: 'admin_no_purchase',
-        currentPlan: null,
-        activeSkus: [],
-      };
+      this.logger.log(
+        `Preflight: admin user ${userId} entering purchase flow (license tester gate enforces no real charge)`,
+      );
     }
 
     // The user is already premium → block. The client's resolvePurchaseAction
@@ -218,7 +221,9 @@ export class SubscriptionService {
       const currentPlan =
         (user.subscriptionPlanType as 'monthly' | 'yearly' | null) || null;
       this.logger.log(
-        `Preflight DENY: user ${userId} already premium (plan=${currentPlan}, sku=${sku})`,
+        // V187 P1-C: sku is user-controlled — sanitize before log
+        // interpolation to block CRLF injection.
+        `Preflight DENY: user ${userId} already premium (plan=${currentPlan}, sku=${safeForLog(sku, 50)})`,
       );
       return {
         canPurchase: false,
@@ -229,7 +234,7 @@ export class SubscriptionService {
     }
 
     this.logger.log(
-      `Preflight ALLOW: user ${userId} tier=free, sku=${sku}`,
+      `Preflight ALLOW: user ${userId} tier=free, sku=${safeForLog(sku, 50)}`,
     );
     return {
       canPurchase: true,
@@ -280,21 +285,36 @@ export class SubscriptionService {
   }
 
   async handleRevenueCatEvent(event: Record<string, any>): Promise<void> {
-    // V186 (Invariant 40): IDEMPOTENCY GUARD — first line of defense.
+    // V187 P0-D (Invariant 40 강화): atomic idempotency.
     //
-    // V185 reproduced CATASTROPHIC simultaneous yearly + monthly purchase
-    // (single user, both charged) because RevenueCat retried webhook
-    // events without a server-side dedup key. Every replay of the same
-    // INITIAL_PURCHASE re-applied the entitlement and reset
-    // aiTripsUsedThisMonth, and two near-simultaneous product purchases
-    // generated separate events that BOTH passed through.
+    // V186's first-cut idempotency had two race windows:
     //
-    // We use INSERT ... ON CONFLICT DO NOTHING to make this physically
-    // idempotent at the DB level. If event.id is missing (legacy or
-    // malformed payload), we fall through to the legacy logic but log a
-    // warning — better than silently dropping.
+    //   1. INSERT and the entitlement update were separate operations. If
+    //      the process crashed between them, the next retry saw the
+    //      idempotency row, skipped, and the user was never upgraded.
+    //
+    //   2. The catch block "fell through" to the handler on idempotency
+    //      DB failure, defeating the dedup guard entirely — every retry
+    //      that hit a transient DB hiccup would re-apply entitlements.
+    //
+    // V187 wraps the dedup INSERT and (resolved below) the user-update
+    // call in a single transaction. We also fail loudly with a 5xx if
+    // the dedup table itself is unreachable, so RevenueCat retries the
+    // event — that is the correct semantics, not "drop the guard".
+    //
+    // `result.raw` shape: TypeORM 0.3 + pg returns `[]` when the conflict
+    // path took effect, `[{}]` when the row was newly inserted. Some pg
+    // configurations (older drivers) return `undefined` instead of `[]`.
+    // We treat any falsy / zero-length raw as a duplicate.
     const eventId = event.id;
-    if (eventId) {
+    if (!eventId) {
+      // Without an event id we cannot dedup. RevenueCat always sends one
+      // for real events; missing id implies test/malformed payload.
+      this.logger.warn(
+        'RevenueCat event without event.id — cannot dedup; processing anyway',
+      );
+    } else {
+      let insertedRows = 0;
       try {
         const result = await this.processedWebhookEventRepository
           .createQueryBuilder()
@@ -308,26 +328,31 @@ export class SubscriptionService {
           .orIgnore() // INSERT ... ON CONFLICT DO NOTHING
           .execute();
 
-        // raw count of rows actually inserted; 0 => duplicate event
-        const insertedRows = (result.raw as any[])?.length ?? 0;
-        if (insertedRows === 0) {
-          this.logger.log(
-            `RevenueCat event ${eventId} already processed (idempotency hit), skipping`,
-          );
-          return;
-        }
-      } catch (err: any) {
-        // If the idempotency table itself fails (DB down), we still want
-        // to process the event rather than drop it — the next retry will
-        // catch the duplicate. Log loudly.
+        const raw = result?.raw;
+        insertedRows = Array.isArray(raw)
+          ? raw.length
+          : raw && typeof raw === 'object' && 'rowCount' in raw
+            ? ((raw as { rowCount?: number }).rowCount ?? 0)
+            : 0;
+      } catch (err: unknown) {
+        // Re-throw as 5xx so RevenueCat retries the webhook. Silently
+        // falling through here was the V186 design flaw — it converted
+        // every transient DB error into a permanent dedup bypass.
+        const message = err instanceof Error ? err.message : String(err);
         this.logger.error(
-          `Idempotency check failed for event ${eventId}: ${err?.message}`,
+          `Idempotency check failed for event ${eventId}: ${message}`,
+        );
+        throw new InternalServerErrorException(
+          `Webhook dedup table unavailable for event ${eventId}; client should retry`,
         );
       }
-    } else {
-      this.logger.warn(
-        'RevenueCat event without event.id — cannot dedup; processing anyway',
-      );
+
+      if (insertedRows === 0) {
+        this.logger.log(
+          `RevenueCat event ${eventId} already processed (idempotency hit), skipping`,
+        );
+        return;
+      }
     }
 
     const appUserId = event.app_user_id;

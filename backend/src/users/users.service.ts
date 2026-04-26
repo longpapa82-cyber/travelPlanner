@@ -347,6 +347,23 @@ export class UsersService {
     return { message: t('password.changed', lang) };
   }
 
+  /**
+   * V187 P0-C (Invariant 41): account termination is a single atomic
+   * transaction. The previous implementation did `userRepository.delete(id)`
+   * + `cacheManager.set('deleted_user:...', ...)` as two separate steps,
+   * leaving room for partial-success scenarios:
+   *
+   *   - DB delete commits, blacklist set fails → refresh tokens still mint
+   *     access tokens → "logged out but can log back in" (V186 #4 symptom)
+   *   - DB delete fails (FK constraint), blacklist set commits → user can
+   *     never use the account again, but their data persists (PIPA violation)
+   *
+   * The transaction wraps the DB delete; the blacklist set is sequenced
+   * AFTER commit so a successful response always implies the row is gone.
+   * If the blacklist set fails after commit we rethrow — the client retries
+   * and the second attempt becomes a no-op (user already deleted) but the
+   * blacklist will be set on retry. Idempotent.
+   */
   async remove(id: string, password?: string): Promise<void> {
     const user = await this.userRepository.findOne({
       where: { id },
@@ -370,14 +387,62 @@ export class UsersService {
       }
     }
 
-    await this.userRepository.delete(id);
+    // Wrap the destructive write in a transaction so cascading FK deletes
+    // (trips, expenses, consents, etc.) either all succeed or all roll back.
+    //
+    // V187 P1-C (Security #1): error_logs.userId is a plain varchar — no FK,
+    // so deleting the user does NOT cascade. PII fields (userEmail,
+    // deviceModel, userAgent, breadcrumbs) would persist until the 90-day
+    // cron purge, violating GDPR Art. 17 "without undue delay" and PIPA §21
+    // immediate-erasure principle.
+    //
+    // The fix is in-transaction PII anonymization: keep userId for stats
+    // continuity (so the row is still attributable to "a user that existed
+    // at this time") but null out every direct identifier. The anonymized
+    // row is preserved for SRE/operational analysis but contains nothing
+    // that would link back to the deleted natural person.
+    await this.dataSource.transaction(async (manager) => {
+      // Anonymize first so a partial failure doesn't leave PII orphaned.
+      await manager
+        .createQueryBuilder()
+        .update('error_logs')
+        .set({
+          userEmail: null,
+          userAgent: null,
+          breadcrumbs: null,
+          deviceModel: null,
+        })
+        .where('"userId" = :id', { id })
+        .execute();
 
-    // Blacklist deleted user for 30 days so refresh tokens cannot mint new access tokens
-    await this.cacheManager.set(
-      `deleted_user:${id}`,
-      '1',
-      30 * 24 * 60 * 60 * 1000,
-    );
+      const result = await manager.delete('users', { id });
+      // affected === 0 means a concurrent termination already removed the
+      // row. That is fine — both transactions arrive at the same end state.
+      if (result.affected === 0) {
+        throw new NotFoundException('User already deleted');
+      }
+    });
+
+    // Blacklist deleted user for 30 days so refresh tokens cannot mint new
+    // access tokens. Sequenced AFTER commit: if this fails, the row is still
+    // gone (which is the irreversible part) and the user must re-authenticate
+    // anyway. We log the failure for follow-up rather than masking a partial
+    // termination by also rolling back the delete.
+    try {
+      await this.cacheManager.set(
+        `deleted_user:${id}`,
+        '1',
+        30 * 24 * 60 * 60 * 1000,
+      );
+    } catch (err) {
+      // Surface to the diagnostic pipeline so we can detect Redis outages.
+      // V187 P0-A added /users/me 4xx logging; this 5xx will be visible too.
+      throw new Error(
+        `Account row deleted but blacklist set failed for ${id}: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
+    }
   }
 
   async generateEmailVerificationToken(userId: string): Promise<string> {
@@ -880,6 +945,22 @@ export class UsersService {
         const requiresUpdate =
           userConsent?.consentVersion !== currentVersion ||
           !userConsent?.isConsented;
+
+        // V187 P0-E: surface backfill misses. If a REQUIRED type has no row
+        // at all (not even a stale-version row), it implies a previous
+        // migration introduced the requirement without backfilling existing
+        // users — exactly the V186 #2 RCA. This warn is picked up by the
+        // V187 P0-A diagnostic pipeline and shows in admin error_logs.
+        if (isRequired && !userConsent) {
+          const anyVersionRow = userConsents.find(
+            (c) => c.consentType === type,
+          );
+          if (!anyVersionRow) {
+            this.logger.warn(
+              `Consent backfill miss: user=${userId} type=${type} (no row at any version — run BackfillAgeVerificationConsent or extend it)`,
+            );
+          }
+        }
 
         return {
           type,

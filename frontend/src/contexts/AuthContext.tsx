@@ -104,6 +104,24 @@ interface AuthContextType {
   loginWithApple: () => Promise<void>;
   loginWithKakao: () => Promise<void>;
   logout: () => Promise<void>;
+  /**
+   * V187 P0-C (Invariant 41): account termination umbrella lock.
+   *
+   * V186 reported "withdraw shows complete but only logout happened" — root
+   * cause: PremiumContext.markLoggingOut only flipped a local flag, while
+   * AuthContext.isLoggingOut (the cross-context lock from invariant 36) was
+   * never set on the deleteAccount path. The window between
+   * `apiService.deleteAccount()` resolving and the subsequent `await logout()`
+   * was unprotected; an in-flight 401 from another context's silentRefresh
+   * fired `setUser(null)` first, the user perceived "just logout", tapped
+   * again, and the second invocation finally completed the deletion.
+   *
+   * `markAccountTerminating()` MUST be called BEFORE `apiService.deleteAccount()`
+   * so the cross-context lock guards the entire termination transaction
+   * (network call → DB delete → Redis blacklist → logout()), not just the
+   * tail end. This generalizes invariant 30 (in-flight guard before await).
+   */
+  markAccountTerminating: () => void;
   refreshUser: () => Promise<void>;
   registerPushAfterLogin: () => void;
   /**
@@ -355,7 +373,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const hasRefresh = await secureStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
       if (!hasRefresh) return;
 
-      const profile = await apiService.getProfile();
+      // V187 P0-F (Invariant 44): bound the refresh latency. When the OS
+      // kills the JS bridge during background, axios's default 30s timeout
+      // leaves silentRefresh hanging — the user sees a white screen because
+      // RootNavigator is rendering nothing actionable while waiting for a
+      // request that will never resolve. 5s is generous for a /auth/me call
+      // (typical p95 < 800ms) and matches the V178 RC SDK race timeout.
+      const profile = await Promise.race([
+        apiService.getProfile(),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('SILENT_REFRESH_TIMEOUT')), 5000),
+        ),
+      ]);
       // V185: re-check after the await — logout may have started while
       // we were waiting on the network. Don't override setUser(null).
       if (isLoggingOutRef.current) return;
@@ -377,6 +406,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // the navigator stack stays mounted.
       const status = err?.response?.status;
       if (status === 429) return;
+      // V187 P0-F: also treat the 5s race timeout as a no-op. The user is
+      // probably in a network-degraded foreground transition; the next
+      // foreground (or any explicit navigation) will retry. Crucially we
+      // do NOT call setUser(null) here — that is what produces the
+      // "everything reset to home" symptom.
+      if (err?.message === 'SILENT_REFRESH_TIMEOUT') return;
       // Any other error (network, 500, etc.) — silent fail per existing
       // contract. The 401 interceptor handles token expiry separately.
     }
@@ -640,8 +675,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const refreshUser = async () => {
+    // V187 P1-A (Invariant 36 강화): refreshUser was the last
+    // unprotected entry point. silentRefresh and the onAuthExpired
+    // callback both gate on isLoggingOutRef, but refreshUser was a
+    // public method that any screen could call mid-termination — the
+    // logoutRace.integration.test exposed this gap. Same primitive
+    // applies: if a logout/withdraw is in flight, do NOT setUser.
+    if (isLoggingOutRef.current) return;
     try {
       const profile = await apiService.getProfile();
+      // Re-check after the await — termination may have started while
+      // we were waiting on the network.
+      if (isLoggingOutRef.current) return;
       setUser(profile);
     } catch (error) {
       // Silent fail - UI remains with stale data
@@ -752,6 +797,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  /**
+   * V187 P0-C (Invariant 41): expose the cross-context lock to deleteAccount
+   * callers. Must be invoked BEFORE the network call so the entire
+   * termination transaction is guarded — not just the trailing logout step.
+   *
+   * Idempotent: calling it twice is harmless; the lock is released by
+   * logout()'s finally block.
+   */
+  const markAccountTerminating = () => {
+    isLoggingOutRef.current = true;
+    setIsLoggingOut(true);
+    __setAuthLoggingOutForModule(true);
+  };
+
   const value = {
     user,
     isLoading,
@@ -767,6 +826,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loginWithApple,
     loginWithKakao,
     logout,
+    markAccountTerminating,
     refreshUser,
     registerPushAfterLogin,
     isLoggingOut,

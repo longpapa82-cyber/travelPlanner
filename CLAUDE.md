@@ -2,18 +2,18 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-26 KST) — V185 Phase 0 완료 (V184 4건 RCA 근본 해결 + 6 에이전트 분석 27건)
+## 📍 현재 상태 (2026-04-26 KST) — V187 Phase 0 완료 (V186 5건 RCA 근본 종결 + P0 6 + P1 4 자동화 도입)
 
 ### 핵심 상태
-- **버전**: V185 (다음 EAS Build versionCode 185 예정, V184 4건 코드 RCA 3건 + D/E 11건 + 자동 검증 확장)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V184까지 frontend 변경, backend는 V184에서 fail-fast 추가
+- **버전**: V187 (다음 EAS Build versionCode 187, V186 5건 RCA + 자동 회귀 차단 4 테스트 + 보안 3 + 콘텐츠 30 + 검증 체크리스트 42)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V187 backend migration 필요 (`BackfillAgeVerificationConsent`)
 - **브랜치**: `main` (commit 대기)
-- **Frontend**: TypeScript 0 errors, Jest **223/223** PASS (16/18 suites — 동일 baseline)
-- **Backend**: TypeScript 0 errors, V185 production fail-fast 추가
-- **자동 검증**: `npm run validate:static` PASS — 261 파일 (HTML 56 + i18n 204 + docs 1)
-- **Play Console**: V184 versionCode 184 Alpha 제출 완료 (`07caa936-768d-49bf-8a18-2e050002551c`), V185 빌드 후 재제출 예정
-- **Sentry**: DSN 설정 완료 (aisoft-p7.sentry.io)
-- **V185 핵심**: V184 보고 4건 중 **3건 코드 RCA fix** (구독 reconcile polling 60s + cross-context logout lock + Android 키보드 인셋 보정), **D 사실 위배 11건** (스토어 무제한/100통화/체크리스트/댓글 + 17 locale 무제한/날짜/art3/제휴/Stripe/AdSense + privacy-en 이메일 + 사업자정보), **E 보안 2건** (production fail-fast + reportError query strip), **자동 검증 i18n+docs 확장으로 14건 잠복 회귀 발견** — A4 foreground 복귀는 A2 cross-context lock으로 자동 해결 가능성 높아 V185 빌드 후 사용자 실측 대기
+- **Frontend**: TypeScript 0 errors, Jest **226/226** PASS (V186 223 + V187 신규 3 logout race integration)
+- **Backend**: TypeScript 0 errors, Jest **398/398** PASS (V186 380 + V187 신규 18: subscription preflight 4 + webhook idempotency 3 + error_logs ingestion 11)
+- **자동 검증**: `npm run validate:static` PASS — 261 파일 (V187 신규 4 패턴: 모든 기능 무료 / 무제한 AI / 미등록 통화 / in N seconds)
+- **Play Console**: V186 versionCode 186 → V187 versionCode 187 빌드 후 Alpha 재제출 예정
+- **Sentry**: DSN `de.sentry.io` (Germany region — V187 P1-B C3에서 i18n art12 정정)
+- **V187 핵심**: V186 5건 회귀 모두 가장 근본적인 fix로 종결 — P0-A 진단 인프라 (4xx 로깅 + AsyncStorage queue), P0-B admin preflight 차단 제거 (server-side 단일 플래그 과부하 회귀 종결), P0-C 회원탈퇴 transaction + cross-context lock umbrella (불변식 41), P0-D webhook idempotency atomic (불변식 40 강화), P0-E AGE_VERIFICATION backfill migration, P0-F silentRefresh 5s timeout + useFocusEffect in-flight guard (불변식 44). **자동 회귀 차단 4 시나리오 도입**: logoutRace.integration.test (V177/V181/V184/V186 4차 회귀 PR 단계 차단), preflight admin allow + webhook idempotency raw shape, error_logs ingestion smoke (이전 silent-drop 6 패턴 persist 확인). **콘텐츠 자동 검증 V187 4 신규 패턴 도입 즉시 30건 잠복 회귀 발견·수정** — V184 25 + V185 14 + V186 + V187 30 = 도합 ~70건 자동 발견, 자동 검증 ROI 4회째 입증.
 
 ### V139~V176 Alpha 테스트 수정 이력
 
@@ -53,6 +53,17 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **A4 foreground 복귀 새 로딩 → 홈 (V184)** | RootNavigator가 `isAuthenticated` 토글 시 navigation tree 재마운트. AppState 'change' → silentRefresh → setUser(profile) cascade가 user reference 변경 시 트리거 가능. V178 setUser shallow compare로 일부 차단됐으나 V184 재발 | A2 cross-context logout lock으로 silentRefresh 차단 시점이 logout 진행 중에도 적용 → 로그아웃-재로그인 path race 자동 해결. **V185 빌드 후 사용자 실측 → 여전히 재발 시 navigation state persist 도입 (별도 PR)** |
 | **D 사실 위배 11건 + 자동 검증으로 14건 추가** | i18n+docs는 V184 validate-content.py 검증 영역 밖. Play 정책 8.3 (오해 소지 광고) 위험 다수 | (D-즉시 8건) 17 locale legal.json 무제한/날짜/art3/제휴/admin Stripe + privacy-en 이메일 + AdSense + store-listing 4건. validate-content.py를 i18n + docs까지 확장 (261 파일) — 도입 즉시 14건 추가 발견·수정. false positive 차단으로 `aiUnlimited` admin sentinel + "정정 이력" 라인 허용 |
 | **E 보안 2건** | DB_PASSWORD silent fallback 'postgres' + reportError url query string에 PII 영구 저장 | `database.config.ts` `requireEnvInProduction` 헬퍼 (DB_HOST/USER/PASSWORD/DATABASE 4건 fail-fast). `api.ts:205` reportError url query strip (`url.split('?')[0]`). **불변식 34, 35** |
+
+### V187 신규 불변식 (V185 39건 + V187 8건 = 47건)
+
+40. **Webhook idempotency는 atomic transaction**: idempotency INSERT 실패 시 silent fall-through 금지. 5xx throw → 외부 시스템 retry 유도가 정확한 semantics. `result.raw`는 Array 형태 + `{rowCount}` 형태 양쪽 driver 호환 검사. V186이 catch 블록의 fall-through로 매 transient DB 오류 시 dedup을 통째 우회시킨 회귀 영구 차단.
+41. **Account termination umbrella lock**: logout과 withdrawAccount는 동일한 cross-context lock(`isLoggingOut`)을 공유. AuthContext에 `markAccountTerminating()` API를 두어 network call **before** 호출. 로컬 ref/state(V178 ProfileScreen `isLoggingOutRef`, PremiumContext `markLoggingOut`)로는 cross-context race 차단 불가 (V186 #4 입증). 모든 termination path는 `await deleteAccount() → 200 OK` 확인 후에만 success UX 진행.
+42. **진단 인프라는 자기 자신을 보호**: reportError 실패 시 AsyncStorage queue (50 entries FIFO) + `__DEV__` console warn + 다음 successful send 시 자동 drain. silent `.catch(() => {})` 패턴 영구 금지. error_logs 0건은 **버그 신호이지 정상 신호가 아님** — backend가 4xx 로깅하지 않거나 frontend reportError가 silent fail이면 자동 검증 회귀.
+43. **단일 플래그 과부하 금지 (server-side에도 적용)**: V184 불변식 32는 frontend뿐 아니라 backend에도. admin 결제 진입 차단은 server logic이 아닌 Play Console 라이선스 테스터 단일 가드에. **고치는 위치를 옮기는 것은 fix가 아니다 — 같은 패러다임의 회귀일 뿐**. quota 면제 / 광고 차단 / 결제 진입은 별도 axis로 분리.
+44. **Foreground network call에는 timeout 가드**: AppState 'change' 시 발사되는 silentRefresh/refreshUser는 5s `Promise.race` timeout 필수. axios default 30s는 background→foreground 시 흰 화면 cause. timeout 분기에서 `setUser(null)` 절대 금지 (RootNavigator 재마운트 → 사용자에게 "리셋"으로 인식). `useFocusEffect` 기반 reset은 in-flight 작업 중일 때 (`isCreatingRef.current || isLoading`) skip 필수.
+45. **Cross-context refresh API는 모두 lock gate**: `silentRefresh`, `refreshUser`, `onAuthExpired` callback 등 setUser 호출 가능한 모든 함수는 entry + after-await 두 번 `isLoggingOutRef` 가드. logoutRace integration test로 PR 단계 자동 검증. 단독 ref/state 패턴(V178)은 회귀 4 사이클 입증.
+46. **Required consent type backfill 의무**: REQUIRED_CONSENTS에 신규 type 추가 시 마이그레이션으로 기존 사용자 backfill 필수. backfill 시 기존 동의(예: TERMS)에 함의된 동의가 있다면 inferred 형태로 기록 (`consent_method='inferred_from_xxx'` audit trail). `getConsentsStatus`에 backfill miss warn 로그로 production 가시화.
+47. **법적 콘텐츠 자동 검증의 양방향 정렬**: art3(제3자 제공)에 외부 처리자 추가 시 art12/art15(국외 이전 표) 자동 동기화 검증. validate-content.py에 처리자명 + 정확한 region 양쪽 매칭. Sentry DSN `de.sentry.io` → 독일 표기 의무 (V187에서 17 locale "USA" 거짓 표기 정정). 미등록 통화 (BRL/EUR 등)로 표기된 가격 자동 차단.
 
 ### V185 핵심 불변식 (V137 12 + V159 3 + V174 3 + V176 4 + V180 5 + V182 4 + V184 2 + V185 6 = 39건)
 
@@ -366,6 +377,7 @@ curl https://mytravel-planner.com/api/health
 | V181~V182 | 2026-04-25 | **CRITICAL** | **PaywallModal server-tier 가드 (V173/V179/V181 phantom 구독 3회 회귀 근본 해결)**, **ConfirmDialog 큐 기반 + handleLogout 가드 선행 (V177/V181 double-logout race 근본 해결)**, admin 페이월 차단, 법적 일관성 (11개 locale OpenWeather + fr/ru art5 + 17개 사업자 placeholder + effectiveDate 통일), `scripts/validate-legal.py` 자동 검증 | 182 (183 빌드) |
 | V183~V184 | 2026-04-26 | **CRITICAL** | **admin 페이월 가드 제거 (V182 단일 플래그 과부하 회귀 — 결제 회귀 검증 lead time 무한대 → server-tier gate 위임)**, **저작권 51 HTML+17 locale 일괄 수정** (© 2024-2026 → © 2026, AI Soft 2026 설립 사실 반영), **Paddle 잔존 6곳 완전 제거** (전자상거래법 §13), **17 locale art12 OpenWeather 추가** (GDPR Art. 44/PIPA §28), **제휴 파트너 약관·5 locale 일괄 제거** (정통망법 §22의2), **iCal 미구현 표기 제거**, **사업자 정보 4 HTML 추가** (PIPA §39의6), **effectiveDate 통일**, **`validate-content.py` 신설** (도입 즉시 25건 잠복 회귀 발견·수정), **validate-legal.py 보강** (P0-E/F/G + P1-B), **`npm run validate:static`** 통합 (11건 + 자동 검증 2건) | 184 (185 빌드 예정) |
 | V184~V185 | 2026-04-26 | **CRITICAL** | **A1 결제 reconcile polling 60s + AWAITED (V184 결제 후 로그아웃 → 재로그인 시 구독 사라짐 — 6번째 phantom 구독 회귀, 정반대 방향)**, **A2 cross-context logout transaction lock (V177/V181/V184 3차 회귀 영구 종결 — AuthContext 전역 isLoggingOut + 모든 context background handler 가드)**, **A3 Android 키보드 인셋 manual `Keyboard.addListener` 보정 (회원가입 비밀번호 확인 스크롤 fix, V159 KAV 금지 불변식 13 유지)**, **D 사실 위배 11건** (스토어 무제한/100통화/체크리스트/댓글 + 17 locale 무제한/날짜/art3/제휴/Stripe/AdSense + privacy-en 이메일 + 사업자정보), **E 보안 2건** (production fail-fast 헬퍼 + reportError query strip), **validate-content.py i18n+docs 확장** (261 파일 검사, false positive 차단, 도입 즉시 14건 잠복 회귀 발견·수정), **불변식 32~39 추가** (16건 + 자동 검증 확장) | 185 (186 빌드 예정) |
+| V186~V187 | 2026-04-26 | **CRITICAL** | **P0-A 진단 인프라 복구** (`/trips`+`/subscription`+`/users/me` 4xx 로깅 추가, IGNORED_PATTERNS silent-drop 6 패턴 제거, frontend reportError AsyncStorage queue 50 + console warn — V186 "오류 로그 0건" 영구 차단), **P0-B admin preflight 차단 제거** (server-side 단일 플래그 과부하 회귀 종결 — V184 불변식 32 backend로 옮긴 회귀, 실결제는 Play Console 라이선스 테스터 단일 가드, PreflightPurchaseDto + 10/min throttle), **P0-C 회원탈퇴 transaction + cross-context lock umbrella** (`markAccountTerminating()` 신설, `await deleteAccount() 200 OK` 확인 후 success UX, `dataSource.transaction(manager.delete)` + DB delete + Redis blacklist atomic — GDPR Art.17/PIPA §39의6 보장), **P0-D webhook idempotency atomic** (catch fall-through 제거 → 5xx throw RC retry, `result.raw` Array+rowCount 양쪽 driver 호환), **P0-E AGE_VERIFICATION backfill migration** (TERMS 동의자에게 inferred 부여, getConsentsStatus backfill miss warn), **P0-F silentRefresh 5s timeout + useFocusEffect in-flight guard** (불변식 44 — background→foreground 흰 화면 영구 차단, navigation tree 보존), **P1-A 자동 회귀 차단 25 신규 테스트** (logoutRace.integration.test V177/V181/V184/V186 4차 회귀 PR 단계 차단, refreshUser 누락 갭 발견 시점 fix, subscription preflight admin allow + idempotency raw shape, error_logs ingestion 6 silent-drop 패턴 persist 확인), **P1-B 콘텐츠 V187 4 신규 패턴** (도입 즉시 30건 잠복 회귀 발견·수정 — "all features free" 12 locale, "tanpa batas/безлимитн" 2 locale, BRL 가격, "in N seconds/Perfect Trip" 28 HTML), **P1-C 보안 CRITICAL 3** (ErrorLog PII anonymization in-transaction, breadcrumbs 500자/key + 20keys cap, Logger CRLF safeForLog), **P1-D 검증 체크리스트 42 항목**, **불변식 40~47 신설** (8건). 자동 검증 ROI 4회째 입증: V184 25 + V185 14 + V186 + V187 30 = ~70건 자동 발견·수정. | 187 (빌드 예정) |
 
 상세: `docs/archive/bug-history-2026-04.md`, `docs/archive/claude-md-history-pre-v112.md`, `testResult.md`
 

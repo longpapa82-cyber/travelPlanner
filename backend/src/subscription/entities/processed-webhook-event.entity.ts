@@ -1,4 +1,10 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  CreateDateColumn,
+  Index,
+} from 'typeorm';
 
 /**
  * V186 (Invariant 40): RevenueCat webhook idempotency table.

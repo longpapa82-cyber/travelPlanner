@@ -8,6 +8,50 @@ import {
   IsObject,
   ArrayMaxSize,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
+
+/**
+ * V187 P1-C (Security #2): per-breadcrumb size cap.
+ *
+ * @ArrayMaxSize(50) bounds the count, but each object's value can still be
+ * an arbitrarily long string (1MB each = 50MB request body). NestJS body
+ * parser default is 1MB but mass-write attempts via the queue replay path
+ * could still flood error_logs.jsonb. We cap each breadcrumb's serialized
+ * length and truncate noisy fields, preserving diagnostic value while
+ * making storage exhaustion infeasible.
+ */
+const MAX_BREADCRUMB_VALUE_LEN = 500;
+const MAX_BREADCRUMB_KEY_LEN = 100;
+
+const sanitizeBreadcrumbs = (
+  raw: unknown,
+): Array<Record<string, unknown>> | undefined => {
+  if (!Array.isArray(raw)) return undefined;
+  return raw
+    .filter((b) => b && typeof b === 'object')
+    .slice(0, 50)
+    .map((b) => {
+      const entries = Object.entries(b as Record<string, unknown>).slice(0, 20);
+      const out: Record<string, unknown> = {};
+      for (const [k, v] of entries) {
+        const safeKey = String(k).slice(0, MAX_BREADCRUMB_KEY_LEN);
+        if (typeof v === 'string') {
+          out[safeKey] = v.slice(0, MAX_BREADCRUMB_VALUE_LEN);
+        } else if (v == null || ['number', 'boolean'].includes(typeof v)) {
+          out[safeKey] = v;
+        } else {
+          // Nested objects are stringified + truncated so the JSONB column
+          // never receives an unbounded structure.
+          try {
+            out[safeKey] = JSON.stringify(v).slice(0, MAX_BREADCRUMB_VALUE_LEN);
+          } catch {
+            out[safeKey] = '[unserializable]';
+          }
+        }
+      }
+      return out;
+    });
+};
 
 // V176: breadcrumbs are stored as JSONB and consumed by the admin UI as
 // freeform objects. The previous `ValidateNested + Type` shape combined with
@@ -66,6 +110,9 @@ export class CreateErrorLogDto {
   @IsArray()
   @ArrayMaxSize(MAX_BREADCRUMBS)
   @IsObject({ each: true })
+  // V187 P1-C: serialized payload is bounded per-breadcrumb at the DTO
+  // boundary so storage exhaustion via the JSONB column is infeasible.
+  @Transform(({ value }) => sanitizeBreadcrumbs(value))
   breadcrumbs?: Array<Record<string, unknown>>;
 
   @IsOptional()

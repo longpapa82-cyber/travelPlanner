@@ -259,22 +259,19 @@ export class ErrorLogController {
   // V115 (Gate 5 H1 fix): lowercase every pattern since isExpectedFlowError()
   // lowercases the incoming message before substring matching — a mixed-case
   // literal would never match.
+  // V187 P0-A: Removed silent-drop patterns that masked real failures.
+  // 'network error' / 'timeout of' / 'api 504' / 'authentication required'
+  // were dropping legitimate signals during V186 (subscription preflight fails,
+  // manual trip creation timeouts, token-expiry mid-flow). Only true business-rule
+  // outcomes that produce no actionable signal should be filtered here.
   private static readonly IGNORED_PATTERNS = [
     'monthly ai generation limit',
     'ai 생성 제한',
     'trip creation cancelled',
     '여행 생성 취소',
-    'throttlerexception',
-    'too many requests',
     'paywallerror',
     'aborterror',
     'request cancelled',
-    'api 504',
-    'network error',
-    'timeout of',
-    '잘못된 인증 정보',
-    'authentication required',
-    'invalid credentials',
   ];
 
   private isExpectedFlowError(message: string): boolean {
