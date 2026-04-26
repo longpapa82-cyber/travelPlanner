@@ -1229,6 +1229,21 @@ class ApiService {
     return response.data;
   }
 
+  /**
+   * V186 (Invariant 41): server-authoritative purchase preflight.
+   * PaywallModal MUST call this before invoking purchasePackage.
+   * Backend is the single source of truth for "can this user purchase".
+   */
+  async preflightPurchase(sku?: string): Promise<{
+    canPurchase: boolean;
+    reason: string;
+    currentPlan: 'monthly' | 'yearly' | null;
+    activeSkus: string[];
+  }> {
+    const response = await this.api.post('/subscription/preflight', { sku });
+    return response.data;
+  }
+
   async getPaddleCheckoutConfig(plan: 'monthly' | 'yearly'): Promise<{ priceId: string }> {
     const response = await this.api.post('/subscription/paddle/checkout-config', { plan });
     return response.data;

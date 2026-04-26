@@ -124,49 +124,75 @@ const PaywallModal: React.FC = () => {
    *   - 'switch' → different plan active, use Google Play replacement flow
    *   - 'buy'    → no active entitlement, proceed with normal purchase
    */
+  /**
+   * V186 (Invariant 41): SERVER-AUTHORITATIVE purchase preflight.
+   *
+   * V174→V178→V180→V182→V184→V185 6 cycles of "phantom subscription"
+   * fixes all trusted RC SDK's `getCustomerInfo()` for client-side gating.
+   * V185 reproduced the CATASTROPHIC simultaneous yearly + monthly
+   * purchase scenario because:
+   *
+   *   - server.subscriptionTier === 'free' (correct, after delete+reregister)
+   *   - V182 gate at line 147 said "buy" for both yearly AND monthly
+   *   - Google Play, seeing two different SKUs, charged BOTH transactions
+   *   - "이미 연간 구독" alert came from a stale RC SDK cache while the
+   *     monthly purchase succeeded simultaneously
+   *
+   * V186 fix: ELIMINATE client-side gating entirely. Backend `/preflight`
+   * is the single source of truth. Backend reads its own DB
+   * (`subscriptionTier`) — which is updated by the webhook idempotency
+   * table (Invariant 40), so it cannot be poisoned by RC SDK staleness.
+   *
+   * RC SDK is now transport-only — used only for the actual
+   * `purchasePackage(pkg)` call (which is required to launch Google Play
+   * Billing UI). It is never trusted for state.
+   *
+   * Returns:
+   *   - 'buy'    → server confirmed user is free, proceed
+   *   - 'block'  → server says user already premium (currentPlan included
+   *               for UX, but the client should NOT differentiate behavior
+   *               based on which plan — both are "already subscribed")
+   */
   const resolvePurchaseAction = async (): Promise<
-    { kind: 'buy' } | { kind: 'block'; currentPlan: 'monthly' | 'yearly' } | { kind: 'switch'; oldProductIdentifier: string; currentPlan: 'monthly' | 'yearly' }
+    { kind: 'buy' } | { kind: 'block'; currentPlan: 'monthly' | 'yearly' | null }
   > => {
-    // V182 (Issue 1): server-tier authoritative gate. Without this, the
-    // V174/V178/V180 PremiumContext defenses (prevUserIdRef, mount-restore
-    // server-premium gate, RC isInitialized reset) were all bypassed
-    // because PaywallModal called getCustomerInfo() directly. When a user
-    // deletes their account and re-registers on the same device, the
-    // backend correctly returns subscriptionTier='free' but the RC SDK
-    // device cache or backend alias chain still surfaces the previous
-    // identity's entitlement — leading to the V173/V179/V181 "이미 연간
-    // 플랜 구독 중" phantom that recurred across three fix cycles.
-    //
-    // We trust the server's subscriptionTier as the single source of
-    // truth: if server says 'free', allow the purchase regardless of what
-    // RC reports. This means we accept a small risk of duplicate billing
-    // in the rare edge case where the webhook hasn't yet reconciled a
-    // legitimate purchase (server free, RC premium for the SAME identity)
-    // — but Google Play itself is the final guard against double-billing
-    // for the same Google account, so this is acceptable.
-    if (user?.subscriptionTier !== 'premium') {
+    try {
+      const result = await apiService.preflightPurchase(
+        // Pass selectedPlan as a hint for backend logging; backend ignores
+        // it for the decision (decision is based on user's DB tier).
+        selectedPlan === 'monthly' ? 'premium_monthly' : 'premium_yearly',
+      );
+      addBreadcrumb({
+        category: 'subscription',
+        message: 'paywall.preflight',
+        data: {
+          canPurchase: result.canPurchase,
+          reason: result.reason,
+          currentPlan: result.currentPlan,
+          selectedPlan,
+        },
+      });
+      if (!result.canPurchase) {
+        return { kind: 'block', currentPlan: result.currentPlan };
+      }
       return { kind: 'buy' };
+    } catch (err: any) {
+      // If preflight fails (network, 5xx), we MUST fail closed — block
+      // the purchase rather than risk duplicate billing. The user can
+      // retry once connectivity is restored. This is more conservative
+      // than the V182 behavior which allowed a small duplicate-billing
+      // risk on transient errors.
+      addBreadcrumb({
+        category: 'subscription',
+        message: 'paywall.preflight.failed',
+        level: 'error',
+        data: { error: err?.message ?? 'unknown' },
+      });
+      throw new Error(
+        t('premium.errors.preflightFailed') ||
+          '결제 가능 여부 확인 중 네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+      );
     }
-
-    const info = await getCustomerInfo();
-    const snapshot = getActiveEntitlementSnapshot(info);
-    if (!snapshot) return { kind: 'buy' };
-    // Known plan matching the attempted purchase → block outright.
-    if (snapshot.planType && snapshot.planType === selectedPlan) {
-      return { kind: 'block', currentPlan: snapshot.planType };
-    }
-    // Different plan → offer Google Play plan switch (deferred proration).
-    // Fall back to 'buy' only when the current plan type is unknown *and*
-    // the productIdentifier is missing — we prefer false positives (block)
-    // over duplicate billing.
-    if (snapshot.productIdentifier) {
-      return {
-        kind: 'switch',
-        oldProductIdentifier: snapshot.productIdentifier,
-        currentPlan: snapshot.planType || 'monthly',
-      };
-    }
-    return { kind: 'buy' };
   };
 
   const handlePurchase = async () => {
@@ -200,8 +226,9 @@ const PaywallModal: React.FC = () => {
 
     setIsPurchasing(true);
     try {
-      // V169 (F1): pre-purchase guard — never call purchasePackage without
-      // reconciling against the live RevenueCat entitlements.
+      // V186 (Invariant 41): SERVER-AUTHORITATIVE purchase preflight.
+      // Backend is single source of truth — never call purchasePackage
+      // without backend confirmation that the user is allowed to buy.
       const action = await resolvePurchaseAction();
       addBreadcrumb({
         category: 'subscription',
@@ -211,47 +238,20 @@ const PaywallModal: React.FC = () => {
 
       if (action.kind === 'block') {
         setIsPurchasing(false);
+        const planLabel = action.currentPlan
+          ? t(`planNames.${action.currentPlan}`)
+          : t('premium.subscription');
         Alert.alert(
-          t('guards.alreadySubscribedTitle'),
+          t('guards.alreadySubscribedTitle') || '이미 구독 중',
           t('guards.alreadySubscribedSameplan', {
-            plan: t(`planNames.${action.currentPlan}`),
-          }),
+            plan: planLabel,
+          }) ||
+            `이미 ${planLabel} 구독 중입니다. 플랜 변경은 Google Play 구독 관리에서 진행해 주세요.`,
         );
         return;
       }
 
-      if (action.kind === 'switch') {
-        // Ask the user to confirm the plan change before issuing a Play
-        // Billing replacement. The old subscription stays active until the
-        // next renewal (DEFERRED proration) — no refund, no double billing.
-        const confirmed = await new Promise<boolean>((resolve) => {
-          Alert.alert(
-            t('guards.planSwitchConfirmTitle'),
-            t('guards.planSwitchConfirmMessage', {
-              currentPlan: t(`planNames.${action.currentPlan}`),
-              newPlan: t(`planNames.${selectedPlan}`),
-            }),
-            [
-              { text: t('guards.planSwitchConfirmNo'), style: 'cancel', onPress: () => resolve(false) },
-              { text: t('guards.planSwitchConfirmYes'), onPress: () => resolve(true) },
-            ],
-            { cancelable: true, onDismiss: () => resolve(false) },
-          );
-        });
-        if (!confirmed) {
-          setIsPurchasing(false);
-          return;
-        }
-        const customerInfo = await purchasePackage(pkg, {
-          oldProductIdentifier: action.oldProductIdentifier,
-        });
-        if (customerInfo) {
-          await finalizePurchase();
-        }
-        return;
-      }
-
-      // Normal first-time purchase
+      // Normal first-time purchase (server confirmed user is free)
       const customerInfo = await purchasePackage(pkg);
       if (customerInfo) {
         await finalizePurchase();

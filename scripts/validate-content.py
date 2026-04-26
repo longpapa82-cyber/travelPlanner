@@ -139,6 +139,57 @@ BANNED_PATTERNS: list[tuple[re.Pattern[str], str, str]] = [
         'marketing language ("enterprise-grade" / "100% secure" / etc.) — RULES.md ban',
         'all',
     ),
+    # V186 NEW: "5초 / N seconds" 정량 약속 — AI 생성 컨텍스트만 차단
+    # (일반 가이드의 "5시간 코스", "1-2 hours" 같은 시간 표기는 허용)
+    # 정확한 약속 패턴: "N초 만에 완성/생성", "in N seconds with/to ai"
+    (
+        re.compile(
+            r'\d+\s*초\s*만에\s*(?:완성|생성|제공|준비)|'
+            r'(?:in|within)\s+(?:just\s+|only\s+)?\d+\s+seconds?\s+(?:with\s+AI|to\s+create|to\s+generate|or\s+less|using\s+AI)|'
+            r'\d+\s*秒で(?:完成|生成|作成)|'
+            r'AI[^.]{0,30}\b\d+\s*(?:초|seconds?|秒)\b[^.]{0,15}(?:완성|생성|만에|to\s+create)',
+            re.IGNORECASE,
+        ),
+        'quantitative time promise for AI generation (e.g. "5초 만에 완성") — actual is 10-30s',
+        'all',
+    ),
+    # V186 NEW: 약관 본문 "제한 없이.*AI" / "unlimited.*premium" 자기모순
+    # (header에서는 30회 명시했는데 art6 ⑤ 본문이 "제한 없이"라 모순)
+    (
+        re.compile(
+            r'제한\s*없이.{0,50}AI|premium.{0,30}unlimited.{0,30}generation|'
+            r'unlimited.{0,30}access.{0,15}premium',
+            re.IGNORECASE,
+        ),
+        'legal text claims "unlimited" premium — actual is 30/month (Invariant 41)',
+        'i18n',
+    ),
+    # V186 NEW: 약관/개인정보처리방침에 "리뷰/댓글" 표기 (좋아요만 구현)
+    (
+        re.compile(
+            r'(?:리뷰|댓글|reviews?|comments?)[\s,]+(?:and\s+|및\s+|や)?(?:photos?|사진|写真|comment|댓글|코멘트)|'
+            r'(?:게시한|posted|posting).{0,30}(?:리뷰|댓글|reviews?|comments?)',
+            re.IGNORECASE,
+        ),
+        'mentions reviews/comments in legal/marketing text — only "like" is implemented',
+        'all',
+    ),
+    # V186 NEW: "완벽" / "perfect" 보장 표현 (표시광고법 제3조 절대적 표현 금지)
+    # 단, 여행지 묘사("완벽한 노을", "perfect sunset" 등)는 일반적 형용사라 허용.
+    # 서비스·기능 광고 컨텍스트에 한정한 정밀 패턴만 차단.
+    (
+        re.compile(
+            r'완벽(?:한|히)\s*(?:여행\s*계획|일정|지원|기록|서비스|플래너)|'
+            r'완벽\s*지원|완벽하게\s*(?:계획|기록|지원)|'
+            r'perfectly\s+(?:plan|tailored|matched)\s+(?:itinerary|trip|travel)|'
+            r'perfect\s+(?:itinerary|trip\s+planner|travel\s+app)|'
+            r'\b최고의\s+(?:선택|서비스|플래너|앱)|'
+            r'the\s+best\s+(?:travel|trip)\s+(?:planner|app)',
+            re.IGNORECASE,
+        ),
+        'absolute/superlative service ad ("완벽한 일정", "perfect itinerary") — Korean ad law §3',
+        'all',
+    ),
 ]
 
 # Copyright span check: e.g. "© 2024-2026 AI Soft" → 2024 < 2026 → fail.

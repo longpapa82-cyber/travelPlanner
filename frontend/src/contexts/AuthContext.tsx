@@ -132,6 +132,20 @@ export const setPushRegistrationCallback = (cb: (() => void) | null) => {
   pushRegistrationCallback = cb;
 };
 
+/**
+ * V186 (Invariant 36 강화): module-level logout lock for non-React modules
+ * (e.g. eventTracker, axios interceptors). React contexts should use the
+ * `useAuth().isLoggingOut` value; modules without React access can read
+ * this synchronously instead.
+ *
+ * Set by AuthProvider on every logout state change. Default false.
+ */
+let __isLoggingOutModule = false;
+export const isAuthLoggingOut = (): boolean => __isLoggingOutModule;
+export const __setAuthLoggingOutForModule = (value: boolean) => {
+  __isLoggingOutModule = value;
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
@@ -182,9 +196,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // Register auth expired callback so 401 responses trigger logout
+  // Register auth expired callback so 401 responses trigger logout.
+  // V186 (Invariant 36 강화): logout 진행 중에는 onAuthExpired callback이
+  // 또 다른 setUser(null)을 호출하지 않도록 가드. V185 보고 이슈 2 (4차 회귀)
+  // RCA: logout 진행 중 다른 in-flight API가 401을 받으면 이 callback이
+  // 추가 setUser(null)을 호출 → 그 사이 token refresh가 성공한 다른 API가
+  // setUser(profile)을 발생시켜 logout이 무효화되는 race window 발생.
   useEffect(() => {
     apiService.setOnAuthExpired(() => {
+      if (isLoggingOutRef.current) return;
       setUser(null);
       setSessionFlag(false);
     });
@@ -658,6 +678,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // commit window and still fire silentRefresh.
     isLoggingOutRef.current = true;
     setIsLoggingOut(true);
+    // V186 (Invariant 36 강화): also set the module-level flag so non-React
+    // modules (eventTracker, axios interceptors) can synchronously gate
+    // their background work without React context access.
+    __setAuthLoggingOutForModule(true);
 
     try {
       // Track logout and flush pending events before clearing auth
@@ -722,6 +746,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setTimeout(() => {
         isLoggingOutRef.current = false;
         setIsLoggingOut(false);
+        // V186: also release the module-level flag.
+        __setAuthLoggingOutForModule(false);
       }, 0);
     }
   };

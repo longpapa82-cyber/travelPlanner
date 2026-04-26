@@ -5,6 +5,7 @@ import { offlineMutationQueue, QueuedMutation } from '../services/offlineMutatio
 import { API_URL } from '../constants/config';
 import { secureStorage } from '../utils/storage';
 import { STORAGE_KEYS } from '../constants/config';
+import { useAuth } from '../contexts/AuthContext';
 
 const PING_URL = (API_URL || 'http://localhost:3000/api') + '/health';
 
@@ -14,6 +15,15 @@ export function useOfflineSync() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<number | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // V186 (Invariant 36 강화): cross-context logout lock. logout 진행 중에는
+  // syncNow가 401을 받아 onAuthExpired callback을 fire시키는 race window를
+  //만들지 않음. V185 보고 이슈 2 (4차 logout race) RCA에서 useOfflineSync가
+  // V185 가드 영역 밖으로 식별됨.
+  const { isLoggingOut } = useAuth();
+  const isLoggingOutRef = useRef(false);
+  useEffect(() => {
+    isLoggingOutRef.current = isLoggingOut;
+  }, [isLoggingOut]);
 
   // Check network connectivity
   const checkNetwork = useCallback(async () => {
@@ -113,9 +123,12 @@ export function useOfflineSync() {
 
     // App foreground event
     const sub = AppState.addEventListener('change', (state) => {
+      // V186 (Invariant 36 강화): logout 진행 중 sync 차단
+      if (isLoggingOutRef.current) return;
       if (state === 'active') {
         checkNetwork().then((online) => {
-          if (online) syncNow();
+          // re-check after the await — logout may have started during network check
+          if (online && !isLoggingOutRef.current) syncNow();
         });
       }
     });

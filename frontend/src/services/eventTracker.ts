@@ -8,6 +8,7 @@
 import * as Sentry from '@sentry/react-native';
 import { AppState, Platform } from 'react-native';
 import apiService from './api';
+import { isAuthLoggingOut } from '../contexts/AuthContext';
 
 export type EventName =
   | 'login'
@@ -50,8 +51,12 @@ function startFlushTimer() {
   if (flushTimer) return;
   flushTimer = setInterval(flush, 30000);
 
-  // Flush when app goes to background
+  // Flush when app goes to background. V186 (Invariant 36 강화): logout
+  // 진행 중에는 flush가 401을 받아 onAuthExpired callback을 fire시키는
+  // race window를 만들지 않도록 차단. logout 자체에서 logout 이벤트는
+  // logout()이 trackEvent + flushEvents 직접 호출하므로 누락 없음.
   AppState.addEventListener('change', (state) => {
+    if (isAuthLoggingOut()) return;
     if (state !== 'active') flush();
   });
 }

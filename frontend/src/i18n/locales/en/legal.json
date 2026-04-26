@@ -173,7 +173,7 @@
       },
       "art6": {
         "title": "Article 6 (AI Service Terms)",
-        "content": "① The accuracy, safety, and suitability of AI-generated travel plans are not guaranteed.\n② Data is processed through the OpenAI API for itinerary generation, as described in our Privacy Policy.\n③ User-entered travel data is not used for AI model training.\n④ AI services may be temporarily limited due to technical circumstances.\n⑤ Free users are limited to 3 AI trip generations per month; Premium subscribers get 30 AI generations per month."
+        "content": "① The accuracy, safety, and suitability of AI-generated travel plans are not guaranteed.\n② Data is processed through the OpenAI API for itinerary generation, as described in our Privacy Policy.\n③ User-entered travel data is not used for AI model training.\n④ AI services may be temporarily limited due to technical circumstances.\n⑤ Free users are limited to 3 AI trip generations per month; Premium subscribers can use up to 30 generations per month."
       },
       "art7": {
         "title": "Article 7 (Prohibited Activities)",

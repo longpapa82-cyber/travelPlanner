@@ -19,6 +19,7 @@ import {
 import Constants from 'expo-constants';
 import { canShowFullScreenAd, recordFullScreenAdShown } from './adFrequency';
 import { usePremium } from '../../contexts/PremiumContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const extra = Constants.expoConfig?.extra || {};
 
@@ -34,6 +35,12 @@ const RELOAD_DELAY_MS = 10000;
 export function useAppOpenAd() {
   // Hook must be called unconditionally (Rules of Hooks)
   const { isPremium } = usePremium();
+  // V186 (Invariant 36 강화): logout 진행 중 광고 표시 차단. logout 직후
+  // 이전 사용자에게 적용되던 ad-free 상태가 잠깐 비활성화되며 광고가
+  // 깜빡이는 race window 차단.
+  const { isLoggingOut } = useAuth();
+  const isLoggingOutRef = useRef(isLoggingOut);
+  isLoggingOutRef.current = isLoggingOut;
 
   const adRef = useRef<AppOpenAd | null>(null);
   const isLoadedRef = useRef(false);
@@ -103,8 +110,16 @@ export function useAppOpenAd() {
         const bgDuration = Date.now() - backgroundTimestamp.current;
         backgroundTimestamp.current = 0;
         if (bgDuration < 30000) return; // Skip if background < 30s (ad transition)
+        // V186 (Invariant 36 강화): logout 진행 중 ad show 차단
+        if (isLoggingOutRef.current) return;
         const canShow = await canShowFullScreenAd();
-        if (canShow && isLoadedRef.current && adRef.current && !isPremiumRef.current) {
+        if (
+          canShow &&
+          isLoadedRef.current &&
+          adRef.current &&
+          !isPremiumRef.current &&
+          !isLoggingOutRef.current
+        ) {
           await adRef.current.show();
           await recordFullScreenAdShown();
         }

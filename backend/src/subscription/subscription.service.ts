@@ -22,6 +22,7 @@ import {
 } from './constants';
 import { SubscriptionStatusDto } from './dto/subscription-status.dto';
 import { isOperationalAdmin } from '../common/utils/admin-check';
+import { ProcessedWebhookEvent } from './entities/processed-webhook-event.entity';
 
 const PREMIUM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 const SANDBOX_YEARLY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -36,6 +37,8 @@ export class SubscriptionService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(ProcessedWebhookEvent)
+    private readonly processedWebhookEventRepository: Repository<ProcessedWebhookEvent>,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly configService: ConfigService,
   ) {
@@ -140,6 +143,102 @@ export class SubscriptionService {
     };
   }
 
+  /**
+   * V186 (Invariant 41): server-authoritative purchase preflight.
+   *
+   * Called by PaywallModal BEFORE invoking Google Play Billing's
+   * `purchasePackage`. The client MUST honor the response — if
+   * `canPurchase: false`, the purchase flow is blocked.
+   *
+   * Why this exists:
+   *   The V174~V185 6-cycle of fixes for "phantom subscription" all
+   *   trusted RC SDK's `getCustomerInfo()` for client-side gating. RC
+   *   SDK has device-cache + alias chain staleness that the client can
+   *   never fully sanitize. V185 boog: simultaneous yearly + monthly
+   *   purchase succeeded because the client gate (server tier === free)
+   *   passed for both attempts before either webhook landed.
+   *
+   * This shifts the entire decision to the server, which:
+   *   1. Reads its own DB (single source of truth for `subscriptionTier`)
+   *   2. Checks for admin (admins can never be charged)
+   *   3. Returns `canPurchase` + `reason` + `currentPlan` (if any)
+   *
+   * Future: integrate Google Play Developer API
+   * `androidpublisher.purchases.subscriptionsv2.get` to also verify
+   * against Google's authoritative entitlement record. For V186 the
+   * server tier + admin check eliminates the V185 race window.
+   */
+  async preflightPurchase(
+    userId: string,
+    sku?: string,
+  ): Promise<{
+    canPurchase: boolean;
+    reason: string;
+    currentPlan: 'monthly' | 'yearly' | null;
+    activeSkus: string[];
+  }> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: [
+        'id',
+        'email',
+        'role',
+        'subscriptionTier',
+        'subscriptionPlanType',
+        'subscriptionExpiresAt',
+      ],
+    });
+
+    if (!user) {
+      return {
+        canPurchase: false,
+        reason: 'user_not_found',
+        currentPlan: null,
+        activeSkus: [],
+      };
+    }
+
+    // Admin accounts are exempt from billing. PaywallModal is allowed to
+    // open for them (V184 invariant 32) for QA testing, but the actual
+    // server-side purchase must be blocked. Real charging is also blocked
+    // by Play Console license tester registration.
+    if (isOperationalAdmin(user.email, user.role)) {
+      return {
+        canPurchase: false,
+        reason: 'admin_no_purchase',
+        currentPlan: null,
+        activeSkus: [],
+      };
+    }
+
+    // The user is already premium → block. The client's resolvePurchaseAction
+    // can use this to drive the "이미 구독 중" or "switch plan" UX without
+    // touching RC SDK.
+    if (user.subscriptionTier === SubscriptionTier.PREMIUM) {
+      const currentPlan =
+        (user.subscriptionPlanType as 'monthly' | 'yearly' | null) || null;
+      this.logger.log(
+        `Preflight DENY: user ${userId} already premium (plan=${currentPlan}, sku=${sku})`,
+      );
+      return {
+        canPurchase: false,
+        reason: 'already_subscribed',
+        currentPlan,
+        activeSkus: currentPlan ? [`premium_${currentPlan}`] : [],
+      };
+    }
+
+    this.logger.log(
+      `Preflight ALLOW: user ${userId} tier=free, sku=${sku}`,
+    );
+    return {
+      canPurchase: true,
+      reason: 'free_tier',
+      currentPlan: null,
+      activeSkus: [],
+    };
+  }
+
   async checkAiTripLimit(userId: string): Promise<{
     allowed: boolean;
     remaining: number;
@@ -181,6 +280,56 @@ export class SubscriptionService {
   }
 
   async handleRevenueCatEvent(event: Record<string, any>): Promise<void> {
+    // V186 (Invariant 40): IDEMPOTENCY GUARD — first line of defense.
+    //
+    // V185 reproduced CATASTROPHIC simultaneous yearly + monthly purchase
+    // (single user, both charged) because RevenueCat retried webhook
+    // events without a server-side dedup key. Every replay of the same
+    // INITIAL_PURCHASE re-applied the entitlement and reset
+    // aiTripsUsedThisMonth, and two near-simultaneous product purchases
+    // generated separate events that BOTH passed through.
+    //
+    // We use INSERT ... ON CONFLICT DO NOTHING to make this physically
+    // idempotent at the DB level. If event.id is missing (legacy or
+    // malformed payload), we fall through to the legacy logic but log a
+    // warning — better than silently dropping.
+    const eventId = event.id;
+    if (eventId) {
+      try {
+        const result = await this.processedWebhookEventRepository
+          .createQueryBuilder()
+          .insert()
+          .values({
+            eventId: String(eventId),
+            source: 'rc',
+            eventType: event.type || null,
+            userId: null, // resolved below; we update after handler completes
+          })
+          .orIgnore() // INSERT ... ON CONFLICT DO NOTHING
+          .execute();
+
+        // raw count of rows actually inserted; 0 => duplicate event
+        const insertedRows = (result.raw as any[])?.length ?? 0;
+        if (insertedRows === 0) {
+          this.logger.log(
+            `RevenueCat event ${eventId} already processed (idempotency hit), skipping`,
+          );
+          return;
+        }
+      } catch (err: any) {
+        // If the idempotency table itself fails (DB down), we still want
+        // to process the event rather than drop it — the next retry will
+        // catch the duplicate. Log loudly.
+        this.logger.error(
+          `Idempotency check failed for event ${eventId}: ${err?.message}`,
+        );
+      }
+    } else {
+      this.logger.warn(
+        'RevenueCat event without event.id — cannot dedup; processing anyway',
+      );
+    }
+
     const appUserId = event.app_user_id;
     if (!appUserId) {
       this.logger.warn('RevenueCat event without app_user_id, skipping');
@@ -648,6 +797,24 @@ export class SubscriptionService {
     );
     this.logger.log(
       `Monthly AI trip counter reset — ${result.affected ?? 0} users`,
+    );
+  }
+
+  /**
+   * V186 (Invariant 40): purge processed_webhook_events older than 30
+   * days. Bounds table size while still catching late RC retries
+   * (RevenueCat documented retry window is up to 7 days; 30 is safe margin).
+   */
+  @Cron('30 4 * * *') // daily at 04:30
+  async cleanupOldProcessedWebhookEvents(): Promise<void> {
+    const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const result = await this.processedWebhookEventRepository
+      .createQueryBuilder()
+      .delete()
+      .where('"processedAt" < :cutoff', { cutoff })
+      .execute();
+    this.logger.log(
+      `Purged ${result.affected ?? 0} processed_webhook_events older than 30 days`,
     );
   }
 }

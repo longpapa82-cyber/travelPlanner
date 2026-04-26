@@ -173,7 +173,7 @@
       },
       "art6": {
         "title": "Perkara 6 (Terma Perkhidmatan AI)",
-        "content": "① Ketepatan, keselamatan, dan kesesuaian pelan perjalanan yang dijana AI tidak dijamin.\n② Data diproses melalui API OpenAI untuk penjanaan jadual perjalanan, seperti yang diterangkan dalam Dasar Privasi kami.\n③ Data perjalanan yang dimasukkan pengguna tidak digunakan untuk latihan model AI.\n④ Perkhidmatan AI mungkin dihadkan sementara atas sebab teknikal.\n⑤ Pengguna percuma dihadkan kepada 3 penjanaan perjalanan AI sebulan; pelanggan Premium mendapat 30 penjanaan sebulan."
+        "content": "① Ketepatan, keselamatan, dan kesesuaian pelan perjalanan yang dijana AI tidak dijamin.\n② Data diproses melalui API OpenAI untuk penjanaan jadual perjalanan, seperti yang diterangkan dalam Dasar Privasi kami.\n③ Data perjalanan yang dimasukkan pengguna tidak digunakan untuk latihan model AI.\n④ Perkhidmatan AI mungkin dihadkan sementara atas sebab teknikal.\n⑤ Pengguna percuma dihadkan kepada 3 penjanaan perjalanan AI sebulan; pelanggan Premium boleh menggunakan sehingga 30 penjanaan sebulan."
       },
       "art7": {
         "title": "Perkara 7 (Aktiviti Dilarang)",

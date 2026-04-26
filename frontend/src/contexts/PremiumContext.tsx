@@ -221,9 +221,19 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
           return;
         }
         try {
-          const info = await getCustomerInfo();
-          const snapshot = getActiveEntitlementSnapshot(info);
-          captureRcSnapshot(snapshot, 'foreground-sync');
+          // V186 (Invariant 42): wrap RC SDK call with a 3s timeout.
+          // V185 reported AI 자동 생성 중 background→foreground 시 흰
+          // 화면 freeze. RCA: RC SDK가 background에서 native 채널 끊겨
+          // await가 timeout 없이 hang하면 모든 후속 effect 차단됨.
+          // Promise.race 패턴으로 RC가 응답 못해도 3초 후 진행 보장.
+          const info = await Promise.race<any>([
+            getCustomerInfo(),
+            new Promise((resolve) => setTimeout(() => resolve(null), 3000)),
+          ]);
+          if (info) {
+            const snapshot = getActiveEntitlementSnapshot(info);
+            captureRcSnapshot(snapshot, 'foreground-sync');
+          }
         } catch {
           // Silent — RevenueCat check is best-effort
         }

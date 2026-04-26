@@ -44,6 +44,41 @@ export class SubscriptionController {
     return this.subscriptionService.restoreSubscription(userId);
   }
 
+  /**
+   * V186 (Invariant 41): server-authoritative purchase preflight.
+   *
+   * V185 reproduced the CATASTROPHIC simultaneous yearly + monthly
+   * purchase scenario. Root cause: the client-side `resolvePurchaseAction`
+   * (PaywallModal) trusted RC SDK's `getCustomerInfo()` for the "is the
+   * user already subscribed" check. RC SDK has device-cache + alias chain
+   * staleness that the V174~V185 6-cycle of fixes could never fully
+   * sanitize.
+   *
+   * This endpoint shifts the trust boundary: the server is the SINGLE
+   * source of truth for "can this user purchase this product right now".
+   * The client calls this BEFORE invoking Google Play Billing's
+   * `purchasePackage`. If the server says no, the client must NOT proceed.
+   *
+   * Logic:
+   *   - If user is admin → block (admins shouldn't be charged)
+   *   - If user.subscriptionTier === 'premium' → block with currentPlan
+   *   - Else → allow, with empty activeSkus
+   *
+   * Future: integrate Google Play Developer API
+   * `androidpublisher.purchases.subscriptionsv2.get` to verify against
+   * Google's authoritative entitlement record. For now, server tier +
+   * planType is sufficient and avoids the RC SDK trust pollution.
+   */
+  @Post('preflight')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async preflight(
+    @CurrentUser('userId') userId: string,
+    @Body() body: { sku?: string },
+  ) {
+    return this.subscriptionService.preflightPurchase(userId, body?.sku);
+  }
+
   @Post('webhook')
   @HttpCode(HttpStatus.OK)
   async handleWebhook(
