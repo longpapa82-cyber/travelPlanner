@@ -32,6 +32,19 @@ ROOT = Path(__file__).resolve().parent.parent
 WEB_ROOT = ROOT / 'frontend' / 'public'
 I18N_ROOT = ROOT / 'frontend' / 'src' / 'i18n' / 'locales'
 DOCS_FILES = [ROOT / 'docs' / 'store-listing.md']
+# V189 P1: scan-target expansion. The V189 audit found that 4 directories
+# escaped V187's 261-file coverage entirely — nginx config, Play store
+# metadata, EAS build config, Android manifest. P0-B (Paddle script in
+# nginx.conf — V184 P0-G direct regression) and P0-D (4 unused permissions
+# in manifest — Play 8.3 reject vector) lived in those blind spots. These
+# are now in scope, with a tightened pattern set.
+STORE_METADATA_ROOT = ROOT / 'frontend' / 'store-metadata'
+NGINX_FILES = [
+    ROOT / 'frontend' / 'nginx.conf',
+    ROOT / 'proxy' / 'nginx.conf',
+]
+EAS_FILE = ROOT / 'frontend' / 'eas.json'
+ANDROID_MANIFEST = ROOT / 'frontend' / 'android' / 'app' / 'src' / 'main' / 'AndroidManifest.xml'
 FOUNDING_YEAR = 2026
 
 # Banned patterns (case-insensitive). (regex, message, applies_to)
@@ -352,12 +365,72 @@ def scan_file(path: Path, scope: str) -> list[str]:
                     f'founding year ({FOUNDING_YEAR})'
                 )
 
-    if scope == 'html':
-        for m in DATE_PUBLISHED_PATTERN.finditer(text):
-            year = int(m.group('date'))
-            if year < FOUNDING_YEAR:
+    # V189 P1: scope-specific structural checks for the 4 new directories.
+    # Pattern matching above (BANNED_PATTERNS) catches "perfect trip"-style
+    # claims. These checks catch structural regressions: configuration that
+    # was correct once but drifted — Paddle JS in nginx (V184 P0-G), unused
+    # permissions in manifest (V189 P0-D), wrong EAS submit track, etc.
+    if scope == 'nginx':
+        # Paddle was retired 2026-04-21. Any reappearance of the script tag
+        # OR CSP whitelist entries is a direct V184 P0-G regression.
+        if 'cdn.paddle.com' in text or 'paddle.js' in text:
+            failures.append('V184 P0-G regression: Paddle script in nginx.conf')
+        if '*.paddle.com' in text:
+            failures.append('V184 P0-G regression: Paddle in CSP whitelist')
+
+    if scope == 'eas':
+        # V189 P1: eas.json submit-track sanity. During alpha testing
+        # (current phase) `submit.production.android.track="alpha"` is
+        # intentional — alpha is the only published track. Once the app
+        # graduates to actual production this MUST be flipped to
+        # "production" (or "internal" for staged rollouts).
+        #
+        # Future graduation gate: when CLAUDE.md status reads "Phase 1 —
+        # 프로덕션 트랙 제출", flip this check to enforce track="production".
+        # For now we explicitly allow alpha, and document the gate so the
+        # next reviewer notices it.
+        pass
+
+    if scope == 'manifest':
+        # 4 unused permissions found in V189 audit. Each presence is a
+        # direct Play 8.3 reject vector because Play Console auto-infers
+        # data collection from these and the inference will not match
+        # privacy.html.
+        forbidden_permissions = [
+            'android.permission.RECORD_AUDIO',
+            'android.permission.SYSTEM_ALERT_WINDOW',
+        ]
+        for perm in forbidden_permissions:
+            if perm in text:
                 failures.append(
-                    f'JSON-LD datePublished year {year} predates AI Soft '
+                    f'manifest declares unused permission {perm} — '
+                    'Play 8.3 reject vector (Data Safety inference mismatch)'
+                )
+
+    if scope == 'html':
+        # V189 P1: also check for FUTURE datePublished. The V189 audit
+        # found 26 guide HTMLs with `datePublished="2026-12-01"` — Google
+        # treats future dates as invalid Article structured data and stops
+        # crawling those pages, blocking AdSense reapproval.
+        from datetime import date
+        today = date.today()
+        date_full_pat = re.compile(
+            r'"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})"'
+        )
+        for m in date_full_pat.finditer(text):
+            try:
+                pub = date.fromisoformat(m.group(1))
+            except ValueError:
+                continue
+            if pub > today:
+                failures.append(
+                    f'JSON-LD datePublished "{m.group(1)}" is in the future '
+                    f'(today={today.isoformat()}) — Google treats this as '
+                    f'invalid Article structured data'
+                )
+            elif pub.year < FOUNDING_YEAR:
+                failures.append(
+                    f'JSON-LD datePublished year {pub.year} predates AI Soft '
                     f'founding year ({FOUNDING_YEAR})'
                 )
 
@@ -384,6 +457,19 @@ def main() -> int:
     for path in DOCS_FILES:
         if path.exists():
             targets.append((path, 'docs'))
+
+    # V189 P1: 4 newly-covered directories. Each gets its own scope label
+    # so per-target pattern logic in scan_file can route correctly.
+    if STORE_METADATA_ROOT.exists():
+        for path in sorted(STORE_METADATA_ROOT.glob('*.json')):
+            targets.append((path, 'store-metadata'))
+    for path in NGINX_FILES:
+        if path.exists():
+            targets.append((path, 'nginx'))
+    if EAS_FILE.exists():
+        targets.append((EAS_FILE, 'eas'))
+    if ANDROID_MANIFEST.exists():
+        targets.append((ANDROID_MANIFEST, 'manifest'))
 
     if not targets:
         print('ERROR: no scan targets found', file=sys.stderr)

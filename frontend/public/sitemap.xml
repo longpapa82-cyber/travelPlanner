@@ -89,4 +89,13 @@
   <url><loc>https://mytravel-planner.com/blog/travel-journal-tips</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://mytravel-planner.com/blog/long-term-travel-guide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
+  <!-- V189 P1: English city guides (Phase 8 regression — created 2026-03-15
+       but never registered in sitemap, blocking Google SEO indexing). -->
+  <url><loc>https://mytravel-planner.com/guides/index-en</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/tokyo-en</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/paris-en</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/bangkok-en</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/seoul-en</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mytravel-planner.com/guides/osaka-en</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
 </urlset>
