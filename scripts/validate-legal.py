@@ -114,6 +114,30 @@ def validate_locale(locale: str) -> tuple[list[str], list[str]]:
             'international-transfer table (art12/art15) missing OpenWeather row'
         )
 
+    # V189 P0-H: every processor declared in art3 (third-party data sharing)
+    # MUST also appear in the cross-border transfer table (art12 OR art15).
+    # The V189 audit found 17 locales × 3-5 processors missing — Mapbox /
+    # LocationIQ / Expo / Apple App Store / Google Play declared in art3
+    # but absent from the transfer table. This is a direct GDPR Art. 44 /
+    # PIPA §28 / Korean Information Network Act §63 violation: undisclosed
+    # cross-border transfer of personal data declared elsewhere.
+    required_in_transfer = [
+        # (canonical name, list of substrings to match in art3)
+        ('mapbox', ['mapbox']),
+        ('locationiq', ['locationiq']),
+        ('expo', ['expo (eas)', '| expo |', 'expo eas', 'expo)']),
+        ('apple app store', ['app store', 'apple app store']),
+        ('google play', ['google play', 'play 결제', 'play billing']),
+    ]
+    for canonical, patterns in required_in_transfer:
+        in_art3 = any(p in art3_content for p in patterns)
+        in_transfer = any(p in transfer_combined for p in patterns)
+        if in_art3 and not in_transfer:
+            p0_failures.append(
+                f'international-transfer table (art12/art15) missing {canonical} '
+                f'(declared in art3 — V189 P0-H GDPR Art.44/PIPA §28)'
+            )
+
     # V184 P0-F: privacy.art3 must NOT advertise affiliate partners while
     # the affiliate program is not running. Catches the V183 inconsistency
     # where revenue dashboard removed affiliate but art3 still claimed

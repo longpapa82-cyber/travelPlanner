@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Chuyển dữ liệu quốc tế",
-        "content": "Để vận hành dịch vụ, thông tin cá nhân của người dùng có thể được chuyển ra nước ngoài như sau:\n\n| Bên nhận | Vị trí | Mục được chuyển | Mục đích |\n| OpenAI | Hoa Kỳ | Dữ liệu du lịch | Tạo lịch trình AI |\n| Google | Hoa Kỳ | ID quảng cáo, mẫu sử dụng | Quảng cáo |\n| RevenueCat | Hoa Kỳ | Thông tin đăng ký | Xử lý thanh toán |\n| Sentry | Đức | Dữ liệu lỗi, mẫu thiết bị | Giám sát lỗi |\n\n| OpenWeather | Hoa Kỳ | Tọa độ vĩ độ/kinh độ | Thông tin thời tiết |\nMỗi dịch vụ thực hiện các biện pháp bảo vệ dữ liệu cá nhân thích hợp, và việc chuyển dữ liệu được thực hiện với sự đồng ý của người dùng theo luật pháp hiện hành."
+        "content": "Để vận hành dịch vụ, thông tin cá nhân của người dùng có thể được chuyển ra nước ngoài như sau:\n\n| Bên nhận | Vị trí | Mục được chuyển | Mục đích |\n| OpenAI | Hoa Kỳ | Dữ liệu du lịch | Tạo lịch trình AI |\n| Google | Hoa Kỳ | ID quảng cáo, mẫu sử dụng | Quảng cáo |\n| RevenueCat | Hoa Kỳ | Thông tin đăng ký | Xử lý thanh toán |\n| Sentry | Đức | Dữ liệu lỗi, mẫu thiết bị | Giám sát lỗi |\n\n| OpenWeather | Hoa Kỳ | Tọa độ vĩ độ/kinh độ | Thông tin thời tiết |\n| Mapbox | Hoa Kỳ | Truy vấn tìm kiếm địa điểm, tọa độ | Bản đồ / tự động hoàn thành địa điểm |\n| LocationIQ | Hoa Kỳ | Truy vấn tìm kiếm địa điểm | Mã hóa địa lý dự phòng |\n| Expo (EAS) | Hoa Kỳ | Mã thông báo đẩy, siêu dữ liệu xây dựng | Thông báo đẩy, cập nhật OTA |\nMỗi dịch vụ thực hiện các biện pháp bảo vệ dữ liệu cá nhân thích hợp, và việc chuyển dữ liệu được thực hiện với sự đồng ý của người dùng theo luật pháp hiện hành."
       },
       "ccpa": {
         "title": "Quyền của người tiêu dùng CCPA (California)",

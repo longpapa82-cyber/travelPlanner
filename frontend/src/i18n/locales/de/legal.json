@@ -287,7 +287,7 @@
       },
       "art15": {
         "title": "15. Internationale Datenübermittlung",
-        "content": "Für den Betrieb des Dienstes können personenbezogene Daten des Nutzers wie folgt ins Ausland übermittelt werden:\n\n| Empfänger | Standort | Übermittelte Elemente | Zweck |\n| OpenAI | USA | Reisedaten | KI-Reiseplanerstellung |\n| Google | USA | Werbe-ID, Nutzungsmuster | Werbung |\n| RevenueCat | USA | Abonnementinformationen | Zahlungsabwicklung |\n| Sentry | Deutschland | Fehlerdaten, Gerätemodell | Fehlerüberwachung |\n\n| OpenWeather | USA | Breiten-/Längenkoordinaten | Wetterinformationen |\nJeder Dienst trifft angemessene Datenschutzmaßnahmen, und die Übermittlung erfolgt mit Zustimmung des Nutzers gemäß den geltenden Gesetzen."
+        "content": "Für den Betrieb des Dienstes können personenbezogene Daten des Nutzers wie folgt ins Ausland übermittelt werden:\n\n| Empfänger | Standort | Übermittelte Elemente | Zweck |\n| OpenAI | USA | Reisedaten | KI-Reiseplanerstellung |\n| Google | USA | Werbe-ID, Nutzungsmuster | Werbung |\n| RevenueCat | USA | Abonnementinformationen | Zahlungsabwicklung |\n| Sentry | Deutschland | Fehlerdaten, Gerätemodell | Fehlerüberwachung |\n\n| OpenWeather | USA | Breiten-/Längenkoordinaten | Wetterinformationen |\n| Mapbox | USA | Ortsuchanfragen, Koordinaten | Karte / Ortsautovervollständigung |\n| LocationIQ | USA | Ortsuchanfragen | Geocoding-Fallback |\n| Expo (EAS) | USA | Push-Token, Build-Metadaten | Push-Benachrichtigungen, OTA-Updates |\nJeder Dienst trifft angemessene Datenschutzmaßnahmen, und die Übermittlung erfolgt mit Zustimmung des Nutzers gemäß den geltenden Gesetzen."
       },
       "ccpa": {
         "title": "CCPA-Verbraucherrechte (Kalifornien)",

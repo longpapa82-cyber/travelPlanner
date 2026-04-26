@@ -42,6 +42,30 @@ export default ({ config }) => ({
     softwareKeyboardLayoutMode: 'pan',
     package: 'com.longpapa82.travelplanner',
     versionCode: config.android?.versionCode ?? 42,
+    // V189 P0-D: explicit permission whitelist. Without this, expo /
+    // react-native modules auto-inject RECORD_AUDIO,
+    // SYSTEM_ALERT_WINDOW, READ/WRITE_EXTERNAL_STORAGE — none of which
+    // this app uses. Play Console's Data Safety form auto-infers
+    // sensitive-data collection from declared permissions, so the
+    // unused mic permission alone makes the form misalign with
+    // privacy.html (which never lists microphone). That mismatch is a
+    // direct Play 8.3 reject vector. The complement: blockedPermissions
+    // forcibly removes any module-injected permission outside this list.
+    permissions: [
+      'INTERNET',
+      'VIBRATE',
+      'POST_NOTIFICATIONS',
+      'READ_MEDIA_IMAGES', // Android 13+ photo picker (replaces READ_EXTERNAL_STORAGE)
+      'com.google.android.gms.permission.AD_ID',
+    ],
+    blockedPermissions: [
+      'RECORD_AUDIO',
+      'SYSTEM_ALERT_WINDOW',
+      'READ_EXTERNAL_STORAGE', // superseded by READ_MEDIA_IMAGES on Android 13+
+      'WRITE_EXTERNAL_STORAGE',
+      'ACCESS_FINE_LOCATION',
+      'ACCESS_COARSE_LOCATION',
+    ],
     intentFilters: [
       {
         action: 'VIEW',

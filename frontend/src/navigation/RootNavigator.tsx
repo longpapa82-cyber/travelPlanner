@@ -1,7 +1,14 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
-import { NavigationContainer, LinkingOptions, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  LinkingOptions,
+  DefaultTheme,
+  DarkTheme,
+  NavigationState,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../contexts/AuthContext';
 import { useConsent } from '../contexts/ConsentContext';
 import { useNotifications } from '../contexts/NotificationContext';
@@ -21,6 +28,83 @@ import PrePermissionATTModal, { shouldShowATTPrePermission } from '../components
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+/**
+ * V189 P0-C (5차 chronic regression — V184 A4 → V185 → V186 #5 → V187 P0-F):
+ * NavigationContainer state persistence.
+ *
+ * The 4 prior fixes (silentRefresh timeout, useFocusEffect guard,
+ * cross-context lock, setUser shallow compare) all guarded JS-layer
+ * race conditions. They could not address the actual cause: when
+ * Android LMK kills the host process during background and the user
+ * returns, React Native cold-starts and NavigationContainer mounts
+ * fresh — the stack history is gone forever, so the user lands on
+ * the initial route (home) regardless of where they were.
+ *
+ * Persist the navigation state to AsyncStorage with a 60-minute TTL
+ * so a cold-start within an hour restores the prior screen. Beyond
+ * 60 minutes, drop the state — too long and stale params (e.g. a
+ * deleted trip id) cause confusing 404s.
+ *
+ * Route param whitelist: we strip everything except the route name
+ * and a small allowlist of stable params (tripId, shareToken,
+ * announcementId). Sensitive params (auth tokens, password reset
+ * tokens, OAuth state) MUST never land in AsyncStorage.
+ */
+const NAV_STATE_KEY = '__navigation_state_v1';
+const NAV_STATE_TTL_MS = 60 * 60 * 1000;
+const SAFE_PARAM_KEYS = new Set(['tripId', 'shareToken', 'announcementId']);
+
+const sanitizeNavState = (state: NavigationState | undefined): unknown => {
+  if (!state) return undefined;
+  return {
+    ...state,
+    routes: state.routes.map((route) => {
+      const params = route.params as Record<string, unknown> | undefined;
+      const safeParams = params
+        ? Object.fromEntries(
+            Object.entries(params).filter(([k]) => SAFE_PARAM_KEYS.has(k)),
+          )
+        : undefined;
+      const child = (route as { state?: NavigationState }).state;
+      return {
+        ...route,
+        params: safeParams && Object.keys(safeParams).length > 0 ? safeParams : undefined,
+        state: child ? sanitizeNavState(child) : undefined,
+      };
+    }),
+  };
+};
+
+const persistNavState = async (state: NavigationState | undefined): Promise<void> => {
+  try {
+    if (!state) {
+      await AsyncStorage.removeItem(NAV_STATE_KEY);
+      return;
+    }
+    await AsyncStorage.setItem(
+      NAV_STATE_KEY,
+      JSON.stringify({ savedAt: Date.now(), state: sanitizeNavState(state) }),
+    );
+  } catch {
+    // Storage failure must not crash navigation.
+  }
+};
+
+const loadPersistedNavState = async (): Promise<unknown | undefined> => {
+  try {
+    const raw = await AsyncStorage.getItem(NAV_STATE_KEY);
+    if (!raw) return undefined;
+    const parsed = JSON.parse(raw) as { savedAt?: number; state?: unknown };
+    if (!parsed.savedAt || Date.now() - parsed.savedAt > NAV_STATE_TTL_MS) {
+      await AsyncStorage.removeItem(NAV_STATE_KEY);
+      return undefined;
+    }
+    return parsed.state;
+  } catch {
+    return undefined;
+  }
+};
 
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [
@@ -85,6 +169,32 @@ const RootNavigator = () => {
   const { theme, isDark } = useTheme();
   const { shouldShowPrePermission, sessionCount, requestTracking } = useTrackingTransparency();
 
+  // V189 P0-C: load persisted nav state on cold-start so users return to
+  // the screen they were on before Android LMK killed the process.
+  // `isStateReady` blocks NavigationContainer mount until we know
+  // whether to use a restored state or start fresh — otherwise the
+  // container mounts at home, then jumps to the restored route, which
+  // looks like a flash.
+  const [initialNavState, setInitialNavState] = useState<unknown | undefined>(undefined);
+  const [isNavStateReady, setIsNavStateReady] = useState(false);
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      // Web persistence is handled by the URL itself; skip AsyncStorage.
+      setIsNavStateReady(true);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const restored = await loadPersistedNavState();
+      if (cancelled) return;
+      setInitialNavState(restored);
+      setIsNavStateReady(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // V141 fix: When the user is authenticated and doesn't need consent,
   // the pushRegistrationCallback bridge may have been missed (race condition
   // during mount). Trigger pre-permission directly once the user lands on
@@ -123,8 +233,11 @@ const RootNavigator = () => {
     setShowATTModal(false);
   }, []);
 
-  // Show loading while checking auth or consent
-  if (isLoading || (isAuthenticated && isCheckingConsent)) {
+  // Show loading while checking auth, consent, or restoring nav state.
+  // V189 P0-C: isNavStateReady gates the NavigationContainer so we never
+  // mount with no initialState and then jump to the restored route — the
+  // jump would look like a flash to the user.
+  if (isLoading || (isAuthenticated && isCheckingConsent) || !isNavStateReady) {
     return (
       <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -179,6 +292,13 @@ const RootNavigator = () => {
   const NavigationContent = (
     <NavigationContainer
       linking={linking}
+      // V189 P0-C: cold-start restoration. initialState is set once on
+      // mount; subsequent updates flow through onStateChange → AsyncStorage.
+      initialState={initialNavState as Parameters<typeof NavigationContainer>[0]['initialState']}
+      onStateChange={(state) => {
+        // Fire-and-forget; AsyncStorage write is fast and non-critical.
+        persistNavState(state);
+      }}
       theme={{
         ...(isDark ? DarkTheme : DefaultTheme),
         colors: {
