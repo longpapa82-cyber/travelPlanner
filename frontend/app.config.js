@@ -42,27 +42,38 @@ export default ({ config }) => ({
     softwareKeyboardLayoutMode: 'pan',
     package: 'com.longpapa82.travelplanner',
     versionCode: config.android?.versionCode ?? 42,
-    // V189 P0-D: explicit permission whitelist. Without this, expo /
-    // react-native modules auto-inject RECORD_AUDIO,
-    // SYSTEM_ALERT_WINDOW, READ/WRITE_EXTERNAL_STORAGE — none of which
-    // this app uses. Play Console's Data Safety form auto-infers
-    // sensitive-data collection from declared permissions, so the
-    // unused mic permission alone makes the form misalign with
-    // privacy.html (which never lists microphone). That mismatch is a
-    // direct Play 8.3 reject vector. The complement: blockedPermissions
-    // forcibly removes any module-injected permission outside this list.
+    // V189.1 P0-D: explicit permission whitelist.
+    //
+    // V189.0 listed READ_MEDIA_IMAGES so the photo picker would work on
+    // Android 13+. Play submission failed with: "All developers requesting
+    // access to the photo and video permissions are required to tell Google
+    // Play about the core functionality of their app" — Play's Photo &
+    // Video Permissions Declaration would have to be filled out manually.
+    //
+    // Better fix: remove the permission entirely. expo-image-picker on
+    // Android 13+ uses the system Photo Picker (PhotoPickerActivity) which
+    // does NOT require READ_MEDIA_IMAGES — the user picks the photo in a
+    // system dialog and the app receives a content:// URI scoped to that
+    // single asset. Photo Picker is the Google-recommended path for any
+    // app that just needs the user to choose a photo (vs apps that index
+    // the whole library, which still need the permission + declaration).
+    //
+    // Net effect: same UX, no permission dialog, no Play declaration
+    // required, privacy.html stays accurate (no broad photo-library access).
     permissions: [
       'INTERNET',
       'VIBRATE',
       'POST_NOTIFICATIONS',
-      'READ_MEDIA_IMAGES', // Android 13+ photo picker (replaces READ_EXTERNAL_STORAGE)
       'com.google.android.gms.permission.AD_ID',
     ],
     blockedPermissions: [
       'RECORD_AUDIO',
       'SYSTEM_ALERT_WINDOW',
-      'READ_EXTERNAL_STORAGE', // superseded by READ_MEDIA_IMAGES on Android 13+
+      'READ_EXTERNAL_STORAGE',
       'WRITE_EXTERNAL_STORAGE',
+      'READ_MEDIA_IMAGES', // V189.1: system Photo Picker doesn't need it
+      'READ_MEDIA_VIDEO',
+      'READ_MEDIA_VISUAL_USER_SELECTED',
       'ACCESS_FINE_LOCATION',
       'ACCESS_COARSE_LOCATION',
     ],

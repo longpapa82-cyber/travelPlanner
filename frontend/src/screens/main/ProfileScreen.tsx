@@ -308,7 +308,15 @@ const ProfileScreen = ({ navigation }: any) => {
   const handlePickProfilePhoto = async () => {
     if (isUploadingPhoto) return;
     try {
-      if (Platform.OS !== 'web') {
+      // V189.1 P0-D hotfix: Android 13+ uses the system Photo Picker via
+      // launchImageLibraryAsync — no READ_MEDIA_IMAGES permission, no
+      // permission dialog, no Play Console declaration form needed. We
+      // only run the permission gate on iOS, where the OS still requires
+      // NSPhotoLibraryUsageDescription. Skipping the gate on Android also
+      // avoids the prior bug where requestMediaLibraryPermissionsAsync()
+      // would resolve 'undetermined' indefinitely on Android 14+ devices
+      // that no longer surface the permission to the app.
+      if (Platform.OS === 'ios') {
         const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
         if (status === 'undetermined') {
           const { status: newStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -692,41 +700,45 @@ const ProfileScreen = ({ navigation }: any) => {
           <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={async () => {
-            const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
-            if (status === 'granted') {
-              Alert.alert(
-                t('settings.photos.title', '사진 접근 설정'),
-                t('settings.photos.alreadyEnabled', '사진 접근이 이미 허용되어 있습니다. 시스템 설정에서 변경할 수 있습니다.'),
-                [
-                  { text: tCommon('ok', '확인'), style: 'cancel' },
-                  { text: t('settings.photos.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
-                ],
-              );
-            } else {
-              const { status: newStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-              if (newStatus === 'granted') {
-                showToast({ type: 'success', message: t('settings.photos.enabled', '사진 접근이 허용되었습니다'), position: 'top' });
-              } else {
+        {/* V189.1 P0-D hotfix: photo access menu is iOS-only. Android 13+
+            uses the system Photo Picker (no permission, no menu needed). */}
+        {Platform.OS === 'ios' && (
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={async () => {
+              const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+              if (status === 'granted') {
                 Alert.alert(
                   t('settings.photos.title', '사진 접근 설정'),
-                  t('settings.photos.denied', '사진 접근 권한이 거부되었습니다. 시스템 설정에서 허용해주세요.'),
+                  t('settings.photos.alreadyEnabled', '사진 접근이 이미 허용되어 있습니다. 시스템 설정에서 변경할 수 있습니다.'),
                   [
                     { text: tCommon('ok', '확인'), style: 'cancel' },
                     { text: t('settings.photos.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
                   ],
                 );
+              } else {
+                const { status: newStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (newStatus === 'granted') {
+                  showToast({ type: 'success', message: t('settings.photos.enabled', '사진 접근이 허용되었습니다'), position: 'top' });
+                } else {
+                  Alert.alert(
+                    t('settings.photos.title', '사진 접근 설정'),
+                    t('settings.photos.denied', '사진 접근 권한이 거부되었습니다. 시스템 설정에서 허용해주세요.'),
+                    [
+                      { text: tCommon('ok', '확인'), style: 'cancel' },
+                      { text: t('settings.photos.openSettings', '설정 열기'), onPress: () => Linking.openSettings() },
+                    ],
+                  );
+                }
               }
-            }
-          }}
-          accessibilityRole="button"
-        >
-          <Icon name="image-outline" size={24} color={theme.colors.textSecondary} />
-          <Text style={styles.menuText}>{t('settings.photos.title', '사진 접근 설정')}</Text>
-          <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
-        </TouchableOpacity>
+            }}
+            accessibilityRole="button"
+          >
+            <Icon name="image-outline" size={24} color={theme.colors.textSecondary} />
+            <Text style={styles.menuText}>{t('settings.photos.title', '사진 접근 설정')}</Text>
+            <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+          </TouchableOpacity>
+        )}
       </View>
 
       {isServiceAdmin && (

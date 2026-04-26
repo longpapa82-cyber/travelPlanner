@@ -4,7 +4,7 @@
     "slug": "travel-planner",
     "version": "1.0.0",
     "android": {
-      "versionCode": 190,
+      "versionCode": 191,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4A90D9"
@@ -40,7 +40,6 @@
         "INTERNET",
         "VIBRATE",
         "POST_NOTIFICATIONS",
-        "READ_MEDIA_IMAGES",
         "com.google.android.gms.permission.AD_ID"
       ],
       "blockedPermissions": [
@@ -48,6 +47,9 @@
         "SYSTEM_ALERT_WINDOW",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO",
+        "READ_MEDIA_VISUAL_USER_SELECTED",
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION"
       ]

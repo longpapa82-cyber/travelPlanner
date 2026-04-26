@@ -29,6 +29,41 @@ import { ProcessedWebhookEvent } from './entities/processed-webhook-event.entity
 const PREMIUM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 const SANDBOX_YEARLY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
+/**
+ * V189.1 P1-Security (C-2): bound RC webhook `expiration_at_ms` to a
+ * sane upper limit. The webhook secret is rotated infrequently and is
+ * the only thing standing between an attacker with leaked credentials
+ * and a forged INITIAL_PURCHASE event with `expiration_at_ms = Number.
+ * MAX_SAFE_INTEGER` — which would mark the user PREMIUM forever.
+ *
+ * 5 years is well past any legitimate Google Play / Apple subscription
+ * (max term is 1 year for both). Anything beyond is unilaterally clamped
+ * to (now + 1 year), the longest legitimate term. The clamp also catches
+ * timestamp-vs-milliseconds confusion bugs where a seconds-based value
+ * gets mis-parsed as milliseconds.
+ */
+const MAX_LEGITIMATE_EXPIRATION_MS = 5 * 365 * 24 * 60 * 60 * 1000;
+const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
+
+const parseExpirationAt = (rawMs: unknown, logger: Logger): Date => {
+  const fallback = () => new Date(Date.now() + ONE_YEAR_MS);
+  if (rawMs === null || rawMs === undefined || rawMs === '') return fallback();
+  const ms = typeof rawMs === 'number' ? rawMs : parseInt(String(rawMs), 10);
+  if (!Number.isFinite(ms) || ms <= 0) {
+    logger.warn(`expiration_at_ms invalid (${rawMs}); falling back to now+1y`);
+    return fallback();
+  }
+  const now = Date.now();
+  if (ms - now > MAX_LEGITIMATE_EXPIRATION_MS) {
+    logger.error(
+      `expiration_at_ms ${ms} exceeds 5y bound — clamping to now+1y. ` +
+        'Possible forged webhook event or seconds-vs-ms confusion.',
+    );
+    return fallback();
+  }
+  return new Date(ms);
+};
+
 @Injectable()
 export class SubscriptionService {
   private readonly logger = new Logger(SubscriptionService.name);
@@ -402,9 +437,10 @@ export class SubscriptionService {
       case 'RENEWAL':
       case 'PRODUCT_CHANGE':
       case 'UNCANCELLATION': {
-        const expiresAt = event.expiration_at_ms
-          ? new Date(parseInt(event.expiration_at_ms, 10))
-          : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+        const expiresAt = parseExpirationAt(
+          event.expiration_at_ms,
+          this.logger,
+        );
 
         // V169 (B1): Explicit mapping instead of substring heuristic.
         // See PLAN_TYPE_BY_PRODUCT_ID for the whitelist.
@@ -454,8 +490,10 @@ export class SubscriptionService {
         // is still valid.  Keep PREMIUM until expiration_at_ms, then EXPIRATION
         // event will fire.  Only update the expiry so isUserPremium() naturally
         // downgrades once the period ends.
+        // V189.1: bound CANCELLATION expiration too — same forged-event
+        // surface as INITIAL_PURCHASE.
         const cancelExpiresAt = event.expiration_at_ms
-          ? new Date(parseInt(event.expiration_at_ms, 10))
+          ? parseExpirationAt(event.expiration_at_ms, this.logger)
           : null;
         if (cancelExpiresAt && cancelExpiresAt > new Date()) {
           await this.userRepository.update(user.id, {
