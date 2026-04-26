@@ -1,3 +1,49 @@
+## V189.1 진행 현황 (2026-04-26 KST)
+
+### 빌드 정보
+- **versionCode**: 195 (EAS auto-bump)
+- **AAB**: `build-v189.1.aab` (68MB)
+- **Play Console**: Alpha 트랙 제출 완료 ✅ (2026-04-26 21:28)
+- **Submission ID**: 9818208b-0377-4daf-8ab4-c4032d08aed6
+- **Backend 배포**: 미완료 ⏳ (rsync+rebuild 필요 — 보안 8건 fix 반영)
+
+### 이번 버전 수정 내용
+
+| 영역 | 수정 항목 | 상태 |
+|------|-----------|------|
+| **P0-A** | 진단 인프라 복구 — `/trips`·`/subscription`·`/users/me` 4xx 로깅 추가, IGNORED_PATTERNS silent-drop 6패턴 제거, frontend reportError AsyncStorage queue 50 + console warn | ✅ |
+| **P0-B** | admin preflight 차단 제거 — server-side 단일 플래그 과부하 회귀 종결, PreflightPurchaseDto + 10/min throttle | ✅ |
+| **P0-C** | 회원탈퇴 transaction + cross-context lock umbrella — `markAccountTerminating()` 신설, `dataSource.transaction(manager.delete)` atomic, GDPR Art.17/PIPA §39의6 보장 | ✅ |
+| **P0-D** | webhook idempotency atomic — catch fall-through 제거 → 5xx throw RC retry, `result.raw` Array+rowCount 양쪽 driver 호환 | ✅ |
+| **P0-E** | AGE_VERIFICATION backfill migration — TERMS 동의자에게 inferred 부여, getConsentsStatus backfill miss warn | ✅ |
+| **P0-F** | silentRefresh 5s timeout + useFocusEffect in-flight guard — background→foreground 흰 화면 영구 차단, navigation tree 보존 | ✅ |
+| **P1-보안** | consent withdrawal `DELETE /me/consents/optional` (GDPR Art.7(3)), error_logs healthcheck cron (09:00 daily), RC webhook secret rotation 주석, `SettleExpenseDto` proper DTO | ✅ |
+| **P1-ConsentContext** | mount race 종결 — `useState(isAuthenticated && !!user)` 초기값 + useEffect `setIsCheckingConsent(true)` 선행 | ✅ |
+| **P1-권한** | `READ_MEDIA_IMAGES` 제거 (Play 8.3 reject 차단) | ✅ |
+| **P1-콘텐츠** | 자동 검증 영역 확장 4패턴, 30건 잠복 회귀 발견·수정 | ✅ |
+
+### 테스트 결과 (빌드 전)
+- **Frontend TypeScript**: 0 errors
+- **Backend TypeScript**: 0 errors
+- **Frontend Jest**: 230/230 PASS
+- **Backend Jest**: 405/405 PASS (auth 2 suite는 @otplib/plugin-base32-scure ESM pre-existing 이슈, 이번 변경과 무관)
+- **validate:static**: PASS (261 파일)
+
+### 이후 계획
+
+| 우선순위 | 항목 | 내용 |
+|---------|------|------|
+| **즉시** | Backend 배포 | 보안 8건 fix rsync → docker compose up -d (Hetzner VPS) |
+| **즉시** | Alpha 검증 | V188 #1 SNS 로그인 후 배경 앱 종료 → V189.1에서 NavigationContainer state persistence로 해결됐는지 확인 |
+| **즉시** | Alpha 검증 | V188 #2 앱 이탈 복귀 시 홈 화면 리셋 → P0-F (silentRefresh 5s timeout + useFocusEffect guard)로 해결됐는지 확인 |
+| **즉시** | Alpha 검증 | V186 #2 이용 동의 화면 재표기 → P1-ConsentContext mount race 종결로 해결됐는지 확인 |
+| **P1** | Maestro E2E 도입 | Detox 대신 Maestro (셋업 2-3일). 로그인·여행생성·구독 3개 핵심 시나리오 자동화 |
+| **P1** | Subscription FSM 명시화 | free→premium→expired 상태 전이 명시화 (architectural — Option A: state machine lib / Option B: 주석+불변식) |
+| **P2** | Backend 배포 자동화 | 현재 수동 rsync → GitHub Actions + Hetzner SSH 자동 배포 |
+| **P2** | Production 트랙 전환 Go/No-Go | Alpha 검증 완료 후 판정 |
+
+---
+
 ## V188 Alpha 테스트 결과
 
 1. SNS 로그인
