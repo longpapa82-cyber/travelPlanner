@@ -4,7 +4,7 @@
     "slug": "travel-planner",
     "version": "1.0.0",
     "android": {
-      "versionCode": 188,
+      "versionCode": 189,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4A90D9"
@@ -37,14 +37,28 @@
         }
       ],
       "permissions": [
+        "INTERNET",
+        "VIBRATE",
+        "POST_NOTIFICATIONS",
+        "READ_MEDIA_IMAGES",
         "com.google.android.gms.permission.AD_ID"
+      ],
+      "blockedPermissions": [
+        "RECORD_AUDIO",
+        "SYSTEM_ALERT_WINDOW",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
       ]
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/6834aeb3-58dd-4d9d-a3a3-19824beb9e62"
+      "url": "https://u.expo.dev/6834aeb3-58dd-4d9d-a3a3-19824beb9e62",
+      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "fallbackToCacheTimeout": 0
     },
     "ios": {
       "supportsTablet": true,
