@@ -1,3 +1,38 @@
+## V196 진행 현황 (2026-04-27 KST)
+
+### 빌드 정보
+- **versionCode**: 196
+- **AAB**: `build-v196.aab` — 빌드 진행 중 🔄
+- **Play Console**: Alpha 제출 예정
+- **Backend 배포**: ✅ 완료 (2026-04-27, docker compose up -d, 헬스체크 정상)
+
+### 이번 버전 수정 내용 (V195 Alpha 테스트 결과 기반)
+
+| 영역 | 수정 항목 | 상태 |
+|------|-----------|------|
+| **P0 — Phantom 구독 7차 재발 근본 종결** | RC TRANSFER 이벤트 케이스 추가 — 탈퇴→재가입 시 old anonymous RC alias에 entitlement가 묶여 "이미 구독 중" 발생. 서버가 TRANSFER webhook을 `default:log`로 무시했던 것이 진짜 원인. 이제 revenuecatAppUserId 재바인딩 + 유효 entitlement 즉시 PREMIUM 적용 | ✅ |
+| **P0 — userId 백필 UPDATE** | processed_webhook_events.userId가 INSERT 시점에 null로 영구 저장 — 운영 가시성 0. webhook 처리 후 userId 백필 UPDATE 추가 | ✅ |
+| **DB 직접 초기화** | hoonjae723@gmail.com 만료된 구독 free로 직접 초기화 (subscriptionExpiresAt < NOW() 조건) | ✅ |
+| **회귀 테스트 4케이스 추가** | TRANSFER active entitlement, TRANSFER expired entitlement, userId backfill 호출 확인, event.id 없을 때 skip 확인 | ✅ |
+
+### 테스트 결과
+- **Backend TypeScript**: 0 errors
+- **Backend Jest**: 409/409 PASS
+- **Invariant 48 신설**: TRANSFER webhook은 반드시 처리 (revenuecatAppUserId 재바인딩 + entitlement 적용)
+
+### 이후 계획
+
+| 우선순위 | 항목 | 내용 |
+|---------|------|------|
+| **즉시** | V196 빌드 완료 후 Alpha 제출 | AAB 빌드 완료 시 Play Console Alpha 트랙 업로드 |
+| **즉시** | Alpha 검증 | hoonjae723 탈퇴→재가입 후 구독 정상 동작 확인 |
+| **즉시** | Alpha 검증 | 앱 로고 3개 중복 (#1) — 기기별 알림 채널 / launchMode 진단 |
+| **즉시** | Alpha 검증 | 앱 이탈-복귀 홈 리셋 (#3) — silentRefresh 5s timeout + useFocusEffect guard 효과 확인 |
+| **P1** | V189.1 종합 hotfix 잔여 항목 | Maestro E2E 도입, Subscription FSM 명시화 |
+| **P2** | Production 트랙 전환 Go/No-Go | Alpha 검증 완료 후 판정 |
+
+---
+
 ## V195 Alpha 테스트 결과
 
 1. myTravel 앱 기본 실행 테스트

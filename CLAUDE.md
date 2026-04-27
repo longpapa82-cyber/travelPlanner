@@ -2,18 +2,25 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-26 KST) — V187 Phase 0 완료 (V186 5건 RCA 근본 종결 + P0 6 + P1 4 자동화 도입)
+## 📍 현재 상태 (2026-04-27 KST) — V196 진행 중 (phantom 구독 7차 재발 근본 종결 — RC TRANSFER 이벤트 처리)
 
 ### 핵심 상태
-- **버전**: V187 (다음 EAS Build versionCode 187, V186 5건 RCA + 자동 회귀 차단 4 테스트 + 보안 3 + 콘텐츠 30 + 검증 체크리스트 42)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V187 backend migration 필요 (`BackfillAgeVerificationConsent`)
-- **브랜치**: `main` (commit 대기)
-- **Frontend**: TypeScript 0 errors, Jest **226/226** PASS (V186 223 + V187 신규 3 logout race integration)
-- **Backend**: TypeScript 0 errors, Jest **398/398** PASS (V186 380 + V187 신규 18: subscription preflight 4 + webhook idempotency 3 + error_logs ingestion 11)
-- **자동 검증**: `npm run validate:static` PASS — 261 파일 (V187 신규 4 패턴: 모든 기능 무료 / 무제한 AI / 미등록 통화 / in N seconds)
-- **Play Console**: V186 versionCode 186 → V187 versionCode 187 빌드 후 Alpha 재제출 예정
-- **Sentry**: DSN `de.sentry.io` (Germany region — V187 P1-B C3에서 i18n art12 정정)
-- **V187 핵심**: V186 5건 회귀 모두 가장 근본적인 fix로 종결 — P0-A 진단 인프라 (4xx 로깅 + AsyncStorage queue), P0-B admin preflight 차단 제거 (server-side 단일 플래그 과부하 회귀 종결), P0-C 회원탈퇴 transaction + cross-context lock umbrella (불변식 41), P0-D webhook idempotency atomic (불변식 40 강화), P0-E AGE_VERIFICATION backfill migration, P0-F silentRefresh 5s timeout + useFocusEffect in-flight guard (불변식 44). **자동 회귀 차단 4 시나리오 도입**: logoutRace.integration.test (V177/V181/V184/V186 4차 회귀 PR 단계 차단), preflight admin allow + webhook idempotency raw shape, error_logs ingestion smoke (이전 silent-drop 6 패턴 persist 확인). **콘텐츠 자동 검증 V187 4 신규 패턴 도입 즉시 30건 잠복 회귀 발견·수정** — V184 25 + V185 14 + V186 + V187 30 = 도합 ~70건 자동 발견, 자동 검증 ROI 4회째 입증.
+- **버전**: V196 (versionCode 196, EAS local 빌드 진행 중 🔄)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V196 backend 배포 완료 ✅ (2026-04-27)
+- **브랜치**: `main` (commit `728a49c9`)
+- **Frontend**: TypeScript 0 errors, Jest **230/230** PASS
+- **Backend**: TypeScript 0 errors, Jest **409/409** PASS (V196 신규 4 TRANSFER 회귀 테스트)
+- **자동 검증**: `npm run validate:static` PASS — 261 파일
+- **Play Console**: V195 Alpha 제출 완료 → V196 빌드 완료 후 Alpha 재제출 예정
+- **Sentry**: DSN `de.sentry.io` (Germany region)
+- **V196 핵심**: **phantom 구독 7차 재발 근본 종결** — RC TRANSFER webhook이 탈퇴→재가입 시 발화되지만 서버가 `default:log`로 무시 → 구독이 old anonymous RC alias에 묶임 → 새 계정 "이미 구독 중". 클라이언트 가드 6회 실패의 진짜 원인이 서버 webhook 처리 누락임을 DB의 TRANSFER 이벤트 4건 + userId=null로 확인. TRANSFER 케이스 추가(revenuecatAppUserId 재바인딩 + 유효 entitlement 즉시 PREMIUM 적용) + userId 백필 UPDATE + 회귀 테스트 4케이스(불변식 48). hoonjae723 DB 직접 free 초기화 완료.
+
+### V196 직후 남은 작업 (우선순위 순)
+1. **Alpha 검증**: V196 설치 후 hoonjae723 탈퇴→재가입 구독 시나리오 정상 동작 확인
+2. **Alpha 검증**: V195 #1 앱 로고 3개 중복 — 기기별 알림 채널 / launchMode 진단
+3. **Alpha 검증**: V195 #3 앱 이탈-복귀 홈 리셋 — V189.1 P0-F 효과 확인
+4. **V189.1 잔여**: Maestro E2E, Subscription FSM 명시화 (Play Store 출시 전 완료 불필요)
+5. **Production Go/No-Go**: Alpha 최종 검증 완료 후
 
 ### V139~V176 Alpha 테스트 수정 이력
 
@@ -378,6 +385,8 @@ curl https://mytravel-planner.com/api/health
 | V183~V184 | 2026-04-26 | **CRITICAL** | **admin 페이월 가드 제거 (V182 단일 플래그 과부하 회귀 — 결제 회귀 검증 lead time 무한대 → server-tier gate 위임)**, **저작권 51 HTML+17 locale 일괄 수정** (© 2024-2026 → © 2026, AI Soft 2026 설립 사실 반영), **Paddle 잔존 6곳 완전 제거** (전자상거래법 §13), **17 locale art12 OpenWeather 추가** (GDPR Art. 44/PIPA §28), **제휴 파트너 약관·5 locale 일괄 제거** (정통망법 §22의2), **iCal 미구현 표기 제거**, **사업자 정보 4 HTML 추가** (PIPA §39의6), **effectiveDate 통일**, **`validate-content.py` 신설** (도입 즉시 25건 잠복 회귀 발견·수정), **validate-legal.py 보강** (P0-E/F/G + P1-B), **`npm run validate:static`** 통합 (11건 + 자동 검증 2건) | 184 (185 빌드 예정) |
 | V184~V185 | 2026-04-26 | **CRITICAL** | **A1 결제 reconcile polling 60s + AWAITED (V184 결제 후 로그아웃 → 재로그인 시 구독 사라짐 — 6번째 phantom 구독 회귀, 정반대 방향)**, **A2 cross-context logout transaction lock (V177/V181/V184 3차 회귀 영구 종결 — AuthContext 전역 isLoggingOut + 모든 context background handler 가드)**, **A3 Android 키보드 인셋 manual `Keyboard.addListener` 보정 (회원가입 비밀번호 확인 스크롤 fix, V159 KAV 금지 불변식 13 유지)**, **D 사실 위배 11건** (스토어 무제한/100통화/체크리스트/댓글 + 17 locale 무제한/날짜/art3/제휴/Stripe/AdSense + privacy-en 이메일 + 사업자정보), **E 보안 2건** (production fail-fast 헬퍼 + reportError query strip), **validate-content.py i18n+docs 확장** (261 파일 검사, false positive 차단, 도입 즉시 14건 잠복 회귀 발견·수정), **불변식 32~39 추가** (16건 + 자동 검증 확장) | 185 (186 빌드 예정) |
 | V186~V187 | 2026-04-26 | **CRITICAL** | **P0-A 진단 인프라 복구** (`/trips`+`/subscription`+`/users/me` 4xx 로깅 추가, IGNORED_PATTERNS silent-drop 6 패턴 제거, frontend reportError AsyncStorage queue 50 + console warn — V186 "오류 로그 0건" 영구 차단), **P0-B admin preflight 차단 제거** (server-side 단일 플래그 과부하 회귀 종결 — V184 불변식 32 backend로 옮긴 회귀, 실결제는 Play Console 라이선스 테스터 단일 가드, PreflightPurchaseDto + 10/min throttle), **P0-C 회원탈퇴 transaction + cross-context lock umbrella** (`markAccountTerminating()` 신설, `await deleteAccount() 200 OK` 확인 후 success UX, `dataSource.transaction(manager.delete)` + DB delete + Redis blacklist atomic — GDPR Art.17/PIPA §39의6 보장), **P0-D webhook idempotency atomic** (catch fall-through 제거 → 5xx throw RC retry, `result.raw` Array+rowCount 양쪽 driver 호환), **P0-E AGE_VERIFICATION backfill migration** (TERMS 동의자에게 inferred 부여, getConsentsStatus backfill miss warn), **P0-F silentRefresh 5s timeout + useFocusEffect in-flight guard** (불변식 44 — background→foreground 흰 화면 영구 차단, navigation tree 보존), **P1-A 자동 회귀 차단 25 신규 테스트** (logoutRace.integration.test V177/V181/V184/V186 4차 회귀 PR 단계 차단, refreshUser 누락 갭 발견 시점 fix, subscription preflight admin allow + idempotency raw shape, error_logs ingestion 6 silent-drop 패턴 persist 확인), **P1-B 콘텐츠 V187 4 신규 패턴** (도입 즉시 30건 잠복 회귀 발견·수정 — "all features free" 12 locale, "tanpa batas/безлимитн" 2 locale, BRL 가격, "in N seconds/Perfect Trip" 28 HTML), **P1-C 보안 CRITICAL 3** (ErrorLog PII anonymization in-transaction, breadcrumbs 500자/key + 20keys cap, Logger CRLF safeForLog), **P1-D 검증 체크리스트 42 항목**, **불변식 40~47 신설** (8건). 자동 검증 ROI 4회째 입증: V184 25 + V185 14 + V186 + V187 30 = ~70건 자동 발견·수정. | 187 (빌드 예정) |
+| V187~V189.1 | 2026-04-27 | **CRITICAL** | **V188 #1 SNS 로그인 배경 앱 종료 (V189 P0-A: NavigationContainer state persistence + expo-updates NEVER)**, **V188 #2 앱 이탈-복귀 홈 리셋 (V189 P0-F 강화: silentRefresh 5s timeout + useFocusEffect in-flight guard)**, **nginx.conf Paddle JS + CSP 잔존 제거 (V184 P0-G 직접 회귀)**, **AndroidManifest READ_MEDIA_IMAGES 제거 (Play 8.3 reject 차단)**, **17 locale art12/art15 5개 처리자 누락 보강 (GDPR Art.44/PIPA §28)**, **보안 9건** (consent withdrawal GDPR Art.7(3), error_logs healthcheck cron, RC webhook secret rotation, SettleExpenseDto, audit anonymization, refresh token AsyncStorage, expiration upper bound 5y, SettingsScreen rotation, health endpoint auth), **콘텐츠 사실성 9건**, **ConsentContext mount race 종결** | 195 (V189.1 빌드) |
+| V195~V196 | 2026-04-27 | **CRITICAL** | **phantom 구독 7차 재발 근본 종결 — RC TRANSFER 이벤트 처리 누락** (탈퇴→재가입 시 RC가 TRANSFER webhook 발송 → 서버 `default:log`로 무시 → 구독이 old anonymous alias에 묶임 → 새 계정 "이미 구독 중". 클라이언트 가드 6회가 모두 실패한 진짜 원인이 데이터 레이어였음을 DB TRANSFER 이벤트 4건 + userId=null로 확인). **TRANSFER 케이스 추가** (revenuecatAppUserId 재바인딩 + 유효 entitlement 즉시 PREMIUM 적용), **userId 백필 UPDATE 추가** (processed_webhook_events.userId 영구 null 해소), **TRANSFER 회귀 테스트 4케이스** (불변식 48 신설), **hoonjae723 DB 직접 free 초기화** | 196 (빌드 진행 중 🔄) |
 
 상세: `docs/archive/bug-history-2026-04.md`, `docs/archive/claude-md-history-pre-v112.md`, `testResult.md`
 
@@ -413,4 +422,4 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-04-26 KST (V185 Phase 0 완료 — V184 4건 RCA 근본 해결 + 6 에이전트 종합 분석 P0 27건 종결. A1 결제 reconcile AWAITED + 60s polling + timeout alert로 6번째 phantom 구독 회귀 영구 종결, A2 AuthContext 전역 isLoggingOut state + ref + 모든 context background handler 가드로 V177/V181/V184 3차 logout race 종결, A3 Android `Keyboard.addListener` manual 인셋 보정으로 회원가입 스크롤 종결 (V159 불변식 13 유지), D 11건 사실 위배 + E 2건 보안 fail-fast, **validate-content.py i18n+docs 확장으로 도입 즉시 잠복 회귀 14건 발견·수정** — 자동 검증 ROI 2회째 입증 (V184 25건 + V185 14건 = 도합 39건). 핵심 불변식 33→39건 — 34~39 신설 (production fail-fast, PII strip, cross-context lock, navigation user.id, paywall AWAITED, Android Keyboard listener). A4 foreground 복귀는 A2로 자동 해결 가능성 높아 V185 빌드 후 사용자 실측 대기. **5번째→6번째 fix-and-regress 사이클의 진짜 종결 — fix만 추가하지 않고 cross-context transaction primitive + AWAITED state machine 패턴 정립**)
+**최종 업데이트**: 2026-04-27 KST (V196 진행 중 — phantom 구독 7차 재발 근본 종결. RC TRANSFER webhook이 탈퇴→재가입 시 발화되지만 서버가 `default:log`로 무시했던 것이 진짜 원인. 클라이언트/서버 가드 6회가 모두 실패한 이유는 데이터 레이어(RC webhook 이벤트 타입 처리 누락)에 있었음을 DB의 TRANSFER 4건 + userId=null로 확인. TRANSFER 케이스 추가(revenuecatAppUserId 재바인딩 + 유효 entitlement 즉시 PREMIUM 적용) + userId 백필 UPDATE + 회귀 테스트 4케이스(불변식 48 신설) + hoonjae723 DB 직접 free 초기화 + backend 배포 완료. V196 EAS local 빌드 진행 중 → Alpha 제출 후 검증 예정.)
