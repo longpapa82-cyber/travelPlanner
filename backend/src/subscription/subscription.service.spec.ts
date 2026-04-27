@@ -1,5 +1,6 @@
 /**
  * V187 P1-A — preflight + webhook idempotency regression test.
+ * V196       — TRANSFER event handling + userId backfill regression test.
  *
  * Pins the V187 P0-B and P0-D fixes:
  *
@@ -16,8 +17,20 @@
  *         transient DB errors into a permanent dedup bypass — every
  *         retry that hit a hiccup re-applied the entitlement.
  *
- * Both regressions shipped at least once because no test pinned the
- * intent. This file is the closure.
+ * Pins the V196 (Invariant 48) fix:
+ *
+ *   TRANSFER event: RC fires this when a purchase moves from one
+ *         appUserID to another — 탈퇴→재가입 scenario. Before V196
+ *         the handler fell into `default:log`, leaving the entitlement
+ *         bound to the old anonymous alias. The 7th phantom-subscription
+ *         recurrence (hoonjae723) was the smoking gun.
+ *
+ *   userId backfill: processedWebhookEvent rows were inserted with
+ *         userId=null because the user lookup happens after the INSERT.
+ *         V196 adds a follow-up UPDATE once user.id is known.
+ *
+ * Both V196 regressions shipped because no test pinned the intent.
+ * This file is the closure for both.
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -39,6 +52,10 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
   let userRepo: jest.Mocked<Repository<User>>;
   let processedRepo: { createQueryBuilder: jest.Mock };
 
+  // Separate mocks for INSERT vs UPDATE chains so tests can verify each.
+  let insertChainExecute: jest.Mock;
+  let updateChainExecute: jest.Mock;
+
   const baseUser: Partial<User> = {
     id: 'user-1',
     email: 'free@example.com',
@@ -49,14 +66,29 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
   };
 
   beforeEach(async () => {
-    const insertChain = {
+    insertChainExecute = jest.fn();
+    updateChainExecute = jest.fn().mockResolvedValue({ affected: 1 });
+
+    // Each call to createQueryBuilder() returns a full chain object that
+    // supports BOTH insert AND update operations. The service uses .insert()
+    // for the dedup row and .update() for the userId backfill. Having both
+    // methods on a single chain object avoids call-count ordering issues.
+    const makeChain = (executeImpl: jest.Mock) => ({
       insert: jest.fn().mockReturnThis(),
       values: jest.fn().mockReturnThis(),
       orIgnore: jest.fn().mockReturnThis(),
-      execute: jest.fn(),
-    };
+      update: jest.fn().mockReturnThis(),
+      set: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      execute: executeImpl,
+    });
+
+    // First call = dedup INSERT; second call = userId backfill UPDATE.
     processedRepo = {
-      createQueryBuilder: jest.fn().mockReturnValue(insertChain),
+      createQueryBuilder: jest
+        .fn()
+        .mockImplementationOnce(() => makeChain(insertChainExecute))
+        .mockImplementation(() => makeChain(updateChainExecute)),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -151,8 +183,7 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
     it('throws 5xx when the dedup INSERT itself fails (RC will retry)', async () => {
       // V186 catch block silently fell through here, defeating dedup.
       // V187 raises so RevenueCat retries the webhook.
-      const chain = processedRepo.createQueryBuilder();
-      chain.execute.mockRejectedValue(new Error('connection refused'));
+      insertChainExecute.mockRejectedValue(new Error('connection refused'));
 
       await expect(
         service.handleRevenueCatEvent({
@@ -164,9 +195,8 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
     });
 
     it('skips when ON CONFLICT yields zero inserted rows (duplicate event)', async () => {
-      const chain = processedRepo.createQueryBuilder();
       // Empty array = ON CONFLICT path took effect.
-      chain.execute.mockResolvedValue({ raw: [] });
+      insertChainExecute.mockResolvedValue({ raw: [] });
 
       // userRepo.findOne returns null so any downstream work would
       // fail loudly — but the duplicate-event short-circuit must
@@ -186,10 +216,9 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
     });
 
     it('handles pg driver returning {rowCount} instead of an array', async () => {
-      // TypeORM 0.3 + some pg configurations return `{ rowCount }`
+      // TypeORM 0.3 + some pg configurations return `{ rowCount: 0 }`
       // instead of `[]`. The V187 raw-shape check must accept both.
-      const chain = processedRepo.createQueryBuilder();
-      chain.execute.mockResolvedValue({ raw: { rowCount: 0 } });
+      insertChainExecute.mockResolvedValue({ raw: { rowCount: 0 } });
       userRepo.findOne.mockResolvedValue(null);
 
       await expect(
@@ -200,6 +229,124 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
         }),
       ).resolves.toBeUndefined();
       expect(userRepo.findOne).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleRevenueCatEvent — V196 (Invariant 48) TRANSFER + userId backfill', () => {
+    it('TRANSFER with active entitlement: rebinds RC alias and sets premium', async () => {
+      // The 탈퇴→재가입 phantom-subscription scenario (7th recurrence).
+      // RC fires TRANSFER when a purchase moves from the old anonymous
+      // appUserId to the new registered user's appUserId.
+      const futureMs = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days out
+      insertChainExecute.mockResolvedValue({ raw: [{}] }); // new INSERT
+
+      const userWithOldAlias = {
+        ...baseUser,
+        subscriptionTier: SubscriptionTier.FREE,
+        revenuecatAppUserId: 'old-anon-rc-id',
+      } as User;
+
+      userRepo.findOne.mockResolvedValue(userWithOldAlias);
+      // userRepo uses addSelect / createQueryBuilder internally; mock via findOne path
+      // The service also tries createQueryBuilder for user lookup:
+      (userRepo.createQueryBuilder as jest.Mock).mockReturnValue({
+        addSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockResolvedValue(userWithOldAlias),
+      });
+
+      await service.handleRevenueCatEvent({
+        id: 'evt_transfer_1',
+        type: 'TRANSFER',
+        app_user_id: 'new-rc-id',
+        product_id: 'premium_yearly',
+        expiration_at_ms: String(futureMs),
+      });
+
+      // Must update user with new RC alias + premium tier
+      expect(userRepo.update).toHaveBeenCalledWith(
+        'user-1',
+        expect.objectContaining({
+          revenuecatAppUserId: 'new-rc-id',
+          subscriptionTier: SubscriptionTier.PREMIUM,
+        }),
+      );
+    });
+
+    it('TRANSFER with expired entitlement: rebinds RC alias only (no premium upgrade)', async () => {
+      // Edge case: TRANSFER fires but the entitlement is already expired.
+      // We must NOT upgrade to premium.
+      const pastMs = Date.now() - 60 * 1000; // 1 minute ago
+      insertChainExecute.mockResolvedValue({ raw: [{}] });
+
+      const freeUser = { ...baseUser } as User;
+      (userRepo.createQueryBuilder as jest.Mock).mockReturnValue({
+        addSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockResolvedValue(freeUser),
+      });
+
+      await service.handleRevenueCatEvent({
+        id: 'evt_transfer_expired',
+        type: 'TRANSFER',
+        app_user_id: 'new-rc-id-2',
+        product_id: 'premium_monthly',
+        expiration_at_ms: String(pastMs),
+      });
+
+      // Must update RC alias but must NOT include subscriptionTier = PREMIUM
+      expect(userRepo.update).toHaveBeenCalledWith(
+        'user-1',
+        expect.objectContaining({ revenuecatAppUserId: 'new-rc-id-2' }),
+      );
+      const callArg = (userRepo.update as jest.Mock).mock.calls[0][1] as Partial<User>;
+      expect(callArg.subscriptionTier).toBeUndefined();
+    });
+
+    it('userId backfill UPDATE is called after successful event processing', async () => {
+      // V196: processed_webhook_events.userId was permanently NULL before
+      // this fix because the INSERT happened before the user lookup.
+      // The follow-up UPDATE must be called for every successfully processed
+      // event that has an event ID.
+      insertChainExecute.mockResolvedValue({ raw: [{}] }); // new row inserted
+
+      const user = { ...baseUser } as User;
+      (userRepo.createQueryBuilder as jest.Mock).mockReturnValue({
+        addSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockResolvedValue(user),
+      });
+
+      await service.handleRevenueCatEvent({
+        id: 'evt_backfill_check',
+        type: 'EXPIRATION',
+        app_user_id: 'user-1',
+      });
+
+      // The second createQueryBuilder call is the UPDATE backfill
+      expect(processedRepo.createQueryBuilder).toHaveBeenCalledTimes(2);
+      expect(updateChainExecute).toHaveBeenCalled();
+    });
+
+    it('userId backfill is skipped when event has no id', async () => {
+      // Events without an id skip dedup entirely and therefore there is
+      // no idempotency row to backfill — the UPDATE must not be attempted.
+      const user = { ...baseUser } as User;
+      (userRepo.createQueryBuilder as jest.Mock).mockReturnValue({
+        addSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockResolvedValue(user),
+      });
+
+      await service.handleRevenueCatEvent({
+        // No `id` field — malformed/test payload
+        type: 'EXPIRATION',
+        app_user_id: 'user-1',
+      });
+
+      // Only the user lookup createQueryBuilder was called; no dedup calls.
+      expect(processedRepo.createQueryBuilder).not.toHaveBeenCalled();
+      expect(updateChainExecute).not.toHaveBeenCalled();
     });
   });
 });

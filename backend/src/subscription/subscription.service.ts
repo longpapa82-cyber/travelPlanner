@@ -534,8 +534,64 @@ export class SubscriptionService {
         break;
       }
 
+      case 'TRANSFER': {
+        // V196 (Invariant 48): TRANSFER fires when RC moves a purchase from
+        // one appUserID to another — the classic 탈퇴→재가입 scenario.
+        // Old anonymous RC ID retains the entitlement; new user registers →
+        // RC alias chain fires TRANSFER to the new appUserId.
+        //
+        // Previous: fell into `default:log` → entitlement stayed bound to
+        // the old anonymous alias → new user PaywallModal gate saw server
+        // tier=free, RC saw entitlement → "이미 구독 중" on 7th attempt.
+        //
+        // Fix: rebind revenuecatAppUserId to current event's app_user_id
+        // and apply the transferred entitlement immediately.
+        const transferExpiresAt = event.expiration_at_ms
+          ? parseExpirationAt(event.expiration_at_ms, this.logger)
+          : null;
+        const transferProductId = (
+          event.product_id || event.product_identifier || ''
+        ).toLowerCase();
+        const transferPlanType = transferProductId
+          ? this.resolvePlanType(transferProductId, 'TRANSFER')
+          : undefined;
+
+        const transferUpdate: Partial<User> = { revenuecatAppUserId: appUserId };
+        if (transferExpiresAt && transferExpiresAt > new Date()) {
+          transferUpdate.subscriptionTier = SubscriptionTier.PREMIUM;
+          transferUpdate.subscriptionExpiresAt = transferExpiresAt;
+          if (transferPlanType) {
+            transferUpdate.subscriptionPlanType = transferPlanType;
+          }
+          await this.cacheManager.set(
+            `premium:${user.id}`,
+            'true',
+            PREMIUM_CACHE_TTL,
+          );
+        }
+        await this.userRepository.update(user.id, transferUpdate);
+        this.logger.log(
+          `[subscription] TRANSFER: user=${user.id} rcId=${appUserId} ` +
+            `tier=${transferUpdate.subscriptionTier ?? 'unchanged'} ` +
+            `expiresAt=${transferExpiresAt?.toISOString() ?? 'none'}`,
+        );
+        break;
+      }
+
       default:
         this.logger.log(`Unhandled RevenueCat event type: ${eventType}`);
+    }
+
+    // V196: backfill userId on the idempotency row now that we know user.id.
+    // The INSERT above used null to avoid a chicken-and-egg dependency;
+    // update it here so ops can correlate webhook events to users in DB.
+    if (eventId) {
+      await this.processedWebhookEventRepository
+        .createQueryBuilder()
+        .update()
+        .set({ userId: user.id })
+        .where('"eventId" = :eventId', { eventId: String(eventId) })
+        .execute();
     }
   }
 
