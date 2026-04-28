@@ -5,18 +5,18 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 ## 📍 현재 상태 (2026-04-28 KST) — V197 완료 (phantom 구독 8차 재발 영구 종결 — RC TRANSFER 페이로드 구조 불일치 수정)
 
 ### 핵심 상태
-- **버전**: V197 (versionCode 197, backend 배포 완료 ✅, EAS 빌드 예정)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V197 backend 배포 완료 ✅ (2026-04-28)
-- **브랜치**: `main` (commit `8d8b67be` → V197 커밋 후)
+- **버전**: V198 (versionCode 198, backend 배포 완료 ✅, AAB 빌드 완료 ✅ `build-v197.aab` 68MB)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V198 backend 배포 완료 ✅ (2026-04-28)
+- **브랜치**: `main` (commit `31642a35`)
 - **Frontend**: TypeScript 0 errors, Jest **230/230** PASS
-- **Backend**: TypeScript 0 errors, Jest **410/410** PASS (V197 신규 TRANSFER 구조 회귀 테스트 포함)
-- **자동 검증**: `npm run validate:static` PASS — 261 파일
-- **Play Console**: V195 Alpha 제출 완료 → V197 EAS 빌드 후 Alpha 재제출 예정
+- **Backend**: TypeScript 0 errors, Jest **410/410** PASS (TRANSFER 회귀 12케이스 포함)
+- **자동 검증**: `npm run validate:static` PASS — 261 파일 (282 파일 포함 시 전체 PASS)
+- **Play Console**: V195 Alpha 제출 완료 → `build-v197.aab` (versionCode 198) Alpha 재제출 예정
 - **Sentry**: DSN `de.sentry.io` (Germany region)
-- **V197 핵심**: **phantom 구독 8차 재발 영구 종결** — V196이 TRANSFER case를 switch에 추가했으나 `if (!appUserId) return` null-guard **뒤에** 위치 → RC TRANSFER 페이로드에는 `app_user_id` 없음 → 모든 TRANSFER 이벤트가 null-guard에서 조기 return됨. 프로덕션 DB TRANSFER 20건 전부 `userId=NULL` + 서버 로그 `RevenueCat event without app_user_id, skipping`으로 확인. null-guard **이전**에 TRANSFER early dispatch 추가(`handleTransferEvent()` 분리) + `transferred_to` 배열로 사용자 탐색 + 불변식 49 신설. hoonjae723 DB free 초기화 완료.
+- **V197~V198 핵심**: V197 — phantom 구독 8차 재발 영구 종결 (RC TRANSFER 페이로드 구조 불일치). V198 — Paddle 코드 완전 제거 (약관 vs 코드 불일치 해소) + TRANSFER cache TTL 정밀화.
 
-### V197 직후 남은 작업 (우선순위 순)
-1. **EAS 빌드**: versionCode 197 AAB 빌드 후 Alpha 제출
+### V198 직후 남은 작업 (우선순위 순)
+1. **Play Console 업로드**: `build-v197.aab` (versionCode 198) Alpha 트랙 제출
 2. **Alpha 검증 T1**: hoonjae723 탈퇴→재가입→연간 구독 — "이미 구독 중" 오류 없이 정상 처리 확인
 3. **Alpha 검증 T2**: 연간 구독 후 월간 구독 시도 → 차단 정상 확인
 4. **Alpha 검증 T3**: 백엔드 로그에 `[subscription] TRANSFER processed` 출력 확인
@@ -431,4 +431,4 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-04-28 KST (V197 완료 — phantom 구독 8차 재발 영구 종결. V196이 TRANSFER case를 switch에 추가했으나 `if (!appUserId) return` null-guard 뒤에 위치했던 것이 진짜 원인 — RC TRANSFER 페이로드에는 `app_user_id`가 없어 모든 TRANSFER 이벤트가 null-guard에서 조기 return됨. 프로덕션 DB TRANSFER 20건 전부 userId=NULL + 서버 로그로 확인. handleTransferEvent() 분리 + null-guard 이전 early dispatch + transferred_to 배열 기반 사용자 탐색 + 만료 entitlement FREE 다운그레이드 + 불변식 49 신설. Backend Jest 410/410 PASS. hoonjae723 DB free 초기화 + backend 배포 완료. EAS versionCode 197 빌드 후 Alpha 제출 예정.)
+**최종 업데이트**: 2026-04-28 KST (V197/V198 완료 — phantom 구독 8차 재발 영구 종결 + Paddle 코드 완전 제거. V197: RC TRANSFER 이벤트가 app_user_id null-guard 뒤에 위치해 조기 return됐던 구조적 버그 수정(handleTransferEvent() early dispatch). V198: 약관에 "Google Play IAP 단일화" 선언 후 코드에 잔존하던 Paddle ~140줄 + @paddle/paddle-node-sdk dep 완전 제거 + TRANSFER cache TTL 정밀화(Math.min 패턴 통일). Backend Jest 410/410 PASS. TS 0 errors. build-v197.aab 68MB 빌드 완료(versionCode 198). backend 배포 완료. Play Console Alpha 업로드 + hoonjae723 T1~T3 검증 예정.)

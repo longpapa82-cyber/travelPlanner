@@ -1,3 +1,35 @@
+## V198 진행 현황 (2026-04-28 KST)
+
+### 빌드 정보
+- **versionCode**: 198 (app.json 업데이트 완료)
+- **AAB**: `build-v197.aab` 68MB — ✅ EAS local 빌드 완료 (2026-04-28 14:05 KST)
+- **Backend 배포**: ✅ 완료 (2026-04-28 14:12 KST, docker compose up -d, 헬스체크 정상)
+
+### 이번 버전 수정 내용 (V197 Alpha 테스트 후 코드 검수 기반)
+
+| 영역 | 수정 항목 | 상태 |
+|------|-----------|------|
+| **P1-1 — Paddle 코드 완전 제거** | 약관 "Google Play IAP 단일화" 선언 후 코드에 잔존하던 `getPaddleCheckoutConfig` / `handlePaddleWebhook` / `handlePaddleSubscriptionActivated/Updated/Ended` 메서드 (~140줄) + controller 라우트 2개 + `@paddle/paddle-node-sdk` dep 완전 제거. 전자상거래법 §13 불변식 33 준수. | ✅ |
+| **P1-2 — TRANSFER cache TTL 정밀화** | `handleTransferEvent()` PREMIUM 적용 시 `PREMIUM_CACHE_TTL` 고정 → `Math.min(remainingMs, PREMIUM_CACHE_TTL)`. CANCELLATION 분기와 동일한 패턴으로 통일. 만료 직전 TRANSFER 시 캐시 오버런 차단. | ✅ |
+
+### 자동 검수 결과 (auto-qa-reviewer)
+- **validate:static**: PASS (261 파일, legal + content 전체 정상)
+- **Backend Jest**: 410/410 PASS (subscription 12케이스 포함)
+- **Backend TypeScript**: 0 errors
+- **보안 점검**: P0 0건 — webhook 인증, JWT, Redis, PII strip 모두 정상
+- **V197 회귀 위험**: 이상 없음 — INITIAL_PURCHASE/RENEWAL/CANCELLATION/EXPIRATION 모두 보존
+
+### Play Console 업로드 필요
+- `build-v197.aab` (versionCode 198) → Alpha 트랙 업로드 후 hoonjae723 검증
+
+| # | 시나리오 | 기대 결과 |
+|---|----------|-----------|
+| T1 | hoonjae723 탈퇴 → 재가입 → 연간 구독 시도 | 정상 결제 진행 ("이미 구독 중" 없어야 함) |
+| T2 | 연간 구독 완료 후 월간 구독 시도 | "이미 구독 중" 메시지 정상 표기 (중복 차단) |
+| T3 | 백엔드 로그에서 `TRANSFER processed` 로그 확인 | `user=abc138... tier=free expiresAt=none` |
+
+---
+
 ## V197 진행 현황 (2026-04-28 KST)
 
 ### 빌드 정보
