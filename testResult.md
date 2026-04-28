@@ -19,8 +19,9 @@
 - **보안 점검**: P0 0건 — webhook 인증, JWT, Redis, PII strip 모두 정상
 - **V197 회귀 위험**: 이상 없음 — INITIAL_PURCHASE/RENEWAL/CANCELLATION/EXPIRATION 모두 보존
 
-### Play Console 업로드 필요
-- `build-v197.aab` (versionCode 198) → Alpha 트랙 업로드 후 hoonjae723 검증
+### Play Console 제출
+- `build-v197.aab` (versionCode 198) → Alpha 트랙 제출 ✅ (2026-04-28 14:xx KST, `eas submit` via EAS Submit)
+- Submission ID: `4d208d1c-7b6d-4846-8362-7018c1e769f5`
 
 | # | 시나리오 | 기대 결과 |
 |---|----------|-----------|
