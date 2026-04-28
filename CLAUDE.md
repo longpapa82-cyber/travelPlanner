@@ -2,25 +2,27 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-27 KST) — V196 진행 중 (phantom 구독 7차 재발 근본 종결 — RC TRANSFER 이벤트 처리)
+## 📍 현재 상태 (2026-04-28 KST) — V197 완료 (phantom 구독 8차 재발 영구 종결 — RC TRANSFER 페이로드 구조 불일치 수정)
 
 ### 핵심 상태
-- **버전**: V196 (versionCode 196, EAS local 빌드 진행 중 🔄)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V196 backend 배포 완료 ✅ (2026-04-27)
-- **브랜치**: `main` (commit `728a49c9`)
+- **버전**: V197 (versionCode 197, backend 배포 완료 ✅, EAS 빌드 예정)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V197 backend 배포 완료 ✅ (2026-04-28)
+- **브랜치**: `main` (commit `8d8b67be` → V197 커밋 후)
 - **Frontend**: TypeScript 0 errors, Jest **230/230** PASS
-- **Backend**: TypeScript 0 errors, Jest **409/409** PASS (V196 신규 4 TRANSFER 회귀 테스트)
+- **Backend**: TypeScript 0 errors, Jest **410/410** PASS (V197 신규 TRANSFER 구조 회귀 테스트 포함)
 - **자동 검증**: `npm run validate:static` PASS — 261 파일
-- **Play Console**: V195 Alpha 제출 완료 → V196 빌드 완료 후 Alpha 재제출 예정
+- **Play Console**: V195 Alpha 제출 완료 → V197 EAS 빌드 후 Alpha 재제출 예정
 - **Sentry**: DSN `de.sentry.io` (Germany region)
-- **V196 핵심**: **phantom 구독 7차 재발 근본 종결** — RC TRANSFER webhook이 탈퇴→재가입 시 발화되지만 서버가 `default:log`로 무시 → 구독이 old anonymous RC alias에 묶임 → 새 계정 "이미 구독 중". 클라이언트 가드 6회 실패의 진짜 원인이 서버 webhook 처리 누락임을 DB의 TRANSFER 이벤트 4건 + userId=null로 확인. TRANSFER 케이스 추가(revenuecatAppUserId 재바인딩 + 유효 entitlement 즉시 PREMIUM 적용) + userId 백필 UPDATE + 회귀 테스트 4케이스(불변식 48). hoonjae723 DB 직접 free 초기화 완료.
+- **V197 핵심**: **phantom 구독 8차 재발 영구 종결** — V196이 TRANSFER case를 switch에 추가했으나 `if (!appUserId) return` null-guard **뒤에** 위치 → RC TRANSFER 페이로드에는 `app_user_id` 없음 → 모든 TRANSFER 이벤트가 null-guard에서 조기 return됨. 프로덕션 DB TRANSFER 20건 전부 `userId=NULL` + 서버 로그 `RevenueCat event without app_user_id, skipping`으로 확인. null-guard **이전**에 TRANSFER early dispatch 추가(`handleTransferEvent()` 분리) + `transferred_to` 배열로 사용자 탐색 + 불변식 49 신설. hoonjae723 DB free 초기화 완료.
 
-### V196 직후 남은 작업 (우선순위 순)
-1. **Alpha 검증**: V196 설치 후 hoonjae723 탈퇴→재가입 구독 시나리오 정상 동작 확인
-2. **Alpha 검증**: V195 #1 앱 로고 3개 중복 — 기기별 알림 채널 / launchMode 진단
-3. **Alpha 검증**: V195 #3 앱 이탈-복귀 홈 리셋 — V189.1 P0-F 효과 확인
-4. **V189.1 잔여**: Maestro E2E, Subscription FSM 명시화 (Play Store 출시 전 완료 불필요)
-5. **Production Go/No-Go**: Alpha 최종 검증 완료 후
+### V197 직후 남은 작업 (우선순위 순)
+1. **EAS 빌드**: versionCode 197 AAB 빌드 후 Alpha 제출
+2. **Alpha 검증 T1**: hoonjae723 탈퇴→재가입→연간 구독 — "이미 구독 중" 오류 없이 정상 처리 확인
+3. **Alpha 검증 T2**: 연간 구독 후 월간 구독 시도 → 차단 정상 확인
+4. **Alpha 검증 T3**: 백엔드 로그에 `[subscription] TRANSFER processed` 출력 확인
+5. **Alpha 검증**: V195 #1 앱 로고 3개 중복 — 기기별 알림 채널 / launchMode 진단
+6. **Alpha 검증**: V195 #3 앱 이탈-복귀 홈 리셋 — V189.1 P0-F 효과 확인
+7. **Production Go/No-Go**: Alpha 최종 검증 완료 후
 
 ### V139~V176 Alpha 테스트 수정 이력
 
@@ -71,6 +73,12 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 45. **Cross-context refresh API는 모두 lock gate**: `silentRefresh`, `refreshUser`, `onAuthExpired` callback 등 setUser 호출 가능한 모든 함수는 entry + after-await 두 번 `isLoggingOutRef` 가드. logoutRace integration test로 PR 단계 자동 검증. 단독 ref/state 패턴(V178)은 회귀 4 사이클 입증.
 46. **Required consent type backfill 의무**: REQUIRED_CONSENTS에 신규 type 추가 시 마이그레이션으로 기존 사용자 backfill 필수. backfill 시 기존 동의(예: TERMS)에 함의된 동의가 있다면 inferred 형태로 기록 (`consent_method='inferred_from_xxx'` audit trail). `getConsentsStatus`에 backfill miss warn 로그로 production 가시화.
 47. **법적 콘텐츠 자동 검증의 양방향 정렬**: art3(제3자 제공)에 외부 처리자 추가 시 art12/art15(국외 이전 표) 자동 동기화 검증. validate-content.py에 처리자명 + 정확한 region 양쪽 매칭. Sentry DSN `de.sentry.io` → 독일 표기 의무 (V187에서 17 locale "USA" 거짓 표기 정정). 미등록 통화 (BRL/EUR 등)로 표기된 가격 자동 차단.
+
+### V196~V197 신규 불변식 (V185 39건 + V187 8건 + V196 1건 + V197 1건 = 50건)
+
+48. **TRANSFER 이벤트 처리 필수 (V196)**: RC TRANSFER webhook은 탈퇴→재가입 시 발화. `processed_webhook_events`에 dedup INSERT + `revenuecatAppUserId` 재바인딩 필수. 유효한 entitlement(`expiration_at_ms > now`)면 PREMIUM 적용, 만료면 FREE 다운그레이드. userId 백필 UPDATE는 사용자 조회 완료 후 별도 UPDATE로 수행(INSERT 시점에는 userId 미확정). TRANSFER 미처리 시 구독이 old anonymous RC alias에 영구 귀속.
+
+49. **RC webhook 페이로드 타입별 구조 검증 필수 (V197)**: RC webhook 이벤트는 타입마다 페이로드 구조가 다르다. TRANSFER는 `app_user_id` 없음 — `transferred_to`(신규 appUserId 배열) + `transferred_from`(구 alias 배열) 사용. 타입별로 분기하는 핸들러는 공통 필드(예: `app_user_id`)를 기준으로 한 null-guard 이전에 타입 특화 이벤트를 dispatch해야 한다. switch statement 내부에 TRANSFER case를 두면 null-guard early-return에 의해 영원히 도달 불가. 신규 RC 이벤트 타입 추가 시 RC 공식 문서의 페이로드 스키마를 반드시 확인하고 타입별 회귀 테스트를 추가.
 
 ### V185 핵심 불변식 (V137 12 + V159 3 + V174 3 + V176 4 + V180 5 + V182 4 + V184 2 + V185 6 = 39건)
 
@@ -386,7 +394,8 @@ curl https://mytravel-planner.com/api/health
 | V184~V185 | 2026-04-26 | **CRITICAL** | **A1 결제 reconcile polling 60s + AWAITED (V184 결제 후 로그아웃 → 재로그인 시 구독 사라짐 — 6번째 phantom 구독 회귀, 정반대 방향)**, **A2 cross-context logout transaction lock (V177/V181/V184 3차 회귀 영구 종결 — AuthContext 전역 isLoggingOut + 모든 context background handler 가드)**, **A3 Android 키보드 인셋 manual `Keyboard.addListener` 보정 (회원가입 비밀번호 확인 스크롤 fix, V159 KAV 금지 불변식 13 유지)**, **D 사실 위배 11건** (스토어 무제한/100통화/체크리스트/댓글 + 17 locale 무제한/날짜/art3/제휴/Stripe/AdSense + privacy-en 이메일 + 사업자정보), **E 보안 2건** (production fail-fast 헬퍼 + reportError query strip), **validate-content.py i18n+docs 확장** (261 파일 검사, false positive 차단, 도입 즉시 14건 잠복 회귀 발견·수정), **불변식 32~39 추가** (16건 + 자동 검증 확장) | 185 (186 빌드 예정) |
 | V186~V187 | 2026-04-26 | **CRITICAL** | **P0-A 진단 인프라 복구** (`/trips`+`/subscription`+`/users/me` 4xx 로깅 추가, IGNORED_PATTERNS silent-drop 6 패턴 제거, frontend reportError AsyncStorage queue 50 + console warn — V186 "오류 로그 0건" 영구 차단), **P0-B admin preflight 차단 제거** (server-side 단일 플래그 과부하 회귀 종결 — V184 불변식 32 backend로 옮긴 회귀, 실결제는 Play Console 라이선스 테스터 단일 가드, PreflightPurchaseDto + 10/min throttle), **P0-C 회원탈퇴 transaction + cross-context lock umbrella** (`markAccountTerminating()` 신설, `await deleteAccount() 200 OK` 확인 후 success UX, `dataSource.transaction(manager.delete)` + DB delete + Redis blacklist atomic — GDPR Art.17/PIPA §39의6 보장), **P0-D webhook idempotency atomic** (catch fall-through 제거 → 5xx throw RC retry, `result.raw` Array+rowCount 양쪽 driver 호환), **P0-E AGE_VERIFICATION backfill migration** (TERMS 동의자에게 inferred 부여, getConsentsStatus backfill miss warn), **P0-F silentRefresh 5s timeout + useFocusEffect in-flight guard** (불변식 44 — background→foreground 흰 화면 영구 차단, navigation tree 보존), **P1-A 자동 회귀 차단 25 신규 테스트** (logoutRace.integration.test V177/V181/V184/V186 4차 회귀 PR 단계 차단, refreshUser 누락 갭 발견 시점 fix, subscription preflight admin allow + idempotency raw shape, error_logs ingestion 6 silent-drop 패턴 persist 확인), **P1-B 콘텐츠 V187 4 신규 패턴** (도입 즉시 30건 잠복 회귀 발견·수정 — "all features free" 12 locale, "tanpa batas/безлимитн" 2 locale, BRL 가격, "in N seconds/Perfect Trip" 28 HTML), **P1-C 보안 CRITICAL 3** (ErrorLog PII anonymization in-transaction, breadcrumbs 500자/key + 20keys cap, Logger CRLF safeForLog), **P1-D 검증 체크리스트 42 항목**, **불변식 40~47 신설** (8건). 자동 검증 ROI 4회째 입증: V184 25 + V185 14 + V186 + V187 30 = ~70건 자동 발견·수정. | 187 (빌드 예정) |
 | V187~V189.1 | 2026-04-27 | **CRITICAL** | **V188 #1 SNS 로그인 배경 앱 종료 (V189 P0-A: NavigationContainer state persistence + expo-updates NEVER)**, **V188 #2 앱 이탈-복귀 홈 리셋 (V189 P0-F 강화: silentRefresh 5s timeout + useFocusEffect in-flight guard)**, **nginx.conf Paddle JS + CSP 잔존 제거 (V184 P0-G 직접 회귀)**, **AndroidManifest READ_MEDIA_IMAGES 제거 (Play 8.3 reject 차단)**, **17 locale art12/art15 5개 처리자 누락 보강 (GDPR Art.44/PIPA §28)**, **보안 9건** (consent withdrawal GDPR Art.7(3), error_logs healthcheck cron, RC webhook secret rotation, SettleExpenseDto, audit anonymization, refresh token AsyncStorage, expiration upper bound 5y, SettingsScreen rotation, health endpoint auth), **콘텐츠 사실성 9건**, **ConsentContext mount race 종결** | 195 (V189.1 빌드) |
-| V195~V196 | 2026-04-27 | **CRITICAL** | **phantom 구독 7차 재발 근본 종결 — RC TRANSFER 이벤트 처리 누락** (탈퇴→재가입 시 RC가 TRANSFER webhook 발송 → 서버 `default:log`로 무시 → 구독이 old anonymous alias에 묶임 → 새 계정 "이미 구독 중". 클라이언트 가드 6회가 모두 실패한 진짜 원인이 데이터 레이어였음을 DB TRANSFER 이벤트 4건 + userId=null로 확인). **TRANSFER 케이스 추가** (revenuecatAppUserId 재바인딩 + 유효 entitlement 즉시 PREMIUM 적용), **userId 백필 UPDATE 추가** (processed_webhook_events.userId 영구 null 해소), **TRANSFER 회귀 테스트 4케이스** (불변식 48 신설), **hoonjae723 DB 직접 free 초기화** | 196 (빌드 진행 중 🔄) |
+| V195~V196 | 2026-04-27 | **CRITICAL** | **phantom 구독 7차 재발 근본 종결 — RC TRANSFER 이벤트 처리 누락** (탈퇴→재가입 시 RC가 TRANSFER webhook 발송 → 서버 `default:log`로 무시 → 구독이 old anonymous alias에 묶임 → 새 계정 "이미 구독 중". 클라이언트 가드 6회가 모두 실패한 진짜 원인이 데이터 레이어였음을 DB TRANSFER 이벤트 4건 + userId=null로 확인). **TRANSFER 케이스 추가** (revenuecatAppUserId 재바인딩 + 유효 entitlement 즉시 PREMIUM 적용), **userId 백필 UPDATE 추가** (processed_webhook_events.userId 영구 null 해소), **TRANSFER 회귀 테스트 4케이스** (불변식 48 신설), **hoonjae723 DB 직접 free 초기화** | 196 ✅ |
+| V196~V197 | 2026-04-28 | **CRITICAL** | **phantom 구독 8차 재발 영구 종결 — RC TRANSFER 페이로드 구조 불일치** (V196 TRANSFER case가 switch 내부에서 `if (!appUserId) return` null-guard **뒤에** 위치 → RC TRANSFER 페이로드에 `app_user_id` 없음 → 모든 TRANSFER 이벤트가 조기 return. 프로덕션 DB TRANSFER 20건 전부 `userId=NULL` + 로그 `RevenueCat event without app_user_id, skipping`으로 확인). **null-guard 이전 TRANSFER early dispatch** (`handleTransferEvent()` 분리), **`transferred_to` 배열 기반 사용자 탐색** (rcId match → UUID fallback), **만료 entitlement 시 FREE 다운그레이드** (V196은 업그레이드만 처리), **회귀 테스트 구조 수정** (app_user_id → transferred_to 배열), **불변식 49 신설**, **hoonjae723 DB free 초기화** | 197 ✅ (backend 배포, EAS 빌드 예정) |
 
 상세: `docs/archive/bug-history-2026-04.md`, `docs/archive/claude-md-history-pre-v112.md`, `testResult.md`
 
@@ -422,4 +431,4 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-04-27 KST (V196 진행 중 — phantom 구독 7차 재발 근본 종결. RC TRANSFER webhook이 탈퇴→재가입 시 발화되지만 서버가 `default:log`로 무시했던 것이 진짜 원인. 클라이언트/서버 가드 6회가 모두 실패한 이유는 데이터 레이어(RC webhook 이벤트 타입 처리 누락)에 있었음을 DB의 TRANSFER 4건 + userId=null로 확인. TRANSFER 케이스 추가(revenuecatAppUserId 재바인딩 + 유효 entitlement 즉시 PREMIUM 적용) + userId 백필 UPDATE + 회귀 테스트 4케이스(불변식 48 신설) + hoonjae723 DB 직접 free 초기화 + backend 배포 완료. V196 EAS local 빌드 진행 중 → Alpha 제출 후 검증 예정.)
+**최종 업데이트**: 2026-04-28 KST (V197 완료 — phantom 구독 8차 재발 영구 종결. V196이 TRANSFER case를 switch에 추가했으나 `if (!appUserId) return` null-guard 뒤에 위치했던 것이 진짜 원인 — RC TRANSFER 페이로드에는 `app_user_id`가 없어 모든 TRANSFER 이벤트가 null-guard에서 조기 return됨. 프로덕션 DB TRANSFER 20건 전부 userId=NULL + 서버 로그로 확인. handleTransferEvent() 분리 + null-guard 이전 early dispatch + transferred_to 배열 기반 사용자 탐색 + 만료 entitlement FREE 다운그레이드 + 불변식 49 신설. Backend Jest 410/410 PASS. hoonjae723 DB free 초기화 + backend 배포 완료. EAS versionCode 197 빌드 후 Alpha 제출 예정.)

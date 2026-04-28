@@ -232,51 +232,45 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
     });
   });
 
-  describe('handleRevenueCatEvent — V196 (Invariant 48) TRANSFER + userId backfill', () => {
-    it('TRANSFER with active entitlement: rebinds RC alias and sets premium', async () => {
-      // The 탈퇴→재가입 phantom-subscription scenario (7th recurrence).
-      // RC fires TRANSFER when a purchase moves from the old anonymous
-      // appUserId to the new registered user's appUserId.
-      const futureMs = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days out
-      insertChainExecute.mockResolvedValue({ raw: [{}] }); // new INSERT
+  describe('handleRevenueCatEvent — V197 (Invariant 49) TRANSFER via transferred_to + userId backfill', () => {
+    // V197 root cause: RC TRANSFER events have no app_user_id field.
+    // They use transferred_to (array of new RC appUserIds) instead.
+    // V196 fix added a TRANSFER case inside the switch but it was gated
+    // behind the app_user_id null-check, so it was never reached.
 
-      const userWithOldAlias = {
-        ...baseUser,
-        subscriptionTier: SubscriptionTier.FREE,
-        revenuecatAppUserId: 'old-anon-rc-id',
-      } as User;
+    it('TRANSFER with active entitlement: resolves user via transferred_to rcId and sets premium', async () => {
+      // V197: TRANSFER has no app_user_id; uses transferred_to array.
+      // RC uses a custom rcId as appUserId. We find the user by matching
+      // revenuecatAppUserId in DB (createQueryBuilder path).
+      const futureMs = Date.now() + 30 * 24 * 60 * 60 * 1000;
+      insertChainExecute.mockResolvedValue({ raw: [{}] });
 
-      userRepo.findOne.mockResolvedValue(userWithOldAlias);
-      // userRepo uses addSelect / createQueryBuilder internally; mock via findOne path
-      // The service also tries createQueryBuilder for user lookup:
+      const newUser = { ...baseUser } as User;
+
+      // userRepo.createQueryBuilder → hit by revenuecatAppUserId match
       (userRepo.createQueryBuilder as jest.Mock).mockReturnValue({
         addSelect: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
-        getOne: jest.fn().mockResolvedValue(userWithOldAlias),
+        getOne: jest.fn().mockResolvedValue(newUser),
       });
 
       await service.handleRevenueCatEvent({
-        id: 'evt_transfer_1',
+        id: 'evt_transfer_v197',
         type: 'TRANSFER',
-        app_user_id: 'new-rc-id',
+        transferred_to: ['new-rc-app-user-id'],
+        transferred_from: ['old-anon-rc-id'],
         product_id: 'premium_yearly',
         expiration_at_ms: String(futureMs),
       });
 
-      // Must update user with new RC alias + premium tier
       expect(userRepo.update).toHaveBeenCalledWith(
         'user-1',
-        expect.objectContaining({
-          revenuecatAppUserId: 'new-rc-id',
-          subscriptionTier: SubscriptionTier.PREMIUM,
-        }),
+        expect.objectContaining({ subscriptionTier: SubscriptionTier.PREMIUM }),
       );
     });
 
-    it('TRANSFER with expired entitlement: rebinds RC alias only (no premium upgrade)', async () => {
-      // Edge case: TRANSFER fires but the entitlement is already expired.
-      // We must NOT upgrade to premium.
-      const pastMs = Date.now() - 60 * 1000; // 1 minute ago
+    it('TRANSFER with expired entitlement: downgrades receiving user to FREE', async () => {
+      const pastMs = Date.now() - 60 * 1000;
       insertChainExecute.mockResolvedValue({ raw: [{}] });
 
       const freeUser = { ...baseUser } as User;
@@ -287,20 +281,31 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
       });
 
       await service.handleRevenueCatEvent({
-        id: 'evt_transfer_expired',
+        id: 'evt_transfer_expired_v197',
         type: 'TRANSFER',
-        app_user_id: 'new-rc-id-2',
+        transferred_to: ['new-rc-app-user-id-2'],
+        transferred_from: ['old-anon-rc-id-2'],
         product_id: 'premium_monthly',
         expiration_at_ms: String(pastMs),
       });
 
-      // Must update RC alias but must NOT include subscriptionTier = PREMIUM
       expect(userRepo.update).toHaveBeenCalledWith(
         'user-1',
-        expect.objectContaining({ revenuecatAppUserId: 'new-rc-id-2' }),
+        expect.objectContaining({ subscriptionTier: SubscriptionTier.FREE }),
       );
-      const callArg = (userRepo.update as jest.Mock).mock.calls[0][1] as Partial<User>;
-      expect(callArg.subscriptionTier).toBeUndefined();
+    });
+
+    it('TRANSFER with no transferred_to: logs warning and does not call update', async () => {
+      insertChainExecute.mockResolvedValue({ raw: [{}] });
+
+      await service.handleRevenueCatEvent({
+        id: 'evt_transfer_no_target',
+        type: 'TRANSFER',
+        transferred_to: [],
+        transferred_from: ['old-id'],
+      });
+
+      expect(userRepo.update).not.toHaveBeenCalled();
     });
 
     it('userId backfill UPDATE is called after successful event processing', async () => {

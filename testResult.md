@@ -1,3 +1,78 @@
+## V197 진행 현황 (2026-04-28 KST)
+
+### 빌드 정보
+- **versionCode**: 197 (예정 — V196 AAB 빌드 후 Alpha 재제출)
+- **Backend 배포**: ✅ 완료 (2026-04-28 04:49 KST, docker compose up -d, 헬스체크 정상)
+- **핵심 수정**: TRANSFER 이벤트 근본 종결 (Invariant 49 신설)
+
+### 이번 버전 수정 내용 (V196 Alpha 테스트 결과 기반)
+
+| 영역 | 수정 항목 | 상태 |
+|------|-----------|------|
+| **P0 — phantom 구독 8차 재발 영구 종결** | RC TRANSFER webhook의 실제 페이로드 구조 불일치 수정. TRANSFER 이벤트는 `app_user_id`가 없고 `transferred_to` / `transferred_from` 배열을 사용. V196 수정 코드가 `app_user_id` null 가드 **뒤**의 switch case에 위치해 조기 반환으로 인해 실행 자체가 안 됐음을 로그로 확인 (`RevenueCat event without app_user_id, skipping` 반복). TRANSFER를 `app_user_id` 가드 **전**에 별도 `handleTransferEvent()` 메서드로 분리하여 `transferred_to` 배열로 사용자 탐색 | ✅ |
+| **P0 — DB 초기화** | hoonjae723@gmail.com 만료된 구독(2026-04-28 04:21 이후) free로 직접 초기화 + Redis 캐시 무효화 | ✅ |
+| **회귀 테스트 업데이트** | 기존 V196 TRANSFER 테스트 4케이스를 V197 실제 페이로드 구조(`transferred_to`)로 수정. 추가 케이스: no-transferred_to → warn only | ✅ |
+
+### RCA (V197 — 8차 재발 근본 원인)
+
+**데이터 진단으로 확정된 사실:**
+
+| 진단 | 결과 |
+|------|------|
+| DB `processed_webhook_events` TRANSFER 이벤트 20건 모두 userId=NULL | ✅ 확인 — userId backfill이 실행되지 않았음 (user를 못 찾은 증거) |
+| 백엔드 로그 `RevenueCat event without app_user_id, skipping` 반복 | ✅ 확인 — TRANSFER 이벤트가 app_user_id guard에서 조기 반환됨 |
+| hoonjae723 subscriptionTier=premium, subscriptionExpiresAt 이미 만료 | ✅ 확인 — INITIAL_PURCHASE(monthly) 처리됐으나 TRANSFER로 정리 안 됨 |
+
+**코드 레벨 근본 원인:**
+RC TRANSFER webhook 페이로드에는 `app_user_id`가 없고 `transferred_to`(새 ID 배열) + `transferred_from`(이전 ID 배열)이 있음. V196 수정은 switch case 내부의 TRANSFER 분기를 추가했으나 그 분기에 도달하기 전 `if (!appUserId) return` 가드에 걸림.
+
+**불변식 49 신설**: RC TRANSFER 이벤트 처리는 반드시 `app_user_id` null 가드 전에 `handleTransferEvent()`로 별도 분기. `transferred_to` 배열을 순회하며 `revenuecatAppUserId` 매칭 또는 UUID 직접 매칭으로 사용자 탐색. entitlement 만료 시 FREE 다운그레이드 포함.
+
+### 테스트 결과
+- **Backend TypeScript**: 0 errors
+- **Backend Jest**: 410/410 PASS (TRANSFER 테스트 3케이스 수정 + 1케이스 추가)
+- **프로덕션 헬스체크**: `{"status":"ok","database":"up","cache":"up"}`
+
+### 검증 시나리오 (Alpha 테스트 필요)
+
+| # | 시나리오 | 기대 결과 |
+|---|----------|-----------|
+| T1 | hoonjae723 탈퇴 → 재가입 → 연간 구독 시도 | 정상 결제 진행 ("이미 구독 중" 없어야 함) |
+| T2 | 연간 구독 완료 후 월간 구독 시도 | "이미 구독 중" 메시지 정상 표기 (중복 차단) |
+| T3 | 백엔드 로그에서 `TRANSFER processed` 로그 확인 | `user=abc138... tier=free expiresAt=none` |
+
+### 이후 계획
+
+| 우선순위 | 항목 | 내용 |
+|---------|------|------|
+| **즉시** | Alpha 검증 T1~T3 | hoonjae723 탈퇴→재가입 구독 시나리오 확인 |
+| **즉시** | V196 AAB 재빌드 | V197 수정 포함 새 빌드 (versionCode 197) |
+| **즉시** | Alpha 검증 | 앱 이탈-복귀 상태 보존 (별도 개선 필요) |
+| **P1** | 전체 앱 종합 검수 | 마스터 플랜 Phase 3~6 진행 |
+| **P2** | Production Go/No-Go | Alpha 검증 완료 후 판정 |
+
+---
+
+## V196 Alpha 테스트 결과
+
+1. 구독(결제) 테스트
+ 1) 화면 : ![alt text](image-7.png), ![alt text](image-8.png), ![alt text](image-9.png)
+ 2) 테스트 방법 및 결과
+  - hoonjae723@gmail.com 계정을 회원탈퇴 후 재 가입하여 년간 구독 시도
+  - 이미 연간 구독이 되어 있다고 표기됨. (방금 회원 가입을 완료 했고, 구독 내역이 없는 상태임.)
+  - 추가로 월간 구독 시도 시, 월간 구독이 됨.
+  - 년간 구독과 월간 구독은 동시에 할 수 없는 구조인데 이것 또한 말이되지 않음.
+  - 지속적으로 구독 오류가 반복되고 있음.
+  - **[V197 수정 완료]** RC TRANSFER 이벤트가 `app_user_id` null 가드에서 조기 반환되는 구조적 버그 수정. 백엔드 배포 완료.
+
+2. 앱 이탈 및 복귀 테스트
+ 1) 화면 : ![alt text](image-10.png), ![alt text](image-11.png)
+ 2) 테스트 결과
+  - 여행 생성 중(로딩 중)에 myTravel 앱을 이탈하여 다른 앱을 이용하다가 다시 myTravel 앱으로 복귀하니 새 여행 만들기 화면은 유지하고 있지만, 입력했던 내용들이 모두 초기화 되어 있고, 여행 생성도 멈춰 있음. (새 여행 만들기 화면으로 처음 진입한 상태)
+  - 앱을 이탈하더라도 진행하던 작업이 멈추지 않고 계속 진행될 수 있는 형태로 개선 필요.
+  - **[미해결]** Android OS의 JS 런타임 suspend 특성으로 완전 해결 어려움. 단기 UX 개선(알림 안내) 또는 서버 job ID AsyncStorage 저장 방식 검토 필요.
+
+
 ## V196 진행 현황 (2026-04-27 KST)
 
 ### 빌드 정보

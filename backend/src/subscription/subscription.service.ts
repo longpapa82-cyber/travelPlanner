@@ -390,6 +390,18 @@ export class SubscriptionService {
       }
     }
 
+    // Invariant 49 (V197): TRANSFER events use transferred_to/transferred_from
+    // instead of app_user_id. Handle them before the app_user_id guard to
+    // prevent the early-return that was silently dropping all TRANSFER events
+    // and causing the 7th phantom subscription recurrence (V196).
+    //
+    // RC TRANSFER payload: { type: 'TRANSFER', transferred_to: [newId],
+    //   transferred_from: [oldId], product_id, expiration_at_ms, ... }
+    if (event.type === 'TRANSFER') {
+      await this.handleTransferEvent(event, eventId);
+      return;
+    }
+
     const appUserId = event.app_user_id;
     if (!appUserId) {
       this.logger.warn('RevenueCat event without app_user_id, skipping');
@@ -534,50 +546,6 @@ export class SubscriptionService {
         break;
       }
 
-      case 'TRANSFER': {
-        // V196 (Invariant 48): TRANSFER fires when RC moves a purchase from
-        // one appUserID to another — the classic 탈퇴→재가입 scenario.
-        // Old anonymous RC ID retains the entitlement; new user registers →
-        // RC alias chain fires TRANSFER to the new appUserId.
-        //
-        // Previous: fell into `default:log` → entitlement stayed bound to
-        // the old anonymous alias → new user PaywallModal gate saw server
-        // tier=free, RC saw entitlement → "이미 구독 중" on 7th attempt.
-        //
-        // Fix: rebind revenuecatAppUserId to current event's app_user_id
-        // and apply the transferred entitlement immediately.
-        const transferExpiresAt = event.expiration_at_ms
-          ? parseExpirationAt(event.expiration_at_ms, this.logger)
-          : null;
-        const transferProductId = (
-          event.product_id || event.product_identifier || ''
-        ).toLowerCase();
-        const transferPlanType = transferProductId
-          ? this.resolvePlanType(transferProductId, 'TRANSFER')
-          : undefined;
-
-        const transferUpdate: Partial<User> = { revenuecatAppUserId: appUserId };
-        if (transferExpiresAt && transferExpiresAt > new Date()) {
-          transferUpdate.subscriptionTier = SubscriptionTier.PREMIUM;
-          transferUpdate.subscriptionExpiresAt = transferExpiresAt;
-          if (transferPlanType) {
-            transferUpdate.subscriptionPlanType = transferPlanType;
-          }
-          await this.cacheManager.set(
-            `premium:${user.id}`,
-            'true',
-            PREMIUM_CACHE_TTL,
-          );
-        }
-        await this.userRepository.update(user.id, transferUpdate);
-        this.logger.log(
-          `[subscription] TRANSFER: user=${user.id} rcId=${appUserId} ` +
-            `tier=${transferUpdate.subscriptionTier ?? 'unchanged'} ` +
-            `expiresAt=${transferExpiresAt?.toISOString() ?? 'none'}`,
-        );
-        break;
-      }
-
       default:
         this.logger.log(`Unhandled RevenueCat event type: ${eventType}`);
     }
@@ -593,6 +561,110 @@ export class SubscriptionService {
         .where('"eventId" = :eventId', { eventId: String(eventId) })
         .execute();
     }
+  }
+
+  // Invariant 49 (V197): TRANSFER events have no app_user_id; they carry
+  // transferred_to (array of new RC appUserIds) and transferred_from (array
+  // of old RC appUserIds). We resolve the receiving user via transferred_to,
+  // rebind revenuecatAppUserId, and apply the entitlement immediately.
+  private async handleTransferEvent(
+    event: Record<string, any>,
+    eventId: string | undefined,
+  ): Promise<void> {
+    const transferredTo: string[] = Array.isArray(event.transferred_to)
+      ? event.transferred_to
+      : event.transferred_to
+        ? [event.transferred_to]
+        : [];
+
+    if (transferredTo.length === 0) {
+      this.logger.warn(
+        `[subscription] TRANSFER event has no transferred_to — cannot resolve user. eventId=${eventId ?? 'none'}`,
+      );
+      return;
+    }
+
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    let user: User | null = null;
+    let matchedAppUserId: string | null = null;
+
+    for (const candidateId of transferredTo) {
+      // Try by revenuecatAppUserId first
+      user = await this.userRepository
+        .createQueryBuilder('user')
+        .addSelect('user.revenuecatAppUserId')
+        .where('user.revenuecatAppUserId = :id', { id: candidateId })
+        .getOne();
+
+      if (!user && uuidRegex.test(candidateId)) {
+        // candidateId may be our own UUID (RC uses it as appUserId by default)
+        user = await this.userRepository.findOne({
+          where: { id: candidateId },
+        });
+      }
+
+      if (user) {
+        matchedAppUserId = candidateId;
+        break;
+      }
+    }
+
+    if (!user) {
+      this.logger.warn(
+        `[subscription] TRANSFER: no matching user for transferred_to=${JSON.stringify(transferredTo)}. eventId=${eventId ?? 'none'}`,
+      );
+      return;
+    }
+
+    const transferExpiresAt = event.expiration_at_ms
+      ? parseExpirationAt(event.expiration_at_ms, this.logger)
+      : null;
+    const productId = (
+      event.product_id ||
+      event.product_identifier ||
+      ''
+    ).toLowerCase();
+    const planType = productId
+      ? this.resolvePlanType(productId, 'TRANSFER')
+      : undefined;
+
+    const update: Partial<User> = {
+      revenuecatAppUserId: matchedAppUserId ?? user.revenuecatAppUserId,
+    };
+
+    if (transferExpiresAt && transferExpiresAt > new Date()) {
+      update.subscriptionTier = SubscriptionTier.PREMIUM;
+      update.subscriptionExpiresAt = transferExpiresAt;
+      if (planType) update.subscriptionPlanType = planType;
+      await this.cacheManager.set(
+        `premium:${user.id}`,
+        'true',
+        PREMIUM_CACHE_TTL,
+      );
+    } else {
+      // Expired or missing expiry — clear any stale premium state
+      update.subscriptionTier = SubscriptionTier.FREE;
+      await this.cacheManager.del(`premium:${user.id}`);
+    }
+
+    await this.userRepository.update(user.id, update);
+
+    if (eventId) {
+      await this.processedWebhookEventRepository
+        .createQueryBuilder()
+        .update()
+        .set({ userId: user.id })
+        .where('"eventId" = :eventId', { eventId: String(eventId) })
+        .execute();
+    }
+
+    this.logger.log(
+      `[subscription] TRANSFER processed: user=${user.id} ` +
+        `rcId=${matchedAppUserId} tier=${update.subscriptionTier} ` +
+        `expiresAt=${transferExpiresAt?.toISOString() ?? 'none'}`,
+    );
   }
 
   async isPremiumUser(userId: string): Promise<boolean> {
