@@ -8,7 +8,6 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
-  BadRequestException,
   UnauthorizedException,
   InternalServerErrorException,
   Logger,
@@ -20,7 +19,6 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { SubscriptionService } from './subscription.service';
 import { RevenueCatWebhookDto } from './dto/revenuecat-webhook.dto';
-import { CreateCheckoutDto } from './dto/create-checkout.dto';
 import { PreflightPurchaseDto } from './dto/preflight-purchase.dto';
 
 @Controller('subscription')
@@ -125,32 +123,5 @@ export class SubscriptionController {
     return { received: true };
   }
 
-  // ─── Paddle Web Payments ───────────────────────────────
-
-  @Post('paddle/checkout-config')
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(HttpStatus.OK)
-  async getPaddleCheckoutConfig(
-    @CurrentUser('userId') userId: string,
-    @Body() dto: CreateCheckoutDto,
-  ) {
-    return this.subscriptionService.getPaddleCheckoutConfig(userId, dto.plan);
-  }
-
-  @Post('paddle/webhook')
-  @Throttle({ short: { ttl: 60000, limit: 100 } })
-  @HttpCode(HttpStatus.OK)
-  async handlePaddleWebhook(
-    @Req() req: { rawBody: Buffer },
-    @Headers('paddle-signature') signature: string,
-  ) {
-    if (!req.rawBody || !signature) {
-      throw new BadRequestException('Missing payload or signature');
-    }
-    await this.subscriptionService.handlePaddleWebhook(
-      req.rawBody.toString('utf-8'),
-      signature,
-    );
-    return { received: true };
-  }
 }
+

@@ -2,7 +2,6 @@ import {
   Injectable,
   Logger,
   Inject,
-  BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,7 +9,6 @@ import { Repository } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { ConfigService } from '@nestjs/config';
-import { Paddle, Environment, EventName } from '@paddle/paddle-node-sdk';
 import {
   User,
   SubscriptionTier,
@@ -69,7 +67,6 @@ export class SubscriptionService {
   private readonly logger = new Logger(SubscriptionService.name);
   private readonly aiTripsFreeLimit: number;
   private readonly aiTripsPremiumLimit: number;
-  private readonly paddle: Paddle | null;
 
   constructor(
     @InjectRepository(User)
@@ -89,20 +86,6 @@ export class SubscriptionService {
         String(AI_TRIPS_PREMIUM_LIMIT),
       10,
     );
-
-    const paddleKey = this.configService.get<string>('PADDLE_API_KEY');
-    this.paddle = paddleKey
-      ? new Paddle(paddleKey, {
-          environment:
-            this.configService.get<string>('NODE_ENV') === 'production'
-              ? Environment.production
-              : Environment.sandbox,
-        })
-      : null;
-
-    if (!this.paddle) {
-      this.logger.warn('Paddle not configured — web payments disabled');
-    }
   }
 
   async getSubscriptionStatus(userId: string): Promise<SubscriptionStatusDto> {
@@ -638,10 +621,11 @@ export class SubscriptionService {
       update.subscriptionTier = SubscriptionTier.PREMIUM;
       update.subscriptionExpiresAt = transferExpiresAt;
       if (planType) update.subscriptionPlanType = planType;
+      const remainingMs = transferExpiresAt.getTime() - Date.now();
       await this.cacheManager.set(
         `premium:${user.id}`,
         'true',
-        PREMIUM_CACHE_TTL,
+        Math.min(remainingMs, PREMIUM_CACHE_TTL),
       );
     } else {
       // Expired or missing expiry — clear any stale premium state
@@ -739,242 +723,6 @@ export class SubscriptionService {
         `Add this SKU to PLAN_TYPE_BY_PRODUCT_ID in subscription/constants.ts.`,
     );
     return fallback;
-  }
-
-  // ─── Paddle Integration ──────────────────────────────────
-
-  async getPaddleCheckoutConfig(
-    userId: string,
-    plan: 'monthly' | 'yearly',
-  ): Promise<{ priceId: string }> {
-    if (!this.paddle) {
-      throw new BadRequestException('Paddle is not configured');
-    }
-
-    const priceId =
-      plan === 'monthly'
-        ? this.configService.get<string>('PADDLE_PRICE_MONTHLY')
-        : this.configService.get<string>('PADDLE_PRICE_YEARLY');
-
-    if (!priceId) {
-      throw new BadRequestException(
-        `Paddle price not configured for ${plan} plan`,
-      );
-    }
-
-    // Verify user exists
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      select: ['id'],
-    });
-    if (!user) {
-      throw new BadRequestException('User not found');
-    }
-
-    this.logger.log(
-      `Paddle checkout config requested for user ${userId}, plan: ${plan}`,
-    );
-    return { priceId };
-  }
-
-  async handlePaddleWebhook(rawBody: string, signature: string): Promise<void> {
-    if (!this.paddle) {
-      throw new BadRequestException('Paddle is not configured');
-    }
-
-    const webhookSecret = this.configService.get<string>(
-      'PADDLE_WEBHOOK_SECRET',
-    );
-    if (!webhookSecret) {
-      this.logger.error('PADDLE_WEBHOOK_SECRET not configured');
-      throw new BadRequestException('Webhook not configured');
-    }
-
-    let event: any;
-    try {
-      event = await this.paddle.webhooks.unmarshal(
-        rawBody,
-        webhookSecret,
-        signature,
-      );
-    } catch (err: any) {
-      this.logger.warn(
-        `Paddle webhook signature verification failed: ${err.message}`,
-      );
-      throw new BadRequestException('Invalid webhook signature');
-    }
-
-    this.logger.log(`Paddle webhook received: ${event.eventType}`);
-
-    switch (event.eventType) {
-      case EventName.SubscriptionActivated:
-      case EventName.TransactionCompleted: {
-        await this.handlePaddleSubscriptionActivated(event.data);
-        break;
-      }
-      case EventName.SubscriptionUpdated: {
-        await this.handlePaddleSubscriptionUpdated(event.data);
-        break;
-      }
-      case EventName.SubscriptionCanceled:
-      case EventName.SubscriptionPastDue: {
-        await this.handlePaddleSubscriptionEnded(event.data, event.eventType);
-        break;
-      }
-      default:
-        this.logger.log(`Unhandled Paddle event: ${event.eventType}`);
-    }
-  }
-
-  private async handlePaddleSubscriptionActivated(data: any): Promise<void> {
-    const userId = data.customData?.userId;
-    if (!userId) {
-      this.logger.warn('Paddle event without userId in customData');
-      return;
-    }
-
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      select: ['id'],
-    });
-    if (!user) {
-      this.logger.warn(`Paddle event for unknown user: ${userId}`);
-      return;
-    }
-
-    const nextBilledAt = data.nextBilledAt || data.next_billed_at;
-    const expiresAt = nextBilledAt
-      ? new Date(nextBilledAt)
-      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
-    const paddleCustomerId = data.customerId || data.customer_id || null;
-
-    // Detect plan type by comparing line item priceId with configured prices
-    const monthlyPriceId = this.configService.get<string>(
-      'PADDLE_PRICE_MONTHLY',
-    );
-    const yearlyPriceId = this.configService.get<string>('PADDLE_PRICE_YEARLY');
-    const items: any[] = data.items || data.line_items || [];
-    const matchedPriceId = items
-      .map((it: any) => it?.price?.id || it?.priceId || it?.price_id)
-      .find((id: string | undefined) => !!id);
-    const planType: 'monthly' | 'yearly' | undefined =
-      matchedPriceId === yearlyPriceId
-        ? 'yearly'
-        : matchedPriceId === monthlyPriceId
-          ? 'monthly'
-          : undefined;
-
-    await this.userRepository.update(user.id, {
-      subscriptionTier: SubscriptionTier.PREMIUM,
-      subscriptionPlatform: SubscriptionPlatform.WEB,
-      subscriptionExpiresAt: expiresAt,
-      subscriptionStartedAt: new Date(),
-      ...(planType && { subscriptionPlanType: planType }),
-      ...(paddleCustomerId && { paddleCustomerId }),
-    });
-
-    await this.cacheManager.set(
-      `premium:${user.id}`,
-      'true',
-      PREMIUM_CACHE_TTL,
-    );
-    this.logger.log(`User ${user.id} upgraded to PREMIUM via Paddle`);
-  }
-
-  private async handlePaddleSubscriptionUpdated(data: any): Promise<void> {
-    const userId = data.customData?.userId;
-    const paddleCustomerId = data.customerId || data.customer_id;
-
-    // Try to find user by customData.userId first, then by paddleCustomerId
-    let user: User | null = null;
-    if (userId) {
-      user = await this.userRepository.findOne({
-        where: { id: userId },
-        select: ['id'],
-      });
-    }
-    if (!user && paddleCustomerId) {
-      user = await this.userRepository
-        .createQueryBuilder('user')
-        .addSelect('user.paddleCustomerId')
-        .where('user.paddleCustomerId = :paddleCustomerId', {
-          paddleCustomerId,
-        })
-        .getOne();
-    }
-
-    if (!user) {
-      this.logger.warn(
-        `Paddle subscription.updated for unknown user/customer: ${userId || paddleCustomerId}`,
-      );
-      return;
-    }
-
-    const status = data.status;
-    if (status === 'active' || status === 'trialing') {
-      const nextBilledAt = data.nextBilledAt || data.next_billed_at;
-      const expiresAt = nextBilledAt
-        ? new Date(nextBilledAt)
-        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-      await this.userRepository.update(user.id, {
-        subscriptionTier: SubscriptionTier.PREMIUM,
-        subscriptionPlatform: SubscriptionPlatform.WEB,
-        subscriptionExpiresAt: expiresAt,
-      });
-      await this.cacheManager.set(
-        `premium:${user.id}`,
-        'true',
-        PREMIUM_CACHE_TTL,
-      );
-      this.logger.log(`User ${user.id} Paddle subscription renewed`);
-    } else {
-      await this.userRepository.update(user.id, {
-        subscriptionTier: SubscriptionTier.FREE,
-      });
-      await this.cacheManager.del(`premium:${user.id}`);
-      this.logger.log(`User ${user.id} Paddle subscription ended (${status})`);
-    }
-  }
-
-  private async handlePaddleSubscriptionEnded(
-    data: any,
-    eventType: string,
-  ): Promise<void> {
-    const userId = data.customData?.userId;
-    const paddleCustomerId = data.customerId || data.customer_id;
-
-    let user: User | null = null;
-    if (userId) {
-      user = await this.userRepository.findOne({
-        where: { id: userId },
-        select: ['id'],
-      });
-    }
-    if (!user && paddleCustomerId) {
-      user = await this.userRepository
-        .createQueryBuilder('user')
-        .addSelect('user.paddleCustomerId')
-        .where('user.paddleCustomerId = :paddleCustomerId', {
-          paddleCustomerId,
-        })
-        .getOne();
-    }
-
-    if (!user) {
-      this.logger.warn(
-        `Paddle ${eventType} for unknown user/customer: ${userId || paddleCustomerId}`,
-      );
-      return;
-    }
-
-    await this.userRepository.update(user.id, {
-      subscriptionTier: SubscriptionTier.FREE,
-    });
-    await this.cacheManager.del(`premium:${user.id}`);
-    this.logger.log(
-      `User ${user.id} downgraded to FREE via Paddle (${eventType})`,
-    );
   }
 
   // ─── Cron ────────────────────────────────────────────────
