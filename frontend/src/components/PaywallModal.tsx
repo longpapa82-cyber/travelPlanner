@@ -22,8 +22,6 @@ import {
   getOfferings,
   purchasePackage,
   restorePurchases,
-  getCustomerInfo,
-  getActiveEntitlementSnapshot,
 } from '../services/revenueCat';
 import apiService from '../services/api';
 import { pollSubscriptionStatus } from '../services/subscriptionPolling';
@@ -55,44 +53,6 @@ const PaywallModal: React.FC = () => {
   const [packages, setPackages] = useState<{ monthly: any; yearly: any }>({ monthly: null, yearly: null });
   const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
   const offeringsLoaded = useRef(false);
-  const paddleInitialized = useRef(false);
-
-  // Load and initialize Paddle SDK on web
-  useEffect(() => {
-    if (Platform.OS !== 'web' || paddleInitialized.current) return;
-    if (typeof window === 'undefined') return;
-
-    const initPaddle = () => {
-      const Paddle = (window as any).Paddle;
-      if (!Paddle) return;
-      try {
-        const token = process.env.EXPO_PUBLIC_PADDLE_CLIENT_TOKEN;
-        if (token) {
-          const env = process.env.EXPO_PUBLIC_PADDLE_ENVIRONMENT || 'sandbox';
-          if (env === 'sandbox') {
-            Paddle.Environment.set('sandbox');
-          }
-          Paddle.Initialize({ token });
-          paddleInitialized.current = true;
-        }
-      } catch (err) {
-        console.warn('Paddle init failed:', err);
-      }
-    };
-
-    // If Paddle.js already loaded
-    if ((window as any).Paddle) {
-      initPaddle();
-      return;
-    }
-
-    // Dynamically load Paddle.js
-    const script = document.createElement('script');
-    script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
-    script.async = true;
-    script.onload = initPaddle;
-    document.head.appendChild(script);
-  }, []);
 
   // Load RevenueCat offerings when paywall becomes visible
   useEffect(() => {
@@ -153,13 +113,16 @@ const PaywallModal: React.FC = () => {
    *               for UX, but the client should NOT differentiate behavior
    *               based on which plan — both are "already subscribed")
    */
+  // V199 (Invariant 53): reason enum for message branching.
+  // 'already_subscribed'     → DB-confirmed premium (normal case)
+  // 'rc_entitlement_active'  → RC shows active, DB was stale (reconciled)
+  // 'verification_unavailable' → RC API down, fail-close
   const resolvePurchaseAction = async (): Promise<
-    { kind: 'buy' } | { kind: 'block'; currentPlan: 'monthly' | 'yearly' | null }
+    | { kind: 'buy' }
+    | { kind: 'block'; currentPlan: 'monthly' | 'yearly' | null; reason: string }
   > => {
     try {
       const result = await apiService.preflightPurchase(
-        // Pass selectedPlan as a hint for backend logging; backend ignores
-        // it for the decision (decision is based on user's DB tier).
         selectedPlan === 'monthly' ? 'premium_monthly' : 'premium_yearly',
       );
       addBreadcrumb({
@@ -173,15 +136,14 @@ const PaywallModal: React.FC = () => {
         },
       });
       if (!result.canPurchase) {
-        return { kind: 'block', currentPlan: result.currentPlan };
+        return {
+          kind: 'block',
+          currentPlan: result.currentPlan,
+          reason: result.reason,
+        };
       }
       return { kind: 'buy' };
     } catch (err: any) {
-      // If preflight fails (network, 5xx), we MUST fail closed — block
-      // the purchase rather than risk duplicate billing. The user can
-      // retry once connectivity is restored. This is more conservative
-      // than the V182 behavior which allowed a small duplicate-billing
-      // risk on transient errors.
       addBreadcrumb({
         category: 'subscription',
         message: 'paywall.preflight.failed',
@@ -189,46 +151,33 @@ const PaywallModal: React.FC = () => {
         data: { error: err?.message ?? 'unknown' },
       });
       throw new Error(
-        t('premium.errors.preflightFailed') ||
+        t('errors.preflightFailed') ||
           '결제 가능 여부 확인 중 네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
       );
     }
   };
 
   const handlePurchase = async () => {
+    // Web: IAP not supported (Google Play IAP is Android-only)
     if (Platform.OS === 'web') {
-      // Web: Paddle Overlay Checkout
-      setIsPurchasing(true);
-      try {
-        const { priceId } = await apiService.getPaddleCheckoutConfig(selectedPlan);
-        const Paddle = (window as any).Paddle;
-        if (!Paddle || !paddleInitialized.current) {
-          throw new Error('Paddle SDK not loaded. Please refresh the page.');
-        }
-        Paddle.Checkout.open({
-          items: [{ priceId, quantity: 1 }],
-          customData: { userId: String(user?.id || '') },
-        });
-      } catch (error: any) {
-        const msg = error?.response?.data?.message || error?.message || t('premium.errors.checkoutFailed');
-        Alert.alert(t('premium.errors.title'), msg);
-      } finally {
-        setIsPurchasing(false);
-      }
+      Alert.alert(
+        t('errors.title') || '알림',
+        t('errors.webNotSupported') || '앱에서만 구독이 가능합니다.',
+      );
       return;
     }
 
     const pkg = selectedPlan === 'monthly' ? packages.monthly : packages.yearly;
     if (!pkg) {
-      Alert.alert(t('premium.errors.title'), t('premium.errors.subscriptionNotLoaded'));
+      Alert.alert(t('errors.title'), t('errors.subscriptionNotLoaded'));
       return;
     }
 
     setIsPurchasing(true);
     try {
-      // V186 (Invariant 41): SERVER-AUTHORITATIVE purchase preflight.
-      // Backend is single source of truth — never call purchasePackage
-      // without backend confirmation that the user is allowed to buy.
+      // V186 (Invariant 41) + V199 (Invariant 50): SERVER-AUTHORITATIVE
+      // dual-source preflight. Backend checks DB tier AND RC active
+      // entitlements before allowing purchasePackage.
       const action = await resolvePurchaseAction();
       addBreadcrumb({
         category: 'subscription',
@@ -238,27 +187,45 @@ const PaywallModal: React.FC = () => {
 
       if (action.kind === 'block') {
         setIsPurchasing(false);
+        // V199 (Invariant 53): message branches by reason
         const planLabel = action.currentPlan
           ? t(`planNames.${action.currentPlan}`)
-          : t('premium.subscription');
-        Alert.alert(
-          t('guards.alreadySubscribedTitle') || '이미 구독 중',
-          t('guards.alreadySubscribedSameplan', {
-            plan: planLabel,
-          }) ||
-            `이미 ${planLabel} 구독 중입니다. 플랜 변경은 Google Play 구독 관리에서 진행해 주세요.`,
-        );
+          : t('subscription');
+
+        if (action.reason === 'verification_unavailable') {
+          Alert.alert(
+            t('guards.verificationUnavailableTitle') || '확인 불가',
+            t('guards.verificationUnavailableBody') ||
+              '구독 상태 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+          );
+        } else if (action.reason === 'rc_entitlement_active') {
+          Alert.alert(
+            t('guards.googleAccountSubscribedTitle') || '이미 구독 중',
+            t('guards.googleAccountSubscribedBody') ||
+              `이 Google 계정에 ${planLabel} 구독이 활성화되어 있습니다. Google Play 구독 관리에서 확인하세요.`,
+            [
+              { text: t('guards.manageSubscription') || '구독 관리', onPress: () => Linking.openURL('https://play.google.com/store/account/subscriptions') },
+              { text: t('common.close') || '닫기', style: 'cancel' },
+            ],
+          );
+        } else {
+          // 'already_subscribed' or fallback
+          Alert.alert(
+            t('guards.alreadySubscribedTitle') || '이미 구독 중',
+            t('guards.alreadySubscribedSameplan', { plan: planLabel }) ||
+              `이미 ${planLabel} 구독 중입니다. 플랜 변경은 Google Play 구독 관리에서 진행해 주세요.`,
+          );
+        }
         return;
       }
 
-      // Normal first-time purchase (server confirmed user is free)
+      // Server confirmed user is free — proceed with purchase
       const customerInfo = await purchasePackage(pkg);
       if (customerInfo) {
         await finalizePurchase();
       }
-      // null = user cancelled, do nothing
     } catch (error: any) {
-      Alert.alert(t('premium.errors.title'), error?.message || t('premium.errors.purchaseFailed'));
+      Alert.alert(t('errors.title'), error?.message || t('errors.purchaseFailed'));
     } finally {
       setIsPurchasing(false);
     }

@@ -5,6 +5,7 @@ import { User } from '../users/entities/user.entity';
 import { SubscriptionService } from './subscription.service';
 import { SubscriptionController } from './subscription.controller';
 import { ProcessedWebhookEvent } from './entities/processed-webhook-event.entity';
+import { RevenueCatClient } from './revenuecat.client';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { ProcessedWebhookEvent } from './entities/processed-webhook-event.entity
     ConfigModule,
   ],
   controllers: [SubscriptionController],
-  providers: [SubscriptionService],
+  providers: [SubscriptionService, RevenueCatClient],
   exports: [SubscriptionService],
 })
 export class SubscriptionModule {}

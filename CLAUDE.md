@@ -2,27 +2,31 @@
 
 bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
-## 📍 현재 상태 (2026-04-28 KST) — V197 완료 (phantom 구독 8차 재발 영구 종결 — RC TRANSFER 페이로드 구조 불일치 수정)
+## 📍 현재 상태 (2026-04-28 KST) — V199 구현 완료 (phantom 구독 9차 근본 해결 — preflight dual-source RC 검증)
 
 ### 핵심 상태
-- **버전**: V198 (versionCode 198, backend 배포 완료 ✅, AAB 빌드 완료 ✅ `build-v197.aab` 68MB)
-- **서버**: https://mytravel-planner.com (Hetzner VPS) — V198 backend 배포 완료 ✅ (2026-04-28)
-- **브랜치**: `main` (commit `31642a35`)
+- **버전**: V199 코드 완료 (backend 배포 + AAB 빌드 + Play Console 제출 필요)
+- **서버**: https://mytravel-planner.com (Hetzner VPS) — V199 배포 전
+- **브랜치**: `main`
 - **Frontend**: TypeScript 0 errors, Jest **230/230** PASS
-- **Backend**: TypeScript 0 errors, Jest **410/410** PASS (TRANSFER 회귀 12케이스 포함)
-- **자동 검증**: `npm run validate:static` PASS — 261 파일 (282 파일 포함 시 전체 PASS)
-- **Play Console**: V195 Alpha 제출 완료 → `build-v197.aab` (versionCode 198) Alpha 재제출 예정
+- **Backend**: TypeScript 0 errors, Jest **416/416** PASS (V199 dual-source RC 가드 6케이스 포함)
+- **자동 검증**: `npm run validate:static` PASS — 261 파일
+- **Play Console**: `build-v197.aab` (versionCode 198) Alpha 제출됨
 - **Sentry**: DSN `de.sentry.io` (Germany region)
+- **⚠️ 선결 과제**: RevenueCat Dashboard → API Keys → Secret key 발급 → 서버 `REVENUECAT_API_KEY` env 추가 필요
 - **V197~V198 핵심**: V197 — phantom 구독 8차 재발 영구 종결 (RC TRANSFER 페이로드 구조 불일치). V198 — Paddle 코드 완전 제거 (약관 vs 코드 불일치 해소) + TRANSFER cache TTL 정밀화.
 
-### V198 직후 남은 작업 (우선순위 순)
-1. **Play Console 업로드**: `build-v197.aab` (versionCode 198) Alpha 트랙 제출
-2. **Alpha 검증 T1**: hoonjae723 탈퇴→재가입→연간 구독 — "이미 구독 중" 오류 없이 정상 처리 확인
-3. **Alpha 검증 T2**: 연간 구독 후 월간 구독 시도 → 차단 정상 확인
-4. **Alpha 검증 T3**: 백엔드 로그에 `[subscription] TRANSFER processed` 출력 확인
-5. **Alpha 검증**: V195 #1 앱 로고 3개 중복 — 기기별 알림 채널 / launchMode 진단
-6. **Alpha 검증**: V195 #3 앱 이탈-복귀 홈 리셋 — V189.1 P0-F 효과 확인
-7. **Production Go/No-Go**: Alpha 최종 검증 완료 후
+### V199 직후 남은 작업 (우선순위 순)
+1. **RC API Key 발급**: RevenueCat Dashboard → Project Settings → API Keys → Secret keys → 새 키 생성 (`sk_...`)
+2. **서버 env 업데이트**: SSH → `/root/travelPlanner/backend/.env`에 `REVENUECAT_API_KEY=sk_...` 추가
+3. **Backend 재배포**: `docker compose build && docker compose up -d`
+4. **AAB 빌드**: `eas build --platform android --profile production --local --output ../build-v199.aab` (versionCode 199로 bump 필요)
+5. **Play Console 업로드**: `eas submit --platform android --profile production --path ../build-v199.aab`
+6. **Alpha 검증 T1**: hoonjae723 탈퇴→재가입→연간 구독 시도 → 정상 결제 또는 RC entitlement 활성 차단 확인
+7. **Alpha 검증 T2**: 연간 활성 상태에서 월간 구독 시도 → `rc_entitlement_active` 차단 확인
+8. **Alpha 검증 T3**: DB=free인데 RC에 활성 → `[subscription] phantom_subscription_recovered` 로그 확인
+9. **Alpha 검증 T4**: RC API 미설정(REVENUECAT_API_KEY 빈값) 상태 → 결제 허용 (degraded mode 확인)
+10. **Production Go/No-Go**: Alpha 최종 검증 완료 후
 
 ### V139~V176 Alpha 테스트 수정 이력
 
@@ -73,6 +77,18 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 45. **Cross-context refresh API는 모두 lock gate**: `silentRefresh`, `refreshUser`, `onAuthExpired` callback 등 setUser 호출 가능한 모든 함수는 entry + after-await 두 번 `isLoggingOutRef` 가드. logoutRace integration test로 PR 단계 자동 검증. 단독 ref/state 패턴(V178)은 회귀 4 사이클 입증.
 46. **Required consent type backfill 의무**: REQUIRED_CONSENTS에 신규 type 추가 시 마이그레이션으로 기존 사용자 backfill 필수. backfill 시 기존 동의(예: TERMS)에 함의된 동의가 있다면 inferred 형태로 기록 (`consent_method='inferred_from_xxx'` audit trail). `getConsentsStatus`에 backfill miss warn 로그로 production 가시화.
 47. **법적 콘텐츠 자동 검증의 양방향 정렬**: art3(제3자 제공)에 외부 처리자 추가 시 art12/art15(국외 이전 표) 자동 동기화 검증. validate-content.py에 처리자명 + 정확한 region 양쪽 매칭. Sentry DSN `de.sentry.io` → 독일 표기 의무 (V187에서 17 locale "USA" 거짓 표기 정정). 미등록 통화 (BRL/EUR 등)로 표기된 가격 자동 차단.
+
+### V196~V199 신규 불변식 (V185 39건 + V187 8건 + V196 1건 + V197 1건 + V199 5건 = 55건)
+
+50. **preflight은 dual-source 검증 필수 (V199)**: 결제 진입점의 preflight은 (a) server DB tier (b) RC backend active entitlements 양쪽을 모두 확인. DB single source 의존 영구 금지. DB premium(layer 1) → 즉시 차단. DB free → RC API 조회(layer 2). RC active 발견 시 DB 자동 reconcile.
+
+51. **RC entitlement는 product-agnostic 차단 (V199)**: 사용자에게 어떤 SKU든 active entitlement가 있으면 모든 신규 결제 SKU 차단. yearly 활성 → monthly 차단, monthly 활성 → yearly 차단. Google Play와 RC SDK는 productId 단위로 dedup하므로 우리가 cross-SKU 비즈니스 규칙 강제 책임.
+
+52. **DB-RC 불일치는 자동 reconcile + audit (V199)**: preflight에서 "DB free + RC active" 감지 시 RC를 truth로 간주, DB 자동 업데이트 (subscriptionTier=PREMIUM, expiresAt=now+1y placeholder), audit log `phantom_subscription_recovered`. Sentry warning 자동 발송. 다음 RENEWAL/EXPIRATION webhook이 실제 expiresAt으로 정정.
+
+53. **결제 차단 메시지는 원인별 분기 (V199)**: "이미 구독 중" 단일 메시지 영구 금지. reason enum 분기: `already_subscribed` (DB premium, 본인 계정), `rc_entitlement_active` (RC active, Google Play 구독 관리 CTA 포함), `verification_unavailable` (RC API 장애, 잠시 후 재시도 안내).
+
+54. **외부 API 의존 preflight은 fail-close (V199)**: RC API timeout/error 시 preflight은 `canPurchase=false reason=verification_unavailable` 응답. canPurchase=true 기본값 절대 금지. false-positive(차단 오류)는 재시도 가능. false-negative(이중 결제)는 환불 분쟁.
 
 ### V196~V197 신규 불변식 (V185 39건 + V187 8건 + V196 1건 + V197 1건 = 50건)
 
@@ -396,6 +412,7 @@ curl https://mytravel-planner.com/api/health
 | V187~V189.1 | 2026-04-27 | **CRITICAL** | **V188 #1 SNS 로그인 배경 앱 종료 (V189 P0-A: NavigationContainer state persistence + expo-updates NEVER)**, **V188 #2 앱 이탈-복귀 홈 리셋 (V189 P0-F 강화: silentRefresh 5s timeout + useFocusEffect in-flight guard)**, **nginx.conf Paddle JS + CSP 잔존 제거 (V184 P0-G 직접 회귀)**, **AndroidManifest READ_MEDIA_IMAGES 제거 (Play 8.3 reject 차단)**, **17 locale art12/art15 5개 처리자 누락 보강 (GDPR Art.44/PIPA §28)**, **보안 9건** (consent withdrawal GDPR Art.7(3), error_logs healthcheck cron, RC webhook secret rotation, SettleExpenseDto, audit anonymization, refresh token AsyncStorage, expiration upper bound 5y, SettingsScreen rotation, health endpoint auth), **콘텐츠 사실성 9건**, **ConsentContext mount race 종결** | 195 (V189.1 빌드) |
 | V195~V196 | 2026-04-27 | **CRITICAL** | **phantom 구독 7차 재발 근본 종결 — RC TRANSFER 이벤트 처리 누락** (탈퇴→재가입 시 RC가 TRANSFER webhook 발송 → 서버 `default:log`로 무시 → 구독이 old anonymous alias에 묶임 → 새 계정 "이미 구독 중". 클라이언트 가드 6회가 모두 실패한 진짜 원인이 데이터 레이어였음을 DB TRANSFER 이벤트 4건 + userId=null로 확인). **TRANSFER 케이스 추가** (revenuecatAppUserId 재바인딩 + 유효 entitlement 즉시 PREMIUM 적용), **userId 백필 UPDATE 추가** (processed_webhook_events.userId 영구 null 해소), **TRANSFER 회귀 테스트 4케이스** (불변식 48 신설), **hoonjae723 DB 직접 free 초기화** | 196 ✅ |
 | V196~V197 | 2026-04-28 | **CRITICAL** | **phantom 구독 8차 재발 영구 종결 — RC TRANSFER 페이로드 구조 불일치** (V196 TRANSFER case가 switch 내부에서 `if (!appUserId) return` null-guard **뒤에** 위치 → RC TRANSFER 페이로드에 `app_user_id` 없음 → 모든 TRANSFER 이벤트가 조기 return. 프로덕션 DB TRANSFER 20건 전부 `userId=NULL` + 로그 `RevenueCat event without app_user_id, skipping`으로 확인). **null-guard 이전 TRANSFER early dispatch** (`handleTransferEvent()` 분리), **`transferred_to` 배열 기반 사용자 탐색** (rcId match → UUID fallback), **만료 entitlement 시 FREE 다운그레이드** (V196은 업그레이드만 처리), **회귀 테스트 구조 수정** (app_user_id → transferred_to 배열), **불변식 49 신설**, **hoonjae723 DB free 초기화** | 197 ✅ (backend 배포, EAS 빌드 예정) |
+| V198~V199 | 2026-04-28 | **CRITICAL** | **phantom 구독 9차 근본 해결 — preflight dual-source RC 검증 도입** (V198 Alpha 2건: Bug 1 — DB=free지만 RC에 yearly active → monthly 결제 허용. Bug 2 — 탈퇴→재가입 후 연간/월간 전체 차단 또는 DB=premium(TRANSFER 처리)인데 사용자는 새 계정으로 인식 혼란). **RCA: 9차 phantom 구독 fix가 모두 실패한 이유 — webhook 비동기성으로 server DB tier는 구조적으로 stale 가능. "server-authoritative" 원칙이 webhook 신뢰성에 기반하므로 webhook race/누락/dedup 우회 시 DB는 거짓말**. **P0: RevenueCatClient 신설** (`revenuecat.client.ts` — RC REST API `/v1/subscribers/{appUserId}`, 3s timeout, fail-close), **preflightPurchase dual-source** (Layer 1: DB tier fast path → Layer 2: RC active_entitlements 조회), **cross-SKU block** (yearly active → monthly도 차단, Invariant 51), **auto-reconcile** (DB free + RC active 감지 시 DB=premium 자동 복구 + `phantom_subscription_recovered` audit log, Invariant 52), **메시지 분기** (reason enum 3가지 → PaywallModal 원인별 Alert + Google Play 구독 관리 CTA, Invariant 53), **fail-close** (RC API 장애 시 차단, Invariant 54), **degraded mode** (REVENUECAT_API_KEY 미설정 시 DB-only fallback + warn log), **Paddle 잔존 웹 분기 제거** (PaywallModal web path를 "앱에서만 구독 가능" Alert으로 교체), **V199 회귀 테스트 6케이스** (Bug 1/2, fail-close, fast path, degraded mode), **불변식 50~54 신설** | 199 (배포 대기 — REVENUECAT_API_KEY 발급 선결) |
 
 상세: `docs/archive/bug-history-2026-04.md`, `docs/archive/claude-md-history-pre-v112.md`, `testResult.md`
 
@@ -431,4 +448,4 @@ curl https://mytravel-planner.com/api/health
 
 ---
 
-**최종 업데이트**: 2026-04-28 KST (V197/V198 완료 — phantom 구독 8차 재발 영구 종결 + Paddle 코드 완전 제거. V197: RC TRANSFER 이벤트가 app_user_id null-guard 뒤에 위치해 조기 return됐던 구조적 버그 수정(handleTransferEvent() early dispatch). V198: 약관에 "Google Play IAP 단일화" 선언 후 코드에 잔존하던 Paddle ~140줄 + @paddle/paddle-node-sdk dep 완전 제거 + TRANSFER cache TTL 정밀화(Math.min 패턴 통일). Backend Jest 410/410 PASS. TS 0 errors. build-v197.aab 68MB 빌드 완료(versionCode 198). backend 배포 완료. Play Console Alpha 업로드 + hoonjae723 T1~T3 검증 예정.)
+**최종 업데이트**: 2026-04-28 KST (V199 코드 완료 — phantom 구독 9차 근본 해결. V174~V198의 9차 fix가 실패한 이유 확정: webhook 비동기성으로 DB tier는 구조적으로 stale 가능. preflight에 RC REST API 직접 조회(dual-source)를 추가해 DB-RC 불일치를 real-time 감지+자동 reconcile. RevenueCatClient 신설, cross-SKU block, fail-close, 메시지 분기, Paddle web 잔존 제거. Backend Jest 416/416 PASS. TS 0 errors. 다음 단계: REVENUECAT_API_KEY 발급 → 서버 env 추가 → backend 재배포 → versionCode 199 bump → AAB 빌드 → Play Console 제출.)

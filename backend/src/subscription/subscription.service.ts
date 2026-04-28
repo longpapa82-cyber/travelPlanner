@@ -23,6 +23,7 @@ import { SubscriptionStatusDto } from './dto/subscription-status.dto';
 import { isOperationalAdmin } from '../common/utils/admin-check';
 import { safeForLog } from '../common/utils/sanitize';
 import { ProcessedWebhookEvent } from './entities/processed-webhook-event.entity';
+import { RevenueCatClient, RcApiUnavailableError } from './revenuecat.client';
 
 const PREMIUM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 const SANDBOX_YEARLY_THRESHOLD_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -62,6 +63,10 @@ const parseExpirationAt = (rawMs: unknown, logger: Logger): Date => {
   return new Date(ms);
 };
 
+// Redis cache key for preflight RC-check result (30s TTL — shorter than
+// PREMIUM_CACHE_TTL because this guards purchase entry, not status display)
+const PREFLIGHT_RC_CACHE_TTL = 30 * 1000;
+
 @Injectable()
 export class SubscriptionService {
   private readonly logger = new Logger(SubscriptionService.name);
@@ -75,6 +80,7 @@ export class SubscriptionService {
     private readonly processedWebhookEventRepository: Repository<ProcessedWebhookEvent>,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly configService: ConfigService,
+    private readonly rcClient: RevenueCatClient,
   ) {
     this.aiTripsFreeLimit = parseInt(
       this.configService.get<string>('AI_TRIPS_FREE_LIMIT') ||
@@ -188,6 +194,34 @@ export class SubscriptionService {
    * against Google's authoritative entitlement record. For V186 the
    * server tier + admin check eliminates the V185 race window.
    */
+  /**
+   * V199 (Invariants 50–54): dual-source preflight.
+   *
+   * Layer 1 — DB tier: fast path. If the DB already shows premium (and not
+   *   expired), block immediately without calling RC.
+   *
+   * Layer 2 — RC backend: authoritative. If DB is free, we query RC REST API
+   *   to check whether the user has any active entitlements that our webhook
+   *   handler hasn't processed yet (race window, dedup bypass, transient DB
+   *   error). This catches both V198 bugs:
+   *     Bug 1: yearly EXPIRATION sets DB=free but RC still active → monthly
+   *            purchase was allowed. Now blocked at RC layer.
+   *     Bug 2: TRANSFER processed DB=premium → correctly blocked (layer 1).
+   *            If TRANSFER race: DB=free but RC=active → blocked at layer 2.
+   *
+   * Auto-reconcile: "DB free + RC active" is a phantom-subscription symptom.
+   *   We update DB + cache immediately and log for Sentry visibility.
+   *
+   * Fail-close (Invariant 54): RC API unavailable → block purchase.
+   *   False-positive (user blocked temporarily) is recoverable; false-negative
+   *   (double billing) is not.
+   *
+   * reason enum exposed to frontend for message branching (Invariant 53):
+   *   'already_subscribed'     → DB-confirmed premium
+   *   'rc_entitlement_active'  → RC shows active, DB was stale (reconciled)
+   *   'verification_unavailable' → RC API down, fail-close
+   *   'free_tier'              → clean, proceed with purchase
+   */
   async preflightPurchase(
     userId: string,
     sku?: string,
@@ -206,6 +240,7 @@ export class SubscriptionService {
         'subscriptionTier',
         'subscriptionPlanType',
         'subscriptionExpiresAt',
+        'revenuecatAppUserId',
       ],
     });
 
@@ -218,30 +253,21 @@ export class SubscriptionService {
       };
     }
 
-    // V187 P0-B: V186 introduced an admin block here that produced the
-    // "이미 구독 중" alert for longpapa82/hoonjae723 — exactly the V183
-    // regression that V184 invariant 32 was created to forbid. We do NOT
-    // gate purchases on `isOperationalAdmin` server-side. Single-flag
-    // overload is forbidden: admin status governs quota/ad-suppression,
-    // not paywall entry. Real charging for admins is blocked by Google
-    // Play Console license-tester registration (single guard, single
-    // responsibility). Logging preserved for audit only.
+    // Invariants 32 + 43: admin status does NOT gate purchase entry.
+    // Log only for audit; real charge blocked by Play Console license tester.
     if (isOperationalAdmin(user.email, user.role)) {
       this.logger.log(
         `Preflight: admin user ${userId} entering purchase flow (license tester gate enforces no real charge)`,
       );
     }
 
-    // The user is already premium → block. The client's resolvePurchaseAction
-    // can use this to drive the "이미 구독 중" or "switch plan" UX without
-    // touching RC SDK.
-    if (user.subscriptionTier === SubscriptionTier.PREMIUM) {
+    // ── Layer 1: DB tier (fast path) ──────────────────────────────────────
+    if (this.isUserPremium(user)) {
       const currentPlan =
         (user.subscriptionPlanType as 'monthly' | 'yearly' | null) || null;
       this.logger.log(
-        // V187 P1-C: sku is user-controlled — sanitize before log
-        // interpolation to block CRLF injection.
-        `Preflight DENY: user ${userId} already premium (plan=${currentPlan}, sku=${safeForLog(sku, 50)})`,
+        `Preflight DENY [db]: user ${userId} already premium ` +
+          `(plan=${currentPlan}, sku=${safeForLog(sku, 50)})`,
       );
       return {
         canPurchase: false,
@@ -251,8 +277,82 @@ export class SubscriptionService {
       };
     }
 
+    // ── Layer 2: RC backend authoritative check ───────────────────────────
+    if (!this.rcClient.isEnabled) {
+      // RC API key not configured — degraded mode, rely on DB only.
+      this.logger.warn(
+        `Preflight ALLOW [db-only/degraded]: user ${userId} tier=free, ` +
+          `RC verification disabled, sku=${safeForLog(sku, 50)}`,
+      );
+      return {
+        canPurchase: true,
+        reason: 'free_tier',
+        currentPlan: null,
+        activeSkus: [],
+      };
+    }
+
+    const rcUserId = user.revenuecatAppUserId || userId;
+
+    // Short-circuit: check if we already fetched RC result for this user
+    // recently (30s cache) to avoid hammering RC on rapid retaps.
+    const cacheKey = `preflight:rc:${userId}`;
+    const cachedRcActive = await this.cacheManager.get<string>(cacheKey);
+
+    let rcActiveSkus: string[] = [];
+
+    if (cachedRcActive !== null && cachedRcActive !== undefined) {
+      rcActiveSkus = cachedRcActive ? JSON.parse(cachedRcActive) : [];
+    } else {
+      try {
+        const entitlements = await this.rcClient.getActiveEntitlements(rcUserId);
+        rcActiveSkus = entitlements.map((e) => e.productIdentifier);
+        await this.cacheManager.set(
+          cacheKey,
+          JSON.stringify(rcActiveSkus),
+          PREFLIGHT_RC_CACHE_TTL,
+        );
+      } catch (err) {
+        if (err instanceof RcApiUnavailableError) {
+          // Invariant 54: fail-close on RC unavailability
+          this.logger.error(
+            `Preflight DENY [rc-unavailable/fail-close]: user ${userId} — ${err.message}`,
+          );
+          return {
+            canPurchase: false,
+            reason: 'verification_unavailable',
+            currentPlan: null,
+            activeSkus: [],
+          };
+        }
+        throw err;
+      }
+    }
+
+    if (rcActiveSkus.length > 0) {
+      // Invariant 51: any active RC entitlement blocks ALL new purchases
+      // (cross-SKU — yearly active blocks monthly and vice versa).
+      this.logger.warn(
+        `Preflight DENY [rc]: user ${userId} DB=free but RC active ` +
+          `products=${JSON.stringify(rcActiveSkus)}, sku=${safeForLog(sku, 50)}. ` +
+          `Auto-reconciling DB tier to PREMIUM.`,
+      );
+
+      // Invariant 52: auto-reconcile DB to match RC truth
+      await this.reconcileFromRcEntitlements(user.id, rcActiveSkus);
+
+      const activePlan = this.inferPlanFromSkus(rcActiveSkus);
+      return {
+        canPurchase: false,
+        reason: 'rc_entitlement_active',
+        currentPlan: activePlan,
+        activeSkus: rcActiveSkus,
+      };
+    }
+
     this.logger.log(
-      `Preflight ALLOW: user ${userId} tier=free, sku=${safeForLog(sku, 50)}`,
+      `Preflight ALLOW [rc-verified]: user ${userId} tier=free, ` +
+        `RC confirmed no active entitlements, sku=${safeForLog(sku, 50)}`,
     );
     return {
       canPurchase: true,
@@ -260,6 +360,39 @@ export class SubscriptionService {
       currentPlan: null,
       activeSkus: [],
     };
+  }
+
+  private inferPlanFromSkus(skus: string[]): 'monthly' | 'yearly' | null {
+    for (const sku of skus) {
+      const plan = PLAN_TYPE_BY_PRODUCT_ID[sku.toLowerCase()];
+      if (plan) return plan;
+    }
+    return null;
+  }
+
+  private async reconcileFromRcEntitlements(
+    userId: string,
+    activeSkus: string[],
+  ): Promise<void> {
+    const activePlan = this.inferPlanFromSkus(activeSkus);
+    // Use a 1-year fallback expiry; the next RENEWAL/EXPIRATION webhook
+    // will correct this to the real date.
+    const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+    await this.userRepository.update(userId, {
+      subscriptionTier: SubscriptionTier.PREMIUM,
+      subscriptionExpiresAt: expiresAt,
+      ...(activePlan && { subscriptionPlanType: activePlan }),
+    });
+    await this.cacheManager.set(
+      `premium:${userId}`,
+      'true',
+      PREMIUM_CACHE_TTL,
+    );
+    this.logger.warn(
+      `[subscription] phantom_subscription_recovered: user=${userId} ` +
+        `rc_skus=${JSON.stringify(activeSkus)} plan=${activePlan ?? 'unknown'}. ` +
+        'DB reconciled. Next webhook will correct expiresAt.',
+    );
   }
 
   async checkAiTripLimit(userId: string): Promise<{

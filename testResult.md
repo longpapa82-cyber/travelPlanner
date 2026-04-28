@@ -1,3 +1,25 @@
+## V198 Alpha 테스트 결과
+
+1. 구독(결제) 테스트
+ 1) 기존 계정(hoonjae723@gmail.com) 테스트
+  - 화면 : ![alt text](image-14.png), ![alt text](image-15.png), ![alt text](image-16.png), ![alt text](image-17.png)
+  - 테스트 결과
+   * 기존 hoonjae723@gmail.com 계정으로 연간 구독을 하려고 할 경우, 이미 구독이 되어 있는 것으로 표기됨.
+   * 기존 hoonjae723@gmail.com 계정으로 월간 구독 시, 구독이 가능함. 
+   * 년간/월간 구독은 중복이 불가능해야 하는데 년간 구독이 되어 있는 상태에서 월간 구독이 되는 구조가 더 문제임.
+
+ 2) 신규 계정(hoonjae723@gmail.com) 테스트
+  - 기존 hoonjae723@gmail.com 계정을 탈퇴하고 신규로 다시 가입하여 테스트 함.
+  - 화면 : ![alt text](image-18.png), ![alt text](image-19.png), ![alt text](image-20.png), ![alt text](image-21.png)
+  - 테스트 결과
+   * 년간/월간 구독 시도 시, 모두 이미 구독이 되어 있다고 표기 되면서 구독이 되지 않음.
+
+2. 앱 이탈 및 복귀 테스트
+ 1) 화면 : ![alt text](image-12.png), ![alt text](image-13.png)
+ 2) 테스트 결과
+  - myTravel 앱에서 새 여행 생성 중(로딩 중) 앱을 이탈하여 다른 앱을 이용 하다가 다시 myTravel 앱으로 복귀 시, 로딩이 발생하면 서 "새 여행 만들기" 화면으로 이동은 되지만 생성이 중단 되었고, 이전에 입력했던 모든 내용들이 초기화 되어 있음. (이전 버전과 동일한 상태. 미해결됨.)
+
+
 ## V198 진행 현황 (2026-04-28 KST)
 
 ### 빌드 정보

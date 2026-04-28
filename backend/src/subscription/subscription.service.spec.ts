@@ -46,11 +46,13 @@ import {
   UserRole,
 } from '../users/entities/user.entity';
 import { ProcessedWebhookEvent } from './entities/processed-webhook-event.entity';
+import { RevenueCatClient, RcApiUnavailableError } from './revenuecat.client';
 
 describe('SubscriptionService — V187 P1-A regression pins', () => {
   let service: SubscriptionService;
   let userRepo: jest.Mocked<Repository<User>>;
   let processedRepo: { createQueryBuilder: jest.Mock };
+  let rcClientMock: jest.Mocked<RevenueCatClient>;
 
   // Separate mocks for INSERT vs UPDATE chains so tests can verify each.
   let insertChainExecute: jest.Mock;
@@ -63,16 +65,13 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
     subscriptionTier: SubscriptionTier.FREE,
     subscriptionPlanType: undefined,
     subscriptionExpiresAt: undefined,
+    revenuecatAppUserId: 'rc-user-1',
   };
 
   beforeEach(async () => {
     insertChainExecute = jest.fn();
     updateChainExecute = jest.fn().mockResolvedValue({ affected: 1 });
 
-    // Each call to createQueryBuilder() returns a full chain object that
-    // supports BOTH insert AND update operations. The service uses .insert()
-    // for the dedup row and .update() for the userId backfill. Having both
-    // methods on a single chain object avoids call-count ordering issues.
     const makeChain = (executeImpl: jest.Mock) => ({
       insert: jest.fn().mockReturnThis(),
       values: jest.fn().mockReturnThis(),
@@ -83,13 +82,19 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
       execute: executeImpl,
     });
 
-    // First call = dedup INSERT; second call = userId backfill UPDATE.
     processedRepo = {
       createQueryBuilder: jest
         .fn()
         .mockImplementationOnce(() => makeChain(insertChainExecute))
         .mockImplementation(() => makeChain(updateChainExecute)),
     };
+
+    // Default: RC client is enabled and returns no active entitlements.
+    // Individual tests can override getActiveEntitlements as needed.
+    rcClientMock = {
+      isEnabled: true,
+      getActiveEntitlements: jest.fn().mockResolvedValue([]),
+    } as unknown as jest.Mocked<RevenueCatClient>;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -109,7 +114,7 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
         },
         {
           provide: CACHE_MANAGER,
-          useValue: { get: jest.fn(), set: jest.fn(), del: jest.fn() },
+          useValue: { get: jest.fn().mockResolvedValue(null), set: jest.fn(), del: jest.fn() },
         },
         {
           provide: ConfigService,
@@ -120,6 +125,10 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
               return undefined;
             }),
           },
+        },
+        {
+          provide: RevenueCatClient,
+          useValue: rcClientMock,
         },
       ],
     }).compile();
@@ -352,6 +361,107 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
       // Only the user lookup createQueryBuilder was called; no dedup calls.
       expect(processedRepo.createQueryBuilder).not.toHaveBeenCalled();
       expect(updateChainExecute).not.toHaveBeenCalled();
+    });
+  });
+
+  // ─── V199 (Invariants 50–54): dual-source preflight regression pins ────────
+  //
+  // These tests pin the V198 Bug 1 + Bug 2 root cause:
+  //   Bug 1: yearly EXPIRATION → DB=free, RC=active → monthly purchase allowed
+  //   Bug 2: TRANSFER → DB=premium OR DB=free but RC=active → all purchases blocked
+  //   Both were caused by preflight relying solely on DB tier (single-source).
+  //
+  // The fix: Layer 1 (DB) + Layer 2 (RC API) dual check + fail-close + reconcile.
+
+  describe('preflightPurchase — V199 (Invariants 50–54) dual-source RC guard', () => {
+    it('V198 Bug 1: DB=free but RC has active yearly → monthly blocked (cross-SKU guard)', async () => {
+      // Simulates: yearly EXPIRATION processed, DB set to free.
+      // User tries monthly → should be blocked because RC still has yearly active.
+      userRepo.findOne.mockResolvedValue(baseUser as User);
+      rcClientMock.getActiveEntitlements = jest.fn().mockResolvedValue([
+        { productIdentifier: 'premium_yearly', expiresDate: new Date(Date.now() + 3600000), isSandbox: true },
+      ]);
+
+      const result = await service.preflightPurchase('user-1', 'premium_monthly');
+
+      expect(result.canPurchase).toBe(false);
+      expect(result.reason).toBe('rc_entitlement_active');
+      // Invariant 51: cross-SKU — RC yearly blocks monthly too
+      expect(result.activeSkus).toContain('premium_yearly');
+      // Invariant 52: auto-reconcile triggered
+      expect(userRepo.update).toHaveBeenCalledWith(
+        'user-1',
+        expect.objectContaining({ subscriptionTier: SubscriptionTier.PREMIUM }),
+      );
+    });
+
+    it('V198 Bug 1 inverse: DB=free, RC also clean → purchase allowed', async () => {
+      userRepo.findOne.mockResolvedValue(baseUser as User);
+      rcClientMock.getActiveEntitlements = jest.fn().mockResolvedValue([]);
+
+      const result = await service.preflightPurchase('user-1', 'premium_monthly');
+
+      expect(result.canPurchase).toBe(true);
+      expect(result.reason).toBe('free_tier');
+      expect(userRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('V198 Bug 2: TRANSFER race — DB=free (webhook not yet processed), RC=active → blocked', async () => {
+      // TRANSFER webhook in flight but not yet processed by our handler.
+      // User logs in immediately and tries to purchase.
+      userRepo.findOne.mockResolvedValue(baseUser as User);
+      rcClientMock.getActiveEntitlements = jest.fn().mockResolvedValue([
+        { productIdentifier: 'premium_monthly', expiresDate: new Date(Date.now() + 7200000), isSandbox: false },
+      ]);
+
+      const result = await service.preflightPurchase('user-1', 'premium_yearly');
+
+      expect(result.canPurchase).toBe(false);
+      expect(result.reason).toBe('rc_entitlement_active');
+    });
+
+    it('Invariant 54: RC API unavailable → fail-close (canPurchase=false)', async () => {
+      // RC API down / timeout — must not allow purchase (false-negative risk).
+      userRepo.findOne.mockResolvedValue(baseUser as User);
+      rcClientMock.getActiveEntitlements = jest.fn().mockRejectedValue(
+        new RcApiUnavailableError('RC API timeout (status=network)'),
+      );
+
+      const result = await service.preflightPurchase('user-1');
+
+      expect(result.canPurchase).toBe(false);
+      expect(result.reason).toBe('verification_unavailable');
+      // Must NOT have reconciled / updated DB when RC is unavailable
+      expect(userRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('DB=premium (not expired) → blocks without calling RC (fast path)', async () => {
+      const premiumUser: Partial<User> = {
+        ...baseUser,
+        subscriptionTier: SubscriptionTier.PREMIUM,
+        subscriptionPlanType: 'yearly',
+        subscriptionExpiresAt: new Date(Date.now() + 86400000),
+      };
+      userRepo.findOne.mockResolvedValue(premiumUser as User);
+
+      const result = await service.preflightPurchase('user-1');
+
+      expect(result.canPurchase).toBe(false);
+      expect(result.reason).toBe('already_subscribed');
+      // Layer 1 short-circuits — RC must not be called
+      expect(rcClientMock.getActiveEntitlements).not.toHaveBeenCalled();
+    });
+
+    it('degraded mode (RC disabled): DB=free → allowed with warning logged', async () => {
+      // RC API key not configured — falls back to DB-only (degraded).
+      (rcClientMock as any).isEnabled = false;
+      userRepo.findOne.mockResolvedValue(baseUser as User);
+
+      const result = await service.preflightPurchase('user-1');
+
+      expect(result.canPurchase).toBe(true);
+      expect(result.reason).toBe('free_tier');
+      expect(rcClientMock.getActiveEntitlements).not.toHaveBeenCalled();
     });
   });
 });
