@@ -104,6 +104,24 @@ export async function purchasePackage(
     return customerInfo;
   } catch (error: any) {
     if (error.userCancelled) return null;
+    // Google Play returns ITEM_ALREADY_OWNED when the Google account already
+    // owns this SKU (e.g. after withdraw+re-register with same Google account).
+    // RC exposes this as error.code === '7' or message contains ITEM_ALREADY_OWNED.
+    //
+    // Do NOT auto-restore here — restorePurchases() attaches the previous
+    // Google account's entitlement to the current RC user, creating a
+    // cross-account entitlement alias that causes the "이미 구독 중" phantom.
+    // Instead, surface a typed error so PaywallModal can guide the user to
+    // Google Play subscription management (the correct resolution path).
+    if (
+      error?.code === '7' ||
+      error?.message?.includes('ITEM_ALREADY_OWNED') ||
+      error?.underlyingErrorMessage?.includes('ITEM_ALREADY_OWNED')
+    ) {
+      const e = new Error('ITEM_ALREADY_OWNED') as Error & { isItemAlreadyOwned: boolean };
+      e.isItemAlreadyOwned = true;
+      throw e;
+    }
     throw error;
   }
 }

@@ -122,6 +122,4 @@ export class SubscriptionController {
     await this.subscriptionService.handleRevenueCatEvent(dto.event);
     return { received: true };
   }
-
 }
-

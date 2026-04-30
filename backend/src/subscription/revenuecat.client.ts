@@ -43,12 +43,14 @@ export class RevenueCatClient {
       return;
     }
 
+    // RC REST API /v1/subscribers endpoint uses Secret Key authentication.
+    // X-Platform header must NOT be sent — it triggers 403 because the server
+    // interprets it as a platform SDK key request (different auth scheme).
     this.http = axios.create({
       baseURL: 'https://api.revenuecat.com/v1',
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'X-Platform': 'android',
       },
       timeout: 3000,
     });
@@ -79,7 +81,9 @@ export class RevenueCatClient {
 
     let response: any;
     try {
-      response = await this.http.get(`/subscribers/${encodeURIComponent(rcAppUserId)}`);
+      response = await this.http.get(
+        `/subscribers/${encodeURIComponent(rcAppUserId)}`,
+      );
     } catch (err: any) {
       const status = err?.response?.status;
       if (status === 404) {

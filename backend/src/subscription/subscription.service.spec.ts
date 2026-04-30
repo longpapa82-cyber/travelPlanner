@@ -114,7 +114,11 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
         },
         {
           provide: CACHE_MANAGER,
-          useValue: { get: jest.fn().mockResolvedValue(null), set: jest.fn(), del: jest.fn() },
+          useValue: {
+            get: jest.fn().mockResolvedValue(null),
+            set: jest.fn(),
+            del: jest.fn(),
+          },
         },
         {
           provide: ConfigService,
@@ -378,11 +382,20 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
       // Simulates: yearly EXPIRATION processed, DB set to free.
       // User tries monthly → should be blocked because RC still has yearly active.
       userRepo.findOne.mockResolvedValue(baseUser as User);
-      rcClientMock.getActiveEntitlements = jest.fn().mockResolvedValue([
-        { productIdentifier: 'premium_yearly', expiresDate: new Date(Date.now() + 3600000), isSandbox: true },
-      ]);
+      rcClientMock.getActiveEntitlements = jest
+        .fn()
+        .mockResolvedValue([
+          {
+            productIdentifier: 'premium_yearly',
+            expiresDate: new Date(Date.now() + 3600000),
+            isSandbox: true,
+          },
+        ]);
 
-      const result = await service.preflightPurchase('user-1', 'premium_monthly');
+      const result = await service.preflightPurchase(
+        'user-1',
+        'premium_monthly',
+      );
 
       expect(result.canPurchase).toBe(false);
       expect(result.reason).toBe('rc_entitlement_active');
@@ -399,7 +412,10 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
       userRepo.findOne.mockResolvedValue(baseUser as User);
       rcClientMock.getActiveEntitlements = jest.fn().mockResolvedValue([]);
 
-      const result = await service.preflightPurchase('user-1', 'premium_monthly');
+      const result = await service.preflightPurchase(
+        'user-1',
+        'premium_monthly',
+      );
 
       expect(result.canPurchase).toBe(true);
       expect(result.reason).toBe('free_tier');
@@ -410,11 +426,20 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
       // TRANSFER webhook in flight but not yet processed by our handler.
       // User logs in immediately and tries to purchase.
       userRepo.findOne.mockResolvedValue(baseUser as User);
-      rcClientMock.getActiveEntitlements = jest.fn().mockResolvedValue([
-        { productIdentifier: 'premium_monthly', expiresDate: new Date(Date.now() + 7200000), isSandbox: false },
-      ]);
+      rcClientMock.getActiveEntitlements = jest
+        .fn()
+        .mockResolvedValue([
+          {
+            productIdentifier: 'premium_monthly',
+            expiresDate: new Date(Date.now() + 7200000),
+            isSandbox: false,
+          },
+        ]);
 
-      const result = await service.preflightPurchase('user-1', 'premium_yearly');
+      const result = await service.preflightPurchase(
+        'user-1',
+        'premium_yearly',
+      );
 
       expect(result.canPurchase).toBe(false);
       expect(result.reason).toBe('rc_entitlement_active');
@@ -423,9 +448,11 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
     it('Invariant 54: RC API unavailable → fail-close (canPurchase=false)', async () => {
       // RC API down / timeout — must not allow purchase (false-negative risk).
       userRepo.findOne.mockResolvedValue(baseUser as User);
-      rcClientMock.getActiveEntitlements = jest.fn().mockRejectedValue(
-        new RcApiUnavailableError('RC API timeout (status=network)'),
-      );
+      rcClientMock.getActiveEntitlements = jest
+        .fn()
+        .mockRejectedValue(
+          new RcApiUnavailableError('RC API timeout (status=network)'),
+        );
 
       const result = await service.preflightPurchase('user-1');
 

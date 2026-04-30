@@ -9,7 +9,7 @@
  * - Dark mode support
  */
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -134,12 +134,14 @@ const ExpensesScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [fetchAll]);
 
   // Refetch when screen regains focus (e.g., returning from AddExpense)
+  const isLoadingRef = useRef(isLoading);
+  isLoadingRef.current = isLoading;
   useFocusEffect(
     useCallback(() => {
-      if (!isLoading) {
+      if (!isLoadingRef.current) {
         fetchAll();
       }
-    }, [fetchAll, isLoading]),
+    }, [fetchAll]),
   );
 
   const onRefresh = useCallback(async () => {

@@ -157,6 +157,39 @@ const PaywallModal: React.FC = () => {
     }
   };
 
+  const handleRestore = async () => {
+    setIsPurchasing(true);
+    try {
+      if (Platform.OS === 'web') {
+        // Web: restore from backend DB (Paddle subscription state)
+        const result = await apiService.restoreSubscription();
+        if (result?.restored) {
+          markPremium();
+          await refreshStatus();
+          hidePaywall();
+          Alert.alert(t('actions.restore'), t('paywall.restoreSuccess') || 'Subscription restored successfully!');
+        } else {
+          Alert.alert(t('actions.restore'), t('paywall.restoreNone') || 'No active subscription found.');
+        }
+      } else {
+        // Native: restore from RevenueCat (App Store / Play Store)
+        const customerInfo = await restorePurchases();
+        if (customerInfo?.entitlements?.active?.['premium']) {
+          markPremium();
+          await refreshStatus();
+          hidePaywall();
+          Alert.alert(t('actions.restore'), t('paywall.restoreSuccess') || 'Subscription restored successfully!');
+        } else {
+          Alert.alert(t('actions.restore'), t('paywall.restoreNone') || 'No active subscription found.');
+        }
+      }
+    } catch (error: any) {
+      Alert.alert(t('premium.errors.title'), error?.message || t('premium.errors.restoreFailed'));
+    } finally {
+      setIsPurchasing(false);
+    }
+  };
+
   const handlePurchase = async () => {
     // Web: IAP not supported (Google Play IAP is Android-only)
     if (Platform.OS === 'web') {
@@ -219,12 +252,37 @@ const PaywallModal: React.FC = () => {
         return;
       }
 
-      // Server confirmed user is free — proceed with purchase
+      // Server confirmed user is free — proceed with purchase.
       const customerInfo = await purchasePackage(pkg);
       if (customerInfo) {
         await finalizePurchase();
       }
     } catch (error: any) {
+      // Suppress user-cancelled (back button / swipe dismiss) — no alert needed.
+      if (error?.userCancelled) return;
+      // ITEM_ALREADY_OWNED: this Google account owns the SKU at Play level
+      // (e.g. after withdraw+re-register with same Google account). The correct
+      // resolution is Google Play subscription management — NOT restorePurchases(),
+      // which would alias the old entitlement onto the new RC user identity.
+      if (error?.isItemAlreadyOwned) {
+        Alert.alert(
+          t('guards.googleAccountSubscribedTitle') || '이미 구독 중',
+          t('guards.googleAccountSubscribedBody') ||
+            '이 Google 계정에 이미 구독이 있습니다. Google Play 구독 관리에서 현재 구독을 취소한 후 다시 시도하거나, 구독을 복원해 주세요.',
+          [
+            {
+              text: t('guards.manageSubscription') || '구독 관리',
+              onPress: () => Linking.openURL('https://play.google.com/store/account/subscriptions'),
+            },
+            {
+              text: t('actions.restore') || '구독 복원',
+              onPress: () => handleRestore(),
+            },
+            { text: t('common.close') || '닫기', style: 'cancel' },
+          ],
+        );
+        return;
+      }
       Alert.alert(t('errors.title'), error?.message || t('errors.purchaseFailed'));
     } finally {
       setIsPurchasing(false);
@@ -290,39 +348,6 @@ const PaywallModal: React.FC = () => {
       setIsPurchasing(false);
     }
     hidePaywall();
-  };
-
-  const handleRestore = async () => {
-    setIsPurchasing(true);
-    try {
-      if (Platform.OS === 'web') {
-        // Web: restore from backend DB (Paddle subscription state)
-        const result = await apiService.restoreSubscription();
-        if (result?.restored) {
-          markPremium();
-          await refreshStatus();
-          hidePaywall();
-          Alert.alert(t('actions.restore'), t('paywall.restoreSuccess') || 'Subscription restored successfully!');
-        } else {
-          Alert.alert(t('actions.restore'), t('paywall.restoreNone') || 'No active subscription found.');
-        }
-      } else {
-        // Native: restore from RevenueCat (App Store / Play Store)
-        const customerInfo = await restorePurchases();
-        if (customerInfo?.entitlements?.active?.['premium']) {
-          markPremium();
-          await refreshStatus();
-          hidePaywall();
-          Alert.alert(t('actions.restore'), t('paywall.restoreSuccess') || 'Subscription restored successfully!');
-        } else {
-          Alert.alert(t('actions.restore'), t('paywall.restoreNone') || 'No active subscription found.');
-        }
-      }
-    } catch (error: any) {
-      Alert.alert(t('premium.errors.title'), error?.message || t('premium.errors.restoreFailed'));
-    } finally {
-      setIsPurchasing(false);
-    }
   };
 
   return (

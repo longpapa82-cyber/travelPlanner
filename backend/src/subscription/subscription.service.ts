@@ -305,7 +305,8 @@ export class SubscriptionService {
       rcActiveSkus = cachedRcActive ? JSON.parse(cachedRcActive) : [];
     } else {
       try {
-        const entitlements = await this.rcClient.getActiveEntitlements(rcUserId);
+        const entitlements =
+          await this.rcClient.getActiveEntitlements(rcUserId);
         rcActiveSkus = entitlements.map((e) => e.productIdentifier);
         await this.cacheManager.set(
           cacheKey,
@@ -383,11 +384,7 @@ export class SubscriptionService {
       subscriptionExpiresAt: expiresAt,
       ...(activePlan && { subscriptionPlanType: activePlan }),
     });
-    await this.cacheManager.set(
-      `premium:${userId}`,
-      'true',
-      PREMIUM_CACHE_TTL,
-    );
+    await this.cacheManager.set(`premium:${userId}`, 'true', PREMIUM_CACHE_TTL);
     this.logger.warn(
       `[subscription] phantom_subscription_recovered: user=${userId} ` +
         `rc_skus=${JSON.stringify(activeSkus)} plan=${activePlan ?? 'unknown'}. ` +
@@ -596,12 +593,16 @@ export class SubscriptionService {
           ...(eventType === 'INITIAL_PURCHASE' && { aiTripsUsedThisMonth: 0 }),
         });
 
-        // Update cache
+        // Update premium cache and invalidate preflight RC cache so the
+        // next purchase attempt re-fetches RC truth instead of serving a
+        // stale "no active entitlements" result that would allow a second
+        // simultaneous SKU purchase (Invariant 51 cross-SKU block).
         await this.cacheManager.set(
           `premium:${user.id}`,
           'true',
           PREMIUM_CACHE_TTL,
         );
+        await this.cacheManager.del(`preflight:rc:${user.id}`);
         // V169 (F5): structured log so ops can correlate webhook receipt
         // with the client-side polling window. The `planType=unknown` case
         // is the loud signal for a missing SKU in PLAN_TYPE_BY_PRODUCT_ID.

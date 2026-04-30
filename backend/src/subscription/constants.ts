@@ -26,9 +26,15 @@ export const PLAN_TYPE_BY_PRODUCT_ID: Record<string, 'monthly' | 'yearly'> = {
   premium_monthly: 'monthly',
   premium_1m: 'monthly',
   'mytravel.premium.monthly': 'monthly',
+  // Google Play base plan format: <productId>:<basePlanId>
+  'travelplanner_premium_monthly:monthly-base': 'monthly',
+  travelplanner_premium_monthly: 'monthly',
   premium_yearly: 'yearly',
   premium_annual: 'yearly',
   premium_1y: 'yearly',
   'mytravel.premium.yearly': 'yearly',
   'mytravel.premium.annual': 'yearly',
+  // Google Play base plan format: <productId>:<basePlanId>
+  'travelplanner_premium_yearly:yearly-base': 'yearly',
+  travelplanner_premium_yearly: 'yearly',
 };

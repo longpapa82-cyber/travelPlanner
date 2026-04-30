@@ -130,9 +130,9 @@ const SettlementSummary: React.FC<SettlementSummaryProps> = memo(
               </View>
             </View>
 
-            {/* Settle button — only shown to the creditor (toUser = person receiving money) */}
+            {/* Settle button — shown to both debtor and creditor */}
             {onSettle && currentUserId &&
-              currentUserId === settlement.toUserId && (
+              (currentUserId === settlement.toUserId || currentUserId === settlement.fromUserId) && (
               <TouchableOpacity
                 style={[
                   styles.settleButton,

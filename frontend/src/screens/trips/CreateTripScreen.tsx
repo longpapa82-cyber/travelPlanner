@@ -120,19 +120,16 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
   const { show: showRewarded, isLoaded: isRewardedLoaded, reload: reloadRewardedAd } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
+  // Cooldown: hide rewarded ad button for 3 min after watching (prevent immediate re-show)
+  const [rewardedAdCooldownUntil, setRewardedAdCooldownUntil] = useState(0);
+  const REWARDED_COOLDOWN_MS = 3 * 60 * 1000;
+  const isRewardedOnCooldown = rewardedAdCooldownUntil > Date.now();
 
-  // Restore state after Android Activity recreation (rewarded ad lifecycle)
-  useEffect(() => {
-    // Check if returning from rewarded ad with persisted state
-    AsyncStorage.getItem('@rewarded_ad_destination').then((savedDest) => {
-      if (savedDest) {
-        setDestination(savedDest);
-        setInsightsUnlocked(true);
-        // Clean up
-        AsyncStorage.multiRemove(['@rewarded_ad_destination']).catch(() => {});
-      }
-    });
-  }, []);
+  // AsyncStorage-based state restoration for rewarded ad removed (V207):
+  // Persisting @rewarded_ad_destination caused the next CreateTripScreen mount
+  // to auto-unlock insights without the user watching an ad.
+  // Android Activity recreation during rewarded ad is handled by fire-and-forget
+  // pattern — the reward callback fires in the original JS context.
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [aiConsentGiven, setAiConsentGiven] = useState(false);
   const [isShowingRewardedAd, setIsShowingRewardedAd] = useState(false);
@@ -1126,7 +1123,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
             )}
 
             {/* Rewarded Ad — unlock extra insights (hidden for premium users) */}
-            {!isPremium && destination.trim().length >= 2 && !insightsUnlocked && isRewardedLoaded && (
+            {!isPremium && destination.trim().length >= 2 && !insightsUnlocked && isRewardedLoaded && !isRewardedOnCooldown && (
               <TouchableOpacity
                 style={[
                   styles.rewardedAdButton,
@@ -1190,14 +1187,14 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   try {
                     setIsShowingRewardedAd(true);
 
-                    // Persist form state before ad — Android may destroy Activity
-                    AsyncStorage.setItem('@rewarded_ad_destination', destination).catch(() => {});
-
                     // Fire-and-forget: don't await the ad show.
                     // Android may destroy the Activity during ad display,
                     // causing the await to never resolve or resolve in wrong context.
                     // The reward callback handles everything we need.
+                    // NOTE: @rewarded_ad_destination AsyncStorage removed — it caused
+                    // auto-unlock on next screen mount (V207 bug: "바로 잠금 해제됨").
                     showRewarded(() => {
+                      setRewardedAdCooldownUntil(Date.now() + REWARDED_COOLDOWN_MS);
                       setInsightsUnlocked(true);
                       setIsShowingRewardedAd(false);
                     }).catch(() => {
@@ -1210,12 +1207,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                         position: 'top',
                         duration: 3000,
                       });
-                      // Clean up persisted state since ad was not shown
-                      AsyncStorage.removeItem('@rewarded_ad_destination').catch(() => {});
                     });
                   } catch {
                     setIsShowingRewardedAd(false);
-                    AsyncStorage.removeItem('@rewarded_ad_destination').catch(() => {});
                   }
                 }}
                 disabled={isShowingRewardedAd}
