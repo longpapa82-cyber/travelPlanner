@@ -41,6 +41,7 @@ export interface OAuthUserData {
   name: string;
   profileImage?: string;
   provider: 'GOOGLE' | 'APPLE' | 'KAKAO';
+  appleRefreshToken?: string;
 }
 
 export interface PendingVerificationResponse {
@@ -508,6 +509,18 @@ export class AuthService {
         profileImage: oauthUser.profileImage,
         isEmailVerified: true,
       });
+    }
+
+    // Apple only sends refresh_token on the very first sign-in.
+    // Persist it for token revocation on account deletion (Guideline 5.1.1(v)).
+    if (
+      provider === AuthProvider.APPLE &&
+      oauthUser.appleRefreshToken
+    ) {
+      await this.usersService.updateAppleRefreshToken(
+        user.id,
+        oauthUser.appleRefreshToken,
+      );
     }
 
     this.updateLoginMetadata(user.id, userAgent);

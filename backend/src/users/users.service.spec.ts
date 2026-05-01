@@ -13,6 +13,7 @@ import {
 } from './entities/user.entity';
 import { UserConsent } from './entities/user-consent.entity';
 import { ConsentAuditLog } from './entities/consent-audit-log.entity';
+import { RevenueCatClient } from '../subscription/revenuecat.client';
 
 // Mock bcrypt
 jest.mock('bcrypt');
@@ -112,6 +113,10 @@ describe('UsersService', () => {
         {
           provide: CACHE_MANAGER,
           useValue: { get: jest.fn(), set: jest.fn(), del: jest.fn() },
+        },
+        {
+          provide: RevenueCatClient,
+          useValue: { deleteSubscriber: jest.fn().mockResolvedValue(true) },
         },
       ],
     }).compile();
@@ -502,7 +507,7 @@ describe('UsersService', () => {
       // Assert
       expect(repository.findOne).toHaveBeenCalledWith({
         where: { id: mockUser.id },
-        select: ['id', 'provider', 'passwordHash'],
+        select: ['id', 'provider', 'passwordHash', 'revenuecatAppUserId', 'appleRefreshToken'],
       });
       // The transaction primitive replaced the direct repository.delete
       // call; assert it was used by checking the mocked DataSource was

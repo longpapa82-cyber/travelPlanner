@@ -28,6 +28,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { t, SupportedLang } from '../common/i18n';
+import { RevenueCatClient } from '../subscription/revenuecat.client';
 
 // Max email verification code attempts before the code is invalidated and
 // the user must request a new one. Kept as a named constant so the
@@ -47,6 +48,7 @@ export class UsersService {
     private readonly auditLogRepository: Repository<ConsentAuditLog>,
     private readonly dataSource: DataSource,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private readonly rcClient: RevenueCatClient,
   ) {}
 
   async create(data: {
@@ -367,7 +369,7 @@ export class UsersService {
   async remove(id: string, password?: string): Promise<void> {
     const user = await this.userRepository.findOne({
       where: { id },
-      select: ['id', 'provider', 'passwordHash'],
+      select: ['id', 'provider', 'passwordHash', 'revenuecatAppUserId', 'appleRefreshToken'],
     });
     if (!user) throw new NotFoundException('User not found');
 
@@ -443,6 +445,93 @@ export class UsersService {
         }`,
       );
     }
+
+    // V210 (P0-2): RC subscriber DELETE — severs alias chain.
+    // V213 (P0-2 enhanced): mark $deleted_at attribute BEFORE delete so
+    // preflightPurchase can detect phantom entitlements if RC re-creates the
+    // subscriber from a still-active Google Play subscription (race window).
+    const rcId = user.revenuecatAppUserId ?? id;
+    try {
+      await this.rcClient.setSubscriberAttribute(
+        rcId,
+        '$deleted_at',
+        new Date().toISOString(),
+      );
+      await this.rcClient.deleteSubscriber(rcId);
+      this.logger.log(`[remove] RC subscriber marked+deleted for user=${id}`);
+    } catch (err) {
+      this.logger.warn(
+        `[remove] RC subscriber delete failed for user=${id} rcId=${rcId}: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
+    }
+
+    // iOS Guideline 5.1.1(v): revoke Apple refresh token on account deletion.
+    // fail-close: failure is logged but does not block the deletion.
+    if (user.provider === AuthProvider.APPLE) {
+      await this.revokeAppleToken(id);
+    }
+  }
+
+  async updateAppleRefreshToken(userId: string, refreshToken: string): Promise<void> {
+    await this.userRepository.update(userId, { appleRefreshToken: refreshToken });
+  }
+
+  private async revokeAppleToken(userId: string): Promise<void> {
+    const userWithToken = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'appleRefreshToken'],
+    });
+    if (!userWithToken?.appleRefreshToken) return;
+
+    try {
+      const clientSecret = this.generateAppleClientSecret();
+      const params = new URLSearchParams({
+        client_id: process.env.APPLE_CLIENT_ID ?? '',
+        client_secret: clientSecret,
+        token: userWithToken.appleRefreshToken,
+        token_type_hint: 'refresh_token',
+      });
+      const res = await fetch('https://appleid.apple.com/auth/revoke', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString(),
+      });
+      this.logger.log(`[remove] Apple token revoked for user=${userId} status=${res.status}`);
+    } catch (err) {
+      this.logger.warn(
+        `[remove] Apple token revoke failed for user=${userId}: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
+    }
+  }
+
+  private generateAppleClientSecret(): string {
+    const privateKey = process.env.APPLE_PRIVATE_KEY ?? '';
+    const teamId = process.env.APPLE_TEAM_ID ?? '';
+    const keyId = process.env.APPLE_KEY_ID ?? '';
+    const clientId = process.env.APPLE_CLIENT_ID ?? '';
+
+    // Apple requires a JWT signed with ES256, valid up to 6 months.
+    const header = Buffer.from(JSON.stringify({ alg: 'ES256', kid: keyId })).toString('base64url');
+    const now = Math.floor(Date.now() / 1000);
+    const payload = Buffer.from(JSON.stringify({
+      iss: teamId,
+      iat: now,
+      exp: now + 15_552_000, // 180 days
+      aud: 'https://appleid.apple.com',
+      sub: clientId,
+    })).toString('base64url');
+
+    const crypto = require('crypto') as typeof import('crypto');
+    const sign = crypto.createSign('SHA256');
+    sign.update(`${header}.${payload}`);
+    const sig = sign.sign({ key: privateKey, dsaEncoding: 'ieee-p1363' })
+      .toString('base64url');
+
+    return `${header}.${payload}.${sig}`;
   }
 
   async generateEmailVerificationToken(userId: string): Promise<string> {

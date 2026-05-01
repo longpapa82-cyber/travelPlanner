@@ -152,6 +152,9 @@ export class User {
   @Column({ type: 'varchar', nullable: true, select: false })
   paddleCustomerId?: string;
 
+  @Column({ type: 'text', nullable: true, select: false })
+  appleRefreshToken?: string;
+
   // Note: stripeCustomerId was migrated to paddleCustomerId in migration 1740400000000
   // stripeSubscriptionId was also removed from the database
 

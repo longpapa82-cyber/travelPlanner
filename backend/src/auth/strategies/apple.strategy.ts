@@ -34,7 +34,7 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
 
   validate(
     _accessToken: string,
-    _refreshToken: string,
+    refreshToken: string,
     profile: AppleProfile,
     done: VerifyCallback,
   ): void {
@@ -46,6 +46,9 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
       name: name ? `${name.firstName} ${name.lastName}` : 'Apple User',
       profileImage: null,
       provider: 'APPLE' as const,
+      // Apple only sends refresh_token on the very first sign-in.
+      // Store it so we can revoke it on account deletion (Guideline 5.1.1(v)).
+      appleRefreshToken: refreshToken || undefined,
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- passport VerifyCallback typing mismatch
