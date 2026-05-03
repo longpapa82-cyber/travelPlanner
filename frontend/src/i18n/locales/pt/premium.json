@@ -81,5 +81,26 @@
     "purchaseFailed": "A compra falhou. Por favor, tente novamente.",
     "restoreFailed": "A restauração falhou. Por favor, tente novamente.",
     "checkoutFailed": "Falha ao iniciar o checkout. Por favor, tente novamente."
+  },
+  "guards": {
+    "crossPlanBlockBody": "Sua assinatura {{currentPlan}} está ativa, então {{selectedPlan}} foi bloqueado. Verifique seu status no gerenciamento de assinaturas do Google Play.",
+    "rcEntitlementActiveBody": "Esta conta Google tem uma assinatura {{plan}} ativa. Verifique no gerenciamento de assinaturas do Google Play.",
+    "itemAlreadyOwnedBody": "Esta conta Google já possui uma assinatura. Verifique seu status atual no gerenciamento de assinaturas do Google Play.",
+    "googleAccountSubscribedTitle": "Já assinante",
+    "googleAccountSubscribedBody": "Esta conta Google tem uma assinatura ativa. Verifique no gerenciamento de assinaturas do Google Play.",
+    "manageSubscription": "Gerenciar assinatura",
+    "verificationUnavailableTitle": "Verificação falhou",
+    "verificationUnavailableBody": "Não foi possível verificar o status da assinatura. Tente novamente mais tarde.",
+    "alreadySubscribedTitle": "Já assinado",
+    "alreadySubscribedSameplan": "Você já assinou o plano {{plan}}. A compra foi bloqueada para evitar cobrança duplicada.",
+    "planSwitchConfirmTitle": "Trocar plano",
+    "planSwitchConfirmMessage": "Você está atualmente no {{currentPlan}}. Mudar para {{newPlan}}? Seu novo plano entrará em vigor na próxima data de faturamento.",
+    "planSwitchConfirmYes": "Trocar",
+    "planSwitchConfirmNo": "Cancelar",
+    "syncingAfterPurchase": "Confirmando pagamento..."
+  },
+  "planNames": {
+    "monthly": "Mensal",
+    "yearly": "Anual"
   }
 }

@@ -195,6 +195,18 @@ const RootNavigator = () => {
     };
   }, []);
 
+  // Clear persisted nav state when user identity changes so a different
+  // account never inherits the previous session's navigation stack
+  // (e.g. admin ErrorLog screen visible to a non-admin user).
+  const prevUserIdRef = useRef<string | null | undefined>(undefined);
+  useEffect(() => {
+    const currentId = user?.id ?? null;
+    if (prevUserIdRef.current !== undefined && prevUserIdRef.current !== currentId) {
+      AsyncStorage.removeItem(NAV_STATE_KEY).catch(() => {});
+    }
+    prevUserIdRef.current = currentId;
+  }, [user?.id]);
+
   // V141 fix: When the user is authenticated and doesn't need consent,
   // the pushRegistrationCallback bridge may have been missed (race condition
   // during mount). Trigger pre-permission directly once the user lands on

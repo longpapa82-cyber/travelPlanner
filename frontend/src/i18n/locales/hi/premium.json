@@ -81,5 +81,26 @@
     "purchaseFailed": "खरीदारी विफल हुई। कृपया फिर से प्रयास करें।",
     "restoreFailed": "पुनर्स्थापना विफल हुई। कृपया फिर से प्रयास करें।",
     "checkoutFailed": "चेकआउट शुरू करने में विफल। कृपया फिर से प्रयास करें।"
+  },
+  "guards": {
+    "crossPlanBlockBody": "आपकी {{currentPlan}} सदस्यता सक्रिय है, इसलिए {{selectedPlan}} ब्लॉक हो गई। Google Play सदस्यता प्रबंधन में अपनी स्थिति जांचें।",
+    "rcEntitlementActiveBody": "इस Google खाते पर {{plan}} सदस्यता सक्रिय है। Google Play सदस्यता प्रबंधन में जांचें।",
+    "itemAlreadyOwnedBody": "इस Google खाते में पहले से एक सदस्यता है। Google Play सदस्यता प्रबंधन में अपनी वर्तमान स्थिति जांचें।",
+    "googleAccountSubscribedTitle": "पहले से सदस्य",
+    "googleAccountSubscribedBody": "इस Google खाते पर एक सदस्यता सक्रिय है। Google Play सदस्यता प्रबंधन में जांचें।",
+    "manageSubscription": "सदस्यता प्रबंधित करें",
+    "verificationUnavailableTitle": "सत्यापन विफल",
+    "verificationUnavailableBody": "सदस्यता स्थिति सत्यापित नहीं हो सकी। कृपया बाद में पुनः प्रयास करें।",
+    "alreadySubscribedTitle": "पहले से सदस्यता ली हुई है",
+    "alreadySubscribedSameplan": "आप पहले से {{plan}} प्लान के सदस्य हैं। डुप्लीकेट बिलिंग से बचने के लिए खरीदारी रोकी गई।",
+    "planSwitchConfirmTitle": "प्लान बदलें",
+    "planSwitchConfirmMessage": "आप वर्तमान में {{currentPlan}} पर हैं। {{newPlan}} पर स्विच करें? आपका नया प्लान अगली बिलिंग तिथि पर लागू होगा।",
+    "planSwitchConfirmYes": "बदलें",
+    "planSwitchConfirmNo": "रद्द करें",
+    "syncingAfterPurchase": "भुगतान की पुष्टि हो रही है..."
+  },
+  "planNames": {
+    "monthly": "मासिक",
+    "yearly": "वार्षिक"
   }
 }

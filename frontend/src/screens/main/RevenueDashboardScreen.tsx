@@ -20,6 +20,7 @@ import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
 import apiService from '../../services/api';
+import { usePremium } from '../../contexts/PremiumContext';
 
 interface SubscriptionStats {
   total: { active: number; revenue: number; mrr: number };
@@ -33,9 +34,14 @@ const SUBSCRIPTION_PLATFORMS: Record<string, { icon: string; color: string; labe
   android: { icon: 'google-play', color: '#34A853', label: 'Google (Android)' },
 };
 
-const RevenueDashboardScreen = () => {
+const RevenueDashboardScreen = ({ navigation }: any) => {
   const { t } = useTranslation(['profile', 'admin']);
   const { theme, isDark } = useTheme();
+  const { isAdmin } = usePremium();
+
+  React.useEffect(() => {
+    if (!isAdmin) navigation.goBack();
+  }, [isAdmin, navigation]);
 
   const [subStats, setSubStats] = useState<SubscriptionStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);

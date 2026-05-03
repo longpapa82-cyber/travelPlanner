@@ -81,5 +81,26 @@
     "purchaseFailed": "L'achat a échoué. Veuillez réessayer.",
     "restoreFailed": "La restauration a échoué. Veuillez réessayer.",
     "checkoutFailed": "Impossible de démarrer le paiement. Veuillez réessayer."
+  },
+  "guards": {
+    "crossPlanBlockBody": "Votre abonnement {{currentPlan}} est actif, donc {{selectedPlan}} est bloqué. Vérifiez votre statut dans la gestion des abonnements Google Play.",
+    "rcEntitlementActiveBody": "Ce compte Google a un abonnement {{plan}} actif. Vérifiez-le dans la gestion des abonnements Google Play.",
+    "itemAlreadyOwnedBody": "Ce compte Google a déjà un abonnement. Vérifiez votre statut dans la gestion des abonnements Google Play.",
+    "googleAccountSubscribedTitle": "Déjà abonné",
+    "googleAccountSubscribedBody": "Ce compte Google a un abonnement actif. Vérifiez-le dans la gestion des abonnements Google Play.",
+    "manageSubscription": "Gérer l'abonnement",
+    "verificationUnavailableTitle": "Vérification impossible",
+    "verificationUnavailableBody": "Impossible de vérifier le statut de l'abonnement. Veuillez réessayer plus tard.",
+    "alreadySubscribedTitle": "Déjà abonné",
+    "alreadySubscribedSameplan": "Vous êtes déjà sur le plan {{plan}}. L'achat a été bloqué pour éviter une double facturation.",
+    "planSwitchConfirmTitle": "Changer de plan",
+    "planSwitchConfirmMessage": "Vous êtes actuellement sur {{currentPlan}}. Passer à {{newPlan}} ? Votre nouveau plan prendra effet à la prochaine date de facturation.",
+    "planSwitchConfirmYes": "Changer",
+    "planSwitchConfirmNo": "Annuler",
+    "syncingAfterPurchase": "Confirmation du paiement..."
+  },
+  "planNames": {
+    "monthly": "Mensuel",
+    "yearly": "Annuel"
   }
 }

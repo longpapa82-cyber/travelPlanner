@@ -81,5 +81,26 @@
     "purchaseFailed": "فشلت عملية الشراء. يرجى المحاولة مرة أخرى.",
     "restoreFailed": "فشلت عملية الاستعادة. يرجى المحاولة مرة أخرى.",
     "checkoutFailed": "فشل بدء عملية الدفع. يرجى المحاولة مرة أخرى."
+  },
+  "guards": {
+    "crossPlanBlockBody": "اشتراكك {{currentPlan}} نشط، لذا تم حظر {{selectedPlan}}. تحقق من حالتك في إدارة الاشتراكات على Google Play.",
+    "rcEntitlementActiveBody": "حساب Google هذا لديه اشتراك {{plan}} نشط. تحقق منه في إدارة اشتراكات Google Play.",
+    "itemAlreadyOwnedBody": "هذا حساب Google لديه اشتراك بالفعل. تحقق من حالتك الحالية في إدارة اشتراكات Google Play.",
+    "googleAccountSubscribedTitle": "مشترك بالفعل",
+    "googleAccountSubscribedBody": "حساب Google هذا لديه اشتراك نشط. تحقق منه في إدارة اشتراكات Google Play.",
+    "manageSubscription": "إدارة الاشتراك",
+    "verificationUnavailableTitle": "فشل التحقق",
+    "verificationUnavailableBody": "تعذر التحقق من حالة الاشتراك. يرجى المحاولة مرة أخرى لاحقاً.",
+    "alreadySubscribedTitle": "مشترك بالفعل",
+    "alreadySubscribedSameplan": "أنت مشترك بالفعل في خطة {{plan}}. تم حظر الشراء لمنع الفواتير المزدوجة.",
+    "planSwitchConfirmTitle": "تغيير الخطة",
+    "planSwitchConfirmMessage": "أنت حالياً على {{currentPlan}}. التبديل إلى {{newPlan}}؟ ستدخل خطتك الجديدة حيز التنفيذ في تاريخ الفاتورة التالية.",
+    "planSwitchConfirmYes": "تغيير",
+    "planSwitchConfirmNo": "إلغاء",
+    "syncingAfterPurchase": "جارٍ تأكيد الدفع..."
+  },
+  "planNames": {
+    "monthly": "شهري",
+    "yearly": "سنوي"
   }
 }

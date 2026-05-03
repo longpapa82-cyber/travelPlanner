@@ -81,5 +81,26 @@
     "purchaseFailed": "Pembelian gagal. Sila cuba lagi.",
     "restoreFailed": "Pemulihan gagal. Sila cuba lagi.",
     "checkoutFailed": "Gagal memulakan pembayaran. Sila cuba lagi."
+  },
+  "guards": {
+    "crossPlanBlockBody": "Langganan {{currentPlan}} anda aktif, oleh itu {{selectedPlan}} disekat. Semak status anda dalam pengurusan langganan Google Play.",
+    "rcEntitlementActiveBody": "Akaun Google ini mempunyai langganan {{plan}} yang aktif. Semak dalam pengurusan langganan Google Play.",
+    "itemAlreadyOwnedBody": "Akaun Google ini sudah mempunyai langganan. Semak status semasa anda dalam pengurusan langganan Google Play.",
+    "googleAccountSubscribedTitle": "Sudah Melanggan",
+    "googleAccountSubscribedBody": "Akaun Google ini mempunyai langganan aktif. Semak dalam pengurusan langganan Google Play.",
+    "manageSubscription": "Urus Langganan",
+    "verificationUnavailableTitle": "Pengesahan Gagal",
+    "verificationUnavailableBody": "Tidak dapat mengesahkan status langganan. Sila cuba lagi kemudian.",
+    "alreadySubscribedTitle": "Sudah melanggan",
+    "alreadySubscribedSameplan": "Anda sudah melanggan pelan {{plan}}. Pembelian disekat untuk mengelakkan bil berganda.",
+    "planSwitchConfirmTitle": "Tukar pelan",
+    "planSwitchConfirmMessage": "Anda kini berada pada {{currentPlan}}. Tukar ke {{newPlan}}? Pelan baru anda akan berkuat kuasa pada tarikh bil seterusnya.",
+    "planSwitchConfirmYes": "Tukar",
+    "planSwitchConfirmNo": "Batal",
+    "syncingAfterPurchase": "Mengesahkan pembayaran..."
+  },
+  "planNames": {
+    "monthly": "Bulanan",
+    "yearly": "Tahunan"
   }
 }

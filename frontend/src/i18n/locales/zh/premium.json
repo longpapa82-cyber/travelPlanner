@@ -81,5 +81,26 @@
     "purchaseFailed": "购买失败。请重试。",
     "restoreFailed": "恢复失败。请重试。",
     "checkoutFailed": "无法开始结账。请重试。"
+  },
+  "guards": {
+    "crossPlanBlockBody": "您的{{currentPlan}}订阅已激活，因此{{selectedPlan}}订阅被阻止。请在Google Play订阅管理中查看当前状态。",
+    "rcEntitlementActiveBody": "此Google账户已有{{plan}}订阅。请在Google Play订阅管理中查看。",
+    "itemAlreadyOwnedBody": "此Google账户已有订阅。请在Google Play订阅管理中查看当前状态。",
+    "googleAccountSubscribedTitle": "已订阅",
+    "googleAccountSubscribedBody": "此Google账户已有订阅。请在Google Play订阅管理中查看。",
+    "manageSubscription": "管理订阅",
+    "verificationUnavailableTitle": "验证失败",
+    "verificationUnavailableBody": "无法验证订阅状态，请稍后重试。",
+    "alreadySubscribedTitle": "已订阅",
+    "alreadySubscribedSameplan": "您已订阅 {{plan}} 套餐。为防止重复计费，购买已被阻止。",
+    "planSwitchConfirmTitle": "切换套餐",
+    "planSwitchConfirmMessage": "您当前订阅的是 {{currentPlan}}。切换到 {{newPlan}}？新套餐将在下次扣款日生效。",
+    "planSwitchConfirmYes": "切换",
+    "planSwitchConfirmNo": "取消",
+    "syncingAfterPurchase": "确认付款中..."
+  },
+  "planNames": {
+    "monthly": "月度",
+    "yearly": "年度"
   }
 }

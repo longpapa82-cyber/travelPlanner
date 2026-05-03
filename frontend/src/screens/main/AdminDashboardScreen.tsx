@@ -7,6 +7,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
 import { ProfileStackParamList } from '../../types';
 import apiService from '../../services/api';
+import { usePremium } from '../../contexts/PremiumContext';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'AdminDashboard'>;
 
@@ -30,6 +31,11 @@ const MENU_ITEMS = [
 const AdminDashboardScreen: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation('admin');
   const { isDark, theme } = useTheme();
+  const { isAdmin } = usePremium();
+
+  React.useEffect(() => {
+    if (!isAdmin) navigation.goBack();
+  }, [isAdmin, navigation]);
   const styles = createStyles(theme, isDark);
   const [aiMetrics, setAiMetrics] = useState<AiMetrics | null>(null);
 

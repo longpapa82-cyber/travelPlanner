@@ -81,5 +81,26 @@
     "purchaseFailed": "การซื้อล้มเหลว กรุณาลองอีกครั้ง",
     "restoreFailed": "การกู้คืนล้มเหลว กรุณาลองอีกครั้ง",
     "checkoutFailed": "ไม่สามารถเริ่มการชำระเงินได้ กรุณาลองอีกครั้ง"
+  },
+  "guards": {
+    "crossPlanBlockBody": "การสมัครสมาชิก{{currentPlan}}ของคุณยังใช้งานอยู่ ดังนั้น{{selectedPlan}}จึงถูกบล็อก ตรวจสอบสถานะของคุณใน Google Play",
+    "rcEntitlementActiveBody": "บัญชี Google นี้มีการสมัครสมาชิก{{plan}}ที่ใช้งานอยู่ ตรวจสอบได้ใน Google Play",
+    "itemAlreadyOwnedBody": "บัญชี Google นี้มีการสมัครสมาชิกอยู่แล้ว ตรวจสอบสถานะปัจจุบันใน Google Play",
+    "googleAccountSubscribedTitle": "สมัครสมาชิกแล้ว",
+    "googleAccountSubscribedBody": "บัญชี Google นี้มีการสมัครสมาชิกที่ใช้งานอยู่ ตรวจสอบได้ใน Google Play",
+    "manageSubscription": "จัดการการสมัครสมาชิก",
+    "verificationUnavailableTitle": "การยืนยันล้มเหลว",
+    "verificationUnavailableBody": "ไม่สามารถยืนยันสถานะการสมัครสมาชิกได้ กรุณาลองใหม่ภายหลัง",
+    "alreadySubscribedTitle": "สมัครแล้ว",
+    "alreadySubscribedSameplan": "คุณสมัครแพ็กเกจ {{plan}} แล้ว การซื้อถูกบล็อกเพื่อป้องกันการเรียกเก็บเงินซ้ำ",
+    "planSwitchConfirmTitle": "เปลี่ยนแพ็กเกจ",
+    "planSwitchConfirmMessage": "ปัจจุบันคุณใช้ {{currentPlan}} เปลี่ยนเป็น {{newPlan}} ไหม? แพ็กเกจใหม่จะมีผลในวันเรียกเก็บเงินถัดไป",
+    "planSwitchConfirmYes": "เปลี่ยน",
+    "planSwitchConfirmNo": "ยกเลิก",
+    "syncingAfterPurchase": "กำลังยืนยันการชำระเงิน..."
+  },
+  "planNames": {
+    "monthly": "รายเดือน",
+    "yearly": "รายปี"
   }
 }

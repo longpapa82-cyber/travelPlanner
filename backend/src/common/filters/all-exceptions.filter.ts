@@ -224,10 +224,11 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       '/auth/login',
       '/auth/verify-email',
       '/auth/reset-password',
+      '/auth/oauth',
     ];
     if (authPaths.some((p) => path.includes(p))) {
-      // Log auth failures (401, 403) and validation errors (400)
-      if ([400, 401, 403].includes(status)) return true;
+      // Log auth failures (400, 401, 403, 409) and validation errors
+      if ([400, 401, 403, 409].includes(status)) return true;
     }
 
     // Log admin access attempts

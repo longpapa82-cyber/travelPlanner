@@ -81,5 +81,26 @@
     "purchaseFailed": "Покупка не удалась. Пожалуйста, попробуйте еще раз.",
     "restoreFailed": "Восстановление не удалось. Пожалуйста, попробуйте еще раз.",
     "checkoutFailed": "Не удалось начать оформление заказа. Пожалуйста, попробуйте еще раз."
+  },
+  "guards": {
+    "crossPlanBlockBody": "Ваша подписка {{currentPlan}} активна, поэтому {{selectedPlan}} заблокирована. Проверьте статус в управлении подписками Google Play.",
+    "rcEntitlementActiveBody": "На этом аккаунте Google активна подписка {{plan}}. Проверьте в управлении подписками Google Play.",
+    "itemAlreadyOwnedBody": "На этом аккаунте Google уже есть подписка. Проверьте текущий статус в управлении подписками Google Play.",
+    "googleAccountSubscribedTitle": "Уже подписан",
+    "googleAccountSubscribedBody": "На этом аккаунте Google есть активная подписка. Проверьте в управлении подписками Google Play.",
+    "manageSubscription": "Управление подпиской",
+    "verificationUnavailableTitle": "Ошибка проверки",
+    "verificationUnavailableBody": "Не удалось проверить статус подписки. Повторите попытку позже.",
+    "alreadySubscribedTitle": "Уже подписан",
+    "alreadySubscribedSameplan": "Вы уже подписаны на план {{plan}}. Покупка заблокирована во избежание двойного списания.",
+    "planSwitchConfirmTitle": "Сменить план",
+    "planSwitchConfirmMessage": "Вы сейчас на плане {{currentPlan}}. Перейти на {{newPlan}}? Новый план вступит в силу в следующую дату выставления счёта.",
+    "planSwitchConfirmYes": "Сменить",
+    "planSwitchConfirmNo": "Отмена",
+    "syncingAfterPurchase": "Подтверждение оплаты..."
+  },
+  "planNames": {
+    "monthly": "Ежемесячно",
+    "yearly": "Ежегодно"
   }
 }

@@ -81,5 +81,26 @@
     "purchaseFailed": "Mua hàng thất bại. Vui lòng thử lại.",
     "restoreFailed": "Khôi phục thất bại. Vui lòng thử lại.",
     "checkoutFailed": "Không thể bắt đầu thanh toán. Vui lòng thử lại."
+  },
+  "guards": {
+    "crossPlanBlockBody": "Gói {{currentPlan}} của bạn đang hoạt động nên {{selectedPlan}} bị chặn. Kiểm tra trạng thái của bạn trong Quản lý đăng ký Google Play.",
+    "rcEntitlementActiveBody": "Tài khoản Google này có đăng ký {{plan}} đang hoạt động. Kiểm tra trong Quản lý đăng ký Google Play.",
+    "itemAlreadyOwnedBody": "Tài khoản Google này đã có đăng ký. Kiểm tra trạng thái hiện tại của bạn trong Quản lý đăng ký Google Play.",
+    "googleAccountSubscribedTitle": "Đã đăng ký",
+    "googleAccountSubscribedBody": "Tài khoản Google này có đăng ký đang hoạt động. Kiểm tra trong Quản lý đăng ký Google Play.",
+    "manageSubscription": "Quản lý đăng ký",
+    "verificationUnavailableTitle": "Xác minh thất bại",
+    "verificationUnavailableBody": "Không thể xác minh trạng thái đăng ký. Vui lòng thử lại sau.",
+    "alreadySubscribedTitle": "Đã đăng ký",
+    "alreadySubscribedSameplan": "Bạn đã đăng ký gói {{plan}}. Mua hàng đã bị chặn để tránh thanh toán trùng lặp.",
+    "planSwitchConfirmTitle": "Đổi gói",
+    "planSwitchConfirmMessage": "Bạn đang dùng {{currentPlan}}. Chuyển sang {{newPlan}}? Gói mới sẽ có hiệu lực vào ngày thanh toán tiếp theo.",
+    "planSwitchConfirmYes": "Đổi",
+    "planSwitchConfirmNo": "Hủy",
+    "syncingAfterPurchase": "Đang xác nhận thanh toán..."
+  },
+  "planNames": {
+    "monthly": "Hàng tháng",
+    "yearly": "Hàng năm"
   }
 }

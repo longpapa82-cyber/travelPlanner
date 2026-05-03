@@ -10,6 +10,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
 import { ProfileStackParamList } from '../../types';
 import apiService from '../../services/api';
+import { usePremium } from '../../contexts/PremiumContext';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'ErrorLog'>;
 
@@ -19,9 +20,14 @@ const SEVERITY_COLORS: Record<string, string> = {
   fatal: '#DC2626',
 };
 
-const ErrorLogScreen: React.FC<Props> = () => {
+const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation('admin');
   const { isDark, theme } = useTheme();
+  const { isAdmin } = usePremium();
+
+  useEffect(() => {
+    if (!isAdmin) navigation.goBack();
+  }, [isAdmin, navigation]);
 
   const [stats, setStats] = useState<any>(null);
   const [logs, setLogs] = useState<any[]>([]);

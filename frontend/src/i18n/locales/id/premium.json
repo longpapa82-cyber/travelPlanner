@@ -81,5 +81,26 @@
     "purchaseFailed": "Pembelian gagal. Silakan coba lagi.",
     "restoreFailed": "Pemulihan gagal. Silakan coba lagi.",
     "checkoutFailed": "Gagal memulai checkout. Silakan coba lagi."
+  },
+  "guards": {
+    "crossPlanBlockBody": "Langganan {{currentPlan}} Anda aktif, sehingga {{selectedPlan}} diblokir. Periksa status Anda di pengelolaan langganan Google Play.",
+    "rcEntitlementActiveBody": "Akun Google ini memiliki langganan {{plan}} aktif. Periksa di pengelolaan langganan Google Play.",
+    "itemAlreadyOwnedBody": "Akun Google ini sudah memiliki langganan. Periksa status Anda saat ini di pengelolaan langganan Google Play.",
+    "googleAccountSubscribedTitle": "Sudah Berlangganan",
+    "googleAccountSubscribedBody": "Akun Google ini memiliki langganan aktif. Periksa di pengelolaan langganan Google Play.",
+    "manageSubscription": "Kelola Langganan",
+    "verificationUnavailableTitle": "Verifikasi Gagal",
+    "verificationUnavailableBody": "Tidak dapat memverifikasi status langganan. Silakan coba lagi nanti.",
+    "alreadySubscribedTitle": "Sudah berlangganan",
+    "alreadySubscribedSameplan": "Anda sudah berlangganan paket {{plan}}. Pembelian diblokir untuk mencegah tagihan ganda.",
+    "planSwitchConfirmTitle": "Ganti paket",
+    "planSwitchConfirmMessage": "Anda saat ini berlangganan {{currentPlan}}. Beralih ke {{newPlan}}? Paket baru Anda akan berlaku pada tanggal tagihan berikutnya.",
+    "planSwitchConfirmYes": "Ganti",
+    "planSwitchConfirmNo": "Batal",
+    "syncingAfterPurchase": "Mengonfirmasi pembayaran..."
+  },
+  "planNames": {
+    "monthly": "Bulanan",
+    "yearly": "Tahunan"
   }
 }

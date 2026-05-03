@@ -81,5 +81,26 @@
     "purchaseFailed": "Acquisto fallito. Si prega di riprovare.",
     "restoreFailed": "Ripristino fallito. Si prega di riprovare.",
     "checkoutFailed": "Impossibile avviare il checkout. Si prega di riprovare."
+  },
+  "guards": {
+    "crossPlanBlockBody": "Il tuo abbonamento {{currentPlan}} è attivo, quindi {{selectedPlan}} è bloccato. Controlla il tuo stato in Gestione abbonamenti Google Play.",
+    "rcEntitlementActiveBody": "Questo account Google ha un abbonamento {{plan}} attivo. Controlla in Gestione abbonamenti Google Play.",
+    "itemAlreadyOwnedBody": "Questo account Google ha già un abbonamento. Controlla il tuo stato attuale in Gestione abbonamenti Google Play.",
+    "googleAccountSubscribedTitle": "Già abbonato",
+    "googleAccountSubscribedBody": "Questo account Google ha un abbonamento attivo. Controlla in Gestione abbonamenti Google Play.",
+    "manageSubscription": "Gestisci abbonamento",
+    "verificationUnavailableTitle": "Verifica non riuscita",
+    "verificationUnavailableBody": "Impossibile verificare lo stato dell'abbonamento. Riprova più tardi.",
+    "alreadySubscribedTitle": "Già abbonato",
+    "alreadySubscribedSameplan": "Sei già abbonato al piano {{plan}}. L'acquisto è stato bloccato per evitare addebiti doppi.",
+    "planSwitchConfirmTitle": "Cambia piano",
+    "planSwitchConfirmMessage": "Sei attualmente su {{currentPlan}}. Passare a {{newPlan}}? Il nuovo piano entrerà in vigore alla prossima data di fatturazione.",
+    "planSwitchConfirmYes": "Cambia",
+    "planSwitchConfirmNo": "Annulla",
+    "syncingAfterPurchase": "Conferma pagamento in corso..."
+  },
+  "planNames": {
+    "monthly": "Mensile",
+    "yearly": "Annuale"
   }
 }

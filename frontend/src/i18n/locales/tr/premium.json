@@ -81,5 +81,26 @@
     "purchaseFailed": "Satın alma başarısız oldu. Lütfen tekrar deneyin.",
     "restoreFailed": "Geri yükleme başarısız oldu. Lütfen tekrar deneyin.",
     "checkoutFailed": "Ödeme başlatılamadı. Lütfen tekrar deneyin."
+  },
+  "guards": {
+    "crossPlanBlockBody": "{{currentPlan}} aboneliğiniz aktif olduğundan {{selectedPlan}} aboneliği engellendi. Google Play abonelik yönetiminde durumunuzu kontrol edin.",
+    "rcEntitlementActiveBody": "Bu Google hesabında {{plan}} aboneliği aktif. Google Play abonelik yönetiminde kontrol edin.",
+    "itemAlreadyOwnedBody": "Bu Google hesabında zaten bir abonelik var. Google Play abonelik yönetiminde mevcut durumunuzu kontrol edin.",
+    "googleAccountSubscribedTitle": "Zaten Abone",
+    "googleAccountSubscribedBody": "Bu Google hesabında aktif bir abonelik var. Google Play abonelik yönetiminde kontrol edin.",
+    "manageSubscription": "Aboneliği Yönet",
+    "verificationUnavailableTitle": "Doğrulama Başarısız",
+    "verificationUnavailableBody": "Abonelik durumu doğrulanamadı. Lütfen daha sonra tekrar deneyin.",
+    "alreadySubscribedTitle": "Zaten abone olundu",
+    "alreadySubscribedSameplan": "Zaten {{plan}} planına abonesiniz. Çift faturalamayı önlemek için satın alma engellendi.",
+    "planSwitchConfirmTitle": "Plan değiştir",
+    "planSwitchConfirmMessage": "Şu anda {{currentPlan}} planındasınız. {{newPlan}}'e geçmek ister misiniz? Yeni planınız bir sonraki fatura tarihinde geçerli olacak.",
+    "planSwitchConfirmYes": "Değiştir",
+    "planSwitchConfirmNo": "İptal",
+    "syncingAfterPurchase": "Ödeme onaylanıyor..."
+  },
+  "planNames": {
+    "monthly": "Aylık",
+    "yearly": "Yıllık"
   }
 }

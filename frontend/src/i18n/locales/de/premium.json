@@ -81,5 +81,26 @@
     "purchaseFailed": "Kauf fehlgeschlagen. Bitte versuchen Sie es erneut.",
     "restoreFailed": "Wiederherstellung fehlgeschlagen. Bitte versuchen Sie es erneut.",
     "checkoutFailed": "Checkout konnte nicht gestartet werden. Bitte versuchen Sie es erneut."
+  },
+  "guards": {
+    "crossPlanBlockBody": "Dein {{currentPlan}}-Abo ist aktiv, daher wurde {{selectedPlan}} blockiert. Prüfe deinen aktuellen Status in der Google Play-Aboverwaltung.",
+    "rcEntitlementActiveBody": "Auf diesem Google-Konto ist ein {{plan}}-Abo aktiv. Prüfe es in der Google Play-Aboverwaltung.",
+    "itemAlreadyOwnedBody": "Dieses Google-Konto hat bereits ein Abo. Prüfe den aktuellen Status in der Google Play-Aboverwaltung.",
+    "googleAccountSubscribedTitle": "Bereits abonniert",
+    "googleAccountSubscribedBody": "Auf diesem Google-Konto ist ein Abo aktiv. Prüfe es in der Google Play-Aboverwaltung.",
+    "manageSubscription": "Abos verwalten",
+    "verificationUnavailableTitle": "Überprüfung fehlgeschlagen",
+    "verificationUnavailableBody": "Der Abostatus konnte nicht überprüft werden. Bitte versuche es später erneut.",
+    "alreadySubscribedTitle": "Bereits abonniert",
+    "alreadySubscribedSameplan": "Sie haben bereits den {{plan}}-Plan abonniert. Der Kauf wurde blockiert, um doppelte Abrechnung zu verhindern.",
+    "planSwitchConfirmTitle": "Plan wechseln",
+    "planSwitchConfirmMessage": "Sie sind derzeit bei {{currentPlan}}. Zu {{newPlan}} wechseln? Ihr neuer Plan tritt zum nächsten Abrechnungsdatum in Kraft.",
+    "planSwitchConfirmYes": "Wechseln",
+    "planSwitchConfirmNo": "Abbrechen",
+    "syncingAfterPurchase": "Zahlung wird bestätigt..."
+  },
+  "planNames": {
+    "monthly": "Monatlich",
+    "yearly": "Jährlich"
   }
 }

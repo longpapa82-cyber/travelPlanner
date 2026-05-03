@@ -596,7 +596,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     // Exchange the one-time code for JWT tokens via secure API call
-    const authResponse: AuthResponse = await apiService.exchangeOAuthCode(result.code);
+    let authResponse: AuthResponse;
+    try {
+      authResponse = await apiService.exchangeOAuthCode(result.code);
+    } catch (err: any) {
+      // message field comes back as string[] from AllExceptionsFilter — normalise to string
+      const raw = err?.response?.data?.message;
+      const serverMsg: string = Array.isArray(raw) ? (raw[0] ?? '') : (raw ?? '');
+      if (serverMsg.startsWith('EMAIL_PROVIDER_CONFLICT:')) {
+        throw new Error(serverMsg);
+      }
+      throw err;
+    }
 
     // Store tokens
     await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, authResponse.accessToken);
@@ -641,6 +652,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
         return;
       } catch (error) {
+        const errorName = error instanceof Error ? error.name : 'UnknownError';
+        // GOOGLE_SIGNIN_CANCELLED is a user-initiated dismiss — not a real error, skip logging
+        if (errorName !== 'GOOGLE_SIGNIN_CANCELLED' && error instanceof Error && error.message !== 'GOOGLE_SIGNIN_CANCELLED') {
+          apiService.reportError({
+            errorName,
+            errorMessage: error instanceof Error ? error.message : String(error),
+            screen: 'LoginScreen',
+            severity: 'error',
+            deviceOS: Platform.OS,
+          }).catch(() => {});
+        }
         throw error;
       }
     }
@@ -650,6 +672,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await handleOAuthResult(result);
       trackEvent('login', { method: 'google' });
     } catch (error) {
+      const errorName = error instanceof Error ? error.name : 'UnknownError';
+      if (errorName !== 'GOOGLE_SIGNIN_CANCELLED' && error instanceof Error && error.message !== 'GOOGLE_SIGNIN_CANCELLED') {
+        apiService.reportError({
+          errorName,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          screen: 'LoginScreen',
+          severity: 'error',
+          deviceOS: Platform.OS,
+        }).catch(() => {});
+      }
       throw error;
     }
   };
@@ -660,6 +692,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await handleOAuthResult(result);
       trackEvent('login', { method: 'apple' });
     } catch (error) {
+      const errorName = error instanceof Error ? error.name : 'UnknownError';
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      // User-initiated cancels are not real errors — skip logging
+      if (errorMsg !== 'APPLE_SIGNIN_CANCELLED' && errorName !== 'APPLE_SIGNIN_CANCELLED') {
+        apiService.reportError({
+          errorName,
+          errorMessage: errorMsg,
+          screen: 'LoginScreen',
+          severity: 'error',
+          deviceOS: Platform.OS,
+        }).catch(() => {});
+      }
       throw error;
     }
   };
@@ -667,9 +711,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loginWithKakao = async () => {
     try {
       const result = await signInWithKakao();
+      if (!result) throw new Error('KAKAO_SIGNIN_CANCELLED');
       await handleOAuthResult(result);
       trackEvent('login', { method: 'kakao' });
     } catch (error) {
+      const errorName = error instanceof Error ? error.name : 'UnknownError';
+      // KAKAO_SIGNIN_CANCELLED is a user-initiated dismiss — not a real error, skip logging
+      if (errorName !== 'KAKAO_SIGNIN_CANCELLED' && error instanceof Error && error.message !== 'KAKAO_SIGNIN_CANCELLED') {
+        apiService.reportError({
+          errorName,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          screen: 'LoginScreen',
+          severity: 'error',
+          deviceOS: Platform.OS,
+        }).catch(() => {});
+      }
       throw error;
     }
   };

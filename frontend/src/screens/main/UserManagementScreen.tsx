@@ -10,6 +10,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
 import { ProfileStackParamList } from '../../types';
 import apiService from '../../services/api';
+import { usePremium } from '../../contexts/PremiumContext';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'UserManagement'>;
 
@@ -20,9 +21,14 @@ const PROVIDER_ICONS: Record<string, string> = {
   kakao: 'chat',
 };
 
-const UserManagementScreen: React.FC<Props> = () => {
+const UserManagementScreen: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation('admin');
   const { isDark, theme } = useTheme();
+  const { isAdmin } = usePremium();
+
+  React.useEffect(() => {
+    if (!isAdmin) navigation.goBack();
+  }, [isAdmin, navigation]);
 
   const [stats, setStats] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);

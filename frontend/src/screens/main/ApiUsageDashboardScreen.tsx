@@ -9,6 +9,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
 import { ProfileStackParamList } from '../../types';
 import apiService from '../../services/api';
+import { usePremium } from '../../contexts/PremiumContext';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'ApiUsageDashboard'>;
 
@@ -56,8 +57,13 @@ const PROVIDERS = ['openai', 'openai_embedding', 'locationiq', 'google_maps', 'o
 
 type PeriodKey = '7d' | '30d' | 'mtd';
 
-const ApiUsageDashboardScreen: React.FC<Props> = () => {
+const ApiUsageDashboardScreen: React.FC<Props> = ({ navigation }) => {
   const { isDark, theme } = useTheme();
+  const { isAdmin } = usePremium();
+
+  React.useEffect(() => {
+    if (!isAdmin) navigation.goBack();
+  }, [isAdmin, navigation]);
   const styles = createStyles(theme, isDark);
 
   const [summary, setSummary] = useState<Summary | null>(null);
