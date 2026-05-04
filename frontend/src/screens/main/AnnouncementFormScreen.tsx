@@ -19,6 +19,8 @@ import { ProfileStackParamList, AnnouncementAdmin } from '../../types';
 import apiService from '../../services/api';
 import { colors } from '../../constants/theme';
 import { getDateLocale } from '../../utils/dateLocale';
+// Top-level import required for New Architecture (lazy require() crashes on iOS)
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'AnnouncementForm'>;
 
@@ -84,9 +86,6 @@ const DateTimeField: React.FC<DateTimeFieldProps> = ({
       </View>
     );
   }
-
-  // Native: use @react-native-community/datetimepicker
-  const DateTimePicker = require('@react-native-community/datetimepicker').default;
 
   const openPicker = () => {
     setAndroidStep('date');

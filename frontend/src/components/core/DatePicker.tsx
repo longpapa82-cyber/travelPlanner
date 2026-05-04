@@ -13,6 +13,8 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
 import { getDateLocale } from '../../utils/dateLocale';
 import { formatLocalYmd } from '../../utils/dateFormat';
+// Top-level import required for New Architecture (lazy require() crashes on iOS)
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface DatePickerProps {
   label: string;
@@ -73,9 +75,6 @@ const DatePickerField: React.FC<DatePickerProps> = ({
       </View>
     );
   }
-
-  // Native: use modal with month/day scrollable picker
-  const DateTimePicker = require('@react-native-community/datetimepicker').default;
 
   return (
     <View style={[styles.container, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[0], borderColor: isDark ? colors.neutral[700] : colors.neutral[200] }]}>
@@ -139,7 +138,7 @@ const DatePickerField: React.FC<DatePickerProps> = ({
                   }
                 }}
                 locale={getDateLocale()}
-                style={{ height: 200 }}
+                style={{ height: 216, width: '100%' }}
               />
             </View>
           </View>

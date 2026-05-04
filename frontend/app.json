@@ -65,7 +65,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.longpapa82.travelplanner",
-      "buildNumber": "1",
+      "buildNumber": "4",
       "usesAppleSignIn": true,
       "associatedDomains": [
         "applinks:mytravel-planner.com"
@@ -79,7 +79,8 @@
           }
         ],
         "NSUserTrackingUsageDescription": "This allows us to show you personalized travel deals and offers.",
-        "NSPhotoLibraryUsageDescription": "MyTravel needs access to your photo library to add photos to your trips."
+        "NSPhotoLibraryUsageDescription": "MyTravel needs access to your photo library to add photos to your trips.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     }
   }

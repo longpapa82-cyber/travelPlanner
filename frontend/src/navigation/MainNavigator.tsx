@@ -126,8 +126,8 @@ const MainNavigator = () => {
           backgroundColor: isDark ? darkColors.background.secondary : colors.neutral[0],
           borderTopWidth: 1,
           borderTopColor: isDark ? darkColors.border.light : colors.neutral[200],
-          paddingBottom: Platform.OS === 'android' ? Math.max(insets.bottom, 5) : 5,
-          height: 60 + (Platform.OS === 'android' ? Math.max(insets.bottom, 0) : 0),
+          paddingBottom: Platform.OS === 'ios' ? Math.max(insets.bottom, 8) : Math.max(insets.bottom, 5),
+          height: 60 + Math.max(insets.bottom, 0),
         },
         headerStyle: {
           backgroundColor: theme.colors.primary,

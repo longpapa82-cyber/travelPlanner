@@ -241,7 +241,7 @@ function App() {
     Platform.OS === 'web' && window.location.pathname === '/auth/callback';
 
   useEffect(() => {
-    // Skip full app init if we're handling the OAuth callback
+    // Skip full app init if we're handling the OAuth callback (web only)
     if (isWebOAuthCallback) {
       setAppReady(true);
       return;
