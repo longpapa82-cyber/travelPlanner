@@ -97,7 +97,15 @@ export default ({ config }) => ({
     './plugins/withDisableWebViewAutofill',
     'expo-web-browser',
     'expo-apple-authentication',
-    '@react-native-google-signin/google-signin',
+    [
+      '@react-native-google-signin/google-signin',
+      {
+        // iOS: registers the reversed client ID as a URL scheme so the
+        // Google Sign-In SDK can redirect back to the app after auth.
+        // Without this, iOS crashes after account selection (no callback URL scheme).
+        iosUrlScheme: 'com.googleusercontent.apps.48805541090-9gh3sp9asspe3d1et4er2pqpihm2bg47',
+      },
+    ],
     [
       'expo-notifications',
       {

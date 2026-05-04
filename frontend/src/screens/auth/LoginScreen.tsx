@@ -271,6 +271,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoComplete="off"
                 importantForAutofill="no"
+                textContentType="none"
                 editable={!isLoading}
                 accessibilityLabel={t('login.password')}
               />

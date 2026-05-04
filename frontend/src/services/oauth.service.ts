@@ -48,18 +48,18 @@ export async function signInWithOAuth(
     // which URL scheme to watch for to auto-dismiss.
     const redirectUri = makeRedirectUri();
 
-    // Android + Kakao: when the Kakao native app handles the auth, the Custom
-    // Tab is dismissed immediately (result.type = 'dismiss') before the callback
-    // URL arrives. We listen for the deeplink in parallel so whichever channel
-    // delivers the callback URL first — Custom Tab success *or* native app
-    // redirect — resolves the race. A 30 s timeout guards against indefinite hangs.
+    // Android + iOS + Kakao: when the Kakao native app handles the auth, the
+    // Custom Tab / SFSafariViewController is dismissed immediately
+    // (result.type = 'dismiss') before the callback URL arrives via deeplink.
+    // We listen for the deeplink in parallel so whichever channel delivers
+    // the callback URL first resolves the race. A 30s timeout guards against hangs.
     const cleanups: Array<() => void> = [];
 
     const browserPromise = WebBrowser.openAuthSessionAsync(authUrl, redirectUri, {
       showInRecents: false,
     });
 
-    const deeplinkPromise = Platform.OS === 'android'
+    const deeplinkPromise = (Platform.OS === 'android' || Platform.OS === 'ios')
       ? new Promise<string | null>((resolve) => {
           const timer = setTimeout(() => resolve(null), 30_000);
           const sub = Linking.addEventListener('url', ({ url }) => {
@@ -147,8 +147,59 @@ export async function signInWithGoogle(): Promise<OAuthResult | null> {
   return signInWithOAuth('google');
 }
 
+export interface AppleNativeResult {
+  identityToken: string;
+  fullName?: string;
+}
+
 /**
- * Apple Sign-In
+ * Apple Sign-In — uses native expo-apple-authentication SDK on iOS.
+ * Returns identityToken directly so the backend can verify it via
+ * POST /auth/apple/token without a web OAuth redirect flow.
+ */
+export async function signInWithAppleNative(): Promise<AppleNativeResult | null> {
+  if (Platform.OS !== 'ios') {
+    throw new Error('Apple Sign-In is only available on iOS');
+  }
+
+  const AppleAuthentication = await import('expo-apple-authentication');
+
+  const isAvailable = await AppleAuthentication.isAvailableAsync();
+  if (!isAvailable) {
+    throw new Error('Apple Sign-In is not available on this device');
+  }
+
+  try {
+    const credential = await AppleAuthentication.signInAsync({
+      requestedScopes: [
+        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        AppleAuthentication.AppleAuthenticationScope.EMAIL,
+      ],
+    });
+
+    if (!credential.identityToken) {
+      return null;
+    }
+
+    const fullName = [
+      credential.fullName?.givenName,
+      credential.fullName?.familyName,
+    ]
+      .filter(Boolean)
+      .join(' ') || undefined;
+
+    return { identityToken: credential.identityToken, fullName };
+  } catch (error: unknown) {
+    const code = (error as { code?: string })?.code;
+    if (code === 'ERR_REQUEST_CANCELED') {
+      throw new Error('APPLE_SIGNIN_CANCELLED');
+    }
+    throw error;
+  }
+}
+
+/**
+ * Apple Sign-In (kept for web compatibility)
  */
 export async function signInWithApple(): Promise<OAuthResult | null> {
   if (Platform.OS !== 'ios') {

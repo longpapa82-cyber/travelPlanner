@@ -178,6 +178,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 34,
+    // Explicit height ensures the spinner (216px) is not clipped on iOS
+    minHeight: 320,
   },
   modalHeader: {
     flexDirection: 'row',
