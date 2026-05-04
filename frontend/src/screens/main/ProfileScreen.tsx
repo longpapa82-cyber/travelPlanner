@@ -189,7 +189,43 @@ const ProfileScreen = ({ navigation }: any) => {
   const [deletePassword, setDeletePassword] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const showPlaySubscriptionWarningIfNeeded = async (): Promise<boolean> => {
+    if (!isPremium) return true;
+    return new Promise((resolve) => {
+      Alert.alert(
+        t('deleteAccount.playSubscriptionWarning.title', { defaultValue: '구독 취소 필요' }),
+        t('deleteAccount.playSubscriptionWarning.message', {
+          defaultValue:
+            '회원탈퇴 후에도 Google Play 정기결제는 자동으로 취소되지 않습니다.\n\n' +
+            '계속 요금이 청구되지 않도록 반드시 Play Store에서 구독을 취소해주세요.',
+        }),
+        [
+          {
+            text: t('deleteAccount.playSubscriptionWarning.openPlayStore', { defaultValue: 'Play Store에서 취소하기' }),
+            onPress: () => {
+              Linking.openURL(
+                'https://play.google.com/store/account/subscriptions?package=com.longpapa82.travelplanner',
+              ).catch(() => {});
+              resolve(false);
+            },
+          },
+          {
+            text: t('deleteAccount.playSubscriptionWarning.alreadyCancelled', { defaultValue: '이미 취소했습니다' }),
+            onPress: () => resolve(true),
+          },
+          {
+            text: tCommon('cancel'),
+            style: 'cancel',
+            onPress: () => resolve(false),
+          },
+        ],
+      );
+    });
+  };
+
   const handleDeleteAccount = async () => {
+    if (!(await showPlaySubscriptionWarningIfNeeded())) return;
+
     if (user?.provider === 'email') {
       const ok = await confirm({
         title: t('deleteAccount.title'),
@@ -224,6 +260,13 @@ const ProfileScreen = ({ navigation }: any) => {
       await logout();
       showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
     } catch (error: any) {
+      apiService.reportError({
+        errorName: error?.name || 'DeleteAccountError',
+        errorMessage: error?.message || 'handleDeleteAccount failed',
+        screen: 'ProfileScreen',
+        severity: 'error',
+        deviceOS: Platform.OS,
+      }).catch(() => {});
       showToast({ type: 'error', message: error.response?.data?.message || t('deleteAccount.alerts.failed'), position: 'top' });
     }
   };
@@ -247,6 +290,13 @@ const ProfileScreen = ({ navigation }: any) => {
       await logout();
       showToast({ type: 'success', message: t('deleteAccount.alerts.success'), position: 'top' });
     } catch (error: any) {
+      apiService.reportError({
+        errorName: error?.name || 'ConfirmDeleteError',
+        errorMessage: error?.message || 'handleConfirmDelete failed',
+        screen: 'ProfileScreen',
+        severity: 'error',
+        deviceOS: Platform.OS,
+      }).catch(() => {});
       showToast({ type: 'error', message: error.response?.data?.message || t('deleteAccount.alerts.failed'), position: 'top' });
     } finally {
       setIsDeleting(false);
@@ -358,6 +408,13 @@ const ProfileScreen = ({ navigation }: any) => {
       await refreshUser();
       showToast({ type: 'success', message: t('editProfile.alerts.photoSuccess'), position: 'top' });
     } catch (error: any) {
+      apiService.reportError({
+        errorName: error?.name || 'PickProfilePhotoError',
+        errorMessage: error?.message || 'handlePickProfilePhoto failed',
+        screen: 'ProfileScreen',
+        severity: 'error',
+        deviceOS: Platform.OS,
+      }).catch(() => {});
       showToast({ type: 'error', message: error.response?.data?.message || t('editProfile.alerts.photoFailed'), position: 'top' });
     } finally {
       setIsUploadingPhoto(false);
@@ -376,6 +433,13 @@ const ProfileScreen = ({ navigation }: any) => {
       setShowImagePreview(false);
       setSelectedImageUri(null);
     } catch (error: any) {
+      apiService.reportError({
+        errorName: error?.name || 'ConfirmProfilePhotoError',
+        errorMessage: error?.message || 'handleConfirmProfilePhoto failed',
+        screen: 'ProfileScreen',
+        severity: 'error',
+        deviceOS: Platform.OS,
+      }).catch(() => {});
       showToast({ type: 'error', message: error.response?.data?.message || t('editProfile.alerts.photoFailed'), position: 'top' });
     } finally {
       setIsUploadingPhoto(false);

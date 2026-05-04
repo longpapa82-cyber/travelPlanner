@@ -89,7 +89,15 @@
     "planSwitchConfirmMessage": "You're currently on {{currentPlan}}. Switch to {{newPlan}}? Your new plan will take effect at the next billing date.",
     "planSwitchConfirmYes": "Switch",
     "planSwitchConfirmNo": "Cancel",
-    "syncingAfterPurchase": "Confirming payment..."
+    "syncingAfterPurchase": "Confirming payment...",
+    "crossPlanBlockBody": "Your {{currentPlan}} subscription is active, so {{selectedPlan}} is blocked. Check your current subscription in Google Play.",
+    "rcEntitlementActiveBody": "A {{plan}} subscription is active on this Google account. Check it in Google Play subscription management.",
+    "itemAlreadyOwnedBody": "This Google account already has a subscription. Check your current status in Google Play subscription management.",
+    "googleAccountSubscribedTitle": "Already Subscribed",
+    "googleAccountSubscribedBody": "A subscription is active on this Google account. Check it in Google Play subscription management.",
+    "manageSubscription": "Manage Subscription",
+    "verificationUnavailableTitle": "Verification Failed",
+    "verificationUnavailableBody": "Could not verify subscription status. Please try again later."
   },
   "planNames": {
     "monthly": "Monthly",

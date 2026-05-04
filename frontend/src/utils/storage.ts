@@ -17,13 +17,14 @@ const LOCAL_STORAGE_KEYS = ['@travelplanner:refresh_token'];
 const KEYCHAIN_MAX_RETRIES = 5;
 const KEYCHAIN_BASE_DELAY_MS = 200;
 
-// Keys to backup in AsyncStorage on native as fallback for Keychain failures.
-// Refresh token is one-time-use so exposure risk is minimal.
-// AsyncStorage is in app-private SQLite on Android (requires root to access).
+// Only the short-lived access token (15 min TTL) is backed up to AsyncStorage
+// as a Keychain fallback. The refresh token is intentionally excluded — it is
+// long-lived (30 days) and its exposure in cleartext SQLite on a rooted device
+// would grant persistent session access. A Keychain failure for the refresh
+// token forces re-login, which is the correct security trade-off.
 const ASYNC_STORAGE_BACKUP_PREFIX = '@travelplanner:backup:';
 const BACKUP_KEYS = [
   '@travelplanner:auth_token',
-  '@travelplanner:refresh_token',
 ];
 
 // Native in-memory cache — avoids slow Keychain reads on every API request.

@@ -165,7 +165,7 @@
       },
       "art4": {
         "title": "Artikel 4 (Kontoregistrierung)",
-        "content": "① Die Registrierung ist per E-Mail oder über Social Accounts (Google, Apple, Kakao) möglich.\n② Nutzer unter 14 Jahren können den Service nicht nutzen.\n③ Sie müssen korrekte Informationen angeben. Sie sind für Probleme durch ungenaue Angaben verantwortlich.\n④ Sie sind für die Sicherheit Ihres Kontos verantwortlich."
+        "content": "① Die Registrierung ist per E-Mail oder über Social Accounts (Google, Apple, Kakao) möglich.\n② Nutzer unter 14 Jahren können den Service nicht nutzen.\n③ Sie müssen korrekte Informationen angeben. Sie sind für Probleme durch ungenaue Angaben verantwortlich.\n④ Sie sind für die Sicherheit Ihres Kontos verantwortlich.\n⑤ Apple-Anmeldung ist nur auf iOS-Geräten verfügbar."
       },
       "art5": {
         "title": "Artikel 5 (Service-Nutzungsregeln)",
@@ -231,7 +231,7 @@
     "articles": {
       "art1": {
         "title": "1. Erhobene Informationen",
-        "content": "[Erforderlich]\n• Kontoinformationen: Name, E-Mail-Adresse, Profilbild\n• Social Login: Öffentliches Profil von Google, Apple oder Kakao\n\n[Optional]\n• Reisepräferenzen: Budgetniveau, Reisestil, Interessen\n\n[Automatisch]\n• Geräteinformationen: Gerätetyp, Betriebssystem, App-Version\n• Nutzungsdaten: App-Nutzungsmuster, Werbeinteraktionen\n• Reisedaten: Reiseziele, Zeitpläne, Aktivitätspläne\n\n[Methoden] Registrierung, Social Login, automatische Erfassung während der Nutzung"
+        "content": "[Erforderlich]\n• Kontoinformationen: Name, E-Mail-Adresse, Profilbild\n• Social Login: Öffentliches Profil von Google, Apple oder Kakao\n• Apple-Authentifizierungsdaten: Apple Sign-In Refresh Token (nur iOS, wird ausschließlich zum Widerruf des Tokens bei Kontolöschung verarbeitet)\n\n[Optional]\n• Reisepräferenzen: Budgetniveau, Reisestil, Interessen\n\n[Automatisch]\n• Geräteinformationen: Gerätetyp, Betriebssystem, App-Version\n• Nutzungsdaten: App-Nutzungsmuster, Werbeinteraktionen\n• Reisedaten: Reiseziele, Zeitpläne, Aktivitätspläne\n\n[Methoden] Registrierung, Social Login, automatische Erfassung während der Nutzung"
       },
       "art2": {
         "title": "2. Verwendung Ihrer Informationen",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Weitergabe an Dritte",
-        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Sentry | Fehlerdaten, Nutzerkontext, Gerätemodell | Fehlerüberwachung |\n| Mapbox | Suchanfragen | Ortssuche |\n| LocationIQ | Suchanfragen | Geocoding |\n| Expo | Push-Token, Geräteinformationen | Push-Benachrichtigungen |\n| RevenueCat | App-Benutzer-ID, Abonnementinformationen | Abonnement-Zahlungsabwicklung |\n| OpenWeather | Breiten- und Längengrad-Koordinaten | Wetterinformationen |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
+        "content": "Wir geben persönliche Daten nicht weiter, außer:\n\n| Empfänger | Daten | Zweck |\n| OpenAI | Reiseziel, Daten, Präferenzen | KI-Reiseplanerstellung |\n| Google (AdSense/AdMob) | Werbe-ID, Nutzungsmuster | Werbeauslieferung |\n| Sentry | Fehlerdaten, Nutzerkontext, Gerätemodell | Fehlerüberwachung |\n| Mapbox | Suchanfragen | Ortssuche |\n| LocationIQ | Suchanfragen | Geocoding |\n| Expo | Push-Token, Geräteinformationen | Push-Benachrichtigungen |\n| RevenueCat | App-Benutzer-ID, Abonnementinformationen | Abonnement-Zahlungsabwicklung |\n| OpenWeather | Breiten- und Längengrad-Koordinaten | Wetterinformationen |\n| Cloudflare | IP-Adresse, Anfrage-Metadaten | DNS-, CDN- und Sicherheits-Proxy |\n| Firebase Cloud Messaging (Google LLC) | Push-Token, Geräteinformationen | Android-Push-Benachrichtigungen |\n\n※ Mit ausdrücklicher Nutzereinwilligung\n※ Wenn gesetzlich erforderlich"
       },
       "art4": {
         "title": "4. Datenverarbeitungsdelegation",
@@ -275,7 +275,7 @@
       },
       "art12": {
         "title": "12. Richtlinienänderungen",
-        "content": "Änderungen werden mindestens 7 Tage vor Inkrafttreten über In-App-Benachrichtigungen mitgeteilt.\n\nDiese Richtlinie gilt ab dem 1. März 2025."
+        "content": "Änderungen werden mindestens 7 Tage vor Inkrafttreten über In-App-Benachrichtigungen mitgeteilt.\n\nDiese Richtlinie gilt ab dem 1. März 2025.\n| Cloudflare | USA | IP-Adresse, Anfrage-Metadaten | DNS, CDN und Sicherheits-Proxy |\n| Firebase Cloud Messaging | USA | Push-Token, Geräteinformationen | Android-Push-Benachrichtigungen |"
       },
       "art13": {
         "title": "13. Benachrichtigung bei Datenschutzverletzungen",

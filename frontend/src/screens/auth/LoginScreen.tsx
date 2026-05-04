@@ -137,12 +137,28 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   // Unknown codes fall back to the generic networkError message.
   const AUTH_ERROR_I18N: Record<string, string> = {
     GOOGLE_SIGNIN_CANCELLED: 'login.alerts.googleCancelled',
+    KAKAO_SIGNIN_CANCELLED: 'login.alerts.kakaoCancelled',
     OAUTH_FAILED: 'login.alerts.oauthFailed',
     GOOGLE_SIGNIN_UNAVAILABLE: 'login.alerts.googleUnavailable',
   };
 
+  const PROVIDER_DISPLAY: Record<string, string> = {
+    google: 'Google',
+    kakao: 'Kakao',
+    apple: 'Apple',
+    email: t('login.alerts.emailProviderName'),
+  };
+
   const getAuthErrorMessage = (error: any): string => {
     const code = error?.message ?? '';
+
+    // EMAIL_PROVIDER_CONFLICT:google — email already registered with a different provider
+    if (code.startsWith('EMAIL_PROVIDER_CONFLICT:')) {
+      const existingProvider = code.split(':')[1] ?? '';
+      const providerName = PROVIDER_DISPLAY[existingProvider] ?? existingProvider;
+      return t('login.alerts.emailProviderConflict', { provider: providerName });
+    }
+
     const i18nKey = AUTH_ERROR_I18N[code];
     return i18nKey ? t(i18nKey) : t('login.alerts.networkError');
   };
@@ -310,20 +326,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               <View style={styles.divider} />
             </View>
 
-            {/* SNS Login Buttons */}
+            {/* SNS Login Buttons — Apple must be first on iOS (Guideline 4.8) */}
             <View style={styles.socialButtons}>
-              <TouchableOpacity
-                style={[styles.socialButton, styles.googleButton]}
-                onPress={handleGoogleLogin}
-                disabled={isLoading}
-                activeOpacity={0.7}
-                accessibilityLabel={t('login.socialGoogle')}
-                accessibilityRole="button"
-              >
-                <Icon name="google" size={22} color="#DB4437" />
-                <Text style={styles.socialButtonText}>{t('login.socialGoogle')}</Text>
-              </TouchableOpacity>
-
               {Platform.OS === 'ios' && (
                 <TouchableOpacity
                   style={[styles.socialButton, styles.appleButton]}
@@ -337,6 +341,18 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                   <Text style={styles.socialButtonText}>{t('login.socialApple')}</Text>
                 </TouchableOpacity>
               )}
+
+              <TouchableOpacity
+                style={[styles.socialButton, styles.googleButton]}
+                onPress={handleGoogleLogin}
+                disabled={isLoading}
+                activeOpacity={0.7}
+                accessibilityLabel={t('login.socialGoogle')}
+                accessibilityRole="button"
+              >
+                <Icon name="google" size={22} color="#DB4437" />
+                <Text style={styles.socialButtonText}>{t('login.socialGoogle')}</Text>
+              </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.socialButton, styles.kakaoButton]}

@@ -20,6 +20,12 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     });
   }
 
+  // Force Kakao to show the login form even when a previous session exists,
+  // so users can switch accounts without logging out of the Kakao app first.
+  override authorizationParams(): Record<string, string> {
+    return { prompt: 'login' };
+  }
+
   async validate(
     accessToken: string,
     _refreshToken: string,

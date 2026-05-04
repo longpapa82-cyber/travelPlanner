@@ -25,6 +25,12 @@ export interface RcActiveEntitlement {
   isSandbox: boolean;
 }
 
+export interface RcSubscriberInfo {
+  activeEntitlements: RcActiveEntitlement[];
+  /** ISO-8601 string set by us at withdrawal time, null if never set */
+  deletedAt: string | null;
+}
+
 @Injectable()
 export class RevenueCatClient {
   private readonly logger = new Logger(RevenueCatClient.name);
@@ -72,11 +78,77 @@ export class RevenueCatClient {
    * Throws RcApiUnavailableError on network/server errors so caller can
    * implement fail-close.
    */
-  async getActiveEntitlements(
-    rcAppUserId: string,
-  ): Promise<RcActiveEntitlement[]> {
+  /**
+   * V210 (P0-2): Deletes the RC subscriber record so the alias chain is
+   * severed on account withdrawal. Fail-close: caller must NOT block DB
+   * deletion on RC failure — call after the DB transaction commits.
+   *
+   * RC REST API: DELETE /v1/subscribers/{app_user_id}
+   * Returns true on success, false on 404 (already gone), throws on 5xx/network.
+   */
+  async deleteSubscriber(rcAppUserId: string): Promise<boolean> {
     if (!this.http || !this.enabled) {
-      return [];
+      return false;
+    }
+
+    try {
+      await this.http.delete(`/subscribers/${encodeURIComponent(rcAppUserId)}`);
+      this.logger.log(`[RC] Subscriber deleted: rcAppUserId=${rcAppUserId}`);
+      return true;
+    } catch (err: any) {
+      const status = err?.response?.status;
+      if (status === 404) {
+        // Already gone — idempotent success
+        return true;
+      }
+      this.logger.error(
+        `[RC] deleteSubscriber failed (status=${status ?? 'network'}): rcAppUserId=${rcAppUserId}`,
+        err?.message,
+      );
+      throw new RcApiUnavailableError(
+        `RC deleteSubscriber unavailable (status=${status ?? 'network'})`,
+        err,
+      );
+    }
+  }
+
+  /**
+   * V213 (P0-2): Sets a custom attribute on the RC subscriber.
+   * Used to mark `$deleted_at` at withdrawal time so preflightPurchase
+   * can detect phantom entitlements after account re-creation.
+   */
+  async setSubscriberAttribute(
+    rcAppUserId: string,
+    key: string,
+    value: string,
+  ): Promise<void> {
+    if (!this.http || !this.enabled) {
+      return;
+    }
+
+    try {
+      await this.http.post(
+        `/subscribers/${encodeURIComponent(rcAppUserId)}/attributes`,
+        { attributes: { [key]: { value } } },
+      );
+    } catch (err: any) {
+      const status = err?.response?.status;
+      // Non-critical — log but do not throw. Deletion still proceeds.
+      this.logger.warn(
+        `[RC] setSubscriberAttribute failed (status=${status ?? 'network'}): ` +
+          `rcAppUserId=${rcAppUserId} key=${key}`,
+        err?.message,
+      );
+    }
+  }
+
+  /**
+   * Fetches active entitlements AND the `$deleted_at` attribute for
+   * phantom detection. Returns combined RcSubscriberInfo.
+   */
+  async getSubscriberInfo(rcAppUserId: string): Promise<RcSubscriberInfo> {
+    if (!this.http || !this.enabled) {
+      return { activeEntitlements: [], deletedAt: null };
     }
 
     let response: any;
@@ -87,26 +159,28 @@ export class RevenueCatClient {
     } catch (err: any) {
       const status = err?.response?.status;
       if (status === 404) {
-        // User not found in RC — no subscription history. Treat as clean.
-        return [];
+        return { activeEntitlements: [], deletedAt: null };
       }
-      // 429, 500, timeout, network — escalate as unavailable so caller fails closed
       throw new RcApiUnavailableError(
         `RC API unavailable (status=${status ?? 'network'})`,
         err,
       );
     }
 
-    const entitlements: Record<string, any> =
-      response.data?.subscriber?.entitlements ?? {};
+    const subscriber = response.data?.subscriber ?? {};
+    const entitlements: Record<string, any> = subscriber.entitlements ?? {};
+    const attributes: Record<string, any> =
+      subscriber.subscriber_attributes ?? {};
+
+    const deletedAt: string | null = attributes['$deleted_at']?.value ?? null;
+
     const now = new Date();
-    const active: RcActiveEntitlement[] = [];
+    const activeEntitlements: RcActiveEntitlement[] = [];
 
     for (const [, ent] of Object.entries(entitlements)) {
       const expiresDate = ent.expires_date ? new Date(ent.expires_date) : null;
-      // Active if no expiry (lifetime) or expiry is in the future
       if (expiresDate === null || expiresDate > now) {
-        active.push({
+        activeEntitlements.push({
           productIdentifier: ent.product_identifier ?? '',
           expiresDate,
           isSandbox: !!ent.is_sandbox,
@@ -114,7 +188,14 @@ export class RevenueCatClient {
       }
     }
 
-    return active;
+    return { activeEntitlements, deletedAt };
+  }
+
+  async getActiveEntitlements(
+    rcAppUserId: string,
+  ): Promise<RcActiveEntitlement[]> {
+    const info = await this.getSubscriberInfo(rcAppUserId);
+    return info.activeEntitlements;
   }
 }
 

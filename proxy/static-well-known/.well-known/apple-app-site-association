@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "VC5L9S5QPX.com.longpapa82.travelplanner",
+        "paths": ["/auth/*", "/app/*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["VC5L9S5QPX.com.longpapa82.travelplanner"]
+  }
+}

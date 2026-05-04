@@ -165,7 +165,7 @@
       },
       "art4": {
         "title": "Artigo 4 (Registro de Conta)",
-        "content": "① Você pode se registrar por e-mail ou contas sociais (Google, Apple, Kakao).\n② Usuários menores de 14 anos não podem usar o Serviço.\n③ Você deve fornecer informações precisas. Você é responsável por quaisquer problemas decorrentes de informações imprecisas.\n④ Você é responsável por manter a segurança da sua conta."
+        "content": "① Você pode se registrar por e-mail ou contas sociais (Google, Apple, Kakao).\n② Usuários menores de 14 anos não podem usar o Serviço.\n③ Você deve fornecer informações precisas. Você é responsável por quaisquer problemas decorrentes de informações imprecisas.\n④ Você é responsável por manter a segurança da sua conta.\n⑤ O login com Apple está disponível apenas em dispositivos iOS."
       },
       "art5": {
         "title": "Artigo 5 (Regras de Uso do Serviço)",
@@ -231,7 +231,7 @@
     "articles": {
       "art1": {
         "title": "1. Informações que Coletamos",
-        "content": "[Obrigatórias]\n• Informações da conta: Nome, endereço de e-mail, foto de perfil\n• Login social: Perfil público do Google, Apple ou Kakao\n\n[Opcionais]\n• Preferências de viagem: Nível de orçamento, estilo de viagem, interesses\n\n[Automáticas]\n• Informações do dispositivo: Tipo de dispositivo, SO, versão do aplicativo\n• Dados de uso: Padrões de uso do aplicativo, interações com anúncios\n• Dados de viagem: Destinos, cronogramas, planos de atividades\n\n[Métodos] Registro, login social, coleta automática durante o uso"
+        "content": "[Obrigatórias]\n• Informações da conta: Nome, endereço de e-mail, foto de perfil\n• Login social: Perfil público do Google, Apple ou Kakao\n• Dados de autenticação Apple: Apple Sign-In Refresh Token (apenas iOS, processado exclusivamente para revogar o token na exclusão da conta)\n\n[Opcionais]\n• Preferências de viagem: Nível de orçamento, estilo de viagem, interesses\n\n[Automáticas]\n• Informações do dispositivo: Tipo de dispositivo, SO, versão do aplicativo\n• Dados de uso: Padrões de uso do aplicativo, interações com anúncios\n• Dados de viagem: Destinos, cronogramas, planos de atividades\n\n[Métodos] Registro, login social, coleta automática durante o uso"
       },
       "art2": {
         "title": "2. Como Usamos Suas Informações",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Compartilhamento com Terceiros",
-        "content": "Não compartilhamos informações pessoais exceto:\n\n| Destinatário | Dados | Finalidade |\n| OpenAI | Destino, datas, preferências | Geração de itinerário com IA |\n| Google (AdSense/AdMob) | ID de anúncio, padrões de uso | Entrega de anúncios |\n| Parceiros afiliados | Eventos de clique (anonimizados) | Serviços de afiliados |\n| Sentry | Dados de erro, contexto do usuário, modelo do dispositivo | Monitoramento de erros |\n| Mapbox | Consultas de pesquisa | Pesquisa de locais |\n| LocationIQ | Consultas de pesquisa | Geocodificação |\n| Expo | Token push, informações do dispositivo | Notificações push |\n| RevenueCat | ID do usuário do aplicativo, informações de assinatura | Processamento de pagamento de assinatura |\n| OpenWeather | Coordenadas de latitude e longitude | Informações meteorológicas |\n\n※ Com consentimento explícito do usuário\n※ Quando exigido por lei"
+        "content": "Não compartilhamos informações pessoais exceto:\n\n| Destinatário | Dados | Finalidade |\n| OpenAI | Destino, datas, preferências | Geração de itinerário com IA |\n| Google (AdSense/AdMob) | ID de anúncio, padrões de uso | Entrega de anúncios |\n| Parceiros afiliados | Eventos de clique (anonimizados) | Serviços de afiliados |\n| Sentry | Dados de erro, contexto do usuário, modelo do dispositivo | Monitoramento de erros |\n| Mapbox | Consultas de pesquisa | Pesquisa de locais |\n| LocationIQ | Consultas de pesquisa | Geocodificação |\n| Expo | Token push, informações do dispositivo | Notificações push |\n| RevenueCat | ID do usuário do aplicativo, informações de assinatura | Processamento de pagamento de assinatura |\n| OpenWeather | Coordenadas de latitude e longitude | Informações meteorológicas |\n| Cloudflare | Endereço IP, metadados de solicitação | Proxy de DNS, CDN e segurança |\n| Firebase Cloud Messaging (Google LLC) | Token push, informações do dispositivo | Entrega de notificações push no Android |\n\n※ Com consentimento explícito do usuário\n※ Quando exigido por lei"
       },
       "art4": {
         "title": "4. Delegação de Processamento de Dados",
@@ -275,7 +275,7 @@
       },
       "art12": {
         "title": "12. Alterações na Política",
-        "content": "As alterações serão notificadas com pelo menos 7 dias de antecedência através de avisos no aplicativo.\n\nEsta política entra em vigor a partir de 1 de março de 2025."
+        "content": "As alterações serão notificadas com pelo menos 7 dias de antecedência através de avisos no aplicativo.\n\nEsta política entra em vigor a partir de 1 de março de 2025.\n| Cloudflare | EUA | Endereço IP, metadados de solicitação | Proxy de DNS, CDN e segurança |\n| Firebase Cloud Messaging | EUA | Token push, info do dispositivo | Notificações push Android |"
       },
       "art13": {
         "title": "13. Notificacao de Violacao de Dados",

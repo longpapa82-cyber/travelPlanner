@@ -89,7 +89,15 @@
     "planSwitchConfirmMessage": "현재 {{currentPlan}} 구독 중입니다. {{newPlan}} 플랜으로 변경하시겠습니까? 다음 결제일에 새 플랜으로 전환됩니다.",
     "planSwitchConfirmYes": "변경하기",
     "planSwitchConfirmNo": "취소",
-    "syncingAfterPurchase": "결제 확인 중..."
+    "syncingAfterPurchase": "결제 확인 중...",
+    "crossPlanBlockBody": "이미 {{currentPlan}} 구독이 활성화되어 있어 {{selectedPlan}} 구독이 차단됩니다. Google Play 구독 관리에서 현재 구독 상태를 확인하세요.",
+    "rcEntitlementActiveBody": "이 Google 계정에 {{plan}} 구독이 활성화되어 있습니다. Google Play 구독 관리에서 확인하세요.",
+    "itemAlreadyOwnedBody": "이 Google 계정에 이미 구독이 있습니다. Google Play 구독 관리에서 현재 구독 상태를 확인하세요.",
+    "googleAccountSubscribedTitle": "이미 구독 중",
+    "googleAccountSubscribedBody": "이 Google 계정에 구독이 활성화되어 있습니다. Google Play 구독 관리에서 확인하세요.",
+    "manageSubscription": "구독 관리",
+    "verificationUnavailableTitle": "확인 불가",
+    "verificationUnavailableBody": "구독 상태 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
   },
   "planNames": {
     "monthly": "월간",

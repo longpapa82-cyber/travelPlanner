@@ -89,7 +89,15 @@
     "planSwitchConfirmMessage": "現在{{currentPlan}}を購読中です。{{newPlan}}プランに変更しますか？次回請求日に新しいプランに切り替わります。",
     "planSwitchConfirmYes": "変更する",
     "planSwitchConfirmNo": "キャンセル",
-    "syncingAfterPurchase": "決済を確認中..."
+    "syncingAfterPurchase": "決済を確認中...",
+    "crossPlanBlockBody": "すでに{{currentPlan}}プランが有効なため、{{selectedPlan}}プランはブロックされました。Google Play サブスクリプション管理をご確認ください。",
+    "rcEntitlementActiveBody": "このGoogleアカウントには{{plan}}サブスクリプションが有効です。Google Playサブスクリプション管理でご確認ください。",
+    "itemAlreadyOwnedBody": "このGoogleアカウントにはすでにサブスクリプションがあります。Google Playサブスクリプション管理でご確認ください。",
+    "googleAccountSubscribedTitle": "すでにサブスクリプション中",
+    "googleAccountSubscribedBody": "このGoogleアカウントにはサブスクリプションが有効です。Google Playサブスクリプション管理でご確認ください。",
+    "manageSubscription": "サブスクリプション管理",
+    "verificationUnavailableTitle": "確認失敗",
+    "verificationUnavailableBody": "サブスクリプション状態を確認できませんでした。しばらくしてから再試行してください。"
   },
   "planNames": {
     "monthly": "月額",

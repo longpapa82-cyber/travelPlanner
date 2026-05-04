@@ -61,7 +61,9 @@ frontend/web-build/
 *.pem
 *.key
 *.cert
+*.p8
 secrets/
+icon_banners_p8/
 uploads/oracleCloudKey/
 uploads/
 # Google Cloud / Play Service Account JSON files (any location)

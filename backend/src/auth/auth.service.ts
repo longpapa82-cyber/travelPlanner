@@ -500,23 +500,49 @@ export class AuthService {
     );
 
     if (!user) {
-      // Create new user — OAuth users are auto-verified (email proven via provider)
-      user = await this.usersService.create({
-        email: oauthUser.email,
-        name: oauthUser.name,
-        provider,
-        providerId: oauthUser.providerId,
-        profileImage: oauthUser.profileImage,
-        isEmailVerified: true,
-      });
+      if (oauthUser.email) {
+        const existing = await this.usersService.findByEmail(oauthUser.email);
+        if (existing) {
+          if (existing.provider === provider) {
+            // Re-link: same email + same provider but providerId changed (e.g. Kakao
+            // re-issues a new providerId after the user unlinks the app and re-auths).
+            await this.usersService.update(existing.id, {
+              providerId: oauthUser.providerId,
+              ...(oauthUser.name && { name: oauthUser.name }),
+              ...(oauthUser.profileImage && {
+                profileImage: oauthUser.profileImage,
+              }),
+            });
+            user = existing;
+            user.providerId = oauthUser.providerId;
+          } else {
+            // Email already registered with a different provider.
+            // Throw a typed error so the client can show a specific message
+            // ("이미 Google 계정으로 가입된 이메일입니다") instead of a
+            // generic 500 network error.
+            throw new ConflictException(
+              `EMAIL_PROVIDER_CONFLICT:${existing.provider}`,
+            );
+          }
+        }
+      }
+
+      if (!user) {
+        // Create new user — OAuth users are auto-verified (email proven via provider)
+        user = await this.usersService.create({
+          email: oauthUser.email,
+          name: oauthUser.name,
+          provider,
+          providerId: oauthUser.providerId,
+          profileImage: oauthUser.profileImage,
+          isEmailVerified: true,
+        });
+      }
     }
 
     // Apple only sends refresh_token on the very first sign-in.
     // Persist it for token revocation on account deletion (Guideline 5.1.1(v)).
-    if (
-      provider === AuthProvider.APPLE &&
-      oauthUser.appleRefreshToken
-    ) {
+    if (provider === AuthProvider.APPLE && oauthUser.appleRefreshToken) {
       await this.usersService.updateAppleRefreshToken(
         user.id,
         oauthUser.appleRefreshToken,

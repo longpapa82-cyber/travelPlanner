@@ -34,13 +34,37 @@
         "SENTRY_DSN": "https://350b24245c83bb14bc60b074844878d3@o4511263608471552.ingest.de.sentry.io/4511263624265808"
       },
       "autoIncrement": true
+    },
+    "production-ios": {
+      "ios": {
+        "buildConfiguration": "Release"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api",
+        "EXPO_PUBLIC_APP_URL": "https://mytravel-planner.com",
+        "REVENUECAT_IOS_KEY": "appl_DtHjfizXdnNUxlHKhZKHuoZKYLe",
+        "SENTRY_DSN": "https://350b24245c83bb14bc60b074844878d3@o4511263608471552.ingest.de.sentry.io/4511263624265808"
+      }
     }
   },
   "submit": {
-    "production": {
+    "alpha": {
       "android": {
         "serviceAccountKeyPath": "./google-play-service-account.json",
         "track": "alpha"
+      }
+    },
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./google-play-service-account.json",
+        "track": "production"
+      }
+    },
+    "production-ios": {
+      "ios": {
+        "appleId": "longpapa82@gmail.com",
+        "ascAppId": "6766147060",
+        "appleTeamId": "VC5L9S5QPX"
       }
     }
   }

@@ -41,13 +41,13 @@ W6 (출시)    Apple Review (평균 24~48h) → 단계적 출시 (1%→10%→100
 
 | 주차 | 마일스톤 | 담당 영역 | Android 영향 |
 |------|----------|-----------|-------------|
-| W1 | Apple Developer Program 가입 완료 | 계정/설정 | 없음 |
-| W1 | Bundle ID `com.travelplanner.app` 등록 | ASC | 없음 |
-| W1 | App Store Connect 앱 레코드 생성 | ASC | 없음 |
-| W2 | EAS iOS Certificate + Provisioning Profile | 빌드 | 없음 |
-| W2 | RevenueCat iOS App 등록 + `appl_` 키 발급 | RC | **확인 필요** |
-| W2 | App Store IAP 상품 등록 (월간/연간) | ASC | 없음 |
-| W2 | TestFlight Internal 첫 빌드 성공 | 빌드 | 없음 |
+| W1 | Apple Developer Program 가입 완료 | 계정/설정 | 없음 | ✅ 2026-05-04 |
+| W1 | Bundle ID `com.longpapa82.travelplanner` 등록 | ASC | 없음 | ✅ 2026-05-04 (com.travelplanner.app 중복으로 변경) |
+| W1 | App Store Connect 앱 레코드 생성 | ASC | 없음 | ✅ 2026-05-04 (ASC App ID: 6766147060) |
+| W2 | EAS iOS Certificate + Provisioning Profile | 빌드 | 없음 | ⏳ 진행 중 |
+| W2 | RevenueCat iOS App 등록 + `appl_` 키 발급 | RC | **확인 필요** | ⏳ 대기 |
+| W2 | App Store IAP 상품 등록 (월간/연간) | ASC | 없음 | ⏳ 대기 |
+| W2 | TestFlight Internal 첫 빌드 성공 | 빌드 | 없음 | ⏳ 대기 |
 | W3 | ATT prompt 구현 + 테스트 | 코드 | 없음 |
 | W3 | Apple Sign-In token revoke 구현 | 코드 | 없음 |
 | W3 | iOS Paddle 링크 완전 숨김 | 코드 | 없음 |
@@ -1032,6 +1032,44 @@ iOS 출시 후 `CLAUDE.md` 핵심 불변식에 추가:
 
 ---
 
-*최종 업데이트: 2026-05-01*  
-*작성: plan-q + Claude Code*  
-*다음 검토: Apple Developer Program 가입 완료 시*
+*최종 업데이트: 2026-05-04*  
+*작성: plan-q + Claude Code*
+
+## 진행 현황 (2026-05-04)
+
+### 확보된 Apple 정보
+| 항목 | 값 |
+|------|-----|
+| Team ID | `VC5L9S5QPX` |
+| Key ID (Sign In with Apple) | `HN8TZ492G4` |
+| Key 파일 | `AuthKey_HN8TZ492G4.p8` (다운로드 완료) |
+| Bundle ID | `com.longpapa82.travelplanner` |
+| ASC App ID | `6766147060` |
+
+### W1 완료 ✅
+- [x] Apple Developer Program 승인 (2026-05-04)
+- [x] Bundle ID `com.longpapa82.travelplanner` 등록
+- [x] Sign In with Apple Key 생성 (HN8TZ492G4)
+- [x] App Store Connect 앱 레코드 생성 (6766147060)
+- [x] `app.json` bundleIdentifier 수정
+- [x] `eas.json` iOS submit 설정 완료
+
+### W2 진행 중 ⏳
+
+#### 완료 ✅
+- [x] RevenueCat iOS App 등록 (App ID: `app10df727a1a`)
+- [x] RC Public API Key 발급: `appl_DtHjfizXdnNUxlHKhZKHuoZKYLe`
+- [x] SubscriptionKey .p8 등록 (Key: `NGK57B8LPR`)
+- [x] App Store IAP 상품 등록 (월간: `com.longpapa82.travelplanner.premium.monthly` / 연간: `com.longpapa82.travelplanner.premium.yearly`)
+- [x] RC Product Catalog에 iOS 상품 2개 추가 + TravelPlanner Premium Entitlement 연결
+- [x] `eas.json` REVENUECAT_IOS_KEY 업데이트 (`appl_DtHjfizXdnNUxlHKhZKHuoZKYLe`)
+- [x] D-U-N-S 번호 신청 완료 (AI SOFT, 처리 중 2~5 영업일)
+
+#### 대기 중 ⏳
+- [ ] RC Offerings에 iOS 상품 패키지 추가
+- [ ] App Store Connect API Key 생성 → EAS 연동 (Organization 전환 후 가능)
+- [ ] `eas credentials --platform ios` 실행
+- [ ] TestFlight Internal 첫 빌드
+
+#### 외부 대기
+- [ ] D-U-N-S 번호 발급 (2~5 영업일) → Organization 계정 전환

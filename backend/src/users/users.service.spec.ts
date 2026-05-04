@@ -507,7 +507,13 @@ describe('UsersService', () => {
       // Assert
       expect(repository.findOne).toHaveBeenCalledWith({
         where: { id: mockUser.id },
-        select: ['id', 'provider', 'passwordHash', 'revenuecatAppUserId', 'appleRefreshToken'],
+        select: [
+          'id',
+          'provider',
+          'passwordHash',
+          'revenuecatAppUserId',
+          'appleRefreshToken',
+        ],
       });
       // The transaction primitive replaced the direct repository.delete
       // call; assert it was used by checking the mocked DataSource was

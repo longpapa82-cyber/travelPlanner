@@ -33,7 +33,9 @@ async function bootstrap() {
           defaultSrc: ["'self'"],
           scriptSrc: [
             "'self'",
-            "'unsafe-inline'",
+            // 'unsafe-inline' removed — API server serves no inline scripts.
+            // The landing page (nginx-served static HTML) uses its own CSP header
+            // and still carries unsafe-inline for AdSense/Paddle until nonce migration.
             'https://pagead2.googlesyndication.com',
             'https://www.googletagmanager.com',
             'https://adservice.google.com',

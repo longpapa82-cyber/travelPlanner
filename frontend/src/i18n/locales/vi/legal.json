@@ -165,7 +165,7 @@
       },
       "art4": {
         "title": "Điều 4 (Đăng ký tài khoản)",
-        "content": "① Bạn có thể đăng ký qua email hoặc tài khoản mạng xã hội (Google, Apple, Kakao).\n② Người dùng dưới 14 tuổi không thể sử dụng Dịch vụ.\n③ Bạn phải cung cấp thông tin chính xác. Bạn chịu trách nhiệm về mọi vấn đề phát sinh từ thông tin không chính xác.\n④ Bạn chịu trách nhiệm bảo mật tài khoản của mình."
+        "content": "① Bạn có thể đăng ký qua email hoặc tài khoản mạng xã hội (Google, Apple, Kakao).\n② Người dùng dưới 14 tuổi không thể sử dụng Dịch vụ.\n③ Bạn phải cung cấp thông tin chính xác. Bạn chịu trách nhiệm về mọi vấn đề phát sinh từ thông tin không chính xác.\n④ Bạn chịu trách nhiệm bảo mật tài khoản của mình.\n⑤ Đăng nhập bằng Apple chỉ khả dụng trên thiết bị iOS."
       },
       "art5": {
         "title": "Điều 5 (Quy tắc sử dụng dịch vụ)",
@@ -231,7 +231,7 @@
     "articles": {
       "art1": {
         "title": "1. Thông tin chúng tôi thu thập",
-        "content": "[Bắt buộc]\n• Thông tin tài khoản: Tên, địa chỉ email, ảnh đại diện\n• Đăng nhập mạng xã hội: Hồ sơ công khai từ Google, Apple hoặc Kakao\n\n[Tùy chọn]\n• Sở thích du lịch: Mức ngân sách, phong cách du lịch, sở thích\n\n[Tự động]\n• Thông tin thiết bị: Loại thiết bị, hệ điều hành, phiên bản ứng dụng\n• Dữ liệu sử dụng: Mô hình sử dụng ứng dụng, tương tác quảng cáo\n• Dữ liệu du lịch: Điểm đến, lịch trình, kế hoạch hoạt động\n\n[Phương thức] Đăng ký, đăng nhập mạng xã hội, thu thập tự động trong quá trình sử dụng"
+        "content": "[Bắt buộc]\n• Thông tin tài khoản: Tên, địa chỉ email, ảnh đại diện\n• Đăng nhập mạng xã hội: Hồ sơ công khai từ Google, Apple hoặc Kakao\n• Dữ liệu xác thực Apple: Apple Sign-In Refresh Token (chỉ iOS, được xử lý để thu hồi token khi xóa tài khoản)\n\n[Tùy chọn]\n• Sở thích du lịch: Mức ngân sách, phong cách du lịch, sở thích\n\n[Tự động]\n• Thông tin thiết bị: Loại thiết bị, hệ điều hành, phiên bản ứng dụng\n• Dữ liệu sử dụng: Mô hình sử dụng ứng dụng, tương tác quảng cáo\n• Dữ liệu du lịch: Điểm đến, lịch trình, kế hoạch hoạt động\n\n[Phương thức] Đăng ký, đăng nhập mạng xã hội, thu thập tự động trong quá trình sử dụng"
       },
       "art2": {
         "title": "2. Cách chúng tôi sử dụng thông tin",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Chia sẻ với bên thứ ba",
-        "content": "Chúng tôi không chia sẻ thông tin cá nhân ngoại trừ:\n\n| Người nhận | Dữ liệu | Mục đích |\n| OpenAI | Điểm đến, ngày, sở thích | Tạo lịch trình AI |\n| Google (AdSense/AdMob) | ID quảng cáo, mô hình sử dụng | Phân phối quảng cáo |\n| Đối tác liên kết | Sự kiện nhấp (ẩn danh) | Dịch vụ liên kết |\n| Sentry | Dữ liệu lỗi, ngữ cảnh người dùng, mẫu thiết bị | Giám sát lỗi |\n| Mapbox | Truy vấn tìm kiếm | Tìm kiếm địa điểm |\n| LocationIQ | Truy vấn tìm kiếm | Mã hóa địa lý |\n| Expo | Mã thông báo push, thông tin thiết bị | Thông báo push |\n| RevenueCat | ID người dùng ứng dụng, thông tin đăng ký | Xử lý thanh toán đăng ký |\n| OpenWeather | Tọa độ vĩ độ và kinh độ | Thông tin thời tiết |\n\n※ Với sự đồng ý rõ ràng của người dùng\n※ Khi luật pháp yêu cầu"
+        "content": "Chúng tôi không chia sẻ thông tin cá nhân ngoại trừ:\n\n| Người nhận | Dữ liệu | Mục đích |\n| OpenAI | Điểm đến, ngày, sở thích | Tạo lịch trình AI |\n| Google (AdSense/AdMob) | ID quảng cáo, mô hình sử dụng | Phân phối quảng cáo |\n| Đối tác liên kết | Sự kiện nhấp (ẩn danh) | Dịch vụ liên kết |\n| Sentry | Dữ liệu lỗi, ngữ cảnh người dùng, mẫu thiết bị | Giám sát lỗi |\n| Mapbox | Truy vấn tìm kiếm | Tìm kiếm địa điểm |\n| LocationIQ | Truy vấn tìm kiếm | Mã hóa địa lý |\n| Expo | Mã thông báo push, thông tin thiết bị | Thông báo push |\n| RevenueCat | ID người dùng ứng dụng, thông tin đăng ký | Xử lý thanh toán đăng ký |\n| OpenWeather | Tọa độ vĩ độ và kinh độ | Thông tin thời tiết |\n| Cloudflare | Địa chỉ IP, siêu dữ liệu yêu cầu | Dịch vụ proxy DNS, CDN và bảo mật |\n| Firebase Cloud Messaging (Google LLC) | Push token, thông tin thiết bị | Gửi thông báo push trên Android |\n\n※ Với sự đồng ý rõ ràng của người dùng\n※ Khi luật pháp yêu cầu"
       },
       "art4": {
         "title": "4. Ủy thác xử lý dữ liệu",
@@ -275,7 +275,7 @@
       },
       "art12": {
         "title": "12. Thay đổi chính sách",
-        "content": "Thay đổi sẽ được thông báo ít nhất 7 ngày trước khi có hiệu lực qua thông báo trong ứng dụng.\n\nChính sách này có hiệu lực từ ngày 01 tháng 3, 2025."
+        "content": "Thay đổi sẽ được thông báo ít nhất 7 ngày trước khi có hiệu lực qua thông báo trong ứng dụng.\n\nChính sách này có hiệu lực từ ngày 01 tháng 3, 2025.\n| Cloudflare | Mỹ | Địa chỉ IP, siêu dữ liệu yêu cầu | Proxy DNS, CDN và bảo mật |\n| Firebase Cloud Messaging | Mỹ | Push token, thông tin thiết bị | Thông báo push Android |"
       },
       "art13": {
         "title": "13. Thong bao vi pham du lieu",

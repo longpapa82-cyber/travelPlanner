@@ -47,18 +47,47 @@ export async function signInWithOAuth(
     // Mobile: use Expo's WebBrowser — the redirect URI tells the browser
     // which URL scheme to watch for to auto-dismiss.
     const redirectUri = makeRedirectUri();
-    const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri, {
+
+    // Android + Kakao: when the Kakao native app handles the auth, the Custom
+    // Tab is dismissed immediately (result.type = 'dismiss') before the callback
+    // URL arrives. We listen for the deeplink in parallel so whichever channel
+    // delivers the callback URL first — Custom Tab success *or* native app
+    // redirect — resolves the race. A 30 s timeout guards against indefinite hangs.
+    const cleanups: Array<() => void> = [];
+
+    const browserPromise = WebBrowser.openAuthSessionAsync(authUrl, redirectUri, {
       showInRecents: false,
     });
+
+    const deeplinkPromise = Platform.OS === 'android'
+      ? new Promise<string | null>((resolve) => {
+          const timer = setTimeout(() => resolve(null), 30_000);
+          const sub = Linking.addEventListener('url', ({ url }) => {
+            if (url.includes('/auth/callback')) {
+              clearTimeout(timer);
+              resolve(url);
+            }
+          });
+          cleanups.push(() => sub.remove());
+        })
+      : Promise.resolve(null);
+
+    const [result, deeplinkUrl] = await Promise.all([browserPromise, deeplinkPromise]);
+
+    cleanups.forEach((fn) => fn());
 
     // Android: clean up browser connection
     if (Platform.OS === 'android') {
       await WebBrowser.coolDownAsync();
     }
 
-    if (result.type === 'success' && result.url) {
-      const callbackResult = parseOAuthCallback(result.url, state);
-      return callbackResult;
+    // Prefer deeplink URL (arrives even when Custom Tab was dismissed by native app)
+    const callbackUrl =
+      deeplinkUrl ??
+      (result.type === 'success' && result.url ? result.url : null);
+
+    if (callbackUrl) {
+      return parseOAuthCallback(callbackUrl, state);
     }
 
     return null;

@@ -165,7 +165,7 @@
       },
       "art4": {
         "title": "Pasal 4 (Pendaftaran Akun)",
-        "content": "① Anda dapat mendaftar melalui email atau akun sosial (Google, Apple, Kakao).\n② Pengguna di bawah 14 tahun tidak dapat menggunakan Layanan.\n③ Anda harus memberikan informasi yang akurat. Anda bertanggung jawab atas masalah yang timbul dari informasi yang tidak akurat.\n④ Anda bertanggung jawab untuk menjaga keamanan akun Anda."
+        "content": "① Anda dapat mendaftar melalui email atau akun sosial (Google, Apple, Kakao).\n② Pengguna di bawah 14 tahun tidak dapat menggunakan Layanan.\n③ Anda harus memberikan informasi yang akurat. Anda bertanggung jawab atas masalah yang timbul dari informasi yang tidak akurat.\n④ Anda bertanggung jawab untuk menjaga keamanan akun Anda.\n⑤ Apple Sign-In hanya tersedia di perangkat iOS."
       },
       "art5": {
         "title": "Pasal 5 (Aturan Penggunaan Layanan)",
@@ -231,7 +231,7 @@
     "articles": {
       "art1": {
         "title": "1. Informasi yang Kami Kumpulkan",
-        "content": "[Wajib]\n• Info akun: Nama, alamat email, foto profil\n• Login sosial: Profil publik dari Google, Apple, atau Kakao\n\n[Opsional]\n• Preferensi perjalanan: Tingkat anggaran, gaya perjalanan, minat\n\n[Otomatis]\n• Info perangkat: Jenis perangkat, OS, versi aplikasi\n• Data penggunaan: Pola penggunaan aplikasi, interaksi iklan\n• Data perjalanan: Tujuan, jadwal, rencana aktivitas\n\n[Metode] Pendaftaran, login sosial, pengumpulan otomatis selama penggunaan"
+        "content": "[Wajib]\n• Info akun: Nama, alamat email, foto profil\n• Login sosial: Profil publik dari Google, Apple, atau Kakao\n• Data autentikasi Apple: Apple Sign-In Refresh Token (khusus iOS, diproses hanya untuk mencabut token saat penghapusan akun)\n\n[Opsional]\n• Preferensi perjalanan: Tingkat anggaran, gaya perjalanan, minat\n\n[Otomatis]\n• Info perangkat: Jenis perangkat, OS, versi aplikasi\n• Data penggunaan: Pola penggunaan aplikasi, interaksi iklan\n• Data perjalanan: Tujuan, jadwal, rencana aktivitas\n\n[Metode] Pendaftaran, login sosial, pengumpulan otomatis selama penggunaan"
       },
       "art2": {
         "title": "2. Bagaimana Kami Menggunakan Informasi Anda",
@@ -239,7 +239,7 @@
       },
       "art3": {
         "title": "3. Berbagi dengan Pihak Ketiga",
-        "content": "Kami tidak membagikan info pribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Tujuan, tanggal, preferensi | Pembuatan jadwal AI |\n| Google (AdSense/AdMob) | ID iklan, pola penggunaan | Penayangan iklan |\n| Mitra afiliasi | Event klik (anonim) | Layanan afiliasi |\n| Sentry | Data kesalahan, konteks pengguna, model perangkat | Pemantauan kesalahan |\n| Mapbox | Kueri pencarian | Pencarian tempat |\n| LocationIQ | Kueri pencarian | Geocoding |\n| Expo | Token push, info perangkat | Notifikasi push |\n| RevenueCat | ID pengguna aplikasi, informasi langganan | Pemrosesan pembayaran langganan |\n| OpenWeather | Koordinat lintang dan bujur | Informasi cuaca |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Ketika diwajibkan oleh hukum"
+        "content": "Kami tidak membagikan info pribadi kecuali:\n\n| Penerima | Data | Tujuan |\n| OpenAI | Tujuan, tanggal, preferensi | Pembuatan jadwal AI |\n| Google (AdSense/AdMob) | ID iklan, pola penggunaan | Penayangan iklan |\n| Mitra afiliasi | Event klik (anonim) | Layanan afiliasi |\n| Sentry | Data kesalahan, konteks pengguna, model perangkat | Pemantauan kesalahan |\n| Mapbox | Kueri pencarian | Pencarian tempat |\n| LocationIQ | Kueri pencarian | Geocoding |\n| Expo | Token push, info perangkat | Notifikasi push |\n| RevenueCat | ID pengguna aplikasi, informasi langganan | Pemrosesan pembayaran langganan |\n| OpenWeather | Koordinat lintang dan bujur | Informasi cuaca |\n| Cloudflare | Alamat IP, metadata permintaan | Layanan proxy DNS, CDN, dan keamanan |\n| Firebase Cloud Messaging (Google LLC) | Token push, info perangkat | Pengiriman notifikasi push Android |\n\n※ Dengan persetujuan eksplisit pengguna\n※ Ketika diwajibkan oleh hukum"
       },
       "art4": {
         "title": "4. Delegasi Pemrosesan Data",
@@ -275,7 +275,7 @@
       },
       "art12": {
         "title": "12. Perubahan Kebijakan",
-        "content": "Perubahan akan diberitahukan setidaknya 7 hari sebelum berlaku melalui pemberitahuan dalam aplikasi.\n\nKebijakan ini berlaku mulai 1 Maret 2025."
+        "content": "Perubahan akan diberitahukan setidaknya 7 hari sebelum berlaku melalui pemberitahuan dalam aplikasi.\n\nKebijakan ini berlaku mulai 1 Maret 2025.\n| Cloudflare | AS | Alamat IP, metadata permintaan | Proxy DNS, CDN, dan keamanan |\n| Firebase Cloud Messaging | AS | Token push, info perangkat | Notifikasi push Android |"
       },
       "art13": {
         "title": "13. Pemberitahuan Pelanggaran Data",

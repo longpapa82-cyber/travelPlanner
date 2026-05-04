@@ -9,6 +9,7 @@ import { UsersController } from './users.controller';
 import { AuditService } from '../admin/audit.service';
 import { AuditLog } from '../admin/entities/audit-log.entity';
 import { ImageService } from '../common/image.service';
+import { RevenueCatClient } from '../subscription/revenuecat.client';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { ImageService } from '../common/image.service';
     CacheModule.register(),
   ],
   controllers: [UsersController],
-  providers: [UsersService, AuditService, ImageService],
+  providers: [UsersService, AuditService, ImageService, RevenueCatClient],
   exports: [UsersService],
 })
 export class UsersModule {}

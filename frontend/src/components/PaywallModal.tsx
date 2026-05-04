@@ -22,6 +22,7 @@ import {
   getOfferings,
   purchasePackage,
   restorePurchases,
+  logIn as rcLogIn,
 } from '../services/revenueCat';
 import apiService from '../services/api';
 import { pollSubscriptionStatus } from '../services/subscriptionPolling';
@@ -220,10 +221,20 @@ const PaywallModal: React.FC = () => {
 
       if (action.kind === 'block') {
         setIsPurchasing(false);
-        // V199 (Invariant 53): message branches by reason
-        const planLabel = action.currentPlan
+        // V210 (P0-4): preflight block 오류 로그 기록
+        apiService.reportError({
+          errorName: `PREFLIGHT_BLOCK_${action.reason.toUpperCase()}`,
+          errorMessage: `Purchase blocked: reason=${action.reason}, currentPlan=${action.currentPlan ?? 'null'}, selectedPlan=${selectedPlan}`,
+          routeName: 'PaywallModal',
+          breadcrumbs: [{ reason: action.reason, currentPlan: action.currentPlan ?? null, selectedPlan }],
+        }).catch(() => {});
+        // V210 (P0-3): currentPlan/selectedPlan을 명확히 구분해 메시지 모순 제거.
+        // 'rc_entitlement_active': currentPlan(RC에서 확인된 활성 플랜)을 표시.
+        // 'already_subscribed': DB 확인 플랜 표시, cross-plan 시도 시 별도 메시지.
+        const currentPlanLabel = action.currentPlan
           ? t(`planNames.${action.currentPlan}`)
-          : t('subscription');
+          : null;
+        const selectedPlanLabel = t(`planNames.${selectedPlan}`);
 
         if (action.reason === 'verification_unavailable') {
           Alert.alert(
@@ -232,27 +243,45 @@ const PaywallModal: React.FC = () => {
               '구독 상태 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
           );
         } else if (action.reason === 'rc_entitlement_active') {
+          // currentPlan이 있으면 "이미 X 구독 중, Y 시도 차단" 형태로 명시
+          const body = currentPlanLabel && action.currentPlan !== selectedPlan
+            ? t('guards.crossPlanBlockBody', { currentPlan: currentPlanLabel, selectedPlan: selectedPlanLabel }) ||
+              `이미 ${currentPlanLabel} 구독이 활성화되어 있어 ${selectedPlanLabel} 구독이 차단됩니다. Google Play 구독 관리에서 현재 구독 상태를 확인하세요.`
+            : t('guards.rcEntitlementActiveBody', { plan: currentPlanLabel ?? selectedPlanLabel }) ||
+              `이 Google 계정에 ${currentPlanLabel ?? selectedPlanLabel} 구독이 활성화되어 있습니다. Google Play 구독 관리에서 확인하세요.`;
           Alert.alert(
             t('guards.googleAccountSubscribedTitle') || '이미 구독 중',
-            t('guards.googleAccountSubscribedBody') ||
-              `이 Google 계정에 ${planLabel} 구독이 활성화되어 있습니다. Google Play 구독 관리에서 확인하세요.`,
+            body,
             [
               { text: t('guards.manageSubscription') || '구독 관리', onPress: () => Linking.openURL('https://play.google.com/store/account/subscriptions') },
               { text: t('common.close') || '닫기', style: 'cancel' },
             ],
           );
         } else {
-          // 'already_subscribed' or fallback
+          // 'already_subscribed': cross-plan 시도 시 현재 플랜 명시
+          const body = currentPlanLabel && action.currentPlan !== selectedPlan
+            ? t('guards.crossPlanBlockBody', { currentPlan: currentPlanLabel, selectedPlan: selectedPlanLabel }) ||
+              `이미 ${currentPlanLabel} 구독 중입니다. ${selectedPlanLabel} 플랜은 중복 구독이 불가합니다. 플랜 변경은 Google Play 구독 관리에서 진행해 주세요.`
+            : t('guards.alreadySubscribedSameplan', { plan: currentPlanLabel ?? selectedPlanLabel }) ||
+              `이미 ${currentPlanLabel ?? selectedPlanLabel} 플랜을 구독 중입니다. 중복 결제되지 않도록 결제를 중단했습니다.`;
           Alert.alert(
             t('guards.alreadySubscribedTitle') || '이미 구독 중',
-            t('guards.alreadySubscribedSameplan', { plan: planLabel }) ||
-              `이미 ${planLabel} 구독 중입니다. 플랜 변경은 Google Play 구독 관리에서 진행해 주세요.`,
+            body,
           );
         }
         return;
       }
 
       // Server confirmed user is free — proceed with purchase.
+      // V214: Re-assert RC identity immediately before purchasePackage.
+      // After a server-side RC subscriber delete, the SDK can revert to an
+      // anonymous session between PremiumContext mount and this call. If that
+      // happens, the purchase goes through under $RCAnonymousID and the
+      // INITIAL_PURCHASE webhook has no matching DB user → finalizePurchase
+      // polls forever. logIn here is idempotent when already logged in.
+      if (user?.id) {
+        await rcLogIn(String(user.id));
+      }
       const customerInfo = await purchasePackage(pkg);
       if (customerInfo) {
         await finalizePurchase();
@@ -265,24 +294,37 @@ const PaywallModal: React.FC = () => {
       // resolution is Google Play subscription management — NOT restorePurchases(),
       // which would alias the old entitlement onto the new RC user identity.
       if (error?.isItemAlreadyOwned) {
+        // V210 (P0-1): "구독 복원" 버튼 제거. restorePurchases()를 여기서 호출하면
+        // RC alias chain이 새 user에 phantom entitlement를 영구 부착한다(11차 회귀 원인).
+        // 복원은 설정 화면 전용 진입점에서만 허용.
+        // V210 (P0-4): 오류 로그 기록
+        apiService.reportError({
+          errorName: 'ITEM_ALREADY_OWNED',
+          errorMessage: error?.message ?? 'Google Play ITEM_ALREADY_OWNED',
+          routeName: 'PaywallModal',
+          breadcrumbs: [{ selectedPlan, errorCode: String(error?.code ?? '7') }],
+        }).catch(() => {});
         Alert.alert(
           t('guards.googleAccountSubscribedTitle') || '이미 구독 중',
-          t('guards.googleAccountSubscribedBody') ||
-            '이 Google 계정에 이미 구독이 있습니다. Google Play 구독 관리에서 현재 구독을 취소한 후 다시 시도하거나, 구독을 복원해 주세요.',
+          t('guards.itemAlreadyOwnedBody') ||
+            '이 Google 계정에 이미 구독이 있습니다. Google Play 구독 관리에서 현재 구독 상태를 확인하세요.',
           [
             {
               text: t('guards.manageSubscription') || '구독 관리',
               onPress: () => Linking.openURL('https://play.google.com/store/account/subscriptions'),
-            },
-            {
-              text: t('actions.restore') || '구독 복원',
-              onPress: () => handleRestore(),
             },
             { text: t('common.close') || '닫기', style: 'cancel' },
           ],
         );
         return;
       }
+      // V210 (P0-4): 일반 결제 실패 오류 로그 기록
+      apiService.reportError({
+        errorName: 'PURCHASE_FAILED',
+        errorMessage: String(error?.message ?? 'unknown purchase error'),
+        routeName: 'PaywallModal',
+        breadcrumbs: [{ selectedPlan, errorCode: String(error?.code ?? '') }],
+      }).catch(() => {});
       Alert.alert(t('errors.title'), error?.message || t('errors.purchaseFailed'));
     } finally {
       setIsPurchasing(false);

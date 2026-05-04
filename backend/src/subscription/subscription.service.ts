@@ -241,6 +241,7 @@ export class SubscriptionService {
         'subscriptionPlanType',
         'subscriptionExpiresAt',
         'revenuecatAppUserId',
+        'createdAt',
       ],
     });
 
@@ -301,16 +302,31 @@ export class SubscriptionService {
 
     let rcActiveSkus: string[] = [];
 
+    // V213: cache stores JSON with skus + deletedAt for phantom detection
+    interface RcCacheEntry {
+      skus: string[];
+      deletedAt: string | null;
+    }
+    let rcDeletedAt: string | null = null;
+
     if (cachedRcActive !== null && cachedRcActive !== undefined) {
-      rcActiveSkus = cachedRcActive ? JSON.parse(cachedRcActive) : [];
+      const parsed: RcCacheEntry = cachedRcActive
+        ? JSON.parse(cachedRcActive)
+        : { skus: [], deletedAt: null };
+      rcActiveSkus = parsed.skus ?? (parsed as unknown as string[]); // backward compat
+      rcDeletedAt = parsed.deletedAt ?? null;
     } else {
       try {
-        const entitlements =
-          await this.rcClient.getActiveEntitlements(rcUserId);
-        rcActiveSkus = entitlements.map((e) => e.productIdentifier);
+        const info = await this.rcClient.getSubscriberInfo(rcUserId);
+        rcActiveSkus = info.activeEntitlements.map((e) => e.productIdentifier);
+        rcDeletedAt = info.deletedAt;
+        const entry: RcCacheEntry = {
+          skus: rcActiveSkus,
+          deletedAt: rcDeletedAt,
+        };
         await this.cacheManager.set(
           cacheKey,
-          JSON.stringify(rcActiveSkus),
+          JSON.stringify(entry),
           PREFLIGHT_RC_CACHE_TTL,
         );
       } catch (err) {
@@ -331,24 +347,48 @@ export class SubscriptionService {
     }
 
     if (rcActiveSkus.length > 0) {
-      // Invariant 51: any active RC entitlement blocks ALL new purchases
-      // (cross-SKU — yearly active blocks monthly and vice versa).
-      this.logger.warn(
-        `Preflight DENY [rc]: user ${userId} DB=free but RC active ` +
-          `products=${JSON.stringify(rcActiveSkus)}, sku=${safeForLog(sku, 50)}. ` +
-          `Auto-reconciling DB tier to PREMIUM.`,
-      );
-
-      // Invariant 52: auto-reconcile DB to match RC truth
-      await this.reconcileFromRcEntitlements(user.id, rcActiveSkus);
-
-      const activePlan = this.inferPlanFromSkus(rcActiveSkus);
-      return {
-        canPurchase: false,
-        reason: 'rc_entitlement_active',
-        currentPlan: activePlan,
-        activeSkus: rcActiveSkus,
-      };
+      // V213 (P0-2): If $deleted_at is set on the RC subscriber and is older
+      // than this user's account (user was created after deletion), the
+      // entitlement is a phantom from a previous account. Allow purchase.
+      if (rcDeletedAt) {
+        const userCreatedAt = user.createdAt as Date | undefined;
+        const deletedAtMs = new Date(rcDeletedAt).getTime();
+        const userCreatedMs = userCreatedAt ? userCreatedAt.getTime() : 0;
+        if (deletedAtMs < userCreatedMs) {
+          this.logger.warn(
+            `Preflight ALLOW [phantom-detected]: user=${userId} RC deleted_at=${rcDeletedAt} ` +
+              `is before user.createdAt — entitlement is from a prior deleted account. Skipping block.`,
+          );
+          // Fall through to the ALLOW path below
+        } else {
+          // deleted_at exists but is newer — ambiguous; block conservatively
+          this.logger.warn(
+            `Preflight DENY [rc-deleted-marker]: user=${userId} RC shows deleted_at=${rcDeletedAt} ` +
+              `and active skus=${JSON.stringify(rcActiveSkus)}. Blocking conservatively.`,
+          );
+          return {
+            canPurchase: false,
+            reason: 'rc_entitlement_active',
+            currentPlan: this.inferPlanFromSkus(rcActiveSkus),
+            activeSkus: rcActiveSkus,
+          };
+        }
+      } else {
+        // Invariant 51: active RC entitlement without deleted_at → block.
+        // V213 (P0-1): No DB reconcile — DB remains free.
+        const activePlan = this.inferPlanFromSkus(rcActiveSkus);
+        this.logger.warn(
+          `Preflight DENY [rc]: user ${userId} DB=free but RC shows active ` +
+            `products=${JSON.stringify(rcActiveSkus)}, sku=${safeForLog(sku, 50)}. ` +
+            `Blocking (no DB reconcile). Investigate if recurring.`,
+        );
+        return {
+          canPurchase: false,
+          reason: 'rc_entitlement_active',
+          currentPlan: activePlan,
+          activeSkus: rcActiveSkus,
+        };
+      }
     }
 
     this.logger.log(

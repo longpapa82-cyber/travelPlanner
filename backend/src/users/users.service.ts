@@ -369,7 +369,13 @@ export class UsersService {
   async remove(id: string, password?: string): Promise<void> {
     const user = await this.userRepository.findOne({
       where: { id },
-      select: ['id', 'provider', 'passwordHash', 'revenuecatAppUserId', 'appleRefreshToken'],
+      select: [
+        'id',
+        'provider',
+        'passwordHash',
+        'revenuecatAppUserId',
+        'appleRefreshToken',
+      ],
     });
     if (!user) throw new NotFoundException('User not found');
 
@@ -474,8 +480,13 @@ export class UsersService {
     }
   }
 
-  async updateAppleRefreshToken(userId: string, refreshToken: string): Promise<void> {
-    await this.userRepository.update(userId, { appleRefreshToken: refreshToken });
+  async updateAppleRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<void> {
+    await this.userRepository.update(userId, {
+      appleRefreshToken: refreshToken,
+    });
   }
 
   private async revokeAppleToken(userId: string): Promise<void> {
@@ -498,7 +509,9 @@ export class UsersService {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: params.toString(),
       });
-      this.logger.log(`[remove] Apple token revoked for user=${userId} status=${res.status}`);
+      this.logger.log(
+        `[remove] Apple token revoked for user=${userId} status=${res.status}`,
+      );
     } catch (err) {
       this.logger.warn(
         `[remove] Apple token revoke failed for user=${userId}: ${
@@ -515,20 +528,25 @@ export class UsersService {
     const clientId = process.env.APPLE_CLIENT_ID ?? '';
 
     // Apple requires a JWT signed with ES256, valid up to 6 months.
-    const header = Buffer.from(JSON.stringify({ alg: 'ES256', kid: keyId })).toString('base64url');
+    const header = Buffer.from(
+      JSON.stringify({ alg: 'ES256', kid: keyId }),
+    ).toString('base64url');
     const now = Math.floor(Date.now() / 1000);
-    const payload = Buffer.from(JSON.stringify({
-      iss: teamId,
-      iat: now,
-      exp: now + 15_552_000, // 180 days
-      aud: 'https://appleid.apple.com',
-      sub: clientId,
-    })).toString('base64url');
+    const payload = Buffer.from(
+      JSON.stringify({
+        iss: teamId,
+        iat: now,
+        exp: now + 15_552_000, // 180 days
+        aud: 'https://appleid.apple.com',
+        sub: clientId,
+      }),
+    ).toString('base64url');
 
     const crypto = require('crypto') as typeof import('crypto');
     const sign = crypto.createSign('SHA256');
     sign.update(`${header}.${payload}`);
-    const sig = sign.sign({ key: privateKey, dsaEncoding: 'ieee-p1363' })
+    const sig = sign
+      .sign({ key: privateKey, dsaEncoding: 'ieee-p1363' })
       .toString('base64url');
 
     return `${header}.${payload}.${sig}`;
