@@ -65,7 +65,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.longpapa82.travelplanner",
-      "buildNumber": "4",
+      "buildNumber": "5",
       "usesAppleSignIn": true,
       "associatedDomains": [
         "applinks:mytravel-planner.com"
