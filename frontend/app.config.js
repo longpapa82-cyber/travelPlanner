@@ -31,6 +31,7 @@ export default ({ config }) => ({
         'This allows us to show you personalized travel deals and offers.',
       NSPhotoLibraryUsageDescription:
         'MyTravel needs access to your photo library to add photos to your trips.',
+      ITSAppUsesNonExemptEncryption: false,
     },
   },
   android: {
