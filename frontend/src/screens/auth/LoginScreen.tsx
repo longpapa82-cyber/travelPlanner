@@ -9,7 +9,7 @@
  * - SNS 로그인 (Google, Apple, Kakao)
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -61,6 +61,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
   const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
+
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
@@ -206,6 +208,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
       <ScrollView
+        ref={scrollViewRef}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -268,11 +271,21 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 placeholderTextColor={theme.colors.textSecondary}
                 value={password}
                 onChangeText={handlePasswordChange}
+                onFocus={() => {
+                  // Scroll down so the password field clears the keyboard on iOS
+                  if (Platform.OS === 'ios') {
+                    setTimeout(() => scrollViewRef.current?.scrollToEnd({ animated: true }), 150);
+                  }
+                }}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
                 autoComplete="off"
                 importantForAutofill="no"
-                textContentType="password"
+                // "oneTimeCode" suppresses the iOS Save Password / AutoFill prompt
+                // while still allowing the secure keyboard to appear.
+                // "password" triggers the keychain save dialog which looks like a
+                // browser prompt and is inappropriate for a native app login.
+                textContentType="oneTimeCode"
                 editable={!isLoading}
                 accessibilityLabel={t('login.password')}
               />
@@ -370,6 +383,10 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                   {t('login.socialKakao')}
                 </Text>
               </TouchableOpacity>
+              {/* Kakao returns to KakaoTalk after auth — this is expected iOS behaviour */}
+              {Platform.OS === 'ios' && (
+                <Text style={styles.kakaoHint}>{t('login.kakaoReturnHint')}</Text>
+              )}
             </View>
 
             {/* Sign Up Link */}
@@ -589,6 +606,13 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
   },
   kakaoButtonText: {
     color: '#3C1E1E',
+  },
+  kakaoHint: {
+    fontSize: 12,
+    color: theme.colors.textSecondary,
+    textAlign: 'center',
+    marginTop: 4,
+    marginBottom: 4,
   },
 
   // Register Link

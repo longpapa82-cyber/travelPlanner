@@ -130,7 +130,8 @@
       "startDateRequired": "Please select a departure date",
       "startDateFuture": "Departure date must be after tomorrow.",
       "streamInterrupted": "Trip created but connection interrupted. Please check your trips list.",
-      "tooManyRequests": "Please try again later. (Too many requests)"
+      "tooManyRequests": "Please try again later. (Too many requests)",
+      "startAfterEnd": "Departure date must be before the return date"
     },
     "aiConsent": {
       "title": "AI Travel Planning",

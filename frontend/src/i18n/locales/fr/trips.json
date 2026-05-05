@@ -122,7 +122,8 @@
       "destinationRequired": "Veuillez entrer une destination",
       "datesRequired": "Veuillez sélectionner les dates de voyage",
       "createFailed": "Échec de la création du voyage",
-      "startDateRequired": "Veuillez sélectionner une date de départ"
+      "startDateRequired": "Veuillez sélectionner une date de départ",
+      "startAfterEnd": "La date de départ doit être antérieure à la date de retour"
     },
     "aiConsent": {
       "title": "Planification IA",

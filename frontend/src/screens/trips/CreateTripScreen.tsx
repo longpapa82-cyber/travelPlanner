@@ -311,7 +311,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       if (start <= today) {
         errors.dates = t('create.alerts.startDateFuture');
       } else if (start > end) {
-        errors.dates = t('create.alerts.startDateRequired');
+        errors.dates = t('create.alerts.startAfterEnd');
       }
     }
     if (Object.keys(errors).length > 0) {

@@ -122,7 +122,8 @@
       "destinationRequired": "Inserisci una destinazione",
       "datesRequired": "Seleziona le date del viaggio",
       "createFailed": "Creazione viaggio fallita",
-      "startDateRequired": "Seleziona una data di partenza"
+      "startDateRequired": "Seleziona una data di partenza",
+      "startAfterEnd": "La data di partenza deve essere precedente alla data di ritorno"
     },
     "aiConsent": {
       "title": "Pianificazione viaggio AI",

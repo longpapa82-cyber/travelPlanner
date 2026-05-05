@@ -122,7 +122,8 @@
       "destinationRequired": "Sila masukkan destinasi",
       "datesRequired": "Sila pilih tarikh perjalanan",
       "createFailed": "Gagal mencipta perjalanan",
-      "startDateRequired": "Sila pilih tarikh berlepas"
+      "startDateRequired": "Sila pilih tarikh berlepas",
+      "startAfterEnd": "Tarikh berlepas mesti sebelum tarikh pulang"
     },
     "aiConsent": {
       "title": "Perancangan Perjalanan AI",

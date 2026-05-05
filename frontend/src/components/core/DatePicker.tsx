@@ -141,6 +141,7 @@ const DatePickerField: React.FC<DatePickerProps> = ({
                 locale={getDateLocale()}
                 style={{ width: '100%' }}
                 accentColor={theme.colors.primary}
+                textColor={isDark ? '#FFFFFF' : '#000000'}
               />
             </View>
           </View>

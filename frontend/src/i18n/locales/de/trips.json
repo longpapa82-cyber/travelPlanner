@@ -122,7 +122,8 @@
       "destinationRequired": "Bitte geben Sie ein Reiseziel ein",
       "datesRequired": "Bitte wählen Sie Reisedaten",
       "createFailed": "Reise konnte nicht erstellt werden",
-      "startDateRequired": "Bitte wählen Sie ein Abreisedatum"
+      "startDateRequired": "Bitte wählen Sie ein Abreisedatum",
+      "startAfterEnd": "Das Abreisedatum muss vor dem Ankunftsdatum liegen"
     },
     "aiConsent": {
       "title": "KI-Reiseplanung",

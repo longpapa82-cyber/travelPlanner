@@ -122,7 +122,8 @@
       "destinationRequired": "Укажите направление",
       "datesRequired": "Выберите даты поездки",
       "createFailed": "Не удалось создать поездку",
-      "startDateRequired": "Выберите дату отправления"
+      "startDateRequired": "Выберите дату отправления",
+      "startAfterEnd": "Дата отъезда должна быть раньше даты возвращения"
     },
     "aiConsent": {
       "title": "AI-планирование путешествий",

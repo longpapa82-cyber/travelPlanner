@@ -122,7 +122,8 @@
       "destinationRequired": "กรุณากรอกจุดหมายปลายทาง",
       "datesRequired": "กรุณาเลือกวันที่เดินทาง",
       "createFailed": "สร้างทริปไม่สำเร็จ",
-      "startDateRequired": "กรุณาเลือกวันออกเดินทาง"
+      "startDateRequired": "กรุณาเลือกวันออกเดินทาง",
+      "startAfterEnd": "วันออกเดินทางต้องอยู่ก่อนวันกลับ"
     },
     "aiConsent": {
       "title": "การวางแผนท่องเที่ยวด้วย AI",

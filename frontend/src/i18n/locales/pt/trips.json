@@ -122,7 +122,8 @@
       "destinationRequired": "Por favor, insira um destino",
       "datesRequired": "Por favor, selecione as datas de viagem",
       "createFailed": "Falha ao criar viagem",
-      "startDateRequired": "Por favor, selecione uma data de partida"
+      "startDateRequired": "Por favor, selecione uma data de partida",
+      "startAfterEnd": "A data de partida deve ser anterior à data de retorno"
     },
     "aiConsent": {
       "title": "Planejamento de Viagem com IA",

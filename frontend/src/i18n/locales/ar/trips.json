@@ -122,7 +122,8 @@
       "destinationRequired": "يرجى إدخال الوجهة",
       "datesRequired": "يرجى اختيار تواريخ السفر",
       "createFailed": "فشل إنشاء الرحلة",
-      "startDateRequired": "يرجى اختيار تاريخ المغادرة"
+      "startDateRequired": "يرجى اختيار تاريخ المغادرة",
+      "startAfterEnd": "تاريخ المغادرة يجب أن يكون قبل تاريخ الوصول"
     },
     "aiConsent": {
       "title": "تخطيط السفر بالذكاء الاصطناعي",
