@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, Animated, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { ToastProps, ToastType } from './Toast.types';
 import { theme } from '../../../constants/theme';
@@ -15,6 +16,7 @@ export const Toast: React.FC<ToastComponentProps> = ({
   visible,
   onHide,
 }) => {
+  const insets = useSafeAreaInsets();
   const translateY = useRef(new Animated.Value(position === 'top' ? -100 : 100)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -94,7 +96,9 @@ export const Toast: React.FC<ToastComponentProps> = ({
       position: 'absolute',
       left: theme.spacing.md,
       right: theme.spacing.md,
-      [position]: theme.spacing.lg,
+      [position]: position === 'top'
+        ? insets.top + theme.spacing.sm
+        : theme.spacing.lg,
       zIndex: 99999,
       elevation: 99999, // Maximum elevation to be above modals on Android
     },

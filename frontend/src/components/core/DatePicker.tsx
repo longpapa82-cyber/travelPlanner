@@ -126,7 +126,7 @@ const DatePickerField: React.FC<DatePickerProps> = ({
               <DateTimePicker
                 value={currentDate}
                 mode="date"
-                display="spinner"
+                display="inline"
                 minimumDate={minimumDate}
                 maximumDate={maximumDate}
                 onChange={(_: any, selectedDate?: Date) => {
@@ -135,10 +135,12 @@ const DatePickerField: React.FC<DatePickerProps> = ({
                     const m = String(selectedDate.getMonth() + 1).padStart(2, '0');
                     const d = String(selectedDate.getDate()).padStart(2, '0');
                     onChange(`${y}-${m}-${d}`);
+                    setShowPicker(false);
                   }
                 }}
                 locale={getDateLocale()}
-                style={{ height: 216, width: '100%' }}
+                style={{ width: '100%' }}
+                accentColor={theme.colors.primary}
               />
             </View>
           </View>
@@ -178,8 +180,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 34,
-    // Explicit height ensures the spinner (216px) is not clipped on iOS
-    minHeight: 320,
   },
   modalHeader: {
     flexDirection: 'row',

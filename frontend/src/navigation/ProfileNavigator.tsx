@@ -40,6 +40,7 @@ const ProfileNavigator = () => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        headerBackButtonDisplayMode: 'minimal',
       }}
     >
       <Stack.Screen

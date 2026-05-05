@@ -381,7 +381,7 @@ const ProfileScreen = ({ navigation }: any) => {
             );
             return;
           }
-        } else if (status !== 'granted') {
+        } else if (status === 'denied') {
           Alert.alert(
             t('editProfile.photoPermission.title', '사진 접근 권한'),
             t('editProfile.photoPermission.message', '프로필 사진 변경을 위해 사진 라이브러리 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.'),

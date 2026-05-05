@@ -27,6 +27,7 @@ const TripsNavigator = () => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        headerBackButtonDisplayMode: 'minimal',
       }}
     >
       <Stack.Screen

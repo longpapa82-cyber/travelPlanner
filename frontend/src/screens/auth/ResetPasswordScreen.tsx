@@ -156,6 +156,7 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
                 autoCapitalize="none"
                 autoComplete="off"
                 importantForAutofill="no"
+                textContentType="none"
                 editable={!isLoading}
                 accessibilityLabel={t('resetPassword.newPassword')}
               />
@@ -224,6 +225,7 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
                 autoCapitalize="none"
                 autoComplete="off"
                 importantForAutofill="no"
+                textContentType="none"
                 editable={!isLoading}
                 accessibilityLabel={t('resetPassword.confirmPassword')}
               />

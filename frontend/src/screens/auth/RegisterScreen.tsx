@@ -324,6 +324,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoComplete="off"
                 importantForAutofill="no"
+                textContentType="none"
                 editable={!isLoading}
                 accessibilityLabel={t('register.password')}
               />
@@ -378,6 +379,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoComplete="off"
                 importantForAutofill="no"
+                textContentType="none"
                 editable={!isLoading}
                 accessibilityLabel={t('register.confirmPassword')}
               />
