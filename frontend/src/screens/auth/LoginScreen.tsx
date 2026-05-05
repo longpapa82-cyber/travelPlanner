@@ -41,6 +41,7 @@ import { Card } from '../../components/core/Card';
 import { getHeroImageUrl } from '../../utils/images';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { convertKoreanToEnglish } from '../../utils/koreanToEnglish';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -53,6 +54,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('auth');
   const { showToast } = useToast();
+  const insets = useSafeAreaInsets();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -135,14 +137,22 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
-  // Map error codes thrown by AuthContext / googleNativeSignIn to i18n keys.
+  // Map error codes thrown by AuthContext to i18n keys.
   // Unknown codes fall back to the generic networkError message.
   const AUTH_ERROR_I18N: Record<string, string> = {
     GOOGLE_SIGNIN_CANCELLED: 'login.alerts.googleCancelled',
     KAKAO_SIGNIN_CANCELLED: 'login.alerts.kakaoCancelled',
+    APPLE_SIGNIN_CANCELLED: 'login.alerts.appleCancelled',
     OAUTH_FAILED: 'login.alerts.oauthFailed',
     GOOGLE_SIGNIN_UNAVAILABLE: 'login.alerts.googleUnavailable',
   };
+
+  // User-initiated cancels: silently dismiss without showing a Toast.
+  const CANCELLED_CODES = new Set([
+    'GOOGLE_SIGNIN_CANCELLED',
+    'KAKAO_SIGNIN_CANCELLED',
+    'APPLE_SIGNIN_CANCELLED',
+  ]);
 
   const PROVIDER_DISPLAY: Record<string, string> = {
     google: 'Google',
@@ -170,7 +180,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await loginWithGoogle();
     } catch (error: any) {
-      showToast({ type: 'error', message: getAuthErrorMessage(error), position: 'top' });
+      if (!CANCELLED_CODES.has(error?.message)) {
+        showToast({ type: 'error', message: getAuthErrorMessage(error), position: 'top' });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -181,7 +193,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await loginWithApple();
     } catch (error: any) {
-      showToast({ type: 'error', message: getAuthErrorMessage(error), position: 'top' });
+      if (!CANCELLED_CODES.has(error?.message)) {
+        showToast({ type: 'error', message: getAuthErrorMessage(error), position: 'top' });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -192,7 +206,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await loginWithKakao();
     } catch (error: any) {
-      showToast({ type: 'error', message: getAuthErrorMessage(error), position: 'top' });
+      if (!CANCELLED_CODES.has(error?.message)) {
+        showToast({ type: 'error', message: getAuthErrorMessage(error), position: 'top' });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -205,7 +221,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}
       enabled={Platform.OS === 'ios'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top + 56 : 0}
     >
       <ScrollView
         ref={scrollViewRef}
@@ -253,8 +269,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
-                autoComplete="email"
-                textContentType="username"
+                autoComplete="off"
+                textContentType="none"
                 editable={!isLoading}
                 accessibilityLabel={t('login.email')}
                 accessibilityHint={t('login.emailPlaceholder')}
@@ -279,11 +295,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoComplete="off"
                 importantForAutofill="no"
-                // "oneTimeCode" suppresses the iOS Save Password / AutoFill prompt
-                // while still allowing the secure keyboard to appear.
-                // "password" triggers the keychain save dialog which looks like a
-                // browser prompt and is inappropriate for a native app login.
-                textContentType="oneTimeCode"
+                textContentType="none"
                 editable={!isLoading}
                 accessibilityLabel={t('login.password')}
               />
