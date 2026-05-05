@@ -15,6 +15,13 @@ export function makeStackScreenOptions(primaryColor: string) {
   return {
     headerStyle: {
       backgroundColor: primaryColor,
+      // Fix iOS header height inconsistency across tabs.
+      // height:56 pins the bar so every tab renders identically.
+      // Without this, Dynamic Island vs. notch vs. no-notch devices
+      // produce slightly different computed heights.
+      // Note: headerHeight is not a valid NativeStack prop; height inside
+      // headerStyle is the correct way to fix this.
+      ...(Platform.OS === 'ios' ? { height: 56 } : {}),
     },
     headerTintColor: colors.neutral[0],
     headerTitleStyle: {
@@ -22,12 +29,6 @@ export function makeStackScreenOptions(primaryColor: string) {
       fontSize: 17,
     },
     headerBackButtonDisplayMode: 'minimal' as const,
-    // Fix iOS header height inconsistency across tabs.
-    // headerTopInsetEnabled:false prevents UINavigationBar from auto-adjusting
-    // for status bar height (which differs per device/orientation).
-    // headerHeight:56 pins the bar to a fixed value so every tab renders
-    // identically — without this, Dynamic Island vs. notch vs. no-notch
-    // devices all produce slightly different computed heights.
-    ...(Platform.OS === 'ios' ? { headerTopInsetEnabled: false, headerHeight: 56 } : {}),
+    ...(Platform.OS === 'ios' ? { headerTopInsetEnabled: false } : {}),
   };
 }

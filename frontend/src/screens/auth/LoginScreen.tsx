@@ -272,10 +272,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 value={password}
                 onChangeText={handlePasswordChange}
                 onFocus={() => {
-                  // Scroll down so the password field clears the keyboard on iOS
-                  if (Platform.OS === 'ios') {
-                    setTimeout(() => scrollViewRef.current?.scrollToEnd({ animated: true }), 150);
-                  }
+                  // KeyboardAvoidingView + behavior="padding" handles this automatically.
+                  // scrollToEnd caused the view to over-scroll past the SNS buttons.
                 }}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"

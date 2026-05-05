@@ -114,7 +114,7 @@ const DatePickerField: React.FC<DatePickerProps> = ({
         <Modal transparent animationType="slide">
           <View style={styles.modalOverlay}>
             <View style={[styles.modalContent, { backgroundColor: isDark ? '#1C1C1E' : '#F2F2F7' }]}>
-              <View style={styles.modalHeader}>
+              <View style={[styles.modalHeader, { borderBottomColor: isDark ? '#3A3A3C' : '#D0D0D0' }]}>
                 <TouchableOpacity onPress={() => setShowPicker(false)}>
                   <Text style={[styles.modalButton, { color: theme.colors.textSecondary }]}>{t('cancel')}</Text>
                 </TouchableOpacity>
@@ -126,7 +126,7 @@ const DatePickerField: React.FC<DatePickerProps> = ({
               <DateTimePicker
                 value={currentDate}
                 mode="date"
-                display="inline"
+                display="spinner"
                 minimumDate={minimumDate}
                 maximumDate={maximumDate}
                 onChange={(_: any, selectedDate?: Date) => {
@@ -135,12 +135,10 @@ const DatePickerField: React.FC<DatePickerProps> = ({
                     const m = String(selectedDate.getMonth() + 1).padStart(2, '0');
                     const d = String(selectedDate.getDate()).padStart(2, '0');
                     onChange(`${y}-${m}-${d}`);
-                    setShowPicker(false);
                   }
                 }}
                 locale={getDateLocale()}
                 style={{ width: '100%' }}
-                accentColor={theme.colors.primary}
                 textColor={isDark ? '#FFFFFF' : '#000000'}
               />
             </View>
@@ -188,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#D0D0D0',
   },
   modalTitle: {
     fontSize: 16,

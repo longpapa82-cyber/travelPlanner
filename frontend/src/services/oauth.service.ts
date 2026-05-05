@@ -92,15 +92,6 @@ export async function signInWithOAuth(
       (result.type === 'success' && result.url ? result.url : null);
 
     if (callbackUrl) {
-      // iOS + Kakao: the KakaoTalk native app handles auth and retains foreground.
-      // Explicitly open the callback URL to signal iOS to bring myTravel back.
-      if (Platform.OS === 'ios' && provider === 'kakao') {
-        try {
-          await Linking.openURL(callbackUrl);
-        } catch {
-          // App is already in foreground — ignore
-        }
-      }
       return parseOAuthCallback(callbackUrl, nonce);
     }
 
