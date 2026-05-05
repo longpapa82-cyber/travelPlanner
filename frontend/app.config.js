@@ -16,7 +16,7 @@ export default ({ config }) => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.longpapa82.travelplanner',
-    buildNumber: config.ios?.buildNumber ?? '13',
+    buildNumber: '14',
     usesAppleSignIn: true,
     associatedDomains: [
       'applinks:mytravel-planner.com',
