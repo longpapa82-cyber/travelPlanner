@@ -10,13 +10,13 @@ export default ({ config }) => ({
   scheme: 'travelplanner',
   splash: {
     image: './assets/splash-icon.png',
-    resizeMode: 'contain',
+    resizeMode: 'cover',
     backgroundColor: '#FAFAF9',
   },
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.longpapa82.travelplanner',
-    buildNumber: config.ios?.buildNumber ?? '4',
+    buildNumber: config.ios?.buildNumber ?? '13',
     usesAppleSignIn: true,
     associatedDomains: [
       'applinks:mytravel-planner.com',

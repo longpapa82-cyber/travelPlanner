@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
 import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import { onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { AuthProvider } from './src/contexts/AuthContext';
@@ -32,6 +33,13 @@ import WelcomeModal from './src/components/tutorial/WelcomeModal';
 import GDPRConsentBanner from './src/components/GDPRConsentBanner';
 import apiService from './src/services/api';
 import WebAppRedirectScreen from './src/screens/web/WebAppRedirectScreen';
+
+// Hold the splash screen visible until app is fully ready.
+// Must be called before any rendering — prevents the iOS screenshot flicker
+// where the previous build's cached app snapshot briefly shows on cold launch.
+if (Platform.OS !== 'web') {
+  SplashScreen.preventAutoHideAsync().catch(() => {});
+}
 
 // Initialize Sentry before app renders
 initSentry();
@@ -265,6 +273,9 @@ function App() {
         }),
       ]);
       setAppReady(true);
+      if (Platform.OS !== 'web') {
+        await SplashScreen.hideAsync();
+      }
     }
     prepare();
   }, [isWebOAuthCallback]);
