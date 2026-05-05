@@ -251,7 +251,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 autoComplete="email"
-                textContentType="none"
+                textContentType="username"
                 editable={!isLoading}
                 accessibilityLabel={t('login.email')}
                 accessibilityHint={t('login.emailPlaceholder')}
@@ -272,7 +272,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoComplete="off"
                 importantForAutofill="no"
-                textContentType="none"
+                textContentType="password"
                 editable={!isLoading}
                 accessibilityLabel={t('login.password')}
               />

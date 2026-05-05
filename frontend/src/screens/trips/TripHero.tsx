@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Trip } from '../../types';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -62,7 +63,8 @@ const TripHero: React.FC<TripHeroProps> = ({
 }) => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('trips');
-  const styles = createStyles(theme, isDark);
+  const insets = useSafeAreaInsets();
+  const styles = createStyles(theme, isDark, insets.top);
   const [menuVisible, setMenuVisible] = useState(false);
 
   const progress = getTripProgress(trip.itineraries, trip.status);
@@ -303,15 +305,16 @@ const TripHero: React.FC<TripHeroProps> = ({
   );
 };
 
-const createStyles = (theme: any, isDark: boolean) =>
+const createStyles = (theme: any, isDark: boolean, safeAreaTop: number) =>
   StyleSheet.create({
     hero: {
       width: '100%',
-      height: 280,
+      height: 280 + safeAreaTop,
     },
     heroGradient: {
       flex: 1,
       padding: 20,
+      paddingTop: 20 + safeAreaTop,
       justifyContent: 'space-between',
     },
     headerButtons: {

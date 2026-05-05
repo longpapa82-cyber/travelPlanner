@@ -23,17 +23,22 @@ export async function signInWithOAuth(
   provider: OAuthProvider
 ): Promise<OAuthResult | null> {
   try {
-    // Generate CSRF state parameter
-    const state = Crypto.randomUUID();
+    // Generate CSRF nonce and encode state as base64url JSON { nonce, platform }
+    // so the backend's extractAndVerifyOAuthState() can read both fields from
+    // the single `state` param (the old ?platform=ios query param is ignored
+    // by the backend callback handler).
+    const nonce = Crypto.randomUUID();
+    const statePayload = btoa(JSON.stringify({ nonce, platform: Platform.OS }))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
 
-    // Build OAuth URL — include platform so the backend callback
-    // redirects to the app's custom scheme instead of the web URL.
-    const authUrl = `${API_URL}/auth/${provider}?platform=${Platform.OS}&state=${state}`;
+    const authUrl = `${API_URL}/auth/${provider}?state=${statePayload}`;
 
     // Web: redirect the current page. The callback is handled by
     // WebOAuthCallbackHandler in App.tsx when the page reloads at /auth/callback.
     if (Platform.OS === 'web') {
-      sessionStorage.setItem('oauth_state', state);
+      sessionStorage.setItem('oauth_state', nonce);
       window.location.href = authUrl;
       // This promise never resolves — the page navigates away.
       return new Promise(() => {});
@@ -87,7 +92,16 @@ export async function signInWithOAuth(
       (result.type === 'success' && result.url ? result.url : null);
 
     if (callbackUrl) {
-      return parseOAuthCallback(callbackUrl, state);
+      // iOS + Kakao: the KakaoTalk native app handles auth and retains foreground.
+      // Explicitly open the callback URL to signal iOS to bring myTravel back.
+      if (Platform.OS === 'ios' && provider === 'kakao') {
+        try {
+          await Linking.openURL(callbackUrl);
+        } catch {
+          // App is already in foreground — ignore
+        }
+      }
+      return parseOAuthCallback(callbackUrl, nonce);
     }
 
     return null;

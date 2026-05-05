@@ -113,7 +113,7 @@ const DatePickerField: React.FC<DatePickerProps> = ({
       {showPicker && Platform.OS === 'ios' && (
         <Modal transparent animationType="slide">
           <View style={styles.modalOverlay}>
-            <View style={[styles.modalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+            <View style={[styles.modalContent, { backgroundColor: isDark ? '#1C1C1E' : '#F2F2F7' }]}>
               <View style={styles.modalHeader}>
                 <TouchableOpacity onPress={() => setShowPicker(false)}>
                   <Text style={[styles.modalButton, { color: theme.colors.textSecondary }]}>{t('cancel')}</Text>

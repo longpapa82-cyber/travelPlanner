@@ -45,7 +45,8 @@
         "EXPO_PUBLIC_APP_URL": "https://mytravel-planner.com",
         "REVENUECAT_IOS_KEY": "appl_DtHjfizXdnNUxlHKhZKHuoZKYLe",
         "GOOGLE_IOS_CLIENT_ID": "48805541090-9gh3sp9asspe3d1et4er2pqpihm2bg47.apps.googleusercontent.com",
-        "SENTRY_DSN": "https://350b24245c83bb14bc60b074844878d3@o4511263608471552.ingest.de.sentry.io/4511263624265808"
+        "SENTRY_DSN": "https://350b24245c83bb14bc60b074844878d3@o4511263608471552.ingest.de.sentry.io/4511263624265808",
+        "EXPO_PUBLIC_USE_TEST_ADS": "true"
       }
     }
   },
