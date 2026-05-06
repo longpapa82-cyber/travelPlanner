@@ -221,7 +221,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}
       enabled={Platform.OS === 'ios'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top + 56 : 0}
+      keyboardVerticalOffset={0}
     >
       <ScrollView
         ref={scrollViewRef}
@@ -269,8 +269,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
-                autoComplete="off"
-                textContentType="none"
+                autoComplete="username"
+                textContentType="username"
                 editable={!isLoading}
                 accessibilityLabel={t('login.email')}
                 accessibilityHint={t('login.emailPlaceholder')}
@@ -293,9 +293,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 }}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
-                autoComplete="off"
+                autoComplete="current-password"
                 importantForAutofill="no"
-                textContentType="none"
+                textContentType="password"
                 editable={!isLoading}
                 accessibilityLabel={t('login.password')}
               />

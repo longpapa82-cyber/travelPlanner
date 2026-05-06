@@ -1,796 +1,493 @@
-# iOS 빌드 16 테스트 분석 및 수정 계획
+# iOS 1.0.0 (18) 버전 — 수정 계획 및 전체 검수 계획
 
-> **최종 수정**: 2026-05-05
-> **현재 기준 버전**: iOS 1.0.0 (buildNumber: 16)
-> **핵심 원칙**: 웹(www.mytravel-planner.com) 및 Android V220 운영 환경에 영향 없음
-> **격리 전략**: 모든 수정은 iOS 전용 조건(`Platform.OS === 'ios'`) 사용, 서버 수정 시 기존 동작 유지
-
----
-
-## 목차
-
-1. [빌드 16 버그 원인 분석 및 수정 계획](#1-빌드-16-버그-원인-분석-및-수정-계획)
-2. [수정 후 검수 계획](#2-수정-후-검수-계획)
-3. [최근 5개 버전 재발 방지 재점검 계획](#3-최근-5개-버전-재발-방지-재점검-계획)
-4. [iOS 앱 전체 기능 검수 계획](#4-ios-앱-전체-기능-검수-계획)
-5. [개인정보 및 시스템 보안 점검 계획](#5-개인정보-및-시스템-보안-점검-계획)
+> **원칙**: 모든 수정 작업은 iOS 전용 코드(`Platform.OS === 'ios'` 분기)에 한정.  
+> 웹(`www.mytravel-planner.com`) 및 Android(Google Play versionCode 220)에 영향을 주는 공유 로직 변경 금지.  
+> 수정 완료 후 한 번에 빌드 → TestFlight 등록 (buildNumber 19).
 
 ---
 
-## 1. 빌드 16 버그 원인 분석 및 수정 계획
+## 1부. B18 버그 원인 분석 및 수정 계획
 
-### B16-01: 비밀번호 입력 시 키보드가 비번 영역 가림 (P1)
+### B18-01 · 스플래시 화면 배경색 불일치
 
-**증상**: 비번 입력란 터치 시 키보드가 올라오면서 필드를 살짝 가림 (사용은 가능하나 UX 불편)
+**현상**: 흰색 배경(#FAFAF9) 위에 아이콘만 표기되어 어색함.  
+**근본 원인**: `app.config.js`의 `splash.backgroundColor: '#FAFAF9'`가 앱 아이콘 배경색(#4A90D9 계열 파랑)과 불일치.  
+**영향 범위**: iOS 전용 (`splash` 설정). Android는 `adaptive-icon` 별도 사용.
 
-**근본 원인**
+**수정 계획**:
 ```
-LoginScreen.tsx Line 208:
-  keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
-
-기기별 StatusBar 높이:
-  - iPhone SE 2세대 (홈 버튼): 20pt
-  - iPhone 14 (노치): 44pt
-  - iPhone 14 Pro (Dynamic Island): 54pt
-  - iPhone 15 Pro Max (Dynamic Island): 59pt
-
-60 오프셋은 SE 기기에서는 충분하지만
-노치/Dynamic Island 기기에서 44~59pt StatusBar에
-NavBar 높이(56pt)까지 더하면 100~115pt가 필요
-
-결과: 오프셋 부족 → KeyboardAvoidingView가 충분히 밀어올리지 못함
-     → 키보드가 비번 필드를 살짝 가림
+파일: frontend/app.config.js
+변경: splash.backgroundColor → '#4A90D9' (아이콘 배경과 동일한 색상)
+      splash.resizeMode → 'contain' 유지 (전체 화면 커버)
+주의: android 섹션의 adaptiveIcon.backgroundColor('#4A90D9')는 그대로 — 영향 없음
 ```
 
-**수정 방법**
-```typescript
-// frontend/src/screens/auth/LoginScreen.tsx
-// 현재:
-keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
-
-// 수정: useSafeAreaInsets().top을 반영한 동적 오프셋
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-const insets = useSafeAreaInsets();
-
-<KeyboardAvoidingView
-  behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-  style={styles.container}
-  enabled={Platform.OS === 'ios'}
-  keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top + 56 : 0}
->
-
-// insets.top: 기기별 StatusBar 높이 자동 반영
-// 56: 헤더 높이 (sharedHeaderOptions와 일치)
-// SE(20+56=76), iPhone14(44+56=100), ProMax(59+56=115) — 기기별 정확 처리
-```
-
-**영향 범위**: `frontend/src/screens/auth/LoginScreen.tsx` Line 204~209  
-**Android/Web 영향**: 없음 (Platform.OS === 'ios' 조건)
+**검증 방법**: TestFlight 설치 후 앱 실행 시 배경색이 아이콘과 자연스럽게 연결되는지 육안 확인.
 
 ---
 
-### B16-02: 이메일 로그인 시 암호 저장 팝업 재등장 (P1)
+### B18-02 · 이메일 로그인 키보드 오프셋 (흰색 박스 영역)
 
-**증상**: 로그인 시도 시 iOS Safari와 동일한 "암호 저장" keychain 팝업 표시
+**현상**: 비밀번호 입력 시 키보드 위에 흰색 박스가 표기되어 일부 UI 가려짐.  
+**근본 원인**: `KeyboardAvoidingView`의 `keyboardVerticalOffset={insets.top}`이 iOS Safe Area 값을 과대 계산하여 빈 공간 생성.  
+**영향 범위**: iOS LoginScreen 전용. Android는 `behavior={undefined}`로 분기되어 영향 없음.
 
-**근본 원인**
+**수정 계획**:
 ```
-iOS 암호 저장 팝업 트리거 조건:
-  - TextInput에 textContentType="username" (이메일 필드) +
-    textContentType="oneTimeCode" (비번 필드) 조합
+파일: frontend/src/screens/auth/LoginScreen.tsx
+변경: keyboardVerticalOffset 값을 조정
+     현재: insets.top
+     수정: Platform.OS === 'ios' ? 0 : 0  
+     (behavior="padding" 자체가 키보드 높이를 계산하므로 offset 추가 불필요)
+추가: KeyboardAvoidingView에 style={{ flex: 1 }} 명시
+```
+
+**검증 방법**: 비밀번호 필드 터치 시 흰색 빈 영역 미발생, 비밀번호 입력란이 키보드 위에 정상 표기.
+
+---
+
+### B18-03 · 이메일 로그인 후 iOS 암호 저장 팝업
+
+**현상**: 네이티브 앱임에도 이메일 로그인 완료 시 iCloud 키체인 암호 저장 팝업 표기.  
+**근본 원인**: iOS 17+에서 `textContentType="oneTimeCode"` + `secureTextEntry` 조합이 여전히 iCloud Keychain 자동 인식 대상. iOS가 `TextInput`을 WebView와 동일한 로그인 폼으로 식별.  
+**영향 범위**: iOS LoginScreen 전용. Android는 `autoComplete="off"` + `importantForAutofill="no"` 이미 적용.
+
+**수정 계획**:
+```
+파일: frontend/src/screens/auth/LoginScreen.tsx
+
+이메일 TextInput에 추가:
+  textContentType="username"  (이미 username임을 명시)
+
+비밀번호 TextInput 변경:
+  현재: textContentType="oneTimeCode"
+  수정: textContentType="password"  + autoFill="no"
+  추가: importantForAutofill="no"
+
+대안 (위 방법 미해결 시):
+  - 커스텀 TextInput wrapper 생성으로 iOS 키체인 인식 차단
+  - 혹은 password 필드 autoComplete="new-password" 적용
+```
+
+> **참고**: iOS 시스템의 암호 저장 기능은 Apple 정책상 100% 차단이 어려울 수 있음.  
+> 차단 불가 시 최종 리포트에 "iOS 시스템 정책상 완전 비활성화 불가, 사용자 경험에 실질적 영향 없음"으로 기재.
+
+**검증 방법**: 이메일 로그인 완료 후 암호 저장 팝업 미표기 or 표기 빈도 최소화 확인.
+
+---
+
+### B18-04 · 카카오 로그인 후 myTravel 앱 미복귀
+
+**현상**: 카카오 인증 완료 후 myTravel 앱으로 돌아오지 않고 카카오 앱에 머무름.  
+**근본 원인**: `oauth.service.ts`에서 카카오 네이티브 앱 처리 시 흐름:
+1. `WebBrowser.openAuthSessionAsync` → 카카오 네이티브 앱 실행 → 즉시 `type: 'dismiss'` 반환
+2. `deeplinkPromise`가 `travelplanner://auth/callback` URL을 기다리는 30초 타임아웃 동안 로딩 지속
+3. 카카오 SDK가 redirect URI로 `travelplanner://` 스킴 대신 카카오 자체 스킴을 사용하는 경우 딥링크 미수신
+
+**영향 범위**: iOS + Android 공통 코드이나, iOS 카카오 앱 전환 동작이 다름.
+
+**수정 가능성 판단**:
+- ✅ **취소 시 무한 로딩 수정**: 가능 → 아래 B18-05 참조
+- ⚠️ **인증 완료 후 앱 복귀**: 카카오 SDK의 universal link / custom scheme 동작은 카카오 측 구현에 의존. 
+  - 카카오 iOS SDK가 `kakaokompassauth://` 스킴으로 먼저 복귀 → myTravel 앱 딥링크로 재전달 흐름 확인 필요
+  - `RootNavigator.tsx`의 Linking 설정에 `travelplanner://auth/callback` 경로 등록 여부 재확인
+
+**수정 계획**:
+```
+파일: frontend/src/services/oauth.service.ts
+
+카카오 전용 분기 추가:
+  browserPromise 결과가 type === 'dismiss' 또는 type === 'cancel'인 경우
+  → deeplinkPromise를 계속 대기 (현재 동작)
+  → 단, 5초 추가 대기 후에도 딥링크 미수신 시 즉시 null 반환 (30초 → 5초로 단축)
+
+파일: frontend/src/navigation/RootNavigator.tsx
+확인: Linking 설정에 auth/callback 경로가 등록되어 있는지 검토
+```
+
+> **최종 판단**: 카카오 앱 → myTravel 앱 자동 복귀는 카카오 iOS SDK 동작 방식에 의존하므로  
+> SDK 레벨에서 해결 불가능할 경우 "카카오 SDK 정책상 iOS에서 네이티브 앱 복귀 미지원 — 사용자가 수동으로 앱 전환 필요"로 최종 리포트에 기재.
+
+---
+
+### B18-05 · 카카오 취소 시 로딩 무한 지속
+
+**현상**: [카카오로 시작하기] 팝업에서 취소 시 로그인 버튼에 장시간 로딩 발생.  
+**근본 원인**: 카카오 취소 시 `WebBrowser`가 `type: 'dismiss'` 반환 → `deeplinkPromise`의 30초 타임아웃 만료까지 `signInWithOAuth`가 반환 안 됨 → `handleKakaoLogin`의 `finally`에서 `setIsLoading(false)` 미호출.  
+**영향 범위**: iOS (카카오 취소 경로). Google/Apple 취소는 B17에서 해결됨.
+
+**수정 계획**:
+```
+파일: frontend/src/services/oauth.service.ts
+
+변경 1: deeplinkPromise 타임아웃 30초 → 5초로 단축
+변경 2: browserPromise 결과가 type === 'cancel' 또는 type === 'dismiss'이면
+        deeplinkPromise를 즉시 resolve(null) 처리하는 신호 추가
+        
+구현:
+  let deeplinkResolve: ((v: string | null) => void) | undefined;
   
-현재 코드:
-  LoginScreen.tsx Line 257: textContentType="username"  ← 이메일 필드
-  LoginScreen.tsx Line 286: textContentType="oneTimeCode"  ← 비번 필드
-
-왜 팝업이 뜨는가:
-  iOS AutoFill 엔진은 username + (password OR oneTimeCode) 조합을 
-  "로그인 폼"으로 인식함.
-  oneTimeCode는 비번 자동완성 팝업을 막지 못하고
-  "저장할 계정" 팝업(keychain save)을 유발함.
-
-정확한 차이:
-  textContentType="newPassword"  → 새 비번 저장 팝업
-  textContentType="password"     → 기존 비번 자동완성 팝업
-  textContentType="oneTimeCode"  → SMS 인증코드 자동입력 (비번 팝업 부분 차단)
-  textContentType="none"         → AutoFill 완전 비활성화 (팝업 없음)
-
-근본 해결책:
-  이메일 필드와 비번 필드 모두 textContentType="none" 으로 설정
-  → iOS AutoFill이 "로그인 폼"으로 인식하지 못함 → 팝업 없음
-```
-
-**수정 방법**
-```typescript
-// frontend/src/screens/auth/LoginScreen.tsx
-
-// 이메일 필드 (Line 257):
-// 변경 전:
-textContentType="username"
-// 변경 후:
-textContentType="none"
-
-// 비번 필드 (Line 286):
-// 현재: textContentType="oneTimeCode" → 유지하거나 "none"으로 변경
-// 권장: "none" (완전 차단)
-textContentType="none"
-
-// 추가 보강 (이미 있음, 유지):
-autoComplete="off"
-importantForAutofill="no"
-```
-
-**영향 범위**: `frontend/src/screens/auth/LoginScreen.tsx` Line 257, 286  
-**Android/Web 영향**: 없음 (iOS AutoFill 전용 prop)
-
----
-
-### B16-03: SNS 로그인 취소 시 로딩 인디케이터 지속 (P1)
-
-**증상**: SNS(Google/Apple/Kakao) 로그인 중 [취소] 버튼 클릭 후에도 로딩 스피너가 계속 표시됨
-
-**근본 원인**
-```
-코드 흐름:
-  handleGoogleLogin() / handleAppleLogin() / handleKakaoLogin()
-  → setIsLoading(true)
-  → loginWithGoogle/Apple/Kakao() — 취소 시 throw new Error('XXX_CANCELLED')
-  → catch(error) → showToast(getAuthErrorMessage(error))
-  → finally → setIsLoading(false)  ← 이것은 정상 작동
-
-문제: catch 블록의 showToast() 호출
-
-APPLE_SIGNIN_CANCELLED 처리 (LoginScreen.tsx Line 140~145):
-  AUTH_ERROR_I18N = {
-    GOOGLE_SIGNIN_CANCELLED: 'login.alerts.googleCancelled',
-    KAKAO_SIGNIN_CANCELLED: 'login.alerts.kakaoCancelled',
-    // APPLE_SIGNIN_CANCELLED 가 없음! ← 버그
-    OAUTH_FAILED: 'login.alerts.oauthFailed',
-    ...
-  }
-
-  getAuthErrorMessage('APPLE_SIGNIN_CANCELLED'):
-    → AUTH_ERROR_I18N['APPLE_SIGNIN_CANCELLED'] = undefined
-    → fallback: t('login.alerts.networkError')  ← "네트워크 오류" 표시
-
-실제 증상:
-  Apple 취소 → "네트워크 오류" Toast 표시 → 사용자 혼란
-  Google/Kakao 취소 → "X 로그인이 취소되었습니다" (정상)
+  const deeplinkPromise = new Promise<string | null>((resolve) => {
+    deeplinkResolve = resolve;
+    const timer = setTimeout(() => resolve(null), 5_000);  // 30s → 5s
+    const sub = Linking.addEventListener('url', ({ url }) => {
+      if (url.includes('/auth/callback')) {
+        clearTimeout(timer);
+        resolve(url);
+      }
+    });
+    cleanups.push(() => { sub.remove(); clearTimeout(timer); });
+  });
   
-  로딩은 finally에서 setIsLoading(false)가 실행되어 멈추지만
-  취소 시에도 Toast가 표시되어 UX가 나빠 보임
-
-추가 문제:
-  취소는 에러가 아니므로 Toast 자체를 표시하지 않아야 함
-  현재: 취소해도 "X 로그인이 취소되었습니다" Toast 표시 → 불필요한 알림
-```
-
-**수정 방법**
-```typescript
-// frontend/src/screens/auth/LoginScreen.tsx
-
-// 1. AUTH_ERROR_I18N에 Apple 취소 추가 (Line 140~145):
-const AUTH_ERROR_I18N: Record<string, string> = {
-  GOOGLE_SIGNIN_CANCELLED: 'login.alerts.googleCancelled',
-  KAKAO_SIGNIN_CANCELLED: 'login.alerts.kakaoCancelled',
-  APPLE_SIGNIN_CANCELLED: 'login.alerts.appleCancelled',  // ← 추가
-  OAUTH_FAILED: 'login.alerts.oauthFailed',
-  GOOGLE_SIGNIN_UNAVAILABLE: 'login.alerts.googleUnavailable',
-};
-
-// 2. 취소 에러는 Toast 표시하지 않도록 핸들러 수정:
-const CANCELLED_CODES = new Set([
-  'GOOGLE_SIGNIN_CANCELLED',
-  'KAKAO_SIGNIN_CANCELLED',
-  'APPLE_SIGNIN_CANCELLED',
-]);
-
-const handleGoogleLogin = async () => {
-  setIsLoading(true);
-  try {
-    await loginWithGoogle();
-  } catch (error: any) {
-    const code = error?.message ?? '';
-    if (!CANCELLED_CODES.has(code)) {
-      // 취소가 아닌 실제 오류만 Toast 표시
-      showToast({ type: 'error', message: getAuthErrorMessage(error), position: 'top' });
+  // browserPromise 완료 후 카카오 취소 감지 시 deeplinkPromise 즉시 종료
+  browserPromise.then((result) => {
+    if (result.type === 'cancel' || result.type === 'dismiss') {
+      // 잠깐 대기 (딥링크 경쟁 허용) 후 즉시 null 반환
+      setTimeout(() => deeplinkResolve?.(null), 500);
     }
-  } finally {
-    setIsLoading(false);
-  }
-};
-// handleAppleLogin, handleKakaoLogin 동일 패턴 적용
+  });
 
-// 3. i18n 추가 (auth.json 17개 언어):
-// "appleCancelled": "Apple 로그인이 취소되었습니다"
+파일: frontend/src/contexts/AuthContext.tsx (또는 oauth.service.ts)
+확인: 반환값 null 시 KAKAO_SIGNIN_CANCELLED 에러 throw → LoginScreen의 
+      CANCELLED_CODES Set이 처리 → setIsLoading(false) 호출 흐름 검증
 ```
 
-**수정 파일**:
-- `frontend/src/screens/auth/LoginScreen.tsx` (3개 핸들러 + AUTH_ERROR_I18N)
-- `frontend/src/i18n/locales/*/auth.json` (17개 언어 — appleCancelled 키 추가)
-
-**Android/Web 영향**: 없음 (동일 패턴이 개선될 뿐, 기존 동작 변경 없음)
+**검증 방법**: 카카오 팝업에서 취소 후 1초 이내에 로딩 해제 및 로그인 화면 정상 표기.
 
 ---
 
-### B16-04: 카카오 로그인 후 카카오톡 앱으로 복귀 (P2 — OS 제한)
+### B18-06 · 오류 로그 점검
 
-**증상**: 카카오 인증 완료 후 myTravel 앱이 아닌 카카오톡 앱으로 포그라운드 이동
+**점검 항목**: 금일(빌드 18 테스트 날짜) 추가된 오류 로그 확인 및 수정/개선 여부 판단.
 
-**근본 원인 (OS 레벨 제한)**
-```
-iOS 앱 포그라운드 전환 메커니즘:
-  - iOS는 앱이 다른 앱을 programmatic하게 포그라운드로 전환하는 것을 금지
-  - 허용된 방법: URL scheme openURL() — 단, 앱이 이미 registered scheme을 처리하는 경우
-
-카카오 인증 흐름:
-  1. myTravel → WebBrowser.openAuthSessionAsync() → 카카오 OAuth 페이지
-  2. 카카오 OAuth가 카카오톡 앱으로 리다이렉트 (앱 인터셉트)
-  3. 카카오톡에서 [확인] 클릭
-  4. 카카오톡 → travelplanner:// 딥링크로 myTravel에 code 전달
-  5. myTravel의 Linking.addEventListener가 딥링크 수신
-  
-문제:
-  Step 4에서 카카오톡이 "전달자" 역할을 하므로
-  카카오톡이 포그라운드 → iOS가 카카오톡을 유지
-  myTravel은 딥링크를 받아 처리하지만 백그라운드 상태 유지
-
-이전 시도 (B15-04에서 제거한 이유):
-  Linking.openURL(callbackUrl) 시도 → code 이중 교환 → 500 에러
-  완전히 제거한 것이 올바른 결정 (500 에러 제거)
-
-현재 상태:
-  - 로그인 자체는 정상 동작 (code 교환, 토큰 발급 모두 정상)
-  - 단지 카카오톡이 포그라운드에 남아있는 UI 문제
-  - 사용자가 직접 myTravel을 탭하면 로그인 완료 상태로 진입
-
-해결 가능성 평가:
-  완전 자동 포그라운드 전환: iOS 정책상 불가
-  부분 개선: 사용자에게 앱 복귀 안내 UI 표시 (이미 B15 때 kakaoReturnHint 추가)
-```
-
-**수정 방향 (UX 안내 강화)**
-```typescript
-// 이미 구현된 내용 확인:
-// LoginScreen에 카카오 로그인 버튼 아래 힌트 텍스트 표시
-// auth.json: "kakaoReturnHint": "로그인 후 카카오톡에서 myTravel 앱으로 자동 복귀됩니다"
-
-// 추가 개선: 카카오 로그인 진행 중 모달/팝업에서 안내 강화
-// "카카오톡에서 로그인 완료 후 myTravel 앱을 눌러 주세요"
-// → 사용자가 무엇을 해야 하는지 명확히 인지
-```
-
-**결론**: 로그인 기능 자체는 100% 정상. OS 제한으로 자동 포그라운드 전환 불가. UX 안내로 대응.  
-**Android/Web 영향**: 없음
-
----
-
-### B16-05: 앱 아이콘 직각 사각형 — 디자인 개선 (P2)
-
-**증상**: 홈 화면 아이콘이 딱딱한 직각 사각형 느낌 (iOS의 자동 squircle 마스크 적용 후에도)
-
-**사용자 요청**: 배경 컬러 전체 + 중앙 아이콘 이미지 배치 (배경색과 스플래시 일치)
-
-**근본 원인**
-```
-현재 icon.png 구조:
-  - 1024x1024 PNG
-  - 내부: 파란 배경 + 비행기+텍스트 로고
-  - iOS squircle 마스크 자동 적용되지만 내부 디자인 자체가 꽉 차있어
-    사각 느낌 유지
-
-사용자 원하는 방향:
-  - 배경: 앱 테마 컬러 (#3B82F6 또는 현재 배경색) 단색
-  - 중앙: 아이콘 이미지 (비행기) — 70~75% 크기로 여백 있게 배치
-  - 결과: iOS squircle 마스킹 후 배경색이 보여 자연스러운 라운드 아이콘
-  - 스플래시 배경 (#FAFAF9)과의 자연스러운 연결
-
-전 세계 앱 벤치마킹 (글로벌 표준):
-  Airbnb: 단색 배경 + 중앙 로고 (80% 크기)
-  Google Maps: 단색 배경 + 핀 아이콘
-  Booking.com: 단색 배경 + 'B' 텍스트 (대문자 단순화)
-  → 공통: 단색 배경 + 단순 아이콘 + 충분한 여백
-```
-
-**수정 방법 (Python Pillow 사용)**
-```python
-# 현재 앱 배경색 확인 필요: app.config.js Line 18: backgroundColor: '#FAFAF9'
-# 앱 primary color: theme.colors.primary → #3B82F6
-
-# 새 아이콘 생성:
-# 1. 1024x1024 캔버스 (#3B82F6 배경)
-# 2. 기존 비행기 아이콘 이미지를 708x708 (69%)으로 리사이즈
-# 3. 중앙 배치 (158, 158)
-# 4. PNG 저장 (알파 채널 없음)
-
-from PIL import Image
-
-BG_COLOR = (59, 130, 246)   # #3B82F6 (primary blue)
-SIZE = 1024
-ICON_RATIO = 0.69
-
-bg = Image.new('RGB', (SIZE, SIZE), BG_COLOR)
-icon = Image.open('icon_src.png').convert('RGBA')
-icon_size = int(SIZE * ICON_RATIO)  # 708px
-icon = icon.resize((icon_size, icon_size), Image.LANCZOS)
-
-offset = (SIZE - icon_size) // 2   # 158
-bg.paste(icon, (offset, offset), icon)
-bg.save('assets/icon.png')
-```
-
-**실행 순서**:
-1. 기존 비행기 아이콘 소스 파일 확인 (transparent PNG)
-2. Python 스크립트로 새 icon.png 생성
-3. app.config.js의 splash backgroundColor와 통일 여부 확인
-4. buildNumber 올린 후 빌드 → TestFlight 확인
-
-**Android/Web 영향**: 없음 (아이콘만 교체, 각 플랫폼 독립 마스킹)
-
----
-
-### B16-06: 오류 로그 점검 (image-69.png) — 조사 항목
-
-**오류 로그 점검 방법**
+**점검 방법**:
 ```bash
-# 프로덕션 서버 오류 로그 조회
+# 프로덕션 서버 ErrorLog DB 조회
 ssh -i ~/.ssh/travelplanner-oci root@46.62.201.127 \
-  "cd /root/travelPlanner/backend && docker compose logs --tail=200 2>&1 | grep -E 'ERROR|500|exception' | head -50"
-
-# 또는 Admin 대시보드에서 확인:
-# https://mytravel-planner.com/admin (관리자 로그인)
-# → Error Logs 메뉴 → 오늘 날짜 필터
+  "cd /root/travelPlanner/backend && \
+   docker compose exec postgres psql -U postgres -d travelplanner \
+   -c \"SELECT created_at, method, url, status_code, message FROM error_log \
+        WHERE created_at > NOW() - INTERVAL '24 hours' \
+        ORDER BY created_at DESC LIMIT 50;\""
 ```
 
-**점검 항목**:
-- 500 에러 발생 건수 및 경로
-- Kakao OAuth 관련 오류 (이중 code 교환 시도)
-- 인증 실패 패턴 (특정 엔드포인트 반복 실패)
-- 비정상 요청 패턴 (DoS, 크롤러)
+**판단 기준**:
+| 상태 코드 | 처리 방침 |
+|-----------|-----------|
+| 5xx 서버 오류 | 즉시 원인 분석 및 수정 |
+| 4xx 클라이언트 오류 | 반복 패턴 시 UI 안내 개선 |
+| 카카오 관련 오류 | B18-04/05와 연계 분석 |
 
 ---
 
-## 2. 수정 후 검수 계획
+## 2부. 수정 완료 항목 검수 계획
 
-### 2-1. B16-01 (키보드 가림) 검수
+> 빌드 13~17에서 해결된 항목이 빌드 18에서 유지되는지 회귀 검증.
 
-```
-기기: iPhone 14 Pro (Dynamic Island), iPhone SE 2세대
-환경: 라이트/다크모드
+### 검수 체크리스트
 
-시나리오:
-  ☐ 로그인 화면 진입
-  ☐ 이메일 입력 완료
-  ☐ 비밀번호 필드 터치
-  ☐ 키보드 올라옴 → 비밀번호 필드 100% 보임 (가리지 않음)  ← 핵심
-  ☐ 비밀번호 입력 가능 (타이핑 정상)
-  ☐ [로그인] 버튼 보임
-  ☐ iPhone SE에서도 동일하게 정상
-```
+| # | 항목 | 이전 해결 버전 | B18 상태 | 검수 방법 |
+|---|------|--------------|---------|---------|
+| C1 | 구글 로그인 — 앱 강제종료 없이 홈으로 이동 | B13 | ✅ 유지 필요 | 구글 계정 선택 → 홈 탐색 화면 도달 확인 |
+| C2 | 애플 로그인 — 정상 동작 | B13 | ✅ 유지 필요 | Apple ID 로그인 → 홈 화면 도달 확인 |
+| C3 | 애플 취소 시 로딩 미발생 | B17 | ✅ 유지 필요 | 애플 팝업 취소 → 즉시 로딩 해제 |
+| C4 | 구글 취소 시 로딩 미발생 | B16 | ✅ 유지 필요 | 구글 팝업 취소 → 즉시 로딩 해제 |
+| C5 | DatePicker (출발일/종료일) 정상 표기 | B15 | ✅ 유지 필요 | 새 여행 만들기 → 날짜 선택 UI 가시 확인 |
+| C6 | 상단 헤더 높이 일정 | B16 | ✅ 유지 필요 | 탭 전환 시 헤더 위치 흔들림 없음 |
+| C7 | 이전 버튼 중복 미표기 | B15 | ✅ 유지 필요 | 새 여행 만들기 화면 — 이전 버튼 1개만 |
+| C8 | 키보드 활성화 시 비밀번호 필드 접근 가능 | B15 | ✅ 유지 필요 | 이메일 → 비밀번호 필드 탭 → 가려짐 없음 |
+| C9 | [광고 보고 인사이트] 버튼 표기 | B14 | ✅ 유지 필요 | 목적지 입력 화면에서 버튼 가시 확인 |
+| C10 | 출발일 > 종료일 시 정확한 오류 메시지 | B14 | ✅ 유지 필요 | "종료일을 확인해주세요" 메시지 출력 |
+| C11 | 스플래시 깜빡임 없음 | B13 | ✅ 유지 필요 | 앱 실행 → 이전 앱 이미지 미표기 |
+| C12 | 로그인 완료 후 홈(탐색) 화면 이동 | B17 | ✅ 유지 필요 | 이메일 로그인 → 탐색 화면 도달 (암호 팝업과 관계없이) |
 
-### 2-2. B16-02 (암호 저장 팝업) 검수
+---
 
-```
-기기: iPhone 모든 기종
-환경: 처음 로그인 / 재로그인
+## 3부. iOS 전체 기능 상세 검수 계획
 
-시나리오:
-  ☐ 이메일 + 비밀번호 입력
-  ☐ [로그인] 버튼 클릭
-  ☐ 로그인 성공
-  ☐ "암호 저장" 또는 "키체인에 저장" 팝업 없음  ← 핵심
-  ☐ 로그아웃 후 재로그인 시도
-  ☐ 자동완성 팝업 없음  ← 핵심
-  ☐ 로그인 정상 완료
-```
+### 검수 환경
 
-### 2-3. B16-03 (SNS 취소) 검수
+| 항목 | 사양 |
+|------|------|
+| 기기 | iPhone (TestFlight 설치) |
+| iOS 버전 | 최신 iOS 지원 버전 |
+| 계정 | 테스트 계정 (hoonjae723@gmail.com) |
+| 네트워크 | WiFi + LTE 각각 테스트 |
+| 프리미엄 상태 | 비프리미엄(광고 노출) + 프리미엄 각각 테스트 |
 
-```
-기기: iPhone
-테스트 계정: Google, Apple, Kakao 각각
+---
 
-시나리오 A — Google 취소:
-  ☐ [Google로 시작하기] 클릭
-  ☐ Google 계정 선택 화면에서 [취소] 클릭
-  ☐ Toast 메시지 없음 (또는 조용히 처리)  ← 핵심
-  ☐ 로딩 인디케이터 즉시 사라짐  ← 핵심
-  ☐ 로그인 화면으로 복귀
+### F1. 앱 실행 및 스플래시
 
-시나리오 B — Apple 취소:
-  ☐ [Apple로 시작하기] 클릭
-  ☐ Face ID 화면 또는 선택 화면에서 [취소]
-  ☐ "네트워크 오류" Toast 없음  ← 핵심 (기존 버그)
-  ☐ 로딩 즉시 사라짐
-  ☐ 로그인 화면 복귀
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F1-01 | 앱 아이콘 터치 후 실행 | 배경색 일치, 중앙 아이콘 표기, 깜빡임 없음 | P0 |
+| F1-02 | 앱 강제 종료 후 재실행 | F1-01과 동일 | P0 |
+| F1-03 | 백그라운드 → 포그라운드 전환 | 스플래시 미표기, 기존 화면 유지 | P1 |
 
-시나리오 C — Kakao 취소:
-  ☐ [카카오로 시작하기] 클릭
-  ☐ 카카오 화면에서 뒤로가기 또는 취소
-  ☐ Toast 없음 또는 조용한 처리
-  ☐ 로딩 즉시 사라짐
-```
+---
 
-### 2-4. B16-04 (카카오 복귀) 확인
+### F2. 인증 — 이메일/비밀번호
 
-```
-시나리오:
-  ☐ [카카오로 시작하기] 클릭
-  ☐ 카카오 인증 페이지 진입
-  ☐ 계정 입력 후 [확인] 클릭
-  ☐ 카카오톡 앱으로 이동 (정상 — OS 제한)
-  ☐ 힌트 문구 표시 확인 "myTravel 앱으로 돌아가세요"
-  ☐ myTravel 앱 탭 후 로그인 완료 상태  ← 핵심
-  ☐ statuscode:500 오류 없음  ← 핵심 (B15-04 수정 유지)
-```
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F2-01 | 이메일 필드 터치 | 키보드 활성화, 화면 가려짐 없음 | P0 |
+| F2-02 | 비밀번호 필드 터치 | 비밀번호 필드 가시, 흰색 박스 미표기 | P0 |
+| F2-03 | 올바른 이메일/비밀번호 로그인 | 홈 화면 이동, 암호 저장 팝업 최소화 | P0 |
+| F2-04 | 잘못된 이메일 형식 입력 | 이메일 형식 오류 메시지 표기 | P1 |
+| F2-05 | 잘못된 비밀번호 입력 | 로그인 오류 메시지 표기 | P1 |
+| F2-06 | 비밀번호 눈 아이콘 토글 | 비밀번호 표시/숨김 전환 | P2 |
+| F2-07 | 이메일 미입력 로그인 시도 | "이메일을 입력해주세요" 표기 | P1 |
+| F2-08 | 비밀번호 미입력 로그인 시도 | "비밀번호를 입력해주세요" 표기 | P1 |
 
-### 2-5. B16-05 (아이콘) 검수
+---
 
-```
-  ☐ 홈 화면에 앱 아이콘 표시
-  ☐ 배경: 파란색(#3B82F6) 단색
-  ☐ 중앙 비행기 아이콘 명확히 보임
-  ☐ 충분한 여백 (사방 15% 이상)
-  ☐ iOS squircle 마스크 후 자연스러운 라운드 처리
-  ☐ 스플래시 화면 배경과 자연스럽게 연결
-  ☐ 앱스토어 제출 전 1024x1024 PNG 규격 확인
-```
+### F3. 인증 — SNS 로그인
 
-### 2-6. 회귀 테스트 (자동화)
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F3-01 | [구글로 시작하기] 터치 | 구글 계정 선택 화면 표기 | P0 |
+| F3-02 | 구글 계정 선택 후 로그인 | 홈 화면 이동 (탐색 화면) | P0 |
+| F3-03 | 구글 로그인 취소 | 즉시 로딩 해제, 로그인 화면 복귀 | P0 |
+| F3-04 | [애플로 시작하기] 터치 | Face ID / Touch ID 팝업 표기 | P0 |
+| F3-05 | 애플 로그인 성공 | 홈 화면 이동 | P0 |
+| F3-06 | 애플 로그인 취소 | 즉시 로딩 해제, 로그인 화면 복귀 | P0 |
+| F3-07 | [카카오로 시작하기] 터치 | 카카오 인증 화면 표기 | P0 |
+| F3-08 | 카카오 로그인 완료 | myTravel 앱 복귀 또는 수동 전환 후 홈 이동 | P0 |
+| F3-09 | 카카오 로그인 취소 | 5초 이내 로딩 해제, 로그인 화면 복귀 | P0 |
+| F3-10 | 중복 이메일 (다른 프로바이더) 로그인 시도 | 프로바이더 충돌 안내 메시지 표기 | P1 |
+
+---
+
+### F4. 로그아웃 및 세션
+
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F4-01 | 프로필 → 로그아웃 | 로그인 화면으로 이동, 광고 깜빡임 없음 | P0 |
+| F4-02 | 로그아웃 후 앱 재실행 | 로그인 화면 표기 (자동 로그인 없음) | P0 |
+| F4-03 | 장시간 비사용 후 앱 재진입 | 세션 만료 시 로그인 화면 이동 | P1 |
+
+---
+
+### F5. 홈 화면
+
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F5-01 | 홈 탭 진입 | 헤더 정상, 콘텐츠 정상 표기 | P0 |
+| F5-02 | 탐색 → 홈 → 탐색 탭 전환 | 헤더 높이 일정, 흔들림 없음 | P0 |
+| F5-03 | 홈에서 여행 카드 터치 | 여행 상세 화면 이동 | P1 |
+
+---
+
+### F6. 새 여행 만들기
+
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F6-01 | [새 여행 만들기] 버튼 터치 | 새 여행 입력 화면 표기, 이전 버튼 1개 | P0 |
+| F6-02 | 목적지 입력 | 장소 자동완성 정상 동작 | P0 |
+| F6-03 | [광고 보고 상세 여행 인사이트 받기] 버튼 | 버튼 가시 및 터치 동작 | P0 |
+| F6-04 | 출발일 선택 | DatePicker 정상 표기, 날짜 선택 가능 | P0 |
+| F6-05 | 종료일 선택 | DatePicker 정상 표기, 날짜 선택 가능 | P0 |
+| F6-06 | 출발일 > 종료일 입력 | "종료일을 확인해주세요" 안내 메시지 | P1 |
+| F6-07 | 여행 이름 입력 | 텍스트 입력 정상, 키보드 가려짐 없음 | P0 |
+| F6-08 | 여행 생성 완료 | 여행 목록 또는 상세 화면 이동 | P0 |
+| F6-09 | 이전 버튼 터치 | 이전 화면 복귀 | P1 |
+
+---
+
+### F7. 여행 목록 및 상세
+
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F7-01 | [내 여행] 탭 진입 | 여행 목록 정상 표기 | P0 |
+| F7-02 | 여행 카드 터치 | 여행 상세 화면 이동, 이전 버튼(<) 표기 | P0 |
+| F7-03 | 여행 상세 → 이전 버튼 터치 | 이전 화면 복귀 및 버튼 동작 | P0 |
+| F7-04 | 여행 수정 | 날짜/이름 수정 후 저장 | P1 |
+| F7-05 | 여행 삭제 | 확인 후 목록에서 제거 | P1 |
+
+---
+
+### F8. 탐색 화면
+
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F8-01 | [탐색] 탭 진입 | 탐색 콘텐츠 정상 표기 | P0 |
+| F8-02 | 장소 검색 | 자동완성 결과 표기 및 선택 | P1 |
+
+---
+
+### F9. 알림 화면
+
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F9-01 | [알림] 탭 진입 | 헤더 정상, 알림 목록 표기 | P1 |
+| F9-02 | 알림 터치 | 관련 화면 이동 | P2 |
+
+---
+
+### F10. 프로필 화면
+
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F10-01 | [프로필] 탭 진입 | 사용자 정보 정상 표기, 헤더 높이 일정 | P0 |
+| F10-02 | 프로필 이미지 변경 | 사진 라이브러리 접근, 이미지 업로드 | P1 |
+| F10-03 | 이름 수정 | 입력 → 저장 → 반영 | P1 |
+| F10-04 | 구독 관리 | 구독 상태 표기, 구독 화면 이동 | P1 |
+| F10-05 | 계정 탈퇴 | 확인 팝업 → 탈퇴 → 로그인 화면 | P1 |
+
+---
+
+### F11. 광고 (비프리미엄 사용자)
+
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F11-01 | 비프리미엄 계정으로 앱 이용 | 배너 광고 표기 | P1 |
+| F11-02 | 리워드 광고 시청 | 광고 완료 후 인사이트 제공 | P1 |
+| F11-03 | 프리미엄 계정으로 로그인 | 광고 미표기 | P1 |
+| F11-04 | 로그아웃 시 광고 처리 | 광고 깜빡임 없이 로그인 화면 이동 | P0 |
+
+---
+
+### F12. 구독/결제 (iOS In-App Purchase)
+
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F12-01 | 구독 화면 진입 | 월간/연간 패키지 가격 표기 | P1 |
+| F12-02 | 구독 시도 (테스트 계정) | App Store 결제 팝업 표기 | P1 |
+| F12-03 | 구독 완료 후 프리미엄 활성화 | 광고 제거, 기능 잠금 해제 | P1 |
+| F12-04 | 구독 복원 | 이전 구독 상태 복원 | P2 |
+
+---
+
+### F13. 하단 탭 네비게이션
+
+| 테스트 ID | 시나리오 | 기대 결과 | 우선순위 |
+|-----------|---------|---------|---------|
+| F13-01 | 5개 탭 순차 터치 | 각 화면 이동, 헤더 높이 일정 | P0 |
+| F13-02 | 빠른 탭 전환 (더블 탭) | 크래시 없음, 정상 동작 | P1 |
+| F13-03 | Safe Area 여백 | 하단 홈 인디케이터 영역 침범 없음 | P1 |
+
+---
+
+## 4부. iOS 앱 보안 점검 계획
+
+> **원칙**: 점검 항목은 iOS 앱 레이어에 한정. 서버/웹/Android 공유 인프라 변경 금지.
+
+---
+
+### S1. 인증 및 토큰 보안
+
+| 점검 ID | 항목 | 점검 방법 | 기준 |
+|---------|------|---------|------|
+| S1-01 | Access Token 저장 위치 | `secureStorage` (expo-secure-store) 사용 확인 | AsyncStorage 저장 금지 |
+| S1-02 | Refresh Token 저장 위치 | `secureStorage` 사용 확인 (Invariant: AsyncStorage 금지) | SecureStore 저장 필수 |
+| S1-03 | OAuth state(nonce) CSRF 검증 | `parseOAuthCallback`에서 state 비교 로직 확인 | state 불일치 시 null 반환 |
+| S1-04 | 토큰 로그 노출 | 서버 오류 로그에 토큰 값 미포함 확인 | 토큰 마스킹 필수 |
+| S1-05 | 앱 백그라운드 시 인증 상태 | 30분 이상 비사용 후 재진입 시 토큰 갱신 동작 | 401 → 자동 재인증 또는 로그인 화면 |
+
+---
+
+### S2. 개인정보 접근 권한
+
+| 점검 ID | 항목 | 점검 방법 | 기준 |
+|---------|------|---------|------|
+| S2-01 | 사진 라이브러리 접근 | `NSPhotoLibraryUsageDescription` 설명 표기 | 명확한 사용 목적 안내 |
+| S2-02 | 광고 추적 권한 | `NSUserTrackingUsageDescription` ATT 팝업 | iOS 14+ ATT 동의 흐름 |
+| S2-03 | 카메라 접근 (미사용 시) | `Info.plist`에 카메라 권한 미선언 확인 | 불필요한 권한 없음 |
+| S2-04 | 위치 정보 (미사용 시) | 위치 권한 미요청 확인 | 미선언 |
+| S2-05 | 마이크 접근 (미사용 시) | 마이크 권한 미요청 확인 | 미선언 |
+
+---
+
+### S3. 네트워크 통신 보안
+
+| 점검 ID | 항목 | 점검 방법 | 기준 |
+|---------|------|---------|------|
+| S3-01 | HTTPS 강제 | 모든 API 호출이 `https://` 사용 | HTTP 호출 없음 |
+| S3-02 | App Transport Security | `NSAllowsArbitraryLoads` 미설정 확인 | ATS 활성화 |
+| S3-03 | API URL 하드코딩 | 소스코드에 프로덕션 자격증명 미노출 | 환경변수 사용 |
+| S3-04 | 인증서 피닝 (선택) | 현재 미적용 — 향후 도입 검토 | P2 (즉시 필수 아님) |
+
+---
+
+### S4. 데이터 저장 보안
+
+| 점검 ID | 항목 | 점검 방법 | 기준 |
+|---------|------|---------|------|
+| S4-01 | 민감 데이터 AsyncStorage 저장 | 코드 검색: `AsyncStorage.setItem`에서 토큰/비밀번호 미저장 | 토큰류 전부 SecureStore |
+| S4-02 | 캐시 데이터 민감정보 | `offlineCache` 저장 데이터 항목 확인 | PII 미포함 |
+| S4-03 | 네비게이션 상태 민감 파라미터 | `sanitizeNavState`에서 토큰/OAuth 파라미터 제거 확인 | SAFE_PARAM_KEYS만 저장 |
+| S4-04 | 로그 파일 PII 노출 | 클라이언트 로그에 이메일/이름 미노출 확인 | PII 마스킹 |
+
+---
+
+### S5. 입력값 검증 및 주입 방지
+
+| 점검 ID | 항목 | 점검 방법 | 기준 |
+|---------|------|---------|------|
+| S5-01 | 이메일 형식 검증 | 클라이언트 정규식 + 서버 DTO 검증 이중 확인 | 양측 검증 필수 |
+| S5-02 | 여행 이름/설명 특수문자 | XSS 방지: `stripHtml` DTO 적용 확인 (서버) | HTML 태그 제거 |
+| S5-03 | 날짜 입력 범위 | 출발일 > 종료일 방어 로직 확인 | 클라이언트 + 서버 검증 |
+
+---
+
+### S6. Apple 앱 심사 정책 준수
+
+| 점검 ID | 항목 | 기준 |
+|---------|------|------|
+| S6-01 | Apple 로그인 필수 제공 | 타 SNS 로그인 제공 시 Apple 로그인도 반드시 제공 ✅ |
+| S6-02 | Privacy Nutrition Labels | App Store Connect 개인정보 수집 선언 정확성 확인 |
+| S6-03 | 암호화 사용 선언 | `ITSAppUsesNonExemptEncryption: false` — 표준 HTTPS만 사용 시 적절 |
+| S6-04 | 광고 추적 투명성 | ATT 동의 없이 IDFA 미사용 확인 |
+| S6-05 | 결제 정책 준수 | 디지털 상품 IAP 필수 사용 (Paddle은 웹 전용 허용 범위 확인) |
+
+---
+
+## 5부. 빌드 및 제출 계획
+
+### 수정 우선순위 및 순서
+
+| 순서 | 항목 | 예상 소요 | 필수 여부 |
+|------|------|---------|---------|
+| 1 | B18-05 카카오 취소 로딩 (5초 타임아웃) | 30분 | 필수 |
+| 2 | B18-01 스플래시 배경색 | 10분 | 필수 |
+| 3 | B18-02 키보드 오프셋 | 30분 | 필수 |
+| 4 | B18-03 암호 저장 팝업 | 30분 | 권장 |
+| 5 | B18-04 카카오 복귀 딥링크 분석 | 60분 | 조건부 |
+| 6 | B18-06 오류 로그 점검 | 30분 | 권장 |
+
+### 빌드 명령
 
 ```bash
-cd frontend && npx tsc --noEmit
-cd frontend && npm test -- --coverage --passWithNoTests
-cd backend && npx tsc --noEmit
-npm run validate:static
+# buildNumber를 19로 설정 (app.config.js)
+# iOS 전용 변경 사항만 반영 후 빌드
+cd frontend
+eas build --platform ios --profile production-ios
 ```
+
+### TestFlight 검증 순서
+
+1. F1 (스플래시) → F2/F3 (로그인) → F6 (여행 생성) 순서로 P0 항목 우선 검증
+2. P0 전체 통과 후 P1 항목 검증
+3. S1~S4 보안 항목 코드 리뷰 (기기 테스트 불필요한 정적 분석 포함)
+4. 최종 Go/No-Go 판정 후 App Store Connect 제출
 
 ---
 
-## 3. 최근 5개 버전 재발 방지 재점검 계획
+## 6부. 웹/Android 영향 없음 확인 체크리스트
 
-> 빌드 12~16의 반복 이슈를 항목별로 점검하여 재발 여부를 확인
+> 모든 수정 작업 완료 후 아래 항목 확인.
 
-### 재점검 매트릭스
-
-| 이슈 | v12 | v13 | v14 | v15 | v16 | 상태 | 재발 여부 |
-|------|-----|-----|-----|-----|-----|------|---------|
-| 스플래시 이전 이미지 깜빡임 | ❌ | ❌ | ✅수정 | - | - | **해결** | 확인 필요 |
-| 이메일 암호 저장 팝업 | ❌ | ❌ | ❌ | ❌ | ❌ | **미해결** | 재발 중 |
-| 카카오 앱 복귀 안됨 | ❌ | ❌ | ❌ | ❌ | ❌ | **OS 제한** | 로그인 정상 |
-| DatePicker 흰색 | ❌ | ❌ | ❌ | ❌ | ✅수정 | **해결** | 재점검 필요 |
-| 이중 뒤로가기 버튼 | ❌ | ❌ | ❌ | ✅수정 | - | **해결** | 확인 필요 |
-| 헤더 높이 불일치 | ❌ | ❌ | ❌ | ❌ | ✅수정 | **해결** | 재점검 필요 |
-| 비번 필드 과도 스크롤 | - | - | ❌ | ❌ | ✅수정 | **해결** | 재점검 필요 |
-| 카카오 500 오류 | - | - | - | ❌ | ✅수정 | **해결** | 재점검 필요 |
-| SNS 취소 시 로딩 지속 | - | - | - | - | ❌ | **신규** | B16-03 |
-| 키보드 비번 가림 | - | - | ❌ | - | ❌ | **부분 재발** | B16-01 |
-
-### 항목별 재점검 시나리오
-
-**[R-01] 스플래시 이전 이미지 — 재발 확인**
-```
-빌드 14에서 splash-icon.png 교체로 해결됨
-재점검:
-  ☐ 앱 완전 종료 후 아이콘 탭
-  ☐ 0.1초 이내 이전 앱 이미지 깜빡임 없음
-  ☐ #FAFAF9 배경 + 현재 아이콘 로딩 확인
-```
-
-**[R-02] 암호 저장 팝업 — 반복 미해결**
-```
-v12~v16까지 5번 연속 미해결
-근본 원인: textContentType="username" 유지 (이메일 필드)
-재점검:
-  ☐ B16-02 수정 후 팝업 완전 제거 확인
-  ☐ 비번 변경 화면도 동일 prop 적용 확인
-```
-
-**[R-03] DatePicker 흰색 — 수정 유지 확인**
-```
-v15에서 display="spinner"로 해결
-재점검:
-  ☐ 새 여행 만들기 → 출발일 클릭
-  ☐ 스피너 UI에서 날짜 숫자 명확히 보임
-  ☐ 라이트모드: 검은 텍스트
-  ☐ 다크모드: 흰 텍스트
-  ☐ 도착일 동일 확인
-  ☐ 날짜 선택 후 필드 반영 확인
-```
-
-**[R-04] 이중 뒤로가기 버튼 — 수정 유지 확인**
-```
-v15에서 headerBackVisible: false (iOS 전용) 추가
-재점검:
-  ☐ 새 여행 만들기 화면 진입
-  ☐ 왼쪽 상단 뒤로가기 버튼 1개만 표시
-  ☐ 버튼 클릭 → 이전 화면 정상 복귀
-  ☐ 다른 스택 화면(편집, 경비 등)도 확인
-```
-
-**[R-05] 헤더 높이 불일치 — 수정 유지 확인**
-```
-v16에서 headerStyle: { height: 56 } 수정
-재점검:
-  ☐ 홈 → 탐색 → 내여행 → 알림 → 프로필 탭 전환 10회
-  ☐ 모든 탭에서 헤더 상단 기준선 동일
-  ☐ iPhone SE, 14, Pro Max 각각 확인
-  ☐ 세로/가로 방향 전환 후에도 일관성 유지
-```
-
-**[R-06] 카카오 500 오류 — 수정 유지 확인**
-```
-v16에서 Linking.openURL(callbackUrl) 제거
-재점검:
-  ☐ 카카오 로그인 성공 후 앱 복귀
-  ☐ 복귀 시 "statuscode:500" 오류 없음
-  ☐ 로그아웃 후 즉시 재로그인 시도
-  ☐ 두 번째 로그인도 오류 없음
-```
+- [ ] `Platform.OS === 'ios'` 분기 외 공통 코드 변경 없음
+- [ ] `oauth.service.ts` 변경 사항이 Android deeplinkPromise 동작에 영향 없음  
+  (Android는 coolDown 후 browserPromise 결과만 사용하는 흐름 유지)
+- [ ] `app.config.js`의 `splash` 변경이 `android.adaptiveIcon` 섹션에 영향 없음
+- [ ] 서버 API 변경 없음 (iOS 클라이언트 레이어만 수정)
+- [ ] `LoginScreen.tsx` TextInput 속성 변경이 Android `autoComplete` 동작에 영향 없음  
+  (Android는 `importantForAutofill="no"`로 이미 별도 처리됨)
+- [ ] 웹 서비스 (`www.mytravel-planner.com`) 빌드/배포 없음
+- [ ] Android versionCode 220 Play Console 제출 내용 변경 없음
 
 ---
 
-## 4. iOS 앱 전체 기능 검수 계획
-
-> 웹/Android 서비스 영향 없는 iOS 전용 검수
-
-### Layer 1: 앱 실행 및 기본 UI
-
-| 항목 | 검수 내용 | 기대 결과 | 우선순위 |
-|------|-----------|-----------|---------|
-| 앱 아이콘 | 홈 화면 아이콘 디자인 | 파란 배경 + 비행기 아이콘 | P2 |
-| 스플래시 | 첫 실행 시 스플래시 | #FAFAF9 배경 + 아이콘, 깜빡임 없음 | P1 |
-| 다크모드 | 기기 설정 → 다크 | 전체 다크 테마 | P1 |
-| 라이트모드 | 기기 설정 → 라이트 | 전체 라이트 테마 | P1 |
-| Dynamic Island | iPhone 14 Pro/15 Pro | 헤더/UI 가리지 않음 | P1 |
-| 탭바 | 하단 5개 탭 전환 | 아이콘+텍스트 정상, 깜빡임 없음 | P1 |
-| 헤더 일관성 | 탭 전환 10회 | 헤더 높이 동일 | P1 |
-| 언어 전환 | 앱 내 언어 설정 변경 | 즉시 반영 | P1 |
-| 방향 전환 | 세로→가로→세로 | 레이아웃 정상 | P2 |
-
-### Layer 2: 인증
-
-| 항목 | 검수 내용 | 기대 결과 | 우선순위 |
-|------|-----------|-----------|---------|
-| 이메일 로그인 | 정상 계정 | 홈 진입, 팝업 없음 | **P0** |
-| 이메일 로그인 실패 | 틀린 비번 | 오류 메시지 (로딩 멈춤) | P1 |
-| Google 로그인 | 계정 선택 → 로그인 | 정상 로그인 | P1 |
-| Google 로그인 취소 | [취소] 클릭 | 로딩 즉시 종료, Toast 없음 | P1 |
-| Apple 로그인 | Face ID → 확인 | 정상 로그인 | P1 |
-| Apple 로그인 취소 | [취소] 클릭 | 로딩 즉시 종료, 네트워크 오류 Toast 없음 | **P0** |
-| Kakao 로그인 | 카카오 인증 → 복귀 | 로그인 완료, 500 오류 없음 | P1 |
-| Kakao 로그인 취소 | 뒤로가기 | 로딩 종료, Toast 없음 | P1 |
-| 자동 로그인 | 앱 재실행 | 로그인 유지 | P1 |
-| 로그아웃 | 프로필 → 로그아웃 | 로그인 화면 이동 | P1 |
-| 세션 만료 | 토큰 만료 후 API | 자동 갱신 또는 재로그인 | P1 |
-| 비밀번호 입력 UI | 비번 필드 탭 | 키보드 올라옴, 필드 가리지 않음 | P1 |
-
-### Layer 3: 여행 관리
-
-| 항목 | 검수 내용 | 기대 결과 | 우선순위 |
-|------|-----------|-----------|---------|
-| 여행 생성 | 목적지/날짜 입력 → 생성 | 정상 생성 | P1 |
-| 출발일 DatePicker | 출발일 필드 클릭 | 스피너 UI, 날짜 보임 | **P0** |
-| 도착일 DatePicker | 도착일 필드 클릭 | 스피너 UI, 날짜 보임 | **P0** |
-| 날짜 유효성 | 출발 > 도착 입력 | "출발일은 종료일보다 이전이어야 합니다" | P1 |
-| AI 여행 생성 | AI 일정 자동 생성 | 로딩 후 정상 생성 | P1 |
-| 광고 보고 인사이트 | 광고 버튼 클릭 | 광고 재생 → 인사이트 표시 | P1 |
-| 여행 목록 | 내 여행 탭 | 생성 여행 카드 | P1 |
-| 여행 상세 | 카드 클릭 | TripDetail 화면 | P1 |
-| 뒤로가기 | ← 버튼 | 목록 복귀 (버튼 1개) | P1 |
-| 여행 수정 | 편집 후 저장 | 저장 완료 | P1 |
-| 여행 삭제 | 삭제 확인 | 목록 제거 | P1 |
-| 활동 추가/수정/삭제 | 일정 관리 | 정상 처리 | P1 |
-| 지도 핀 | 활동 위치 | 좌표 정상 표시 | P2 |
-
-### Layer 4: 탐색 및 검색
-
-| 항목 | 검수 내용 | 기대 결과 | 우선순위 |
-|------|-----------|-----------|---------|
-| 탐색 화면 | 탐색 탭 | 여행지 콘텐츠 | P2 |
-| 장소 검색 | 목적지 검색 | 자동완성 결과 | P1 |
-| 날씨 정보 | 여행지 날씨 | 날씨 데이터 표시 | P2 |
-
-### Layer 5: 프로필 및 설정
-
-| 항목 | 검수 내용 | 기대 결과 | 우선순위 |
-|------|-----------|-----------|---------|
-| 프로필 조회 | 프로필 탭 | 이름/이메일 표시 | P1 |
-| 프로필 이미지 변경 | 사진 선택 | 이미지 변경 성공 | P1 |
-| 언어 설정 | 앱 내 언어 | 즉시 반영 | P1 |
-| 테마 설정 | 라이트/다크 | 즉시 반영 | P1 |
-| 알림 설정 | 푸시 on/off | 설정 저장 | P2 |
-| 계정 삭제 | 탈퇴 플로우 | 데이터 삭제, 로그인 화면 | P2 |
-
-### Layer 6: 알림
-
-| 항목 | 검수 내용 | 기대 결과 | 우선순위 |
-|------|-----------|-----------|---------|
-| 알림 목록 | 알림 탭 | 수신된 알림 표시 | P2 |
-| 알림 읽음 | 항목 탭 | 읽음 상태 변경 | P2 |
-
-### Layer 7: 구독/결제
-
-| 항목 | 검수 내용 | 기대 결과 | 우선순위 |
-|------|-----------|-----------|---------|
-| 프리미엄 업그레이드 | 구독 화면 진입 | 요금제 표시 | P1 |
-| 구독 처리 | 구독 시도 | RevenueCat 정상 처리 | P1 |
-| 구독 후 광고 제거 | 구독 완료 | 광고 미노출 | P1 |
-| 구독 취소 | 관리 화면 | 취소 후 만료일까지 프리미엄 | P1 |
-
-### Layer 8: 오류 처리
-
-| 항목 | 확인 내용 | 기대 결과 | 우선순위 |
-|------|-----------|-----------|---------|
-| 오프라인 | 네트워크 끄기 | 오류 메시지, 크래시 없음 | P1 |
-| 서버 오류 | API 500 | 사용자 친화 메시지 | P1 |
-| 타임아웃 | 느린 네트워크 | 로딩 → 타임아웃 처리 | P2 |
-
----
-
-## 5. 개인정보 및 시스템 보안 점검 계획
-
-> 기존 웹/Android 운영 서비스 영향 없이 iOS 앱 관련 항목 집중 점검
-
-### 5-1. 인증 보안 (iOS 전용)
-
-**A. textContentType 보안 강화 확인**
-```
-수정 후 점검:
-  ☐ 이메일/비번 필드 textContentType="none" 확인
-  ☐ 키체인 저장 없음 확인 (iCloud Keychain에 앱 항목 없음)
-  ☐ 비밀번호 화면 캡처 방지 여부 (선택)
-```
-
-**B. OAuth 토큰 저장 (iOS Keychain)**
-```
-  ☐ Refresh Token: Keychain만 저장 (AsyncStorage X)
-    → AuthContext.tsx의 secureStorage 사용 확인
-  ☐ Access Token: 메모리에만 보관 (앱 재실행 시 재발급)
-  ☐ 로그아웃 시 모든 토큰 Keychain에서 삭제 확인
-  ☐ 기기 분실 시나리오: 새 기기에서 로그인 → 이전 토큰 무효화
-```
-
-**C. Apple Sign-In 보안**
-```
-  ☐ identityToken JWKS 서버 검증 (backend auth.service.ts)
-  ☐ 로그아웃 시 Apple refresh token 폐기 API 호출
-  ☐ 첫 로그인만 이름 제공 — 이후 Apple이 이메일 숨김 허용 대응
-```
-
-**D. Kakao OAuth 보안**
-```
-  ☐ state nonce 생성/검증 (oauth.service.ts Line 30~44 확인)
-  ☐ code 일회성 사용 — 서버 측 중복 처리 방지
-  ☐ redirect_uri 화이트리스트 (백엔드 확인)
-  ☐ B15-04 수정 후 code 이중 교환 시도 없음 확인
-```
-
-### 5-2. 데이터 전송 보안
-
-```
-  ☐ HTTPS 강제 적용
-    → app.config.js의 EXPO_PUBLIC_API_URL: https://mytravel-planner.com/api
-    → HTTP 요청 차단 (ATS 설정 확인)
-  ☐ API 인터셉터 Bearer 토큰 자동 추가 (api.ts 확인)
-  ☐ 인증 필요 엔드포인트에서 토큰 없이 401 응답
-  ☐ 민감 정보 네트워크 로그 미노출:
-    → 비밀번호, 토큰이 console.log에 없음
-    → Sentry 오류 보고 시 PII strip 확인
-```
-
-### 5-3. 기기 내 데이터 저장
-
-```
-  ☐ AsyncStorage에 토큰/비밀번호 없음 확인
-    → 저장 가능 항목: 언어 설정, 테마, 세션 플래그만
-  ☐ Keychain 항목:
-    → STORAGE_KEYS.AUTH_TOKEN: secureStorage (Keychain)
-    → STORAGE_KEYS.REFRESH_TOKEN: secureStorage (Keychain)
-  ☐ 앱 삭제 후 Keychain 항목 처리 정책 확인
-    (iOS는 앱 삭제 후에도 Keychain 남음 — 재설치 시 자동 로그인 방지 필요)
-```
-
-### 5-4. 개인정보 수집 vs 처리방침 일치
-
-**iOS Privacy Manifest 확인**
-```
-app.config.js Line 138~191 NSPrivacyCollectedDataTypes:
-  ☐ EmailAddress: 수집 O (계정 생성 시)
-  ☐ UserID: 수집 O (DB 저장 ID)
-  ☐ PhotosOrVideos: 수집 O (여행 사진 업로드)
-  ☐ DeviceID: 수집 O (광고 식별)
-  ☐ PurchaseHistory: 수집 O (RevenueCat 구독)
-  ☐ CrashData: 수집 O (Sentry)
-  ☐ AdvertisingData: 수집 O (AdMob)
-  
-  실제 수집 여부와 매니페스트 일치 확인:
-  ☐ 위치 정보: 수집 안 함 → Manifest에 없음 (일치)
-  ☐ 연락처: 수집 안 함 → Manifest에 없음 (일치)
-```
-
-**만 14세 이상 동의 확인**
-```
-  ☐ 회원가입 화면(RegisterScreen)에 "만 14세 이상" 체크박스 있음 확인
-  ☐ 체크 없이 가입 시도 시 차단
-  ☐ 개인정보처리방침 art7과 구현 일치 확인
-```
-
-**데이터 내보내기/삭제 권리**
-```
-  ☐ 앱 내 계정 삭제 기능 있음 확인
-  ☐ 삭제 요청 시 30일 이내 파기 (법정 의무)
-  ☐ 데이터 내보내기: ProfileScreen에 버튼 있는지 확인
-    → 없다면 추가 구현 계획 수립 (GDPR 의무)
-```
-
-### 5-5. 앱스토어 제출 전 보안 체크
-
-```
-  ☐ ITSAppUsesNonExemptEncryption: false (app.config.js Line 38)
-    → 암호화 수출 규정 준수 선언 (현재 설정 OK)
-  ☐ NSUserTrackingUsageDescription 설정 (app.config.js Line 34)
-    → 광고 추적 동의 문구 있음
-  ☐ NSPhotoLibraryUsageDescription 설정 (app.config.js Line 36)
-    → 사진 접근 동의 문구 있음
-  ☐ URL Scheme 보안: travelplanner:// 등록 확인
-  ☐ Associated Domains: mytravel-planner.com 확인
-  ☐ Privacy Policy URL: 앱 내 표시 및 앱스토어 등록 확인
-```
-
-### 5-6. 서버 측 보안 (iOS 요청 관련, 웹/Android 공용)
-
-> ⚠️ 아래 항목은 서버 측이므로 수정 시 웹/Android에도 영향. **읽기 전용 점검만 수행**
-
-```
-  📋 점검 전용 (수정 불가):
-  ☐ 카카오 OAuth code 일회성 처리 — Redis 기반 중복 방지
-  ☐ Rate limiting: 로그인 분당 10회, 전체 API 100회
-  ☐ IDOR 방지: 타 사용자 여행 403 응답
-  ☐ 관리자 API: isAdmin 가드 동작 확인
-  ☐ 오류 로그에 PII(이메일/이름) 미포함
-  ☐ Refresh Token Redis eviction 방지 (V220 불변식)
-  ☐ isLoggingOut lock 동작 (V220 불변식)
-
-  → 이슈 발견 시: iOS 전용 수정이 불가능한 경우 별도 서버 배포 계획 수립
-    단, 기존 웹/Android 동작 변경 없는 범위에서만 수정
-```
-
----
-
-## 6. 빌드 17 수정 순서 및 일정
-
-| 순위 | 항목 | 파일 | 소요 | 웹/Android 영향 |
-|------|------|------|------|----------------|
-| 1 | B16-02: 암호 저장 팝업 | LoginScreen.tsx | 10분 | 없음 |
-| 2 | B16-03: SNS 취소 로딩 | LoginScreen.tsx + auth.json×17 | 30분 | 없음 |
-| 3 | B16-01: 키보드 가림 | LoginScreen.tsx | 10분 | 없음 |
-| 4 | B16-05: 앱 아이콘 | icon.png (Python) | 1~2시간 | 없음 |
-| 5 | B16-04: 카카오 UX 안내 | LoginScreen.tsx (옵션) | 20분 | 없음 |
-
-**수정 완료 후**: TS 타입 체크 → 단위 테스트 → buildNumber 17 → EAS 로컬 빌드 → TestFlight 업로드
-
----
-
-## 요약
-
-| 항목 | 우선순위 | 상태 | 비고 |
-|------|---------|------|------|
-| B16-01: 키보드 비번 가림 | P1 | 수정 예정 | insets.top 동적 오프셋 |
-| B16-02: 암호 저장 팝업 | P1 | 수정 예정 | textContentType="none" |
-| B16-03: SNS 취소 로딩 | P1 | 수정 예정 | Apple 취소 코드 누락 |
-| B16-04: 카카오 앱 복귀 | P2 | OS 제한 | 로그인 정상, UX 안내 |
-| B16-05: 앱 아이콘 | P2 | 수정 예정 | 파란 배경 + 중앙 아이콘 |
-| B16-06: 오류 로그 점검 | P2 | 조사 필요 | 서버 로그 확인 |
-| 재발 방지 점검 | P1 | 계획 수립 | v12~v16 6개 항목 |
-| 전체 기능 검수 | P1 | 계획 수립 | Layer 1~8 체계적 검수 |
-| 보안/개인정보 | P1 | 계획 수립 | iOS 전용 + 서버 읽기 전용 |
-
-**예상 소요**: 코드 수정 2~3시간 + 빌드/업로드 30분 + 검수 2~3시간 = **총 1일**
-
----
-
-*최종 수정: 2026-05-05*
-*기준 버전: iOS 1.0.0 (buildNumber: 16)*
-*다음 단계: B16-02 → B16-03 → B16-01 → B16-05 → buildNumber 17 → TestFlight*
+*작성일: 2026-05-06 | 기준 버전: iOS 1.0.0 (18) | 다음 빌드 목표: buildNumber 19*

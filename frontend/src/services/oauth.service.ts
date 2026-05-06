@@ -57,8 +57,14 @@ export async function signInWithOAuth(
     // Custom Tab / SFSafariViewController is dismissed immediately
     // (result.type = 'dismiss') before the callback URL arrives via deeplink.
     // We listen for the deeplink in parallel so whichever channel delivers
-    // the callback URL first resolves the race. A 30s timeout guards against hangs.
+    // the callback URL first resolves the race.
+    //
+    // Timeout is 5s (was 30s): if the browser dismisses with cancel/dismiss and
+    // no deeplink arrives within 500ms, the deeplinkPromise is resolved with null
+    // immediately — this prevents the indefinite loading spinner on Kakao cancel.
     const cleanups: Array<() => void> = [];
+
+    let deeplinkResolve: ((v: string | null) => void) | undefined;
 
     const browserPromise = WebBrowser.openAuthSessionAsync(authUrl, redirectUri, {
       showInRecents: false,
@@ -66,16 +72,28 @@ export async function signInWithOAuth(
 
     const deeplinkPromise = (Platform.OS === 'android' || Platform.OS === 'ios')
       ? new Promise<string | null>((resolve) => {
-          const timer = setTimeout(() => resolve(null), 30_000);
+          deeplinkResolve = resolve;
+          const timer = setTimeout(() => resolve(null), 5_000);
           const sub = Linking.addEventListener('url', ({ url }) => {
             if (url.includes('/auth/callback')) {
               clearTimeout(timer);
               resolve(url);
             }
           });
-          cleanups.push(() => sub.remove());
+          cleanups.push(() => { sub.remove(); clearTimeout(timer); });
         })
       : Promise.resolve(null);
+
+    // When browser is dismissed or cancelled (e.g. Kakao cancel), allow a short
+    // window for a deeplink to arrive, then immediately resolve with null so
+    // setIsLoading(false) fires without waiting for the full timeout.
+    browserPromise.then((result) => {
+      if (result.type === 'cancel' || result.type === 'dismiss') {
+        setTimeout(() => deeplinkResolve?.(null), 500);
+      }
+    }).catch(() => {
+      deeplinkResolve?.(null);
+    });
 
     const [result, deeplinkUrl] = await Promise.all([browserPromise, deeplinkPromise]);
 

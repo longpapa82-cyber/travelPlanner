@@ -10,17 +10,15 @@ export default ({ config }) => ({
   scheme: 'travelplanner',
   splash: {
     image: './assets/splash-icon.png',
-    // 'contain' fits the image within the screen without cropping.
-    // Our splash-icon.png is already a full-bleed canvas (1284×2778) with
-    // the app icon centered on #FAFAF9 background, so contain and cover
-    // produce the same visual — but contain is safer on non-standard ratios.
+    // splash-icon.png: 1284×2778 canvas, #4A90D9 background with centered app icon.
+    // backgroundColor matches so there is no color flash on any aspect ratio.
     resizeMode: 'contain',
-    backgroundColor: '#FAFAF9',
+    backgroundColor: '#4A90D9',
   },
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.longpapa82.travelplanner',
-    buildNumber: '17',
+    buildNumber: '19',
     usesAppleSignIn: true,
     associatedDomains: [
       'applinks:mytravel-planner.com',
