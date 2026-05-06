@@ -93,5 +93,23 @@
     "react-test-renderer": "^19.1.0",
     "typescript": "~5.9.2"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "install": {
+      "exclude": [
+        "expo",
+        "expo-auth-session",
+        "expo-crypto",
+        "expo-file-system",
+        "expo-image-picker",
+        "expo-notifications",
+        "expo-updates",
+        "expo-web-browser",
+        "@react-native-community/datetimepicker",
+        "@sentry/react-native",
+        "react-native-screens",
+        "react-native-worklets"
+      ]
+    }
+  }
 }
