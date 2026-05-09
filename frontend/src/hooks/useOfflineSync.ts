@@ -10,7 +10,9 @@ import { useAuth } from '../contexts/AuthContext';
 const PING_URL = (API_URL || 'http://localhost:3000/api') + '/health';
 
 export function useOfflineSync() {
-  const [isOnline, setIsOnline] = useState(true);
+  // null = network check not yet completed (app startup)
+  // Prevents false "offline mode" flash on first render before the first ping resolves.
+  const [isOnline, setIsOnline] = useState<boolean | null>(null);
   const [pendingCount, setPendingCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<number | null>(null);
@@ -114,7 +116,8 @@ export function useOfflineSync() {
       if (online) syncNow();
     });
     intervalRef.current = setInterval(async () => {
-      const wasOffline = !isOnline;
+      // isOnline === null means initial check in progress; treat as offline for sync logic
+      const wasOffline = isOnline !== true;
       const nowOnline = await checkNetwork();
       if (wasOffline && nowOnline) {
         syncNow();

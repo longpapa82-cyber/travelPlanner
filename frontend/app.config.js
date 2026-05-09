@@ -18,7 +18,7 @@ export default ({ config }) => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.longpapa82.travelplanner',
-    buildNumber: '19',
+    buildNumber: '33',
     usesAppleSignIn: true,
     associatedDomains: [
       'applinks:mytravel-planner.com',
@@ -29,8 +29,6 @@ export default ({ config }) => ({
           CFBundleURLSchemes: ['travelplanner'],
         },
       ],
-      NSUserTrackingUsageDescription:
-        'This allows us to show you personalized travel deals and offers.',
       NSPhotoLibraryUsageDescription:
         'MyTravel needs access to your photo library to add photos to your trips.',
       ITSAppUsesNonExemptEncryption: false,
@@ -39,6 +37,14 @@ export default ({ config }) => ({
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
+      backgroundColor: '#4A90D9',
+    },
+    // Android splash backgroundColor must be set here separately from the
+    // top-level splash block, which only applies to iOS/Web. Without this,
+    // Android defaults to #FFFFFF, showing a white rectangle around the icon.
+    splash: {
+      image: './assets/splash-icon.png',
+      resizeMode: 'contain',
       backgroundColor: '#4A90D9',
     },
     edgeToEdgeEnabled: true,
@@ -116,7 +122,6 @@ export default ({ config }) => ({
         color: '#3B82F6',
       },
     ],
-    'expo-tracking-transparency',
     [
       'react-native-google-mobile-ads',
       {

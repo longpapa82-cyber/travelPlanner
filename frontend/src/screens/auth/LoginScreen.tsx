@@ -9,7 +9,7 @@
  * - SNS 로그인 (Google, Apple, Kakao)
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -59,12 +59,21 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [secureEntry, setSecureEntry] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
   const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
 
   const scrollViewRef = useRef<ScrollView>(null);
+  const passwordRef = useRef<TextInput>(null);
+
+  // Delay secureTextEntry activation so iOS AutoFill scanner sees a plain
+  // text field on initial render and does not classify it as a password form.
+  useEffect(() => {
+    const t = setTimeout(() => setSecureEntry(true), 50);
+    return () => clearTimeout(t);
+  }, []);
 
   const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
@@ -103,8 +112,13 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
     setIsLoading(true);
     setLoginError('');
+    passwordRef.current?.blur();
     try {
       await login(email, password);
+      // Clear password immediately after successful login so iOS AutoFill
+      // has no value to save and does not show the "Save Password?" popup
+      // during the screen transition that follows setUser() in AuthContext.
+      setPassword('');
     } catch (error: any) {
       if (error instanceof TwoFactorRequiredError) {
         navigation.navigate('TwoFactorLogin', { tempToken: error.tempToken });
@@ -269,8 +283,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
-                autoComplete="username"
-                textContentType="username"
+                autoComplete="email"
+                textContentType="emailAddress"
                 editable={!isLoading}
                 accessibilityLabel={t('login.email')}
                 accessibilityHint={t('login.emailPlaceholder')}
@@ -282,20 +296,19 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             <View style={[styles.inputContainer, passwordError ? styles.inputError : null]}>
               <Icon name="lock-outline" size={20} color={passwordError ? colors.error.main : colors.primary[400]} style={styles.inputIcon} />
               <TextInput
+                ref={passwordRef}
                 style={styles.input}
                 placeholder={t('login.passwordPlaceholder')}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={password}
                 onChangeText={handlePasswordChange}
-                onFocus={() => {
-                  // KeyboardAvoidingView + behavior="padding" handles this automatically.
-                  // scrollToEnd caused the view to over-scroll past the SNS buttons.
-                }}
-                secureTextEntry={!showPassword}
+                onFocus={() => {}}
+                onBlur={() => {}}
+                secureTextEntry={!showPassword && secureEntry}
                 autoCapitalize="none"
-                autoComplete="current-password"
+                autoComplete="off"
                 importantForAutofill="no"
-                textContentType="password"
+                textContentType="none"
                 editable={!isLoading}
                 accessibilityLabel={t('login.password')}
               />

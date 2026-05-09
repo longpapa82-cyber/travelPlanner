@@ -4,7 +4,7 @@
     "slug": "travel-planner",
     "version": "1.0.0",
     "android": {
-      "versionCode": 220,
+      "versionCode": 222,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4A90D9"
@@ -78,7 +78,6 @@
             ]
           }
         ],
-        "NSUserTrackingUsageDescription": "This allows us to show you personalized travel deals and offers.",
         "NSPhotoLibraryUsageDescription": "MyTravel needs access to your photo library to add photos to your trips.",
         "ITSAppUsesNonExemptEncryption": false
       }

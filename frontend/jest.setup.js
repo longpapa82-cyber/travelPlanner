@@ -21,16 +21,6 @@ jest.mock('@sentry/react-native', () => ({
   init: jest.fn(),
 }));
 
-// Mock expo-tracking-transparency
-jest.mock('expo-tracking-transparency', () => ({
-  getTrackingPermissionsAsync: jest.fn(() =>
-    Promise.resolve({ status: 'undetermined' }),
-  ),
-  requestTrackingPermissionsAsync: jest.fn(() =>
-    Promise.resolve({ status: 'authorized' }),
-  ),
-}));
-
 // Mock expo-localization
 jest.mock('expo-localization', () => ({
   getLocales: jest.fn(() => [{ languageCode: 'ko' }]),

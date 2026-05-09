@@ -9,11 +9,11 @@ export const OfflineBanner: React.FC = () => {
   const { t } = useTranslation('common');
   const { isOnline, pendingCount, isSyncing, syncNow } = useOfflineSync();
 
-  // Online with no pending — show nothing
-  if (isOnline && pendingCount === 0 && !isSyncing) return null;
+  // Network check still in progress (null) or online with no pending — show nothing
+  if (isOnline === null || (isOnline && pendingCount === 0 && !isSyncing)) return null;
 
-  // Online + syncing
-  if (isOnline && isSyncing) {
+  // Online + syncing (isOnline === true explicitly)
+  if (isOnline === true && isSyncing) {
     return (
       <View style={[styles.container, styles.syncingContainer]}>
         <ActivityIndicator size="small" color="#fff" />
@@ -23,7 +23,7 @@ export const OfflineBanner: React.FC = () => {
   }
 
   // Online + just synced (pending went to 0)
-  if (isOnline && pendingCount === 0) {
+  if (isOnline === true && pendingCount === 0) {
     return null;
   }
 

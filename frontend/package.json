@@ -20,7 +20,7 @@
   "jest": {
     "preset": "jest-expo",
     "transformIgnorePatterns": [
-      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|react-native-reanimated|react-native-gesture-handler|react-native-screens|react-native-safe-area-context|@react-native-async-storage/async-storage|react-native-paper|react-native-vector-icons|react-native-keychain|react-native-google-mobile-ads|expo-tracking-transparency|expo-web-browser|expo-linking|expo-crypto|expo-localization|i18next|react-i18next|@tanstack/react-query)"
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|react-native-reanimated|react-native-gesture-handler|react-native-screens|react-native-safe-area-context|@react-native-async-storage/async-storage|react-native-paper|react-native-vector-icons|react-native-keychain|react-native-google-mobile-ads|expo-web-browser|expo-linking|expo-crypto|expo-localization|i18next|react-i18next|@tanstack/react-query)"
     ],
     "setupFiles": [
       "<rootDir>/jest.setup.js"
@@ -59,7 +59,6 @@
     "expo-sharing": "^14.0.8",
     "expo-splash-screen": "~31.0.13",
     "expo-status-bar": "~3.0.9",
-    "expo-tracking-transparency": "~6.0.8",
     "expo-updates": "~29.0.16",
     "expo-web-browser": "~15.0.10",
     "i18next": "^25.8.4",
