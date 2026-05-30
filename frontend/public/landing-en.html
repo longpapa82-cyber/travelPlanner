@@ -3,48 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyTravel - AI-Powered Travel Planning Made Easy</title>
+  <title>myTravel - AI-Powered Travel Planning Made Easy</title>
   <meta name="description" content="Just pick a destination and AI creates the tailored itinerary for you. Weather, time zones, local tips — all in one place. Free service supporting 17 languages." />
   <link rel="canonical" href="https://mytravel-planner.com/landing-en.html" />
   <link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/landing.html" />
   <link rel="alternate" hreflang="en" href="https://mytravel-planner.com/landing-en.html" />
   <link rel="alternate" hreflang="x-default" href="https://mytravel-planner.com/landing-en.html" />
-  <meta property="og:title" content="MyTravel - AI-Powered Travel Planning Made Easy" />
+  <meta property="og:title" content="myTravel - AI-Powered Travel Planning Made Easy" />
   <meta property="og:description" content="Just pick a destination and AI creates the tailored itinerary. Weather, time zones, local tips — all in one place." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mytravel-planner.com/landing-en.html" />
-  <meta property="og:site_name" content="MyTravel" />
+  <meta property="og:site_name" content="myTravel" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="ko_KR" />
   <meta property="og:locale:alternate" content="ja_JP" />
-  <meta property="og:image" content="https://mytravel-planner.com/assets/icon-512.png" />
+  <meta property="og:image" content="https://mytravel-planner.com/assets/icon-512-v2.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="MyTravel - AI-Powered Travel Planning Made Easy" />
+  <meta name="twitter:title" content="myTravel - AI-Powered Travel Planning Made Easy" />
   <meta name="twitter:description" content="Just pick a destination and AI creates the tailored itinerary for you." />
-  <meta name="twitter:image" content="https://mytravel-planner.com/assets/icon-512.png" />
-  <meta name="theme-color" content="#2563EB" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png" />
+  <meta name="twitter:image" content="https://mytravel-planner.com/assets/icon-512-v2.png" />
+  <meta name="theme-color" content="#4A90D9" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192-v2.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-v2.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192-v2.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="myTravel" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <!-- AdSense: uncomment for production
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script> -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "MyTravel",
+    "name": "myTravel",
     "url": "https://mytravel-planner.com",
     "description": "AI-powered travel planning service. Just pick a destination and get the tailored itinerary instantly.",
     "applicationCategory": "TravelApplication",
     "operatingSystem": "Web",
     "inLanguage": ["ko", "en", "ja", "zh", "es", "de", "fr", "th", "vi", "pt", "ar", "id", "hi", "it", "ru", "tr", "ms"],
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "author": { "@type": "Organization", "name": "MyTravel" }
+    "author": { "@type": "Organization", "name": "myTravel" }
   }
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #4A90D9;
+      --blue-deeper: #2d6aaf;
+      --duration-fast: 0.2s;
+      --duration-normal: 0.4s;
+      --duration-slow: 0.6s;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --reveal-stagger: 60ms;
+      --shadow-sm: 0 1px 4px rgba(15,30,60,0.06), 0 4px 16px rgba(15,30,60,0.04);
+      --shadow-md: 0 8px 30px rgba(74,144,217,0.12);
+      --glass-bg: rgba(255,255,255,0.72);
+    }
+    /* Accessibility: respect reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity var(--duration-slow) var(--ease-out-expo),
+                  transform var(--duration-slow) var(--ease-out-expo);
+      transition-delay: var(--reveal-delay, 0ms);
+      will-change: opacity, transform;
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); will-change: auto; }
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
     a { color: inherit; text-decoration: none; }
 
@@ -129,29 +168,30 @@
       .banner-download { padding: 6px 12px; font-size: 12px; }
     }
 
-    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; transition: box-shadow var(--duration-fast) var(--ease-out-expo), background var(--duration-fast) var(--ease-out-expo); }
+    .header.scrolled { box-shadow: 0 4px 20px rgba(15,30,60,0.08); background: rgba(255,255,255,0.99); }
     .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
-    .logo span { color: #f59e0b; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #4A90D9; }
+    
     .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
     .nav a { color: #475569; transition: color 0.2s; }
-    .nav a:hover { color: #2563EB; }
+    .nav a:hover { color: #4A90D9; }
     .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
-    .btn-primary { background: #2563EB; color: #fff; }
-    .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn-primary { background: #4A90D9; color: #fff; }
+    .btn-primary:hover { background: #3a7bc8; transform: translateY(-1px); }
     .nav a.btn-primary { color: #fff; }
-    .btn-outline { border: 1.5px solid #2563EB; color: #2563EB; }
-    .btn-outline:hover { background: #eff6ff; }
+    .btn-outline { border: 1.5px solid #4A90D9; color: #4A90D9; }
+    .btn-outline:hover { background: rgba(74,144,217,0.1); }
     .btn-lg { padding: 0.875rem 2rem; font-size: 1.05rem; border-radius: 0.75rem; }
 
-    .hero { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%); padding: 4rem 1.5rem 3rem; text-align: center; }
+    .hero { background: linear-gradient(135deg, #1a3a5c 0%, #2d6aaf 100%); padding: 4rem 1.5rem 3rem; text-align: center; }
     .hero h1 { font-size: 2.25rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem; line-height: 1.3; }
-    .hero h1 em { font-style: normal; color: #2563EB; }
+    .hero h1 em { font-style: normal; color: #4A90D9; }
     .hero p { font-size: 1.1rem; color: #475569; max-width: 600px; margin: 0 auto 2rem; }
     .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
     .hero-stats { display: flex; gap: 2rem; justify-content: center; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(37,99,235,0.15); }
     .hero-stat { text-align: center; }
-    .hero-stat strong { display: block; font-size: 1.5rem; color: #2563EB; }
+    .hero-stat strong { display: block; font-size: 1.5rem; color: #4A90D9; }
     .hero-stat span { font-size: 0.85rem; color: #64748b; }
 
     .section { padding: 4rem 1.5rem; max-width: 1200px; margin: 0 auto; }
@@ -160,15 +200,40 @@
     .section .subtitle { text-align: center; color: #64748b; margin-bottom: 3rem; font-size: 1rem; }
 
     .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-    .feature { background: #fff; border-radius: 1rem; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; }
-    .feature:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-    .feature-icon { width: 3rem; height: 3rem; background: #eff6ff; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+    .feature {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-radius: 1rem; padding: 2rem;
+      box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0;
+      transition: transform var(--duration-fast) var(--ease-out-expo),
+                  box-shadow var(--duration-fast) var(--ease-out-expo),
+                  border-color var(--duration-fast) var(--ease-out-expo);
+    }
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .feature { background: #fff; }
+    }
+    .feature:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: rgba(74,144,217,0.25); }
+    .feature-icon {
+      width: 3rem; height: 3rem;
+      background: linear-gradient(135deg, rgba(74,144,217,0.16) 0%, rgba(126,200,251,0.10) 100%);
+      border-radius: 0.75rem; display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 1rem;
+      transition: transform var(--duration-normal) var(--ease-out-expo),
+                  box-shadow var(--duration-normal) var(--ease-out-expo);
+    }
+    .feature:hover .feature-icon { transform: scale(1.08) rotate(-4deg); box-shadow: 0 6px 18px rgba(74,144,217,0.28); }
     .feature h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
     .feature p { color: #64748b; font-size: 0.95rem; line-height: 1.7; }
 
     .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; counter-reset: step; }
     .step { text-align: center; position: relative; }
-    .step::before { counter-increment: step; content: counter(step); display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: #2563EB; color: #fff; border-radius: 50%; font-weight: 700; margin: 0 auto 1rem; }
+    .step::before { counter-increment: step; content: counter(step); display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, var(--blue) 0%, var(--blue-deeper) 100%); color: #fff; border-radius: 50%; font-weight: 700; margin: 0 auto 1rem; box-shadow: 0 6px 16px rgba(74,144,217,0.4); }
+    .step.is-visible::before { animation: stepPop var(--duration-slow) var(--ease-out-expo) backwards; }
+    @keyframes stepPop {
+      0%   { transform: scale(0.4); opacity: 0; }
+      60%  { transform: scale(1.12); opacity: 1; }
+      100% { transform: scale(1); }
+    }
     .step h3 { font-weight: 600; margin-bottom: 0.5rem; }
     .step p { color: #64748b; font-size: 0.95rem; }
 
@@ -181,11 +246,23 @@
 
     .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 0; overflow: hidden; }
 
-    .cta-section { background: linear-gradient(135deg, #2563EB, #1d4ed8); color: #fff; padding: 4rem 1.5rem; text-align: center; }
+    .cta-section { background: linear-gradient(135deg, #4A90D9, #3a7bc8); color: #fff; padding: 4rem 1.5rem; text-align: center; }
     .cta-section h2 { color: #fff; margin-bottom: 1rem; }
     .cta-section p { color: #bfdbfe; max-width: 500px; margin: 0 auto 2rem; }
-    .btn-white { background: #fff; color: #2563EB; }
+    .btn-white { background: #fff; color: #4A90D9; }
     .btn-white:hover { background: #f0f9ff; }
+    /* Store buttons */
+    .btn-store { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1.5rem; border-radius: 0.875rem; font-weight: 700; transition: all 0.22s; border: none; cursor: pointer; }
+    .btn-store span { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+    .btn-store span small { font-size: 0.65rem; font-weight: 400; opacity: 0.85; letter-spacing: 0.02em; }
+    .btn-store span { font-size: 1rem; }
+    .btn-google { background: #1a1a2e; color: #fff; }
+    .btn-google:hover { background: #0f0f1e; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); color: #fff; }
+    .btn-apple { background: #fff; color: #1a1a2e; border: 1.5px solid rgba(255,255,255,0.4); }
+    .btn-apple:hover { background: rgba(255,255,255,0.92); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); color: #1a1a2e; }
+    /* Upgrade feature-icon to SVG style */
+    .feature-icon { width: 3.25rem; height: 3.25rem; background: rgba(74,144,217,0.1); border-radius: 0.875rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1.1rem; flex-shrink: 0; font-size: unset; }
+    .feature-icon svg { width: 1.625rem; height: 1.625rem; color: #4A90D9; }
 
     .footer { background: #1e293b; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
     .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
@@ -196,7 +273,7 @@
     .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
     .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
     .lang-switch { position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; color: #64748b; }
-    .lang-switch a { color: #2563EB; font-weight: 600; }
+    .lang-switch a { color: #4A90D9; font-weight: 600; }
 
     @media (max-width: 768px) {
       .hero h1 { font-size: 1.75rem; }
@@ -211,7 +288,7 @@
 <!-- Smart App Banner (Android Only) -->
 <div id="smartAppBanner" class="smart-app-banner">
   <div class="banner-content">
-    <div class="banner-icon">🎯</div>
+    <div class="banner-icon"><img src="/assets/icon-192-v2.png" width="44" height="44" alt="myTravel" style="border-radius:10px;display:block;width:100%;height:100%;object-fit:cover;"/></div>
     <div class="banner-text">
       <h4>myTravel</h4>
       <p id="bannerTagline">AI Creates Your Personalized Trip</p>
@@ -226,7 +303,7 @@
 
 <header class="header">
   <div class="header-inner" style="position:relative;">
-    <a href="/" class="logo">My<span>Travel</span></a>
+    <a href="/" class="logo">myTravel</a>
     <nav class="nav">
       <a href="/about">About</a>
       <a href="/guides/index-en">Guides</a>
@@ -249,9 +326,18 @@
   <!-- Dual CTA: Try Demo + Download App -->
   <div class="hero-cta">
     <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner"
-       class="btn btn-primary btn-lg"
+       class="btn btn-store btn-google btn-lg"
        onclick="if(typeof gtag!=='undefined'){gtag('event','hero_app_download',{location:'primary_cta'})}">
-      📱 Download App (Free)
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.18 23.76c.37.21.8.22 1.2.02l12.7-7.06-2.93-2.93-10.97 9.97zM.27 1.46A1.5 1.5 0 0 0 0 2.34v19.32c0 .32.09.62.27.88l.08.08 10.82-10.82v-.26L.35 1.38l-.08.08zM22.2 10.5l-2.9-1.65-3.26 3.26 3.26 3.26 2.93-1.67c.84-.48.84-1.73-.03-2.2zM4.38.22L17.08 7.3l-2.93 2.93L3.18.24c.4-.2.83-.19 1.2-.02z"/></svg>
+      <span><small>Download</small>Google Play</span>
+    </a>
+    <a href="https://apps.apple.com/app/id6766147060"
+       class="btn btn-store btn-apple btn-lg"
+       style="display:none"
+       id="hero-cta-ios-en"
+       onclick="if(typeof gtag!=='undefined'){gtag('event','hero_app_download',{location:'primary_cta',os:'ios'})}">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.17 1.28-2.15 3.8.03 3.02 2.65 4.03 2.68 4.04l-.08.28zM13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      <span><small>Download</small>App Store</span>
     </a>
     <a href="#features" class="btn btn-outline btn-lg">Explore Features</a>
   </div>
@@ -259,7 +345,7 @@
   <!-- Key Features Summary -->
   <div class="hero-stats">
     <div class="hero-stat">
-      <strong>17</strong>
+      <strong data-count-to="17">17</strong>
       <span>Languages</span>
     </div>
     <div class="hero-stat">
@@ -267,48 +353,60 @@
       <span>Auto Itinerary</span>
     </div>
     <div class="hero-stat">
-      <strong>50+</strong>
+      <strong data-count-to="50" data-count-suffix="+">50+</strong>
       <span>Destinations</span>
     </div>
   </div>
 </section>
 
 <section class="section" id="features">
-  <h2>Why MyTravel?</h2>
+  <h2>Why myTravel?</h2>
   <p class="subtitle">Let AI handle the complex planning so you can focus on enjoying your trip</p>
   <div class="features">
     <article class="feature">
-      <div class="feature-icon">🤖</div>
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.2L21 12l-6.6 2.8L12 22l-2.4-7.2L3 12l6.6-2.8z"/><path d="M5 3l.8 2.4L8 6.5 5.8 7.5 5 10l-.8-2.5L2 6.5l2.2-1z"/><path d="M19 15l.6 1.8 1.8.7-1.8.8-.6 1.7-.6-1.7-1.8-.8 1.8-.7z"/></svg>
+      </div>
       <h3>AI-Generated Itineraries</h3>
       <p>Enter your destination and travel dates — AI analyzes the latest travel trends to create optimized daily plans.
         Attractions, restaurants, routes, and timing are all carefully arranged. You can also build itineraries manually.</p>
     </article>
     <article class="feature">
-      <div class="feature-icon">🌤️</div>
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="3"/><path d="M12 2v2M12 14v1M4.22 4.22l1.42 1.42M17.36 5.64l1.42-1.42M2 9h2M20 9h2M5.64 17.36l-1.42 1.42"/><path d="M9 17a4 4 0 0 0 7.92-.8A3 3 0 1 0 14 13H9a3 3 0 0 0 0 6 3 3 0 0 0 0-6"/></svg>
+      </div>
       <h3>Real-Time Weather & Time Zones</h3>
       <p>Your itinerary automatically shows local weather forecasts and time zone information for each day.
         Know when you'll need an umbrella or a jacket, and plan around jet lag before you even leave.</p>
     </article>
     <article class="feature">
-      <div class="feature-icon">✏️</div>
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+      </div>
       <h3>Flexible Editing</h3>
       <p>Not happy with the AI's suggestion? Freely modify your itinerary — add, remove, or reorder activities.
         Even during your trip, you can update upcoming plans in real-time for maximum flexibility.</p>
     </article>
     <article class="feature">
-      <div class="feature-icon">📱</div>
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      </div>
       <h3>Mobile-First Design</h3>
       <p>Optimized for smartphones, tablets, and desktops. Especially designed for checking your itinerary on-the-go.
         Offline caching lets you view your plans even without internet access.</p>
     </article>
     <article class="feature">
-      <div class="feature-icon">🌍</div>
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
       <h3>17 Languages Supported</h3>
       <p>Korean, English, Japanese, Chinese, Spanish, German, French, Thai, Vietnamese, Portuguese, Arabic, Indonesian,
         Hindi, Italian, Russian, Turkish, and Malay. Plan your trip in your native language.</p>
     </article>
     <article class="feature">
-      <div class="feature-icon">👥</div>
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </div>
       <h3>Social & Sharing</h3>
       <p>Share your travel plans with friends and family, and edit together as collaborators. Browse popular itineraries
         from other travelers, like and follow for inspiration. Share your own travel stories with the community.</p>
@@ -363,17 +461,17 @@
 <section class="section-alt">
   <div class="section">
     <h2>Smart Travel Planning Starts Here</h2>
-    <p class="subtitle">Travel preparation is different with MyTravel</p>
-    <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+    <p class="subtitle">Travel preparation is different with myTravel</p>
+    <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));">
       <article class="feature">
         <h3>🧳 Travel Prep Made Simple</h3>
         <p>Great trips start with great preparation. Planning your itinerary in advance reduces transit time and lets you
-          experience more. MyTravel recommends efficient routes considering travel distances and times.
+          experience more. myTravel recommends efficient routes considering travel distances and times.
           It also provides weather forecasts for your travel dates so you can pack appropriately.</p>
       </article>
       <article class="feature">
         <h3>💡 AI-Powered Itinerary Suggestions</h3>
-        <p>MyTravel's AI considers your destination, dates, group size, and interests to build a balanced itinerary.
+        <p>myTravel's AI considers your destination, dates, group size, and interests to build a balanced itinerary.
           It suggests time-of-day appropriate activities — morning walks, lunch at local spots,
           afternoon attractions, and evening downtime — without overpromising what cannot be verified.</p>
       </article>
@@ -384,15 +482,20 @@
 <section class="cta-section">
   <h2>Download the App and Start Planning</h2>
   <p>AI-powered travel planning made simple. Free download, premium features included.</p>
-  <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner"
-     onclick="if(typeof gtag!=='undefined'){gtag('event','cta_app_download',{location:'bottom_section'})}"
-     class="btn btn-white btn-lg">Download Free App →</a>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+    <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner"
+       onclick="if(typeof gtag!=='undefined'){gtag('event','cta_app_download',{location:'bottom_section',os:'android'})}"
+       class="btn btn-white btn-lg">Download on Google Play</a>
+    <a href="https://apps.apple.com/app/id6766147060"
+       onclick="if(typeof gtag!=='undefined'){gtag('event','cta_app_download',{location:'bottom_section',os:'ios'})}"
+       class="btn btn-white btn-lg">Download on App Store</a>
+  </div>
 </section>
 
 <footer class="footer">
   <div class="footer-inner">
     <div>
-      <h4>MyTravel</h4>
+      <h4>myTravel</h4>
       <p style="font-size:0.9rem;">AI-powered travel planning service.<br/>Pick a destination and get the tailored itinerary.</p>
       <div class="langs" style="margin-top:1rem;">
         <span class="lang-badge">🇰🇷 한국어</span>
@@ -436,6 +539,88 @@
 </footer>
 
 <script>
+  // ── Scroll reveal ──────────────────────────────────
+  (function setupScrollReveal() {
+    const prefersReducedMotion =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const groups = [
+      document.querySelectorAll('.features > .feature'),
+      document.querySelectorAll('.steps > .step'),
+      document.querySelectorAll('.destinations > .dest'),
+      document.querySelectorAll('.cta-section h2, .cta-section p, .cta-store-btns'),
+    ];
+    const targets = [];
+    groups.forEach(group => {
+      group.forEach((el, indexInGroup) => {
+        el.classList.add('reveal');
+        el.dataset.revealIndex = indexInGroup;
+        targets.push(el);
+      });
+    });
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      targets.forEach(el => el.classList.add('is-visible'));
+      return;
+    }
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const index = Math.min(parseInt(el.dataset.revealIndex, 10) || 0, 6);
+        el.style.setProperty('--reveal-delay', (index * 60) + 'ms');
+        el.classList.add('is-visible');
+        obs.unobserve(el);
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+    targets.forEach(el => observer.observe(el));
+  })();
+
+  // ── Hero stat count-up ─────────────────────────────
+  (function setupCountUp() {
+    const els = document.querySelectorAll('[data-count-to]');
+    if (!els.length) return;
+    const prefersReducedMotion =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function animateCount(el) {
+      const target = parseInt(el.dataset.countTo, 10);
+      const suffix = el.dataset.countSuffix || '';
+      if (isNaN(target)) return;
+      const DURATION = 1100;
+      let startTime = null;
+      function tick(now) {
+        if (startTime === null) startTime = now;
+        const progress = Math.min((now - startTime) / DURATION, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(target * eased) + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        animateCount(entry.target);
+        obs.unobserve(entry.target);
+      });
+    }, { threshold: 0.6 });
+    els.forEach(el => observer.observe(el));
+  })();
+
+  // ── Header shadow on scroll (rAF-throttled) ────────
+  (function setupHeaderScroll() {
+    const header = document.querySelector('.header');
+    if (!header) return;
+    let ticking = false;
+    function update() {
+      header.classList.toggle('scrolled', window.scrollY > 8);
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+  })();
+
   if (window.innerWidth <= 768) {
     document.getElementById('mobile-login').style.display = 'inline-flex';
   }

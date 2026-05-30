@@ -20,119 +20,396 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="MyTravel - AI가 만들어주는 맞춤형 여행 계획" />
   <meta name="twitter:description" content="목적지만 선택하면 AI가 최적의 여행 일정을 자동으로 만들어줍니다." />
-  <meta property="og:image" content="https://mytravel-planner.com/assets/icon-512.png" />
-  <meta name="twitter:image" content="https://mytravel-planner.com/assets/icon-512.png" />
-  <meta name="theme-color" content="#2563EB" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png" />
+  <meta property="og:image" content="https://mytravel-planner.com/assets/icon-512-v2.png" />
+  <meta name="twitter:image" content="https://mytravel-planner.com/assets/icon-512-v2.png" />
+  <meta name="theme-color" content="#4A90D9" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192-v2.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512-v2.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-v2.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="myTravel" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <!-- AdSense: 운영 배포 시 아래 스크립트와 ad-slot 코드 복원 필요 -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script> -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "MyTravel",
+    "name": "myTravel",
     "url": "https://mytravel-planner.com",
     "description": "AI 기반 여행 계획 서비스. 목적지만 선택하면 최적의 여행 일정을 자동으로 만들어줍니다.",
     "applicationCategory": "TravelApplication",
     "operatingSystem": "Web",
     "inLanguage": ["ko", "en", "ja", "zh", "es", "de", "fr", "th", "vi", "pt", "ar", "id", "hi", "it", "ru", "tr", "ms"],
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "author": { "@type": "Organization", "name": "MyTravel" }
+    "author": { "@type": "Organization", "name": "myTravel" }
   }
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
-    a { color: inherit; text-decoration: none; }
+    :root {
+      --blue: #4A90D9;
+      --blue-dark: #3a7bc8;
+      --blue-deeper: #2d6aaf;
+      --blue-light: #7ec8fb;
+      --text-dark: #1a202c;
+      --text-mid: #475569;
+      --text-light: #64748b;
+      --surface: #f8fafc;
+      --border: #e2e8f0;
 
-    /* Header */
-    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
-    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
-    .logo span { color: #f59e0b; }
-    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
-    .nav a { color: #475569; transition: color 0.2s; }
-    .nav a:hover { color: #2563EB; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
-    .btn-primary { background: #2563EB; color: #fff; }
-    .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
-    .nav a.btn-primary { color: #fff; }
-    .btn-outline { border: 1.5px solid #2563EB; color: #2563EB; }
-    .btn-outline:hover { background: #eff6ff; }
-    .btn-lg { padding: 0.875rem 2rem; font-size: 1.05rem; border-radius: 0.75rem; }
+      /* Motion */
+      --duration-fast: 0.2s;
+      --duration-normal: 0.4s;
+      --duration-slow: 0.6s;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --reveal-stagger: 60ms;
 
-    /* Hero */
-    .hero { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%); padding: 4rem 1.5rem 3rem; text-align: center; }
-    .hero h1 { font-size: 2.25rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem; line-height: 1.3; }
-    .hero h1 em { font-style: normal; color: #2563EB; }
-    .hero p { font-size: 1.1rem; color: #475569; max-width: 600px; margin: 0 auto 2rem; }
-    .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .hero-stats { display: flex; gap: 2rem; justify-content: center; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(37,99,235,0.15); }
-    .hero-stat { text-align: center; }
-    .hero-stat strong { display: block; font-size: 1.5rem; color: #2563EB; }
-    .hero-stat span { font-size: 0.85rem; color: #64748b; }
+      /* Depth */
+      --shadow-sm: 0 1px 4px rgba(15,30,60,0.06), 0 4px 16px rgba(15,30,60,0.04);
+      --shadow-md: 0 8px 30px rgba(74,144,217,0.12);
+      --shadow-lg: 0 18px 50px rgba(15,30,60,0.14);
 
-    /* Sections */
-    .section { padding: 4rem 1.5rem; max-width: 1200px; margin: 0 auto; }
-    .section-alt { background: #f8fafc; }
-    .section h2 { font-size: 1.75rem; font-weight: 700; text-align: center; margin-bottom: 0.75rem; }
-    .section .subtitle { text-align: center; color: #64748b; margin-bottom: 3rem; font-size: 1rem; }
-
-    /* Features */
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-    .feature { background: #fff; border-radius: 1rem; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; }
-    .feature:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-    .feature-icon { width: 3rem; height: 3rem; background: #eff6ff; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
-    .feature h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
-    .feature p { color: #64748b; font-size: 0.95rem; line-height: 1.7; }
-
-    /* How it works */
-    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; counter-reset: step; }
-    .step { text-align: center; position: relative; }
-    .step::before { counter-increment: step; content: counter(step); display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: #2563EB; color: #fff; border-radius: 50%; font-weight: 700; margin: 0 auto 1rem; }
-    .step h3 { font-weight: 600; margin-bottom: 0.5rem; }
-    .step p { color: #64748b; font-size: 0.95rem; }
-
-    /* Destinations */
-    .destinations { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; }
-    .dest { background: linear-gradient(135deg, #1e293b, #334155); border-radius: 1rem; padding: 1.5rem; color: #fff; text-align: center; transition: transform 0.2s; }
-    .dest:hover { transform: scale(1.03); }
-    .dest-emoji { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    .dest h3 { font-size: 1.05rem; font-weight: 600; }
-    .dest p { font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem; }
-
-    /* Ad slot */
-    .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 0; overflow: hidden; }
-
-    /* CTA */
-    .cta-section { background: linear-gradient(135deg, #2563EB, #1d4ed8); color: #fff; padding: 4rem 1.5rem; text-align: center; }
-    .cta-section h2 { color: #fff; margin-bottom: 1rem; }
-    .cta-section p { color: #bfdbfe; max-width: 500px; margin: 0 auto 2rem; }
-    .btn-white { background: #fff; color: #2563EB; }
-    .btn-white:hover { background: #f0f9ff; }
-
-    /* Footer */
-    .footer { background: #1e293b; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
-    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
-    .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
-    .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
-    .footer a:hover { color: #fff; }
-    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #334155; text-align: center; font-size: 0.85rem; }
-    .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-    .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
-
-    /* Mobile */
-    @media (max-width: 768px) {
-      .hero h1 { font-size: 1.75rem; }
-      .hero-stats { gap: 1rem; }
-      .nav { display: none; }
-      .section h2 { font-size: 1.4rem; }
+      /* Glass surfaces */
+      --glass-bg: rgba(255,255,255,0.72);
+      --glass-border: rgba(255,255,255,0.6);
     }
 
-    /* Smart App Banner */
+    /* Accessibility: respect reduced-motion — disable all motion, reveal everything immediately */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-dark); line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── Header ─── */
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.97); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); transition: box-shadow var(--duration-fast) var(--ease-out-expo), background var(--duration-fast) var(--ease-out-expo); }
+    .header.scrolled { box-shadow: 0 4px 20px rgba(15,30,60,0.08); background: rgba(255,255,255,0.99); }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.3rem; font-weight: 700; color: var(--blue); letter-spacing: -0.02em; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: var(--text-mid); transition: color 0.2s; }
+    .nav a:hover { color: var(--blue); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(74,144,217,0.35); }
+    .nav a.btn-primary { color: #fff; }
+    .btn-outline { border: 1.5px solid var(--blue); color: var(--blue); background: transparent; }
+    .btn-outline:hover { background: rgba(74,144,217,0.08); }
+    .btn-lg { padding: 0.875rem 2rem; font-size: 1.05rem; border-radius: 0.75rem; }
+    /* Store buttons */
+    .btn-store { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1.5rem; border-radius: 0.875rem; font-weight: 700; transition: all 0.22s; border: none; cursor: pointer; }
+    .btn-store span { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+    .btn-store span small { font-size: 0.65rem; font-weight: 400; opacity: 0.85; letter-spacing: 0.02em; }
+    .btn-store span { font-size: 1rem; }
+    .btn-google { background: #1a1a2e; color: #fff; }
+    .btn-google:hover { background: #0f0f1e; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); color: #fff; }
+    .btn-apple { background: #fff; color: #1a1a2e; border: 1.5px solid rgba(255,255,255,0.4); }
+    .btn-apple:hover { background: rgba(255,255,255,0.92); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); color: #1a1a2e; }
+    .btn-apple-dark { background: #1a1a2e; color: #fff; border: none; }
+    .btn-apple-dark:hover { background: #0f0f1e; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); color: #fff; }
+
+    /* ─── Hero ─── */
+    .hero {
+      position: relative;
+      min-height: 580px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 1.5rem 4rem;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80&fit=crop');
+      background-size: cover;
+      background-position: center 40%;
+      z-index: 0;
+      animation: kenBurns 28s ease-in-out infinite alternate;
+    }
+    @keyframes kenBurns {
+      from { transform: scale(1) translateY(0); }
+      to   { transform: scale(1.08) translateY(-1.5%); }
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(15,30,60,0.62) 0%, rgba(15,30,60,0.72) 60%, rgba(15,30,60,0.82) 100%);
+      z-index: 1;
+    }
+    /* Gradient mesh — soft blue light bleed layered over the dark overlay */
+    .hero-mesh {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(50% 55% at 18% 22%, rgba(74,144,217,0.35) 0%, transparent 60%),
+        radial-gradient(45% 50% at 85% 30%, rgba(126,200,251,0.22) 0%, transparent 55%),
+        radial-gradient(60% 60% at 60% 100%, rgba(45,106,175,0.30) 0%, transparent 60%);
+      mix-blend-mode: screen;
+    }
+    /* Hero content entrance — fade-up cascade on load */
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-content > * {
+      opacity: 0;
+      animation: heroFadeUp var(--duration-slow) var(--ease-out-expo) forwards;
+    }
+    .hero-content > .hero-badge { animation-delay: 0.05s; }
+    .hero-content > h1          { animation-delay: 0.18s; }
+    .hero-content > p           { animation-delay: 0.32s; }
+    .hero-content > .hero-cta   { animation-delay: 0.46s; }
+    .hero-content > .hero-stats { animation-delay: 0.60s; }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 720px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(74,144,217,0.25);
+      border: 1px solid rgba(74,144,217,0.5);
+      color: #93c5fd;
+      padding: 0.3rem 0.9rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 { font-size: 2.6rem; font-weight: 700; color: #fff; margin-bottom: 1.1rem; line-height: 1.25; letter-spacing: -0.02em; }
+    .hero h1 em { font-style: normal; color: #7ec8fb; }
+    .hero p { font-size: 1.05rem; color: rgba(255,255,255,0.85); max-width: 540px; margin: 0 auto 2.25rem; line-height: 1.8; }
+    .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .hero-stats { display: flex; gap: 2.5rem; justify-content: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2); }
+    .hero-stat { text-align: center; }
+    .hero-stat strong { display: block; font-size: 1.6rem; font-weight: 700; color: #7ec8fb; }
+    .hero-stat span { font-size: 0.82rem; color: rgba(255,255,255,0.7); }
+
+    /* ─── Sections ─── */
+    .section { padding: 5rem 1.5rem; max-width: 1200px; margin: 0 auto; }
+    .section-alt { background: var(--surface); }
+    .section h2 { font-size: 1.85rem; font-weight: 700; text-align: center; margin-bottom: 0.75rem; letter-spacing: -0.02em; color: var(--text-dark); }
+    .section .subtitle { text-align: center; color: var(--text-light); margin-bottom: 3rem; font-size: 1rem; }
+
+    /* ─── Features ─── */
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.75rem; }
+    .feature {
+      position: relative;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      transition: transform var(--duration-fast) var(--ease-out-expo),
+                  box-shadow var(--duration-fast) var(--ease-out-expo),
+                  border-color var(--duration-fast) var(--ease-out-expo);
+    }
+    /* Solid fallback where backdrop-filter is unsupported */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .feature { background: #fff; }
+    }
+    .feature:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: rgba(74,144,217,0.25); }
+    .feature-icon {
+      width: 3.25rem; height: 3.25rem;
+      background: linear-gradient(135deg, rgba(74,144,217,0.16) 0%, rgba(126,200,251,0.10) 100%);
+      border-radius: 0.875rem;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.1rem; flex-shrink: 0;
+      transition: transform var(--duration-normal) var(--ease-out-expo),
+                  box-shadow var(--duration-normal) var(--ease-out-expo);
+    }
+    .feature:hover .feature-icon {
+      transform: scale(1.08) rotate(-4deg);
+      box-shadow: 0 6px 18px rgba(74,144,217,0.28);
+    }
+    .feature-icon svg { width: 1.625rem; height: 1.625rem; color: var(--blue); }
+    .feature h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-dark); }
+    .feature p { color: var(--text-light); font-size: 0.93rem; line-height: 1.75; }
+
+    /* ─── Steps ─── */
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; counter-reset: step; }
+    .step { text-align: center; position: relative; }
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      display: flex; align-items: center; justify-content: center;
+      width: 2.75rem; height: 2.75rem;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-deeper) 100%);
+      color: #fff;
+      border-radius: 50%;
+      font-weight: 700; font-size: 1.1rem;
+      margin: 0 auto 1.1rem;
+      box-shadow: 0 6px 16px rgba(74,144,217,0.4);
+      transition: transform var(--duration-normal) var(--ease-out-expo);
+    }
+    .step.is-visible::before { animation: stepPop var(--duration-slow) var(--ease-out-expo) backwards; }
+    @keyframes stepPop {
+      0%   { transform: scale(0.4); opacity: 0; }
+      60%  { transform: scale(1.12); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    .step h3 { font-weight: 600; margin-bottom: 0.5rem; }
+    .step p { color: var(--text-light); font-size: 0.93rem; }
+
+    /* ─── Destinations (photo cards) ─── */
+    .destinations { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; }
+    .dest {
+      position: relative;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      cursor: pointer;
+      transition: transform 0.25s;
+    }
+    .dest:hover { transform: scale(1.03); }
+    .dest-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .dest:hover .dest-img { transform: scale(1.08); }
+    .dest-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(15,25,50,0.8) 0%, rgba(15,25,50,0.1) 60%);
+      transition: background var(--duration-normal) var(--ease-out-expo);
+    }
+    .dest:hover .dest-overlay {
+      background: linear-gradient(to top, rgba(15,25,50,0.92) 0%, rgba(74,144,217,0.25) 70%);
+    }
+    .dest-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.25rem 1rem;
+      color: #fff;
+      transform: translateY(0);
+      transition: transform var(--duration-normal) var(--ease-out-expo);
+    }
+    .dest:hover .dest-info { transform: translateY(-4px); }
+    .dest-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.15rem; }
+    .dest-info p {
+      font-size: 0.78rem; color: rgba(255,255,255,0.75);
+      opacity: 0.75;
+      transition: opacity var(--duration-normal) var(--ease-out-expo);
+    }
+    .dest:hover .dest-info p { opacity: 1; }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-deeper) 100%);
+      color: #fff;
+      padding: 5rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: -60%;
+      left: -20%;
+      width: 500px;
+      height: 500px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+      animation: ctaFloat 14s ease-in-out infinite alternate;
+    }
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      bottom: -50%;
+      right: -15%;
+      width: 400px;
+      height: 400px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+      animation: ctaFloat 18s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes ctaFloat {
+      from { transform: translate(0, 0); }
+      to   { transform: translate(40px, -30px); }
+    }
+    .cta-section h2 { color: #fff; margin-bottom: 1rem; position: relative; z-index: 1; }
+    .cta-section p { color: rgba(255,255,255,0.85); max-width: 500px; margin: 0 auto 2rem; position: relative; z-index: 1; }
+    .cta-store-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+    .btn-white { background: #fff; color: var(--blue); font-weight: 700; }
+    .btn-white:hover { background: #f0f9ff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+    .btn-outline-white { border: 2px solid rgba(255,255,255,0.6); color: #fff; background: rgba(255,255,255,0.08); }
+    .btn-outline-white:hover { background: rgba(255,255,255,0.18); }
+
+    /* ─── Footer ─── */
+    .footer { background: #0f1e3c; color: #94a3b8; padding: 3.5rem 1.5rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2.5rem; }
+    .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.875rem; font-size: 0.95rem; letter-spacing: 0.03em; text-transform: uppercase; }
+    .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.88rem; transition: color 0.2s; }
+    .footer a:hover { color: #fff; }
+    .footer-brand-name { font-size: 1.2rem; font-weight: 700; color: var(--blue); margin-bottom: 0.75rem; }
+    .footer-bottom { max-width: 1200px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid #1e3460; text-align: center; font-size: 0.82rem; }
+    .langs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.875rem; }
+    .lang-badge { background: #1e3460; padding: 0.2rem 0.55rem; border-radius: 0.25rem; font-size: 0.72rem; color: #94a3b8; }
+
+    /* ─── Scroll reveal ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity var(--duration-slow) var(--ease-out-expo),
+                  transform var(--duration-slow) var(--ease-out-expo);
+      transition-delay: var(--reveal-delay, 0ms);
+      will-change: opacity, transform;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      will-change: auto;
+    }
+    /* Progressive enhancement: if JS never runs, content must still show */
+    .no-js .reveal { opacity: 1; transform: none; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .hero { min-height: 480px; padding: 4rem 1.25rem 3rem; }
+      .hero h1 { font-size: 1.9rem; }
+      .hero-stats { gap: 1.5rem; }
+      .nav { display: none; }
+      .section h2 { font-size: 1.5rem; }
+      .destinations { grid-template-columns: repeat(2, 1fr); }
+      .dest { aspect-ratio: 4/5; }
+    }
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.6rem; }
+      .hero-stats { gap: 1rem; flex-wrap: wrap; }
+      .destinations { grid-template-columns: repeat(2, 1fr); gap: 0.875rem; }
+    }
+
+    /* ─── Smart App Banner ─── */
     .smart-app-banner {
       position: fixed;
       top: 0;
@@ -141,7 +418,7 @@
       background: linear-gradient(135deg, #4A90D9 0%, #5BA3E8 100%);
       color: white;
       z-index: 9999;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
       animation: slideDown 0.3s ease-out;
       padding: 0.875rem 1rem;
       display: none;
@@ -155,98 +432,38 @@
       from { transform: translateY(-100%); }
       to { transform: translateY(0); }
     }
-    .banner-content {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex: 1;
-      min-width: 0;
-    }
-    .banner-icon {
-      font-size: 2.5rem;
-      flex-shrink: 0;
-    }
-    .banner-text {
-      flex: 1;
-      min-width: 0;
-    }
-    .banner-text h4 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.125rem;
-    }
-    .banner-text p {
-      font-size: 0.8rem;
-      opacity: 0.95;
-      margin-bottom: 0.25rem;
-    }
-    .banner-rating {
-      font-size: 0.7rem;
-      opacity: 0.9;
-    }
-    .banner-actions {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      flex-shrink: 0;
-    }
-    .banner-download {
-      background: white;
-      color: #4A90D9;
-      border: none;
-      padding: 0.5rem 1.25rem;
-      border-radius: 1.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .banner-download:hover {
-      background: #f0f9ff;
-      transform: scale(1.02);
-    }
-    .banner-close {
-      background: rgba(255,255,255,0.2);
-      border: none;
-      color: white;
-      width: 2rem;
-      height: 2rem;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-    }
-    .banner-close:hover {
-      background: rgba(255,255,255,0.3);
-    }
+    .banner-content { display: flex; align-items: center; gap: 0.875rem; flex: 1; min-width: 0; }
+    .banner-icon { width: 2.75rem; height: 2.75rem; border-radius: 0.625rem; overflow: hidden; flex-shrink: 0; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .banner-text { flex: 1; min-width: 0; }
+    .banner-text h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.1rem; }
+    .banner-text p { font-size: 0.78rem; opacity: 0.92; margin-bottom: 0.2rem; }
+    .banner-store { font-size: 0.68rem; opacity: 0.85; font-weight: 500; letter-spacing: 0.02em; }
+    .banner-actions { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
+    .banner-download { background: white; color: #4A90D9; border: none; padding: 0.475rem 1.1rem; border-radius: 1.5rem; font-weight: 700; font-size: 0.875rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .banner-download:hover { background: #f0f9ff; transform: scale(1.02); }
+    .banner-close { background: rgba(255,255,255,0.2); border: none; color: white; width: 2rem; height: 2rem; border-radius: 50%; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; flex-shrink: 0; }
+    .banner-close:hover { background: rgba(255,255,255,0.35); }
     @media (max-width: 480px) {
-      .smart-app-banner { padding: 0.75rem 0.875rem; }
-      .banner-content { gap: 0.75rem; }
-      .banner-icon { font-size: 2rem; }
-      .banner-text h4 { font-size: 0.95rem; }
-      .banner-text p { font-size: 0.75rem; }
-      .banner-download { padding: 0.4rem 1rem; font-size: 0.85rem; }
+      .smart-app-banner { padding: 0.7rem 0.875rem; }
+      .banner-content { gap: 0.625rem; }
+      .banner-download { padding: 0.4rem 0.875rem; font-size: 0.8rem; }
     }
   </style>
 </head>
 <body>
 
-<!-- Smart App Banner (Android Only) -->
+<!-- Smart App Banner (iOS + Android) -->
 <div id="smartAppBanner" class="smart-app-banner">
   <div class="banner-content">
-    <div class="banner-icon">🎯</div>
+    <div class="banner-icon"><img src="/assets/icon-192-v2.png" width="44" height="44" alt="myTravel" style="border-radius:10px;display:block;width:100%;height:100%;object-fit:cover;"/></div>
     <div class="banner-text">
       <h4>myTravel</h4>
       <p id="bannerTagline">AI가 만드는 맞춤형 여행</p>
-      <div class="banner-rating">Google Play에서 무료</div>
+      <div class="banner-store" id="bannerStore">무료 다운로드</div>
     </div>
   </div>
   <div class="banner-actions">
-    <button class="banner-download" onclick="handleBannerInstall()">무료 다운로드</button>
+    <button class="banner-download" onclick="handleBannerInstall()">무료 설치</button>
     <button class="banner-close" onclick="handleBannerDismiss()">✕</button>
   </div>
 </div>
@@ -254,13 +471,13 @@
 <!-- Header -->
 <header class="header">
   <div class="header-inner">
-    <a href="/" class="logo">My<span>Travel</span></a>
+    <a href="/" class="logo">myTravel</a>
     <nav class="nav">
       <a href="/about">소개</a>
       <a href="/guides/">가이드</a>
       <a href="/blog">블로그</a>
       <a href="/contact">문의</a>
-      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner" class="btn btn-primary">앱 다운로드</a>
+      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner" class="btn btn-primary" id="nav-download-btn">앱 다운로드</a>
     </nav>
     <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner" class="btn btn-primary" style="display:none" id="mobile-login">앱 다운로드</a>
   </div>
@@ -268,35 +485,47 @@
 
 <!-- Hero -->
 <section class="hero">
-  <h1>AI가 만드는 나만의 여행<br/><em>AI가 빠르게 생성</em></h1>
-  <p>
-    목적지와 날짜만 입력하세요. AI가 명소, 맛집, 날씨, 일정까지 꼼꼼하게 계획합니다.
-    17개 언어를 지원하는 AI 기반 스마트 여행 플래너.
-  </p>
-
-  <!-- 듀얼 CTA: 체험 + 앱 다운로드 -->
-  <div class="hero-cta">
-    <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner"
-       class="btn btn-primary btn-lg"
-       onclick="if(typeof gtag!=='undefined'){gtag('event','hero_app_download',{location:'primary_cta'})}">
-      📱 앱 다운로드 (무료)
-    </a>
-    <a href="#features" class="btn btn-outline btn-lg">기능 살펴보기</a>
-  </div>
-
-  <!-- 핵심 기능 요약 -->
-  <div class="hero-stats">
-    <div class="hero-stat">
-      <strong>17개</strong>
-      <span>언어 지원</span>
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-overlay" aria-hidden="true"></div>
+  <div class="hero-mesh" aria-hidden="true"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ AI Travel Planner</div>
+    <h1>AI가 만드는<br/><em>나만의 여행 일정</em></h1>
+    <p>
+      목적지와 날짜만 입력하세요. AI가 명소, 맛집, 날씨, 이동 동선까지
+      꼼꼼하게 계획합니다. 17개 언어 지원.
+    </p>
+    <div class="hero-cta">
+      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner"
+         class="btn btn-store btn-google btn-lg"
+         id="hero-cta-android"
+         onclick="if(typeof gtag!=='undefined'){gtag('event','hero_app_download',{location:'primary_cta',os:'android'})}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.18 23.76c.37.21.8.22 1.2.02l12.7-7.06-2.93-2.93-10.97 9.97zM.27 1.46A1.5 1.5 0 0 0 0 2.34v19.32c0 .32.09.62.27.88l.08.08 10.82-10.82v-.26L.35 1.38l-.08.08zM22.2 10.5l-2.9-1.65-3.26 3.26 3.26 3.26 2.93-1.67c.84-.48.84-1.73-.03-2.2zM4.38.22L17.08 7.3l-2.93 2.93L3.18.24c.4-.2.83-.19 1.2-.02z"/></svg>
+        <span><small>다운로드</small>Google Play</span>
+      </a>
+      <a href="https://apps.apple.com/app/id6766147060"
+         class="btn btn-store btn-apple btn-lg"
+         id="hero-cta-ios"
+         style="display:none"
+         onclick="if(typeof gtag!=='undefined'){gtag('event','hero_app_download',{location:'primary_cta',os:'ios'})}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.17 1.28-2.15 3.8.03 3.02 2.65 4.03 2.68 4.04l-.08.28zM13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <span><small>다운로드</small>App Store</span>
+      </a>
+      <a href="#features" class="btn btn-outline-white btn-lg">기능 살펴보기</a>
     </div>
-    <div class="hero-stat">
-      <strong>AI 기반</strong>
-      <span>자동 일정 생성</span>
-    </div>
-    <div class="hero-stat">
-      <strong>50+</strong>
-      <span>인기 여행지</span>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <strong data-count-to="17" data-count-suffix="개">17개</strong>
+        <span>언어 지원</span>
+      </div>
+      <div class="hero-stat">
+        <strong>AI 기반</strong>
+        <span>자동 일정 생성</span>
+      </div>
+      <div class="hero-stat">
+        <strong data-count-to="20" data-count-suffix="+">20+</strong>
+        <span>인기 여행지</span>
+      </div>
     </div>
   </div>
 </section>
@@ -307,37 +536,79 @@
   <p class="subtitle">복잡한 여행 계획, AI에게 맡기고 여행만 즐기세요</p>
   <div class="features">
     <article class="feature">
-      <div class="feature-icon">🤖</div>
+      <div class="feature-icon">
+        <!-- Sparkle / AI wand -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2l2.4 7.2L21 12l-6.6 2.8L12 22l-2.4-7.2L3 12l6.6-2.8z"/>
+          <path d="M5 3l.8 2.4L8 6.5 5.8 7.5 5 10l-.8-2.5L2 6.5l2.2-1z"/>
+          <path d="M19 15l.6 1.8 1.8.7-1.8.8-.6 1.7-.6-1.7-1.8-.8 1.8-.7z"/>
+        </svg>
+      </div>
       <h3>AI 자동 일정 생성</h3>
       <p>목적지와 여행 기간만 입력하면 AI가 최근 여행 트렌드를 분석하여 최적의 일정을 자동으로 만들어줍니다.
         관광지, 맛집, 이동 경로까지 세밀하게 구성된 여행 계획을 받아보세요. 수동 모드로 직접 만들 수도 있습니다.</p>
     </article>
     <article class="feature">
-      <div class="feature-icon">🌤️</div>
+      <div class="feature-icon">
+        <!-- Sun + cloud -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="9" r="3"/>
+          <path d="M12 2v2M12 14v1M4.22 4.22l1.42 1.42M17.36 5.64l1.42-1.42M2 9h2M20 9h2M5.64 17.36l-1.42 1.42"/>
+          <path d="M9 17a4 4 0 0 0 7.92-.8A3 3 0 1 0 14 13H9a3 3 0 0 0 0 6 3 3 0 0 0 0-6"/>
+        </svg>
+      </div>
       <h3>실시간 날씨 & 시차 정보</h3>
       <p>여행 일정에 맞춰 현지 날씨 예보와 시차 정보를 자동으로 표시합니다. 우산이 필요한 날, 두꺼운 옷이 필요한 날을
         미리 확인하고 짐을 꾸리세요. 시차 적응 계획도 함께 세울 수 있습니다.</p>
     </article>
     <article class="feature">
-      <div class="feature-icon">✏️</div>
+      <div class="feature-icon">
+        <!-- Edit / pencil -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/>
+        </svg>
+      </div>
       <h3>자유로운 일정 수정</h3>
       <p>AI가 만든 일정이 마음에 들지 않으면 자유롭게 수정하세요. 활동 추가, 삭제, 순서 변경이 모두 가능합니다.
         여행 중에도 아직 진행하지 않은 일정은 실시간으로 변경할 수 있어 유연한 여행이 가능합니다.</p>
     </article>
     <article class="feature">
-      <div class="feature-icon">📱</div>
+      <div class="feature-icon">
+        <!-- Smartphone -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+          <line x1="12" y1="18" x2="12.01" y2="18"/>
+        </svg>
+      </div>
       <h3>모바일 최적화 디자인</h3>
       <p>스마트폰, 태블릿, PC 어디서든 최적의 화면을 제공합니다. 특히 여행 중 스마트폰으로 일정을 확인하기 편리한
         모바일 퍼스트 디자인으로 제작되었습니다. 오프라인 캐시 기능으로 인터넷 없이도 일정을 확인할 수 있습니다.</p>
     </article>
     <article class="feature">
-      <div class="feature-icon">🌍</div>
+      <div class="feature-icon">
+        <!-- Globe -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      </div>
       <h3>17개 언어 지원</h3>
       <p>한국어, English, 日本語, 中文, Español, Deutsch, Français, ไทย, Tiếng Việt, Português, العربية, Bahasa Indonesia, हिन्दी, Italiano, Русский, Türkçe, Bahasa Melayu 등
         17개 언어를 모두 지원합니다. 전 세계 어디서든 모국어로 편리하게 여행을 계획하세요.</p>
     </article>
     <article class="feature">
-      <div class="feature-icon">👥</div>
+      <div class="feature-icon">
+        <!-- Share / people -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="18" cy="5" r="3"/>
+          <circle cx="6" cy="12" r="3"/>
+          <circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+      </div>
       <h3>소셜 & 공유 기능</h3>
       <p>친구, 가족과 여행 계획을 공유하고 함께 수정할 수 있습니다. 다른 여행자들의 인기 여행 일정을 탐색하고
         좋아요, 팔로우 기능으로 영감을 얻으세요. 여행 후기를 공유하여 커뮤니티에 기여할 수도 있습니다.</p>
@@ -345,11 +616,6 @@
   </div>
 </section>
 
-<!-- Ad slot (between content sections) -->
-<div class="ad-container">
-  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="2397004834" data-ad-format="auto" data-full-width-responsive="true"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-</div>
 
 <!-- How it works -->
 <section class="section-alt">
@@ -376,68 +642,85 @@
   </div>
 </section>
 
-<!-- Popular Destinations -->
+<!-- Popular Destinations (실사 사진) -->
 <section class="section">
   <h2>인기 여행지</h2>
   <p class="subtitle">전 세계 여행자들이 가장 많이 찾는 목적지</p>
   <div class="destinations">
     <div class="dest">
-      <div class="dest-emoji">🗼</div>
-      <h3>도쿄</h3>
-      <p>일본</p>
+      <img class="dest-img" src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=75&fit=crop" alt="도쿄 야경" loading="lazy" />
+      <div class="dest-overlay"></div>
+      <div class="dest-info"><h3>도쿄</h3><p>일본</p></div>
     </div>
     <div class="dest">
-      <div class="dest-emoji">🗼</div>
-      <h3>파리</h3>
-      <p>프랑스</p>
+      <img class="dest-img" src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=75&fit=crop" alt="파리 에펠탑" loading="lazy" />
+      <div class="dest-overlay"></div>
+      <div class="dest-info"><h3>파리</h3><p>프랑스</p></div>
     </div>
     <div class="dest">
-      <div class="dest-emoji">🛕</div>
-      <h3>방콕</h3>
-      <p>태국</p>
+      <img class="dest-img" src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&q=75&fit=crop" alt="방콕 사원" loading="lazy" />
+      <div class="dest-overlay"></div>
+      <div class="dest-info"><h3>방콕</h3><p>태국</p></div>
     </div>
     <div class="dest">
-      <div class="dest-emoji">🗽</div>
-      <h3>뉴욕</h3>
-      <p>미국</p>
+      <img class="dest-img" src="https://images.unsplash.com/photo-1499092346589-b9b6be3e94b2?w=400&q=75&fit=crop" alt="뉴욕 야경" loading="lazy" />
+      <div class="dest-overlay"></div>
+      <div class="dest-info"><h3>뉴욕</h3><p>미국</p></div>
     </div>
     <div class="dest">
-      <div class="dest-emoji">⛩️</div>
-      <h3>오사카</h3>
-      <p>일본</p>
+      <img class="dest-img" src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400&q=75&fit=crop" alt="오사카 도톤보리" loading="lazy" />
+      <div class="dest-overlay"></div>
+      <div class="dest-info"><h3>오사카</h3><p>일본</p></div>
     </div>
     <div class="dest">
-      <div class="dest-emoji">🏰</div>
-      <h3>런던</h3>
-      <p>영국</p>
+      <img class="dest-img" src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&q=75&fit=crop" alt="런던 타워브리지" loading="lazy" />
+      <div class="dest-overlay"></div>
+      <div class="dest-info"><h3>런던</h3><p>영국</p></div>
     </div>
     <div class="dest">
-      <div class="dest-emoji">🏖️</div>
-      <h3>다낭</h3>
-      <p>베트남</p>
+      <img class="dest-img" src="https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=400&q=75&fit=crop" alt="다낭 해변" loading="lazy" />
+      <div class="dest-overlay"></div>
+      <div class="dest-info"><h3>다낭</h3><p>베트남</p></div>
     </div>
     <div class="dest">
-      <div class="dest-emoji">🌃</div>
-      <h3>싱가포르</h3>
-      <p>싱가포르</p>
+      <img class="dest-img" src="https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&q=75&fit=crop" alt="싱가포르 야경" loading="lazy" />
+      <div class="dest-overlay"></div>
+      <div class="dest-info"><h3>싱가포르</h3><p>싱가포르</p></div>
     </div>
   </div>
 </section>
 
-<!-- Additional Content: Travel Planning Tips -->
+<!-- Additional Content -->
 <section class="section-alt">
   <div class="section">
     <h2>스마트한 여행 계획의 시작</h2>
     <p class="subtitle">MyTravel와 함께하면 여행 준비가 달라집니다</p>
-    <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+    <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));">
       <article class="feature">
-        <h3>🧳 여행 준비, 이것만 기억하세요</h3>
+        <div class="feature-icon">
+          <!-- Luggage / suitcase -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"/>
+            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+            <line x1="12" y1="12" x2="12" y2="16"/>
+            <line x1="10" y1="14" x2="14" y2="14"/>
+          </svg>
+        </div>
+        <h3>여행 준비, 이것만 기억하세요</h3>
         <p>좋은 여행의 시작은 꼼꼼한 준비입니다. 여행 일정을 미리 세우면 현지에서의 이동 시간을 줄이고
           더 많은 경험을 할 수 있습니다. MyTravel는 이동 거리와 시간을 고려하여 효율적인 동선을 추천합니다.
           또한, 여행 기간에 맞는 날씨 정보를 제공하여 적절한 옷차림과 준비물을 챙길 수 있도록 도와줍니다.</p>
       </article>
       <article class="feature">
-        <h3>💡 AI 기반 일정 추천</h3>
+        <div class="feature-icon">
+          <!-- Lightbulb -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="9" y1="18" x2="15" y2="18"/>
+            <line x1="10" y1="22" x2="14" y2="22"/>
+            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+          </svg>
+        </div>
+        <h3>AI 기반 일정 추천</h3>
         <p>MyTravel의 AI는 단순히 유명 관광지만 나열하지 않습니다. 목적지·기간·동행 인원·관심사를
           종합하여 균형 잡힌 일정을 구성합니다. 아침의 도보 산책, 점심의 현지 음식, 오후의 주요 명소,
           저녁의 휴식까지 시간대별로 적합한 활동을 추천합니다.
@@ -451,18 +734,29 @@
 <!-- CTA -->
 <section class="cta-section">
   <h2>지금 바로 앱을 다운로드하세요</h2>
-  <p>AI가 만드는 맞춤형 여행 계획, AI가 빠르게 생성. 지금 바로 무료로 시작하세요.</p>
-  <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner"
-     onclick="if(typeof gtag!=='undefined'){gtag('event','cta_app_download',{location:'bottom_section'})}"
-     class="btn btn-white btn-lg">무료 앱 다운로드 →</a>
+  <p>AI가 만드는 맞춤형 여행 계획. 무료로 시작하세요.</p>
+  <div class="cta-store-btns">
+    <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner"
+       onclick="if(typeof gtag!=='undefined'){gtag('event','cta_app_download',{location:'bottom_section',os:'android'})}"
+       class="btn btn-store btn-google btn-lg" id="cta-android">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.18 23.76c.37.21.8.22 1.2.02l12.7-7.06-2.93-2.93-10.97 9.97zM.27 1.46A1.5 1.5 0 0 0 0 2.34v19.32c0 .32.09.62.27.88l.08.08 10.82-10.82v-.26L.35 1.38l-.08.08zM22.2 10.5l-2.9-1.65-3.26 3.26 3.26 3.26 2.93-1.67c.84-.48.84-1.73-.03-2.2zM4.38.22L17.08 7.3l-2.93 2.93L3.18.24c.4-.2.83-.19 1.2-.02z"/></svg>
+      <span><small>다운로드</small>Google Play</span>
+    </a>
+    <a href="https://apps.apple.com/app/id6766147060"
+       onclick="if(typeof gtag!=='undefined'){gtag('event','cta_app_download',{location:'bottom_section',os:'ios'})}"
+       class="btn btn-store btn-apple-dark btn-lg" id="cta-ios">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.17 1.28-2.15 3.8.03 3.02 2.65 4.03 2.68 4.04l-.08.28zM13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      <span><small>다운로드</small>App Store</span>
+    </a>
+  </div>
 </section>
 
 <!-- Footer -->
 <footer class="footer">
   <div class="footer-inner">
     <div>
-      <h4>MyTravel</h4>
-      <p style="font-size:0.9rem;">AI 기반 여행 계획 서비스.<br/>목적지만 선택하면 맞춤 일정이 완성됩니다.</p>
+      <div class="footer-brand-name">myTravel</div>
+      <p style="font-size:0.88rem;">AI 기반 여행 계획 서비스.<br/>목적지만 선택하면 맞춤 일정이 완성됩니다.</p>
       <div class="langs" style="margin-top:1rem;">
         <span class="lang-badge">🇰🇷 한국어</span>
         <span class="lang-badge">🇺🇸 English</span>
@@ -485,7 +779,8 @@
     </div>
     <div>
       <h4>서비스</h4>
-      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner">앱 다운로드</a>
+      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner">앱 다운로드 (Android)</a>
+      <a href="https://apps.apple.com/app/id6766147060">앱 다운로드 (iOS)</a>
       <a href="/guides/">여행 가이드</a>
       <a href="/blog">블로그</a>
       <a href="/about">서비스 소개</a>
@@ -496,7 +791,7 @@
       <a href="/terms">이용약관</a>
       <a href="/privacy">개인정보처리방침</a>
       <a href="/faq">FAQ</a>
-      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:longpapa82@gmail.com" style="display:inline;">longpapa82@gmail.com</a></p>
+      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:longpapa82@gmail.com" style="display:inline;color:#94a3b8;">longpapa82@gmail.com</a></p>
     </div>
   </div>
   <div class="footer-bottom">
@@ -505,11 +800,161 @@
 </footer>
 
 <script>
-  // Mobile menu toggle
+  // ── Detect OS ──────────────────────────────────────
+  const IS_IOS     = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const IS_ANDROID = /Android/i.test(navigator.userAgent);
+
+  // ── Scroll reveal ──────────────────────────────────
+  (function setupScrollReveal() {
+    const prefersReducedMotion =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Elements to animate in, grouped so each group can stagger independently.
+    const groups = [
+      document.querySelectorAll('.features > .feature'),
+      document.querySelectorAll('.steps > .step'),
+      document.querySelectorAll('.destinations > .dest'),
+      document.querySelectorAll('.cta-section h2, .cta-section p, .cta-store-btns'),
+    ];
+
+    // Collect targets and tag each with its position within its group (for stagger).
+    const targets = [];
+    groups.forEach(group => {
+      group.forEach((el, indexInGroup) => {
+        el.classList.add('reveal');
+        el.dataset.revealIndex = indexInGroup;
+        targets.push(el);
+      });
+    });
+
+    // No IntersectionObserver support OR reduced motion → show everything now.
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      targets.forEach(el => el.classList.add('is-visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(handleReveal, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -10% 0px',
+    });
+    targets.forEach(el => observer.observe(el));
+
+    // ─────────────────────────────────────────────────────────────
+    // TODO (your turn): implement handleReveal(entries, observer)
+    //
+    // For each entry that `isIntersecting`:
+    //   1. Compute a stagger delay from el.dataset.revealIndex so siblings
+    //      cascade in (the CSS reads it from the `--reveal-delay` custom property,
+    //      and --reveal-stagger is 60ms — multiply index by 60).
+    //   2. Trigger the reveal by adding the `is-visible` class.
+    //   3. Stop observing that element so it only animates once.
+    //
+    // Why this matters: the delay calc is what turns a flat "everything
+    // appears at once" into a polished cascade. Index 0 → 0ms, index 1 → 60ms…
+    // Edge cases to consider: entries that are NOT intersecting (skip them).
+    // ─────────────────────────────────────────────────────────────
+    function handleReveal(entries, observer) {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        // Cap the index so long lists (e.g. 8 destination cards stacked on
+        // mobile) don't accumulate a sluggish multi-second cascade.
+        const index = Math.min(parseInt(el.dataset.revealIndex, 10) || 0, 6);
+        el.style.setProperty('--reveal-delay', (index * 60) + 'ms');
+        el.classList.add('is-visible');
+        observer.unobserve(el);
+      });
+    }
+  })();
+
+  // ── Hero stat count-up ─────────────────────────────
+  (function setupCountUp() {
+    const els = document.querySelectorAll('[data-count-to]');
+    if (!els.length) return;
+
+    const prefersReducedMotion =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function animateCount(el) {
+      const target = parseInt(el.dataset.countTo, 10);
+      const suffix = el.dataset.countSuffix || '';
+      if (isNaN(target)) return;
+      const DURATION = 1100; // ms
+      let startTime = null;
+      function tick(now) {
+        if (startTime === null) startTime = now;
+        const progress = Math.min((now - startTime) / DURATION, 1);
+        // ease-out cubic for a decelerating count
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(target * eased) + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      return; // leave the markup's final values as-is
+    }
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        animateCount(entry.target);
+        obs.unobserve(entry.target);
+      });
+    }, { threshold: 0.6 });
+    els.forEach(el => observer.observe(el));
+  })();
+
+  // ── Update hero / nav CTA by OS ───────────────────
+  (function updateStoreCTAs() {
+    if (IS_IOS) {
+      const androidBtn = document.getElementById('hero-cta-android');
+      const iosBtn     = document.getElementById('hero-cta-ios');
+      if (androidBtn) androidBtn.style.display = 'none';
+      if (iosBtn)     iosBtn.style.display = 'inline-flex';
+
+      const navBtn = document.getElementById('nav-download-btn');
+      if (navBtn) {
+        navBtn.href = 'https://apps.apple.com/app/id6766147060';
+        navBtn.textContent = '앱 다운로드';
+      }
+      const mobileBtn = document.getElementById('mobile-login');
+      if (mobileBtn) mobileBtn.href = 'https://apps.apple.com/app/id6766147060';
+
+      // Highlight iOS CTA in bottom section
+      const ctaIos     = document.getElementById('cta-ios');
+      const ctaAndroid = document.getElementById('cta-android');
+      if (ctaIos)     { ctaIos.className = 'btn btn-white btn-lg'; }
+      if (ctaAndroid) { ctaAndroid.className = 'btn btn-outline-white btn-lg'; }
+    }
+  })();
+
+  // ── Header shadow on scroll (rAF-throttled) ────────
+  (function setupHeaderScroll() {
+    const header = document.querySelector('.header');
+    if (!header) return;
+    let ticking = false;
+    function update() {
+      header.classList.toggle('scrolled', window.scrollY > 8);
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }, { passive: true });
+    update(); // set initial state (e.g. on reload mid-page)
+  })();
+
+  // ── Mobile menu toggle ─────────────────────────────
   if (window.innerWidth <= 768) {
-    document.getElementById('mobile-login').style.display = 'inline-flex';
+    const mobileBtn = document.getElementById('mobile-login');
+    if (mobileBtn) mobileBtn.style.display = 'inline-flex';
   }
-  // Smooth scroll
+
+  // ── Smooth scroll ──────────────────────────────────
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
@@ -517,15 +962,15 @@
     });
   });
 
-  // ============================================================
-  // Smart App Banner Logic (Android Only)
-  // ============================================================
-
+  // ─────────────────────────────────────────────────────
+  // Smart App Banner (iOS + Android)
+  // ─────────────────────────────────────────────────────
   const CONFIG = {
     playStoreURL: 'https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner',
+    appStoreURL:  'https://apps.apple.com/app/id6766147060',
     storageKeys: {
       dismissed: 'smartBanner_dismissed',
-      variant: 'smartBanner_variant'
+      variant:   'smartBanner_variant'
     }
   };
 
@@ -535,123 +980,72 @@
     C: '빠른 여행 일정 완성'
   };
 
-  // Utility: Check if mobile (Android only)
-  function isMobile() {
-    return /Android/i.test(navigator.userAgent);
-  }
-
-  // Utility: Check if banner was dismissed recently (4 hours)
   function wasDismissedRecently() {
     const dismissed = localStorage.getItem(CONFIG.storageKeys.dismissed);
     if (!dismissed) return false;
-
-    const dismissedTime = parseInt(dismissed, 10);
-    const now = Date.now();
-    const fourHours = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
-
-    return (now - dismissedTime) < fourHours;
+    return (Date.now() - parseInt(dismissed, 10)) < 4 * 60 * 60 * 1000;
   }
 
-  // Utility: Get or assign A/B test variant
   function getVariant() {
     let variant = localStorage.getItem(CONFIG.storageKeys.variant);
     if (!variant || !BANNER_VARIANTS[variant]) {
-      const variants = Object.keys(BANNER_VARIANTS);
-      variant = variants[Math.floor(Math.random() * variants.length)];
+      const keys = Object.keys(BANNER_VARIANTS);
+      variant = keys[Math.floor(Math.random() * keys.length)];
       localStorage.setItem(CONFIG.storageKeys.variant, variant);
     }
     return variant;
   }
 
-  // Track event via GTM
-  function trackEvent(eventName, params = {}) {
-    if (typeof gtag !== 'undefined') {
-      gtag('event', eventName, params);
-    }
+  function trackEvent(name, params = {}) {
+    if (typeof gtag !== 'undefined') gtag('event', name, params);
   }
 
-  // Show banner with assigned variant
   function showBanner() {
     try {
-      const banner = document.getElementById('smartAppBanner');
-      if (!banner) {
-        console.error('SmartAppBanner: Element not found');
-        return;
-      }
+      const banner    = document.getElementById('smartAppBanner');
+      const taglineEl = document.getElementById('bannerTagline');
+      const storeEl   = document.getElementById('bannerStore');
+      if (!banner) return;
 
       const variant = getVariant();
-      const taglineEl = document.getElementById('bannerTagline');
-      if (taglineEl) {
-        taglineEl.textContent = BANNER_VARIANTS[variant];
+      if (taglineEl) taglineEl.textContent = BANNER_VARIANTS[variant];
+      if (storeEl) {
+        storeEl.textContent = IS_IOS ? 'App Store에서 무료' : 'Google Play에서 무료';
       }
 
       banner.classList.add('show');
-      console.log('SmartAppBanner: Displayed successfully with variant:', variant);
-
-      // Track event with error handling
-      if (typeof trackEvent === 'function') {
-        trackEvent('banner_view', {
-          variant: variant,
-          page: window.location.pathname
-        });
-      }
-    } catch (error) {
-      console.error('SmartAppBanner Error:', error);
+      trackEvent('banner_view', { variant, platform: IS_IOS ? 'ios' : 'android' });
+    } catch (e) {
+      // silent fail — banner is non-critical
     }
   }
 
-  // Handle banner install click
   window.handleBannerInstall = function() {
     const variant = getVariant();
+    const storeURL = IS_IOS ? CONFIG.appStoreURL : CONFIG.playStoreURL;
     const deepLink = encodeURIComponent(window.location.pathname + window.location.search);
-    const url = CONFIG.playStoreURL + '&referrer=' + deepLink;
+    const url = IS_IOS ? storeURL : storeURL + '&referrer=' + deepLink;
 
-    trackEvent('banner_click', {
-      variant: variant,
-      page: window.location.pathname,
-      deepLink: deepLink
-    });
-
+    trackEvent('banner_click', { variant, platform: IS_IOS ? 'ios' : 'android' });
     window.open(url, '_blank');
   };
 
-  // Handle banner dismiss
   window.handleBannerDismiss = function() {
     const banner = document.getElementById('smartAppBanner');
     if (!banner) return;
-
-    const variant = getVariant();
-    const now = Date.now();
-    localStorage.setItem(CONFIG.storageKeys.dismissed, now.toString());
-
+    localStorage.setItem(CONFIG.storageKeys.dismissed, Date.now().toString());
     banner.classList.remove('show');
-    trackEvent('banner_dismiss', {
-      variant: variant,
-      page: window.location.pathname
-    });
+    trackEvent('banner_dismiss', { variant: getVariant(), platform: IS_IOS ? 'ios' : 'android' });
   };
 
-  // Initialize banner on page load
-  console.log('SmartAppBanner Init:', {
-    isMobile: isMobile(),
-    wasDismissedRecently: wasDismissedRecently(),
-    willShowBanner: isMobile() && !wasDismissedRecently()
-  });
-
-  if (isMobile() && !wasDismissedRecently()) {
-    // Delay banner 0.5 seconds for better UX (optimized from 2s)
-    console.log('SmartAppBanner: Will show in 0.5 seconds...');
-    setTimeout(showBanner, 500);
+  if ((IS_IOS || IS_ANDROID) && !wasDismissedRecently()) {
+    setTimeout(showBanner, 600);
   }
 
-  // Debug mode support
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('debug_banner') === 'true') {
-    console.log('SmartAppBanner Debug Mode: Force showing banner');
+  // Debug: ?debug_banner=true forces banner regardless of device
+  if (new URLSearchParams(window.location.search).get('debug_banner') === 'true') {
     localStorage.removeItem('smartBanner_dismissed');
-    setTimeout(function() {
-      showBanner();
-    }, 100);
+    setTimeout(showBanner, 100);
   }
 </script>
 
