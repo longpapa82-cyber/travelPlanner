@@ -181,18 +181,69 @@
     .btn-primary:hover { background: #3a7bc8; transform: translateY(-1px); }
     .nav a.btn-primary { color: #fff; }
     .btn-outline { border: 1.5px solid #4A90D9; color: #4A90D9; }
+    .btn-outline-white {
+      border: 1.5px solid rgba(255,255,255,0.45);
+      color: #fff;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      transition: all var(--duration-fast) var(--ease-out-expo);
+    }
+    .btn-outline-white:hover {
+      background: rgba(255,255,255,0.22);
+      border-color: rgba(255,255,255,0.7);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(15,30,60,0.3);
+    }
     .btn-outline:hover { background: rgba(74,144,217,0.1); }
     .btn-lg { padding: 0.875rem 2rem; font-size: 1.05rem; border-radius: 0.75rem; }
 
-    .hero { background: linear-gradient(135deg, #1a3a5c 0%, #2d6aaf 100%); padding: 4rem 1.5rem 3rem; text-align: center; }
-    .hero h1 { font-size: 2.25rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem; line-height: 1.3; }
-    .hero h1 em { font-style: normal; color: #4A90D9; }
-    .hero p { font-size: 1.1rem; color: #475569; max-width: 600px; margin: 0 auto 2rem; }
+    .hero {
+      position: relative;
+      background:
+        radial-gradient(60% 65% at 18% 20%, rgba(96,165,250,0.45) 0%, transparent 58%),
+        radial-gradient(55% 60% at 85% 80%, rgba(126,200,251,0.35) 0%, transparent 55%),
+        linear-gradient(135deg, #14304f 0%, #1a3a5c 45%, #2d6aaf 100%);
+      padding: 5rem 1.5rem 4rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 1.1rem + 4.6vw, 3.8rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 1.25rem;
+      line-height: 1.18;
+      letter-spacing: -0.03em;
+      text-shadow: 0 2px 30px rgba(15,30,60,0.4);
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(100deg, #7ec8fb 0%, #bfdbff 45%, #60a5fa 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: #7ec8fb;
+    }
+    .hero p { font-size: clamp(1.02rem, 0.9rem + 0.5vw, 1.2rem); color: rgba(255,255,255,0.9); max-width: 600px; margin: 0 auto 2.5rem; }
     .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .hero-stats { display: flex; gap: 2rem; justify-content: center; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(37,99,235,0.15); }
-    .hero-stat { text-align: center; }
-    .hero-stat strong { display: block; font-size: 1.5rem; color: #4A90D9; }
-    .hero-stat span { font-size: 0.85rem; color: #64748b; }
+    .hero-stats {
+      display: inline-flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: stretch;
+      margin-top: 3rem;
+      padding: 1.1rem 1.75rem;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 1.25rem;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 12px 40px rgba(15,30,60,0.35);
+    }
+    .hero-stat { text-align: center; padding: 0 1.25rem; position: relative; }
+    .hero-stat + .hero-stat::before {
+      content: ''; position: absolute; left: 0; top: 15%;
+      height: 70%; width: 1px; background: rgba(255,255,255,0.22);
+    }
+    .hero-stat strong { display: block; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); font-weight: 800; color: #7ec8fb; line-height: 1.1; }
+    .hero-stat span { font-size: 0.82rem; color: rgba(255,255,255,0.78); }
 
     .section { padding: 4rem 1.5rem; max-width: 1200px; margin: 0 auto; }
     .section-alt { background: #f8fafc; }
@@ -276,8 +327,8 @@
     .lang-switch a { color: #4A90D9; font-weight: 600; }
 
     @media (max-width: 768px) {
-      .hero h1 { font-size: 1.75rem; }
-      .hero-stats { gap: 1rem; }
+      .hero-stats { gap: 0.5rem; padding: 0.9rem 1rem; }
+      .hero-stat { padding: 0 0.75rem; }
       .nav { display: none; }
       .section h2 { font-size: 1.4rem; }
     }
@@ -339,7 +390,7 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.17 1.28-2.15 3.8.03 3.02 2.65 4.03 2.68 4.04l-.08.28zM13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
       <span><small>Download</small>App Store</span>
     </a>
-    <a href="#features" class="btn btn-outline btn-lg">Explore Features</a>
+    <a href="#features" class="btn btn-outline-white btn-lg">Explore Features</a>
   </div>
 
   <!-- Key Features Summary -->
