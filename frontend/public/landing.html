@@ -156,11 +156,11 @@
       background-size: cover;
       background-position: center 40%;
       z-index: 0;
-      animation: kenBurns 20s ease-in-out infinite alternate;
+      animation: kenBurns 16s ease-in-out infinite alternate;
     }
     @keyframes kenBurns {
-      from { transform: scale(1.02) translate(0, 0); }
-      to   { transform: scale(1.1) translate(-1.2%, -2%); }
+      from { transform: scale(1.04) translate(1.5%, 1%); }
+      to   { transform: scale(1.13) translate(-3%, -4%); }
     }
     .hero-overlay {
       position: absolute;
@@ -208,31 +208,31 @@
       width: 46vw; height: 46vw; max-width: 620px; max-height: 620px;
       top: 4%; left: 6%;
       background: radial-gradient(circle, rgba(96,165,250,0.55) 0%, transparent 70%);
-      animation: auroraDrift1 16s ease-in-out infinite alternate;
+      animation: auroraDrift1 12s ease-in-out infinite alternate;
     }
     .hero-aurora .orb-2 {
       width: 40vw; height: 40vw; max-width: 540px; max-height: 540px;
       top: 18%; right: 2%;
       background: radial-gradient(circle, rgba(45,212,191,0.42) 0%, transparent 70%);
-      animation: auroraDrift2 21s ease-in-out infinite alternate;
+      animation: auroraDrift2 16s ease-in-out infinite alternate;
     }
     .hero-aurora .orb-3 {
       width: 52vw; height: 52vw; max-width: 700px; max-height: 700px;
       bottom: -12%; left: 32%;
       background: radial-gradient(circle, rgba(59,130,246,0.5) 0%, transparent 72%);
-      animation: auroraDrift3 26s ease-in-out infinite alternate;
+      animation: auroraDrift3 20s ease-in-out infinite alternate;
     }
     @keyframes auroraDrift1 {
-      from { transform: translate3d(0,0,0) scale(1); opacity: 0.7; }
-      to   { transform: translate3d(8%,6%,0) scale(1.15); opacity: 1; }
+      from { transform: translate3d(0,0,0) scale(1); opacity: 0.65; }
+      to   { transform: translate3d(14%,11%,0) scale(1.22); opacity: 1; }
     }
     @keyframes auroraDrift2 {
-      from { transform: translate3d(0,0,0) scale(1.1); opacity: 1; }
-      to   { transform: translate3d(-7%,9%,0) scale(0.95); opacity: 0.75; }
+      from { transform: translate3d(0,0,0) scale(1.15); opacity: 1; }
+      to   { transform: translate3d(-13%,15%,0) scale(0.9); opacity: 0.7; }
     }
     @keyframes auroraDrift3 {
-      from { transform: translate3d(0,0,0) scale(0.95); opacity: 0.8; }
-      to   { transform: translate3d(5%,-8%,0) scale(1.12); opacity: 1; }
+      from { transform: translate3d(0,0,0) scale(0.92); opacity: 0.75; }
+      to   { transform: translate3d(10%,-14%,0) scale(1.18); opacity: 1; }
     }
     /* Hero content entrance — fade-up cascade on load */
     @keyframes heroFadeUp {
@@ -515,9 +515,9 @@
       left: 0; right: 0; top: 50%;
       transform: translateY(-50%);
       text-align: center;
-      color: rgba(255,255,255,0.92);
-      font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.2rem);
-      font-weight: 600;
+      color: rgba(255,255,255,0.95);
+      font-size: clamp(1.3rem, 1.05rem + 1vw, 1.85rem);
+      font-weight: 700;
       letter-spacing: -0.01em;
       padding: 0 1.5rem;
       z-index: 1;
@@ -526,7 +526,11 @@
     /* Header variant: the photo doubles as the section header, carrying the
        section title + subtitle. Taller band + stronger overlay so the text
        stays legible over the imagery. */
-    .photo-band--header { height: clamp(260px, 34vw, 400px); }
+    /* Header variant carries section content, so it must NOT pull into the
+       neighbouring sections (the divider's negative margin would make the
+       previous card and the next step number butt right against the photo).
+       Zero the negative margin so section padding gives clean separation. */
+    .photo-band--header { height: clamp(260px, 34vw, 400px); margin-top: 0; margin-bottom: 0; }
     .photo-band--header::after {
       background: linear-gradient(
         180deg,
@@ -663,6 +667,7 @@
       .dest { aspect-ratio: 4/5; }
       /* Match the reduced section padding so the band still butts cleanly. */
       .photo-band { margin-top: -3.25rem; margin-bottom: -3.25rem; }
+      .photo-band--header { margin-top: 0; margin-bottom: 0; }
     }
     @media (max-width: 480px) {
       .hero-stat { padding: 0 0.6rem; }
