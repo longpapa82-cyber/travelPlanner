@@ -66,6 +66,9 @@
       --reveal-stagger: 60ms;
       --glass-bg: rgba(20,40,72,0.55);
       --glass-border: rgba(126,200,251,0.22);
+      --grain-opacity: 0.04;
+      --glow-blue: rgba(59,130,246,0.20);
+      --glow-cyan: rgba(45,212,191,0.14);
     }
     /* Accessibility: respect reduced-motion */
     @media (prefers-reduced-motion: reduce) {
@@ -260,6 +263,15 @@
     .section h2 { font-size: 1.75rem; font-weight: 700; text-align: center; margin-bottom: 0.75rem; color: #f1f5fb; }
     .section .subtitle { text-align: center; color: #8499b8; margin-bottom: 3rem; font-size: 1rem; }
 
+    #features { position: relative; overflow: hidden; isolation: isolate; }
+    #features::before { content: ''; position: absolute; top: 0; left: 50%; width: 100vw; height: 100%; transform: translateX(-50%); z-index: -2; pointer-events: none; background: radial-gradient(48% 42% at 14% 8%, var(--glow-blue) 0%, transparent 60%), radial-gradient(44% 40% at 88% 22%, var(--glow-cyan) 0%, transparent 58%), radial-gradient(60% 55% at 50% 112%, rgba(74,144,217,0.16) 0%, transparent 62%); }
+    #features::after { content: ''; position: absolute; top: 0; left: 50%; width: 100vw; height: 100%; transform: translateX(-50%); z-index: -1; opacity: var(--grain-opacity); pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    .photo-band { position: relative; height: clamp(180px, 26vw, 300px); overflow: hidden; background: var(--bg-base); }
+    .photo-band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); }
+    .photo-band::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,22,40,0.78) 0%, rgba(10,22,40,0.45) 45%, rgba(10,22,40,0.82) 100%); }
+    .photo-band .photo-band-caption { position: absolute; left: 0; right: 0; bottom: clamp(1rem, 3vw, 2rem); text-align: center; color: rgba(255,255,255,0.92); font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.2rem); font-weight: 600; letter-spacing: -0.01em; padding: 0 1.5rem; z-index: 1; text-shadow: 0 2px 12px rgba(0,0,0,0.5); }
+    @media (hover: hover) and (pointer: fine) { .photo-band { background-attachment: fixed; } }
+    @media (prefers-reduced-motion: reduce) { .photo-band img { transform: none; } }
     .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
     .feature {
       background: var(--glass-bg);
@@ -397,7 +409,7 @@
     <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner"
        class="btn btn-store btn-google btn-lg"
        onclick="if(typeof gtag!=='undefined'){gtag('event','hero_app_download',{location:'primary_cta'})}">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.18 23.76c.37.21.8.22 1.2.02l12.7-7.06-2.93-2.93-10.97 9.97zM.27 1.46A1.5 1.5 0 0 0 0 2.34v19.32c0 .32.09.62.27.88l.08.08 10.82-10.82v-.26L.35 1.38l-.08.08zM22.2 10.5l-2.9-1.65-3.26 3.26 3.26 3.26 2.93-1.67c.84-.48.84-1.73-.03-2.2zM4.38.22L17.08 7.3l-2.93 2.93L3.18.24c.4-.2.83-.19 1.2-.02z"/></svg>
+      <svg width="22" height="22" viewBox="0 0 512 512" aria-hidden="true"><path fill="#00d3ff" d="M48.5 27.6C42.9 33.5 39.6 42.7 39.6 54.7v402.6c0 12 3.3 21.2 8.9 27.1l1.3 1.3 225.6-225.6v-5.3L49.8 26.3l-1.3 1.3z"/><path fill="#ffcf00" d="M350.5 351.5L275.4 276.4v-5.3l75.1-75.1 1.7 1L440.5 248c25.4 14.4 25.4 38.1 0 52.6l-88.3 50.2-1.7.7z"/><path fill="#ff3a44" d="M352.2 350.8L275.4 274 48.5 500.9c8.4 8.9 22.2 10 37.8 1.1l266-151.2"/><path fill="#00e676" d="M352.2 199.2L86.3 48.1c-15.6-8.9-29.4-7.8-37.8 1.1L275.4 276l76.8-76.8z"/></svg>
       <span><small>Download</small>Google Play</span>
     </a>
     <a href="https://apps.apple.com/app/id6766147060"
@@ -483,6 +495,13 @@
   </div>
 </section>
 
+<!-- Photo band: travel inspiration divider -->
+<div class="photo-band reveal" aria-hidden="true">
+  <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&q=70&auto=format&fit=crop"
+       alt="" loading="lazy" decoding="async" fetchpriority="low" width="1920" height="600" />
+  <p class="photo-band-caption">Wherever you go, your next journey starts here</p>
+</div>
+
 <div class="ad-container">
   <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="2397004834" data-ad-format="auto" data-full-width-responsive="true"></ins>
   <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
@@ -547,6 +566,13 @@
     </div>
   </div>
 </section>
+
+<!-- Photo band: pre-CTA emotional beat -->
+<div class="photo-band reveal" aria-hidden="true">
+  <img src="https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=1920&q=70&auto=format&fit=crop"
+       alt="" loading="lazy" decoding="async" fetchpriority="low" width="1920" height="600" />
+  <p class="photo-band-caption">Pack light, plan perfectly</p>
+</div>
 
 <section class="cta-section">
   <h2>Download the App and Start Planning</h2>
