@@ -100,10 +100,12 @@
       }
       .reveal { opacity: 1 !important; transform: none !important; }
     }
+    html { overflow-x: hidden; }
     body {
       font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--text-dark);
       line-height: 1.7;
+      overflow-x: hidden;
       background:
         radial-gradient(60% 50% at 15% 0%, rgba(59,130,246,0.16) 0%, transparent 55%),
         radial-gradient(55% 45% at 90% 12%, rgba(45,212,191,0.10) 0%, transparent 55%),
@@ -323,16 +325,18 @@
     .section .subtitle { text-align: center; color: var(--text-light); margin-bottom: 3rem; font-size: 1rem; }
 
     /* ─── Features ─── */
-    /* Atmospheric backdrop: full-bleed mesh glow + grain so the glass
-       cards have something to refract. overflow:hidden gates the 100vw
-       layer to prevent horizontal scroll (incl. narrow viewports). */
-    #features { position: relative; overflow: hidden; isolation: isolate; }
+    /* Atmospheric backdrop: full-bleed mesh glow + grain so the glass cards
+       have something to refract. The layer breaks out of the section's
+       max-width:1200px via `left/right: calc(50% - 50vw)` so it spans the
+       full viewport with NO clipping — clipping (overflow:hidden) would crop
+       the glow at the 1200px edge and draw a visible vertical seam on wide
+       screens. Horizontal scroll is prevented on <html> instead. */
+    #features { position: relative; isolation: isolate; }
     #features::before {
       content: '';
       position: absolute;
-      top: 0; left: 50%;
-      width: 100vw; height: 100%;
-      transform: translateX(-50%);
+      top: 0; bottom: 0;
+      left: calc(50% - 50vw); right: calc(50% - 50vw);
       z-index: -2;
       background:
         radial-gradient(48% 42% at 14% 8%, var(--glow-blue) 0%, transparent 60%),
@@ -345,9 +349,8 @@
     #features::after {
       content: '';
       position: absolute;
-      top: 0; left: 50%;
-      width: 100vw; height: 100%;
-      transform: translateX(-50%);
+      top: 0; bottom: 0;
+      left: calc(50% - 50vw); right: calc(50% - 50vw);
       z-index: -1;
       opacity: var(--grain-opacity);
       pointer-events: none;
