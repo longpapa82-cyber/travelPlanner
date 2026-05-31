@@ -523,6 +523,40 @@
       z-index: 1;
       text-shadow: 0 2px 12px rgba(0,0,0,0.5);
     }
+    /* Header variant: the photo doubles as the section header, carrying the
+       section title + subtitle. Taller band + stronger overlay so the text
+       stays legible over the imagery. */
+    .photo-band--header { height: clamp(260px, 34vw, 400px); }
+    .photo-band--header::after {
+      background: linear-gradient(
+        180deg,
+        rgba(10,22,40,0.62) 0%,
+        rgba(10,22,40,0.55) 40%,
+        rgba(10,22,40,0.78) 100%);
+    }
+    .photo-band-header {
+      position: absolute;
+      left: 0; right: 0; top: 50%;
+      transform: translateY(-50%);
+      text-align: center;
+      padding: 0 1.5rem;
+      z-index: 1;
+    }
+    .photo-band-header h2 {
+      font-size: clamp(1.6rem, 1.1rem + 2.2vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 0.6rem;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.55);
+    }
+    .photo-band-header p {
+      font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.15rem);
+      color: rgba(255,255,255,0.9);
+      max-width: 38rem;
+      margin: 0 auto;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.5);
+    }
     @media (hover: hover) and (pointer: fine) {
       .photo-band { background-attachment: fixed; }
     }
@@ -844,18 +878,19 @@
   </div>
 </section>
 
-<!-- Photo band: travel inspiration divider -->
-<div class="photo-band" aria-hidden="true">
+<!-- Photo band doubles as the "How it works" section header -->
+<div class="photo-band photo-band--header">
   <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&q=70&auto=format&fit=crop"
        alt="" loading="lazy" decoding="async" fetchpriority="low" width="1920" height="600" />
-  <p class="photo-band-caption">세계 어디든, 당신의 다음 여행이 시작됩니다</p>
+  <div class="photo-band-header">
+    <h2>3단계로 완성하는 여행 계획</h2>
+    <p>복잡한 검색과 비교 없이, 목적지만 선택하면 끝</p>
+  </div>
 </div>
 
 <!-- How it works -->
 <section class="section-alt">
   <div class="section">
-    <h2>3단계로 완성하는 여행 계획</h2>
-    <p class="subtitle">복잡한 검색과 비교 없이, 목적지만 선택하면 끝</p>
     <div class="steps">
       <div class="step">
         <h3>목적지 선택</h3>
