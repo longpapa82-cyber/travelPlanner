@@ -437,6 +437,12 @@
       height: clamp(180px, 26vw, 300px);
       overflow: hidden;
       background: var(--bg-base);
+      /* Pull up into the previous section's bottom padding and let the next
+         section's top padding overlap, so the band reads as a divider butted
+         against both sections instead of floating in a 160px padding gap. */
+      margin-top: -5rem;
+      margin-bottom: -5rem;
+      z-index: 0;
     }
     .photo-band img {
       position: absolute;
@@ -568,9 +574,13 @@
       .hero-stats { padding: 0.9rem 1rem; }
       .hero-stat { padding: 0 0.85rem; }
       .nav { display: none; }
+      .section { padding: 3.25rem 1.25rem; }
+      .section .subtitle { margin-bottom: 2rem; }
       .section h2 { font-size: 1.5rem; }
       .destinations { grid-template-columns: repeat(2, 1fr); }
       .dest { aspect-ratio: 4/5; }
+      /* Match the reduced section padding so the band still butts cleanly. */
+      .photo-band { margin-top: -3.25rem; margin-bottom: -3.25rem; }
     }
     @media (max-width: 480px) {
       .hero-stat { padding: 0 0.6rem; }

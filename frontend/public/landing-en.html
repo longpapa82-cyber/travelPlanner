@@ -266,7 +266,7 @@
     #features { position: relative; overflow: hidden; isolation: isolate; }
     #features::before { content: ''; position: absolute; top: 0; left: 50%; width: 100vw; height: 100%; transform: translateX(-50%); z-index: -2; pointer-events: none; background: radial-gradient(48% 42% at 14% 8%, var(--glow-blue) 0%, transparent 60%), radial-gradient(44% 40% at 88% 22%, var(--glow-cyan) 0%, transparent 58%), radial-gradient(60% 55% at 50% 112%, rgba(74,144,217,0.16) 0%, transparent 62%); }
     #features::after { content: ''; position: absolute; top: 0; left: 50%; width: 100vw; height: 100%; transform: translateX(-50%); z-index: -1; opacity: var(--grain-opacity); pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-    .photo-band { position: relative; height: clamp(180px, 26vw, 300px); overflow: hidden; background: var(--bg-base); }
+    .photo-band { position: relative; height: clamp(180px, 26vw, 300px); overflow: hidden; background: var(--bg-base); margin-top: -4rem; margin-bottom: -4rem; z-index: 0; }
     .photo-band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); }
     .photo-band::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,22,40,0.78) 0%, rgba(10,22,40,0.45) 45%, rgba(10,22,40,0.82) 100%); }
     .photo-band .photo-band-caption { position: absolute; left: 0; right: 0; bottom: clamp(1rem, 3vw, 2rem); text-align: center; color: rgba(255,255,255,0.92); font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.2rem); font-weight: 600; letter-spacing: -0.01em; padding: 0 1.5rem; z-index: 1; text-shadow: 0 2px 12px rgba(0,0,0,0.5); }
@@ -360,7 +360,9 @@
       .hero-stats { gap: 0.5rem; padding: 0.9rem 1rem; }
       .hero-stat { padding: 0 0.75rem; }
       .nav { display: none; }
+      .section { padding: 3.25rem 1.25rem; }
       .section h2 { font-size: 1.4rem; }
+      .photo-band { margin-top: -3.25rem; margin-bottom: -3.25rem; }
     }
   </style>
 </head>
@@ -495,16 +497,16 @@
   </div>
 </section>
 
+<div class="ad-container">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="2397004834" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
 <!-- Photo band: travel inspiration divider -->
 <div class="photo-band reveal" aria-hidden="true">
   <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&q=70&auto=format&fit=crop"
        alt="" loading="lazy" decoding="async" fetchpriority="low" width="1920" height="600" />
   <p class="photo-band-caption">Wherever you go, your next journey starts here</p>
-</div>
-
-<div class="ad-container">
-  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7330738950092177" data-ad-slot="2397004834" data-ad-format="auto" data-full-width-responsive="true"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
 <section class="section-alt">
