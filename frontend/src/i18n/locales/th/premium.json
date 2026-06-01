@@ -27,7 +27,8 @@
     "subscribe": "สมัครสมาชิก",
     "restore": "กู้คืนการซื้อ",
     "manage": "จัดการการสมัครสมาชิก",
-    "cancel": "ยกเลิกการสมัครสมาชิก"
+    "cancel": "ยกเลิกการสมัครสมาชิก",
+    "retry": "ลองอีกครั้ง"
   },
   "paywall": {
     "title": "อัปเกรดเป็นพรีเมียม",
@@ -42,7 +43,7 @@
     "privacyLink": "นโยบายความเป็นส่วนตัว",
     "restoreSuccess": "กู้คืนการสมัครสมาชิกสำเร็จ!",
     "restoreNone": "ไม่พบการสมัครสมาชิกที่ใช้งานอยู่",
-    "aiUnlimited": "∞ ไม่จำกัด"
+    "aiUnlimited": "30 ทริป AI/เดือน"
   },
   "status": {
     "active": "ใช้งานอยู่",
@@ -73,7 +74,7 @@
     "upgradePremium": "อัปเกรดเป็นพรีเมียม",
     "managePlan": "จัดการแผน",
     "aiRemaining": "AI: {{remaining}}/{{total}} เหลือ",
-    "aiUnlimited": "∞ ไม่จำกัด"
+    "aiUnlimited": "30 ทริป AI/เดือน"
   },
   "errors": {
     "title": "ข้อผิดพลาด",

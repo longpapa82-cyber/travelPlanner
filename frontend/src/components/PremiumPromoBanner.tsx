@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -15,72 +15,44 @@ import { useTheme } from '../contexts/ThemeContext';
 import { PREMIUM_ENABLED } from '../constants/config';
 
 const DISMISS_KEY = '@travelplanner:promo_dismiss_ts';
-const DISMISS_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 const PremiumPromoBanner: React.FC = () => {
   const { t } = useTranslation('premium');
-  const { isPremium, showPaywall } = usePremium();
-  const { theme, isDark } = useTheme();
-  const [visible, setVisible] = useState(false);
+  const { isPremium, isProfileLoaded, showPaywall } = usePremium();
+  const { isDark } = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  // Clean up animation on unmount
   useEffect(() => {
+    // Clear any previously stored dismiss timestamp so the banner always shows.
+    AsyncStorage.removeItem(DISMISS_KEY).catch(() => {});
     return () => {
       fadeAnim.stopAnimation();
     };
   }, []);
 
+  // Wait until subscription state is confirmed from server before showing the banner.
+  // Without this guard the banner flashes briefly on cold start for premium users
+  // because isPremium starts false until the RC/server snapshot arrives.
   useEffect(() => {
-    if (isPremium || !PREMIUM_ENABLED) return;
-
-    AsyncStorage.getItem(DISMISS_KEY).then((val) => {
-      if (val) {
-        const dismissedAt = parseInt(val, 10);
-        if (Date.now() - dismissedAt < DISMISS_DURATION_MS) return;
-      }
-      setVisible(true);
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: Platform.OS !== 'web',
-      }).start();
-    }).catch(() => {
-      setVisible(true);
-    });
-  }, [isPremium, fadeAnim]);
-
-  const handleDismiss = () => {
-    AsyncStorage.setItem(DISMISS_KEY, String(Date.now())).catch(() => {});
+    if (!isProfileLoaded || isPremium || !PREMIUM_ENABLED) return;
     Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 200,
+      toValue: 1,
+      duration: 400,
       useNativeDriver: Platform.OS !== 'web',
-    }).start(() => setVisible(false));
-  };
+    }).start();
+  }, [isProfileLoaded, isPremium, fadeAnim]);
 
   const handleCta = () => {
     showPaywall('general');
   };
 
-  if (!visible || isPremium || !PREMIUM_ENABLED) return null;
+  if (!isProfileLoaded || isPremium || !PREMIUM_ENABLED) return null;
 
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <View style={[styles.card, { backgroundColor: isDark ? '#78350F' : '#FFFBEB' }]}>
         {/* Gold accent bar */}
         <View style={styles.accentBar} />
-
-        {/* Dismiss button */}
-        <TouchableOpacity
-          onPress={handleDismiss}
-          style={styles.dismissBtn}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          accessibilityRole="button"
-          accessibilityLabel={t('promo.dismiss', { defaultValue: 'Dismiss' })}
-        >
-          <Icon name="close" size={18} color={isDark ? '#FBBF24' : '#92400E'} />
-        </TouchableOpacity>
 
         <View style={styles.content}>
           {/* Crown icon */}
@@ -142,19 +114,11 @@ const styles = StyleSheet.create({
     height: 3,
     backgroundColor: '#F59E0B',
   },
-  dismissBtn: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    padding: 4,
-    zIndex: 1,
-  },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
     marginBottom: 12,
-    paddingRight: 24,
   },
   iconCircle: {
     width: 48,

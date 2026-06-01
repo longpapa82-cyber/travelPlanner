@@ -38,6 +38,7 @@ import { useNotifications } from '../../contexts/NotificationContext';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ensureAbsoluteUrl } from '../../utils/images';
+import { formatDisplayName } from '../../utils/user.utils';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ProfileScreen = ({ navigation }: any) => {
@@ -470,17 +471,33 @@ const ProfileScreen = ({ navigation }: any) => {
 
   const styles = React.useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
+  const headerHeight = Platform.OS === 'ios' ? insets.top + 44 : insets.top + 56;
+
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
-      }
-    >
-      {/* 이메일 인증 배너 비활성화 — 추후 필요 시 복원
-      <EmailVerificationBanner />
-      */}
-      <View style={styles.profileHeader}>
+    <View style={styles.outerContainer}>
+      {/* Custom header — matches other tab root screens */}
+      <View
+        style={[
+          styles.customHeader,
+          {
+            paddingTop: insets.top,
+            height: headerHeight,
+            backgroundColor: theme.colors.primary,
+          },
+        ]}
+      >
+        <Text style={styles.customHeaderTitle}>{t('title')}</Text>
+      </View>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+        }
+      >
+        {/* 이메일 인증 배너 비활성화 — 추후 필요 시 복원
+        <EmailVerificationBanner />
+        */}
+        <View style={styles.profileHeader}>
         <TouchableOpacity
           style={styles.avatarContainer}
           onPress={handlePickProfilePhoto}
@@ -502,7 +519,7 @@ const ProfileScreen = ({ navigation }: any) => {
             )}
           </View>
         </TouchableOpacity>
-        <Text style={styles.name} testID="profile-name">{user?.name}</Text>
+        <Text style={styles.name} testID="profile-name">{formatDisplayName(user?.name)}</Text>
         <Text style={styles.email} testID="profile-email">{user?.email}</Text>
       </View>
 
@@ -1098,11 +1115,26 @@ const ProfileScreen = ({ navigation }: any) => {
         </View>
       </Modal>
 
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  customHeader: {
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+  },
+  customHeaderTitle: {
+    fontSize: 17,
+    fontWeight: 'bold' as const,
+    color: '#ffffff',
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,

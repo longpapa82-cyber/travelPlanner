@@ -27,7 +27,8 @@
     "subscribe": "Подписаться",
     "restore": "Восстановить покупку",
     "manage": "Управление подпиской",
-    "cancel": "Отменить подписку"
+    "cancel": "Отменить подписку",
+    "retry": "Повторить"
   },
   "paywall": {
     "title": "Перейти на Премиум",
@@ -42,7 +43,7 @@
     "privacyLink": "Политика конфиденциальности",
     "restoreSuccess": "Подписка успешно восстановлена!",
     "restoreNone": "Активная подписка не найдена.",
-    "aiUnlimited": "∞ Без ограничений"
+    "aiUnlimited": "30 поездок AI/мес"
   },
   "status": {
     "active": "Активна",
@@ -73,7 +74,7 @@
     "upgradePremium": "Перейти на Премиум",
     "managePlan": "Управление тарифом",
     "aiRemaining": "AI: {{remaining}}/{{total}} осталось",
-    "aiUnlimited": "∞ Без ограничений"
+    "aiUnlimited": "30 поездок AI/мес"
   },
   "errors": {
     "title": "Ошибка",

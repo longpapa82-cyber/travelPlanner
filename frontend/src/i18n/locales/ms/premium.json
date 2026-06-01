@@ -27,7 +27,8 @@
     "subscribe": "Langgan",
     "restore": "Pulihkan pembelian",
     "manage": "Urus langganan",
-    "cancel": "Batalkan langganan"
+    "cancel": "Batalkan langganan",
+    "retry": "Cuba Lagi"
   },
   "paywall": {
     "title": "Naik Taraf ke Premium",
@@ -42,7 +43,7 @@
     "privacyLink": "Dasar privasi",
     "restoreSuccess": "Langganan berjaya dipulihkan!",
     "restoreNone": "Tiada langganan aktif ditemui.",
-    "aiUnlimited": "∞ Tanpa had"
+    "aiUnlimited": "30 perjalanan AI/bln"
   },
   "status": {
     "active": "Aktif",
@@ -73,7 +74,7 @@
     "upgradePremium": "Naik Taraf ke Premium",
     "managePlan": "Urus pelan",
     "aiRemaining": "AI: {{remaining}}/{{total}} baki",
-    "aiUnlimited": "∞ Tanpa had"
+    "aiUnlimited": "30 perjalanan AI/bln"
   },
   "errors": {
     "title": "Ralat",

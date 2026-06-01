@@ -50,7 +50,7 @@ interface Props {
 }
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const { login, loginWithGoogle, loginWithApple, loginWithKakao } = useAuth();
+  const { login, loginWithGoogle, loginWithApple, loginWithKakao, enterGuestMode } = useAuth();
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('auth');
   const { showToast } = useToast();
@@ -425,6 +425,16 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
+            {/* Browse without login */}
+            <TouchableOpacity
+              onPress={enterGuestMode}
+              style={styles.guestButton}
+              accessibilityLabel={t('login.browseWithoutLogin')}
+              accessibilityRole="button"
+            >
+              <Text style={styles.guestButtonText}>{t('login.browseWithoutLogin')}</Text>
+            </TouchableOpacity>
+
             {/* Legal Footer */}
             <View style={styles.legalFooter}>
               <TouchableOpacity
@@ -653,11 +663,21 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     color: colors.primary[500],
     fontWeight: '700',
   },
+  guestButton: {
+    alignItems: 'center',
+    marginTop: theme.spacing.md,
+    paddingVertical: 8,
+  },
+  guestButtonText: {
+    fontSize: 14,
+    color: theme.colors.textSecondary,
+    textDecorationLine: 'underline',
+  },
   legalFooter: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: theme.spacing.lg + 8,
+    marginTop: theme.spacing.md,
     paddingVertical: 12,
     gap: 8,
   },

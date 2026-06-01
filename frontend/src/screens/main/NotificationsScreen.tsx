@@ -7,8 +7,10 @@ import {
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -48,6 +50,7 @@ const NotificationsScreen = () => {
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
 
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
@@ -302,8 +305,24 @@ const NotificationsScreen = () => {
     );
   }
 
+  const headerHeight = Platform.OS === 'ios' ? insets.top + 44 : insets.top + 56;
+
   return (
     <View style={styles.container}>
+      {/* Custom header */}
+      <View
+        style={[
+          styles.header,
+          {
+            paddingTop: insets.top,
+            height: headerHeight,
+            backgroundColor: theme.colors.primary,
+          },
+        ]}
+      >
+        <Text style={styles.headerTitle}>{t('tabs.notifications')}</Text>
+      </View>
+
       {/* Header Actions */}
       {notifications.length > 0 && (
         <View style={styles.headerActions}>
@@ -366,6 +385,16 @@ const createStyles = (theme: any, isDark: boolean) =>
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
+    },
+    header: {
+      justifyContent: 'flex-end',
+      paddingHorizontal: 16,
+      paddingBottom: 12,
+    },
+    headerTitle: {
+      fontSize: 17,
+      fontWeight: 'bold' as const,
+      color: '#ffffff',
     },
     center: {
       justifyContent: 'center',

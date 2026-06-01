@@ -14,12 +14,36 @@
     "seeAll": "Ver tudo →"
   },
   "destinations": {
-    "tokyo": { "name": "Tóquio", "country": "Japão", "description": "Onde a tradição encontra a modernidade" },
-    "osaka": { "name": "Osaka", "country": "Japão", "description": "Cidade de sabores e ruas vibrantes" },
-    "bangkok": { "name": "Bangkok", "country": "Tailândia", "description": "Templos dourados e mercados noturnos" },
-    "danang": { "name": "Da Nang", "country": "Vietnã", "description": "Praias bonitas e ótima comida" },
-    "paris": { "name": "Paris", "country": "França", "description": "Cidade da arte e do romance" },
-    "singapore": { "name": "Singapura", "country": "Singapura", "description": "Uma jornada gastronômica em uma cidade futurista" }
+    "tokyo": {
+      "name": "Tóquio",
+      "country": "Japão",
+      "description": "Onde a tradição encontra a modernidade"
+    },
+    "osaka": {
+      "name": "Osaka",
+      "country": "Japão",
+      "description": "Cidade de sabores e ruas vibrantes"
+    },
+    "bangkok": {
+      "name": "Bangkok",
+      "country": "Tailândia",
+      "description": "Templos dourados e mercados noturnos"
+    },
+    "danang": {
+      "name": "Da Nang",
+      "country": "Vietnã",
+      "description": "Praias bonitas e ótima comida"
+    },
+    "paris": {
+      "name": "Paris",
+      "country": "França",
+      "description": "Cidade da arte e do romance"
+    },
+    "singapore": {
+      "name": "Singapura",
+      "country": "Singapura",
+      "description": "Uma jornada gastronômica em uma cidade futurista"
+    }
   },
   "quickActions": {
     "title": "Ações Rápidas",
@@ -32,5 +56,11 @@
     "sectionTitle": "Dicas de Viagem",
     "title": "💡 Planeje com Antecedência",
     "description": "A IA cria o itinerário ideal considerando o clima local, pontos populares e rotas de viagem."
+  },
+  "guestLoginPrompt": {
+    "title": "Login necessário",
+    "message": "Este recurso requer uma conta. Faça login para criar viagens e salvar seus planos.",
+    "cancel": "Cancelar",
+    "login": "Entrar"
   }
 }

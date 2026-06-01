@@ -9,7 +9,7 @@ import { offlineCache } from '../services/offlineCache';
 import { trackEvent, flushEvents } from '../services/eventTracker';
 import {
   signInWithGoogle as signInWithGoogleWeb,
-  signInWithApple,
+  signInWithAppleNative,
   signInWithKakao,
   OAuthResult,
 } from '../services/oauth.service';
@@ -142,6 +142,9 @@ interface AuthContextType {
    * insufficient because other contexts had no visibility into it.
    */
   isLoggingOut: boolean;
+  isGuestMode: boolean;
+  enterGuestMode: () => void;
+  exitGuestMode: () => void;
 }
 
 // Push token registration callback — set by NotificationContext bridge
@@ -190,6 +193,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // inside silentRefresh, which can run before React commits the state).
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const isLoggingOutRef = useRef(false);
+  const [isGuestMode, setIsGuestMode] = useState(false);
+
+  const enterGuestMode = () => setIsGuestMode(true);
+  const exitGuestMode = () => setIsGuestMode(false);
+
+  // 로그인 성공 시 게스트 모드 자동 해제
+  const setUserAndExitGuest = (u: User | null) => {
+    if (u) setIsGuestMode(false);
+    setUser(u);
+  };
 
   const clearPendingVerification = () => setPendingVerification(null);
 
@@ -438,13 +451,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       setUser(authResponse.user);
       await setSessionFlag(true);
+      await AsyncStorage.removeItem('__navigation_state_v1');
       trackEvent('login', { method: 'email' });
       registerPushAfterLogin();
 
       // Fetch full profile to populate aiTripsUsedThisMonth, subscriptionTier, etc.
       try {
         const profile = await apiService.getProfile();
-        if (profile) setUser(profile);
+        if (profile) setUserAndExitGuest(profile);
       } catch {
         // Best-effort — profile will be fetched on next app focus
       }
@@ -485,7 +499,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Fetch full profile to populate subscription fields
       try {
         const profile = await apiService.getProfile();
-        if (profile) setUser(profile);
+        if (profile) setUserAndExitGuest(profile);
       } catch {
         // Best-effort — profile will be fetched on next app focus
       }
@@ -531,7 +545,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         registerPushAfterLogin();
         try {
           const profile = await apiService.getProfile();
-          if (profile) setUser(profile);
+          if (profile) setUserAndExitGuest(profile);
         } catch {
           // Best-effort — profile will be fetched on next app focus
         }
@@ -580,7 +594,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // resume token is scope-restricted and would 401 against /auth/me.
         try {
           const profile = await apiService.getProfile();
-          if (profile) setUser(profile);
+          if (profile) setUserAndExitGuest(profile);
         } catch {
           // Best-effort — profile will be fetched on next app focus
         }
@@ -615,6 +629,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     setUser(authResponse.user);
     await setSessionFlag(true);
+    await AsyncStorage.removeItem('__navigation_state_v1');
     registerPushAfterLogin();
 
     // Fetch full profile to populate aiTripsUsedThisMonth, subscriptionTier, etc.
@@ -639,6 +654,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authResponse.refreshToken);
         setUser(authResponse.user);
         await setSessionFlag(true);
+        await AsyncStorage.removeItem('__navigation_state_v1');
         registerPushAfterLogin();
         trackEvent('login', { method: 'google_native' });
 
@@ -646,7 +662,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // (native Google Sign-In response excludes these fields).
         try {
           const profile = await apiService.getProfile();
-          if (profile) setUser(profile);
+          if (profile) setUserAndExitGuest(profile);
         } catch {
           // Best-effort — profile will be fetched on next app focus
         }
@@ -688,9 +704,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const loginWithApple = async () => {
     try {
-      const result = await signInWithApple();
-      await handleOAuthResult(result);
-      trackEvent('login', { method: 'apple' });
+      const result = await signInWithAppleNative();
+      if (!result) throw new Error('APPLE_SIGNIN_CANCELLED');
+
+      const authResponse: AuthResponse = await apiService.exchangeAppleToken(
+        result.identityToken,
+        result.fullName,
+      );
+
+      await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, authResponse.accessToken);
+      await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authResponse.refreshToken);
+      setUser(authResponse.user);
+      await setSessionFlag(true);
+      await AsyncStorage.removeItem('__navigation_state_v1');
+      registerPushAfterLogin();
+      trackEvent('login', { method: 'apple_native' });
+
+      try {
+        const profile = await apiService.getProfile();
+        if (profile) setUserAndExitGuest(profile);
+      } catch {
+        // best-effort
+      }
     } catch (error) {
       const errorName = error instanceof Error ? error.name : 'UnknownError';
       const errorMsg = error instanceof Error ? error.message : String(error);
@@ -886,6 +921,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     refreshUser,
     registerPushAfterLogin,
     isLoggingOut,
+    isGuestMode,
+    enterGuestMode,
+    exitGuestMode,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

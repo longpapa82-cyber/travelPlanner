@@ -56,5 +56,11 @@
     "sectionTitle": "Tips Perjalanan",
     "title": "💡 Rancang Lebih Awal",
     "description": "AI mencipta jadual perjalanan optimum dengan mengambil kira cuaca tempatan, tempat popular, dan laluan perjalanan."
+  },
+  "guestLoginPrompt": {
+    "title": "Log masuk diperlukan",
+    "message": "Ciri ini memerlukan akaun. Log masuk untuk mencipta perjalanan dan menyimpan pelan anda.",
+    "cancel": "Batal",
+    "login": "Log Masuk"
   }
 }

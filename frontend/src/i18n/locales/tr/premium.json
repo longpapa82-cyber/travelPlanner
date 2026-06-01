@@ -27,7 +27,8 @@
     "subscribe": "Abone Ol",
     "restore": "Satın almayı geri yükle",
     "manage": "Aboneliği yönet",
-    "cancel": "Aboneliği iptal et"
+    "cancel": "Aboneliği iptal et",
+    "retry": "Tekrar Dene"
   },
   "paywall": {
     "title": "Premium'a Yükselt",
@@ -42,7 +43,7 @@
     "privacyLink": "Gizlilik politikası",
     "restoreSuccess": "Abonelik başarıyla geri yüklendi!",
     "restoreNone": "Aktif abonelik bulunamadı.",
-    "aiUnlimited": "∞ Sınırsız"
+    "aiUnlimited": "Ayda 30 AI turu"
   },
   "status": {
     "active": "Aktif",
@@ -73,7 +74,7 @@
     "upgradePremium": "Premium'a Yükselt",
     "managePlan": "Planı yönet",
     "aiRemaining": "AI: {{remaining}}/{{total}} kalan",
-    "aiUnlimited": "∞ Sınırsız"
+    "aiUnlimited": "Ayda 30 AI turu"
   },
   "errors": {
     "title": "Hata",

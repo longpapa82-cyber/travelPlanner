@@ -137,7 +137,7 @@
       },
       "premiumRestore": {
         "q": "¿Cómo restauro mi suscripción?",
-        "a": "Ve a Perfil → Suscripción y toca 'Restaurar compras'. Inicia sesión con el mismo Apple ID o cuenta de Google para restaurar."
+        "a": "Ve a Perfil → Suscripción y toca 'Restaurar compras'. La aplicación verificará tu compra anterior y restaurará tu suscripción. Al cambiar de dispositivo, inicia sesión con el mismo Apple ID o cuenta de Google y luego toca Restaurar compras."
       }
     },
     "contact": {
@@ -221,7 +221,7 @@
       },
       "art18": {
         "title": "Proveedor de servicios",
-        "content": "• Nombre de la empresa: AI Soft\n• Representante: Hoon-jae Park\n• Correo de consulta: longpapa82@gmail.com\n• Número de registro mercantil: En proceso — se actualizará antes del lanzamiento comercial oficial"
+        "content": "• Nombre de la empresa: AI Soft\n• Representante: Hoon-jae Park\n• Correo de consulta: longpapa82@gmail.com\n• Número de registro mercantil: 411-18-92743\n• Dirección: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Corea del Sur"
       }
     }
   },
@@ -271,7 +271,7 @@
       },
       "art11": {
         "title": "11. Responsable de privacidad",
-        "content": "Responsable de privacidad: Equipo de operaciones de MyTravel\nCorreo: longpapa82@gmail.com"
+        "content": "Responsable de privacidad: Equipo de operaciones de MyTravel\nCorreo: longpapa82@gmail.com\nDirección: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Corea del Sur"
       },
       "art12": {
         "title": "12. Cambios en la política",

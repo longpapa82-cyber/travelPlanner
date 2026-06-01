@@ -27,7 +27,8 @@
     "subscribe": "订阅",
     "restore": "恢复购买",
     "manage": "管理订阅",
-    "cancel": "取消订阅"
+    "cancel": "取消订阅",
+    "retry": "重试"
   },
   "paywall": {
     "title": "升级为高级版",
@@ -42,7 +43,7 @@
     "privacyLink": "隐私政策",
     "restoreSuccess": "订阅已恢复！",
     "restoreNone": "未找到有效订阅。",
-    "aiUnlimited": "∞ 无限制"
+    "aiUnlimited": "每月30次AI"
   },
   "status": {
     "active": "活跃",
@@ -73,7 +74,7 @@
     "upgradePremium": "升级高级版",
     "managePlan": "管理方案",
     "aiRemaining": "AI: {{remaining}}/{{total}}次剩余",
-    "aiUnlimited": "∞ 无限制"
+    "aiUnlimited": "每月30次AI"
   },
   "errors": {
     "title": "错误",

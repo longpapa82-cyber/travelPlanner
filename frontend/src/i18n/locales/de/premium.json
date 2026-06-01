@@ -27,7 +27,8 @@
     "subscribe": "Abonnieren",
     "restore": "Kauf wiederherstellen",
     "manage": "Abonnement verwalten",
-    "cancel": "Abonnement kündigen"
+    "cancel": "Abonnement kündigen",
+    "retry": "Erneut versuchen"
   },
   "paywall": {
     "title": "Auf Premium upgraden",
@@ -42,7 +43,7 @@
     "privacyLink": "Datenschutzrichtlinie",
     "restoreSuccess": "Abonnement erfolgreich wiederhergestellt!",
     "restoreNone": "Kein aktives Abonnement gefunden.",
-    "aiUnlimited": "∞ Unbegrenzt"
+    "aiUnlimited": "30 KI-Reisen/Mo."
   },
   "status": {
     "active": "Aktiv",
@@ -73,7 +74,7 @@
     "upgradePremium": "Auf Premium upgraden",
     "managePlan": "Plan verwalten",
     "aiRemaining": "AI: {{remaining}}/{{total}} übrig",
-    "aiUnlimited": "∞ Unbegrenzt"
+    "aiUnlimited": "30 KI-Reisen/Mo."
   },
   "errors": {
     "title": "Fehler",

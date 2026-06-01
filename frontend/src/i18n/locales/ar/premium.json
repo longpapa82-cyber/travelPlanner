@@ -27,7 +27,8 @@
     "subscribe": "اشتراك",
     "restore": "استعادة المشتريات",
     "manage": "إدارة الاشتراك",
-    "cancel": "إلغاء الاشتراك"
+    "cancel": "إلغاء الاشتراك",
+    "retry": "حاول مجددًا"
   },
   "paywall": {
     "title": "الترقية إلى Premium",
@@ -42,7 +43,7 @@
     "privacyLink": "سياسة الخصوصية",
     "restoreSuccess": "تم استعادة الاشتراك بنجاح!",
     "restoreNone": "لم يتم العثور على اشتراك نشط.",
-    "aiUnlimited": "∞ غير محدود"
+    "aiUnlimited": "٣٠ رحلة AI/شهر"
   },
   "status": {
     "active": "نشط",
@@ -73,7 +74,7 @@
     "upgradePremium": "الترقية إلى Premium",
     "managePlan": "إدارة الخطة",
     "aiRemaining": "AI: {{remaining}}/{{total}} متبقي",
-    "aiUnlimited": "∞ غير محدود"
+    "aiUnlimited": "٣٠ رحلة AI/شهر"
   },
   "errors": {
     "title": "خطأ",

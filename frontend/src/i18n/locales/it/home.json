@@ -56,5 +56,11 @@
     "sectionTitle": "Consigli di viaggio",
     "title": "💡 Pianifica in anticipo",
     "description": "L'AI crea l'itinerario ottimale considerando il meteo locale, i luoghi più popolari e i percorsi di viaggio."
+  },
+  "guestLoginPrompt": {
+    "title": "Accesso richiesto",
+    "message": "Questa funzione richiede un account. Accedi per creare viaggi e salvare i tuoi piani.",
+    "cancel": "Annulla",
+    "login": "Accedi"
   }
 }

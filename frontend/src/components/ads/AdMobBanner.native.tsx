@@ -10,8 +10,8 @@
  * Retry limit prevents infinite ad request loops when SDK is in a bad state.
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { View, StyleSheet, Platform } from 'react-native';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { useTheme } from '../../contexts/ThemeContext';
 
@@ -44,16 +44,17 @@ const BANNER_MIN_HEIGHT: Record<AdMobBannerSize, number> = {
 };
 
 /** Max consecutive failures before giving up ad requests for this mount */
-const MAX_FAIL_COUNT = 2;
+const MAX_FAIL_COUNT = 3;
 
 const AdMobBannerComponent: React.FC<AdMobBannerProps> = ({
   adUnitId,
   size = 'adaptive',
   style,
-  requestNonPersonalizedAdsOnly = false,
+  requestNonPersonalizedAdsOnly = Platform.OS === 'ios',
 }) => {
   const { isDark } = useTheme();
-  const [adError, setAdError] = useState(false);
+  const [adLoaded, setAdLoaded] = useState(false);
+  const [adFailed, setAdFailed] = useState(false);
   const mountedRef = useRef(true);
   const failCountRef = useRef(0);
 
@@ -62,45 +63,61 @@ const AdMobBannerComponent: React.FC<AdMobBannerProps> = ({
     return () => { mountedRef.current = false; };
   }, []);
 
+  const handleAdLoaded = useCallback(() => {
+    if (mountedRef.current) {
+      setAdLoaded(true);
+      setAdFailed(false);
+      failCountRef.current = 0;
+    }
+  }, []);
+
+  const handleAdFailed = useCallback(() => {
+    if (mountedRef.current) {
+      failCountRef.current += 1;
+      setAdFailed(true);
+    }
+  }, []);
+
   const useTestAds = __DEV__ || process.env.EXPO_PUBLIC_USE_TEST_ADS === 'true';
   const unitId = useTestAds
     ? TestIds.BANNER
     : adUnitId || '';
 
-  // No ad unit configured — render nothing (this is before any ad request)
   if (!unitId) return null;
+  if (adFailed || failCountRef.current >= MAX_FAIL_COUNT) return null;
 
   const adSize = BannerAdSize[BANNER_SIZE_MAP[size]] || BannerAdSize.ANCHORED_ADAPTIVE_BANNER;
   const minHeight = BANNER_MIN_HEIGHT[size] || 60;
 
-  // Always render the container to maintain stable frame dimensions (AdMob policy).
-  // On error or after exceeding retry limit, keep the container but hide the ad content.
+  // BannerAd is a native view — overflow:hidden on a JS wrapper doesn't reliably
+  // clip it on iOS. The only guaranteed way to show zero space before load is to
+  // render the wrapper with height:0 + overflow:hidden AND position the BannerAd
+  // absolutely so its native frame stays within the clipped region.
   return (
-    <View style={[styles.container, isDark && styles.containerDark, { minHeight }, style]}>
-      {!adError && failCountRef.current < MAX_FAIL_COUNT && (
-        <BannerAd
-          unitId={unitId}
-          size={adSize}
-          requestOptions={{ requestNonPersonalizedAdsOnly }}
-          onAdLoaded={() => {
-            if (mountedRef.current) {
-              setAdError(false);
-              failCountRef.current = 0;
-            }
-          }}
-          onAdFailedToLoad={() => {
-            if (mountedRef.current) {
-              failCountRef.current += 1;
-              setAdError(true);
-            }
-          }}
-        />
-      )}
+    <View
+      style={[
+        styles.wrapper,
+        adLoaded
+          ? [styles.container, isDark && styles.containerDark, { minHeight }]
+          : styles.hidden,
+        style,
+      ]}
+    >
+      <BannerAd
+        unitId={unitId}
+        size={adSize}
+        requestOptions={{ requestNonPersonalizedAdsOnly }}
+        onAdLoaded={handleAdLoaded}
+        onAdFailedToLoad={handleAdFailed}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    alignSelf: 'stretch',
+  },
   container: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -108,6 +125,11 @@ const styles = StyleSheet.create({
   },
   containerDark: {
     backgroundColor: 'transparent',
+  },
+  hidden: {
+    height: 0,
+    marginVertical: 0,
+    overflow: 'hidden',
   },
 });
 

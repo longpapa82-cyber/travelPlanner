@@ -137,7 +137,7 @@
       },
       "premiumRestore": {
         "q": "Como restauro minha assinatura?",
-        "a": "Vá em Perfil → Assinatura e toque em 'Restaurar Compras'. Sua assinatura anterior será restaurada automaticamente. Ao trocar de dispositivo, faça login com o mesmo Apple ID ou conta Google."
+        "a": "Vá em Perfil → Assinatura e toque em 'Restaurar Compras'. O aplicativo verificará sua compra anterior e restaurará sua assinatura. Ao trocar de dispositivo, faça login com o mesmo Apple ID ou conta Google e toque em Restaurar Compras."
       }
     },
     "contact": {
@@ -221,7 +221,7 @@
       },
       "art18": {
         "title": "Provedor de serviço",
-        "content": "• Nome da empresa: AI Soft\n• Representante: Hoon-jae Park\n• Email de contato: longpapa82@gmail.com\n• Número de registro comercial: Em andamento — será atualizado antes do lançamento comercial oficial"
+        "content": "• Nome da empresa: AI Soft\n• Representante: Hoon-jae Park\n• Email de contato: longpapa82@gmail.com\n• Número de registro comercial: 411-18-92743\n• Endereço: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Coreia do Sul"
       }
     }
   },
@@ -271,7 +271,7 @@
       },
       "art11": {
         "title": "11. Responsável pela Privacidade",
-        "content": "Responsável pela Privacidade: Equipe de Operações do MyTravel\nE-mail: longpapa82@gmail.com"
+        "content": "Responsável pela Privacidade: Equipe de Operações do MyTravel\nE-mail: longpapa82@gmail.com\nEndereço: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Coreia do Sul"
       },
       "art12": {
         "title": "12. Alterações na Política",

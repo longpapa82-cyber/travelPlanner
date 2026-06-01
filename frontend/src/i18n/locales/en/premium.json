@@ -27,7 +27,8 @@
     "subscribe": "Subscribe",
     "restore": "Restore purchase",
     "manage": "Manage subscription",
-    "cancel": "Cancel subscription"
+    "cancel": "Cancel subscription",
+    "retry": "Try Again"
   },
   "paywall": {
     "title": "Upgrade to Premium",
@@ -42,7 +43,7 @@
     "privacyLink": "Privacy Policy",
     "restoreSuccess": "Subscription restored successfully!",
     "restoreNone": "No active subscription found.",
-    "aiUnlimited": "∞ Unlimited"
+    "aiUnlimited": "30 AI trips/mo"
   },
   "status": {
     "active": "Active",
@@ -73,7 +74,7 @@
     "upgradePremium": "Upgrade to Premium",
     "managePlan": "Manage plan",
     "aiRemaining": "AI: {{remaining}}/{{total}} remaining",
-    "aiUnlimited": "∞ Unlimited"
+    "aiUnlimited": "30 AI trips/mo"
   },
   "errors": {
     "title": "Error",

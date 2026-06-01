@@ -27,7 +27,8 @@
     "subscribe": "購読する",
     "restore": "購入を復元",
     "manage": "サブスクリプション管理",
-    "cancel": "サブスクリプション解約"
+    "cancel": "サブスクリプション解約",
+    "retry": "再試行"
   },
   "paywall": {
     "title": "プレミアムにアップグレード",
@@ -42,7 +43,7 @@
     "privacyLink": "プライバシーポリシー",
     "restoreSuccess": "サブスクリプションが復元されました！",
     "restoreNone": "有効なサブスクリプションが見つかりません。",
-    "aiUnlimited": "∞ 無制限"
+    "aiUnlimited": "月30回AI"
   },
   "status": {
     "active": "有効",
@@ -73,7 +74,7 @@
     "upgradePremium": "プレミアムにアップグレード",
     "managePlan": "プラン管理",
     "aiRemaining": "AI: {{remaining}}/{{total}}回残り",
-    "aiUnlimited": "∞ 無制限"
+    "aiUnlimited": "月30回AI"
   },
   "errors": {
     "title": "エラー",

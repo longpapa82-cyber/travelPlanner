@@ -137,7 +137,7 @@
       },
       "premiumRestore": {
         "q": "Bagaimana cara memulihkan langganan saya?",
-        "a": "Buka Profil → Langganan dan ketuk 'Pulihkan Pembelian'. Langganan Anda sebelumnya akan otomatis dipulihkan. Saat beralih perangkat, masuk dengan Apple ID atau akun Google yang sama."
+        "a": "Buka Profil → Langganan dan ketuk 'Pulihkan Pembelian'. Aplikasi akan memverifikasi pembelian Anda sebelumnya dan memulihkan langganan. Saat beralih perangkat, masuk dengan Apple ID atau akun Google yang sama, lalu ketuk Pulihkan Pembelian."
       }
     },
     "contact": {
@@ -221,7 +221,7 @@
       },
       "art18": {
         "title": "Penyedia Layanan",
-        "content": "• Nama perusahaan: AI Soft\n• Perwakilan: Hoon-jae Park\n• Email pertanyaan: longpapa82@gmail.com\n• Nomor registrasi bisnis: Sedang diproses — akan diperbarui sebelum peluncuran komersial resmi"
+        "content": "• Nama perusahaan: AI Soft\n• Perwakilan: Hoon-jae Park\n• Email pertanyaan: longpapa82@gmail.com\n• Nomor registrasi bisnis: 411-18-92743\n• Alamat: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Korea Selatan"
       }
     }
   },
@@ -271,7 +271,7 @@
       },
       "art11": {
         "title": "11. Petugas Privasi",
-        "content": "Petugas Privasi: Tim Operasional MyTravel\nEmail: longpapa82@gmail.com"
+        "content": "Petugas Privasi: Tim Operasional MyTravel\nEmail: longpapa82@gmail.com\nAlamat: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Korea Selatan"
       },
       "art12": {
         "title": "12. Perubahan Kebijakan",

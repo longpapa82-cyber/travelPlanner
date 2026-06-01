@@ -25,7 +25,7 @@ const TripsNavigator = () => {
       <Stack.Screen
         name="TripList"
         component={TripListScreen}
-        options={{ title: t('list.title') }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="TripDetail"
@@ -35,12 +35,7 @@ const TripsNavigator = () => {
       <Stack.Screen
         name="CreateTrip"
         component={CreateTripScreen}
-        options={{
-          title: t('create.title'),
-          // iOS NativeStack auto-injects a back button; the screen also renders
-          // its own custom back chevron. Suppress the native one on iOS only.
-          ...(Platform.OS === 'ios' ? { headerBackVisible: false } : {}),
-        }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="EditTrip"

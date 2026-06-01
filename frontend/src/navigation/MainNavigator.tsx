@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,9 +15,11 @@ import AnnouncementBellIcon from '../components/AnnouncementBellIcon';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors, darkColors } from '../constants/theme';
+import { makeStackScreenOptions } from './sharedHeaderOptions';
 import apiService from '../services/api';
 import { notificationEvents } from '../utils/notificationEvents';
 import { useNotifications } from '../contexts/NotificationContext';
+import { useAuth } from '../contexts/AuthContext';
 
 /** Wrap a screen component with ErrorBoundary so crashes are isolated per-tab */
 const withErrorBoundary = <P extends object>(Component: React.ComponentType<P>) => {
@@ -41,10 +43,23 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainNavigator = () => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('common');
+  const { t: tHome } = useTranslation('home');
+  const { isGuestMode, exitGuestMode } = useAuth();
   const insets = useSafeAreaInsets();
   const [unreadCount, setUnreadCount] = useState(0);
   const navigation = useNavigation<any>();
   const { lastNotificationResponse } = useNotifications();
+
+  const showGuestLoginPrompt = useCallback(() => {
+    Alert.alert(
+      tHome('guestLoginPrompt.title'),
+      tHome('guestLoginPrompt.message'),
+      [
+        { text: tHome('guestLoginPrompt.cancel'), style: 'cancel' },
+        { text: tHome('guestLoginPrompt.login'), onPress: exitGuestMode },
+      ],
+    );
+  }, [tHome, exitGuestMode]);
 
   const fetchUnread = useCallback(async () => {
     try {
@@ -119,6 +134,7 @@ const MainNavigator = () => {
 
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.textSecondary,
@@ -130,13 +146,7 @@ const MainNavigator = () => {
           paddingTop: 8,
           height: 60 + Math.max(insets.bottom, 0),
         },
-        headerStyle: {
-          backgroundColor: theme.colors.primary,
-        },
-        headerTintColor: colors.neutral[0],
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
+        ...makeStackScreenOptions(theme.colors.primary),
       }}
     >
       <Tab.Screen
@@ -144,10 +154,10 @@ const MainNavigator = () => {
         component={SafeHomeScreen}
         options={{
           title: t('tabs.home'),
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" size={size} color={color} />
           ),
-          headerRight: () => <AnnouncementBellIcon />,
         }}
       />
       <Tab.Screen
@@ -155,6 +165,7 @@ const MainNavigator = () => {
         component={SafeDiscoverScreen}
         options={{
           title: t('tabs.discover'),
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name="compass-outline" size={size} color={color} />
           ),
@@ -173,6 +184,10 @@ const MainNavigator = () => {
         listeners={({ navigation }) => ({
           tabPress: (e) => {
             e.preventDefault();
+            if (isGuestMode) {
+              showGuestLoginPrompt();
+              return;
+            }
             navigation.navigate('Trips', { screen: 'TripList' });
           },
         })}
@@ -182,6 +197,7 @@ const MainNavigator = () => {
         component={SafeNotificationsScreen}
         options={{
           title: t('tabs.notifications'),
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name="bell-outline" size={size} color={color} />
           ),
@@ -205,6 +221,14 @@ const MainNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon name="account" size={size} color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            if (isGuestMode) {
+              e.preventDefault();
+              showGuestLoginPrompt();
+            }
+          },
         }}
       />
     </Tab.Navigator>

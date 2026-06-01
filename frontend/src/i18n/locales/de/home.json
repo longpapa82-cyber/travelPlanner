@@ -56,5 +56,11 @@
     "sectionTitle": "Reisetipps",
     "title": "💡 Vorausplanen",
     "description": "KI erstellt den optimalen Reiseplan unter Berücksichtigung von Wetter, beliebten Orten und Reiserouten."
+  },
+  "guestLoginPrompt": {
+    "title": "Anmeldung erforderlich",
+    "message": "Diese Funktion erfordert ein Konto. Melde dich an, um Reisen zu erstellen und deine Pläne zu speichern.",
+    "cancel": "Abbrechen",
+    "login": "Anmelden"
   }
 }
