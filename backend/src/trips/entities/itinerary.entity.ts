@@ -62,7 +62,7 @@ export class Itinerary {
   @Column({ type: 'varchar', nullable: true })
   timezone?: string;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'real', nullable: true })
   timezoneOffset?: number;
 
   @Column({ type: 'text', nullable: true })

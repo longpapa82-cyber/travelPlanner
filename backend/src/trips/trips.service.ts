@@ -36,9 +36,9 @@ import { Subject } from 'rxjs';
 const SLOW_THRESHOLDS: Record<string, number> = {
   validating: 5_000,
   weather: 5_000,
-  ai_generating: 60_000,
+  ai_generating: 90_000, // OpenAI p95 latency can exceed 60s for long trips; align with server AbortSignal timeout
   saving: 3_000,
-  total: 60_000,
+  total: 90_000,
 };
 
 export type TripCreationStep =
@@ -54,6 +54,8 @@ export type TripCreationStep =
 export interface TripCreationProgress {
   step: TripCreationStep;
   message?: string;
+  // Granular day-level progress for parallel AI generation (>7 days)
+  dayProgress?: { completed: number; total: number };
 }
 
 /**
@@ -549,29 +551,17 @@ export class TripsService {
           `Prepared ${itineraryData.length} empty itineraries (manual mode) for trip ${savedTrip.id}`,
         );
       } else {
-        // AI mode: generate itineraries with AI + weather in parallel
+        // AI mode: fetch weather first, then pass it into AI generation
+        // so the model can adapt activities to actual forecast conditions.
+        // weatherMap is declared outside try so the catch fallback can reuse it.
+        let weatherMap: Map<number, any> = new Map();
         try {
           throwIfCancelled();
-          progress$?.next({ step: 'ai_generating' });
-          const aiStart = Date.now();
-          const aiPromise = this.aiService.generateAllItineraries(
-            {
-              destination: createTripDto.destination,
-              country: createTripDto.country,
-              city: createTripDto.city,
-              startDate,
-              endDate,
-              numberOfTravelers: safeTravelers,
-              preferences: createTripDto.preferences,
-              language,
-            },
-            signal,
-          );
 
-          // Fetch weather in parallel while AI generates
+          // Step 1: Fetch weather (with 5s timeout) — needed before AI call
           progress$?.next({ step: 'weather' });
           const weatherStart = Date.now();
-          const weatherMap = await fetchWeatherMap();
+          weatherMap = await fetchWeatherMap();
           const weatherElapsed = Date.now() - weatherStart;
           this.logger.log(
             `[TripCreation] weather completed in ${weatherElapsed}ms (trip: ${savedTrip.id})`,
@@ -590,8 +580,24 @@ export class TripsService {
           }
           throwIfCancelled();
 
-          // Wait for AI generation to complete
-          const aiItineraries = await aiPromise;
+          // Step 2: Generate itineraries with weather context injected
+          progress$?.next({ step: 'ai_generating' });
+          const aiStart = Date.now();
+          const aiItineraries = await this.aiService.generateAllItineraries(
+            {
+              destination: createTripDto.destination,
+              country: createTripDto.country,
+              city: createTripDto.city,
+              startDate,
+              endDate,
+              numberOfTravelers: safeTravelers,
+              preferences: createTripDto.preferences,
+              language,
+              weatherByDay: weatherMap,
+            },
+            signal,
+            progress$,
+          );
           const aiElapsed = Date.now() - aiStart;
           this.logger.log(
             `[TripCreation] ai_generating completed in ${aiElapsed}ms (trip: ${savedTrip.id})`,
@@ -670,8 +676,7 @@ export class TripsService {
             );
           }
 
-          // Fallback: Create empty itineraries with weather
-          const weatherMap = await fetchWeatherMap();
+          // Fallback: Create empty itineraries — reuse weatherMap already fetched above
           itineraryData = buildEmptyItineraries(weatherMap);
         }
       }

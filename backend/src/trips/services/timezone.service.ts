@@ -161,7 +161,9 @@ export class TimezoneService {
 
     if (cached) {
       const targetTimestamp = timestamp || new Date();
-      const localDateTime = DateTime.fromJSDate(targetTimestamp, { zone: cached.timeZoneId });
+      const localDateTime = DateTime.fromJSDate(targetTimestamp, {
+        zone: cached.timeZoneId,
+      });
       const totalOffset = cached.rawOffset + cached.dstOffset;
       return {
         timezone: cached.timeZoneName,
@@ -199,7 +201,9 @@ export class TimezoneService {
         .catch(() => {});
 
       const totalOffset = rawOffset + dstOffset;
-      const localDateTime = DateTime.fromJSDate(targetTimestamp, { zone: timeZoneId });
+      const localDateTime = DateTime.fromJSDate(targetTimestamp, {
+        zone: timeZoneId,
+      });
 
       return {
         timezone: timeZoneName,
@@ -246,18 +250,41 @@ export class TimezoneService {
    * Delegates to GeocodingService (Redis → DB → LocationIQ → Google fallback chain).
    * Falls back to direct Google Maps API if GeocodingService is not available.
    */
+  // AI occasionally generates placeholder text like "귀하의 호텔" or "Your Hotel"
+  // instead of a real place name. These patterns produce guaranteed 404s from
+  // geocoding providers — skip them early to avoid wasted API calls and log noise.
+  private isPlaceholderLocation(location: string): boolean {
+    const placeholders = [
+      /귀하의\s/,
+      /your\s+hotel/i,
+      /your\s+accommodation/i,
+      /^hotel$/i,
+      /^accommodation$/i,
+      /^숙소$/,
+      /^호텔$/,
+    ];
+    return placeholders.some((p) => p.test(location.trim()));
+  }
+
   async geocodeActivities(
     activities: { location: string }[],
     destination: string,
   ): Promise<{ latitude: number; longitude: number }[]> {
     // Prefer GeocodingService (multi-provider fallback chain)
     if (this.geocodingService) {
-      const queries = activities.map((a) => `${a.location}, ${destination}`);
-      const results = await this.geocodingService.geocodeBatch(queries);
-      return results.map((r) =>
-        r
-          ? { latitude: r.latitude, longitude: r.longitude }
-          : { latitude: 0, longitude: 0 },
+      const queries = activities.map((a) =>
+        this.isPlaceholderLocation(a.location)
+          ? null
+          : `${a.location}, ${destination}`,
+      );
+      const nonNullQueries = queries.map((q) => q ?? destination);
+      const results = await this.geocodingService.geocodeBatch(nonNullQueries);
+      return results.map((r, i) =>
+        queries[i] === null
+          ? { latitude: 0, longitude: 0 }
+          : r
+            ? { latitude: r.latitude, longitude: r.longitude }
+            : { latitude: 0, longitude: 0 },
       );
     }
 

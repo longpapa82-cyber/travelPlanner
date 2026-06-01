@@ -111,7 +111,10 @@ describe('AIService', () => {
         { provide: AnalyticsService, useValue: analyticsService },
         { provide: TemplateService, useValue: templateService },
         { provide: TimezoneService, useValue: timezoneService },
-        { provide: ApiUsageService, useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) } },
+        {
+          provide: ApiUsageService,
+          useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) },
+        },
       ],
     }).compile();
 
@@ -138,7 +141,10 @@ describe('AIService', () => {
           { provide: AnalyticsService, useValue: analyticsService },
           { provide: TemplateService, useValue: templateService },
           { provide: TimezoneService, useValue: timezoneService },
-          { provide: ApiUsageService, useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) } },
+          {
+            provide: ApiUsageService,
+            useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) },
+          },
         ],
       }).compile();
 
@@ -158,7 +164,10 @@ describe('AIService', () => {
           { provide: AnalyticsService, useValue: analyticsService },
           { provide: TemplateService, useValue: templateService },
           { provide: TimezoneService, useValue: timezoneService },
-          { provide: ApiUsageService, useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) } },
+          {
+            provide: ApiUsageService,
+            useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) },
+          },
         ],
       }).compile();
 
@@ -178,32 +187,26 @@ describe('AIService', () => {
       expect(result).toEqual([]);
     });
 
-    it('should return cached result when available', async () => {
-      const cachedActivities = [
-        {
-          time: '09:00',
-          title: 'Cached Activity',
-          description: '',
-          location: 'Tokyo',
-          estimatedDuration: 60,
-          estimatedCost: 0,
-          type: 'sightseeing',
-        },
-      ];
-      cacheManager.get.mockResolvedValue(cachedActivities);
+    it('should always call OpenAI regardless of repeated requests (no cache)', async () => {
+      openaiCreate.mockResolvedValue(mockStream(mockActivitiesResponse));
 
-      const result = await service.generateDailyItinerary(
+      // Call twice with identical arguments
+      await service.generateDailyItinerary(
+        tripContext,
+        1,
+        new Date('2025-07-01'),
+      );
+      await service.generateDailyItinerary(
         tripContext,
         1,
         new Date('2025-07-01'),
       );
 
-      expect(result).toEqual(cachedActivities);
-      expect(openaiCreate).not.toHaveBeenCalled();
+      // OpenAI must be called both times — no caching shortcut
+      expect(openaiCreate).toHaveBeenCalledTimes(2);
     });
 
-    it('should generate activities from OpenAI and cache the result', async () => {
-      cacheManager.get.mockResolvedValue(null);
+    it('should generate activities from OpenAI without caching the result', async () => {
       openaiCreate.mockResolvedValue(mockStream(mockActivitiesResponse));
 
       const result = await service.generateDailyItinerary(
@@ -215,11 +218,8 @@ describe('AIService', () => {
       expect(result.length).toBe(2);
       expect(result[0].title).toBe('Visit Senso-ji Temple');
       expect(result[1].title).toBe('Lunch at Tsukiji Market');
-      expect(cacheManager.set).toHaveBeenCalledWith(
-        expect.stringContaining('ai:itinerary:Tokyo'),
-        result,
-        86400000,
-      );
+      // No cache set — weather context differs per request
+      expect(cacheManager.set).not.toHaveBeenCalled();
     });
 
     it('should include geocoded coordinates in activities', async () => {
@@ -293,8 +293,7 @@ describe('AIService', () => {
       expect(result).toEqual([]);
     });
 
-    it('should use correct cache key including language', async () => {
-      cacheManager.get.mockResolvedValue(null);
+    it('should use the correct language in the OpenAI system prompt', async () => {
       openaiCreate.mockResolvedValue(mockStream(mockActivitiesResponse));
 
       await service.generateDailyItinerary(
@@ -303,8 +302,16 @@ describe('AIService', () => {
         new Date('2025-07-01'),
       );
 
-      expect(cacheManager.get).toHaveBeenCalledWith(
-        expect.stringContaining(':ja'),
+      expect(openaiCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          messages: expect.arrayContaining([
+            expect.objectContaining({
+              role: 'system',
+              content: expect.stringContaining('Japanese'),
+            }),
+          ]),
+        }),
+        expect.anything(),
       );
     });
 
@@ -486,34 +493,21 @@ describe('AIService', () => {
       expect(result[1].activities.length).toBe(2);
     }, 15000);
 
-    it('should return template data instantly when template cache hits', async () => {
-      const mockTemplateResult = {
+    it('should always call OpenAI even when template exists (template is save-only now)', async () => {
+      // Template cache is no longer used for serving — each request goes to AI
+      // so weather context can be reflected in the generated itinerary.
+      (templateService.findTemplate as jest.Mock).mockResolvedValue({
         days: [
           {
             dayNumber: 1,
             activities: [
               {
                 time: '09:00',
-                title: 'Cached Temple Visit',
-                description: 'From template',
-                location: 'Senso-ji Temple',
-                estimatedDuration: 90,
+                title: 'Old Cached Activity',
+                location: 'Tokyo',
+                estimatedDuration: 60,
                 estimatedCost: 0,
                 type: 'sightseeing',
-              },
-            ],
-          },
-          {
-            dayNumber: 2,
-            activities: [
-              {
-                time: '10:00',
-                title: 'Cached Market Tour',
-                description: 'From template',
-                location: 'Tsukiji Market',
-                estimatedDuration: 60,
-                estimatedCost: 15,
-                type: 'food',
               },
             ],
           },
@@ -521,30 +515,20 @@ describe('AIService', () => {
         templateId: 'tmpl-123',
         generatedAt: new Date(),
         isStale: false,
-      };
-      (templateService.findTemplate as jest.Mock).mockResolvedValue(
-        mockTemplateResult,
-      );
+      });
+      openaiCreate.mockResolvedValue(mockStream(mockFullTripResponse(2)));
 
       const shortTrip = { ...tripContext, endDate: new Date('2025-07-02') };
       const result = await service.generateAllItineraries(shortTrip);
 
-      // Should use template data, NOT call OpenAI
+      // OpenAI MUST be called — template is no longer used as a serving cache
+      expect(openaiCreate).toHaveBeenCalled();
       expect(result.length).toBe(2);
-      expect(result[0].activities[0].title).toBe('Cached Temple Visit');
-      expect(result[1].activities[0].title).toBe('Cached Market Tour');
-      expect(openaiCreate).not.toHaveBeenCalled();
-    });
+      // Result comes from AI (Senso-ji), not from template (Old Cached Activity)
+      expect(result[0].activities[0].title).toBe('Visit Senso-ji Temple');
+    }, 15000);
 
-    it('should call AI when template is stale and auto-save result', async () => {
-      // Template found but stale → should call AI
-      (templateService.findTemplate as jest.Mock).mockResolvedValue({
-        days: [],
-        templateId: 'tmpl-stale',
-        generatedAt: new Date('2024-01-01'),
-        isStale: true,
-      });
-      cacheManager.get.mockResolvedValue(null);
+    it('should always call AI and auto-save template after generation', async () => {
       openaiCreate.mockResolvedValue(mockStream(mockFullTripResponse(2)));
 
       const shortTrip = { ...tripContext, endDate: new Date('2025-07-02') };
@@ -552,23 +536,36 @@ describe('AIService', () => {
 
       expect(result.length).toBe(2);
       expect(openaiCreate).toHaveBeenCalled();
-      // Auto-save should be called
+      // Auto-save to template DB must still happen (for analytics/warmup)
       expect(templateService.saveFromAI).toHaveBeenCalled();
     }, 15000);
 
-    it('should fall back to AI when template lookup fails', async () => {
-      (templateService.findTemplate as jest.Mock).mockRejectedValue(
-        new Error('DB down'),
-      );
-      cacheManager.get.mockResolvedValue(null);
+    it('should inject weatherByDay into the prompt when provided', async () => {
       openaiCreate.mockResolvedValue(mockStream(mockFullTripResponse(2)));
 
-      const shortTrip = { ...tripContext, endDate: new Date('2025-07-02') };
-      const result = await service.generateAllItineraries(shortTrip);
+      const weatherMap = new Map([
+        [1, { temperature: 28, condition: 'Sunny', precipitation: 10 }],
+        [2, { temperature: 15, condition: 'Rain', precipitation: 80 }],
+      ]);
+      const shortTrip = {
+        ...tripContext,
+        endDate: new Date('2025-07-02'),
+        weatherByDay: weatherMap,
+      };
+      await service.generateAllItineraries(shortTrip);
 
-      // Should still work via AI fallback
-      expect(result.length).toBe(2);
-      expect(openaiCreate).toHaveBeenCalled();
+      // Prompt must contain weather info for Day 2 rain warning
+      expect(openaiCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          messages: expect.arrayContaining([
+            expect.objectContaining({
+              role: 'user',
+              content: expect.stringContaining('Rain'),
+            }),
+          ]),
+        }),
+        expect.anything(),
+      );
     }, 15000);
   });
 });

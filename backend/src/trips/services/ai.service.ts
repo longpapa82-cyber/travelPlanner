@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Cron } from '@nestjs/schedule';
 import OpenAI from 'openai';
+import { Subject } from 'rxjs';
 import { ActivityDto } from '../dto/update-itinerary.dto';
 import { AnalyticsService } from './analytics.service';
 import { TemplateService } from './template.service';
@@ -10,6 +11,7 @@ import { TimezoneService } from './timezone.service';
 import { ApiUsageService } from '../../admin/api-usage.service';
 import { getErrorMessage } from '../../common/types/request.types';
 import { withRetry, CircuitBreaker } from '../../common/utils/resilience';
+import { TripCreationProgress } from '../trips.service';
 
 interface RawAiActivity {
   time?: string;
@@ -28,6 +30,21 @@ interface RawAiActivity {
   category?: string;
 }
 
+interface WeatherDayInfo {
+  temperature: number;
+  condition: string;
+  precipitation?: number;
+}
+
+interface DestinationRecommendations {
+  recommendedDuration: number;
+  recommendedTravelers: number;
+  bestMonths: number[];
+  budget?: string;
+  travelStyle?: string;
+  topActivities: string[];
+}
+
 interface TripContext {
   destination: string;
   country?: string;
@@ -41,6 +58,9 @@ interface TripContext {
     interests?: string[];
   };
   language?: string;
+  weatherByDay?: Map<number, WeatherDayInfo>;
+  // Pre-fetched once at generateAllItineraries level to avoid N duplicate DB queries
+  recommendations?: DestinationRecommendations | null;
 }
 
 const LANGUAGE_NAMES: Record<string, string> = {
@@ -94,7 +114,7 @@ Return a valid JSON object. Each activity MUST include:
 - "location": full address or well-known location name with area/district
 - "latitude": number (decimal degrees, e.g., 35.6762)
 - "longitude": number (decimal degrees, e.g., 139.6503)
-- "description": 2-3 sentences explaining the activity, why it's recommended, and practical tips
+- "description": 1-2 sentences: what the activity is and one key practical tip (keep concise)
 - "estimatedCost": number in USD (0 for free activities)
 - "estimatedDuration": number in minutes (minimum 30, maximum 480)
 
@@ -184,36 +204,34 @@ export class AIService {
     dayNumber: number,
     date: Date,
     signal?: AbortSignal,
+    usedLocations?: string[],
   ): Promise<ActivityDto[]> {
     if (!this.openai) {
       this.logger.warn('OpenAI not configured, returning empty itinerary');
       return [];
     }
 
-    // Check cache for identical trip context + day
-    const lang = tripContext.language || 'ko';
-    const cacheKey = `ai:itinerary:${tripContext.destination}:${date.toISOString().split('T')[0]}:${tripContext.preferences?.travelStyle || 'default'}:${lang}`;
-    const cached = await this.cacheManager.get<ActivityDto[]>(cacheKey);
-    if (cached) {
-      this.logger.debug(`Cache hit for AI itinerary: ${cacheKey}`);
-      return cached;
-    }
-
+    // No Redis cache for daily itineraries — weather context differs per request.
     try {
-      // 사용자 데이터 기반 추천 정보 가져오기
+      // Use pre-fetched recommendations from context if available (avoids duplicate DB query
+      // when called in parallel batches — all days share the same destination).
       const recommendations =
-        await this.analyticsService.getDestinationRecommendations(
-          tripContext.destination,
-        );
+        tripContext.recommendations !== undefined
+          ? tripContext.recommendations
+          : await this.analyticsService
+              .getDestinationRecommendations(tripContext.destination)
+              .catch(() => null);
 
       const prompt = this.buildPrompt(
         tripContext,
         dayNumber,
         date,
-        recommendations,
+        recommendations ?? undefined,
+        usedLocations,
       );
 
-      const langName = LANGUAGE_NAMES[tripContext.language || 'ko'] || 'Korean';
+      const lang = tripContext.language || 'ko';
+      const langName = LANGUAGE_NAMES[lang] || 'Korean';
       const content = await this.openaiBreaker.run(() =>
         withRetry(
           () =>
@@ -276,8 +294,6 @@ export class AIService {
         }
       }
 
-      // Cache AI response for 24 hours
-      await this.cacheManager.set(cacheKey, result, 86400000);
       return result;
     } catch (error) {
       this.logger.error(
@@ -309,6 +325,7 @@ export class AIService {
       travelStyle?: string;
       topActivities: string[];
     },
+    usedLocations?: string[],
   ): string {
     const dateStr = date.toLocaleDateString('en-US', {
       weekday: 'long',
@@ -393,14 +410,27 @@ Trip Details:
       }
     }
 
+    // Weather context for this specific day
+    const weather = context.weatherByDay?.get(dayNumber);
+    if (weather) {
+      const rainWarning =
+        (weather.precipitation ?? 0) >= 50
+          ? ' ⚠️ HIGH RAIN CHANCE — use indoor venues (museums, galleries, covered markets)'
+          : (weather.precipitation ?? 0) >= 30
+            ? ' (some rain possible — include indoor backup options)'
+            : '';
+      prompt += `\n\nToday's Weather: ${weather.condition}, ${weather.temperature}°C${rainWarning}`;
+      prompt += `\n- Adapt outdoor activities accordingly`;
+    }
+
     if (dayNumber === 1) {
       const isInternational = !!context.country;
       if (isInternational) {
         prompt += `\n\nThis is the first day of an international trip to ${context.country}.
-- Travelers likely arrive by flight; start activities from early afternoon (13:00-14:00) to account for airport transfer and hotel check-in.
-- Plan only 2-3 light activities for the first day (nearby sightseeing, local dining).
-- Consider jet lag: keep the first day relaxed.
-- Include a suggested arrival/transfer activity (e.g., "Airport to hotel") as the first item around 10:00-12:00.`;
+- MANDATORY FIRST ACTIVITY: "Hotel Check-in" at 13:00 (type: accommodation) — this must be the FIRST activity in the list, before any sightseeing or dining.
+- After check-in, plan only 2-3 light activities starting from 15:00 onward (nearby sightseeing, local dining).
+- Consider jet lag: keep the first day relaxed and low-energy.
+- NO tourist activities or meals before the hotel check-in activity.`;
       } else {
         prompt +=
           '\n\nThis is the first day - include arrival and settling in.';
@@ -415,9 +445,15 @@ Trip Details:
       } else {
         prompt += '\n\nThis is the last day - include departure preparations.';
       }
+    } else {
+      prompt += `\n\nThis is day ${dayNumber} of ${totalDays}. Explore a COMPLETELY DIFFERENT neighborhood/district from all previous days.`;
     }
 
-    prompt += `\n\nRules: 4-6 activities, 24h format (HH:MM), realistic travel time, include meals, varied types, specific locations with lat/lng.
+    if (usedLocations && usedLocations.length > 0) {
+      prompt += `\n\nALREADY VISITED — DO NOT repeat any of these locations or their immediate surroundings:\n${usedLocations.map((l, i) => `${i + 1}. ${l}`).join('\n')}`;
+    }
+
+    prompt += `\n\nRules: 4-6 activities, 24h format (HH:MM), realistic travel time, include meals, varied types, specific locations with lat/lng. Every title and location must be unique — do NOT repeat anything from the already-visited list above.
 
 Return JSON:
 {"activities":[{"time":"09:00","title":"...","description":"...","location":"...","latitude":0.0,"longitude":0.0,"estimatedDuration":120,"estimatedCost":25,"type":"sightseeing|food|shopping|transportation|accommodation|culture|entertainment|nature"}]}`;
@@ -447,6 +483,7 @@ Return JSON:
   async generateAllItineraries(
     tripContext: TripContext,
     signal?: AbortSignal,
+    progress$?: Subject<TripCreationProgress>,
   ): Promise<{ dayNumber: number; date: Date; activities: ActivityDto[] }[]> {
     const totalDays =
       Math.ceil(
@@ -454,45 +491,16 @@ Return JSON:
           (1000 * 60 * 60 * 24),
       ) + 1;
 
-    // Phase 1: Check Template Cache DB first (instant, no AI cost)
-    try {
-      const templateResult = await this.templateService.findTemplate({
-        destination: tripContext.destination,
-        durationDays: totalDays,
-        travelStyle: tripContext.preferences?.travelStyle,
-        budgetLevel: tripContext.preferences?.budget,
-        language: tripContext.language,
-      });
+    // Template cache is intentionally not used for serving here.
+    // Each trip gets a fresh AI generation because weather context differs per request.
+    // Templates are still saved after generation for analytics/warmup purposes.
 
-      if (templateResult && !templateResult.isStale) {
-        this.logger.log(
-          `Template cache HIT [${templateResult.matchType}] for "${tripContext.destination}" ${totalDays}d — skipping AI` +
-            (templateResult.similarity
-              ? ` (similarity: ${templateResult.similarity.toFixed(3)})`
-              : ''),
-        );
-        // Map template days to dated itineraries
-        return templateResult.days.map((day, i) => {
-          const date = new Date(tripContext.startDate);
-          date.setDate(date.getDate() + i);
-          return {
-            dayNumber: day.dayNumber,
-            date,
-            activities: day.activities as ActivityDto[],
-          };
-        });
-      }
-
-      if (templateResult?.isStale) {
-        this.logger.log(
-          `Template found but stale (>30d) for "${tripContext.destination}" — refreshing via AI`,
-        );
-      }
-    } catch (error) {
-      this.logger.warn(
-        `Template lookup failed, proceeding to AI: ${getErrorMessage(error)}`,
-      );
-    }
+    // Pre-fetch recommendations once here so parallel daily calls don't each
+    // issue a duplicate DB query for the same destination.
+    const recommendations = await this.analyticsService
+      .getDestinationRecommendations(tripContext.destination)
+      .catch(() => null);
+    const enrichedContext: TripContext = { ...tripContext, recommendations };
 
     // Phase C/A: AI generation (fallback — template cache MISS)
     this.logger.log(
@@ -504,17 +512,21 @@ Return JSON:
       activities: ActivityDto[];
     }[];
 
-    if (totalDays <= 10) {
+    // Single call is fastest for short trips (≤7 days).
+    // Parallel batches are faster for longer trips because output token
+    // volume per call stays bounded (~700-1000 tokens vs 4000+ for 7+ days).
+    if (totalDays <= 7) {
       itineraries = await this.generateFullTripItinerary(
-        tripContext,
+        enrichedContext,
         totalDays,
         signal,
       );
     } else {
       itineraries = await this.generateParallelItineraries(
-        tripContext,
+        enrichedContext,
         totalDays,
         signal,
+        progress$,
       );
     }
 
@@ -556,35 +568,26 @@ Return JSON:
       return this.buildEmptyItineraries(tripContext, totalDays);
     }
 
-    // Check cache for the full trip
+    // No Redis cache for full trip — weather context differs per request.
     const lang = tripContext.language || 'ko';
-    const startStr = tripContext.startDate.toISOString().split('T')[0];
-    const endStr = tripContext.endDate.toISOString().split('T')[0];
-    const cacheKey = `ai:fulltrip:${tripContext.destination}:${startStr}:${endStr}:${tripContext.preferences?.travelStyle || 'default'}:${lang}`;
-    const cached =
-      await this.cacheManager.get<
-        { dayNumber: number; date: Date; activities: ActivityDto[] }[]
-      >(cacheKey);
-    if (cached) {
-      this.logger.debug(`Cache hit for full trip itinerary: ${cacheKey}`);
-      return cached;
-    }
 
     try {
       const recommendations =
-        await this.analyticsService.getDestinationRecommendations(
-          tripContext.destination,
-        );
+        tripContext.recommendations !== undefined
+          ? tripContext.recommendations
+          : await this.analyticsService
+              .getDestinationRecommendations(tripContext.destination)
+              .catch(() => null);
 
       const prompt = this.buildFullTripPrompt(
         tripContext,
         totalDays,
-        recommendations,
+        recommendations ?? undefined,
       );
 
       const langName = LANGUAGE_NAMES[lang] || 'Korean';
-      // Dynamic max_tokens based on trip duration
-      const maxTokens = totalDays <= 3 ? 4096 : totalDays <= 7 ? 8192 : 12288;
+      // max_tokens: ~350-400 tokens/day after description shortening
+      const maxTokens = totalDays <= 3 ? 2048 : totalDays <= 5 ? 3072 : 4096;
 
       const content = await this.openaiBreaker.run(() =>
         withRetry(
@@ -678,8 +681,6 @@ Return JSON:
         }),
       );
 
-      // Cache for 24 hours
-      await this.cacheManager.set(cacheKey, itineraries, 86400000);
       this.logger.log(
         `Generated full ${totalDays}-day itinerary in single API call`,
       );
@@ -704,14 +705,24 @@ Return JSON:
     tripContext: TripContext,
     totalDays: number,
     signal?: AbortSignal,
+    progress$?: Subject<TripCreationProgress>,
   ): Promise<{ dayNumber: number; date: Date; activities: ActivityDto[] }[]> {
-    const BATCH_SIZE = 5;
+    // Batch size: 8 concurrent calls per batch (well within gpt-4o-mini 500 RPM).
+    // Batches run sequentially so each batch can pass the accumulated location list
+    // from prior batches to prevent duplicate places across days.
+    // Within a batch, days run in parallel but share the same pre-batch location list —
+    // good enough for inter-batch deduplication without sacrificing parallelism.
+    const BATCH_SIZE = 8;
     let failedDays = 0;
+    let completedDays = 0;
     const itineraries: {
       dayNumber: number;
       date: Date;
       activities: ActivityDto[];
     }[] = [];
+
+    // Accumulate location titles across all completed days to pass as exclusion list.
+    const usedLocations: string[] = [];
 
     for (let batchStart = 0; batchStart < totalDays; batchStart += BATCH_SIZE) {
       const batchEnd = Math.min(batchStart + BATCH_SIZE, totalDays);
@@ -720,6 +731,10 @@ Return JSON:
         date: Date;
         activities: ActivityDto[];
       }>[] = [];
+
+      // Snapshot the location list at batch start — all days in this batch
+      // receive the same pre-batch exclusion list (parallel-safe).
+      const locationsAtBatchStart = [...usedLocations];
 
       for (let i = batchStart; i < batchEnd; i++) {
         const date = new Date(tripContext.startDate);
@@ -732,7 +747,17 @@ Return JSON:
             dayNumber,
             date,
             signal,
-          ).then((activities) => ({ dayNumber, date, activities })),
+            locationsAtBatchStart.length > 0
+              ? locationsAtBatchStart
+              : undefined,
+          ).then((activities) => {
+            completedDays++;
+            progress$?.next({
+              step: 'ai_generating',
+              dayProgress: { completed: completedDays, total: totalDays },
+            });
+            return { dayNumber, date, activities };
+          }),
         );
       }
 
@@ -740,16 +765,17 @@ Return JSON:
       for (const result of batchResults) {
         if (result.status === 'fulfilled') {
           itineraries.push(result.value);
+          // Collect location titles from this batch to exclude in subsequent batches.
+          for (const activity of result.value.activities) {
+            if (activity.title) usedLocations.push(activity.title);
+          }
         } else {
           failedDays++;
           this.logger.warn(`Parallel day generation failed: ${result.reason}`);
         }
       }
 
-      // Add delay between batches to avoid rate limiting
-      if (batchStart + BATCH_SIZE < totalDays) {
-        await new Promise((r) => setTimeout(r, 1000));
-      }
+      // No artificial delay — withRetry handles actual 429 rate-limit responses.
     }
 
     // Log failure rate for monitoring
@@ -807,6 +833,8 @@ Return JSON:
 
   /**
    * Build a single prompt for the entire multi-day trip.
+   * Injects per-day weather and unique area/theme directives to prevent
+   * the model from repeating Day 1 content across subsequent days.
    */
   private buildFullTripPrompt(
     context: TripContext,
@@ -870,7 +898,44 @@ Trip Details:
       }
     }
 
-    prompt += `\n\nRules: Day 1=arrival, Day ${totalDays}=departure. 4-6 activities/day, 24h format, geographic flow, different area/theme per day. Include lat/lng.
+    // Per-day schedule with weather context and unique area directive
+    prompt += `\n\nPer-Day Schedule (STRICTLY FOLLOW — each day must be unique):`;
+    for (let i = 0; i < totalDays; i++) {
+      const dayNum = i + 1;
+      const weather = context.weatherByDay?.get(dayNum);
+
+      let dayLine = `\nDay ${dayNum} (${dates[i]}):`;
+
+      if (dayNum === 1) {
+        dayLine += ` ARRIVAL DAY — FIRST activity must be "Hotel Check-in" at 13:00 (accommodation type), then 2-3 light activities from 15:00 near hotel district. NO sightseeing or dining before check-in.`;
+      } else if (dayNum === totalDays) {
+        dayLine += ` DEPARTURE DAY — morning only before 12:00, 1-2 activities max near hotel, end with airport transfer`;
+      } else {
+        // Assign a unique district index so the model is explicitly forced to rotate areas.
+        dayLine += ` FULL DAY — use District Zone ${dayNum} (must be a different named neighborhood than Days 1-${dayNum - 1})`;
+      }
+
+      if (weather) {
+        const rainWarning =
+          (weather.precipitation ?? 0) >= 50
+            ? ' ⚠️ HIGH RAIN — prioritize indoor venues (museums, galleries, covered markets)'
+            : (weather.precipitation ?? 0) >= 30
+              ? ' (some rain possible — have indoor backup options)'
+              : '';
+        dayLine += ` | Weather: ${weather.condition}, ${weather.temperature}°C${rainWarning}`;
+      }
+
+      prompt += dayLine;
+    }
+
+    prompt += `\n\nCRITICAL RULES — VIOLATIONS ARE NOT ACCEPTABLE:
+1. Every activity title must be unique across ALL days — if an activity appears on Day N it MUST NOT appear on any other day
+2. Every location name must be unique across ALL days — no place may be visited twice
+3. Each day must be anchored to a geographically distinct named neighborhood or district
+4. Adapt outdoor activities to the weather forecast above
+5. 24h time format (HH:MM), include lat/lng for every activity
+
+Before writing Day N, mentally verify that none of its locations already appear in Days 1 through N-1.
 
 Return JSON:
 {"days":[{"day":1,"activities":[{"time":"09:00","title":"...","description":"...","location":"...","latitude":0.0,"longitude":0.0,"estimatedDuration":120,"estimatedCost":25,"type":"sightseeing|food|shopping|transportation|accommodation|culture|entertainment|nature"}]}]}`;
