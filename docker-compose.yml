@@ -22,7 +22,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    command: redis-server --requirepass ${REDIS_PASSWORD:-redis_secure_password_change_me}
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redis_secure_password_change_me} --appendonly yes --appendfsync everysec
     ports:
       - '6379:6379'
     volumes:

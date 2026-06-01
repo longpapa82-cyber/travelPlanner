@@ -90,6 +90,14 @@ docs/obsidian-graph/
 .claude/agents/
 .claude/agent-memory/
 .claude/scheduled_tasks.lock
+**/.claude/agents/
+**/.claude/agent-memory/
+
+# Local test notes / scratch plans (not project artifacts)
+/iOStest.md
+/iosTestResult.md
+/testResult.md
+/androidUpdatePlan.md
 
 # EAS local builds (uploaded to EAS cloud or shared via Play Console)
 frontend/build-*.apk

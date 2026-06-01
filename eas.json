@@ -16,8 +16,6 @@
     }
   },
   "submit": {
-    "production": {
-      "track": "alpha"
-    }
+    "production": {}
   }
 }
