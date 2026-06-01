@@ -36,6 +36,7 @@ import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { TripsStackParamList } from '../../types';
 import { colors } from '../../constants/theme';
+import { MAX_AI_TRIP_DAYS } from '../../constants/config';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -308,10 +309,17 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       const start = new Date(startDate + 'T00:00:00');
       const end = new Date(endDate + 'T00:00:00');
       const today = localMidnightToday();
+      // Inclusive day count — mirrors backend numberOfDays and calculateDuration.
+      const durationDays =
+        Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
       if (start <= today) {
         errors.dates = t('create.alerts.startDateFuture');
       } else if (start > end) {
         errors.dates = t('create.alerts.startAfterEnd');
+      } else if (durationDays > MAX_AI_TRIP_DAYS) {
+        errors.dates = t('create.alerts.tripDurationTooLong', {
+          maxDays: MAX_AI_TRIP_DAYS,
+        });
       }
     }
     if (Object.keys(errors).length > 0) {

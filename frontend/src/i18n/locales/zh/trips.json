@@ -123,7 +123,8 @@
       "datesRequired": "请选择旅行日期",
       "createFailed": "旅行创建失败",
       "startDateRequired": "请选择出发日期",
-      "startAfterEnd": "出发日期必须早于返回日期"
+      "startAfterEnd": "出发日期必须早于返回日期",
+      "tripDurationTooLong": "行程时长最多为 {{maxDays}} 天"
     },
     "aiConsent": {
       "title": "AI旅行规划",

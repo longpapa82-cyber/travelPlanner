@@ -12,6 +12,7 @@ import { Trip, TripStatus } from './entities/trip.entity';
 import { Itinerary } from './entities/itinerary.entity';
 import { Collaborator, CollaboratorRole } from './entities/collaborator.entity';
 import { CreateTripDto } from './dto/create-trip.dto';
+import { MAX_AI_TRIP_DAYS } from './constants';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { UpdateItineraryDto } from './dto/update-itinerary.dto';
 import { AddActivityDto } from './dto/add-activity.dto';
@@ -217,6 +218,16 @@ export class TripsService {
       Math.ceil(
         (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
       ) + 1;
+
+    // Defense-in-depth: the CreateTripDto validator already rejects spans over
+    // MAX_AI_TRIP_DAYS, but re-check here so any caller that bypasses the DTO
+    // (internal callers, future endpoints) cannot trigger unbounded long-trip
+    // generation. Mirrors the safeTravelers clamp pattern below.
+    if (numberOfDays > MAX_AI_TRIP_DAYS) {
+      throw new BadRequestException(
+        `Trip duration (${numberOfDays} days) exceeds the maximum of ${MAX_AI_TRIP_DAYS} days.`,
+      );
+    }
 
     const isManualMode = createTripDto.planningMode === 'manual';
 

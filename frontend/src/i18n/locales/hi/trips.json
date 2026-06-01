@@ -123,7 +123,8 @@
       "datesRequired": "कृपया यात्रा तिथियां चुनें",
       "createFailed": "यात्रा बनाने में विफल",
       "startDateRequired": "कृपया प्रस्थान तिथि चुनें",
-      "startAfterEnd": "प्रस्थान तिथि वापसी तिथि से पहले होनी चाहिए"
+      "startAfterEnd": "प्रस्थान तिथि वापसी तिथि से पहले होनी चाहिए",
+      "tripDurationTooLong": "यात्रा की अवधि अधिकतम {{maxDays}} दिन हो सकती है"
     },
     "aiConsent": {
       "title": "AI यात्रा योजना",

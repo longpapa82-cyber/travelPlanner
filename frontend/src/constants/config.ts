@@ -16,6 +16,12 @@ export const OAUTH_CONFIG = {
 // Feature flag: enables subscription UI (PaywallModal, SubscriptionScreen)
 export const PREMIUM_ENABLED = true;
 
+// Maximum AI trip duration in days (inclusive of start and end date).
+// Mirror of backend MAX_AI_TRIP_DAYS (backend/src/trips/constants.ts). The
+// backend is authoritative; this value only drives inline UX validation so the
+// user gets feedback before the request round-trips. Keep both in sync.
+export const MAX_AI_TRIP_DAYS = 31;
+
 export const STORAGE_KEYS = {
   AUTH_TOKEN: '@travelplanner:auth_token',
   REFRESH_TOKEN: '@travelplanner:refresh_token',

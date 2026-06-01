@@ -123,7 +123,8 @@
       "datesRequired": "Por favor selecciona las fechas de viaje",
       "createFailed": "Error al crear el viaje",
       "startDateRequired": "Por favor selecciona una fecha de salida",
-      "startAfterEnd": "La fecha de salida debe ser anterior a la fecha de regreso"
+      "startAfterEnd": "La fecha de salida debe ser anterior a la fecha de regreso",
+      "tripDurationTooLong": "La duración del viaje puede ser de máximo {{maxDays}} días"
     },
     "aiConsent": {
       "title": "Planificación con IA",

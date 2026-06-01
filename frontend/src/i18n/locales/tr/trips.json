@@ -123,7 +123,8 @@
       "datesRequired": "Lütfen seyahat tarihlerini seçin",
       "createFailed": "Gezi oluşturulamadı",
       "startDateRequired": "Lütfen gidiş tarihini seçin",
-      "startAfterEnd": "Gidiş tarihi dönüş tarihinden önce olmalıdır"
+      "startAfterEnd": "Gidiş tarihi dönüş tarihinden önce olmalıdır",
+      "tripDurationTooLong": "Seyahat süresi en fazla {{maxDays}} gün olabilir"
     },
     "aiConsent": {
       "title": "AI Gezi Planlama",

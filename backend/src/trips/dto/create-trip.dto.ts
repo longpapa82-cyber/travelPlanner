@@ -14,7 +14,9 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { IsAfterDate } from '../../common/validators/is-after-date.validator';
+import { IsWithinMaxDuration } from '../../common/validators/is-within-max-duration.validator';
 import { stripHtml } from '../../common/utils/sanitize';
+import { MAX_AI_TRIP_DAYS } from '../constants';
 
 class TripPreferencesDto {
   @IsString()
@@ -67,6 +69,9 @@ export class CreateTripDto {
   @IsDateString()
   @IsAfterDate('startDate', {
     message: 'endDate must be on or after startDate',
+  })
+  @IsWithinMaxDuration('startDate', MAX_AI_TRIP_DAYS, {
+    message: `Trip duration must not exceed ${MAX_AI_TRIP_DAYS} days`,
   })
   endDate: string;
 

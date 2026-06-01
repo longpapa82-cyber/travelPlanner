@@ -123,7 +123,8 @@
       "datesRequired": "旅行日程を選択してください",
       "createFailed": "旅行の作成に失敗しました",
       "startDateRequired": "出発日を選択してください",
-      "startAfterEnd": "出発日は帰着日より前である必要があります"
+      "startAfterEnd": "出発日は帰着日より前である必要があります",
+      "tripDurationTooLong": "旅行期間は最大{{maxDays}}日までです"
     },
     "aiConsent": {
       "title": "AI旅行プラン作成",

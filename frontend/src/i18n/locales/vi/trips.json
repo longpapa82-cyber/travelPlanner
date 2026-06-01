@@ -123,7 +123,8 @@
       "datesRequired": "Vui lòng chọn ngày du lịch",
       "createFailed": "Tạo chuyến đi thất bại",
       "startDateRequired": "Vui lòng chọn ngày khởi hành",
-      "startAfterEnd": "Ngày khởi hành phải trước ngày về"
+      "startAfterEnd": "Ngày khởi hành phải trước ngày về",
+      "tripDurationTooLong": "Thời gian chuyến đi tối đa là {{maxDays}} ngày"
     },
     "aiConsent": {
       "title": "Lập kế hoạch du lịch AI",
