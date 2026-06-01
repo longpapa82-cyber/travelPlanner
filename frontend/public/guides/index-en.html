@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Travel Guides - MyTravel | Complete City Guides for Popular Destinations</title>
-  <meta name="description" content="Explore MyTravel's curated travel guides for 20 popular destinations worldwide. Find top attractions, local food, transportation tips, weather info, and more for Tokyo, Paris, Bangkok, New York, and beyond." />
+  <title>Travel Guides - myTravel | Complete City Guides for Popular Destinations</title>
+  <meta name="description" content="Explore myTravel's curated travel guides for 20 popular destinations worldwide. Find top attractions, local food, transportation tips, weather info, and more for Tokyo, Paris, Bangkok, New York, and beyond." />
   <link rel="canonical" href="https://mytravel-planner.com/guides/index-en" />
   <link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/guides/" />
   <link rel="alternate" hreflang="en" href="https://mytravel-planner.com/guides/index-en" />
   <link rel="alternate" hreflang="x-default" href="https://mytravel-planner.com/guides/index-en" />
-  <meta property="og:title" content="Travel Guides - MyTravel" />
+  <meta property="og:title" content="Travel Guides - myTravel" />
   <meta property="og:description" content="Complete travel guides for 20 popular destinations worldwide. Attractions, food, transport, and weather info all in one place." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mytravel-planner.com/guides/index-en" />
-  <meta property="og:site_name" content="MyTravel" />
+  <meta property="og:site_name" content="myTravel" />
   <meta property="og:locale" content="en_US" />
-  <meta name="theme-color" content="#2563EB" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192-v2.png" />
+  <meta name="theme-color" content="#4A90D9" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-v2.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -27,47 +29,48 @@
     a { color: inherit; text-decoration: none; }
     .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
     .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
-    .logo span { color: #f59e0b; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #4A90D9; }
+    
     .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
     .nav a { color: #475569; transition: color 0.2s; }
-    .nav a:hover { color: #2563EB; }
+    .nav a:hover { color: #4A90D9; }
     .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
-    .btn-primary { background: #2563EB; color: #fff; }
-    .btn-primary:hover { background: #1d4ed8; }
+    .btn-primary { background: #4A90D9; color: #fff; }
+    .btn-primary:hover { background: #3a7bc8; }
     .nav a.btn-primary { color: #fff; }
 
-    .page-hero { background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 3rem 1.5rem; text-align: center; }
-    .page-hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
-    .page-hero p { color: #475569; max-width: 600px; margin: 0 auto; }
+    .page-hero { background: linear-gradient(135deg, #1a3a5c 0%, #2d6aaf 100%); padding: 3rem 1.5rem; text-align: center; }
+    .page-hero h1 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .page-hero p { color: rgba(255,255,255,0.85); max-width: 600px; margin: 0 auto; }
 
     .breadcrumb { max-width: 1200px; margin: 0 auto; padding: 1rem 1.5rem; font-size: 0.85rem; color: #64748b; }
-    .breadcrumb a { color: #2563EB; }
+    .breadcrumb a { color: #4A90D9; }
     .breadcrumb a:hover { text-decoration: underline; }
 
     .content { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 3rem; }
-    .content h2 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1e293b; border-left: 4px solid #2563EB; padding-left: 0.75rem; }
+    .content h2 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1e293b; border-left: 4px solid #4A90D9; padding-left: 0.75rem; }
     .content p { color: #334155; margin-bottom: 1rem; font-size: 1rem; line-height: 1.8; }
     .intro-text { max-width: 800px; margin: 0 auto 2rem; text-align: center; }
 
     .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
     .dest-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 2rem 1.5rem; text-align: center; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
-    .dest-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(37,99,235,0.12); border-color: #2563EB; }
+    .dest-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(74,144,217,0.12); border-color: #4A90D9; }
     .dest-card .emoji { font-size: 3rem; margin-bottom: 0.75rem; }
     .dest-card h3 { font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
     .dest-card p { color: #64748b; font-size: 0.9rem; line-height: 1.6; flex-grow: 1; }
-    .dest-card .card-link { display: inline-block; margin-top: 1rem; color: #2563EB; font-weight: 600; font-size: 0.9rem; }
+    .dest-card .card-link { display: inline-block; margin-top: 1rem; color: #4A90D9; font-weight: 600; font-size: 0.9rem; }
     .dest-card .card-link:hover { text-decoration: underline; }
     .dest-card .lang-tag { display: inline-block; margin-top: 0.5rem; font-size: 0.75rem; color: #94a3b8; }
 
     .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 0; overflow: hidden; }
 
-    .footer { background: #1e293b; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
+    .footer { background: #0f1e3c; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
     .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer-brand-name { font-size: 1.2rem; font-weight: 700; color: #4A90D9; margin-bottom: 0.75rem; }
     .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
     .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
     .footer a:hover { color: #fff; }
-    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #334155; text-align: center; font-size: 0.85rem; }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #1e3460; text-align: center; font-size: 0.85rem; }
     .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
     .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
 
@@ -179,9 +182,9 @@
 <!-- Smart App Banner (Android Only) -->
 <div id="smartAppBanner" class="smart-app-banner">
   <div class="banner-content">
-    <div class="banner-icon">🎯</div>
+    <div class="banner-icon"><img src="/assets/icon-192-v2.png" width="36" height="36" alt="myTravel" style="border-radius:8px;display:block;"/></div>
     <div class="banner-text">
-      <h4>myTravel</h4>
+      <div class="footer-brand-name">myTravel</div>
       <p id="bannerTagline">AI Creates Your Personalized Trip</p>
       <div class="banner-rating">Free on Google Play</div>
     </div>
@@ -196,11 +199,11 @@
 
 <header class="header">
   <div class="header-inner">
-    <a href="/landing-en" class="logo">My<span>Travel</span></a>
+    <a href="/landing-en" class="logo">myTravel</a>
     <nav class="nav">
       <a href="/landing-en">Home</a>
       <a href="/about">About</a>
-      <a href="/guides/index-en" style="color:#2563EB;font-weight:600;">Guides</a>
+      <a href="/guides/index-en" style="color:#4A90D9;font-weight:600;">Guides</a>
       <a href="/blog">Blog</a>
       <a href="/contact">Contact</a>
       <a href="/login" class="btn btn-primary">Login</a>
@@ -220,10 +223,10 @@
 <main class="content">
   <div class="intro-text">
     <p>
-      MyTravel's curated collection of travel guides covers 20 of the world's most popular
+      myTravel's curated collection of travel guides covers 20 of the world's most popular
       destinations. Each guide includes top attractions, local cuisine recommendations,
       transportation tips, weather information, and the best time to visit. Use these guides
-      to plan your trip, then let MyTravel's AI create a personalized itinerary for you.
+      to plan your trip, then let myTravel's AI create a personalized itinerary for you.
     </p>
     <p>
       The best trips start with great planning. Whether you're a first-time visitor wondering
@@ -400,19 +403,19 @@
     Book flights at least 2-3 months in advance for the best prices. Choose accommodation
     based on proximity to public transportation and city center access to save time and
     money on getting around. Prepare a local SIM card or pocket WiFi before departure so
-    you can use maps and translation apps immediately upon arrival. With MyTravel, you can
+    you can use maps and translation apps immediately upon arrival. With myTravel, you can
     check local weather, time zones, and recommended attractions at a glance, making your
     trip planning much easier.
   </p>
 
-  <h2>Start Planning with MyTravel</h2>
+  <h2>Start Planning with myTravel</h2>
   <p>
-    Found your dream destination? Let MyTravel's AI create a personalized travel itinerary
+    Found your dream destination? Let myTravel's AI create a personalized travel itinerary
     just for you. Simply enter your destination and dates, and our AI will generate an
     optimized schedule considering local weather, travel times, and popular attractions.
     You can freely customize the generated itinerary to match your preferences. Share your
     plans with other travelers for tips, or browse community itineraries for inspiration.
-    Available in 17 languages, MyTravel helps travelers worldwide plan their Personalized Trip
+    Available in 17 languages, myTravel helps travelers worldwide plan their Personalized Trip
     in their native language.
   </p>
   <p style="text-align:center;margin-top:1.5rem;">
@@ -423,7 +426,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <div>
-      <h4>MyTravel</h4>
+      <div class="footer-brand-name">myTravel</div>
       <p style="font-size:0.9rem;">AI-powered travel planning service.<br/>Just pick a destination and get a tailored itinerary.</p>
       <div class="langs" style="margin-top:1rem;">
         <span class="lang-badge">🇰🇷 한국어</span>
@@ -435,6 +438,14 @@
         <span class="lang-badge">🇫🇷 Français</span>
         <span class="lang-badge">🇹🇭 ไทย</span>
         <span class="lang-badge">🇻🇳 Tiếng Việt</span>
+        <span class="lang-badge">🇧🇷 Português</span>
+        <span class="lang-badge">🇸🇦 العربية</span>
+        <span class="lang-badge">🇮🇩 Bahasa</span>
+        <span class="lang-badge">🇮🇳 हिन्दी</span>
+        <span class="lang-badge">🇮🇹 Italiano</span>
+        <span class="lang-badge">🇷🇺 Русский</span>
+        <span class="lang-badge">🇹🇷 Türkçe</span>
+        <span class="lang-badge">🇲🇾 Melayu</span>
       </div>
     </div>
     <div>

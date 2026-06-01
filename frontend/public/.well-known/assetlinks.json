@@ -5,7 +5,9 @@
       "namespace": "android_app",
       "package_name": "com.longpapa82.travelplanner",
       "sha256_cert_fingerprints": [
-        "E7:06:3F:BE:01:C4:47:BF:7C:50:01:79:48:49:7F:72:AB:51:76:B0:27:85:DB:84:C9:01:CE:7A:91:E8:70:7A"
+        "E7:06:3F:BE:01:C4:47:BF:7C:50:01:79:48:49:7F:72:AB:51:76:B0:27:85:DB:84:C9:01:CE:7A:91:E8:70:7A",
+        "05:C3:26:E4:6E:76:99:D0:58:9C:7C:A0:D7:50:9A:91:E9:CE:60:70:55:A8:10:68:AE:86:36:FF:04:9B:90:1F",
+        "13:A3:BC:97:F4:35:56:07:F2:51:1D:79:FF:29:CD:E4:1A:A4:6E:25"
       ]
     }
   }

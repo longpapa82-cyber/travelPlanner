@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>여행 가이드 - MyTravel | 인기 여행지 완벽 가이드</title>
-  <meta name="description" content="MyTravel가 엄선한 전 세계 인기 여행지 20곳 완벽 가이드. 도쿄, 파리, 방콕, 뉴욕, 런던, 서울, 싱가포르, 시드니, 두바이 등 관광지, 맛집, 교통, 날씨 정보를 한눈에 확인하세요." />
+  <title>여행 가이드 - myTravel | 인기 여행지 완벽 가이드</title>
+  <meta name="description" content="myTravel가 엄선한 전 세계 인기 여행지 20곳 완벽 가이드. 도쿄, 파리, 방콕, 뉴욕, 런던, 서울, 싱가포르, 시드니, 두바이 등 관광지, 맛집, 교통, 날씨 정보를 한눈에 확인하세요." />
   <link rel="canonical" href="https://mytravel-planner.com/guides/" />
   <link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/guides/" />
   <link rel="alternate" hreflang="en" href="https://mytravel-planner.com/guides/index-en" />
   <link rel="alternate" hreflang="x-default" href="https://mytravel-planner.com/guides/index-en" />
-  <meta property="og:title" content="여행 가이드 - MyTravel" />
+  <meta property="og:title" content="여행 가이드 - myTravel" />
   <meta property="og:description" content="전 세계 인기 여행지 20곳의 완벽 가이드. 관광지, 맛집, 교통, 날씨 정보를 확인하세요." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mytravel-planner.com/guides/" />
-  <meta property="og:site_name" content="MyTravel" />
+  <meta property="og:site_name" content="myTravel" />
   <meta property="og:locale" content="ko_KR" />
-  <meta name="theme-color" content="#2563EB" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192-v2.png" />
+  <meta name="theme-color" content="#4A90D9" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-v2.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -26,46 +28,47 @@
     a { color: inherit; text-decoration: none; }
     .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
     .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-size: 1.25rem; font-weight: 700; color: #2563EB; }
-    .logo span { color: #f59e0b; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #4A90D9; }
+    
     .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
     .nav a { color: #475569; transition: color 0.2s; }
-    .nav a:hover { color: #2563EB; }
+    .nav a:hover { color: #4A90D9; }
     .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
-    .btn-primary { background: #2563EB; color: #fff; }
-    .btn-primary:hover { background: #1d4ed8; }
+    .btn-primary { background: #4A90D9; color: #fff; }
+    .btn-primary:hover { background: #3a7bc8; }
     .nav a.btn-primary { color: #fff; }
 
-    .page-hero { background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 3rem 1.5rem; text-align: center; }
-    .page-hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
-    .page-hero p { color: #475569; max-width: 600px; margin: 0 auto; }
+    .page-hero { background: linear-gradient(135deg, #1a3a5c 0%, #2d6aaf 100%); padding: 3rem 1.5rem; text-align: center; }
+    .page-hero h1 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .page-hero p { color: rgba(255,255,255,0.85); max-width: 600px; margin: 0 auto; }
 
     .breadcrumb { max-width: 1200px; margin: 0 auto; padding: 1rem 1.5rem; font-size: 0.85rem; color: #64748b; }
-    .breadcrumb a { color: #2563EB; }
+    .breadcrumb a { color: #4A90D9; }
     .breadcrumb a:hover { text-decoration: underline; }
 
     .content { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 3rem; }
-    .content h2 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1e293b; border-left: 4px solid #2563EB; padding-left: 0.75rem; }
+    .content h2 { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1e293b; border-left: 4px solid #4A90D9; padding-left: 0.75rem; }
     .content p { color: #334155; margin-bottom: 1rem; font-size: 1rem; line-height: 1.8; }
     .intro-text { max-width: 800px; margin: 0 auto 2rem; text-align: center; }
 
     .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
     .dest-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 2rem 1.5rem; text-align: center; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
-    .dest-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(37,99,235,0.12); border-color: #2563EB; }
+    .dest-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(74,144,217,0.12); border-color: #4A90D9; }
     .dest-card .emoji { font-size: 3rem; margin-bottom: 0.75rem; }
     .dest-card h3 { font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
     .dest-card p { color: #64748b; font-size: 0.9rem; line-height: 1.6; flex-grow: 1; }
-    .dest-card .card-link { display: inline-block; margin-top: 1rem; color: #2563EB; font-weight: 600; font-size: 0.9rem; }
+    .dest-card .card-link { display: inline-block; margin-top: 1rem; color: #4A90D9; font-weight: 600; font-size: 0.9rem; }
     .dest-card .card-link:hover { text-decoration: underline; }
 
     .ad-container { text-align: center; margin: 2rem 0; padding: 1rem 0; min-height: 0; overflow: hidden; }
 
-    .footer { background: #1e293b; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
+    .footer { background: #0f1e3c; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
     .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer-brand-name { font-size: 1.2rem; font-weight: 700; color: #4A90D9; margin-bottom: 0.75rem; }
     .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
     .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
     .footer a:hover { color: #fff; }
-    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #334155; text-align: center; font-size: 0.85rem; }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #1e3460; text-align: center; font-size: 0.85rem; }
     .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
     .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
 
@@ -177,9 +180,9 @@
 <!-- Smart App Banner (Android Only) -->
 <div id="smartAppBanner" class="smart-app-banner">
   <div class="banner-content">
-    <div class="banner-icon">🎯</div>
+    <div class="banner-icon"><img src="/assets/icon-192-v2.png" width="36" height="36" alt="myTravel" style="border-radius:8px;display:block;"/></div>
     <div class="banner-text">
-      <h4>myTravel</h4>
+      <div class="footer-brand-name">myTravel</div>
       <p id="bannerTagline">AI가 만드는 완벽한 여행</p>
       <div class="banner-rating">Google Play에서 무료</div>
     </div>
@@ -194,11 +197,11 @@
 
 <header class="header">
   <div class="header-inner">
-    <a href="/" class="logo">My<span>Travel</span></a>
+    <a href="/" class="logo">myTravel</a>
     <nav class="nav">
       <a href="/">홈</a>
       <a href="/about">소개</a>
-      <a href="/guides/" style="color:#2563EB;font-weight:600;">가이드</a>
+      <a href="/guides/" style="color:#4A90D9;font-weight:600;">가이드</a>
       <a href="/blog">블로그</a>
       <a href="/contact">문의</a>
       <a href="/login" class="btn btn-primary">로그인</a>
@@ -218,10 +221,10 @@
 <main class="content">
   <div class="intro-text">
     <p>
-      MyTravel가 엄선한 전 세계 인기 여행지 20곳의 완벽 가이드입니다.
+      myTravel가 엄선한 전 세계 인기 여행지 20곳의 완벽 가이드입니다.
       각 도시별 추천 관광지, 현지 음식, 교통 이용법, 최적의 여행 시기까지
       여행 준비에 필요한 모든 정보를 담았습니다. 가이드를 참고하여 여행 계획을
-      세우고, MyTravel의 AI 자동 일정 생성 기능으로 나만의 완벽한 여행
+      세우고, myTravel의 AI 자동 일정 생성 기능으로 나만의 완벽한 여행
       일정을 만들어 보세요.
     </p>
     <p>
@@ -380,13 +383,13 @@
     숙소는 도심 접근성과 대중교통 편의성을 기준으로 선택하면 이동 시간과 교통비를
     절약할 수 있습니다. 현지 유심이나 포켓 와이파이를 미리 준비하면 도착 즉시
     지도 앱과 번역 앱을 활용하여 편리하게 여행할 수 있습니다.
-    MyTravel를 활용하면 이 모든 준비 과정에서 현지 날씨, 시차, 추천 관광지
+    myTravel를 활용하면 이 모든 준비 과정에서 현지 날씨, 시차, 추천 관광지
     정보를 한눈에 확인할 수 있어 여행 준비가 훨씬 수월해집니다.
   </p>
 
-  <h2>MyTravel로 여행 계획 시작하기</h2>
+  <h2>myTravel로 여행 계획 시작하기</h2>
   <p>
-    가이드를 통해 여행지에 대한 정보를 확인하셨나요? 이제 MyTravel의 AI가
+    가이드를 통해 여행지에 대한 정보를 확인하셨나요? 이제 myTravel의 AI가
     여러분만을 위한 맞춤 여행 일정을 자동으로 만들어 드립니다. 여행지와 날짜만
     입력하면 현지 날씨, 이동 시간, 인기 관광지를 고려한 최적의 일정이 완성됩니다.
     물론 생성된 일정은 자유롭게 수정하고 추가할 수 있습니다. 소셜 기능을 통해
@@ -402,7 +405,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <div>
-      <h4>MyTravel</h4>
+      <div class="footer-brand-name">myTravel</div>
       <p style="font-size:0.9rem;">AI 기반 여행 계획 서비스.<br/>목적지만 선택하면 맞춤 일정이 완성됩니다.</p>
       <div class="langs" style="margin-top:1rem;">
         <span class="lang-badge">🇰🇷 한국어</span>
@@ -414,11 +417,20 @@
         <span class="lang-badge">🇫🇷 Français</span>
         <span class="lang-badge">🇹🇭 ไทย</span>
         <span class="lang-badge">🇻🇳 Tiếng Việt</span>
+        <span class="lang-badge">🇧🇷 Português</span>
+        <span class="lang-badge">🇸🇦 العربية</span>
+        <span class="lang-badge">🇮🇩 Bahasa</span>
+        <span class="lang-badge">🇮🇳 हिन्दी</span>
+        <span class="lang-badge">🇮🇹 Italiano</span>
+        <span class="lang-badge">🇷🇺 Русский</span>
+        <span class="lang-badge">🇹🇷 Türkçe</span>
+        <span class="lang-badge">🇲🇾 Melayu</span>
       </div>
     </div>
     <div>
       <h4>서비스</h4>
-      <a href="/login">여행 계획 만들기</a>
+      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner">앱 다운로드 (Android)</a>
+      <a href="https://apps.apple.com/app/id6766147060">앱 다운로드 (iOS)</a>
       <a href="/guides/">여행 가이드</a>
       <a href="/blog">블로그</a>
       <a href="/about">서비스 소개</a>
