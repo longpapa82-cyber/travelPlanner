@@ -14,16 +14,20 @@
 
 ### 앱 이름 (30자)
 ```
-MyTravel - AI 여행 플래너
+AI 여행 플래너 - 일정·경비 자동관리
 ```
 
 ### 짧은 설명 (80자)
 ```
-AI가 맞춤 여행 일정을 만들어 드립니다. 경비 기록, 친구와 공유까지 한 번에.
+AI로 여행 일정 자동 생성. 해외여행·국내여행 코스 추천, 경비 기록, 여행 플래너·일정표 무료!
 ```
 
 ### 자세한 설명 (4000자)
 ```
+여행 계획이 막막할 때, MyTravel이 도와드립니다.
+해외 여행 일정부터 국내 여행 코스 추천까지, AI가 자동으로 만들어주는 여행 플래너입니다.
+여행 준비 앱으로 여행지 검색, 여행 일정표 작성, 여행 경비 계산을 한 번에 해보세요.
+
 여행 계획, 아직도 혼자 고민하고 계신가요?
 
 MyTravel은 AI가 당신만의 맞춤형 여행 일정을 자동으로 만들어주는 스마트 여행 플래너입니다. 목적지와 여행 기간만 알려주세요. AI가 현지 날씨, 인기 명소, 이동 동선까지 고려해 최적의 일정을 설계합니다.
@@ -77,16 +81,20 @@ MyTravel은 AI가 당신만의 맞춤형 여행 일정을 자동으로 만들어
 
 ### App Name (30 chars)
 ```
-MyTravel - AI Trip Planner
+AI Travel Planner & Itinerary
 ```
 
 ### Short Description (80 chars)
 ```
-AI creates your tailored itinerary. Track expenses and share trips with friends.
+AI trip planner: itinerary, expense tracker, travel guide & trip sharing. Free!
 ```
 
 ### Full Description (4000 chars)
 ```
+Plan your perfect trip with MyTravel — the AI travel planner for itinerary building, expense tracking, and travel guide discovery.
+Whether planning a vacation, weekend trip, or solo travel — AI creates your personalized travel itinerary in seconds.
+Use our trip planner to search destinations, build your travel schedule, and track travel expenses all in one place.
+
 Still spending hours planning your trips?
 
 MyTravel is a smart travel planner that uses AI to create your tailored itinerary quickly. Just tell us your destination and travel dates — AI designs an optimized schedule considering local weather, popular attractions, and efficient routes.
@@ -141,16 +149,20 @@ Terms of Service: https://mytravel-planner.com/terms-en.html
 
 ### アプリ名 (30字)
 ```
-MyTravel - AI旅行プランナー
+MyTravel - AI旅行計画·日程自動生成
 ```
 
 ### 短い説明 (80字)
 ```
-AIがあなただけの旅行プランを作成。経費記録、友達との共有まで。
+AI旅行プランナー：旅行日程自動生成、海外旅行計画、経費記録、旅行スケジュール管理を一括で！
 ```
 
 ### 詳しい説明 (4000字)
 ```
+旅行の計画に迷ったら、MyTravelにお任せください。
+海外旅行の日程から国内旅行のコース提案まで、AIが自動で作成する旅行プランナーです。
+旅行準備アプリとして、旅行先の検索、旅行スケジュール作成、旅行経費の管理を一括でできます。
+
 旅行の計画、まだ一人で悩んでいませんか？
 
 MyTravelは、AIがあなたにぴったりの旅行プランを自動で作成するスマート旅行プランナーです。行き先と旅行期間を入力するだけ。AIが現地の天気、人気スポット、移動ルートを考慮して最適なプランを設計します。
