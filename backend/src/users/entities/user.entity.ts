@@ -146,6 +146,9 @@ export class User {
   @Column({ type: 'varchar', length: 16, nullable: true })
   subscriptionPlanType?: 'monthly' | 'yearly';
 
+  @Column({ type: 'boolean', nullable: true, default: null })
+  subscriptionIsSandbox?: boolean | null;
+
   @Column({ type: 'varchar', nullable: true, select: false })
   revenuecatAppUserId?: string;
 

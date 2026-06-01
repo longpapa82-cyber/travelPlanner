@@ -303,11 +303,14 @@ export class SubscriptionService {
     let rcActiveSkus: string[] = [];
 
     // V213: cache stores JSON with skus + deletedAt for phantom detection
+    // V216: also store isSandboxOnly to filter sandbox-only entitlements in production
     interface RcCacheEntry {
       skus: string[];
       deletedAt: string | null;
+      isSandboxOnly?: boolean;
     }
     let rcDeletedAt: string | null = null;
+    let rcIsSandboxOnly = false;
 
     if (cachedRcActive !== null && cachedRcActive !== undefined) {
       const parsed: RcCacheEntry = cachedRcActive
@@ -315,14 +318,23 @@ export class SubscriptionService {
         : { skus: [], deletedAt: null };
       rcActiveSkus = parsed.skus ?? (parsed as unknown as string[]); // backward compat
       rcDeletedAt = parsed.deletedAt ?? null;
+      rcIsSandboxOnly = parsed.isSandboxOnly ?? false;
     } else {
       try {
         const info = await this.rcClient.getSubscriberInfo(rcUserId);
-        rcActiveSkus = info.activeEntitlements.map((e) => e.productIdentifier);
+        // V216: sandbox-only entitlements should not block production purchases.
+        // A Sandbox TestFlight entitlement (isSandbox=true) can remain active
+        // after the user cancels in Google Play — they are separate billing systems.
+        // Filter out sandbox entitlements from the active SKU list for production preflight.
+        const allActive = info.activeEntitlements;
+        const prodActive = allActive.filter((e) => !e.isSandbox);
+        rcIsSandboxOnly = allActive.length > 0 && prodActive.length === 0;
+        rcActiveSkus = prodActive.map((e) => e.productIdentifier);
         rcDeletedAt = info.deletedAt;
         const entry: RcCacheEntry = {
           skus: rcActiveSkus,
           deletedAt: rcDeletedAt,
+          isSandboxOnly: rcIsSandboxOnly,
         };
         await this.cacheManager.set(
           cacheKey,
@@ -344,6 +356,14 @@ export class SubscriptionService {
         }
         throw err;
       }
+    }
+
+    // V216: log when sandbox-only entitlements were filtered out
+    if (rcIsSandboxOnly) {
+      this.logger.warn(
+        `Preflight ALLOW [sandbox-filtered]: user ${userId} had sandbox-only RC entitlements. ` +
+          `Filtered for production preflight — sandbox and production are separate billing systems.`,
+      );
     }
 
     if (rcActiveSkus.length > 0) {
@@ -578,6 +598,26 @@ export class SubscriptionService {
         });
       }
     }
+    // RC may send the anonymous ID ($RCAnonymousID:xxx) when logIn() alias
+    // hasn't propagated yet. Try to find the user via the RC alias API.
+    if (!user && appUserId.startsWith('$RCAnonymousID:')) {
+      this.logger.warn(
+        `[webhook] RC anonymous ID received: ${appUserId}. ` +
+          'Attempting alias lookup via RC API.',
+      );
+      try {
+        const info = await this.rcClient.getSubscriberInfo(appUserId);
+        // RC subscriber object carries `other_purchases` keyed by our UUID
+        // when an alias chain exists. We can't easily extract it here without
+        // the raw RC response. Instead, log and let syncFromRc handle it.
+        this.logger.warn(
+          `[webhook] Anonymous ID has ${info.activeEntitlements.length} active entitlements. ` +
+            'syncFromRc will reconcile on next client call.',
+        );
+      } catch {
+        // RC API unavailable — continue, user will remain null, webhook skipped
+      }
+    }
 
     if (!user) {
       this.logger.warn(
@@ -627,6 +667,7 @@ export class SubscriptionService {
           subscriptionPlatform:
             storeToPlatform[event.store || ''] || user.subscriptionPlatform,
           subscriptionExpiresAt: expiresAt,
+          subscriptionIsSandbox: event.environment === 'SANDBOX',
           ...(planType && { subscriptionPlanType: planType }),
           ...(purchasedAt && { subscriptionStartedAt: purchasedAt }),
           revenuecatAppUserId: appUserId,
@@ -794,6 +835,7 @@ export class SubscriptionService {
     if (transferExpiresAt && transferExpiresAt > new Date()) {
       update.subscriptionTier = SubscriptionTier.PREMIUM;
       update.subscriptionExpiresAt = transferExpiresAt;
+      update.subscriptionIsSandbox = event.environment === 'SANDBOX';
       if (planType) update.subscriptionPlanType = planType;
       const remainingMs = transferExpiresAt.getTime() - Date.now();
       await this.cacheManager.set(
@@ -929,5 +971,75 @@ export class SubscriptionService {
     this.logger.log(
       `Purged ${result.affected ?? 0} processed_webhook_events older than 30 days`,
     );
+  }
+
+  /**
+   * RC SDK가 이미 entitlement를 확인한 상태에서 서버 DB가 아직 free인 경우
+   * RC REST API에서 직접 subscriber 정보를 가져와 DB를 강제 동기화합니다.
+   *
+   * 사용 시점: finalizePurchase polling 60초 타임아웃 후 클라이언트가 호출.
+   * RC → DB 경로: REST API getSubscriberInfo → parseEntitlement → userRepository.update
+   */
+  async syncFromRc(userId: string): Promise<{ synced: boolean; tier: string }> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'email', 'subscriptionTier', 'revenuecatAppUserId'],
+    });
+
+    if (!user) {
+      return { synced: false, tier: 'free' };
+    }
+
+    // RC 앱 유저 ID: 우리 UUID 우선, 없으면 DB 저장된 RC ID
+    const rcAppUserId = user.revenuecatAppUserId || String(userId);
+
+    let subscriberInfo;
+    try {
+      subscriberInfo = await this.rcClient.getSubscriberInfo(rcAppUserId);
+    } catch {
+      this.logger.warn(`[syncFromRc] RC API unavailable for user=${userId}`);
+      return { synced: false, tier: user.subscriptionTier };
+    }
+
+    // Accept both production and sandbox entitlements — TestFlight builds
+    // always produce sandbox entitlements (isSandbox=true). Filtering them
+    // out caused syncFromRc to always return synced=false for TestFlight
+    // testers, resulting in infinite loading after purchase.
+    // The subscriptionIsSandbox flag keeps sandbox purchases out of the
+    // revenue dashboard (already filtered there).
+    const allActive = subscriberInfo.activeEntitlements;
+    const isSandboxOnly =
+      allActive.length > 0 && allActive.every((e) => e.isSandbox);
+
+    if (allActive.length === 0) {
+      this.logger.log(`[syncFromRc] No active entitlements for user=${userId}`);
+      return { synced: false, tier: user.subscriptionTier };
+    }
+
+    // 만료일 중 가장 늦은 것 사용 (null = 영구)
+    const expiresAt = allActive.reduce((latest: Date | null, e) => {
+      if (e.expiresDate === null) return null;
+      if (latest === null) return latest;
+      return e.expiresDate > latest ? e.expiresDate : latest;
+    }, allActive[0].expiresDate);
+
+    await this.userRepository.update(userId, {
+      subscriptionTier: SubscriptionTier.PREMIUM,
+      subscriptionPlatform: SubscriptionPlatform.IOS,
+      subscriptionExpiresAt:
+        expiresAt ?? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      subscriptionStartedAt: new Date(),
+      subscriptionIsSandbox: isSandboxOnly,
+    });
+
+    await this.cacheManager.set(`premium:${userId}`, 'true', PREMIUM_CACHE_TTL);
+    await this.cacheManager.del(`preflight:rc:${userId}`);
+
+    this.logger.log(
+      `[syncFromRc] Synced user=${userId} to PREMIUM from RC direct API. ` +
+        `entitlements=${allActive.length} isSandbox=${isSandboxOnly} expiresAt=${expiresAt?.toISOString() ?? 'lifetime'}`,
+    );
+
+    return { synced: true, tier: 'premium' };
   }
 }

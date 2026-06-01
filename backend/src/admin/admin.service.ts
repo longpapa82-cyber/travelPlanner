@@ -195,8 +195,7 @@ export class AdminService {
         'u.lastLoginAt',
         'u.createdAt',
       ])
-      .orderBy('u.lastLoginAt', 'DESC', 'NULLS LAST')
-      .addOrderBy('u.createdAt', 'DESC');
+      .orderBy('COALESCE(u.lastLoginAt, u.createdAt)', 'DESC');
 
     if (search) {
       qb.andWhere('(u.name ILIKE :search OR u.email ILIKE :search)', {
@@ -386,6 +385,9 @@ export class AdminService {
   async getSubscriptionStats() {
     const now = new Date();
 
+    // Test accounts excluded from revenue stats (sandbox/internal testers)
+    const TEST_EMAILS = ['hoonjae723@gmail.com'];
+
     // Active subscribers by platform and tier
     const subsRaw = await this.userRepository
       .createQueryBuilder('u')
@@ -396,6 +398,10 @@ export class AdminService {
       .andWhere(
         '(u.subscriptionExpiresAt IS NULL OR u.subscriptionExpiresAt > :now)',
         { now },
+      )
+      .andWhere('u.email NOT IN (:...testEmails)', { testEmails: TEST_EMAILS })
+      .andWhere(
+        '(u.subscriptionIsSandbox IS NULL OR u.subscriptionIsSandbox = false)',
       )
       .groupBy('u.subscriptionPlatform')
       .addGroupBy('u.subscriptionTier')

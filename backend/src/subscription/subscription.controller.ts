@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Headers,
-  Req,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -79,6 +78,13 @@ export class SubscriptionController {
     @Body() body: PreflightPurchaseDto,
   ) {
     return this.subscriptionService.preflightPurchase(userId, body?.sku);
+  }
+
+  @Post('sync-from-rc')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async syncFromRc(@CurrentUser('userId') userId: string) {
+    return this.subscriptionService.syncFromRc(userId);
   }
 
   @Post('webhook')

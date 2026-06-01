@@ -169,6 +169,7 @@ export class RevenueCatClient {
 
     const subscriber = response.data?.subscriber ?? {};
     const entitlements: Record<string, any> = subscriber.entitlements ?? {};
+    const subscriptions: Record<string, any> = subscriber.subscriptions ?? {};
     const attributes: Record<string, any> =
       subscriber.subscriber_attributes ?? {};
 
@@ -180,10 +181,14 @@ export class RevenueCatClient {
     for (const [, ent] of Object.entries(entitlements)) {
       const expiresDate = ent.expires_date ? new Date(ent.expires_date) : null;
       if (expiresDate === null || expiresDate > now) {
+        // is_sandbox is on the subscriptions object, not entitlements.
+        // Cross-reference via product_identifier to get the correct flag.
+        const productId: string = ent.product_identifier ?? '';
+        const subInfo = subscriptions[productId] ?? {};
         activeEntitlements.push({
-          productIdentifier: ent.product_identifier ?? '',
+          productIdentifier: productId,
           expiresDate,
-          isSandbox: !!ent.is_sandbox,
+          isSandbox: !!subInfo.is_sandbox,
         });
       }
     }
