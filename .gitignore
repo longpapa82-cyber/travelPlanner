@@ -45,6 +45,10 @@ tests/.auth/
 tmp/
 temp/
 *.tmp
+*.bak
+*.bak[0-9]*
+*.bak_*
+tests_tmp.*
 
 # Backend specific
 backend/dist/
