@@ -27,6 +27,7 @@ let initialized = false;
 let initializationPromise: Promise<void> | null = null;
 
 export async function initializeAds(): Promise<void> {
+
   // Return existing promise if initialization is in progress
   if (initializationPromise) {
     console.log('[AdMob] ⏳ Waiting for existing initialization...');
@@ -70,22 +71,30 @@ async function performInitialization(): Promise<void> {
     // 2. Google UMP consent (GDPR) — must come after config but before init
     try {
       const consentInfo = await AdsConsent.requestInfoUpdate();
-      console.log('[AdMob] 📋 Consent status:', consentInfo.status);
+      console.log('[AdMob] 📋 UMP Consent status:', consentInfo.status);
 
       if (consentInfo.status === AdsConsentStatus.REQUIRED) {
         console.log('[AdMob] 📋 Showing consent form...');
         const consentResult = await AdsConsent.loadAndShowConsentFormIfRequired();
         console.log('[AdMob] 📋 Consent form result:', consentResult);
       } else {
-        console.log('[AdMob] 📋 Consent not required, proceeding (status:', consentInfo.status, ')');
+        console.log('[AdMob] 📋 UMP Consent not required, proceeding (status:', consentInfo.status, ')');
       }
     } catch (error) {
       // UMP not configured in AdMob console yet — proceed without consent form
       console.log('[AdMob] ℹ️  UMP consent not configured, proceeding without consent form');
     }
 
-    // 3. ATT is handled by useTrackingTransparency + PrePermissionATTModal
-    //    (deferred until session >= 3). Do NOT request here.
+    // 3. iOS App Tracking Transparency (ATT) — must be requested before AdMob init
+    if (Platform.OS === 'ios') {
+      try {
+        console.log('[AdMob] 📋 Requesting iOS App Tracking Transparency...');
+        const attGranted = await requestATTPermission();
+        console.log('[AdMob] 📋 iOS ATT permission granted:', attGranted);
+      } catch (attError) {
+        console.error('[AdMob] ❌ iOS ATT permission request failed:', attError);
+      }
+    }
 
     // 4. Initialize AdMob SDK
     console.log('[AdMob] 🎯 Initializing AdMob SDK...');
@@ -234,4 +243,12 @@ export function getTestDeviceHashes(): string[] {
 
 export function isAdsInitialized(): boolean {
   return initialized;
+}
+
+export async function requestATTPermission(): Promise<boolean> {
+  return false;
+}
+
+export async function getATTStatus(): Promise<boolean> {
+  return false;
 }

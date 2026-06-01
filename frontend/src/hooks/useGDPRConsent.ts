@@ -6,7 +6,8 @@
  * Non-EU users pass through without interruption.
  */
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 
 type ConsentStatus = 'unknown' | 'required' | 'not_required' | 'obtained';
 
@@ -24,12 +25,19 @@ export function useGDPRConsent(): GDPRConsentResult {
   useEffect(() => {
     let mounted = true;
 
-    // Safety timeout: if UMP SDK hangs, proceed with non-personalized ads
-    const safetyTimeout = setTimeout(() => {
+    // Safety timeout: if initialization hangs, proceed with non-personalized ads
+    const safetyTimeout = setTimeout(async () => {
       if (mounted && !isReady) {
-        console.log('[useGDPRConsent] Timeout — proceeding without UMP result');
-        setConsentStatus('not_required');
-        setCanShowPersonalizedAds(false);
+        console.log('[useGDPRConsent] Timeout — proceeding without consent result');
+        let attGranted = false;
+        if (Platform.OS === 'ios') {
+          try {
+            const { getATTStatus } = await import('../utils/initAds.native');
+            attGranted = await getATTStatus();
+          } catch {}
+        }
+        setConsentStatus('unknown');
+        setCanShowPersonalizedAds(Platform.OS === 'ios' ? attGranted : false);
         setIsReady(true);
       }
     }, 5000);
@@ -37,45 +45,55 @@ export function useGDPRConsent(): GDPRConsentResult {
     (async () => {
       try {
         const { AdsConsent, AdsConsentStatus } = await import('react-native-google-mobile-ads');
+        const { initializeAds, getATTStatus } = await import('../utils/initAds.native');
 
-        // Request consent info update (checks geography, prior consent)
-        const consentInfo = await AdsConsent.requestInfoUpdate();
+        // Wait for the central ad initialization flow to complete (handles UMP + ATT prompts)
+        await initializeAds();
 
         if (!mounted) return;
 
+        const consentInfo = await AdsConsent.requestInfoUpdate();
+        let gdprPersonalized = true;
+        let status: ConsentStatus = 'not_required';
+
         if (consentInfo.status === AdsConsentStatus.REQUIRED) {
-          // EU user who hasn't consented yet — show form
-          setConsentStatus('required');
-          try {
-            const formResult = await AdsConsent.loadAndShowConsentFormIfRequired();
-            if (!mounted) return;
-            if (formResult.status === AdsConsentStatus.OBTAINED) {
-              setConsentStatus('obtained');
-              // Check if they allowed personalized ads
-              const purposes = await AdsConsent.getUserChoices();
-              setCanShowPersonalizedAds(purposes.storeAndAccessInformationOnDevice);
-            } else {
-              setConsentStatus('required');
-              setCanShowPersonalizedAds(false);
-            }
-          } catch {
-            // Form load/show failed — fall back to non-personalized
-            if (mounted) setCanShowPersonalizedAds(false);
-          }
+          status = 'required';
+          gdprPersonalized = false;
         } else if (consentInfo.status === AdsConsentStatus.OBTAINED) {
-          setConsentStatus('obtained');
-          const purposes = await AdsConsent.getUserChoices();
-          if (mounted) setCanShowPersonalizedAds(purposes.storeAndAccessInformationOnDevice);
-        } else {
-          // NOT_REQUIRED (non-EU) or UNKNOWN
-          setConsentStatus('not_required');
-          setCanShowPersonalizedAds(true);
+          status = 'obtained';
+          try {
+            const purposes = await AdsConsent.getUserChoices();
+            gdprPersonalized = purposes.storeAndAccessInformationOnDevice;
+          } catch (e) {
+            console.log('[useGDPRConsent] Error getting UMP choices:', e);
+            gdprPersonalized = false;
+          }
         }
-      } catch {
-        // UMP SDK not available or error — default to non-personalized
+
+        // On iOS, also require ATT permission for personalized ads
+        let attGranted = true;
+        if (Platform.OS === 'ios') {
+          attGranted = await getATTStatus();
+          console.log('[useGDPRConsent] iOS ATT permission status:', attGranted);
+        }
+
+        const allowed = gdprPersonalized && attGranted;
+        console.log('[useGDPRConsent] Personalization allowed:', allowed, '(GDPR:', gdprPersonalized, 'ATT:', attGranted, ')');
+
         if (mounted) {
-          setConsentStatus('not_required');
-          setCanShowPersonalizedAds(true);
+          setConsentStatus(status);
+          setCanShowPersonalizedAds(allowed);
+        }
+      } catch (error) {
+        console.error('[useGDPRConsent] Error checking consent:', error);
+        if (mounted) {
+          setConsentStatus('unknown');
+          let attGranted = false;
+          try {
+            const { getATTStatus } = await import('../utils/initAds.native');
+            attGranted = await getATTStatus();
+          } catch {}
+          setCanShowPersonalizedAds(Platform.OS === 'ios' ? attGranted : true);
         }
       } finally {
         if (mounted) setIsReady(true);

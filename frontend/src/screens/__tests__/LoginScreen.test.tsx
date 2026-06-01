@@ -6,6 +6,22 @@ import { ToastProvider } from '../../components/feedback/Toast/ToastContext';
 
 // ── Mocks ──
 
+jest.mock('@react-native-google-signin/google-signin', () => ({
+  GoogleSignin: {
+    configure: jest.fn(),
+    hasPlayServices: jest.fn().mockResolvedValue(true),
+    signIn: jest.fn(),
+    signOut: jest.fn(),
+    revokeAccess: jest.fn(),
+    isSignedIn: jest.fn().mockReturnValue(false),
+  },
+  statusCodes: {
+    SIGN_IN_CANCELLED: 'SIGN_IN_CANCELLED',
+    IN_PROGRESS: 'IN_PROGRESS',
+    PLAY_SERVICES_NOT_AVAILABLE: 'PLAY_SERVICES_NOT_AVAILABLE',
+  },
+}));
+
 const mockLogin = jest.fn();
 const mockLoginWithGoogle = jest.fn();
 const mockLoginWithApple = jest.fn();
