@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThanOrEqual } from 'typeorm';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import {
   Announcement,
   AnnouncementTargetAudience,
@@ -9,6 +10,8 @@ import { AnnouncementRead } from './entities/announcement-read.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateAnnouncementDto } from './dto/create-announcement.dto';
 import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
+
+const UNREAD_COUNT_TTL_MS = 60_000; // 60s — short enough to feel real-time, long enough to absorb polling bursts
 
 @Injectable()
 export class AnnouncementService {
@@ -19,6 +22,8 @@ export class AnnouncementService {
     private readonly readRepo: Repository<AnnouncementRead>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   private async getUserTier(userId: string): Promise<'free' | 'premium'> {
@@ -190,6 +195,10 @@ export class AnnouncementService {
   }
 
   async getUnreadCount(userId: string): Promise<number> {
+    const cacheKey = `announcement:unread:${userId}`;
+    const cached = await this.cacheManager.get<number>(cacheKey);
+    if (cached !== null && cached !== undefined) return cached;
+
     const now = new Date();
     const userTier = await this.getUserTier(userId);
 
@@ -227,7 +236,13 @@ export class AnnouncementService {
       return `a.id NOT IN ${subQuery}`;
     }).setParameter('userId', userId);
 
-    return qb.getCount();
+    const count = await qb.getCount();
+    await this.cacheManager.set(cacheKey, count, UNREAD_COUNT_TTL_MS);
+    return count;
+  }
+
+  private invalidateUnreadCountCache(userId: string): void {
+    this.cacheManager.del(`announcement:unread:${userId}`).catch(() => {});
   }
 
   private async findActiveAnnouncement(id: string): Promise<Announcement> {
@@ -260,6 +275,7 @@ export class AnnouncementService {
     }
 
     await this.readRepo.save(this.readRepo.create({ userId, announcementId }));
+    this.invalidateUnreadCountCache(userId);
   }
 
   async dismiss(userId: string, announcementId: string): Promise<void> {
@@ -281,5 +297,6 @@ export class AnnouncementService {
         }),
       );
     }
+    this.invalidateUnreadCountCache(userId);
   }
 }
