@@ -2,23 +2,21 @@ export default ({ config }) => ({
   ...config,
   name: 'MyTravel',
   slug: 'travel-planner',
-  version: '1.0.0',
+  version: '1.4.2',
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   scheme: 'travelplanner',
-  splash: {
-    image: './assets/splash-icon.png',
-    // splash-icon.png: 1284×2778 canvas, #4A90D9 background with centered app icon.
-    // backgroundColor matches so there is no color flash on any aspect ratio.
-    resizeMode: 'contain',
-    backgroundColor: '#4A90D9',
-  },
+  // NOTE: Top-level splash intentionally omitted.
+  // iOS splash is controlled via ['expo-splash-screen', props] in plugins[] below
+  // so getIosSplashConfig.js takes the `if (props)` branch — enabling imageWidth control.
+  // Android splash is set in android.splash below (separate block required for Android).
+  // Web has no splash (WebAppRedirectScreen renders immediately).
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.longpapa82.travelplanner',
-    buildNumber: '33',
+    buildNumber: '85',
     usesAppleSignIn: true,
     associatedDomains: [
       'applinks:mytravel-planner.com',
@@ -39,18 +37,23 @@ export default ({ config }) => ({
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#4A90D9',
     },
-    // Android splash backgroundColor must be set here separately from the
-    // top-level splash block, which only applies to iOS/Web. Without this,
-    // Android defaults to #FFFFFF, showing a white rectangle around the icon.
+    // Android splash backgroundColor: #4A90D9 so native splash bg → app icon visible.
+    // hideAsync() fires at JS mount (~2.5s after launch) so native splash shows for ~2.5s.
+    // After hideAsync(), !appReady white+spinner screen shows briefly (~3s, i18n loading).
     splash: {
       image: './assets/splash-icon.png',
       resizeMode: 'contain',
       backgroundColor: '#4A90D9',
+      imageWidth: 288,
     },
-    edgeToEdgeEnabled: true,
+    // edgeToEdgeEnabled: false — EdgeToEdgePackage.onCreate()이 즉시 enableEdgeToEdge()를
+    // 호출해 navigationBar 색상 변경 → WindowManager inset 재계산 → 파란 배경 깜빡임 유발.
+    // withAndroidDeferEdgeToEdge 플러그인으로 지연을 시도했으나 EdgeToEdgePackage 자체를
+    // 막지 못해 여전히 즉시 실행됨. StatusBar는 expo-status-bar로 JS에서 제어.
+    edgeToEdgeEnabled: false,
     softwareKeyboardLayoutMode: 'pan',
     package: 'com.longpapa82.travelplanner',
-    versionCode: config.android?.versionCode ?? 42,
+    versionCode: config.android?.versionCode ?? 288,
     // V189.1 P0-D: explicit permission whitelist.
     //
     // V189.0 listed READ_MEDIA_IMAGES so the photo picker would work on
@@ -89,10 +92,16 @@ export default ({ config }) => ({
     intentFilters: [
       {
         action: 'VIEW',
+        data: [{ scheme: 'travelplanner' }],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
+      {
+        action: 'VIEW',
         autoVerify: true,
         data: [
-          { scheme: 'travelplanner' },
           { scheme: 'https', host: 'mytravel-planner.com', pathPrefix: '/auth' },
+          { scheme: 'https', host: 'mytravel-planner.com', pathPrefix: '/app' },
+          { scheme: 'https', host: 'mytravel-planner.com', pathPrefix: '/share' },
         ],
         category: ['BROWSABLE', 'DEFAULT'],
       },
@@ -104,6 +113,32 @@ export default ({ config }) => ({
   },
   plugins: [
     './plugins/withDisableWebViewAutofill',
+    './plugins/withAndroidSplashImageWidth',
+    './plugins/withAndroidSplashAnimationDuration',
+    './plugins/withAndroidWindowBackground',
+    // withAndroidDeferEdgeToEdge 제거 — edgeToEdgeEnabled:false로 EdgeToEdgePackage 비활성화했으므로 불필요
+    './plugins/withFixSplashScreenRaceCondition',
+    // iOS splash: use plugin form so getIosSplashConfig takes the `if (props)` branch.
+    // enableFullScreenImage_legacy: false → uses SplashScreenLogo (imageWidth respected).
+    // imageWidth: 85 matches the JS loading screen icon size in App.tsx for a seamless transition.
+    [
+      'expo-splash-screen',
+      {
+        image: './assets/icon_transparent.png',
+        backgroundColor: '#4A90D9',
+        resizeMode: 'contain',
+        enableFullScreenImage_legacy: false,
+        imageWidth: 200,
+      },
+    ],
+    // expo-tracking-transparency plugin must be present even though ATT is not used.
+    // The package is in package.json (react-native-google-mobile-ads links ATTrackingManager),
+    // so the native module must be initialized via this plugin or UIManager crashes (SIGSEGV).
+    // userTrackingPermission: false prevents NSUserTrackingUsageDescription from being
+    // injected into Info.plist — App Store won't require a tracking data declaration.
+    ['expo-tracking-transparency', { userTrackingPermission: false }],
+    // Double-guard: remove NSUserTrackingUsageDescription even if injected by any plugin.
+    './plugins/withRemoveATTDescription',
     'expo-web-browser',
     'expo-apple-authentication',
     [
@@ -126,6 +161,10 @@ export default ({ config }) => ({
       'react-native-google-mobile-ads',
       {
         androidAppId: process.env.ADMOB_ANDROID_APP_ID || 'ca-app-pub-7330738950092177~5475101490',
+        // iosAppId is required by the native Google Mobile Ads SDK (GADApplicationIdentifier).
+        // Removing it causes an immediate crash on launch. AdMob ads are disabled on iOS at
+        // runtime via Platform.OS === 'ios' checks in initAds.native.ts and useGDPRConsent.ts.
+        // UMP consent form is also skipped on iOS in those same files.
         iosAppId: process.env.ADMOB_IOS_APP_ID || 'ca-app-pub-7330738950092177~7468498577',
         delayAppMeasurementInit: true,
       },
@@ -209,19 +248,19 @@ export default ({ config }) => ({
     },
     admob: {
       bannerAdUnitId: {
-        ios: process.env.ADMOB_IOS_BANNER_ID || 'ca-app-pub-7330738950092177/6974109326',
+        ios: process.env.ADMOB_IOS_BANNER_ID || 'ca-app-pub-7330738950092177/8971179051',
         android: process.env.ADMOB_ANDROID_BANNER_ID || 'ca-app-pub-7330738950092177/6507205462',
       },
       interstitialAdUnitId: {
-        ios: process.env.ADMOB_IOS_INTERSTITIAL_ID || 'ca-app-pub-7330738950092177/6010288116',
+        ios: process.env.ADMOB_IOS_INTERSTITIAL_ID || 'ca-app-pub-7330738950092177/5357413279',
         android: process.env.ADMOB_ANDROID_INTERSTITIAL_ID || 'ca-app-pub-7330738950092177/1039256361',
       },
       appOpenAdUnitId: {
-        ios: process.env.ADMOB_IOS_APP_OPEN_ID || 'ca-app-pub-7330738950092177/6405873931',
+        ios: process.env.ADMOB_IOS_APP_OPEN_ID || 'ca-app-pub-7330738950092177/6478923255',
         android: process.env.ADMOB_ANDROID_APP_OPEN_ID || 'ca-app-pub-7330738950092177/4051173331',
       },
       rewardedAdUnitId: {
-        ios: process.env.ADMOB_IOS_REWARDED_ID || 'ca-app-pub-7330738950092177/7718955609',
+        ios: process.env.ADMOB_IOS_REWARDED_ID || 'ca-app-pub-7330738950092177/9960827090',
         android: process.env.ADMOB_ANDROID_REWARDED_ID || 'ca-app-pub-7330738950092177/9032037274',
       },
     },

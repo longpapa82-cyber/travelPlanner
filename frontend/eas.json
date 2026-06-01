@@ -20,6 +20,9 @@
     },
     "staging": {
       "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api",
         "EXPO_PUBLIC_APP_URL": "https://mytravel-planner.com",
@@ -36,7 +39,19 @@
       },
       "autoIncrement": true
     },
+    "production-apk": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://mytravel-planner.com/api",
+        "EXPO_PUBLIC_APP_URL": "https://mytravel-planner.com",
+        "REVENUECAT_ANDROID_KEY": "goog_BeyiIKXfhmqtbtzaEGMRICChtQd",
+        "SENTRY_DSN": "https://350b24245c83bb14bc60b074844878d3@o4511263608471552.ingest.de.sentry.io/4511263624265808"
+      }
+    },
     "production-ios": {
+      "channel": "production",
       "ios": {
         "buildConfiguration": "Release"
       },
@@ -45,8 +60,7 @@
         "EXPO_PUBLIC_APP_URL": "https://mytravel-planner.com",
         "REVENUECAT_IOS_KEY": "appl_DtHjfizXdnNUxlHKhZKHuoZKYLe",
         "GOOGLE_IOS_CLIENT_ID": "48805541090-9gh3sp9asspe3d1et4er2pqpihm2bg47.apps.googleusercontent.com",
-        "SENTRY_DSN": "https://350b24245c83bb14bc60b074844878d3@o4511263608471552.ingest.de.sentry.io/4511263624265808",
-        "EXPO_PUBLIC_USE_TEST_ADS": "true"
+        "SENTRY_DSN": "https://350b24245c83bb14bc60b074844878d3@o4511263608471552.ingest.de.sentry.io/4511263624265808"
       }
     }
   },
@@ -54,13 +68,14 @@
     "alpha": {
       "android": {
         "serviceAccountKeyPath": "./google-play-service-account.json",
-        "track": "alpha"
+        "track": "alpha",
+        "releaseStatus": "draft",
+        "changesNotSentForReview": false
       }
     },
     "production": {
       "android": {
-        "serviceAccountKeyPath": "./google-play-service-account.json",
-        "track": "production"
+        "serviceAccountKeyPath": "./google-play-service-account.json"
       }
     },
     "production-ios": {

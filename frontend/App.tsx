@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator, Platform, View, Text, StyleSheet } from 'react-native';
+import { ActivityIndicator, AppState, AppStateStatus, Platform, View, Text, StyleSheet } from 'react-native';
+import * as NavigationBar from 'expo-navigation-bar';
+import * as Updates from 'expo-updates';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
@@ -16,7 +18,7 @@ import { ConfirmDialogProvider } from './src/components/feedback/ConfirmDialog';
 import { NotificationProvider } from './src/contexts/NotificationContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import ErrorBoundary from './src/components/ErrorBoundary';
-import { OfflineBanner } from './src/components/OfflineBanner';
+
 import { PWAInstallPrompt } from './src/components/PWAInstallPrompt';
 import { initI18n } from './src/i18n';
 import { offlineCache } from './src/services/offlineCache';
@@ -35,10 +37,15 @@ import apiService from './src/services/api';
 import WebAppRedirectScreen from './src/screens/web/WebAppRedirectScreen';
 
 // Hold the splash screen visible until app is fully ready.
-// Must be called before any rendering — prevents the iOS screenshot flicker
-// where the previous build's cached app snapshot briefly shows on cold launch.
+// Android: fade:false — immediate hide prevents the Android 12+ OS icon exit
+// animation gap where the icon disappears while the background lingers.
+// iOS: fade:true — smooth crossfade over the cached app snapshot on cold launch.
 if (Platform.OS !== 'web') {
   SplashScreen.preventAutoHideAsync().catch(() => {});
+  SplashScreen.setOptions({
+    fade: Platform.OS !== 'android',
+    duration: Platform.OS !== 'android' ? 500 : 0,
+  });
 }
 
 // Initialize Sentry before app renders
@@ -230,9 +237,17 @@ const AppContent = () => {
   const { isDark } = useTheme();
   useAppOpenAd();
 
+  // Android 시스템 네비게이션 바 색상을 탭 바와 동기화 (흰색/다크 배경)
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    const bgColor = isDark ? '#1E293B' : '#FFFFFF'; // darkColors.background.secondary / white
+    const btnStyle = isDark ? 'light' : 'dark';
+    NavigationBar.setBackgroundColorAsync(bgColor).catch(() => {});
+    NavigationBar.setButtonStyleAsync(btnStyle).catch(() => {});
+  }, [isDark]);
+
   return (
     <>
-      <OfflineBanner />
       <RootNavigator />
       <PWAInstallPrompt />
       <GDPRConsentBanner />
@@ -241,8 +256,32 @@ const AppContent = () => {
   );
 };
 
+// Check for OTA updates when app comes to foreground (native only).
+// ON_LOAD covers cold starts; this covers warm resumes.
+function useOTAUpdate() {
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    const handleAppStateChange = async (nextState: AppStateStatus) => {
+      if (nextState !== 'active') return;
+      try {
+        const update = await Updates.checkForUpdateAsync();
+        if (update.isAvailable) {
+          await Updates.fetchUpdateAsync();
+          await Updates.reloadAsync();
+        }
+      } catch {
+        // OTA failure is non-fatal — app continues with cached bundle
+      }
+    };
+    const sub = AppState.addEventListener('change', handleAppStateChange);
+    return () => sub.remove();
+  }, []);
+}
+
 function App() {
   const [appReady, setAppReady] = useState(false);
+  const splashHiddenRef = useRef(false);
+  useOTAUpdate();
 
   // On web, detect if we're at the OAuth callback URL.
   const isWebOAuthCallback =
@@ -261,9 +300,14 @@ function App() {
         await logTestDeviceInfo();
       }
 
+      // initializeAds is intentionally excluded from the blocking Promise.all.
+      // AdMob SDK initialization takes ~4 seconds on first install (no cache),
+      // which delays the JS splash frame and causes a blank blue screen while
+      // the native splash is fading out. Ads init runs in the background instead.
+      initializeAds().catch(() => {});
+
       await Promise.all([
         initI18n(),
-        initializeAds(),
         offlineCache.clearExpired(),
         Font.loadAsync({
           'material-community': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
@@ -272,20 +316,48 @@ function App() {
           'Ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
         }),
       ]);
-      setAppReady(true);
-      if (Platform.OS !== 'web') {
-        await SplashScreen.hideAsync();
-      }
+      // Defer setAppReady by two rAF ticks so all pending microtasks and
+      // the first JS paint cycle complete before hideAsync is called.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setAppReady(true);
+        });
+      });
     }
     prepare();
   }, [isWebOAuthCallback]);
 
+  // Android: hide native splash at mount so onPreDraw unblocks while appReady=false.
+  // The !appReady white+spinner screen is then the first JS frame shown to the user.
+  // The !appReady screen does NOT use SafeAreaView insets so the inset race is not
+  // an issue here. iOS uses null return so the system handles the fade natively.
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    if (splashHiddenRef.current) return;
+    splashHiddenRef.current = true;
+    SplashScreen.hideAsync().catch(() => {});
+  }, []);
+
+  const handleRootLayout = useCallback(() => {}, []);
+
   if (!appReady) {
+    // iOS: SplashScreen fades the entire Window — no gap, keep null.
+    if (Platform.OS !== 'android') return null;
+    // Android: native splash is already dismissed at mount above.
+    // Show white background + spinner while fonts/i18n finish loading.
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF9' }}>
-        <ActivityIndicator size="large" color="#3B82F6" />
+      <View style={{ flex: 1, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="#4A90D9" />
       </View>
     );
+  }
+
+  // Android: hide native splash now that the full app is ready (if not already done).
+  // This is a no-op for Android (already hidden at mount), but handles the iOS case
+  // and any edge case where the above effect didn't run.
+  if (Platform.OS !== 'web' && !splashHiddenRef.current) {
+    splashHiddenRef.current = true;
+    SplashScreen.hideAsync().catch(() => {});
   }
 
   // Render lightweight callback handler instead of full app
@@ -318,7 +390,7 @@ function App() {
   }
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider onLayout={handleRootLayout}>
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
