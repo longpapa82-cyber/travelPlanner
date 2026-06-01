@@ -60,6 +60,7 @@ export class UsersService {
     profileImage?: string;
     isEmailVerified?: boolean;
   }): Promise<User> {
+    const now = new Date();
     const userData: Partial<User> = {
       email: data.email,
       passwordHash: data.password
@@ -70,6 +71,9 @@ export class UsersService {
       providerId: data.providerId,
       profileImage: data.profileImage,
       isEmailVerified: data.isEmailVerified ?? false,
+      // Set lastLoginAt at signup so all users appear in admin dashboard
+      // regardless of provider. Email users update it again on first login.
+      lastLoginAt: now,
       // Initialize AI trip count and subscription fields explicitly
       aiTripsUsedThisMonth: 0,
       subscriptionTier: SubscriptionTier.FREE,
@@ -78,6 +82,43 @@ export class UsersService {
 
     const user = this.userRepository.create(userData);
     return await this.userRepository.save(user);
+  }
+
+  /**
+   * Race-safe version of create() for OAuth sign-ups.
+   * Two concurrent logins with the same OAuth identity can both pass the
+   * "user not found" check before either INSERT commits, causing a duplicate-key
+   * violation. This method catches that constraint error and re-fetches the row
+   * that won the race, so both callers receive a valid User instead of a 500.
+   */
+  async createOrFindOAuthUser(data: {
+    email?: string;
+    name: string;
+    provider: AuthProvider;
+    providerId?: string;
+    profileImage?: string;
+    isEmailVerified?: boolean;
+  }): Promise<User> {
+    try {
+      return await this.create(data);
+    } catch (err: any) {
+      // PostgreSQL unique_violation code = '23505'
+      if (err?.code === '23505') {
+        // Another concurrent request already inserted this user — look it up.
+        if (data.providerId) {
+          const existing = await this.findByProviderAndId(
+            data.provider,
+            data.providerId,
+          );
+          if (existing) return existing;
+        }
+        if (data.email) {
+          const existing = await this.findByEmail(data.email);
+          if (existing) return existing;
+        }
+      }
+      throw err;
+    }
   }
 
   /**

@@ -11,10 +11,12 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { randomUUID, randomBytes, createHash } from 'crypto';
+import { randomUUID, randomBytes, createHash, createPublicKey } from 'crypto';
 import { generateSecret, generateURI, verifySync } from 'otplib';
 import * as QRCode from 'qrcode';
 import { OAuth2Client } from 'google-auth-library';
+import axios from 'axios';
+import * as jwt from 'jsonwebtoken';
 import { UsersService } from '../users/users.service';
 import { AuthProvider } from '../users/entities/user.entity';
 import { EmailService } from '../email/email.service';
@@ -338,10 +340,17 @@ export class AuthService {
       if (payload.jti) {
         const stored = await this.cacheManager.get(`refresh:${payload.jti}`);
         if (!stored) {
-          // JTI not found in Redis — either revoked or evicted.
-          // Reject to prevent replay attacks with previously-used tokens.
+          // JTI not found in Redis — either revoked, evicted (Redis restart/AOF gap), or replay attempt.
+          // Structured log for CS triage: check issuedAt vs Redis uptime to distinguish restart vs replay.
           this.logger.warn(
-            `Refresh JTI ${payload.jti} not found in Redis for user ${payload.sub} — rejecting`,
+            JSON.stringify({
+              event: 'refresh_jti_not_found',
+              userId: payload.sub,
+              jti: payload.jti,
+              iat: payload.iat,
+              exp: payload.exp,
+              reason: 'jti_missing_in_redis',
+            }),
           );
           throw new UnauthorizedException('Refresh token revoked');
         } else {
@@ -499,6 +508,22 @@ export class AuthService {
       oauthUser.providerId,
     );
 
+    // Heal corrupted Apple names on every re-login (e.g. privaterelay email stored as name).
+    // Only applies when provider is APPLE and the stored name looks like an email address.
+    if (user && provider === AuthProvider.APPLE) {
+      const storedName = user.name ?? '';
+      if (storedName.includes('@')) {
+        const healedName = this.sanitizeAppleDisplayName(
+          oauthUser.name,
+          oauthUser.email,
+        );
+        if (healedName !== storedName) {
+          await this.usersService.update(user.id, { name: healedName });
+          user.name = healedName;
+        }
+      }
+    }
+
     if (!user) {
       if (oauthUser.email) {
         const existing = await this.usersService.findByEmail(oauthUser.email);
@@ -528,8 +553,11 @@ export class AuthService {
       }
 
       if (!user) {
-        // Create new user — OAuth users are auto-verified (email proven via provider)
-        user = await this.usersService.create({
+        // Create new user — OAuth users are auto-verified (email proven via provider).
+        // Guard against duplicate-key race condition: two concurrent logins with the
+        // same OAuth identity can both reach this branch before either INSERT commits.
+        // On conflict, re-fetch the row that won the race instead of surfacing a 500.
+        user = await this.usersService.createOrFindOAuthUser({
           email: oauthUser.email,
           name: oauthUser.name,
           provider,
@@ -565,6 +593,86 @@ export class AuthService {
       },
       ...tokens,
     };
+  }
+
+  private isAppleRelayEmail(email: string): boolean {
+    return email.endsWith('@privaterelay.appleid.com');
+  }
+
+  private sanitizeAppleDisplayName(fullName?: string, email?: string): string {
+    const trimmed = fullName?.trim();
+    if (trimmed) return trimmed;
+    if (!email || this.isAppleRelayEmail(email)) return 'Apple User';
+    return email.split('@')[0] || 'Apple User';
+  }
+
+  async verifyAppleIdentityToken(
+    identityToken: string,
+    fullName?: string,
+    userAgent?: string,
+  ): Promise<AuthResponse> {
+    try {
+      // Fetch Apple's public keys
+      const { data: jwks } = await axios.get<{ keys: any[] }>(
+        'https://appleid.apple.com/auth/keys',
+        { timeout: 5000 },
+      );
+
+      // Decode header to find the matching key
+      const tokenParts = identityToken.split('.');
+      if (tokenParts.length !== 3) {
+        throw new UnauthorizedException('Invalid Apple identity token format');
+      }
+      const header = JSON.parse(
+        Buffer.from(tokenParts[0], 'base64url').toString(),
+      ) as { kid?: string; alg?: string };
+
+      const matchingKey = jwks.keys.find((k: any) => k.kid === header.kid);
+      if (!matchingKey) {
+        throw new UnauthorizedException('Apple public key not found');
+      }
+
+      // Build PEM from JWK
+      const publicKey = createPublicKey({
+        key: matchingKey,
+        format: 'jwk',
+      });
+      const pem = publicKey.export({ type: 'spki', format: 'pem' }) as string;
+
+      // Verify JWT
+      const bundleId = this.configService.get<string>('oauth.apple.clientId');
+      const payload = jwt.verify(identityToken, pem, {
+        algorithms: ['RS256'],
+        audience: bundleId,
+        issuer: 'https://appleid.apple.com',
+      }) as { sub?: string; email?: string };
+
+      if (!payload.sub) {
+        throw new UnauthorizedException(
+          'Invalid Apple identity token: missing sub',
+        );
+      }
+
+      const displayName = this.sanitizeAppleDisplayName(
+        fullName,
+        payload.email,
+      );
+
+      const oauthUser: OAuthUserData = {
+        providerId: payload.sub,
+        email: payload.email,
+        name: displayName,
+        provider: 'APPLE',
+      };
+
+      return this.oauthLogin(oauthUser, userAgent);
+    } catch (error) {
+      if (error instanceof UnauthorizedException) throw error;
+      this.logger.error(
+        `Apple identity token verification failed: ${getErrorMessage(error)}`,
+      );
+      throw new UnauthorizedException('Invalid Apple identity token');
+    }
   }
 
   async verifyGoogleIdToken(

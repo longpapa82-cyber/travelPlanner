@@ -20,6 +20,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ExchangeOAuthCodeDto } from './dto/exchange-oauth-code.dto';
 import { VerifyTwoFactorDto, TwoFactorLoginDto } from './dto/two-factor.dto';
 import { GoogleIdTokenDto } from './dto/google-id-token.dto';
+import { AppleIdentityTokenDto } from './dto/apple-identity-token.dto';
 import { VerifyEmailDto, ResendVerificationDto } from './dto/verify-email.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
@@ -283,6 +284,21 @@ export class AuthController {
     );
   }
 
+  // Apple native Sign-In — iOS app sends identityToken directly
+  @Post('apple/token')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ short: { ttl: 60000, limit: 10 } })
+  async appleIdentityTokenLogin(
+    @Body() body: AppleIdentityTokenDto,
+    @Req() req: Request,
+  ) {
+    return this.authService.verifyAppleIdentityToken(
+      body.identityToken,
+      body.fullName,
+      req.headers['user-agent'],
+    );
+  }
+
   // Google OAuth
   @Get('google')
   @UseGuards(GoogleAuthGuard)
@@ -398,22 +414,34 @@ export class AuthController {
 
   /**
    * Builds the OAuth redirect URL based on the originating platform.
-   * Mobile apps get the custom scheme so WebBrowser.openAuthSessionAsync dismisses.
-   * Web gets the HTTPS frontend URL.
+   *
+   * iOS: custom scheme (travelplanner:///) — SFSafariViewController handles it
+   *   directly from the Custom Tab session which stays alive in background.
+   *
+   * Android: HTTPS App Links — Chrome Custom Tab is destroyed when KakaoTalk
+   *   takes over, so the custom scheme redirect never reaches the app.
+   *   Using the HTTPS URL lets the Android OS App Links system deliver the
+   *   callback directly to the app via the verified intent filter, bypassing
+   *   the dead Custom Tab entirely.
+   *
+   * Web: HTTPS frontend URL.
    */
   private buildOAuthRedirectUrl(
     platform: string | undefined,
     code: string,
   ): string {
-    if (platform === 'ios' || platform === 'android') {
-      const scheme = process.env.APP_SCHEME || 'travelplanner';
-      return `${scheme}:///auth/callback?code=${code}`;
-    }
     const frontendUrl =
       process.env.FRONTEND_URL ||
       (process.env.NODE_ENV === 'production'
         ? 'https://mytravel-planner.com'
         : 'http://localhost:8081');
+
+    if (platform === 'ios') {
+      const scheme = process.env.APP_SCHEME || 'travelplanner';
+      return `${scheme}:///auth/callback?code=${code}`;
+    }
+
+    // Android and web both use HTTPS — Android App Links delivers it to the app.
     return `${frontendUrl}/auth/callback?code=${code}`;
   }
 
