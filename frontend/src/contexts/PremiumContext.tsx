@@ -9,6 +9,7 @@ import {
   getCustomerInfo,
   addCustomerInfoUpdateListener,
   getActiveEntitlementSnapshot,
+  prefetchOfferings,
   ActiveEntitlementSnapshot,
 } from '../services/revenueCat';
 import { PREMIUM_ENABLED } from '../constants/config';
@@ -34,6 +35,7 @@ export type PaywallContext = 'ai_limit' | 'general';
 
 interface PremiumContextType {
   isPremium: boolean;
+  isProfileLoaded: boolean;
   subscriptionTier: 'free' | 'premium';
   aiTripsRemaining: number;
   aiTripsUsed: number;
@@ -96,7 +98,7 @@ interface RcEntitlementState extends ActiveEntitlementSnapshot {
 }
 
 export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) => {
-  const { user, refreshUser, isLoggingOut: authIsLoggingOut } = useAuth();
+  const { user, refreshUser, isLoggingOut: authIsLoggingOut, isGuestMode } = useAuth();
   // V185 (Invariant 36): mirror to ref for synchronous access inside
   // AppState handler. Auth's authIsLoggingOut is a state value; React
   // batching means a stale closure could be captured by the long-lived
@@ -154,6 +156,18 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     [],
   );
 
+  // B52 fix: In guest mode, pre-fetch offerings anonymously so PaywallModal
+  // finds a warm cache even before the user logs in.
+  // Apple reviewers may enter paywall while in guest mode — offerings must be ready.
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    if (!isGuestMode) return;
+    initRevenueCat(undefined).then(() => {
+      prefetchOfferings().catch(() => {});
+    }).catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGuestMode]);
+
   // Initialize RevenueCat on native platforms when user is available
   // After init, check if user has active entitlements and sync premium status
   useEffect(() => {
@@ -165,22 +179,15 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
       await logIn(String(user.id));
 
       try {
-        let info = await getCustomerInfo();
-        let snapshot = getActiveEntitlementSnapshot(info);
+        const info = await getCustomerInfo();
+        const snapshot = getActiveEntitlementSnapshot(info);
 
-        // Re-login / reinstall case: RC hasn't linked the receipt yet.
-        // Restore before falling back to "no subscription" so we don't
-        // mis-classify a real subscriber as free.
-        if (!snapshot) {
-          const { restorePurchases } = await import('../services/revenueCat');
-          const restored = await restorePurchases();
-          const restoredSnapshot = getActiveEntitlementSnapshot(restored);
-          if (restoredSnapshot) {
-            snapshot = restoredSnapshot;
-            info = restored;
-          }
-        }
-
+        // V212/V209 fix: do NOT auto-restore on mount. restorePurchases()
+        // links whatever Play/App Store receipt is on the device to the
+        // current RC user — on a fresh account after deletion this silently
+        // re-attaches the deleted account's subscription, producing phantom
+        // entitlements. Users who genuinely need to restore (e.g. reinstall)
+        // can use the explicit "Restore Purchases" button in the paywall.
         captureRcSnapshot(snapshot, 'mount-restore');
 
         // Always refresh server state so isPremium can reconcile
@@ -188,6 +195,12 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
       } catch {
         // Silent — premium detection is best-effort
       }
+
+      // B52 fix (Guideline 2.1b): Pre-fetch RevenueCat offerings in background
+      // so PaywallModal finds a warm cache when the user taps "Try premium".
+      // Sandbox cold-start null is the confirmed root cause of repeated
+      // App Store rejections — offerings must be ready before reviewer taps.
+      prefetchOfferings().catch(() => {});
 
       // Listen for purchase completions (handles app kill during payment flow)
       addCustomerInfoUpdateListener((updatedInfo) => {
@@ -285,8 +298,12 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   // V155 downgrade reconciliation (preserved): if the server reports the
   // subscription as expired or free, drop the local snapshot so RC's stale
   // cache can't keep premium alive.
+  // EXCEPTION: source='purchase' is a just-completed purchase — the server
+  // DB update happens asynchronously via webhook. Do NOT clear it here;
+  // finalizePurchase() will call refreshStatus() once the server is updated.
   useEffect(() => {
     if (!rcEntitlement || !user) return;
+    if (rcEntitlement.source === 'purchase') return;
     const serverExpired =
       user.subscriptionTier === 'free' ||
       (user.subscriptionExpiresAt && new Date(user.subscriptionExpiresAt) < new Date());
@@ -458,6 +475,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
 
   const value = useMemo<PremiumContextType>(() => ({
     isPremium,
+    isProfileLoaded,
     isAdmin,
     isServiceAdmin,
     subscriptionTier: isPremium ? 'premium' : 'free',
@@ -476,7 +494,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     refreshStatus,
     markPremium,
     markLoggingOut,
-  }), [isPremium, isAdmin, isServiceAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, expiresAt, user?.subscriptionStartedAt, planType, user?.subscriptionPlatform, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
+  }), [isPremium, isProfileLoaded, isAdmin, isServiceAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, expiresAt, user?.subscriptionStartedAt, planType, user?.subscriptionPlatform, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
 
   return (
     <PremiumContext.Provider value={value}>
