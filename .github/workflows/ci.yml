@@ -226,9 +226,20 @@ jobs:
       - name: Start frontend
         run: |
           cd frontend
-          npx expo export:web 2>/dev/null || true
-          npx serve web-build -l 8081 &
-          sleep 5
+          # expo export:web은 deprecated. 현행 명령은 `expo export --platform web`
+          # (출력 디렉터리: dist/). 실패를 삼키면(2>/dev/null||true) web 서버가 빈
+          # 디렉터리를 서빙해 Playwright webServer가 조기 종료하므로, 실패는 노출한다.
+          npx expo export --platform web
+          npx serve dist -s -l 8081 &
+          # 8081이 실제로 응답할 때까지 대기 (sleep 고정값은 불안정).
+          for i in $(seq 1 24); do
+            if curl -sf http://localhost:8081 > /dev/null; then
+              echo "Frontend web server up on 8081"
+              break
+            fi
+            echo "Waiting for frontend... ($i)"
+            sleep 2
+          done
         env:
           EXPO_PUBLIC_API_URL: http://localhost:3001/api
 
