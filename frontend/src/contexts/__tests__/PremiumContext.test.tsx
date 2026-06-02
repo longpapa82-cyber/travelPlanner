@@ -63,6 +63,9 @@ jest.mock('../../services/revenueCat', () => ({
   restorePurchases: (...args: any[]) => mockRestorePurchases(...args),
   getActiveEntitlementSnapshot: (info: any) =>
     mockGetActiveEntitlementSnapshot(info),
+  prefetchOfferings: jest.fn(() => Promise.resolve(null)),
+  getOfferings: jest.fn(() => Promise.resolve(null)),
+  getCachedOfferings: jest.fn(() => null),
 }));
 
 jest.mock('../../common/sentry', () => ({ addBreadcrumb: jest.fn() }));

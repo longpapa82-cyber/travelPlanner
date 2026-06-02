@@ -86,7 +86,12 @@ describe('oauth.service', () => {
 
       const authUrl = (WebBrowser.openAuthSessionAsync as jest.Mock).mock
         .calls[0][0] as string;
-      expect(authUrl).toContain('state=mock-uuid-1234');
+      // state is base64url-encoded JSON { nonce, platform } (CSRF + platform routing)
+      const stateParam = new URL(authUrl).searchParams.get('state');
+      expect(stateParam).toBeTruthy();
+      const decodedState = JSON.parse(atob(stateParam as string));
+      expect(decodedState.nonce).toBe('mock-uuid-1234');
+      expect(decodedState).toHaveProperty('platform');
     });
 
     it('should return null when auth cancelled', async () => {
