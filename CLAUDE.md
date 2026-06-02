@@ -17,11 +17,13 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 1. **iOS 1.4.3 (B86) App Store 심사 결과 대기** — 2026-06-02 제출, 통과 후 출시
 2. **Android v294 알파 출시 검토 통과 대기** — Play 비공개 테스트 등록 완료, Google 검토 후 테스터 배포. 이후 프로덕션 승격
-3. **백엔드 CI ERESOLVE 부채 해결** — main CI의 Backend Lint/Tests + Static 실패는 V189.1부터 기존 의존성 부채 (프론트 CI는 PR #3에서 GoogleSignin mock으로 초록화 완료)
-4. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
-5. **Sentry 코드 제거**: DSN 미설정으로 완전 비활성 — 불필요 코드/패키지 정리
-6. **⚠️ Android 16+ edge-to-edge**: edgeToEdgeEnabled:false는 임시 방편 — targetSdkVersion 36 대응 필요
-7. **⚠️ Android 로컬 빌드 reanimated/worklets 레이스** — EAS local 실패 시 prebuild + `org.gradle.parallel=false` + gradlew 경로 사용 (메모리 `build_reanimated_worklets_race.md`)
+3. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
+4. **⚠️ Android 16+ edge-to-edge (별도 세션 권장)**: `edgeToEdgeEnabled:false`는 임시 방편 — targetSdkVersion 36이 강제 적용하는 미래 시점 대비 필요. **고난도·고리스크**: edge-to-edge를 켜면 상태바/네비바 뒤로 콘텐츠가 깔려 18개 화면 safe-area 전수 재검증 + StatusBar/네비바 색상 로직(2곳) 재작업 + "파란 배경 깜빡임" 버그(과거 withAndroidDeferEdgeToEdge 시도→실패 이력) 재대응 필요. 실기기 육안 QA 필수 + 새 빌드/알파 재출시 수반. **현재 운영/출시 영향 없음** — 충분한 QA 시간 확보 후 전용 세션에서 진행.
+5. **(낮음) GitHub 자동배포 워크플로 정비**: `.github/workflows/deploy.yml`이 VPS secret 미설정으로 시작부터 실패 — **현재 미사용**(실 배포는 수동 rsync, [deploy.md](docs/operations/deploy.md)). 자동 CI/CD 도입 시에만 의미. 운영 무관.
+
+> ✅ **2026-06-02 해결 완료**: 백엔드 CI 부채(ERESOLVE/테스트31/lint25/coverage) + Sentry 전면 제거 + Static Content Validation(권한 검증 오탐 + 마케팅 문구) + Docker frontend 빌드(plugins 누락). CI 핵심 5 job 초록.
+
+**⚠️ Android 로컬 빌드 reanimated/worklets 레이스** — EAS local 실패 시 prebuild + `org.gradle.parallel=false` + gradlew 경로 사용 (메모리 `build_reanimated_worklets_race.md`)
 
 ---
 
