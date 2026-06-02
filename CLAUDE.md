@@ -6,7 +6,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 | 플랫폼 | 버전 | 상태 |
 |--------|------|------|
-| **Android** | 1.4.3 (versionCode 293) | **Play 비공개 테스트 출시 완료** ✅ — 2026-06-02 (회원탈퇴 키보드 UX 수정 + 신규기능) |
+| **Android** | 1.4.3 (versionCode 294) | **Play 비공개 테스트 업로드 완료(draft)** ✅ — 2026-06-02 (회원탈퇴 키보드 jank 수정). v293=키보드 UX+신규기능 |
 | **iOS** | 1.4.3 (B86) | **App Store 심사 제출 완료** ⏳ — 2026-06-02 (제출ID 3f0d5ff1) |
 | **서버** | 39차 | https://mytravel-planner.com 운영 중 |
 | **브랜치** | `main` | feat/next-build (PR #3) 병합 완료 — 2026-06-02 |
@@ -16,7 +16,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 ## ⚠️ 다음 할 일
 
 1. **iOS 1.4.3 (B86) App Store 심사 결과 대기** — 2026-06-02 제출, 통과 후 출시
-2. **Android v293 알파 테스트 후 프로덕션 승격** — 회원탈퇴 키보드 UX + 신규기능 검증 후 진행
+2. **Android v294 알파 출시 확정** — eas submit으로 alpha 트랙 draft 업로드 완료. Play Console에서 출시노트(ko/en/ja) 추가 + 최종 출시(rollout) 버튼만 남음. 이후 프로덕션 승격
 3. **백엔드 CI ERESOLVE 부채 해결** — main CI의 Backend Lint/Tests + Static 실패는 V189.1부터 기존 의존성 부채 (프론트 CI는 PR #3에서 GoogleSignin mock으로 초록화 완료)
 4. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
 5. **Sentry 코드 제거**: DSN 미설정으로 완전 비활성 — 불필요 코드/패키지 정리
@@ -50,9 +50,13 @@ xcrun altool --upload-app --type ios --file ../build-ios-BXX.ipa \
 
 ---
 
-## 🤖 Android 최신 빌드: versionCode 293 (1.4.3) — Play 비공개 테스트 출시 완료 ✅
+## 🤖 Android 최신 빌드: versionCode 294 (1.4.3) — Play 비공개 테스트 업로드 완료(draft) ✅
 
-**v293 수정 내역**: 회원탈퇴 모달 키보드 UX — ①`animationType` fade→none + onShow 즉시 focus(누르자마자 키보드 활성화) ②키보드 표시 시 하단 정렬(flex-end)로 팝업을 키보드 바로 위 선상에 안착(pan 모드 중앙→과도 상승 버그 수정). 신규기능(AI 일자별 진행률·딥링크 보안·게스트모드 revert 등) 포함. versionCode 291→293, 알파 출시 (2026-06-02).
+**v294 수정 내역**: 회원탈퇴 모달 키보드 등장 시 팝업 튐(jank) 제거. 키보드 표시 시 justifyContent를 center→flex-end로 동적 전환하던 로직이 pan 모드와 비동기라 팝업이 한 번 튀던 현상 → 동적 전환 제거하고 Android는 flex-end 고정(iOS는 center 유지·정상). eas submit alpha 트랙 draft 업로드 (2026-06-02).
+
+**v293 수정 내역**: 회원탈퇴 모달 키보드 UX(animationType none+onShow 즉시 focus, 키보드 위 정렬) + 신규기능(AI 일자별 진행률·딥링크 보안·게스트모드 revert 등). versionCode 291→293.
+
+**⚠️ AAB 출시 빌드 절차**: EAS local이 reanimated/worklets 레이스로 실패하므로 `prebuild --clean` → keystore 주입(EAS 메타데이터 base64에서 추출, SHA-1 `68:5E...`) → `org.gradle.parallel=false` → `gradlew :app:bundleRelease` → `eas submit --platform android --profile alpha`(service account 자동 업로드, track=alpha/draft).
 
 > 이전 빌드 상세(v282~v291) → `docs/build-history.md`
 
