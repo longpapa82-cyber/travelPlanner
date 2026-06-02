@@ -203,14 +203,22 @@ const MainNavigator = () => {
           ),
           tabBarBadge: unreadCount > 0 ? (unreadCount > 99 ? '99+' : unreadCount) : undefined,
         }}
-        listeners={{
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            // Notifications require login — guests are prompted instead of hitting 401
+            if (isGuestMode) {
+              e.preventDefault();
+              showGuestLoginPrompt();
+            }
+          },
           focus: () => {
-            // Refresh badge when navigating to notifications
+            // Refresh badge when navigating to notifications (skip for guests)
+            if (isGuestMode) return;
             apiService.getUnreadNotificationCount()
               .then(data => setUnreadCount(data.count))
               .catch(() => {});
           },
-        }}
+        })}
       />
       <Tab.Screen
         name="Profile"

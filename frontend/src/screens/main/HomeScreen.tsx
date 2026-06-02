@@ -241,6 +241,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleViewTrips = () => {
+    if (isGuestMode) {
+      showGuestLoginPrompt();
+      return;
+    }
     navigation.navigate('Trips', { screen: 'TripList' });
   };
 
