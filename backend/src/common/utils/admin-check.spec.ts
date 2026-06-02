@@ -21,7 +21,7 @@ describe('admin-check', () => {
       process.env.ADMIN_EMAILS = envEmails;
     }
     // Force re-import so the module-level ADMIN_EMAILS list is rebuilt.
-    return require('./admin-check');
+    return jest.requireActual<typeof import('./admin-check')>('./admin-check');
   }
 
   describe('isOperationalAdmin', () => {

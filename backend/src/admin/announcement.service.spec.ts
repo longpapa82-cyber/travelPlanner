@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { AnnouncementService } from './announcement.service';
 import { Announcement, AnnouncementType } from './entities/announcement.entity';
 import { AnnouncementRead } from './entities/announcement-read.entity';
@@ -44,6 +45,14 @@ describe('AnnouncementService', () => {
           useFactory: mockReadRepo,
         },
         { provide: getRepositoryToken(User), useFactory: mockUserRepo },
+        {
+          provide: CACHE_MANAGER,
+          useValue: {
+            get: jest.fn().mockResolvedValue(undefined),
+            set: jest.fn().mockResolvedValue(undefined),
+            del: jest.fn().mockResolvedValue(undefined),
+          },
+        },
       ],
     }).compile();
 

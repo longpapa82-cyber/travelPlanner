@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, LessThan } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { User, AuthProvider, SubscriptionTier } from './entities/user.entity';
 import {
@@ -583,7 +583,6 @@ export class UsersService {
       }),
     ).toString('base64url');
 
-    const crypto = require('crypto') as typeof import('crypto');
     const sign = crypto.createSign('SHA256');
     sign.update(`${header}.${payload}`);
     const sig = sign
@@ -1073,7 +1072,8 @@ export class UsersService {
    * Get user's consent status for all consent types
    */
   async getConsentsStatus(userId: string): Promise<ConsentsStatusDto> {
-    const user = await this.findById(userId);
+    // Validate the user exists (findById throws NotFoundException otherwise).
+    await this.findById(userId);
 
     const allConsentTypes = Object.values(ConsentType).filter(
       (type) => !this.DEPRECATED_CONSENTS.includes(type),
@@ -1146,7 +1146,8 @@ export class UsersService {
     ipAddress?: string,
     userAgent?: string,
   ): Promise<void> {
-    const user = await this.findById(userId);
+    // Validate the user exists (findById throws NotFoundException otherwise).
+    await this.findById(userId);
 
     for (const consentItem of dto.consents) {
       const { type, isConsented } = consentItem;

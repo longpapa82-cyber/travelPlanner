@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { ForbiddenException } from '@nestjs/common';
 import { TripsService } from './trips.service';
 import { Trip } from './entities/trip.entity';
@@ -138,7 +138,9 @@ describe('TripsService - AI Generation Limits', () => {
         {
           provide: SubscriptionService,
           useValue: {
-            checkAiTripLimit: jest.fn().mockResolvedValue({ allowed: true, remaining: 3 }),
+            checkAiTripLimit: jest
+              .fn()
+              .mockResolvedValue({ allowed: true, remaining: 3 }),
             incrementAiTripCount: jest.fn().mockResolvedValue(undefined),
           },
         },
@@ -197,9 +199,8 @@ describe('TripsService - AI Generation Limits', () => {
       ).resolves.toBeDefined();
 
       // Should NOT increment the AI trips counter for admin
-      const updateCalls = mockQueryRunner.manager
-        .createQueryBuilder()
-        .update.mock.calls;
+      const updateCalls =
+        mockQueryRunner.manager.createQueryBuilder().update.mock.calls;
       const aiTripsUpdateCall = updateCalls.find((call) =>
         JSON.stringify(call).includes('aiTripsUsedThisMonth'),
       );
@@ -240,9 +241,8 @@ describe('TripsService - AI Generation Limits', () => {
       ).resolves.toBeDefined();
 
       // Should increment the AI trips counter
-      const updateCalls = mockQueryRunner.manager
-        .createQueryBuilder()
-        .update.mock.calls;
+      const updateCalls =
+        mockQueryRunner.manager.createQueryBuilder().update.mock.calls;
       expect(updateCalls.length).toBeGreaterThan(0);
     });
 
@@ -315,9 +315,8 @@ describe('TripsService - AI Generation Limits', () => {
       ).resolves.toBeDefined();
 
       // Should increment the AI trips counter
-      const updateCalls = mockQueryRunner.manager
-        .createQueryBuilder()
-        .update.mock.calls;
+      const updateCalls =
+        mockQueryRunner.manager.createQueryBuilder().update.mock.calls;
       expect(updateCalls.length).toBeGreaterThan(0);
     });
 

@@ -333,6 +333,7 @@ describe('TripsService', () => {
           endDate: expect.any(Date),
         }),
         undefined, // V112 fix #4: second arg is the optional AbortSignal
+        undefined, // 일자별 진행률 Subject(progress$) — 테스트에선 미설정
       );
     });
 

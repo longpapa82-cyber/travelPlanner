@@ -1,9 +1,6 @@
-import { Test } from '@nestjs/testing';
 import { HttpException, HttpStatus, ArgumentsHost } from '@nestjs/common';
-import { HttpAdapterHost } from '@nestjs/core';
 import { AllExceptionsFilter } from './all-exceptions.filter';
 import { DataSource } from 'typeorm';
-import { ErrorLog } from '../../admin/entities/error-log.entity';
 import * as Sentry from '@sentry/nestjs';
 
 // Mock Sentry

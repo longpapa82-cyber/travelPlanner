@@ -20,7 +20,9 @@ export class UpdateTravelPreferencesDto {
   @IsString({ each: true })
   @Transform(({ value }) =>
     Array.isArray(value)
-      ? value.map((v: string) => typeof v === 'string' ? v.replace(/<[^>]*>/g, '') : v)
+      ? value.map((v: string) =>
+          typeof v === 'string' ? v.replace(/<[^>]*>/g, '') : v,
+        )
       : value,
   )
   interests?: string[];

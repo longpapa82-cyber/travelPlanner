@@ -6,8 +6,21 @@ import {
   Index,
 } from 'typeorm';
 
-export type ApiProvider = 'openai' | 'openai_embedding' | 'locationiq' | 'google_maps' | 'openweather' | 'google_timezone' | 'email';
-export type ApiFeature = 'ai_trip' | 'embedding' | 'geocoding' | 'weather' | 'timezone' | 'email';
+export type ApiProvider =
+  | 'openai'
+  | 'openai_embedding'
+  | 'locationiq'
+  | 'google_maps'
+  | 'openweather'
+  | 'google_timezone'
+  | 'email';
+export type ApiFeature =
+  | 'ai_trip'
+  | 'embedding'
+  | 'geocoding'
+  | 'weather'
+  | 'timezone'
+  | 'email';
 export type ApiStatus = 'success' | 'error';
 
 @Entity('api_usage')

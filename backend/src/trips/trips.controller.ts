@@ -83,7 +83,7 @@ export class TripsController {
   @Post('create-async')
   @UseGuards(AdminExemptThrottlerGuard)
   @Throttle({ short: { ttl: 60000, limit: 10 } })
-  async createAsync(
+  createAsync(
     @CurrentUser('userId') userId: string,
     @Headers('accept-language') acceptLanguage: string | undefined,
     @Body() createTripDto: CreateTripDto,

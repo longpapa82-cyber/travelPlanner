@@ -135,7 +135,7 @@ export class AuthService {
     // The token is only accepted by PendingVerificationGuard-protected endpoints
     // (send-verification-code, verify-email-code). A full token pair is issued
     // on successful verification.
-    const resumeToken = await this.generateResumeToken(user.id, user.email!);
+    const resumeToken = await this.generateResumeToken(user.id, user.email);
 
     return {
       action,
@@ -770,7 +770,7 @@ export class AuthService {
 
     const code = await this.usersService.generateEmailVerificationCode(userId);
     await this.emailService.sendVerificationCodeEmail(
-      user.email!,
+      user.email,
       user.name || '',
       code,
       lang,

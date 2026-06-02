@@ -49,8 +49,6 @@ export function isOperationalAdmin(
  * Do NOT change this to OR with ADMIN_EMAILS without explicit security
  * review — see the file-level docstring for why.
  */
-export function isSecurityAdmin(
-  role: string | null | undefined,
-): boolean {
+export function isSecurityAdmin(role: string | null | undefined): boolean {
   return role === 'admin';
 }

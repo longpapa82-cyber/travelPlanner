@@ -22,8 +22,21 @@ export const stripHtml = ({ value }: { value: unknown }): unknown =>
  * also bounded to maxLen so a megabyte-sized adversarial value cannot
  * blow up log shipping.
  */
+/**
+ * Stringify a non-string value for log output, mirroring the runtime
+ * behaviour of `String(value ?? '')`: null/undefined → '', everything else
+ * via String(). Implemented as an explicit helper so the linter does not
+ * flag implicit object-to-string coercion (no-base-to-string) while keeping
+ * the exact same output (objects still become '[object Object]').
+ */
+const stringifyForLog = (value: unknown): string => {
+  if (value === null || value === undefined) return '';
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string
+  return String(value);
+};
+
 export const safeForLog = (value: unknown, maxLen = 200): string => {
-  const s = typeof value === 'string' ? value : String(value ?? '');
+  const s = typeof value === 'string' ? value : stringifyForLog(value);
   // eslint-disable-next-line no-control-regex
   return s.replace(/[\x00-\x08\x0A-\x1F]/g, ' ').slice(0, maxLen);
 };

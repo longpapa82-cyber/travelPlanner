@@ -1,7 +1,7 @@
 import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan, Between } from 'typeorm';
+import { Repository, Between } from 'typeorm';
 import { Trip, TripStatus } from './entities/trip.entity';
 import { AIService } from './services/ai.service';
 import { NotificationsService } from '../notifications/notifications.service';
@@ -67,7 +67,10 @@ export class TripStatusScheduler {
           await this.tripRepository.save(trip);
 
           // Track transition for logging
-          if (oldStatus === TripStatus.UPCOMING && correctStatus === TripStatus.ONGOING) {
+          if (
+            oldStatus === TripStatus.UPCOMING &&
+            correctStatus === TripStatus.ONGOING
+          ) {
             upcomingToOngoing++;
 
             // Notify user that their trip has started
@@ -81,10 +84,16 @@ export class TripStatusScheduler {
                   { tripId: trip.id },
                 )
                 .catch((err) =>
-                  this.logger.warn('Failed to send trip start notification', err),
+                  this.logger.warn(
+                    'Failed to send trip start notification',
+                    err,
+                  ),
                 );
             }
-          } else if (oldStatus === TripStatus.ONGOING && correctStatus === TripStatus.COMPLETED) {
+          } else if (
+            oldStatus === TripStatus.ONGOING &&
+            correctStatus === TripStatus.COMPLETED
+          ) {
             ongoingToCompleted++;
 
             // Notify user that their trip is complete
@@ -134,7 +143,11 @@ export class TripStatusScheduler {
    * @param endDate Trip end date
    * @param timezoneOffset Trip destination timezone offset in hours (e.g., 9 for KST, -5 for EST)
    */
-  calculateTripStatus(startDate: Date, endDate: Date, timezoneOffset?: number): TripStatus {
+  calculateTripStatus(
+    startDate: Date,
+    endDate: Date,
+    timezoneOffset?: number,
+  ): TripStatus {
     // Calculate today in destination timezone
     let today = new Date();
     if (timezoneOffset != null) {

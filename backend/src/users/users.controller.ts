@@ -9,7 +9,6 @@ import {
   Param,
   Body,
   Headers,
-  Res,
   UseGuards,
   ParseUUIDPipe,
   UseInterceptors,

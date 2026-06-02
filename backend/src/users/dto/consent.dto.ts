@@ -1,4 +1,10 @@
-import { IsEnum, IsBoolean, IsString, IsArray, ValidateNested, IsOptional } from 'class-validator';
+import {
+  IsEnum,
+  IsBoolean,
+  IsString,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ConsentType } from '../entities/user-consent.entity';
 

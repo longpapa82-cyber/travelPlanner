@@ -31,7 +31,9 @@ describe('ErrorLogController — V187 P1-A ingestion smoke', () => {
   let adminService: { createErrorLog: jest.Mock };
 
   beforeEach(async () => {
-    adminService = { createErrorLog: jest.fn().mockResolvedValue({ id: 'log-1' }) };
+    adminService = {
+      createErrorLog: jest.fn().mockResolvedValue({ id: 'log-1' }),
+    };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ErrorLogController],
       providers: [{ provide: AdminService, useValue: adminService }],
@@ -53,19 +55,19 @@ describe('ErrorLogController — V187 P1-A ingestion smoke', () => {
     'authentication required',
     'invalid credentials',
     'ThrottlerException: Too Many Requests',
-  ])(
-    'persists previously-dropped pattern: %s',
-    async (errorMessage) => {
-      await controller.createErrorLog(buildReq() as any, {
+  ])('persists previously-dropped pattern: %s', async (errorMessage) => {
+    await controller.createErrorLog(
+      buildReq() as any,
+      {
         errorMessage,
         screen: '/api/subscription/preflight',
         severity: 'warning',
-      } as any);
-      expect(adminService.createErrorLog).toHaveBeenCalledWith(
-        expect.objectContaining({ errorMessage }),
-      );
-    },
-  );
+      } as any,
+    );
+    expect(adminService.createErrorLog).toHaveBeenCalledWith(
+      expect.objectContaining({ errorMessage }),
+    );
+  });
 
   // The remaining true business-rule outcomes still filter out — they
   // are noise (user-initiated cancel, AI quota), not signals.
@@ -74,34 +76,41 @@ describe('ErrorLogController — V187 P1-A ingestion smoke', () => {
     'PaywallError: insufficient quota',
     'AbortError: trip creation cancelled',
     'request cancelled by user',
-  ])(
-    'still filters legitimate noise pattern: %s',
-    async (errorMessage) => {
-      const result = await controller.createErrorLog(buildReq() as any, {
+  ])('still filters legitimate noise pattern: %s', async (errorMessage) => {
+    const result = await controller.createErrorLog(
+      buildReq() as any,
+      {
         errorMessage,
         screen: '/some/screen',
-      } as any);
-      expect(result).toEqual({ filtered: true });
-      expect(adminService.createErrorLog).not.toHaveBeenCalled();
-    },
-  );
+      } as any,
+    );
+    expect(result).toEqual({ filtered: true });
+    expect(adminService.createErrorLog).not.toHaveBeenCalled();
+  });
 
   it('forwards V174 expanded payload (errorName, routeName, breadcrumbs, httpStatus, deviceModel)', async () => {
-    await controller.createErrorLog(buildReq() as any, {
-      errorMessage: 'Subscription preflight failed',
-      severity: 'error',
-      errorName: 'SubscriptionError',
-      routeName: 'PaywallModal',
-      breadcrumbs: [{ category: 'subscription', message: 'paywall.preflight' }],
-      httpStatus: 500,
-      deviceModel: 'iPhone 15',
-    } as any);
+    await controller.createErrorLog(
+      buildReq() as any,
+      {
+        errorMessage: 'Subscription preflight failed',
+        severity: 'error',
+        errorName: 'SubscriptionError',
+        routeName: 'PaywallModal',
+        breadcrumbs: [
+          { category: 'subscription', message: 'paywall.preflight' },
+        ],
+        httpStatus: 500,
+        deviceModel: 'iPhone 15',
+      } as any,
+    );
 
     expect(adminService.createErrorLog).toHaveBeenCalledWith(
       expect.objectContaining({
         errorName: 'SubscriptionError',
         routeName: 'PaywallModal',
-        breadcrumbs: [{ category: 'subscription', message: 'paywall.preflight' }],
+        breadcrumbs: [
+          { category: 'subscription', message: 'paywall.preflight' },
+        ],
         httpStatus: 500,
         deviceModel: 'iPhone 15',
         userId: 'user-1',

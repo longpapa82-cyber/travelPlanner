@@ -126,7 +126,7 @@ export class GeocodingService {
     if (this.locationIQKey) {
       const result = await this.geocodeViaLocationIQ(q);
       if (result) {
-        await this.persistResult(hash, q, result);
+        this.persistResult(hash, q, result);
         return result;
       }
     }
@@ -135,7 +135,7 @@ export class GeocodingService {
     if (this.googleMapsKey) {
       const result = await this.geocodeViaGoogleMaps(q);
       if (result) {
-        await this.persistResult(hash, q, result);
+        this.persistResult(hash, q, result);
         return result;
       }
     }
@@ -219,7 +219,11 @@ export class GeocodingService {
       }
 
       // Increment counter (TTL: 25 hours to cover timezone differences)
-      await this.cacheManager.set(counterKey, String(count + 1), 25 * 60 * 60 * 1000);
+      await this.cacheManager.set(
+        counterKey,
+        String(count + 1),
+        25 * 60 * 60 * 1000,
+      );
       return true;
     } catch {
       // On counter failure, allow the call (fail-open)

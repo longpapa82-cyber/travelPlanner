@@ -47,9 +47,14 @@ const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 const parseExpirationAt = (rawMs: unknown, logger: Logger): Date => {
   const fallback = () => new Date(Date.now() + ONE_YEAR_MS);
   if (rawMs === null || rawMs === undefined || rawMs === '') return fallback();
-  const ms = typeof rawMs === 'number' ? rawMs : parseInt(String(rawMs), 10);
+  // Stringify once for parsing/logging. For objects this yields
+  // '[object Object]' (same as the prior String(rawMs) behaviour), which
+  // parseInt then turns into NaN and the guard below rejects.
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string
+  const rawStr = String(rawMs);
+  const ms = typeof rawMs === 'number' ? rawMs : parseInt(rawStr, 10);
   if (!Number.isFinite(ms) || ms <= 0) {
-    logger.warn(`expiration_at_ms invalid (${rawMs}); falling back to now+1y`);
+    logger.warn(`expiration_at_ms invalid (${rawStr}); falling back to now+1y`);
     return fallback();
   }
   const now = Date.now();

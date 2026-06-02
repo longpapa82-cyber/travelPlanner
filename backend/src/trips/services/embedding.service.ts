@@ -127,7 +127,8 @@ export class EmbeddingService {
         input: texts,
       });
 
-      const inputTokens = response.usage?.total_tokens ?? texts.join('').length / 4;
+      const inputTokens =
+        response.usage?.total_tokens ?? texts.join('').length / 4;
       const costUsd = (inputTokens * 0.02) / 1_000_000;
       this.apiUsageService
         ?.logApiUsage({

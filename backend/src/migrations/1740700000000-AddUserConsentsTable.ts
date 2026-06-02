@@ -78,7 +78,9 @@ export class AddUserConsentsTable1740700000000 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Drop audit logs table
     await queryRunner.query(`DROP INDEX "IDX_consent_audit_logs_consentType"`);
-    await queryRunner.query(`DROP INDEX "IDX_consent_audit_logs_userId_createdAt"`);
+    await queryRunner.query(
+      `DROP INDEX "IDX_consent_audit_logs_userId_createdAt"`,
+    );
     await queryRunner.query(`DROP TABLE "consent_audit_logs"`);
 
     // Drop user_consents table

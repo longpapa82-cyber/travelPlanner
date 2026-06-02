@@ -143,8 +143,7 @@ describe('EmailService', () => {
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           context: expect.objectContaining({
-            verificationUrl:
-              'http://localhost:8081/app/verify?token=abc-token',
+            verificationUrl: 'http://localhost:8081/app/verify?token=abc-token',
           }),
         }),
       );

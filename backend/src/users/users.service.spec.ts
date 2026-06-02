@@ -167,6 +167,8 @@ describe('UsersService', () => {
         aiTripsUsedThisMonth: 0,
         subscriptionTier: 'free',
         subscriptionExpiresAt: undefined,
+        // 가입 시 lastLoginAt 설정(관리자 대시보드 노출용)
+        lastLoginAt: expect.any(Date),
       });
       expect(repository.save).toHaveBeenCalledWith(createdUser);
       expect(result).toEqual(createdUser);
@@ -207,6 +209,8 @@ describe('UsersService', () => {
         aiTripsUsedThisMonth: 0,
         subscriptionTier: 'free',
         subscriptionExpiresAt: undefined,
+        // 가입 시 lastLoginAt 설정(관리자 대시보드 노출용)
+        lastLoginAt: expect.any(Date),
       });
       expect(result.passwordHash).toBeNull();
     });

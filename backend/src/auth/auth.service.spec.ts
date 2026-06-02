@@ -2,11 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import {
-  UnauthorizedException,
-  ConflictException,
-  BadRequestException,
-} from '@nestjs/common';
+import { UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
@@ -52,6 +48,8 @@ describe('AuthService', () => {
     const mockUsersService = {
       findByEmail: jest.fn(),
       create: jest.fn(),
+      // 레이스 안전 OAuth 가입 메서드(23505 충돌 시 기존 row 재조회)
+      createOrFindOAuthUser: jest.fn(),
       validatePassword: jest.fn(),
       findById: jest.fn(),
       findByProviderAndId: jest.fn(),
@@ -510,7 +508,7 @@ describe('AuthService', () => {
     it('should create new user if not exists', async () => {
       // Arrange
       usersService.findByProviderAndId.mockResolvedValue(null);
-      usersService.create.mockResolvedValue({
+      usersService.createOrFindOAuthUser.mockResolvedValue({
         ...mockUser,
         provider: AuthProvider.GOOGLE,
         providerId: oauthUser.providerId,
@@ -527,7 +525,7 @@ describe('AuthService', () => {
         AuthProvider.GOOGLE,
         oauthUser.providerId,
       );
-      expect(usersService.create).toHaveBeenCalledWith({
+      expect(usersService.createOrFindOAuthUser).toHaveBeenCalledWith({
         email: oauthUser.email,
         name: oauthUser.name,
         provider: AuthProvider.GOOGLE,
@@ -560,7 +558,7 @@ describe('AuthService', () => {
         AuthProvider.GOOGLE,
         oauthUser.providerId,
       );
-      expect(usersService.create).not.toHaveBeenCalled();
+      expect(usersService.createOrFindOAuthUser).not.toHaveBeenCalled();
       expect(result.accessToken).toBe(mockTokens.accessToken);
     });
 
@@ -581,7 +579,7 @@ describe('AuthService', () => {
 
       async function testOAuthProvider(provider: 'GOOGLE' | 'APPLE' | 'KAKAO') {
         usersService.findByProviderAndId.mockResolvedValue(null);
-        usersService.create.mockResolvedValue({
+        usersService.createOrFindOAuthUser.mockResolvedValue({
           ...mockUser,
           provider: providerMap[provider],
         } as any);
@@ -605,7 +603,7 @@ describe('AuthService', () => {
         provider: 'APPLE' as const,
       };
       usersService.findByProviderAndId.mockResolvedValue(null);
-      usersService.create.mockResolvedValue({
+      usersService.createOrFindOAuthUser.mockResolvedValue({
         ...mockUser,
         email: undefined,
         provider: AuthProvider.APPLE,
@@ -619,7 +617,7 @@ describe('AuthService', () => {
       const result = await service.oauthLogin(appleUser);
 
       // Assert
-      expect(usersService.create).toHaveBeenCalledWith({
+      expect(usersService.createOrFindOAuthUser).toHaveBeenCalledWith({
         email: undefined,
         name: appleUser.name,
         provider: AuthProvider.APPLE,
@@ -639,7 +637,7 @@ describe('AuthService', () => {
         provider: 'KAKAO' as const,
       };
       usersService.findByProviderAndId.mockResolvedValue(null);
-      usersService.create.mockResolvedValue({
+      usersService.createOrFindOAuthUser.mockResolvedValue({
         ...mockUser,
         email: undefined,
         provider: AuthProvider.KAKAO,
@@ -654,7 +652,7 @@ describe('AuthService', () => {
       const result = await service.oauthLogin(kakaoUser);
 
       // Assert
-      expect(usersService.create).toHaveBeenCalledWith({
+      expect(usersService.createOrFindOAuthUser).toHaveBeenCalledWith({
         email: undefined,
         name: kakaoUser.name,
         provider: AuthProvider.KAKAO,
@@ -668,7 +666,7 @@ describe('AuthService', () => {
     it('should generate tokens for OAuth login', async () => {
       // Arrange
       usersService.findByProviderAndId.mockResolvedValue(null);
-      usersService.create.mockResolvedValue({
+      usersService.createOrFindOAuthUser.mockResolvedValue({
         ...mockUser,
         provider: AuthProvider.GOOGLE,
       } as any);
@@ -733,7 +731,7 @@ describe('AuthService', () => {
       cacheManager.get.mockResolvedValue(JSON.stringify(oauthUser));
       cacheManager.del.mockResolvedValue(undefined);
       usersService.findByProviderAndId.mockResolvedValue(null);
-      usersService.create.mockResolvedValue({
+      usersService.createOrFindOAuthUser.mockResolvedValue({
         ...mockUser,
         provider: AuthProvider.GOOGLE,
         providerId: oauthUser.providerId,
@@ -774,7 +772,7 @@ describe('AuthService', () => {
       cacheManager.get.mockResolvedValueOnce(JSON.stringify(oauthUser));
       cacheManager.del.mockResolvedValue(undefined);
       usersService.findByProviderAndId.mockResolvedValue(null);
-      usersService.create.mockResolvedValue({
+      usersService.createOrFindOAuthUser.mockResolvedValue({
         ...mockUser,
         provider: AuthProvider.GOOGLE,
       } as any);

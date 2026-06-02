@@ -16,7 +16,9 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
  * touches this column for failed AI trips, so historic successful trips
  * never get inspected.
  */
-export class AddQuotaRefundedToTrips1777377600000 implements MigrationInterface {
+export class AddQuotaRefundedToTrips1777377600000
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       ALTER TABLE "trips"

@@ -90,9 +90,13 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
     };
 
     // Default: RC client is enabled and returns no active entitlements.
-    // Individual tests can override getActiveEntitlements as needed.
+    // preflightPurchase는 getSubscriberInfo({activeEntitlements, deletedAt})를 사용.
+    // 개별 테스트가 getSubscriberInfo를 케이스별로 override한다.
     rcClientMock = {
       isEnabled: true,
+      getSubscriberInfo: jest
+        .fn()
+        .mockResolvedValue({ activeEntitlements: [], deletedAt: null }),
       getActiveEntitlements: jest.fn().mockResolvedValue([]),
     } as unknown as jest.Mocked<RevenueCatClient>;
 
@@ -382,15 +386,18 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
       // Simulates: yearly EXPIRATION processed, DB set to free.
       // User tries monthly → should be blocked because RC still has yearly active.
       userRepo.findOne.mockResolvedValue(baseUser as User);
-      rcClientMock.getActiveEntitlements = jest
-        .fn()
-        .mockResolvedValue([
+      // 프로덕션 entitlement(isSandbox=false)여야 sandbox 필터를 통과해
+      // 실제 구매 차단(cross-SKU)으로 이어진다.
+      rcClientMock.getSubscriberInfo = jest.fn().mockResolvedValue({
+        activeEntitlements: [
           {
             productIdentifier: 'premium_yearly',
             expiresDate: new Date(Date.now() + 3600000),
-            isSandbox: true,
+            isSandbox: false,
           },
-        ]);
+        ],
+        deletedAt: null,
+      });
 
       const result = await service.preflightPurchase(
         'user-1',
@@ -401,16 +408,16 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
       expect(result.reason).toBe('rc_entitlement_active');
       // Invariant 51: cross-SKU — RC yearly blocks monthly too
       expect(result.activeSkus).toContain('premium_yearly');
-      // Invariant 52: auto-reconcile triggered
-      expect(userRepo.update).toHaveBeenCalledWith(
-        'user-1',
-        expect.objectContaining({ subscriptionTier: SubscriptionTier.PREMIUM }),
-      );
+      // V213 (P0-1): 차단만 하고 DB reconcile은 하지 않는다(phantom 오인 시
+      // 잘못된 premium 부여 방지). 따라서 userRepo.update는 호출되지 않아야 함.
+      expect(userRepo.update).not.toHaveBeenCalled();
     });
 
     it('V198 Bug 1 inverse: DB=free, RC also clean → purchase allowed', async () => {
       userRepo.findOne.mockResolvedValue(baseUser as User);
-      rcClientMock.getActiveEntitlements = jest.fn().mockResolvedValue([]);
+      rcClientMock.getSubscriberInfo = jest
+        .fn()
+        .mockResolvedValue({ activeEntitlements: [], deletedAt: null });
 
       const result = await service.preflightPurchase(
         'user-1',
@@ -426,15 +433,16 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
       // TRANSFER webhook in flight but not yet processed by our handler.
       // User logs in immediately and tries to purchase.
       userRepo.findOne.mockResolvedValue(baseUser as User);
-      rcClientMock.getActiveEntitlements = jest
-        .fn()
-        .mockResolvedValue([
+      rcClientMock.getSubscriberInfo = jest.fn().mockResolvedValue({
+        activeEntitlements: [
           {
             productIdentifier: 'premium_monthly',
             expiresDate: new Date(Date.now() + 7200000),
             isSandbox: false,
           },
-        ]);
+        ],
+        deletedAt: null,
+      });
 
       const result = await service.preflightPurchase(
         'user-1',
@@ -448,7 +456,7 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
     it('Invariant 54: RC API unavailable → fail-close (canPurchase=false)', async () => {
       // RC API down / timeout — must not allow purchase (false-negative risk).
       userRepo.findOne.mockResolvedValue(baseUser as User);
-      rcClientMock.getActiveEntitlements = jest
+      rcClientMock.getSubscriberInfo = jest
         .fn()
         .mockRejectedValue(
           new RcApiUnavailableError('RC API timeout (status=network)'),
@@ -476,7 +484,7 @@ describe('SubscriptionService — V187 P1-A regression pins', () => {
       expect(result.canPurchase).toBe(false);
       expect(result.reason).toBe('already_subscribed');
       // Layer 1 short-circuits — RC must not be called
-      expect(rcClientMock.getActiveEntitlements).not.toHaveBeenCalled();
+      expect(rcClientMock.getSubscriberInfo).not.toHaveBeenCalled();
     });
 
     it('degraded mode (RC disabled): DB=free → allowed with warning logged', async () => {

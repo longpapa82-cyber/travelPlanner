@@ -47,15 +47,24 @@ export class PlacesService {
     // ===== PHASE 2: Mapbox Fallback Chain =====
     // 1. Try Mapbox first (100K/month free)
     try {
-      const mapboxResult = await this.mapboxService.geocodeForward(input, language);
+      const mapboxResult = await this.mapboxService.geocodeForward(
+        input,
+        language,
+      );
       if (mapboxResult.available && mapboxResult.predictions.length > 0) {
-        this.logger.log(`Mapbox success: ${mapboxResult.predictions.length} results`);
+        this.logger.log(
+          `Mapbox success: ${mapboxResult.predictions.length} results`,
+        );
         return mapboxResult;
       }
       // Mapbox returned empty or unavailable → fallback to Google
-      this.logger.log('Mapbox empty or unavailable, falling back to Google Places');
+      this.logger.log(
+        'Mapbox empty or unavailable, falling back to Google Places',
+      );
     } catch (error: any) {
-      this.logger.warn(`Mapbox error: ${error.message}, falling back to Google Places`);
+      this.logger.warn(
+        `Mapbox error: ${error.message}, falling back to Google Places`,
+      );
     }
 
     // ===== 2. Fallback to Google Places =====
@@ -94,7 +103,10 @@ export class PlacesService {
           `Places API status: ${data.status} — ${data.error_message || ''}`,
         );
         // Return available:false when API is denied or has errors
-        if (data.status === 'REQUEST_DENIED' || data.status === 'OVER_QUERY_LIMIT') {
+        if (
+          data.status === 'REQUEST_DENIED' ||
+          data.status === 'OVER_QUERY_LIMIT'
+        ) {
           return { predictions: [], available: false };
         }
         return { predictions: [], available: true };
@@ -130,13 +142,17 @@ export class PlacesService {
               };
             }
           } catch (e: any) {
-            this.logger.warn(`Place Details failed for ${pred.placeId}: ${e.message}`);
+            this.logger.warn(
+              `Place Details failed for ${pred.placeId}: ${e.message}`,
+            );
           }
           return pred;
         }),
       );
 
-      this.logger.log(`Google Places success: ${predictions.length} results (with coords)`);
+      this.logger.log(
+        `Google Places success: ${predictions.length} results (with coords)`,
+      );
       return { predictions, available: true };
     } catch (error: any) {
       this.logger.error(`Google Places error: ${error.message}`);

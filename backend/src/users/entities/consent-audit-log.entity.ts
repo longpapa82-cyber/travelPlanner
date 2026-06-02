@@ -14,9 +14,9 @@ import { ConsentType } from './user-consent.entity';
  * Actions that can be performed on consents
  */
 export enum ConsentAction {
-  GRANT = 'grant',     // 동의 부여
-  REVOKE = 'revoke',   // 동의 철회
-  UPDATE = 'update',   // 동의 업데이트 (버전 변경)
+  GRANT = 'grant', // 동의 부여
+  REVOKE = 'revoke', // 동의 철회
+  UPDATE = 'update', // 동의 업데이트 (버전 변경)
 }
 
 /**

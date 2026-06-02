@@ -19,17 +19,6 @@ describe('TimezoneService', () => {
   let cacheManager: { get: jest.Mock; set: jest.Mock };
   let geocodingService: jest.Mocked<Partial<GeocodingService>>;
 
-  const mockGeocodeResponse = {
-    data: {
-      results: [
-        {
-          geometry: { location: { lat: 35.6762, lng: 139.6503 } },
-          formatted_address: 'Tokyo, Japan',
-        },
-      ],
-    },
-  };
-
   const mockTimezoneResponse = {
     data: {
       timeZoneId: 'Asia/Tokyo',
