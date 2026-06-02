@@ -190,7 +190,9 @@ const ProfileScreen = ({ navigation }: any) => {
   const [deletePassword, setDeletePassword] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const deletePasswordInputRef = useRef<TextInput>(null);
-  // 회원탈퇴 모달: 키보드 표시 여부에 따라 정렬을 달리한다(키보드 없으면 중앙, 있으면 키보드 위).
+  // 회원탈퇴 모달 정렬: Android pan 모드에서 키보드가 뜨면 화면 전체가 위로 밀린다.
+  // 팝업이 중앙이면 과도하게 상단으로 밀려 올라가므로(실측 버그), 키보드가 떠 있을 때는
+  // 하단 정렬(flex-end)로 두어 팝업이 키보드 바로 위 선상에 오게 한다. 없을 때는 중앙.
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
@@ -1041,31 +1043,36 @@ const ProfileScreen = ({ navigation }: any) => {
       <Modal
         visible={showDeleteConfirm}
         transparent
-        animationType="fade"
+        // animationType="none": fade 애니메이션은 Android에서 onShow 시점의 focus()를
+        // 무시해 키보드가 늦게 뜨는 원인이었다. 애니메이션을 없애 모달이 즉시 표시되고,
+        // onShow에서 곧바로 focus하면 커서+키보드가 바로 활성화된다(요구사항: 누르자마자).
+        animationType="none"
         onRequestClose={() => setShowDeleteConfirm(false)}
-        // Android: autoFocus는 모달 fade 애니메이션 중에 키보드를 띄우지 못한다.
-        // fade가 끝난 뒤(약 300ms) 명시적으로 focus해야 키보드가 확실히 올라온다.
+        // 모달이 표시되는 즉시 비밀번호 입력란에 focus → 커서+키보드 즉시 활성화.
         onShow={() => {
-          if (Platform.OS === 'android') {
-            setTimeout(() => deletePasswordInputRef.current?.focus(), 300);
-          }
+          deletePasswordInputRef.current?.focus();
         }}
       >
         <Pressable
           style={{
             flex: 1,
-            // iOS: KAV(padding)가 처리하므로 항상 중앙.
-            // Android: softwareKeyboardLayoutMode='pan'이 화면을 밀어올리므로,
-            //   키보드가 떠 있을 때만 하단 정렬(키보드 바로 위), 없을 때는 상/하 중앙.
+            // Android: pan 모드가 키보드 높이만큼 화면을 밀어올린다. 팝업이 중앙이면
+            //   과도하게 상단으로 밀리므로, 키보드가 떠 있을 때는 하단 정렬(flex-end)로
+            //   두어 팝업이 키보드 바로 위 선상에 안착하게 한다. 없으면 중앙.
+            // iOS: 아래 KAV(padding)가 키보드 높이를 보정하므로 항상 중앙.
             justifyContent:
               Platform.OS === 'android' && keyboardVisible ? 'flex-end' : 'center',
             alignItems: 'center',
             backgroundColor: 'rgba(0,0,0,0.5)',
             padding: 20,
-            paddingBottom: Platform.OS === 'android' && keyboardVisible ? 32 : 20,
+            // 키보드 위(flex-end)일 때 팝업과 키보드 사이에 약간의 숨 쉴 공간.
+            paddingBottom: Platform.OS === 'android' && keyboardVisible ? 12 : 20,
           }}
           onPress={() => Keyboard.dismiss()}
         >
+          {/* iOS: KAV(padding)가 키보드 높이를 보정해 중앙 유지.
+              Android: softwareKeyboardLayoutMode='pan'이 화면을 통째로 밀어올리고
+              위에서 flex-end로 키보드 위에 배치하므로 KAV는 끈다(이중 보정 방지). */}
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} enabled={Platform.OS === 'ios'} style={{ width: '100%' }}>
             <Pressable onPress={(e) => e.stopPropagation()}>
               <View style={[styles.deleteModalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
