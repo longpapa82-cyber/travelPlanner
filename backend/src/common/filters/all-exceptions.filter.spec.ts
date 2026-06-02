@@ -1,12 +1,6 @@
 import { HttpException, HttpStatus, ArgumentsHost } from '@nestjs/common';
 import { AllExceptionsFilter } from './all-exceptions.filter';
 import { DataSource } from 'typeorm';
-import * as Sentry from '@sentry/nestjs';
-
-// Mock Sentry
-jest.mock('@sentry/nestjs', () => ({
-  captureException: jest.fn(),
-}));
 
 describe('AllExceptionsFilter', () => {
   let filter: AllExceptionsFilter;
@@ -174,7 +168,6 @@ describe('AllExceptionsFilter', () => {
           severity: 'error',
         }),
       );
-      expect(Sentry.captureException).toHaveBeenCalled();
     });
 
     it('should log admin access attempts (403)', () => {

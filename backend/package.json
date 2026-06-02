@@ -39,8 +39,6 @@
     "@nestjs/swagger": "11.2.6",
     "@nestjs/throttler": "6.5.0",
     "@nestjs/typeorm": "11.0.0",
-    "@sentry/nestjs": "10.39.0",
-    "@sentry/profiling-node": "10.39.0",
     "@types/passport-google-oauth20": "2.0.17",
     "@types/passport-local": "1.0.38",
     "@types/passport-oauth2": "1.8.0",

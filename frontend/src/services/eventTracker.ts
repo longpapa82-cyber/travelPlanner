@@ -1,11 +1,9 @@
 /**
  * Lightweight event analytics tracker.
- * - Records Sentry breadcrumbs for crash-context enrichment
  * - Batches events and flushes to backend every 30 seconds
  * - Fire-and-forget: never blocks UI
  */
 
-import * as Sentry from '@sentry/react-native';
 import { AppState, Platform } from 'react-native';
 import apiService from './api';
 import { isAuthLoggingOut } from '../contexts/AuthContext';
@@ -73,17 +71,9 @@ async function flush() {
 
 /**
  * Track a user event.
- * Non-blocking — adds to Sentry breadcrumbs and queues for backend.
+ * Non-blocking — queues for backend.
  */
 export function trackEvent(name: EventName, properties?: Record<string, string | number | boolean>) {
-  // Sentry breadcrumb for crash context
-  Sentry.addBreadcrumb({
-    category: 'user-action',
-    message: name,
-    level: 'info',
-    data: properties,
-  });
-
   // Queue for backend
   eventQueue.push({
     name,

@@ -138,21 +138,6 @@ export const LICENSE_SECTIONS: LicenseSection[] = [
     ],
   },
   {
-    title: 'Monitoring & Analytics',
-    packages: [
-      {
-        name: '@sentry/react-native',
-        license: 'MIT',
-        url: 'https://github.com/getsentry/sentry-react-native',
-      },
-      {
-        name: '@sentry/nestjs',
-        license: 'MIT',
-        url: 'https://github.com/getsentry/sentry-javascript',
-      },
-    ],
-  },
-  {
     title: 'Utilities',
     packages: [
       {

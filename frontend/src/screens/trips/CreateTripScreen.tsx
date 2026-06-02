@@ -50,7 +50,6 @@ import DestinationInsights from '../../components/DestinationInsights';
 import { useInterstitialAd, useRewardedAd } from '../../components/ads';
 import { usePremium } from '../../contexts/PremiumContext';
 import { getHeroImageUrl } from '../../utils/images';
-import * as Sentry from '@sentry/react-native';
 import * as StoreReview from 'expo-store-review';
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
@@ -740,11 +739,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         stackTrace: error.stack,
       }).catch(() => {});
 
-      // Report to Sentry for crash analytics
-      Sentry.captureException(error, {
-        tags: { screen: 'CreateTripScreen', action: 'createTrip' },
-        extra: { destination: destination.trim(), duration: calculateDuration(), mode: effectiveMode, statusCode },
-      });
+      if (__DEV__) console.error('CreateTripScreen createTrip error:', error);
 
       // Refresh subscription status so AI remaining count is accurate
       await refreshStatus();

@@ -9,7 +9,6 @@ import {
   Platform,
 } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
 import i18next from 'i18next';
 import { colors } from '../constants/theme';
@@ -44,10 +43,9 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    const eventId = Sentry.captureException(error, {
-      extra: { componentStack: errorInfo.componentStack },
-    });
-    this.setState({ eventId: eventId ?? null });
+    // Locally generated id surfaced in the UI for support reference.
+    const eventId = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+    this.setState({ eventId });
 
     // Report to admin error log (best-effort, never re-throws)
     apiService.reportError({

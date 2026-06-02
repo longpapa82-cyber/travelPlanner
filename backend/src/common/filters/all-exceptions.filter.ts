@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { Request, Response } from 'express';
-import * as Sentry from '@sentry/nestjs';
 import { DataSource } from 'typeorm';
 import { ErrorLog } from '../../admin/entities/error-log.entity';
 import { detectPlatform } from '../utils/platform-detector';
@@ -15,7 +14,6 @@ import { detectPlatform } from '../utils/platform-detector';
 /**
  * Global exception filter that:
  * - Converts unhandled exceptions to consistent JSON responses
- * - Reports 5xx errors and unknown exceptions to Sentry
  * - Persists 5xx errors to ErrorLog table for admin dashboard
  * - Logs all errors with request context
  */
@@ -70,23 +68,11 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         extra = rest;
       }
       error = exception.name;
-
-      // Only report 5xx to Sentry
-      if (status >= 500) {
-        Sentry.captureException(exception, {
-          extra: { path: request.url, method: request.method },
-        });
-      }
     } else {
       // Unknown/unhandled exceptions → 500
       status = HttpStatus.INTERNAL_SERVER_ERROR;
       message = 'An unexpected error occurred';
       error = 'InternalServerError';
-
-      // Always report unknown exceptions to Sentry
-      Sentry.captureException(exception, {
-        extra: { path: request.url, method: request.method },
-      });
 
       this.logger.error(
         `Unhandled exception on ${request.method} ${request.url}: ${

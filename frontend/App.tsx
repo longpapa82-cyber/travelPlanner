@@ -4,7 +4,6 @@ import { ActivityIndicator, AppState, AppStateStatus, Platform, View, Text, Styl
 import * as NavigationBar from 'expo-navigation-bar';
 import * as Updates from 'expo-updates';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -22,7 +21,6 @@ import ErrorBoundary from './src/components/ErrorBoundary';
 import { PWAInstallPrompt } from './src/components/PWAInstallPrompt';
 import { initI18n } from './src/i18n';
 import { offlineCache } from './src/services/offlineCache';
-import { initSentry } from './src/common/sentry';
 import { initWebVitals } from './src/common/web-vitals';
 import { API_URL, STORAGE_KEYS } from './src/constants/config';
 import { secureStorage } from './src/utils/storage';
@@ -48,8 +46,6 @@ if (Platform.OS !== 'web') {
   });
 }
 
-// Initialize Sentry before app renders
-initSentry();
 initWebVitals();
 
 // Global error handlers — report uncaught errors to admin error log
@@ -418,4 +414,4 @@ function App() {
   );
 }
 
-export default Sentry.wrap(App);
+export default App;

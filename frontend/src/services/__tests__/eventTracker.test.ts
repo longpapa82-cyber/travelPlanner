@@ -1,5 +1,4 @@
 import { AppState } from 'react-native';
-import * as Sentry from '@sentry/react-native';
 
 // Must mock api before importing eventTracker
 jest.mock('../api', () => ({
@@ -25,17 +24,6 @@ describe('eventTracker', () => {
   // ── trackEvent ──
 
   describe('trackEvent', () => {
-    it('should add Sentry breadcrumb', () => {
-      trackEvent('login', { method: 'email' });
-
-      expect(Sentry.addBreadcrumb).toHaveBeenCalledWith({
-        category: 'user-action',
-        message: 'login',
-        level: 'info',
-        data: { method: 'email' },
-      });
-    });
-
     it('should include platform in queued event properties', () => {
       trackEvent('trip_created');
 

@@ -7,8 +7,8 @@ What it checks (P0 = exit 1, P1 = warn):
   P0  art18 (or other terms article) contains "AI Soft" + an explicit
       placeholder marker so reviewers know the registration number is
       pending issuance.
-  P0  privacy.articles.art3 mentions OpenAI, Sentry, RevenueCat, Google,
-      OpenWeather (5 third parties).
+  P0  privacy.articles.art3 mentions OpenAI, RevenueCat, Google,
+      OpenWeather (4 third parties). Sentry removed (no longer used).
   P0  privacy.articles.ccpa exists with the 5 statute references
       (1798.100/.105/.110/.120/.125).
   P0  privacy.articles.art12 exists (international transfer table).
@@ -31,7 +31,7 @@ LOCALES = [
     'ms', 'pt', 'ru', 'th', 'tr', 'vi', 'zh',
 ]
 
-REQUIRED_THIRD_PARTIES_LC = ['openai', 'sentry', 'revenuecat', 'google', 'openweather']
+REQUIRED_THIRD_PARTIES_LC = ['openai', 'revenuecat', 'google', 'openweather']
 REQUIRED_CCPA_SECTIONS = ['1798.100', '1798.105', '1798.110', '1798.120', '1798.125']
 
 BASE = Path(__file__).resolve().parent.parent / 'frontend' / 'src' / 'i18n' / 'locales'

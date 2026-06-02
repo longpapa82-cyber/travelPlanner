@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '../components/feedback/Toast/ToastContext';
-import * as Sentry from '@sentry/react-native';
 
 interface ApiErrorOptions {
   /** Custom message to show instead of default */
   customMessage?: string;
-  /** Whether to report to Sentry (default: true for 5xx) */
+  /** @deprecated No-op. Crash reporting was removed; kept for call-site compatibility. */
   reportToSentry?: boolean;
   /** Whether to show a toast (default: true) */
   showToast?: boolean;
@@ -22,7 +21,7 @@ export function useApiError() {
 
   const handleError = useCallback(
     (error: any, options: ApiErrorOptions = {}) => {
-      const { customMessage, reportToSentry = true, showToast: shouldToast = true } = options;
+      const { customMessage, showToast: shouldToast = true } = options;
       const status = error?.response?.status;
       const serverMessage = error?.response?.data?.message;
 
@@ -52,13 +51,6 @@ export function useApiError() {
 
       if (shouldToast) {
         showToast({ type, message, position: 'top', duration: 4000 });
-      }
-
-      // Report 5xx errors and network errors to Sentry
-      if (reportToSentry && (status >= 500 || !error?.response)) {
-        Sentry.captureException(error, {
-          extra: { status, serverMessage, url: error?.config?.url },
-        });
       }
 
       return message;

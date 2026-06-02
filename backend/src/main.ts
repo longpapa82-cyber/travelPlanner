@@ -8,13 +8,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { join } from 'path';
 import helmet from 'helmet';
-import { initSentry } from './common/sentry';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ResponseEnvelopeInterceptor } from './common/interceptors/response-envelope.interceptor';
 import { AppModule } from './app.module';
-
-// Initialize Sentry before app creation
-initSentry();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -139,7 +135,7 @@ async function bootstrap() {
   // Graceful shutdown — drain connections on SIGTERM/SIGINT
   app.enableShutdownHooks();
 
-  // Global exception filter (consistent error responses + Sentry reporting + ErrorLog persistence)
+  // Global exception filter (consistent error responses + ErrorLog persistence)
   const exceptionFilter = new AllExceptionsFilter(app.getHttpAdapter());
   const { DataSource } = await import('typeorm');
   const dataSource = app.get(DataSource);

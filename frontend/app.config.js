@@ -266,7 +266,6 @@ export default ({ config }) => ({
     },
     revenueCatIosKey: process.env.REVENUECAT_IOS_KEY || '',
     revenueCatAndroidKey: process.env.REVENUECAT_ANDROID_KEY || '',
-    sentryDsn: process.env.SENTRY_DSN || '',
     eas: {
       projectId: process.env.EAS_PROJECT_ID || '6834aeb3-58dd-4d9d-a3a3-19824beb9e62',
     },
