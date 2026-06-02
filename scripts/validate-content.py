@@ -396,12 +396,23 @@ def scan_file(path: Path, scope: str) -> list[str]:
         # direct Play 8.3 reject vector because Play Console auto-infers
         # data collection from these and the inference will not match
         # privacy.html.
+        #
+        # A <uses-permission .../> tagged with tools:node="remove" is NOT a
+        # declared permission — the Android manifest merger strips it from
+        # the final APK (this is exactly how expo blockedPermissions works).
+        # Only flag a forbidden permission when it appears WITHOUT a remove
+        # marker on the same tag.
         forbidden_permissions = [
             'android.permission.RECORD_AUDIO',
             'android.permission.SYSTEM_ALERT_WINDOW',
         ]
         for perm in forbidden_permissions:
-            if perm in text:
+            # Match the <uses-permission> tag that declares this permission.
+            tag_match = re.search(
+                r'<uses-permission[^>]*' + re.escape(perm) + r'[^>]*/?>',
+                text,
+            )
+            if tag_match and 'tools:node="remove"' not in tag_match.group(0):
                 failures.append(
                     f'manifest declares unused permission {perm} — '
                     'Play 8.3 reject vector (Data Safety inference mismatch)'

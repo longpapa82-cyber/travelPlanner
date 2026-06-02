@@ -91,8 +91,8 @@ AI trip planner: itinerary, expense tracker, travel guide & trip sharing. Free!
 
 ### Full Description (4000 chars)
 ```
-Plan your perfect trip with MyTravel — the AI travel planner for itinerary building, expense tracking, and travel guide discovery.
-Whether planning a vacation, weekend trip, or solo travel — AI creates your personalized travel itinerary in seconds.
+Plan your next trip with MyTravel — the AI travel planner for itinerary building, expense tracking, and travel guide discovery.
+Whether planning a vacation, weekend trip, or solo travel — AI creates your personalized travel itinerary in moments.
 Use our trip planner to search destinations, build your travel schedule, and track travel expenses all in one place.
 
 Still spending hours planning your trips?
