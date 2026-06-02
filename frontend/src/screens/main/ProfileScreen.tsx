@@ -190,19 +190,6 @@ const ProfileScreen = ({ navigation }: any) => {
   const [deletePassword, setDeletePassword] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const deletePasswordInputRef = useRef<TextInput>(null);
-  // 회원탈퇴 모달 정렬: Android pan 모드에서 키보드가 뜨면 화면 전체가 위로 밀린다.
-  // 팝업이 중앙이면 과도하게 상단으로 밀려 올라가므로(실측 버그), 키보드가 떠 있을 때는
-  // 하단 정렬(flex-end)로 두어 팝업이 키보드 바로 위 선상에 오게 한다. 없을 때는 중앙.
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
-    const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
-  }, []);
 
   const showPlaySubscriptionWarningIfNeeded = async (): Promise<boolean> => {
     if (!isPremium) return true;
@@ -1056,17 +1043,18 @@ const ProfileScreen = ({ navigation }: any) => {
         <Pressable
           style={{
             flex: 1,
-            // Android: pan 모드가 키보드 높이만큼 화면을 밀어올린다. 팝업이 중앙이면
-            //   과도하게 상단으로 밀리므로, 키보드가 떠 있을 때는 하단 정렬(flex-end)로
-            //   두어 팝업이 키보드 바로 위 선상에 안착하게 한다. 없으면 중앙.
-            // iOS: 아래 KAV(padding)가 키보드 높이를 보정하므로 항상 중앙.
-            justifyContent:
-              Platform.OS === 'android' && keyboardVisible ? 'flex-end' : 'center',
+            // 정렬을 고정한다(동적 전환 금지). 이전엔 키보드 표시 시 center→flex-end로
+            // 바꿨는데, 이 JS 전환이 Android pan 모드의 화면 밀어올림과 동기화되지 않아
+            // 팝업이 한 번 튀었다 돌아오는 깜빡임(jank)이 발생했다.
+            // Android: flex-end 고정 → 이 모달은 열리자마자 키보드가 뜨므로(onShow focus)
+            //   하단 고정이 자연스럽고, pan이 함께 밀어올려 키보드 바로 위에 안착한다.
+            // iOS: 아래 KAV(padding)가 키보드 높이를 보정하므로 center 고정.
+            justifyContent: Platform.OS === 'android' ? 'flex-end' : 'center',
             alignItems: 'center',
             backgroundColor: 'rgba(0,0,0,0.5)',
             padding: 20,
-            // 키보드 위(flex-end)일 때 팝업과 키보드 사이에 약간의 숨 쉴 공간.
-            paddingBottom: Platform.OS === 'android' && keyboardVisible ? 12 : 20,
+            // Android 하단 고정 시 팝업과 키보드 사이 숨 쉴 공간.
+            paddingBottom: Platform.OS === 'android' ? 12 : 20,
           }}
           onPress={() => Keyboard.dismiss()}
         >
