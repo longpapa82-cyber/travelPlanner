@@ -1028,7 +1028,16 @@ const ProfileScreen = ({ navigation }: any) => {
       {/* Delete Account (회원 탈퇴) Password Confirmation Modal — center-positioned */}
       <Modal visible={showDeleteConfirm} transparent animationType="fade" onRequestClose={() => setShowDeleteConfirm(false)}>
         <Pressable
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: 20 }}
+          style={{
+            flex: 1,
+            // iOS: KAV(padding)가 키보드를 피해 중앙 배치. Android: softwareKeyboardLayoutMode='pan'이
+            // 화면을 통째 밀어올리므로 하단 정렬 + 여백을 주어 키보드 바로 위에 자연스럽게 붙도록 한다.
+            justifyContent: Platform.OS === 'ios' ? 'center' : 'flex-end',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            padding: 20,
+            paddingBottom: Platform.OS === 'ios' ? 20 : 32,
+          }}
           onPress={() => Keyboard.dismiss()}
         >
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} enabled={Platform.OS === 'ios'} style={{ width: '100%' }}>
