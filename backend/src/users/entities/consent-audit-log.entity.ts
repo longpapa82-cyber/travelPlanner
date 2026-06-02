@@ -48,7 +48,9 @@ export class ConsentAuditLog {
     type: 'enum',
     enum: ConsentType,
   })
-  @Index()
+  // 단일 컬럼 인덱스는 클래스 레벨 @Index(['consentType'])로 정의됨.
+  // 컬럼 레벨 @Index()를 함께 두면 동일 인덱스를 중복 생성해
+  // synchronize 시 "relation IDX_... already exists" 충돌 → 제거.
   consentType: ConsentType;
 
   @Column({ type: 'jsonb', nullable: true })
