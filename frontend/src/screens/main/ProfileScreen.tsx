@@ -189,6 +189,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const deletePasswordInputRef = useRef<TextInput>(null);
 
   const showPlaySubscriptionWarningIfNeeded = async (): Promise<boolean> => {
     if (!isPremium) return true;
@@ -1026,7 +1027,19 @@ const ProfileScreen = ({ navigation }: any) => {
       </Modal>
 
       {/* Delete Account (회원 탈퇴) Password Confirmation Modal — center-positioned */}
-      <Modal visible={showDeleteConfirm} transparent animationType="fade" onRequestClose={() => setShowDeleteConfirm(false)}>
+      <Modal
+        visible={showDeleteConfirm}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowDeleteConfirm(false)}
+        // Android: autoFocus가 모달 fade 중에는 키보드를 띄우지 못하므로, 모달이 완전히
+        // 표시된 직후(onShow) 명시적으로 focus → 첫 화면(키보드 없음) 없이 바로 키보드 활성화.
+        onShow={() => {
+          if (Platform.OS === 'android') {
+            setTimeout(() => deletePasswordInputRef.current?.focus(), 50);
+          }
+        }}
+      >
         <Pressable
           style={{
             flex: 1,
@@ -1052,6 +1065,7 @@ const ProfileScreen = ({ navigation }: any) => {
                 <View style={styles.modalBody}>
                   <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('deleteAccount.passwordConfirm')}</Text>
                   <TextInput
+                    ref={deletePasswordInputRef}
                     style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
                     value={deletePassword}
                     onChangeText={setDeletePassword}
