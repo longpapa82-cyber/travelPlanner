@@ -190,6 +190,17 @@ const ProfileScreen = ({ navigation }: any) => {
   const [deletePassword, setDeletePassword] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const deletePasswordInputRef = useRef<TextInput>(null);
+  // 회원탈퇴 모달: 키보드 표시 여부에 따라 정렬을 달리한다(키보드 없으면 중앙, 있으면 키보드 위).
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   const showPlaySubscriptionWarningIfNeeded = async (): Promise<boolean> => {
     if (!isPremium) return true;
@@ -1032,24 +1043,26 @@ const ProfileScreen = ({ navigation }: any) => {
         transparent
         animationType="fade"
         onRequestClose={() => setShowDeleteConfirm(false)}
-        // Android: autoFocus가 모달 fade 중에는 키보드를 띄우지 못하므로, 모달이 완전히
-        // 표시된 직후(onShow) 명시적으로 focus → 첫 화면(키보드 없음) 없이 바로 키보드 활성화.
+        // Android: autoFocus는 모달 fade 애니메이션 중에 키보드를 띄우지 못한다.
+        // fade가 끝난 뒤(약 300ms) 명시적으로 focus해야 키보드가 확실히 올라온다.
         onShow={() => {
           if (Platform.OS === 'android') {
-            setTimeout(() => deletePasswordInputRef.current?.focus(), 50);
+            setTimeout(() => deletePasswordInputRef.current?.focus(), 300);
           }
         }}
       >
         <Pressable
           style={{
             flex: 1,
-            // iOS: KAV(padding)가 키보드를 피해 중앙 배치. Android: softwareKeyboardLayoutMode='pan'이
-            // 화면을 통째 밀어올리므로 하단 정렬 + 여백을 주어 키보드 바로 위에 자연스럽게 붙도록 한다.
-            justifyContent: Platform.OS === 'ios' ? 'center' : 'flex-end',
+            // iOS: KAV(padding)가 처리하므로 항상 중앙.
+            // Android: softwareKeyboardLayoutMode='pan'이 화면을 밀어올리므로,
+            //   키보드가 떠 있을 때만 하단 정렬(키보드 바로 위), 없을 때는 상/하 중앙.
+            justifyContent:
+              Platform.OS === 'android' && keyboardVisible ? 'flex-end' : 'center',
             alignItems: 'center',
             backgroundColor: 'rgba(0,0,0,0.5)',
             padding: 20,
-            paddingBottom: Platform.OS === 'ios' ? 20 : 32,
+            paddingBottom: Platform.OS === 'android' && keyboardVisible ? 32 : 20,
           }}
           onPress={() => Keyboard.dismiss()}
         >
