@@ -6,7 +6,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 | 플랫폼 | 버전 | 상태 |
 |--------|------|------|
-| **Android** | 1.4.3 (versionCode 294) | **Play 비공개 테스트 업로드 완료(draft)** ✅ — 2026-06-02 (회원탈퇴 키보드 jank 수정). v293=키보드 UX+신규기능 |
+| **Android** | 1.4.3 (versionCode 294) | **Play 비공개 테스트 등록 완료, 출시 대기 중** ⏳ — 2026-06-02 (회원탈퇴 키보드 jank 수정). v293=키보드 UX+신규기능 |
 | **iOS** | 1.4.3 (B86) | **App Store 심사 제출 완료** ⏳ — 2026-06-02 (제출ID 3f0d5ff1) |
 | **서버** | 39차 | https://mytravel-planner.com 운영 중 |
 | **브랜치** | `main` | feat/next-build (PR #3) 병합 완료 — 2026-06-02 |
@@ -16,7 +16,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 ## ⚠️ 다음 할 일
 
 1. **iOS 1.4.3 (B86) App Store 심사 결과 대기** — 2026-06-02 제출, 통과 후 출시
-2. **Android v294 알파 출시 확정** — eas submit으로 alpha 트랙 draft 업로드 완료. Play Console에서 출시노트(ko/en/ja) 추가 + 최종 출시(rollout) 버튼만 남음. 이후 프로덕션 승격
+2. **Android v294 알파 출시 검토 통과 대기** — Play 비공개 테스트 등록 완료, Google 검토 후 테스터 배포. 이후 프로덕션 승격
 3. **백엔드 CI ERESOLVE 부채 해결** — main CI의 Backend Lint/Tests + Static 실패는 V189.1부터 기존 의존성 부채 (프론트 CI는 PR #3에서 GoogleSignin mock으로 초록화 완료)
 4. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
 5. **Sentry 코드 제거**: DSN 미설정으로 완전 비활성 — 불필요 코드/패키지 정리
