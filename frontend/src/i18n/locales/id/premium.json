@@ -27,7 +27,8 @@
     "subscribe": "Berlangganan",
     "restore": "Pulihkan pembelian",
     "manage": "Kelola langganan",
-    "cancel": "Batalkan langganan"
+    "cancel": "Batalkan langganan",
+    "retry": "Coba Lagi"
   },
   "paywall": {
     "title": "Upgrade ke Premium",
@@ -42,7 +43,7 @@
     "privacyLink": "Kebijakan privasi",
     "restoreSuccess": "Langganan berhasil dipulihkan!",
     "restoreNone": "Tidak ditemukan langganan aktif.",
-    "aiUnlimited": "∞ Tanpa batas"
+    "aiUnlimited": "30 perjalanan AI/bln"
   },
   "status": {
     "active": "Aktif",
@@ -73,7 +74,7 @@
     "upgradePremium": "Upgrade ke Premium",
     "managePlan": "Kelola paket",
     "aiRemaining": "AI: {{remaining}}/{{total}} tersisa",
-    "aiUnlimited": "∞ Tanpa batas"
+    "aiUnlimited": "30 perjalanan AI/bln"
   },
   "errors": {
     "title": "Kesalahan",

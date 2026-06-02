@@ -51,17 +51,21 @@ export async function signInWithOAuth(
 
     // Mobile: use Expo's WebBrowser — the redirect URI tells the browser
     // which URL scheme to watch for to auto-dismiss.
+    //
+    // Android uses HTTPS App Links URI instead of the custom scheme because
+    // KakaoTalk destroys the Chrome Custom Tab when it launches, cutting off
+    // the travelplanner:// redirect chain. HTTPS App Links are delivered by
+    // the Android OS directly to the app, bypassing the dead Custom Tab.
     const redirectUri = makeRedirectUri();
 
-    // Android + iOS + Kakao: when the Kakao native app handles the auth, the
-    // Custom Tab / SFSafariViewController is dismissed immediately
-    // (result.type = 'dismiss') before the callback URL arrives via deeplink.
-    // We listen for the deeplink in parallel so whichever channel delivers
-    // the callback URL first resolves the race.
+    // When KakaoTalk handles the auth, the Custom Tab / SFSafariViewController
+    // is dismissed immediately (result.type = 'dismiss') before the callback
+    // URL arrives via deep link. We listen for the deep link in parallel so
+    // whichever channel delivers the callback URL first resolves the race.
     //
-    // Timeout is 5s (was 30s): if the browser dismisses with cancel/dismiss and
-    // no deeplink arrives within 500ms, the deeplinkPromise is resolved with null
-    // immediately — this prevents the indefinite loading spinner on Kakao cancel.
+    // Android: callback arrives via App Links (HTTPS) after KakaoTalk destroys
+    // the Custom Tab. The OS delivers it to Linking.addEventListener.
+    // iOS: callback arrives via travelplanner:// custom scheme.
     const cleanups: Array<() => void> = [];
 
     let deeplinkResolve: ((v: string | null) => void) | undefined;
@@ -73,25 +77,52 @@ export async function signInWithOAuth(
     const deeplinkPromise = (Platform.OS === 'android' || Platform.OS === 'ios')
       ? new Promise<string | null>((resolve) => {
           deeplinkResolve = resolve;
-          const timer = setTimeout(() => resolve(null), 5_000);
+          const timer = setTimeout(() => resolve(null), 10_000);
+
+          // Primary: listen for incoming deep link URL
           const sub = Linking.addEventListener('url', ({ url }) => {
             if (url.includes('/auth/callback')) {
               clearTimeout(timer);
               resolve(url);
             }
           });
+
+          // Fallback for Android: the deep link may arrive as the launch Intent
+          // when the app is brought to foreground after KakaoTalk finishes.
+          if (Platform.OS === 'android') {
+            Linking.getInitialURL().then((url) => {
+              if (url && url.includes('/auth/callback')) {
+                clearTimeout(timer);
+                resolve(url);
+              }
+            }).catch(() => {});
+          }
+
           cleanups.push(() => { sub.remove(); clearTimeout(timer); });
         })
       : Promise.resolve(null);
 
-    // When browser is dismissed or cancelled (e.g. Kakao cancel), allow a short
-    // window for a deeplink to arrive, then immediately resolve with null so
-    // setIsLoading(false) fires without waiting for the full timeout.
+    // When the browser is dismissed (e.g. KakaoTalk took over the auth flow),
+    // keep listening for the deep link.
+    //
+    // Android: KakaoTalk destroys the Custom Tab, so the callback arrives via
+    // App Links (HTTPS) rather than travelplanner://. The OS delivers it to
+    // Linking.addEventListener, so we wait longer (6s) for the full round-trip:
+    // KakaoTalk auth → kakao server → https://mytravel-planner.com/auth/callback
+    // → Android App Links → Linking event.
+    //
+    // iOS: SFSafariViewController stays alive in background and handles the
+    // travelplanner:// redirect itself, so a short wait suffices.
+    const dismissWaitMs = Platform.OS === 'android' ? 6_000 : 500;
     browserPromise.then((result) => {
       if (result.type === 'cancel' || result.type === 'dismiss') {
-        setTimeout(() => deeplinkResolve?.(null), 500);
+        if (__DEV__) {
+          console.log(`[OAuth] Browser ${result.type} on ${Platform.OS}, waiting ${dismissWaitMs}ms for deep link`);
+        }
+        setTimeout(() => deeplinkResolve?.(null), dismissWaitMs);
       }
-    }).catch(() => {
+    }).catch((err) => {
+      if (__DEV__) console.warn('[OAuth] Browser error:', err);
       deeplinkResolve?.(null);
     });
 
@@ -120,14 +151,20 @@ export async function signInWithOAuth(
 }
 
 /**
- * Creates the redirect URI for OAuth callback
+ * Creates the redirect URI for OAuth callback.
+ *
+ * Android production uses HTTPS App Links because KakaoTalk destroys the
+ * Chrome Custom Tab, making travelplanner:// unreachable. The HTTPS URI is
+ * verified via assetlinks.json and delivered by the Android OS directly.
+ *
+ * iOS and dev environments use the custom scheme (travelplanner:// or exp://).
  */
 function makeRedirectUri(): string {
   if (Platform.OS === 'web') {
     return `${window.location.origin}/auth/callback`;
   }
 
-  // Mobile development: Use Expo Go redirect
+  // Development: Use Expo Go redirect
   if (__DEV__) {
     const scheme = 'exp';
     const host = 'localhost';
@@ -135,7 +172,12 @@ function makeRedirectUri(): string {
     return `${scheme}://${host}:${port}/auth/callback`;
   }
 
-  // Mobile production: Use app scheme (travelplanner:///auth/callback)
+  // Android production: HTTPS App Links (bypasses destroyed Custom Tab)
+  if (Platform.OS === 'android') {
+    return 'https://mytravel-planner.com/auth/callback';
+  }
+
+  // iOS production: custom scheme (SFSafariViewController handles it)
   return Linking.createURL('/auth/callback');
 }
 

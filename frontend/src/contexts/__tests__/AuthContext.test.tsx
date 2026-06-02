@@ -8,6 +8,7 @@ import { trackEvent, flushEvents } from '../../services/eventTracker';
 import {
   signInWithGoogle,
   signInWithApple,
+  signInWithAppleNative,
   signInWithKakao,
 } from '../../services/oauth.service';
 import { nativeGoogleSignIn } from '../../services/googleNativeSignIn';
@@ -23,8 +24,10 @@ jest.mock('../../services/api', () => ({
     verifyTwoFactor: jest.fn(),
     exchangeOAuthCode: jest.fn(),
     exchangeGoogleIdToken: jest.fn(),
+    exchangeAppleToken: jest.fn(),
     removePushToken: jest.fn(),
     setOnAuthExpired: jest.fn(),
+    reportError: jest.fn(),
     logout: jest.fn(),
   },
 }));
@@ -40,6 +43,8 @@ jest.mock('../../utils/storage', () => ({
 jest.mock('../../services/offlineCache', () => ({
   offlineCache: {
     clearAll: jest.fn(() => Promise.resolve()),
+    get: jest.fn(() => Promise.resolve(null)),
+    set: jest.fn(() => Promise.resolve()),
   },
 }));
 
@@ -51,6 +56,7 @@ jest.mock('../../services/eventTracker', () => ({
 jest.mock('../../services/oauth.service', () => ({
   signInWithGoogle: jest.fn(),
   signInWithApple: jest.fn(),
+  signInWithAppleNative: jest.fn(),
   signInWithKakao: jest.fn(),
 }));
 
@@ -309,7 +315,12 @@ describe('AuthContext', () => {
     });
 
     it('should login with Apple', async () => {
-      (signInWithApple as jest.Mock).mockResolvedValue(oauthResult);
+      // Apple is native-only: signInWithAppleNative → exchangeAppleToken
+      (signInWithAppleNative as jest.Mock).mockResolvedValue({
+        identityToken: 'apple-identity-token',
+        fullName: 'Test User',
+      });
+      (apiService.exchangeAppleToken as jest.Mock).mockResolvedValue(mockAuthResponse);
 
       const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -321,8 +332,12 @@ describe('AuthContext', () => {
         await result.current.loginWithApple();
       });
 
-      expect(signInWithApple).toHaveBeenCalled();
-      expect(trackEvent).toHaveBeenCalledWith('login', { method: 'apple' });
+      expect(signInWithAppleNative).toHaveBeenCalled();
+      expect(apiService.exchangeAppleToken).toHaveBeenCalledWith(
+        'apple-identity-token',
+        'Test User',
+      );
+      expect(trackEvent).toHaveBeenCalledWith('login', { method: 'apple_native' });
     });
 
     it('should login with Kakao', async () => {

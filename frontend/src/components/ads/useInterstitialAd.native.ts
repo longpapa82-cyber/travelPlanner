@@ -20,6 +20,8 @@ import {
 import Constants from 'expo-constants';
 import { canShowFullScreenAd, recordFullScreenAdShown } from './adFrequency';
 
+import { useGDPRConsent } from '../../hooks/useGDPRConsent';
+
 const extra = Constants.expoConfig?.extra || {};
 
 const INTERSTITIAL_UNIT_ID = __DEV__
@@ -33,17 +35,20 @@ const RELOAD_DELAY_MS = 5000;
 
 export function useInterstitialAd() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const { canShowPersonalizedAds, isReady } = useGDPRConsent();
   const adRef = useRef<InterstitialAd | null>(null);
   const mountedRef = useRef(true);
   const reloadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (!isReady) return;
     mountedRef.current = true;
     if (!INTERSTITIAL_UNIT_ID) return;
 
+    console.log('[AdMob] 📋 Creating InterstitialAd request. requestNonPersonalizedAdsOnly:', !canShowPersonalizedAds);
     // Create ONE instance per mount — reuse via load() for subsequent requests
     const interstitial = InterstitialAd.createForAdRequest(INTERSTITIAL_UNIT_ID, {
-      requestNonPersonalizedAdsOnly: true,
+      requestNonPersonalizedAdsOnly: !canShowPersonalizedAds,
     });
 
     const loadedUnsub = interstitial.addAdEventListener(AdEventType.LOADED, () => {
@@ -75,7 +80,7 @@ export function useInterstitialAd() {
       errorUnsub();
       adRef.current = null;
     };
-  }, []);
+  }, [isReady, canShowPersonalizedAds]);
 
   const show = useCallback(async () => {
     const canShow = await canShowFullScreenAd();

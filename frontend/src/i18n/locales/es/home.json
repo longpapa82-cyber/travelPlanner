@@ -56,5 +56,11 @@
     "sectionTitle": "Consejos de viaje",
     "title": "💡 Planifica con anticipación",
     "description": "La IA crea el itinerario óptimo considerando el clima local, lugares populares y rutas de viaje."
+  },
+  "guestLoginPrompt": {
+    "title": "Inicio de sesión requerido",
+    "message": "Esta función requiere una cuenta. Inicia sesión para crear viajes y guardar tus planes.",
+    "cancel": "Cancelar",
+    "login": "Iniciar sesión"
   }
 }

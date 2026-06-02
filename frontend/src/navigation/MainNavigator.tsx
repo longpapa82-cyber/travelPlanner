@@ -15,6 +15,7 @@ import AnnouncementBellIcon from '../components/AnnouncementBellIcon';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { colors, darkColors } from '../constants/theme';
+import { makeStackScreenOptions } from './sharedHeaderOptions';
 import apiService from '../services/api';
 import { notificationEvents } from '../utils/notificationEvents';
 import { useNotifications } from '../contexts/NotificationContext';
@@ -119,6 +120,7 @@ const MainNavigator = () => {
 
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.textSecondary,
@@ -130,13 +132,7 @@ const MainNavigator = () => {
           paddingTop: 8,
           height: 60 + Math.max(insets.bottom, 0),
         },
-        headerStyle: {
-          backgroundColor: theme.colors.primary,
-        },
-        headerTintColor: colors.neutral[0],
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
+        ...makeStackScreenOptions(theme.colors.primary),
       }}
     >
       <Tab.Screen
@@ -144,10 +140,10 @@ const MainNavigator = () => {
         component={SafeHomeScreen}
         options={{
           title: t('tabs.home'),
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" size={size} color={color} />
           ),
-          headerRight: () => <AnnouncementBellIcon />,
         }}
       />
       <Tab.Screen
@@ -155,6 +151,7 @@ const MainNavigator = () => {
         component={SafeDiscoverScreen}
         options={{
           title: t('tabs.discover'),
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name="compass-outline" size={size} color={color} />
           ),
@@ -182,6 +179,7 @@ const MainNavigator = () => {
         component={SafeNotificationsScreen}
         options={{
           title: t('tabs.notifications'),
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name="bell-outline" size={size} color={color} />
           ),

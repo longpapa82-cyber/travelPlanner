@@ -38,6 +38,7 @@ import { useNotifications } from '../../contexts/NotificationContext';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ensureAbsoluteUrl } from '../../utils/images';
+import { formatDisplayName } from '../../utils/user.utils';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ProfileScreen = ({ navigation }: any) => {
@@ -188,6 +189,20 @@ const ProfileScreen = ({ navigation }: any) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const deletePasswordInputRef = useRef<TextInput>(null);
+  // 회원탈퇴 모달 정렬: Android pan 모드에서 키보드가 뜨면 화면 전체가 위로 밀린다.
+  // 팝업이 중앙이면 과도하게 상단으로 밀려 올라가므로(실측 버그), 키보드가 떠 있을 때는
+  // 하단 정렬(flex-end)로 두어 팝업이 키보드 바로 위 선상에 오게 한다. 없을 때는 중앙.
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   const showPlaySubscriptionWarningIfNeeded = async (): Promise<boolean> => {
     if (!isPremium) return true;
@@ -470,17 +485,33 @@ const ProfileScreen = ({ navigation }: any) => {
 
   const styles = React.useMemo(() => createStyles(theme, isDark), [theme, isDark]);
 
+  const headerHeight = Platform.OS === 'ios' ? insets.top + 44 : insets.top + 56;
+
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
-      }
-    >
-      {/* 이메일 인증 배너 비활성화 — 추후 필요 시 복원
-      <EmailVerificationBanner />
-      */}
-      <View style={styles.profileHeader}>
+    <View style={styles.outerContainer}>
+      {/* Custom header — matches other tab root screens */}
+      <View
+        style={[
+          styles.customHeader,
+          {
+            paddingTop: insets.top,
+            height: headerHeight,
+            backgroundColor: theme.colors.primary,
+          },
+        ]}
+      >
+        <Text style={styles.customHeaderTitle}>{t('title')}</Text>
+      </View>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+        }
+      >
+        {/* 이메일 인증 배너 비활성화 — 추후 필요 시 복원
+        <EmailVerificationBanner />
+        */}
+        <View style={styles.profileHeader}>
         <TouchableOpacity
           style={styles.avatarContainer}
           onPress={handlePickProfilePhoto}
@@ -502,7 +533,7 @@ const ProfileScreen = ({ navigation }: any) => {
             )}
           </View>
         </TouchableOpacity>
-        <Text style={styles.name} testID="profile-name">{user?.name}</Text>
+        <Text style={styles.name} testID="profile-name">{formatDisplayName(user?.name)}</Text>
         <Text style={styles.email} testID="profile-email">{user?.email}</Text>
       </View>
 
@@ -1009,11 +1040,39 @@ const ProfileScreen = ({ navigation }: any) => {
       </Modal>
 
       {/* Delete Account (회원 탈퇴) Password Confirmation Modal — center-positioned */}
-      <Modal visible={showDeleteConfirm} transparent animationType="fade" onRequestClose={() => setShowDeleteConfirm(false)}>
+      <Modal
+        visible={showDeleteConfirm}
+        transparent
+        // animationType="none": fade 애니메이션은 Android에서 onShow 시점의 focus()를
+        // 무시해 키보드가 늦게 뜨는 원인이었다. 애니메이션을 없애 모달이 즉시 표시되고,
+        // onShow에서 곧바로 focus하면 커서+키보드가 바로 활성화된다(요구사항: 누르자마자).
+        animationType="none"
+        onRequestClose={() => setShowDeleteConfirm(false)}
+        // 모달이 표시되는 즉시 비밀번호 입력란에 focus → 커서+키보드 즉시 활성화.
+        onShow={() => {
+          deletePasswordInputRef.current?.focus();
+        }}
+      >
         <Pressable
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: 20 }}
+          style={{
+            flex: 1,
+            // Android: pan 모드가 키보드 높이만큼 화면을 밀어올린다. 팝업이 중앙이면
+            //   과도하게 상단으로 밀리므로, 키보드가 떠 있을 때는 하단 정렬(flex-end)로
+            //   두어 팝업이 키보드 바로 위 선상에 안착하게 한다. 없으면 중앙.
+            // iOS: 아래 KAV(padding)가 키보드 높이를 보정하므로 항상 중앙.
+            justifyContent:
+              Platform.OS === 'android' && keyboardVisible ? 'flex-end' : 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            padding: 20,
+            // 키보드 위(flex-end)일 때 팝업과 키보드 사이에 약간의 숨 쉴 공간.
+            paddingBottom: Platform.OS === 'android' && keyboardVisible ? 12 : 20,
+          }}
           onPress={() => Keyboard.dismiss()}
         >
+          {/* iOS: KAV(padding)가 키보드 높이를 보정해 중앙 유지.
+              Android: softwareKeyboardLayoutMode='pan'이 화면을 통째로 밀어올리고
+              위에서 flex-end로 키보드 위에 배치하므로 KAV는 끈다(이중 보정 방지). */}
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} enabled={Platform.OS === 'ios'} style={{ width: '100%' }}>
             <Pressable onPress={(e) => e.stopPropagation()}>
               <View style={[styles.deleteModalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
@@ -1026,6 +1085,7 @@ const ProfileScreen = ({ navigation }: any) => {
                 <View style={styles.modalBody}>
                   <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('deleteAccount.passwordConfirm')}</Text>
                   <TextInput
+                    ref={deletePasswordInputRef}
                     style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
                     value={deletePassword}
                     onChangeText={setDeletePassword}
@@ -1098,11 +1158,26 @@ const ProfileScreen = ({ navigation }: any) => {
         </View>
       </Modal>
 
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  customHeader: {
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+  },
+  customHeaderTitle: {
+    fontSize: 17,
+    fontWeight: 'bold' as const,
+    color: '#ffffff',
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,

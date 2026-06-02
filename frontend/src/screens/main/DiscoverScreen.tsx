@@ -9,9 +9,11 @@ import {
   ActivityIndicator,
   Image,
   Share,
+  Platform,
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -25,8 +27,10 @@ import { ensureAbsoluteUrl, getDestinationImageUrl } from '../../utils/images';
 
 const DiscoverScreen = () => {
   const { t } = useTranslation('social');
+  const { t: tCommon } = useTranslation('common');
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
 
   const [items, setItems] = useState<FeedTrip[]>([]);
@@ -214,8 +218,24 @@ const DiscoverScreen = () => {
     </TouchableOpacity>
   );
 
+  const headerHeight = Platform.OS === 'ios' ? insets.top + 44 : insets.top + 56;
+
   return (
     <View style={styles.container}>
+      {/* Custom header — same height as TripList/Profile headers */}
+      <View
+        style={[
+          styles.header,
+          {
+            paddingTop: insets.top,
+            height: headerHeight,
+            backgroundColor: theme.colors.primary,
+          },
+        ]}
+      >
+        <Text style={styles.headerTitle}>{tCommon('tabs.discover')}</Text>
+      </View>
+
       {isLoading ? (
         <View style={[styles.container, styles.center]}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -273,6 +293,16 @@ const createStyles = (theme: any, isDark: boolean) =>
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
+    },
+    header: {
+      justifyContent: 'flex-end',
+      paddingHorizontal: 16,
+      paddingBottom: 12,
+    },
+    headerTitle: {
+      fontSize: 17,
+      fontWeight: 'bold' as const,
+      color: '#ffffff',
     },
     center: {
       justifyContent: 'center',

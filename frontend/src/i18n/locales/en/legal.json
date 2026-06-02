@@ -137,7 +137,7 @@
       },
       "premiumRestore": {
         "q": "How do I restore my subscription?",
-        "a": "Go to Profile → Subscription and tap 'Restore Purchases'. Your previous subscription will be automatically restored. When switching devices, sign in with the same Apple ID or Google account."
+        "a": "Go to Profile → Subscription and tap 'Restore Purchases'. The app will verify your previous purchase and restore your subscription. When switching devices, sign in with the same Apple ID or Google account, then tap Restore Purchases."
       }
     },
     "contact": {
@@ -221,7 +221,7 @@
       },
       "art18": {
         "title": "Service Provider",
-        "content": "• Company name: AI Soft\n• Representative: Hoon-jae Park\n• Inquiry email: longpapa82@gmail.com\n• Business registration number: In progress — will be updated before official commercial launch"
+        "content": "• Company name: AI Soft\n• Representative: Hoon-jae Park\n• Inquiry email: longpapa82@gmail.com\n• Business registration number: 411-18-92743\n• Address: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, South Korea"
       }
     }
   },
@@ -271,7 +271,7 @@
       },
       "art11": {
         "title": "11. Privacy Officer",
-        "content": "Privacy Officer: MyTravel Operations Team\nEmail: longpapa82@gmail.com"
+        "content": "Privacy Officer: MyTravel Operations Team\nEmail: longpapa82@gmail.com\nAddress: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, South Korea"
       },
       "art12": {
         "title": "12. Cross-Border Data Transfer",

@@ -14,11 +14,15 @@ import {
   RefreshControl,
   ActivityIndicator,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
-import { RouteProp } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import { RouteProp, useNavigation, NavigationProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { colors } from '../../constants/theme';
 import { RootStackParamList, Trip } from '../../types';
 import apiService from '../../services/api';
@@ -34,7 +38,10 @@ interface Props {
 const SharedTripViewScreen: React.FC<Props> = ({ route }) => {
   const { shareToken } = route.params;
   const { theme, isDark } = useTheme();
+  const { isAuthenticated } = useAuth();
   const { t } = useTranslation('trips');
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const insets = useSafeAreaInsets();
   const [trip, setTrip] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -71,16 +78,37 @@ const SharedTripViewScreen: React.FC<Props> = ({ route }) => {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString(undefined, {
+    return date.toLocaleDateString('ko-KR', {
       year: 'numeric',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
     });
   };
 
+  const handleBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      // Cold-start: stack has only SharedTrip. Reset to the correct root screen
+      // depending on auth state — 'Main' only exists when authenticated.
+      const rootScreen = isAuthenticated ? 'Main' : 'Auth';
+      navigation.reset({ index: 0, routes: [{ name: rootScreen }] });
+    }
+  };
+
+  const CustomHeader = () => (
+    <View style={[styles.headerSafeArea, { backgroundColor: theme.colors.background, paddingTop: insets.top }]}>
+      <View style={[styles.customHeader, { borderBottomColor: theme.colors.border }]}>
+        <TouchableOpacity onPress={handleBack} style={styles.backButton} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+          <Icon name="arrow-left" size={24} color={theme.colors.primary} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   if (loading) {
     return (
-      <View style={[styles.centerContainer, { backgroundColor: theme.colors.background }]}>
+      <View style={[styles.fullContainer, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
     );
@@ -88,11 +116,14 @@ const SharedTripViewScreen: React.FC<Props> = ({ route }) => {
 
   if (error || !trip) {
     return (
-      <View style={[styles.centerContainer, { backgroundColor: theme.colors.background }]}>
-        <Icon name="link-variant-off" size={64} color={theme.colors.textSecondary} />
-        <Text style={[styles.errorTitle, { color: theme.colors.text }]}>
-          {error || t('sharedTrip.notFound', 'Trip not found')}
-        </Text>
+      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <CustomHeader />
+        <View style={styles.centerContainer}>
+          <Icon name="link-variant-off" size={64} color={theme.colors.textSecondary} />
+          <Text style={[styles.errorTitle, { color: theme.colors.text }]}>
+            {error || t('sharedTrip.notFound', 'Trip not found')}
+          </Text>
+        </View>
       </View>
     );
   }
@@ -107,55 +138,62 @@ const SharedTripViewScreen: React.FC<Props> = ({ route }) => {
   ) || 0;
 
   return (
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <CustomHeader />
     <ScrollView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
+      style={{ flex: 1 }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
       {/* Header */}
-      <View style={[styles.heroSection, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}>
+      <LinearGradient
+        colors={['#1a3a5c', '#2d6aaf']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.heroSection}
+      >
         <View style={styles.sharedBadge}>
-          <Icon name="share-variant" size={16} color={theme.colors.primary} />
-          <Text style={[styles.sharedBadgeText, { color: theme.colors.primary }]}>
-            {t('sharedTrip.badge', 'Shared Trip')}
+          <Icon name="share-variant" size={14} color="rgba(255,255,255,0.9)" />
+          <Text style={styles.sharedBadgeText}>
+            {t('sharedTrip.badge', '공유된 여행')}
           </Text>
         </View>
-        <Text style={[styles.destination, { color: theme.colors.text }]}>
+        <Text style={styles.destination}>
           {trip.destination}
         </Text>
         {trip.country && (
-          <Text style={[styles.country, { color: theme.colors.textSecondary }]}>
+          <Text style={styles.country}>
             {trip.country}
           </Text>
         )}
         <View style={styles.dateRow}>
-          <Icon name="calendar-range" size={18} color={theme.colors.textSecondary} />
-          <Text style={[styles.dateText, { color: theme.colors.textSecondary }]}>
+          <Icon name="calendar-range" size={16} color="rgba(255,255,255,0.8)" />
+          <Text style={styles.dateText}>
             {formatDate(trip.startDate)} — {formatDate(trip.endDate)}
           </Text>
         </View>
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: theme.colors.text }]}>{totalDays}</Text>
-            <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
-              {t('sharedTrip.days', 'Days')}
+            <Text style={styles.statValue}>{totalDays}</Text>
+            <Text style={styles.statLabel}>
+              {t('sharedTrip.days', '일')}
             </Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: theme.colors.text }]}>{totalActivities}</Text>
-            <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
-              {t('sharedTrip.activities', 'Activities')}
+            <Text style={styles.statValue}>{totalActivities}</Text>
+            <Text style={styles.statLabel}>
+              {t('sharedTrip.activities', '활동')}
             </Text>
           </View>
           {trip.numberOfTravelers && (
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>{trip.numberOfTravelers}</Text>
-              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
-                {t('sharedTrip.travelers', 'Travelers')}
+              <Text style={styles.statValue}>{trip.numberOfTravelers}</Text>
+              <Text style={styles.statLabel}>
+                {t('sharedTrip.travelers', '여행자')}
               </Text>
             </View>
           )}
         </View>
-      </View>
+      </LinearGradient>
 
       {/* Description */}
       {trip.description && (
@@ -235,12 +273,32 @@ const SharedTripViewScreen: React.FC<Props> = ({ route }) => {
         </Text>
       </View>
     </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  headerSafeArea: {
+    zIndex: 10,
+    // paddingTop is set dynamically via insets.top
+  },
+  customHeader: {
+    height: 48,
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  backButton: {
+    padding: 8,
+  },
+  fullContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   centerContainer: {
     flex: 1,
@@ -256,26 +314,41 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   heroSection: {
+    margin: 16,
+    marginTop: 8,
+    borderRadius: 20,
     padding: 24,
-    paddingTop: Platform.OS === 'web' ? 48 : 60,
     gap: 8,
+    shadowColor: '#0f172a',
+    shadowOpacity: 0.18,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
   },
   sharedBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignSelf: 'flex-start',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
     marginBottom: 8,
   },
   sharedBadgeText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
+    color: 'rgba(255,255,255,0.95)',
   },
   destination: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: '800',
+    color: '#ffffff',
   },
   country: {
     fontSize: 16,
+    color: 'rgba(255,255,255,0.8)',
   },
   dateRow: {
     flexDirection: 'row',
@@ -284,23 +357,26 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   dateText: {
-    fontSize: 15,
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.85)',
   },
   statsRow: {
     flexDirection: 'row',
-    gap: 24,
+    gap: 28,
     marginTop: 16,
   },
   statItem: {
     alignItems: 'center',
   },
   statValue: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
+    color: '#ffffff',
   },
   statLabel: {
     fontSize: 12,
     marginTop: 2,
+    color: 'rgba(255,255,255,0.75)',
   },
   section: {
     padding: 20,

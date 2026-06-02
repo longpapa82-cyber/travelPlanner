@@ -57,14 +57,79 @@ export async function initRevenueCat(userId?: string): Promise<void> {
   }
 }
 
+// Module-level offerings cache: pre-fetched by PremiumContext on init,
+// reused by PaywallModal to avoid cold-start null from Sandbox.
+let cachedOfferings: PurchasesOfferings | null = null;
+
+export function getCachedOfferings(): PurchasesOfferings | null {
+  return cachedOfferings;
+}
+
 export async function getOfferings(): Promise<PurchasesOfferings | null> {
   try {
+    // If SDK not yet initialized (e.g. paywall opened before PremiumContext init completes),
+    // configure anonymously so getOfferings can proceed.
+    if (!isInitialized) {
+      const apiKey = Platform.OS === 'ios' ? REVENUECAT_IOS_KEY : REVENUECAT_ANDROID_KEY;
+      if (apiKey) {
+        Purchases.setLogLevel(LOG_LEVEL.WARN);
+        Purchases.configure({ apiKey });
+        isInitialized = true;
+      }
+    }
     const offerings = await Purchases.getOfferings();
+    if (offerings?.current) {
+      cachedOfferings = offerings;
+      return offerings;
+    }
+
+    // Log details to diagnose why current is missing
+    const allKeys = offerings ? Object.keys(offerings.all ?? {}) : [];
+    console.warn(
+      `[RevenueCat] no current offering on ${Platform.OS}.`,
+      `all keys: ${allKeys.join(', ') || 'none'}`,
+    );
+
+    // Fallback: if current is null but offerings.all has entries,
+    // synthesize a current-like object from the first available offering.
+    // This handles RevenueCat dashboard misconfiguration where Default Offering is unset.
+    if (offerings && allKeys.length > 0) {
+      const firstOffering = offerings.all[allKeys[0]];
+      if (firstOffering) {
+        console.warn(`[RevenueCat] using fallback offering: ${allKeys[0]}`);
+        const patched = { ...offerings, current: firstOffering };
+        cachedOfferings = patched;
+        return patched;
+      }
+    }
+
     return offerings;
-  } catch (error) {
-    console.warn('[RevenueCat] Failed to get offerings:', error);
+  } catch (error: any) {
+    console.warn(
+      '[RevenueCat] Failed to get offerings:',
+      error?.message ?? error,
+      'code:', error?.code ?? 'n/a',
+    );
     return null;
   }
+}
+
+// Pre-fetch offerings in background after SDK init.
+// Retries up to maxAttempts times with delayMs between attempts.
+// Called by PremiumContext on user login so PaywallModal finds a warm cache.
+export async function prefetchOfferings(maxAttempts = 4, delayMs = 2000): Promise<void> {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    if (cachedOfferings) return;
+    const offerings = await getOfferings();
+    if (offerings?.current) {
+      cachedOfferings = offerings;
+      return;
+    }
+    if (attempt < maxAttempts) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+  console.warn('[RevenueCat] prefetchOfferings: no current offering after', maxAttempts, 'attempts');
 }
 
 /**
@@ -152,17 +217,22 @@ export function getActiveEntitlementSnapshot(
   const idLower = productIdentifier.toLowerCase();
   // V169: explicit mapping table — mirror backend B1 fix to stay consistent.
   // Matches known SKUs: premium_monthly, premium_yearly, premium_annual,
-  // premium_1y, premium_1m. Add new SKUs here *and* in subscription.service.ts.
+  // premium_1y, premium_1m, and full iOS bundle IDs.
+  // Add new SKUs here *and* in subscription.service.ts.
   const planType: 'monthly' | 'yearly' | undefined =
     idLower === 'premium_yearly' ||
     idLower === 'premium_annual' ||
     idLower === 'premium_1y' ||
+    idLower === 'com.longpapa82.travelplanner.premium.yearly' ||
     idLower.endsWith(':premium-yearly') ||
-    idLower.endsWith(':premium-annual')
+    idLower.endsWith(':premium-annual') ||
+    idLower.endsWith('.premium.yearly')
       ? 'yearly'
       : idLower === 'premium_monthly' ||
           idLower === 'premium_1m' ||
-          idLower.endsWith(':premium-monthly')
+          idLower === 'com.longpapa82.travelplanner.premium.monthly' ||
+          idLower.endsWith(':premium-monthly') ||
+          idLower.endsWith('.premium.monthly')
         ? 'monthly'
         : idLower.includes('year') || idLower.includes('annual')
           ? 'yearly'

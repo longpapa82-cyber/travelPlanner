@@ -68,8 +68,12 @@ const getWeatherColor = (condition: string | undefined | null): string => {
 
 // 시차 포맷팅
 const formatTimezoneOffset = (offset: number): string => {
-  const sign = offset >= 0 ? '+' : '';
-  return `UTC${sign}${offset}`;
+  const sign = offset >= 0 ? '+' : '-';
+  const abs = Math.abs(offset);
+  const hours = Math.floor(abs);
+  const minutes = Math.round((abs - hours) * 60);
+  const minuteStr = minutes > 0 ? `:${String(minutes).padStart(2, '0')}` : '';
+  return `UTC${sign}${hours}${minuteStr}`;
 };
 
 export const WeatherWidget: React.FC<WeatherWidgetProps> = React.memo(({

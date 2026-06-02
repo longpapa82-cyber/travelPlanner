@@ -134,14 +134,22 @@ class ApiService {
               if (!storedRefresh) {
                 // No refresh token available — session cannot be recovered.
                 // Clear stale access token and trigger logout.
-                this.isRefreshing = false;
                 this.onRefreshFailed(error);
                 await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
                 this.onAuthExpired?.();
                 return Promise.reject(error);
               }
 
-              const response = await this.api.post('/auth/refresh', { refreshToken: storedRefresh });
+              // Enforce a hard 10s timeout on the refresh call so isRefreshing
+              // never gets permanently stuck when the server is unreachable.
+              const refreshWithTimeout = Promise.race([
+                this.api.post('/auth/refresh', { refreshToken: storedRefresh }),
+                new Promise<never>((_, reject) =>
+                  setTimeout(() => reject(new Error('refresh_timeout')), 10000),
+                ),
+              ]);
+
+              const response = await refreshWithTimeout;
               const data = response.data?.accessToken ? response.data : response.data?.data;
               const { accessToken, refreshToken: newRefreshToken } = data;
 
@@ -158,18 +166,16 @@ class ApiService {
                 }
               }
 
-              this.isRefreshing = false;
               this.onRefreshed(accessToken);
 
               // Retry original request with new token
               originalRequest.headers.Authorization = `Bearer ${accessToken}`;
               return this.api(originalRequest);
             } catch (refreshError: any) {
-              this.isRefreshing = false;
               this.onRefreshFailed(error);
 
               // Clear tokens on explicit server rejection (401/403) or missing refresh token.
-              // Network errors should preserve tokens for retry on next launch.
+              // Network errors (timeout, 5xx) preserve tokens for retry on next launch.
               const status = refreshError?.response?.status;
               if (status === 401 || status === 403) {
                 await secureStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
@@ -177,6 +183,11 @@ class ApiService {
                 this.onAuthExpired?.();
               }
               return Promise.reject(error);
+            } finally {
+              // Always reset so the next 401 can attempt a fresh refresh.
+              // Without this, a network error or timeout during refresh permanently
+              // blocks all subsequent requests from entering the refresh path.
+              this.isRefreshing = false;
             }
           }
 
@@ -399,6 +410,11 @@ class ApiService {
     return response.data;
   }
 
+  async exchangeAppleToken(identityToken: string, fullName?: string) {
+    const response = await this.api.post('/auth/apple/token', { identityToken, fullName });
+    return response.data;
+  }
+
   // User Methods
   async getProfile() {
     try {
@@ -523,7 +539,7 @@ class ApiService {
 
   async createTripWithPolling(
     data: any,
-    onProgress?: (step: string, message?: string) => void,
+    onProgress?: (step: string, message?: string, dayProgress?: { completed: number; total: number }) => void,
     signal?: AbortSignal,
   ): Promise<any> {
     try {
@@ -569,15 +585,15 @@ class ApiService {
           try {
             // 작업 상태 조회
             const statusResponse = await this.api.get(`/trips/job-status/${jobId}`, {
-              timeout: 5000,
+              timeout: 30000,
               signal,
             });
 
             const status = statusResponse.data;
 
-            // 진행률 콜백 호출
+            // 진행률 콜백 호출 (dayProgress 포함)
             if (status.progress && onProgress) {
-              onProgress(status.progress.step, status.progress.message);
+              onProgress(status.progress.step, status.progress.message, status.progress.dayProgress);
             }
 
             // 완료 처리
@@ -1293,6 +1309,13 @@ class ApiService {
   async restoreSubscription() {
     const response = await this.api.post('/subscription/restore');
     return response.data;
+  }
+
+  async syncSubscriptionFromRc(): Promise<{ synced: boolean; tier: string }> {
+    const res = await this.api.post<{ synced: boolean; tier: string }>(
+      '/subscription/sync-from-rc',
+    );
+    return res.data;
   }
 
   /**

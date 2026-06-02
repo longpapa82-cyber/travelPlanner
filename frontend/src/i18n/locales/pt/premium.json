@@ -27,7 +27,8 @@
     "subscribe": "Assinar",
     "restore": "Restaurar compra",
     "manage": "Gerenciar assinatura",
-    "cancel": "Cancelar assinatura"
+    "cancel": "Cancelar assinatura",
+    "retry": "Tentar Novamente"
   },
   "paywall": {
     "title": "Upgrade para Premium",
@@ -42,7 +43,7 @@
     "privacyLink": "Política de privacidade",
     "restoreSuccess": "Assinatura restaurada com sucesso!",
     "restoreNone": "Nenhuma assinatura ativa encontrada.",
-    "aiUnlimited": "∞ Ilimitado"
+    "aiUnlimited": "30 viagens IA/mês"
   },
   "status": {
     "active": "Ativo",
@@ -73,7 +74,7 @@
     "upgradePremium": "Upgrade para Premium",
     "managePlan": "Gerenciar plano",
     "aiRemaining": "AI: {{remaining}}/{{total}} restantes",
-    "aiUnlimited": "∞ Ilimitado"
+    "aiUnlimited": "30 viagens IA/mês"
   },
   "errors": {
     "title": "Erro",

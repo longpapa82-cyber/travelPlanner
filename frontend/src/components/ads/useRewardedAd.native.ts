@@ -21,6 +21,7 @@ import mobileAds from 'react-native-google-mobile-ads';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { canShowFullScreenAd, recordFullScreenAdShown } from './adFrequency';
+import { useGDPRConsent } from '../../hooks/useGDPRConsent';
 
 const extra = Constants.expoConfig?.extra || {};
 
@@ -48,6 +49,7 @@ export function useRewardedAd(): {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const { canShowPersonalizedAds, isReady } = useGDPRConsent();
 
   // Track ad state and timing
   const adRef = useRef<RewardedAd | null>(null);
@@ -211,7 +213,7 @@ export function useRewardedAd(): {
       console.log('[useRewardedAd] Creating ad with unit ID:', adUnitId.substring(0, 20) + '...');
 
       const ad = RewardedAd.createForAdRequest(adUnitId, {
-        requestNonPersonalizedAdsOnly: false,
+        requestNonPersonalizedAdsOnly: !canShowPersonalizedAds,
         keywords: ['travel', 'vacation', 'trip', 'tourism'],
       });
 
@@ -229,13 +231,14 @@ export function useRewardedAd(): {
       setError('Failed to create ad');
       throw err;
     }
-  }, [getAdUnitId, setupListeners, loadAd]);
+  }, [getAdUnitId, setupListeners, loadAd, canShowPersonalizedAds]);
 
   /**
-   * Initialize on mount
+   * Initialize when consent is ready
    */
   useEffect(() => {
-    console.log('[useRewardedAd] Component mounted, initializing...');
+    if (!isReady) return;
+    console.log('[useRewardedAd] GDPR Consent ready, initializing rewarded ad...');
 
     // Delay initial ad creation to ensure SDK is ready
     const initTimer = setTimeout(() => {
@@ -255,12 +258,12 @@ export function useRewardedAd(): {
     // Cleanup
     return () => {
       clearTimeout(initTimer);
-      console.log('[useRewardedAd] Component unmounting');
+      console.log('[useRewardedAd] Component unmounting / re-initializing');
       adRef.current = null;
       listenersSetupRef.current = false;
       isLoadedRef.current = false;
     };
-  }, []); // Empty deps - only run once on mount
+  }, [isReady, canShowPersonalizedAds]); // Empty deps - only run once on mount
 
   /**
    * Show the ad with Just-in-Time loading
@@ -340,24 +343,12 @@ export function useRewardedAd(): {
     } catch (err) {
       console.error('[useRewardedAd] Failed to show ad:', err);
       setError(String(err));
-
-      // Fallback reward only for legitimate errors, not user-caused blocking
-      const errorStr = String(err);
-      const isLegitimateError =
-        errorStr.includes('No fill') ||          // No ads available (AdMob)
-        errorStr.includes('ERROR_CODE_NO_FILL') || // No ads available
-        errorStr.includes('Network') ||           // Network issues
-        errorStr.includes('timeout') ||           // SDK timeout
-        errorStr.includes('SDK');                 // SDK errors
-
-      if (isLegitimateError) {
-        console.log('[useRewardedAd] Giving reward anyway (legitimate error fallback)');
-        onRewarded();
-      } else {
-        // User might be blocking ads - don't reward
-        console.log('[useRewardedAd] Ad show failed - no fallback reward (possible ad blocker)');
-        throw err; // Re-throw to caller
-      }
+      // Always grant the reward — rewarded ads are user-initiated and best-effort.
+      // Ad load failures (NO_FILL, network, SDK errors, iOS ATT restrictions) are
+      // outside the user's control. Withholding the insight on an ad failure is
+      // a worse UX than the rare case of a user bypassing ads deliberately.
+      console.log('[useRewardedAd] Granting reward despite ad failure (best-effort fallback)');
+      onRewarded();
     } finally {
       setIsLoading(false);
     }

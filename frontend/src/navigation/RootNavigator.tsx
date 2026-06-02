@@ -1,10 +1,11 @@
-import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   NavigationContainer,
   LinkingOptions,
   DefaultTheme,
   DarkTheme,
   NavigationState,
+  createNavigationContainerRef,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
@@ -13,7 +14,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { useConsent } from '../contexts/ConsentContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTrackingTransparency } from '../hooks/useTrackingTransparency';
 import { RootStackParamList } from '../types';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
@@ -24,10 +24,15 @@ import AnnouncementDetailScreen from '../screens/main/AnnouncementDetailScreen';
 import ConsentScreen from '../screens/consent/ConsentScreen';
 import EmailVerificationCodeScreen from '../screens/auth/EmailVerificationCodeScreen';
 import { ActivityIndicator, View, StyleSheet, Platform } from 'react-native';
-import PrePermissionATTModal, { shouldShowATTPrePermission } from '../components/PrePermissionATTModal';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { OfflineBanner } from '../components/OfflineBanner';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+// Module-level ref so login handlers in AuthContext can navigate to Home
+// after the NavigationContainer mounts with a potentially-stale initialState.
+export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 /**
  * V189 P0-C (5차 chronic regression — V184 A4 → V185 → V186 #5 → V187 P0-F):
@@ -57,9 +62,14 @@ const SAFE_PARAM_KEYS = new Set(['tripId', 'shareToken', 'announcementId']);
 
 const sanitizeNavState = (state: NavigationState | undefined): unknown => {
   if (!state) return undefined;
+  // SharedTrip must never be persisted — it is a transient deep-link entry
+  // point. Restoring it after a cold-start or login would land the user on
+  // a potentially-expired share token instead of Home.
+  const filteredRoutes = state.routes.filter((r) => r.name !== 'SharedTrip');
+  if (filteredRoutes.length === 0) return undefined;
   return {
     ...state,
-    routes: state.routes.map((route) => {
+    routes: filteredRoutes.map((route) => {
       const params = route.params as Record<string, unknown> | undefined;
       const safeParams = params
         ? Object.fromEntries(
@@ -106,12 +116,47 @@ const loadPersistedNavState = async (): Promise<unknown | undefined> => {
   }
 };
 
+// V189 P0-D: getInitialURL consumed flag (module-level = survives remounts).
+// Problem: NavigationContainer unmounts/remounts during login (isCheckingConsent
+// briefly true) → React Navigation's useLinking calls getInitialURL again on
+// every remount → iOS returns the original share URL for the entire app process
+// lifetime → SharedTrip appears instead of Home after re-login.
+// Fix: consume the URL exactly once; every subsequent remount gets null.
+let _initialURLConsumed = false;
+
+// Eagerly capture the initial URL once at module load time.
+// Must be done before any async gates (AsyncStorage, AuthContext) run.
+const _coldStartURLPromise: Promise<string | null> =
+  Platform.OS !== 'web'
+    ? Linking.getInitialURL().catch(() => null)
+    : Promise.resolve(null);
+
+// Resolved value of _coldStartURLPromise — set synchronously once the promise
+// settles so the nav-state loading effect can read it without await.
+let _coldStartURL: string | null = null;
+_coldStartURLPromise.then((url) => { _coldStartURL = url; });
+
+// nav-state ready gate: signals getInitialURL that AsyncStorage restore is done.
+let _navStateReadyResolver: (() => void) | null = null;
+const _navStateReadyPromise = new Promise<void>((resolve) => {
+  _navStateReadyResolver = resolve;
+});
+
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [
     Linking.createURL('/'),
     'travelplanner://',
     'https://mytravel-planner.com',
   ],
+  getInitialURL: async () => {
+    if (_initialURLConsumed) return null;
+    _initialURLConsumed = true;
+    // No need to await nav-state ready: when _coldStartURL is set the useEffect
+    // already clears initialState (undefined), so the URL is the sole source of
+    // truth for the initial route. Returning immediately avoids a 3-second delay
+    // where the URL could be dropped if NavigationContainer mounts first.
+    return _coldStartURLPromise;
+  },
   config: {
     screens: {
       SharedTrip: {
@@ -154,6 +199,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   },
 };
 
+
 const RootNavigator = () => {
   const {
     isAuthenticated,
@@ -167,7 +213,6 @@ const RootNavigator = () => {
   const { needsConsentScreen, isCheckingConsent, markConsentComplete } = useConsent();
   const { triggerPrePermission } = useNotifications();
   const { theme, isDark } = useTheme();
-  const { shouldShowPrePermission, sessionCount, requestTracking } = useTrackingTransparency();
 
   // V189 P0-C: load persisted nav state on cold-start so users return to
   // the screen they were on before Android LMK killed the process.
@@ -185,10 +230,19 @@ const RootNavigator = () => {
     }
     let cancelled = false;
     (async () => {
+      // Wait for _coldStartURLPromise to settle first so _coldStartURL is set.
+      await _coldStartURLPromise;
       const restored = await loadPersistedNavState();
       if (cancelled) return;
-      setInitialNavState(restored);
+      // If there is a cold-start deep link URL, do NOT restore nav state.
+      // React Navigation: when initialState is non-undefined AND getInitialURL
+      // returns a URL, initialState wins and the deep link is silently ignored.
+      // Clearing initialState here ensures the deep link navigates correctly.
+      setInitialNavState(_coldStartURL ? undefined : restored);
       setIsNavStateReady(true);
+      // Signal getInitialURL that nav state is ready so cold-start deep links
+      // are not dropped before NavigationContainer mounts.
+      _navStateReadyResolver?.();
     })();
     return () => {
       cancelled = true;
@@ -198,14 +252,35 @@ const RootNavigator = () => {
   // Clear persisted nav state when user identity changes so a different
   // account never inherits the previous session's navigation stack
   // (e.g. admin ErrorLog screen visible to a non-admin user).
+  // On login (null → userId), navigate to Home via the live ref because
+  // setInitialNavState(undefined) has no effect on an already-mounted
+  // NavigationContainer — initialState is a mount-time-only prop.
   const prevUserIdRef = useRef<string | null | undefined>(undefined);
   useEffect(() => {
+    const prevId = prevUserIdRef.current;
     const currentId = user?.id ?? null;
-    if (prevUserIdRef.current !== undefined && prevUserIdRef.current !== currentId) {
+    if (prevId !== undefined && prevId !== currentId) {
       AsyncStorage.removeItem(NAV_STATE_KEY).catch(() => {});
+      if (prevId === null && currentId !== null) {
+        // Login transition: reset the entire navigation stack to Home so that
+        // any deep-link screen (e.g. SharedTrip) that was open before login is
+        // fully removed. Using navigate() would push Home on top of SharedTrip,
+        // leaving it reachable via the back gesture — reset() wipes the stack.
+        setInitialNavState(undefined);
+        if (navigationRef.isReady()) {
+          navigationRef.reset({
+            index: 0,
+            routes: [{ name: 'Main' }],
+          });
+        }
+      }
     }
     prevUserIdRef.current = currentId;
   }, [user?.id]);
+
+  // Cold-start deep link is handled entirely by linking.getInitialURL above.
+  // React Navigation parses the URL and sets the initial route automatically.
+  // No manual navigate() calls needed for the cold-start case.
 
   // V141 fix: When the user is authenticated and doesn't need consent,
   // the pushRegistrationCallback bridge may have been missed (race condition
@@ -231,28 +306,18 @@ const RootNavigator = () => {
     return undefined;
   }, [isAuthenticated, isLoading, isCheckingConsent, needsConsentScreen, pendingVerification, triggerPrePermission]);
 
-  // ATT pre-permission modal state
-  const [showATTModal, setShowATTModal] = useState(false);
-
-  useEffect(() => {
-    if (!shouldShowPrePermission) return;
-    shouldShowATTPrePermission(sessionCount).then((show) => {
-      if (show) setShowATTModal(true);
-    });
-  }, [shouldShowPrePermission, sessionCount]);
-
-  const handleATTDismiss = useCallback(() => {
-    setShowATTModal(false);
-  }, []);
-
   // Show loading while checking auth, consent, or restoring nav state.
   // V189 P0-C: isNavStateReady gates the NavigationContainer so we never
   // mount with no initialState and then jump to the restored route — the
   // jump would look like a flash to the user.
   if (isLoading || (isAuthenticated && isCheckingConsent) || !isNavStateReady) {
+    // White background + spinner: matches the App.tsx !appReady loading screen
+    // so the transition is seamless (white→white→app, no blue flash).
+    // edgeToEdge inset race is not an issue here since this View has no
+    // absolutely-positioned elements that depend on inset values.
     return (
-      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
+      <View style={{ flex: 1, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="#4A90D9" />
       </View>
     );
   }
@@ -299,10 +364,16 @@ const RootNavigator = () => {
     return <ConsentScreen onComplete={markConsentComplete} />;
   }
 
+  // OfflineBanner is placed here (after all loading gates) so it never
+  // shifts the splash/loading icon position during app startup.
+  // Web uses the window online/offline events and doesn't need native banner.
+  const offlineBanner = Platform.OS !== 'web' ? <OfflineBanner /> : null;
+
   // Wrap entire app in GestureHandlerRootView for proper gesture handling
   // This should be the only GestureHandlerRootView in the app
   const NavigationContent = (
     <NavigationContainer
+      ref={navigationRef}
       linking={linking}
       // V189 P0-C: cold-start restoration. initialState is set once on
       // mount; subsequent updates flow through onStateChange → AsyncStorage.
@@ -329,7 +400,7 @@ const RootNavigator = () => {
           <Stack.Screen name="Auth" component={AuthNavigator} />
         )}
         <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
-        <Stack.Screen name="SharedTrip" component={SharedTripViewScreen} />
+        <Stack.Screen name="SharedTrip" component={SharedTripViewScreen} options={{ headerShown: false }} />
         <Stack.Screen
           name="AnnouncementList"
           component={AnnouncementListScreen}
@@ -342,12 +413,6 @@ const RootNavigator = () => {
         />
       </Stack.Navigator>
 
-      <PrePermissionATTModal
-        visible={showATTModal}
-        sessionCount={sessionCount}
-        onRequestTracking={requestTracking}
-        onDismiss={handleATTDismiss}
-      />
     </NavigationContainer>
   );
 
@@ -359,6 +424,7 @@ const RootNavigator = () => {
   // On native platforms, wrap with GestureHandlerRootView for proper gesture handling
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      {offlineBanner}
       {NavigationContent}
     </GestureHandlerRootView>
   );

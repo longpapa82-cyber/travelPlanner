@@ -137,7 +137,7 @@
       },
       "premiumRestore": {
         "q": "Aboneliğimi nasıl geri yüklerim?",
-        "a": "Profil → Abonelik bölümüne gidin ve 'Satın Almayı Geri Yükle' düğmesine dokunun. Önceki aboneliğiniz otomatik olarak geri yüklenecektir. Cihaz değiştirirken aynı Apple ID veya Google hesabıyla giriş yapın."
+        "a": "Profil → Abonelik bölümüne gidin ve 'Satın Almayı Geri Yükle' düğmesine dokunun. Uygulama önceki satın alımınızı doğrulayarak aboneliğinizi geri yükleyecektir. Cihaz değiştirirken aynı Apple ID veya Google hesabıyla giriş yapın ve ardından Geri Yükle düğmesine dokunun."
       }
     },
     "contact": {
@@ -221,7 +221,7 @@
       },
       "art18": {
         "title": "Hizmet Sağlayıcı",
-        "content": "• Şirket adı: AI Soft\n• Temsilci: Hoon-jae Park\n• İletişim e-postası: longpapa82@gmail.com\n• İşletme kayıt numarası: Devam ediyor — resmi ticari lansmandan önce güncellenecek"
+        "content": "• Şirket adı: AI Soft\n• Temsilci: Hoon-jae Park\n• İletişim e-postası: longpapa82@gmail.com\n• İşletme kayıt numarası: 411-18-92743\n• Adres: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Güney Kore"
       }
     }
   },
@@ -271,7 +271,7 @@
       },
       "art11": {
         "title": "11. Gizlilik Sorumlusu",
-        "content": "Gizlilik Sorumlusu: MyTravel Operasyon Ekibi\nE-posta: longpapa82@gmail.com"
+        "content": "Gizlilik Sorumlusu: MyTravel Operasyon Ekibi\nE-posta: longpapa82@gmail.com\nAdres: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Güney Kore"
       },
       "art12": {
         "title": "12. Sınır Ötesi Veri Aktarımı",

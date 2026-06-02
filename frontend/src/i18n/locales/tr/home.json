@@ -56,5 +56,11 @@
     "sectionTitle": "Seyahat İpuçları",
     "title": "💡 Önceden Planlayın",
     "description": "AI, yerel hava durumu, popüler noktalar ve ulaşım güzergahlarını değerlendirerek en uygun güzergahı oluşturur."
+  },
+  "guestLoginPrompt": {
+    "title": "Giriş gerekli",
+    "message": "Bu özellik bir hesap gerektirir. Seyahat oluşturmak ve planlarınızı kaydetmek için giriş yapın.",
+    "cancel": "İptal",
+    "login": "Giriş Yap"
   }
 }

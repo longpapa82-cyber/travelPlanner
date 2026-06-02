@@ -11,6 +11,7 @@ import { colors } from '../../constants/theme';
 import { ProfileStackParamList } from '../../types';
 import apiService from '../../services/api';
 import { usePremium } from '../../contexts/PremiumContext';
+import { formatDisplayName } from '../../utils/user.utils';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'UserManagement'>;
 
@@ -71,8 +72,10 @@ const UserManagementScreen: React.FC<Props> = ({ navigation }) => {
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return t('users.never');
-    const d = new Date(dateStr);
-    return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+    return new Date(dateStr).toLocaleString('ko-KR', {
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hour12: false,
+    });
   };
 
   const styles = createStyles(theme, isDark);
@@ -161,7 +164,7 @@ const UserManagementScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.userInfo}>
         <View style={styles.userNameRow}>
           <Icon name={(PROVIDER_ICONS[item.provider] || 'account') as any} size={16} color={theme.colors.textSecondary} />
-          <Text style={[styles.userName, { color: theme.colors.text }]}>{item.name}</Text>
+          <Text style={[styles.userName, { color: theme.colors.text }]}>{formatDisplayName(item.name)}</Text>
         </View>
         <Text style={[styles.userEmail, { color: theme.colors.textSecondary }]}>{item.email}</Text>
       </View>

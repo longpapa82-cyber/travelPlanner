@@ -26,6 +26,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TripsStackParamList, Trip } from '../../types';
 import { colors } from '../../constants/theme';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -80,6 +81,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation('trips');
   const { showToast } = useToast();
   const { confirm } = useConfirm();
+  const insets = useSafeAreaInsets();
   const [fetchError, setFetchError] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -543,8 +545,24 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
 
   const isFiltered = searchText.length > 0 || selectedStatus !== null;
 
+  const headerHeight = Platform.OS === 'ios' ? insets.top + 44 : insets.top + 56;
+
   return (
     <View style={styles.container}>
+      {/* Custom header — replaces native header removed from TripsNavigator */}
+      <View
+        style={[
+          styles.customHeader,
+          {
+            paddingTop: insets.top,
+            height: headerHeight,
+            backgroundColor: theme.colors.primary,
+          },
+        ]}
+      >
+        <Text style={styles.customHeaderTitle}>{t('list.title')}</Text>
+      </View>
+
       <ScrollView
         style={styles.content}
         removeClippedSubviews={Platform.OS !== 'web'}
@@ -1022,6 +1040,16 @@ const createStyles = (theme: any, isDark: boolean) =>
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
+    },
+    customHeader: {
+      justifyContent: 'flex-end',
+      paddingHorizontal: 16,
+      paddingBottom: 12,
+    },
+    customHeaderTitle: {
+      fontSize: 17,
+      fontWeight: 'bold' as const,
+      color: '#ffffff',
     },
     loadingContainer: {
       flex: 1,

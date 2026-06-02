@@ -10,13 +10,16 @@ import { useAuth } from '../contexts/AuthContext';
 const PING_URL = (API_URL || 'http://localhost:3000/api') + '/health';
 
 export function useOfflineSync() {
-  // null = network check not yet completed (app startup)
-  // Prevents false "offline mode" flash on first render before the first ping resolves.
+  // Start with null (unknown) — OfflineBanner hides when null, preventing false offline flash.
+  // Optimistic assumption: user is online until proven otherwise.
   const [isOnline, setIsOnline] = useState<boolean | null>(null);
   const [pendingCount, setPendingCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<number | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Require 2 consecutive failures before showing offline banner.
+  // Single-ping latency spikes (server load, WiFi↔LTE switch) should not trigger the banner.
+  const consecutiveFailuresRef = useRef(0);
   // V186 (Invariant 36 강화): cross-context logout lock. logout 진행 중에는
   // syncNow가 401을 받아 onAuthExpired callback을 fire시키는 race window를
   //만들지 않음. V185 보고 이슈 2 (4차 logout race) RCA에서 useOfflineSync가
@@ -27,17 +30,24 @@ export function useOfflineSync() {
     isLoggingOutRef.current = isLoggingOut;
   }, [isLoggingOut]);
 
-  // Check network connectivity
+  // Check network connectivity.
+  // On success: reset failure counter, mark online immediately.
+  // On failure: increment counter — only mark offline after 2 consecutive failures
+  // to avoid false positives from momentary latency spikes or WiFi↔LTE transitions.
   const checkNetwork = useCallback(async () => {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
+      const timeout = setTimeout(() => controller.abort(), 3000);
       await fetch(PING_URL, { method: 'HEAD', signal: controller.signal });
       clearTimeout(timeout);
+      consecutiveFailuresRef.current = 0;
       setIsOnline(true);
       return true;
     } catch {
-      setIsOnline(false);
+      consecutiveFailuresRef.current += 1;
+      if (consecutiveFailuresRef.current >= 2) {
+        setIsOnline(false);
+      }
       return false;
     }
   }, []);
@@ -111,9 +121,18 @@ export function useOfflineSync() {
       };
     }
 
-    // Native: periodic network check
-    checkNetwork().then((online) => {
-      if (online) syncNow();
+    // Native: initial network check with up to 3 retries (앱 시작 시 네트워크 준비 전 false 방지)
+    checkNetwork().then(async (online) => {
+      if (online) {
+        syncNow();
+      } else {
+        // 최대 3회 재시도 (1s, 2s, 3s 간격) — 앱 시작 직후 네트워크 미준비 오탐 방지
+        for (const delay of [1000, 2000, 3000]) {
+          await new Promise(resolve => setTimeout(resolve, delay));
+          const retryOnline = await checkNetwork();
+          if (retryOnline) { syncNow(); return; }
+        }
+      }
     });
     intervalRef.current = setInterval(async () => {
       // isOnline === null means initial check in progress; treat as offline for sync logic

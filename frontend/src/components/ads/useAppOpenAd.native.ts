@@ -20,6 +20,7 @@ import Constants from 'expo-constants';
 import { canShowFullScreenAd, recordFullScreenAdShown } from './adFrequency';
 import { usePremium } from '../../contexts/PremiumContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useGDPRConsent } from '../../hooks/useGDPRConsent';
 
 const extra = Constants.expoConfig?.extra || {};
 
@@ -39,6 +40,7 @@ export function useAppOpenAd() {
   // 이전 사용자에게 적용되던 ad-free 상태가 잠깐 비활성화되며 광고가
   // 깜빡이는 race window 차단.
   const { isLoggingOut } = useAuth();
+  const { canShowPersonalizedAds, isReady } = useGDPRConsent();
   const isLoggingOutRef = useRef(isLoggingOut);
   isLoggingOutRef.current = isLoggingOut;
 
@@ -52,6 +54,8 @@ export function useAppOpenAd() {
   isPremiumRef.current = isPremium;
 
   const loadAd = useCallback(() => {
+    if (!isReady) return;
+
     if (!APP_OPEN_UNIT_ID || isPremium) {
       // Clear any existing ad instance when user becomes premium
       if (adRef.current) {
@@ -61,9 +65,10 @@ export function useAppOpenAd() {
       return;
     }
 
+    console.log('[AdMob] 📋 Creating AppOpenAd request. requestNonPersonalizedAdsOnly:', !canShowPersonalizedAds);
     // Create ONE instance per mount — reuse via load() for subsequent requests
     const appOpen = AppOpenAd.createForAdRequest(APP_OPEN_UNIT_ID, {
-      requestNonPersonalizedAdsOnly: true,
+      requestNonPersonalizedAdsOnly: !canShowPersonalizedAds,
     });
 
     const loadedUnsub = appOpen.addAdEventListener(AdEventType.LOADED, () => {
@@ -92,7 +97,7 @@ export function useAppOpenAd() {
       closedUnsub();
       errorUnsub();
     };
-  }, [isPremium]);
+  }, [isPremium, isReady, canShowPersonalizedAds]);
 
   useEffect(() => {
     mountedRef.current = true;

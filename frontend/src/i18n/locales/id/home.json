@@ -1,5 +1,5 @@
 {
-  "greeting": "Halo \ud83d\udc4b",
+  "greeting": "Halo 👋",
   "heroTitle": "Perjalanan {{name}}",
   "subtitle": "Siap merencanakan petualangan berikutnya?",
   "createTrip": "Buat Rencana Perjalanan AI",
@@ -11,7 +11,7 @@
   "featured": {
     "title": "Tempat Menarik untuk Dikunjungi Sekarang",
     "subtitle": "Jelajahi destinasi populer",
-    "seeAll": "Lihat semua \u2192"
+    "seeAll": "Lihat semua →"
   },
   "destinations": {
     "tokyo": {
@@ -54,7 +54,13 @@
   },
   "tip": {
     "sectionTitle": "Tips Perjalanan",
-    "title": "\ud83d\udca1 Rencanakan Lebih Awal",
+    "title": "💡 Rencanakan Lebih Awal",
     "description": "AI membuat jadwal optimal dengan mempertimbangkan cuaca lokal, tempat populer, dan rute perjalanan."
+  },
+  "guestLoginPrompt": {
+    "title": "Masuk diperlukan",
+    "message": "Fitur ini membutuhkan akun. Masuk untuk membuat perjalanan dan menyimpan rencana Anda.",
+    "cancel": "Batal",
+    "login": "Masuk"
   }
 }

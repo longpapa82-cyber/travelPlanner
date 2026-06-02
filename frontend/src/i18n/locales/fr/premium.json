@@ -27,7 +27,8 @@
     "subscribe": "S'abonner",
     "restore": "Restaurer l'achat",
     "manage": "Gérer l'abonnement",
-    "cancel": "Annuler l'abonnement"
+    "cancel": "Annuler l'abonnement",
+    "retry": "Réessayer"
   },
   "paywall": {
     "title": "Passer à Premium",
@@ -42,7 +43,7 @@
     "privacyLink": "Politique de confidentialité",
     "restoreSuccess": "Abonnement restauré avec succès !",
     "restoreNone": "Aucun abonnement actif trouvé.",
-    "aiUnlimited": "∞ Illimité"
+    "aiUnlimited": "30 voyages IA/mois"
   },
   "status": {
     "active": "Actif",
@@ -73,7 +74,7 @@
     "upgradePremium": "Passer à Premium",
     "managePlan": "Gérer le forfait",
     "aiRemaining": "AI : {{remaining}}/{{total}} restants",
-    "aiUnlimited": "∞ Illimité"
+    "aiUnlimited": "30 voyages IA/mois"
   },
   "errors": {
     "title": "Erreur",

@@ -20,9 +20,12 @@ import { useTheme } from '../contexts/ThemeContext';
 import { colors } from '../constants/theme';
 import {
   getOfferings,
+  getCachedOfferings,
   purchasePackage,
   restorePurchases,
   logIn as rcLogIn,
+  getCustomerInfo,
+  getActiveEntitlementSnapshot,
 } from '../services/revenueCat';
 import apiService from '../services/api';
 import { pollSubscriptionStatus } from '../services/subscriptionPolling';
@@ -45,32 +48,76 @@ const BENEFITS: BenefitItem[] = [
 ];
 
 const PaywallModal: React.FC = () => {
-  const { t } = useTranslation('premium');
+  const { t } = useTranslation(['premium', 'common']);
   const { user } = useAuth();
   const { isPaywallVisible, paywallContext, hidePaywall, refreshStatus, isPremium, aiTripsUsed, aiTripsRemaining, markPremium } = usePremium();
   const { theme, isDark } = useTheme();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [packages, setPackages] = useState<{ monthly: any; yearly: any }>({ monthly: null, yearly: null });
+  const [offeringsLoading, setOfferingsLoading] = useState(false);
+  const [offeringsError, setOfferingsError] = useState(false);
   const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | null>(null);
   const offeringsLoaded = useRef(false);
+  const autoRetryCount = useRef(0);
+  const autoRetryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const applyOfferings = (offerings: any) => {
+    const current = offerings?.current;
+    if (current) {
+      setPackages({
+        monthly: current.monthly,
+        yearly: current.annual,
+      });
+      offeringsLoaded.current = true;
+      autoRetryCount.current = 0;
+      return true;
+    }
+    return false;
+  };
+
+  const loadOfferings = async () => {
+    if (Platform.OS === 'web') return;
+
+    // Use cached offerings from PremiumContext prefetch (avoids Sandbox cold-start null)
+    const cached = getCachedOfferings();
+    if (cached && applyOfferings(cached)) return;
+
+    setOfferingsLoading(true);
+    setOfferingsError(false);
+    try {
+      const offerings = await getOfferings();
+      if (!applyOfferings(offerings)) {
+        setOfferingsError(true);
+        scheduleAutoRetry();
+      }
+    } catch {
+      setOfferingsError(true);
+      scheduleAutoRetry();
+    } finally {
+      setOfferingsLoading(false);
+    }
+  };
+
+  // Sandbox can be slow — auto-retry up to 3 times with increasing delay
+  const scheduleAutoRetry = () => {
+    if (autoRetryCount.current >= 3) return;
+    autoRetryCount.current += 1;
+    // 3s → 5s → 8s escalating delay for Sandbox cold-start scenarios
+    const delay = autoRetryCount.current === 1 ? 3000 : autoRetryCount.current === 2 ? 5000 : 8000;
+    autoRetryTimer.current = setTimeout(() => {
+      if (!offeringsLoaded.current) loadOfferings();
+    }, delay);
+  };
 
   // Load RevenueCat offerings when paywall becomes visible
   useEffect(() => {
     if (!isPaywallVisible || offeringsLoaded.current) return;
-    if (Platform.OS === 'web') return;
-
-    (async () => {
-      const offerings = await getOfferings();
-      const current = offerings?.current;
-      if (current) {
-        setPackages({
-          monthly: current.monthly,
-          yearly: current.annual,
-        });
-        offeringsLoaded.current = true;
-      }
-    })();
+    autoRetryCount.current = 0;
+    loadOfferings();
+    return () => {
+      if (autoRetryTimer.current) clearTimeout(autoRetryTimer.current);
+    };
   }, [isPaywallVisible]);
 
   /**
@@ -151,10 +198,11 @@ const PaywallModal: React.FC = () => {
         level: 'error',
         data: { error: err?.message ?? 'unknown' },
       });
-      throw new Error(
-        t('errors.preflightFailed') ||
-          '결제 가능 여부 확인 중 네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
-      );
+      // B54: preflight 네트워크 실패 시 구매 차단 대신 허용 (fail-open).
+      // Sandbox 환경에서 서버 접근 불가 시 구매를 막으면 심사 거절 원인이 됨.
+      // 중복 결제 방어는 App Store/Play Store 자체 레이어가 담당.
+      console.warn('[Paywall] preflight failed, proceeding with purchase:', err?.message ?? 'unknown');
+      return { kind: 'buy' };
     }
   };
 
@@ -203,8 +251,17 @@ const PaywallModal: React.FC = () => {
 
     const pkg = selectedPlan === 'monthly' ? packages.monthly : packages.yearly;
     if (!pkg) {
-      Alert.alert(t('errors.title'), t('errors.subscriptionNotLoaded'));
-      return;
+      if (offeringsLoading) {
+        // Still loading — silently wait (button shows spinner via isPurchasing)
+        return;
+      }
+      // Offerings failed to load — retry once before showing error
+      await loadOfferings();
+      const retryPkg = selectedPlan === 'monthly' ? packages.monthly : packages.yearly;
+      if (!retryPkg) {
+        Alert.alert(t('errors.title'), t('errors.subscriptionNotLoaded'));
+        return;
+      }
     }
 
     setIsPurchasing(true);
@@ -222,9 +279,16 @@ const PaywallModal: React.FC = () => {
       if (action.kind === 'block') {
         setIsPurchasing(false);
         // V210 (P0-4): preflight block 오류 로그 기록
+        // 'already_subscribed' and 'rc_entitlement_active' are expected states
+        // (user tapped buy on an already-active plan) — log as warning, not error.
+        const blockSeverity =
+          action.reason === 'already_subscribed' || action.reason === 'rc_entitlement_active'
+            ? 'warning'
+            : 'error';
         apiService.reportError({
           errorName: `PREFLIGHT_BLOCK_${action.reason.toUpperCase()}`,
           errorMessage: `Purchase blocked: reason=${action.reason}, currentPlan=${action.currentPlan ?? 'null'}, selectedPlan=${selectedPlan}`,
+          severity: blockSeverity,
           routeName: 'PaywallModal',
           breadcrumbs: [{ reason: action.reason, currentPlan: action.currentPlan ?? null, selectedPlan }],
         }).catch(() => {});
@@ -254,7 +318,7 @@ const PaywallModal: React.FC = () => {
             body,
             [
               { text: t('guards.manageSubscription') || '구독 관리', onPress: () => Linking.openURL('https://play.google.com/store/account/subscriptions') },
-              { text: t('common.close') || '닫기', style: 'cancel' },
+              { text: t('common:close') || '닫기', style: 'cancel' },
             ],
           );
         } else {
@@ -313,7 +377,7 @@ const PaywallModal: React.FC = () => {
               text: t('guards.manageSubscription') || '구독 관리',
               onPress: () => Linking.openURL('https://play.google.com/store/account/subscriptions'),
             },
-            { text: t('common.close') || '닫기', style: 'cancel' },
+            { text: t('common:close') || '닫기', style: 'cancel' },
           ],
         );
         return;
@@ -356,40 +420,61 @@ const PaywallModal: React.FC = () => {
    *   4. hidePaywall() — only after confirmed OR user dismisses timeout
    */
   const finalizePurchase = async () => {
+    // markPremium() captures RC snapshot (source='purchase') → isPremium=true immediately.
+    // This is the client-side optimistic update — server sync happens below.
     await markPremium();
-    await refreshStatus();
-    // V185: keep paywall open with loading state during poll. The user
-    // sees the modal until server confirms premium — preventing them
-    // from logging out before the webhook lands.
     setIsPurchasing(true);
     try {
+      // Step 1: Direct RC→server sync. syncFromRc now accepts sandbox
+      // entitlements (TestFlight always produces isSandbox=true), so this
+      // succeeds for both TestFlight testers and production users.
+      try {
+        const syncResult = await apiService.syncSubscriptionFromRc();
+        if (syncResult.synced) {
+          await refreshStatus();
+          return;
+        }
+      } catch {
+        // RC API unavailable — fall through to webhook polling
+      }
+
+      // Step 2: Webhook polling — wait up to 15s.
+      // RC webhook normally arrives within 5s. If syncFromRc failed (RC API
+      // down), the webhook path is the last resort.
       const result = await pollSubscriptionStatus({
-        maxAttempts: 30,
-        intervalMs: 2_000,
+        maxAttempts: 5,
+        intervalMs: 3_000,
         onSuccess: async () => {
           await refreshStatus();
         },
       });
+
       if (!result.confirmed) {
-        // V185: explicit user-visible failure. Without this, the V184
-        // silent timeout meant the user closed the paywall thinking the
-        // purchase succeeded, then later saw 'free' on next login.
-        Alert.alert(
-          t('premium.errors.title') || 'Subscription',
-          t('premium.errors.syncTimeout') ||
-            '결제는 처리됐으나 서버 동기화가 지연되고 있습니다. 잠시 후 프로필 화면에서 구독 상태를 확인해 주세요. 영수증은 보관됩니다.',
-          [{ text: 'OK', onPress: () => hidePaywall() }],
-        );
-        return;
+        // Step 3: One final sync attempt — covers the case where RC API
+        // responded slowly and entitlement appeared after Step 1.
+        try {
+          const syncResult2 = await apiService.syncSubscriptionFromRc();
+          if (syncResult2.synced) {
+            await refreshStatus();
+            return;
+          }
+        } catch {
+          // Non-fatal
+        }
+        // markPremium() snapshot (source='purchase') keeps isPremium=true
+        // even if server hasn't caught up yet. V155 reconciliation will not
+        // clear source='purchase' — it is only cleared on explicit refreshStatus
+        // that confirms server-side premium, or on next app launch.
+        await refreshStatus();
       }
     } catch {
-      // Network errors during poll are non-fatal — the RC snapshot in
-      // PremiumContext keeps the user premium until the next foreground
-      // refresh reconciles. Just close the modal.
+      // Network errors — markPremium() snapshot keeps premium state.
     } finally {
       setIsPurchasing(false);
+      // Always close the paywall — markPremium() ensures isPremium=true
+      // regardless of server sync outcome. Infinite loading is eliminated.
+      hidePaywall();
     }
-    hidePaywall();
   };
 
   return (
@@ -466,6 +551,10 @@ const PaywallModal: React.FC = () => {
             {/* Plan Cards */}
             <View style={styles.planCards}>
               {/* Yearly */}
+              <View style={styles.planCardWrapper}>
+                <View style={styles.saveBadgeAbsolute}>
+                  <Text style={styles.saveBadgeText}>{t('premium.price.yearlySaving')}</Text>
+                </View>
               <TouchableOpacity
                 style={[
                   styles.planCard,
@@ -479,21 +568,25 @@ const PaywallModal: React.FC = () => {
                 onPress={() => setSelectedPlan('yearly')}
                 activeOpacity={0.7}
               >
-                <View style={styles.saveBadge}>
-                  <Text style={styles.saveBadgeText}>{t('premium.price.yearlySaving')}</Text>
-                </View>
                 <Text style={[styles.planName, { color: theme.colors.text }]}>
                   {t('premium.price.yearly')}
                 </Text>
-                <Text style={[styles.planPrice, { color: theme.colors.text }]}>
+                <Text
+                  style={[styles.planPrice, { color: theme.colors.text }]}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.6}
+                >
                   {packages.yearly?.product?.priceString || '$29.99'}
                 </Text>
                 <Text style={[styles.planPer, { color: theme.colors.textSecondary }]}>
                   / {t('premium.price.year')}
                 </Text>
               </TouchableOpacity>
+              </View>
 
               {/* Monthly */}
+              <View style={[styles.planCardWrapper, { paddingTop: 0 }]}>
               <TouchableOpacity
                 style={[
                   styles.planCard,
@@ -510,29 +603,35 @@ const PaywallModal: React.FC = () => {
                 <Text style={[styles.planName, { color: theme.colors.text }]}>
                   {t('premium.price.monthly')}
                 </Text>
-                <Text style={[styles.planPrice, { color: theme.colors.text }]}>
+                <Text
+                  style={[styles.planPrice, { color: theme.colors.text }]}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.6}
+                >
                   {packages.monthly?.product?.priceString || '$3.99'}
                 </Text>
                 <Text style={[styles.planPer, { color: theme.colors.textSecondary }]}>
                   / {t('premium.price.month')}
                 </Text>
               </TouchableOpacity>
+              </View>
             </View>
 
             {/* Subscribe Button */}
             <TouchableOpacity
-              style={[styles.subscribeButton, isPurchasing && styles.subscribeButtonDisabled]}
+              style={[styles.subscribeButton, (isPurchasing || offeringsLoading) && styles.subscribeButtonDisabled]}
               onPress={handlePurchase}
-              disabled={isPurchasing}
+              disabled={isPurchasing || offeringsLoading}
               activeOpacity={0.8}
               accessibilityRole="button"
               accessibilityLabel={t('promo.cta')}
             >
-              {isPurchasing ? (
+              {(isPurchasing || offeringsLoading) ? (
                 <ActivityIndicator color="#FFF" />
               ) : (
                 <Text style={styles.subscribeButtonText}>
-                  {t('promo.cta')}
+                  {offeringsError ? t('actions.retry') || 'Try Again' : t('promo.cta')}
                 </Text>
               )}
             </TouchableOpacity>
@@ -664,19 +763,39 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     marginBottom: 24,
+    marginTop: 12,
   },
   planCard: {
     flex: 1,
     borderWidth: 2,
     borderRadius: 16,
-    padding: 16,
+    padding: 12,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  planCardWrapper: {
+    flex: 1,
+    position: 'relative',
+  },
+  saveBadgeAbsolute: {
+    position: 'absolute',
+    top: -12,
+    alignSelf: 'center',
+    backgroundColor: '#F59E0B',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    zIndex: 1,
   },
   saveBadge: {
     backgroundColor: '#F59E0B',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 8,
+    marginBottom: 8,
+  },
+  saveBadgeSpacer: {
+    height: 36,
     marginBottom: 8,
   },
   saveBadgeText: {
@@ -690,8 +809,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   planPrice: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: '800',
+    textAlign: 'center',
   },
   planPer: {
     fontSize: 13,

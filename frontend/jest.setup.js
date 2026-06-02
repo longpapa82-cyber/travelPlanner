@@ -7,6 +7,19 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   clear: jest.fn(),
 }));
 
+// Mock @react-native-google-signin/google-signin
+// 네이티브 TurboModule(RNGoogleSignin)이 jest 환경엔 없어 import만으로
+// "Invariant Violation: RNGoogleSignin could not be found"가 발생한다.
+// 사용 메서드(configure/hasPlayServices/signIn/signOut)만 mock한다.
+jest.mock('@react-native-google-signin/google-signin', () => ({
+  GoogleSignin: {
+    configure: jest.fn(),
+    hasPlayServices: jest.fn(() => Promise.resolve(true)),
+    signIn: jest.fn(() => Promise.resolve({ data: { idToken: null } })),
+    signOut: jest.fn(() => Promise.resolve()),
+  },
+}));
+
 // Mock react-native-keychain
 jest.mock('react-native-keychain', () => ({
   setGenericPassword: jest.fn(() => Promise.resolve(true)),

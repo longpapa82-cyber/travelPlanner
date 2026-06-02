@@ -18,7 +18,7 @@ import LicensesScreen from '../screens/main/LicensesScreen';
 import UserProfileScreen from '../screens/main/UserProfileScreen';
 import SubscriptionScreen from '../screens/main/SubscriptionScreen';
 import { useTheme } from '../contexts/ThemeContext';
-import { colors } from '../constants/theme';
+import { makeStackScreenOptions } from './sharedHeaderOptions';
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
@@ -32,21 +32,12 @@ const ProfileNavigator = () => {
 
   return (
     <Stack.Navigator
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: theme.colors.primary,
-        },
-        headerTintColor: colors.neutral[0],
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-        headerBackButtonDisplayMode: 'minimal',
-      }}
+      screenOptions={makeStackScreenOptions(theme.colors.primary)}
     >
       <Stack.Screen
         name="ProfileMain"
         component={ProfileScreen}
-        options={{ title: t('title') }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="TwoFactorSettings"

@@ -23,6 +23,7 @@ import {
   Platform,
   useWindowDimensions,
   Share,
+  Alert,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -51,6 +52,8 @@ import { AdBanner } from '../../components/ads';
 import { getDestinationImageUrl, getHeroImageUrl } from '../../utils/images';
 import { useTutorial } from '../../contexts/TutorialContext';
 import WelcomeModal from '../../components/tutorial/WelcomeModal';
+import AnnouncementBellIcon from '../../components/AnnouncementBellIcon';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type HomeScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<MainTabParamList, 'Home'>,
@@ -123,6 +126,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { user } = useAuth();
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('home');
+  const insets = useSafeAreaInsets();
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const CARD_WIDTH = SCREEN_WIDTH * 0.75;
   const [stats, setStats] = useState({ completed: 0, ongoing: 0, upcoming: 0 });
@@ -212,6 +216,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     };
   }, []);
 
+
   const handleCreateTrip = () => {
     navigation.navigate('Trips', { screen: 'CreateTrip' });
   };
@@ -265,6 +270,11 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           ]}
           style={styles.heroGradient}
         >
+          {/* Announcement bell — top-right, respects status bar */}
+          <View style={[styles.heroBellWrapper, { top: insets.top + 8 }]}>
+            <AnnouncementBellIcon />
+          </View>
+
           <Animated.View
             style={[
               styles.heroContent,
@@ -551,6 +561,10 @@ const createStyles = (theme: any, isDark: boolean) => StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     paddingBottom: theme.spacing.xl,
+  },
+  heroBellWrapper: {
+    position: 'absolute',
+    right: 8,
   },
   heroContent: {
     padding: theme.spacing.xl,

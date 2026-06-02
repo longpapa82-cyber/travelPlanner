@@ -137,7 +137,7 @@
       },
       "premiumRestore": {
         "q": "Comment restaurer mon abonnement ?",
-        "a": "Allez dans Profil → Abonnement et appuyez sur 'Restaurer les achats'. Connectez-vous avec le même identifiant Apple ou compte Google."
+        "a": "Allez dans Profil → Abonnement et appuyez sur 'Restaurer les achats'. L'application vérifiera votre achat précédent et restaurera votre abonnement. En changeant d'appareil, connectez-vous avec le même identifiant Apple ou compte Google, puis appuyez sur Restaurer les achats."
       }
     },
     "contact": {
@@ -221,7 +221,7 @@
       },
       "art18": {
         "title": "Fournisseur de services",
-        "content": "• Nom de l'entreprise : AI Soft\n• Représentant : Hoon-jae Park\n• Email de contact : longpapa82@gmail.com\n• Numéro d'enregistrement commercial : En cours — sera mis à jour avant le lancement commercial officiel"
+        "content": "• Nom de l'entreprise : AI Soft\n• Représentant : Hoon-jae Park\n• Email de contact : longpapa82@gmail.com\n• Numéro d'enregistrement commercial : 411-18-92743\n• Adresse: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Corée du Sud"
       }
     }
   },
@@ -271,7 +271,7 @@
       },
       "art11": {
         "title": "11. Responsable de la protection des données",
-        "content": "Responsable de la protection des données : Équipe opérationnelle MyTravel\nE-mail : longpapa82@gmail.com"
+        "content": "Responsable de la protection des données : Équipe opérationnelle MyTravel\nE-mail : longpapa82@gmail.com\nAdresse: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Corée du Sud"
       },
       "art12": {
         "title": "12. Modifications de la politique",

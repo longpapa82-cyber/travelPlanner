@@ -56,5 +56,11 @@
     "sectionTitle": "Travel Tips",
     "title": "💡 Plan Ahead",
     "description": "AI creates the optimal itinerary considering local weather, popular spots, and travel routes."
+  },
+  "guestLoginPrompt": {
+    "title": "Sign in required",
+    "message": "This feature requires an account. Sign in to create trips and save your plans.",
+    "cancel": "Cancel",
+    "login": "Sign In"
   }
 }

@@ -22,8 +22,16 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform, Linking, TextInput,
 
 const PLAY_STORE_URL =
   'https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner';
-const APP_STORE_URL = 'https://apps.apple.com/app/mytravel/id0000000000'; // placeholder
+const APP_STORE_URL = 'https://apps.apple.com/app/id6766147060';
 const API_BASE = 'https://mytravel-planner.com/api';
+
+function detectPlatform(): 'ios' | 'android' | 'other' {
+  if (typeof window === 'undefined') return 'other';
+  const ua = window.navigator.userAgent;
+  if (/iPad|iPhone|iPod/.test(ua)) return 'ios';
+  if (/Android/.test(ua)) return 'android';
+  return 'other';
+}
 
 function isResetOrVerifyPath(): { kind: 'reset' | 'verify' | null; token: string | null } {
   if (typeof window === 'undefined') return { kind: null, token: null };
@@ -85,7 +93,7 @@ const WebResetPasswordForm: React.FC<{ token: string }> = ({ token }) => {
   if (result === 'success') {
     return (
       <View style={styles.card}>
-        <Text style={styles.title}>MyTravel</Text>
+        <Text style={styles.title}>myTravel</Text>
         <Text style={styles.successIcon}>✓</Text>
         <Text style={styles.headline}>비밀번호가 변경되었습니다</Text>
         <Text style={styles.subline}>새 비밀번호로 앱에서 로그인해 주세요.</Text>
@@ -149,32 +157,35 @@ const WebAppRedirectScreen: React.FC = () => {
     );
   }
 
+  const platform = detectPlatform();
+  const storeUrl = platform === 'ios' ? APP_STORE_URL : PLAY_STORE_URL;
+  const storeBtnText = platform === 'ios' ? 'App Store에서 앱 받기' : 'Play 스토어에서 앱 받기';
+
   const headline =
     kind === 'verify'
       ? '이메일 인증은 앱에서 진행됩니다'
-      : 'MyTravel은 모바일 앱에서 이용하실 수 있습니다';
+      : 'myTravel은 모바일 앱에서 이용하실 수 있습니다';
 
   const subline =
     kind === 'verify'
-      ? '이메일 인증 링크는 앱에서 안전하게 처리됩니다. 아래 버튼으로 앱을 실행하거나 Play 스토어에서 설치해 주세요.'
+      ? `이메일 인증 링크는 앱에서 안전하게 처리됩니다. 아래 버튼으로 앱을 실행하거나 ${platform === 'ios' ? 'App Store' : 'Play 스토어'}에서 설치해 주세요.`
       : '여행 계획, 일정 관리, AI 자동 생성 등 모든 기능은 전용 모바일 앱에서 제공됩니다. 아래 버튼으로 앱을 받아보세요.';
 
   const openStore = () => {
-    const url = Platform.OS === 'ios' ? APP_STORE_URL : PLAY_STORE_URL;
-    Linking.openURL(url).catch(() => {
-      if (typeof window !== 'undefined') window.location.href = url;
+    Linking.openURL(storeUrl).catch(() => {
+      if (typeof window !== 'undefined') window.location.href = storeUrl;
     });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.title}>MyTravel</Text>
+        <Text style={styles.title}>myTravel</Text>
         <Text style={styles.headline}>{headline}</Text>
         <Text style={styles.subline}>{subline}</Text>
 
         <TouchableOpacity style={styles.primaryBtn} onPress={openStore} activeOpacity={0.85}>
-          <Text style={styles.primaryBtnText}>Play 스토어에서 앱 받기</Text>
+          <Text style={styles.primaryBtnText}>{storeBtnText}</Text>
         </TouchableOpacity>
 
         <View style={styles.legalLinks}>

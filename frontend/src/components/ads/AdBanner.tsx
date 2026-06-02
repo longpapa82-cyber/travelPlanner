@@ -50,9 +50,10 @@ const AdBanner: React.FC<AdBannerProps> = ({
   const { isPremium } = usePremium();
   const { isReady: consentReady, canShowPersonalizedAds } = useGDPRConsent();
 
-  // Premium users and consent-pending: render nothing before any ad is requested
-  // This is safe because no ad frame has been created yet
-  if (isPremium || !consentReady) return null;
+  // Premium users: render nothing
+  if (isPremium) return null;
+  // consentReady=false여도 렌더 허용 — requestNonPersonalizedAdsOnly=true로 이미 전달됨
+  // !consentReady 게이트를 두면 iOS에서 initializeAds() 완료 전 배너가 영구 미표시됨
 
   if (Platform.OS === 'web') {
     const slot = adSenseSlot || DEFAULT_ADSENSE_SLOT;

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Animated,
   FlatList,
+  AppState,
   useWindowDimensions,
   Platform,
 } from 'react-native';
@@ -49,6 +50,15 @@ const AnnouncementBanner: React.FC = () => {
 
   useEffect(() => {
     fetchAnnouncements();
+  }, []);
+
+  // Re-fetch announcements when app returns to foreground — catches new announcements
+  // posted while the app was backgrounded (mount-only fetch would miss them).
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') fetchAnnouncements();
+    });
+    return () => sub.remove();
   }, []);
 
   const fetchAnnouncements = async () => {

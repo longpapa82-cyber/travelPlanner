@@ -1,11 +1,15 @@
 jest.mock('expo-web-browser', () => ({
   maybeCompleteAuthSession: jest.fn(),
   openAuthSessionAsync: jest.fn(),
+  warmUpAsync: jest.fn(),
+  coolDownAsync: jest.fn(),
 }));
 
 jest.mock('expo-linking', () => ({
   createURL: jest.fn((path: string) => `travelplanner://${path}`),
   parse: jest.fn(),
+  addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+  openURL: jest.fn().mockResolvedValue(undefined),
 }));
 
 jest.mock('expo-crypto', () => ({
@@ -25,8 +29,23 @@ import {
 describe('oauth.service', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
     (Platform as any).OS = 'ios';
   });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  /**
+   * Runs signInWithOAuth while simultaneously advancing fake timers so
+   * the 30-second deeplink timeout resolves without a real wait.
+   */
+  async function runOAuth(provider: Parameters<typeof signInWithOAuth>[0]) {
+    const promise = signInWithOAuth(provider);
+    await jest.runAllTimersAsync();
+    return promise;
+  }
 
   // ── signInWithOAuth (mobile) ──
 
@@ -40,7 +59,7 @@ describe('oauth.service', () => {
         queryParams: { code: 'abc123', state: 'mock-uuid-1234' },
       });
 
-      const result = await signInWithOAuth('google');
+      const result = await runOAuth('google');
 
       expect(WebBrowser.openAuthSessionAsync).toHaveBeenCalled();
       expect(result).toEqual({ code: 'abc123' });
@@ -51,7 +70,7 @@ describe('oauth.service', () => {
         type: 'cancel',
       });
 
-      await signInWithOAuth('kakao');
+      await runOAuth('kakao');
 
       const authUrl = (WebBrowser.openAuthSessionAsync as jest.Mock).mock
         .calls[0][0] as string;
@@ -63,11 +82,16 @@ describe('oauth.service', () => {
         type: 'cancel',
       });
 
-      await signInWithOAuth('google');
+      await runOAuth('google');
 
       const authUrl = (WebBrowser.openAuthSessionAsync as jest.Mock).mock
         .calls[0][0] as string;
-      expect(authUrl).toContain('state=mock-uuid-1234');
+      // state is base64url-encoded JSON { nonce, platform } (CSRF + platform routing)
+      const stateParam = new URL(authUrl).searchParams.get('state');
+      expect(stateParam).toBeTruthy();
+      const decodedState = JSON.parse(atob(stateParam as string));
+      expect(decodedState.nonce).toBe('mock-uuid-1234');
+      expect(decodedState).toHaveProperty('platform');
     });
 
     it('should return null when auth cancelled', async () => {
@@ -75,7 +99,7 @@ describe('oauth.service', () => {
         type: 'cancel',
       });
 
-      const result = await signInWithOAuth('google');
+      const result = await runOAuth('google');
 
       expect(result).toBeNull();
     });
@@ -85,7 +109,7 @@ describe('oauth.service', () => {
         type: 'dismiss',
       });
 
-      const result = await signInWithOAuth('kakao');
+      const result = await runOAuth('kakao');
 
       expect(result).toBeNull();
     });
@@ -99,7 +123,7 @@ describe('oauth.service', () => {
         queryParams: { code: 'abc', state: 'wrong-state' },
       });
 
-      const result = await signInWithOAuth('google');
+      const result = await runOAuth('google');
 
       expect(result).toBeNull();
     });
@@ -113,17 +137,22 @@ describe('oauth.service', () => {
         queryParams: { error: 'access_denied' },
       });
 
-      const result = await signInWithOAuth('google');
+      const result = await runOAuth('google');
 
       expect(result).toBeNull();
     });
 
     it('should throw on WebBrowser error', async () => {
-      (WebBrowser.openAuthSessionAsync as jest.Mock).mockRejectedValue(
-        new Error('Browser error'),
+      (WebBrowser.openAuthSessionAsync as jest.Mock).mockImplementation(() =>
+        Promise.reject(new Error('Browser error')),
       );
 
-      await expect(signInWithOAuth('google')).rejects.toThrow('Browser error');
+      // runOAuth advances timers; the WebBrowser rejection propagates through Promise.all
+      const rejection = signInWithOAuth('google');
+      // Suppress the unhandled rejection before we assert on it
+      rejection.catch(() => {});
+      await jest.runAllTimersAsync();
+      await expect(rejection).rejects.toThrow('Browser error');
     });
   });
 
@@ -135,7 +164,9 @@ describe('oauth.service', () => {
         type: 'cancel',
       });
 
-      await signInWithGoogle();
+      const promise = signInWithGoogle();
+      await jest.runAllTimersAsync();
+      await promise;
 
       const url = (WebBrowser.openAuthSessionAsync as jest.Mock).mock
         .calls[0][0] as string;
@@ -150,7 +181,9 @@ describe('oauth.service', () => {
         type: 'cancel',
       });
 
-      const result = await signInWithApple();
+      const promise = signInWithApple();
+      await jest.runAllTimersAsync();
+      const result = await promise;
 
       expect(result).toBeNull();
     });
@@ -170,7 +203,9 @@ describe('oauth.service', () => {
         type: 'cancel',
       });
 
-      await signInWithKakao();
+      const promise = signInWithKakao();
+      await jest.runAllTimersAsync();
+      await promise;
 
       const url = (WebBrowser.openAuthSessionAsync as jest.Mock).mock
         .calls[0][0] as string;

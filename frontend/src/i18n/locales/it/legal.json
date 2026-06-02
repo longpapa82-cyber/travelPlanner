@@ -137,7 +137,7 @@
       },
       "premiumRestore": {
         "q": "Come ripristino il mio abbonamento?",
-        "a": "Vai a Profilo → Abbonamento e tocca 'Ripristina acquisti'. Il tuo abbonamento precedente verrà ripristinato automaticamente. Quando cambi dispositivo, accedi con lo stesso Apple ID o account Google."
+        "a": "Vai a Profilo → Abbonamento e tocca 'Ripristina acquisti'. L'app verificherà il tuo acquisto precedente e ripristinerà l'abbonamento. Quando cambi dispositivo, accedi con lo stesso Apple ID o account Google e poi tocca Ripristina acquisti."
       }
     },
     "contact": {
@@ -221,7 +221,7 @@
       },
       "art18": {
         "title": "Fornitore del servizio",
-        "content": "• Nome dell'azienda: AI Soft\n• Rappresentante: Hoon-jae Park\n• Email di contatto: longpapa82@gmail.com\n• Numero di registrazione aziendale: In corso — sarà aggiornato prima del lancio commerciale ufficiale"
+        "content": "• Nome dell'azienda: AI Soft\n• Rappresentante: Hoon-jae Park\n• Email di contatto: longpapa82@gmail.com\n• Numero di registrazione aziendale: 411-18-92743\n• Indirizzo: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Corea del Sud"
       }
     }
   },
@@ -271,7 +271,7 @@
       },
       "art11": {
         "title": "11. Responsabile della privacy",
-        "content": "Responsabile della privacy: Team operativo MyTravel\nEmail: longpapa82@gmail.com"
+        "content": "Responsabile della privacy: Team operativo MyTravel\nEmail: longpapa82@gmail.com\nIndirizzo: 302, 72 Gwanak-daero 339beon-gil, Dongan-gu, Anyang-si, Gyeonggi-do, Corea del Sud"
       },
       "art12": {
         "title": "12. Trasferimento transfrontaliero dei dati",

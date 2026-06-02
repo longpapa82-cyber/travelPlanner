@@ -51,6 +51,7 @@ import { useInterstitialAd, useRewardedAd } from '../../components/ads';
 import { usePremium } from '../../contexts/PremiumContext';
 import { getHeroImageUrl } from '../../utils/images';
 import * as Sentry from '@sentry/react-native';
+import * as StoreReview from 'expo-store-review';
 
 type CreateTripScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'CreateTrip'>;
 
@@ -111,6 +112,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const [prefInterests, setPrefInterests] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [generationStep, setGenerationStep] = useState(0);
+  const [dayProgress, setDayProgress] = useState<{ completed: number; total: number } | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{ destination?: string; dates?: string }>({});
   const progressAnim = useRef(new Animated.Value(0)).current;
   const stepTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -380,6 +382,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
     isCreatingRef.current = true;
     setIsLoading(true);
     setGenerationStep(0);
+    setDayProgress(null);
     progressAnim.setValue(0);
 
     const abortController = new AbortController();
@@ -455,16 +458,31 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       // Use polling-based progress tracking (Railway SSE workaround)
       const trip = await apiService.createTripWithPolling(
         tripData,
-        (step: string) => {
+        (step: string, _message?: string, dp?: { completed: number; total: number }) => {
           if (!isMountedRef.current) return;
           const stepIndex = STEP_MAP[step] ?? 0;
           setGenerationStep(stepIndex);
-          const progress = (stepIndex + 1) / 5;
-          Animated.timing(progressAnim, {
-            toValue: progress,
-            duration: 400,
-            useNativeDriver: false,
-          }).start();
+          // Show per-day progress during AI generation (>7 day parallel path)
+          if (dp) {
+            setDayProgress(dp);
+            // Drive progress bar from actual day completion ratio (planning step = 0.4..0.9)
+            const planningBase = 0.4;
+            const planningRange = 0.5;
+            const ratio = dp.total > 0 ? dp.completed / dp.total : 0;
+            Animated.timing(progressAnim, {
+              toValue: planningBase + ratio * planningRange,
+              duration: 300,
+              useNativeDriver: false,
+            }).start();
+          } else {
+            setDayProgress(null);
+            const progress = (stepIndex + 1) / 5;
+            Animated.timing(progressAnim, {
+              toValue: progress,
+              duration: 400,
+              useNativeDriver: false,
+            }).start();
+          }
         },
         abortController.signal,
       );
@@ -487,6 +505,15 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       // Schedule trip reminder notifications
       scheduleTripReminders(trip).catch(() => {});
       trackEvent('trip_created', { destination: destination.trim() });
+
+      // Request in-app review after AI trip generation (best satisfaction moment).
+      // Only prompt once per install: expo-store-review tracks this internally.
+      // Wrapped in try/catch — review API failure must never block trip creation.
+      if (trip.aiStatus !== 'failed') {
+        StoreReview.isAvailableAsync().then(available => {
+          if (available) StoreReview.requestReview().catch(() => {});
+        }).catch(() => {});
+      }
 
       // Auto-save preferences to user profile (non-blocking)
       if (Object.keys(preferences).length > 0) {
@@ -1131,7 +1158,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
             )}
 
             {/* Rewarded Ad — unlock extra insights (hidden for premium users) */}
-            {!isPremium && destination.trim().length >= 2 && !insightsUnlocked && isRewardedLoaded && !isRewardedOnCooldown && (
+            {!isPremium && destination.trim().length >= 2 && !insightsUnlocked && !isRewardedOnCooldown && (
               <TouchableOpacity
                 style={[
                   styles.rewardedAdButton,
@@ -1146,52 +1173,10 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     return;
                   }
 
-                  // Enhanced error handling with better user feedback
-                  if (!isRewardedLoaded) {
-
-                    // Development/Web fallback - unlock insights without ad
-                    if (__DEV__ || Platform.OS === 'web') {
-                      setInsightsUnlocked(true);
-                      showToast({
-                        type: 'info',
-                        message: t('create.rewardedAd.devMode', {
-                          defaultValue: '개발 모드: 인사이트가 잠금 해제되었습니다',
-                        }),
-                        position: 'top',
-                        duration: 2000,
-                      });
-                      return;
-                    }
-
-                    // Production: Try to reload the ad with user feedback
-                    showToast({
-                      type: 'info',
-                      message: t('create.rewardedAd.loading', {
-                        defaultValue: '광고를 불러오는 중입니다...',
-                      }),
-                      position: 'top',
-                      duration: 2000,
-                    });
-
-                    // Attempt to reload and wait briefly
-                    reloadRewardedAd();
-
-                    // Wait 3 seconds for ad to load
-                    setTimeout(() => {
-                      if (!isRewardedLoaded) {
-                        showToast({
-                          type: 'warning',
-                          message: t('create.rewardedAd.notAvailable', {
-                            defaultValue: '광고를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.',
-                          }),
-                          position: 'top',
-                          duration: 3000,
-                        });
-                      }
-                    }, 3000);
-                    return;
-                  }
-
+                  // showRewarded() handles JIT loading internally (5s timeout).
+                  // On legitimate failures (NO_FILL, network) it calls onRewarded()
+                  // as fallback so the user always gets the insight.
+                  // Dev/web: showRewarded resolves immediately via __DEV__ branch inside hook.
                   try {
                     setIsShowingRewardedAd(true);
 
@@ -1199,8 +1184,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                     // Android may destroy the Activity during ad display,
                     // causing the await to never resolve or resolve in wrong context.
                     // The reward callback handles everything we need.
-                    // NOTE: @rewarded_ad_destination AsyncStorage removed — it caused
-                    // auto-unlock on next screen mount (V207 bug: "바로 잠금 해제됨").
                     showRewarded(() => {
                       setRewardedAdCooldownUntil(Date.now() + REWARDED_COOLDOWN_MS);
                       setInsightsUnlocked(true);
@@ -1782,37 +1765,43 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   { icon: 'weather-partly-cloudy', text: t('create.progress.weather') },
                   { icon: 'calendar-edit', text: t('create.progress.planning') },
                   { icon: 'check-circle-outline', text: t('create.progress.finalizing') },
-                ].map((step, idx) => (
-                  <View
-                    key={idx}
-                    style={[
-                      styles.progressStep,
-                      idx <= generationStep ? styles.progressStepActive : null,
-                    ]}
-                  >
-                    <Icon
-                      name={step.icon}
-                      size={18}
-                      color={idx <= generationStep ? theme.colors.primary : theme.colors.textSecondary}
-                    />
-                    <Text
+                ].map((step, idx) => {
+                  const isActive = idx <= generationStep;
+                  const isCurrent = idx === generationStep;
+                  const showDayCounter = isCurrent && idx === 2 && dayProgress && dayProgress.total > 0;
+                  return (
+                    <View
+                      key={idx}
                       style={[
-                        styles.progressStepText,
-                        {
-                          color: idx <= generationStep
-                            ? theme.colors.primary
-                            : theme.colors.textSecondary,
-                          fontWeight: idx === generationStep ? '700' : '500',
-                        },
+                        styles.progressStep,
+                        isActive ? styles.progressStepActive : null,
                       ]}
                     >
-                      {step.text}
-                    </Text>
-                    {idx === generationStep && (
-                      <ActivityIndicator size="small" color={theme.colors.primary} style={{ marginLeft: 4 }} />
-                    )}
-                  </View>
-                ))}
+                      <Icon
+                        name={step.icon}
+                        size={18}
+                        color={isActive ? theme.colors.primary : theme.colors.textSecondary}
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={[
+                            styles.progressStepText,
+                            {
+                              color: isActive ? theme.colors.primary : theme.colors.textSecondary,
+                              fontWeight: isCurrent ? '700' : '500',
+                            },
+                          ]}
+                        >
+                          {step.text}
+                          {showDayCounter ? ` (${dayProgress!.completed}/${dayProgress!.total})` : ''}
+                        </Text>
+                      </View>
+                      {isCurrent && (
+                        <ActivityIndicator size="small" color={theme.colors.primary} style={{ marginLeft: 4 }} />
+                      )}
+                    </View>
+                  );
+                })}
               </View>
               <TouchableOpacity
                 style={[styles.cancelButton, { borderColor: theme.colors.textSecondary }]}

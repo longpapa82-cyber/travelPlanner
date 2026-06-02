@@ -56,5 +56,11 @@
     "sectionTitle": "旅行贴士",
     "title": "💡 提前规划",
     "description": "AI会综合考虑当地天气、热门景点和出行路线，为您制定最优行程。"
+  },
+  "guestLoginPrompt": {
+    "title": "需要登录",
+    "message": "此功能需要账号。登录以创建旅行并保存您的计划。",
+    "cancel": "取消",
+    "login": "登录"
   }
 }

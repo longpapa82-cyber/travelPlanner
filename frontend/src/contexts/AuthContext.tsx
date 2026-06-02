@@ -9,7 +9,7 @@ import { offlineCache } from '../services/offlineCache';
 import { trackEvent, flushEvents } from '../services/eventTracker';
 import {
   signInWithGoogle as signInWithGoogleWeb,
-  signInWithApple,
+  signInWithAppleNative,
   signInWithKakao,
   OAuthResult,
 } from '../services/oauth.service';
@@ -190,7 +190,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // inside silentRefresh, which can run before React commits the state).
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const isLoggingOutRef = useRef(false);
-
   const clearPendingVerification = () => setPendingVerification(null);
 
   // Session flag helpers — AsyncStorage is more reliable than Keychain for simple flags
@@ -438,6 +437,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       setUser(authResponse.user);
       await setSessionFlag(true);
+      await AsyncStorage.removeItem('__navigation_state_v1');
       trackEvent('login', { method: 'email' });
       registerPushAfterLogin();
 
@@ -615,6 +615,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     setUser(authResponse.user);
     await setSessionFlag(true);
+    await AsyncStorage.removeItem('__navigation_state_v1');
     registerPushAfterLogin();
 
     // Fetch full profile to populate aiTripsUsedThisMonth, subscriptionTier, etc.
@@ -639,6 +640,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authResponse.refreshToken);
         setUser(authResponse.user);
         await setSessionFlag(true);
+        await AsyncStorage.removeItem('__navigation_state_v1');
         registerPushAfterLogin();
         trackEvent('login', { method: 'google_native' });
 
@@ -688,9 +690,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const loginWithApple = async () => {
     try {
-      const result = await signInWithApple();
-      await handleOAuthResult(result);
-      trackEvent('login', { method: 'apple' });
+      const result = await signInWithAppleNative();
+      if (!result) throw new Error('APPLE_SIGNIN_CANCELLED');
+
+      const authResponse: AuthResponse = await apiService.exchangeAppleToken(
+        result.identityToken,
+        result.fullName,
+      );
+
+      await secureStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, authResponse.accessToken);
+      await secureStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, authResponse.refreshToken);
+      setUser(authResponse.user);
+      await setSessionFlag(true);
+      await AsyncStorage.removeItem('__navigation_state_v1');
+      registerPushAfterLogin();
+      trackEvent('login', { method: 'apple_native' });
+
+      try {
+        const profile = await apiService.getProfile();
+        if (profile) setUser(profile);
+      } catch {
+        // best-effort
+      }
     } catch (error) {
       const errorName = error instanceof Error ? error.name : 'UnknownError';
       const errorMsg = error instanceof Error ? error.message : String(error);

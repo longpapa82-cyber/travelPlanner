@@ -2,7 +2,7 @@ export default ({ config }) => ({
   ...config,
   name: 'MyTravel',
   slug: 'travel-planner',
-  version: '1.4.2',
+  version: '1.4.3',
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
@@ -16,7 +16,7 @@ export default ({ config }) => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.longpapa82.travelplanner',
-    buildNumber: '85',
+    buildNumber: '86',
     usesAppleSignIn: true,
     associatedDomains: [
       'applinks:mytravel-planner.com',

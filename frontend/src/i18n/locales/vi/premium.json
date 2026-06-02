@@ -27,7 +27,8 @@
     "subscribe": "Đăng ký",
     "restore": "Khôi phục mua hàng",
     "manage": "Quản lý đăng ký",
-    "cancel": "Hủy đăng ký"
+    "cancel": "Hủy đăng ký",
+    "retry": "Thử Lại"
   },
   "paywall": {
     "title": "Nâng cấp lên Cao cấp",
@@ -42,7 +43,7 @@
     "privacyLink": "Chính sách bảo mật",
     "restoreSuccess": "Khôi phục đăng ký thành công!",
     "restoreNone": "Không tìm thấy đăng ký hoạt động.",
-    "aiUnlimited": "∞ Không giới hạn"
+    "aiUnlimited": "30 chuyến AI/tháng"
   },
   "status": {
     "active": "Đang hoạt động",
@@ -73,7 +74,7 @@
     "upgradePremium": "Nâng cấp Cao cấp",
     "managePlan": "Quản lý gói",
     "aiRemaining": "AI: {{remaining}}/{{total}} còn lại",
-    "aiUnlimited": "∞ Không giới hạn"
+    "aiUnlimited": "30 chuyến AI/tháng"
   },
   "errors": {
     "title": "Lỗi",
