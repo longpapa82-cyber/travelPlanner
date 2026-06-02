@@ -6,21 +6,22 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 | 플랫폼 | 버전 | 상태 |
 |--------|------|------|
-| **Android** | 1.4.2 (versionCode 289) | **알파 출시 완료** ✅ — 2026-05-28 (하단 네비게이션 바 색상 수정) |
-| **iOS** | 1.4.2 (B84) | **App Store 심사 대기 중** ⏳ — 2026-05-25 |
+| **Android** | 1.4.3 (versionCode 293) | **Play 비공개 테스트 출시 완료** ✅ — 2026-06-02 (회원탈퇴 키보드 UX 수정 + 신규기능) |
+| **iOS** | 1.4.3 (B86) | **App Store 심사 제출 완료** ⏳ — 2026-06-02 (제출ID 3f0d5ff1) |
 | **서버** | 39차 | https://mytravel-planner.com 운영 중 |
-| **브랜치** | `main` | — |
+| **브랜치** | `main` | feat/next-build (PR #3) 병합 완료 — 2026-06-02 |
 
 ---
 
 ## ⚠️ 다음 할 일
 
-1. **랜딩 리디자인 PR #2 병합** — 브랜치 `feat/landing-motion-enhance`, 39 commits, `mytravel-planner.com` 배포 완료. main 병합 대기
-2. **iOS 1.4.2 (B84) App Store 심사 결과 대기** — 통과 후 출시
-3. **Android v289 알파 테스트 후 프로덕션 승격** — 하단 네비게이션 바 색상 수정 확인 후 진행
+1. **iOS 1.4.3 (B86) App Store 심사 결과 대기** — 2026-06-02 제출, 통과 후 출시
+2. **Android v293 알파 테스트 후 프로덕션 승격** — 회원탈퇴 키보드 UX + 신규기능 검증 후 진행
+3. **백엔드 CI ERESOLVE 부채 해결** — main CI의 Backend Lint/Tests + Static 실패는 V189.1부터 기존 의존성 부채 (프론트 CI는 PR #3에서 GoogleSignin mock으로 초록화 완료)
 4. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
 5. **Sentry 코드 제거**: DSN 미설정으로 완전 비활성 — 불필요 코드/패키지 정리
 6. **⚠️ Android 16+ edge-to-edge**: edgeToEdgeEnabled:false는 임시 방편 — targetSdkVersion 36 대응 필요
+7. **⚠️ Android 로컬 빌드 reanimated/worklets 레이스** — EAS local 실패 시 prebuild + `org.gradle.parallel=false` + gradlew 경로 사용 (메모리 `build_reanimated_worklets_race.md`)
 
 ---
 
@@ -49,15 +50,17 @@ xcrun altool --upload-app --type ios --file ../build-ios-BXX.ipa \
 
 ---
 
-## 🤖 Android 최신 빌드: versionCode 289 (1.4.2) — 알파 출시 완료 ✅
+## 🤖 Android 최신 빌드: versionCode 293 (1.4.3) — Play 비공개 테스트 출시 완료 ✅
 
-**v289 수정 내역**: 하단 OS 네비게이션 바 ↔ 앱 탭 바 색상 동기화. `expo-navigation-bar` 패키지 + `App.tsx` useEffect 런타임 색상(라이트 `#FFFFFF`/다크 `#1E293B`). versionCode 288→289, 알파 출시 (2026-05-28).
+**v293 수정 내역**: 회원탈퇴 모달 키보드 UX — ①`animationType` fade→none + onShow 즉시 focus(누르자마자 키보드 활성화) ②키보드 표시 시 하단 정렬(flex-end)로 팝업을 키보드 바로 위 선상에 안착(pan 모드 중앙→과도 상승 버그 수정). 신규기능(AI 일자별 진행률·딥링크 보안·게스트모드 revert 등) 포함. versionCode 291→293, 알파 출시 (2026-06-02).
 
-> 이전 빌드 상세(v282~v287) → `docs/build-history.md`
+> 이전 빌드 상세(v282~v291) → `docs/build-history.md`
 
 **⚠️ Android 16+ edge-to-edge**: `edgeToEdgeEnabled:false`는 targetSdkVersion 36에서 무시됨 — 향후 대응 필요.
 
-**Android 빌드 명령어**:
+**⚠️ 로컬 빌드 reanimated/worklets 레이스**: `eas build --local`이 `libworklets.so missing`으로 실패하면 빌드 옵션(ninja/ABI/재시도)으로 안 풀림. **해결**: prebuild + `org.gradle.parallel=false` + `./gradlew bundleRelease/assembleRelease`. 출시 AAB는 EAS keystore 주입 필요. 상세 → 메모리 `build_reanimated_worklets_race.md`.
+
+**Android 빌드 명령어** (EAS 클라우드 정상 시):
 ```bash
 cd frontend && eas build --platform android --profile production --local --output ../build-vXXX.aab
 ```
