@@ -8,6 +8,7 @@ COPY package*.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY tsconfig.json app.json app.config.js App.tsx index.ts ./
+COPY plugins/ plugins/
 COPY src/ src/
 COPY assets/ assets/
 COPY public/ public/
