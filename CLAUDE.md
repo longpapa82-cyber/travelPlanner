@@ -9,7 +9,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **Android** | 1.4.3 (versionCode 294) | **Play 비공개 테스트 등록 완료, 출시 대기 중** ⏳ — 2026-06-02 (회원탈퇴 키보드 jank 수정). v293=키보드 UX+신규기능 |
 | **iOS** | 1.4.3 (B86) | **App Store 심사 제출 완료** ⏳ — 2026-06-02 (제출ID 3f0d5ff1) |
 | **서버** | 39차 | https://mytravel-planner.com 운영 중 |
-| **브랜치** | `main` | feat/next-build (PR #3) 병합 완료 — 2026-06-02 |
+| **브랜치** | `main` | PR #3 병합 + 기술부채 정리 완료 — 2026-06-02 (CI 핵심 6 job 초록) |
 
 ---
 
