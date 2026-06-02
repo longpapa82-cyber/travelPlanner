@@ -142,9 +142,6 @@ interface AuthContextType {
    * insufficient because other contexts had no visibility into it.
    */
   isLoggingOut: boolean;
-  isGuestMode: boolean;
-  enterGuestMode: () => void;
-  exitGuestMode: () => void;
 }
 
 // Push token registration callback — set by NotificationContext bridge
@@ -193,17 +190,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // inside silentRefresh, which can run before React commits the state).
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const isLoggingOutRef = useRef(false);
-  const [isGuestMode, setIsGuestMode] = useState(false);
-
-  const enterGuestMode = () => setIsGuestMode(true);
-  const exitGuestMode = () => setIsGuestMode(false);
-
-  // 로그인 성공 시 게스트 모드 자동 해제
-  const setUserAndExitGuest = (u: User | null) => {
-    if (u) setIsGuestMode(false);
-    setUser(u);
-  };
-
   const clearPendingVerification = () => setPendingVerification(null);
 
   // Session flag helpers — AsyncStorage is more reliable than Keychain for simple flags
@@ -458,7 +444,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Fetch full profile to populate aiTripsUsedThisMonth, subscriptionTier, etc.
       try {
         const profile = await apiService.getProfile();
-        if (profile) setUserAndExitGuest(profile);
+        if (profile) setUser(profile);
       } catch {
         // Best-effort — profile will be fetched on next app focus
       }
@@ -499,7 +485,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Fetch full profile to populate subscription fields
       try {
         const profile = await apiService.getProfile();
-        if (profile) setUserAndExitGuest(profile);
+        if (profile) setUser(profile);
       } catch {
         // Best-effort — profile will be fetched on next app focus
       }
@@ -545,7 +531,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         registerPushAfterLogin();
         try {
           const profile = await apiService.getProfile();
-          if (profile) setUserAndExitGuest(profile);
+          if (profile) setUser(profile);
         } catch {
           // Best-effort — profile will be fetched on next app focus
         }
@@ -594,7 +580,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // resume token is scope-restricted and would 401 against /auth/me.
         try {
           const profile = await apiService.getProfile();
-          if (profile) setUserAndExitGuest(profile);
+          if (profile) setUser(profile);
         } catch {
           // Best-effort — profile will be fetched on next app focus
         }
@@ -662,7 +648,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // (native Google Sign-In response excludes these fields).
         try {
           const profile = await apiService.getProfile();
-          if (profile) setUserAndExitGuest(profile);
+          if (profile) setUser(profile);
         } catch {
           // Best-effort — profile will be fetched on next app focus
         }
@@ -722,7 +708,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       try {
         const profile = await apiService.getProfile();
-        if (profile) setUserAndExitGuest(profile);
+        if (profile) setUser(profile);
       } catch {
         // best-effort
       }
@@ -921,9 +907,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     refreshUser,
     registerPushAfterLogin,
     isLoggingOut,
-    isGuestMode,
-    enterGuestMode,
-    exitGuestMode,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

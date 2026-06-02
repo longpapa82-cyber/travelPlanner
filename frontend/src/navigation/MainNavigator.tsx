@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Platform, Alert } from 'react-native';
+import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,7 +19,6 @@ import { makeStackScreenOptions } from './sharedHeaderOptions';
 import apiService from '../services/api';
 import { notificationEvents } from '../utils/notificationEvents';
 import { useNotifications } from '../contexts/NotificationContext';
-import { useAuth } from '../contexts/AuthContext';
 
 /** Wrap a screen component with ErrorBoundary so crashes are isolated per-tab */
 const withErrorBoundary = <P extends object>(Component: React.ComponentType<P>) => {
@@ -43,23 +42,10 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 const MainNavigator = () => {
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('common');
-  const { t: tHome } = useTranslation('home');
-  const { isGuestMode, exitGuestMode } = useAuth();
   const insets = useSafeAreaInsets();
   const [unreadCount, setUnreadCount] = useState(0);
   const navigation = useNavigation<any>();
   const { lastNotificationResponse } = useNotifications();
-
-  const showGuestLoginPrompt = useCallback(() => {
-    Alert.alert(
-      tHome('guestLoginPrompt.title'),
-      tHome('guestLoginPrompt.message'),
-      [
-        { text: tHome('guestLoginPrompt.cancel'), style: 'cancel' },
-        { text: tHome('guestLoginPrompt.login'), onPress: exitGuestMode },
-      ],
-    );
-  }, [tHome, exitGuestMode]);
 
   const fetchUnread = useCallback(async () => {
     try {
@@ -184,10 +170,6 @@ const MainNavigator = () => {
         listeners={({ navigation }) => ({
           tabPress: (e) => {
             e.preventDefault();
-            if (isGuestMode) {
-              showGuestLoginPrompt();
-              return;
-            }
             navigation.navigate('Trips', { screen: 'TripList' });
           },
         })}
@@ -203,22 +185,14 @@ const MainNavigator = () => {
           ),
           tabBarBadge: unreadCount > 0 ? (unreadCount > 99 ? '99+' : unreadCount) : undefined,
         }}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            // Notifications require login — guests are prompted instead of hitting 401
-            if (isGuestMode) {
-              e.preventDefault();
-              showGuestLoginPrompt();
-            }
-          },
+        listeners={{
           focus: () => {
-            // Refresh badge when navigating to notifications (skip for guests)
-            if (isGuestMode) return;
+            // Refresh badge when navigating to notifications
             apiService.getUnreadNotificationCount()
               .then(data => setUnreadCount(data.count))
               .catch(() => {});
           },
-        })}
+        }}
       />
       <Tab.Screen
         name="Profile"
@@ -229,14 +203,6 @@ const MainNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon name="account" size={size} color={color} />
           ),
-        }}
-        listeners={{
-          tabPress: (e) => {
-            if (isGuestMode) {
-              e.preventDefault();
-              showGuestLoginPrompt();
-            }
-          },
         }}
       />
     </Tab.Navigator>

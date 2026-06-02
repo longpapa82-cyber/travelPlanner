@@ -98,7 +98,7 @@ interface RcEntitlementState extends ActiveEntitlementSnapshot {
 }
 
 export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) => {
-  const { user, refreshUser, isLoggingOut: authIsLoggingOut, isGuestMode } = useAuth();
+  const { user, refreshUser, isLoggingOut: authIsLoggingOut } = useAuth();
   // V185 (Invariant 36): mirror to ref for synchronous access inside
   // AppState handler. Auth's authIsLoggingOut is a state value; React
   // batching means a stale closure could be captured by the long-lived
@@ -156,17 +156,6 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     [],
   );
 
-  // B52 fix: In guest mode, pre-fetch offerings anonymously so PaywallModal
-  // finds a warm cache even before the user logs in.
-  // Apple reviewers may enter paywall while in guest mode — offerings must be ready.
-  useEffect(() => {
-    if (Platform.OS === 'web') return;
-    if (!isGuestMode) return;
-    initRevenueCat(undefined).then(() => {
-      prefetchOfferings().catch(() => {});
-    }).catch(() => {});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isGuestMode]);
 
   // Initialize RevenueCat on native platforms when user is available
   // After init, check if user has active entitlements and sync premium status

@@ -209,7 +209,6 @@ const RootNavigator = () => {
     logout,
     pendingVerification,
     clearPendingVerification,
-    isGuestMode,
   } = useAuth();
   const { needsConsentScreen, isCheckingConsent, markConsentComplete } = useConsent();
   const { triggerPrePermission } = useNotifications();
@@ -395,7 +394,7 @@ const RootNavigator = () => {
       }}
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {(isAuthenticated || isGuestMode) ? (
+        {isAuthenticated ? (
           <Stack.Screen name="Main" component={MainNavigator} />
         ) : (
           <Stack.Screen name="Auth" component={AuthNavigator} />

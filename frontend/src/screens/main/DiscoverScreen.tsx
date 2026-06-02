@@ -10,7 +10,6 @@ import {
   Image,
   Share,
   Platform,
-  Alert,
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -18,7 +17,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
-import { useAuth } from '../../contexts/AuthContext';
 import { colors } from '../../constants/theme';
 import { FeedTrip, ProfileStackParamList } from '../../types';
 import apiService from '../../services/api';
@@ -30,23 +28,10 @@ import { ensureAbsoluteUrl, getDestinationImageUrl } from '../../utils/images';
 const DiscoverScreen = () => {
   const { t } = useTranslation('social');
   const { t: tCommon } = useTranslation('common');
-  const { t: tHome } = useTranslation('home');
   const { theme, isDark } = useTheme();
   const { showToast } = useToast();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
-  const { isGuestMode, exitGuestMode } = useAuth();
-
-  const showGuestLoginPrompt = useCallback(() => {
-    Alert.alert(
-      tHome('guestLoginPrompt.title'),
-      tHome('guestLoginPrompt.message'),
-      [
-        { text: tHome('guestLoginPrompt.cancel'), style: 'cancel' },
-        { text: tHome('guestLoginPrompt.login'), onPress: () => exitGuestMode() },
-      ],
-    );
-  }, [tHome, exitGuestMode]);
 
   const [items, setItems] = useState<FeedTrip[]>([]);
   const [total, setTotal] = useState(0);
@@ -99,10 +84,6 @@ const DiscoverScreen = () => {
   };
 
   const handleLikeToggle = async (trip: FeedTrip) => {
-    if (isGuestMode) {
-      showGuestLoginPrompt();
-      return;
-    }
     const wasLiked = trip.isLiked;
     // Optimistic update
     setItems((prev) =>
@@ -147,10 +128,6 @@ const DiscoverScreen = () => {
   };
 
   const handleTripPress = (tripId: string) => {
-    if (isGuestMode) {
-      showGuestLoginPrompt();
-      return;
-    }
     trackEvent('trip_viewed', { tripId, source: 'discover' });
     (navigation as any).navigate('Trips', { screen: 'TripDetail', params: { tripId } });
   };

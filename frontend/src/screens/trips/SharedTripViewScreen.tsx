@@ -38,7 +38,7 @@ interface Props {
 const SharedTripViewScreen: React.FC<Props> = ({ route }) => {
   const { shareToken } = route.params;
   const { theme, isDark } = useTheme();
-  const { isAuthenticated, isGuestMode } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { t } = useTranslation('trips');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const insets = useSafeAreaInsets();
@@ -90,8 +90,8 @@ const SharedTripViewScreen: React.FC<Props> = ({ route }) => {
       navigation.goBack();
     } else {
       // Cold-start: stack has only SharedTrip. Reset to the correct root screen
-      // depending on auth state — 'Main' only exists when authenticated/guest.
-      const rootScreen = (isAuthenticated || isGuestMode) ? 'Main' : 'Auth';
+      // depending on auth state — 'Main' only exists when authenticated.
+      const rootScreen = isAuthenticated ? 'Main' : 'Auth';
       navigation.reset({ index: 0, routes: [{ name: rootScreen }] });
     }
   };

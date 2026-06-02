@@ -123,7 +123,7 @@ const getFeaturedDestinations = (t: TFunction) => [
 ];
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
-  const { user, isGuestMode, exitGuestMode } = useAuth();
+  const { user } = useAuth();
   const { theme, isDark } = useTheme();
   const { t } = useTranslation('home');
   const insets = useSafeAreaInsets();
@@ -216,43 +216,16 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     };
   }, []);
 
-  const showGuestLoginPrompt = useCallback(() => {
-    Alert.alert(
-      t('guestLoginPrompt.title'),
-      t('guestLoginPrompt.message'),
-      [
-        { text: t('guestLoginPrompt.cancel'), style: 'cancel' },
-        {
-          text: t('guestLoginPrompt.login'),
-          onPress: () => {
-            exitGuestMode();
-          },
-        },
-      ],
-    );
-  }, [t, exitGuestMode]);
 
   const handleCreateTrip = () => {
-    if (isGuestMode) {
-      showGuestLoginPrompt();
-      return;
-    }
     navigation.navigate('Trips', { screen: 'CreateTrip' });
   };
 
   const handleViewTrips = () => {
-    if (isGuestMode) {
-      showGuestLoginPrompt();
-      return;
-    }
     navigation.navigate('Trips', { screen: 'TripList' });
   };
 
   const handleDestinationPress = (destination: typeof FEATURED_DESTINATIONS[0]) => {
-    if (isGuestMode) {
-      showGuestLoginPrompt();
-      return;
-    }
     navigation.navigate('Trips', {
       screen: 'CreateTrip',
       params: { destination: destination.name },
