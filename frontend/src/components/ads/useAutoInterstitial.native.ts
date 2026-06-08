@@ -24,8 +24,9 @@
  * behind a native full-screen ad.
  */
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { Platform } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   InterstitialAd,
   AdEventType,
@@ -62,7 +63,11 @@ export function useAutoInterstitial(): void {
   const { isLoggingOut } = useAuth();
   const { isReady } = useGDPRConsent();
 
-  // Latest-value refs so the delayed callback doesn't act on a stale snapshot.
+  // Latest-value refs so the focus callback / delayed timer act on current
+  // state without needing these as dependencies (useFocusEffect re-runs on
+  // every focus regardless, so we don't want a stale-closure tax either).
+  const isReadyRef = useRef(isReady);
+  isReadyRef.current = isReady;
   const isPremiumRef = useRef(isPremium);
   isPremiumRef.current = isPremium;
   const isAdminRef = useRef(isAdmin);
@@ -70,11 +75,16 @@ export function useAutoInterstitial(): void {
   const isLoggingOutRef = useRef(isLoggingOut);
   isLoggingOutRef.current = isLoggingOut;
 
-  useEffect(() => {
+  // Re-arm on EVERY screen focus, not once on mount. A tab screen mounts once
+  // and never unmounts, so a plain useEffect gave only a single ad chance for
+  // the whole app session. useFocusEffect fires each time the user lands on the
+  // host screen, so the auto ad gets a fresh chance per visit.
+  useFocusEffect(
+    useCallback(() => {
     // Don't even arm the timer until consent has resolved and ads are eligible.
-    if (!isReady) return;
+    if (!isReadyRef.current) return;
     if (!INTERSTITIAL_UNIT_ID) return;
-    if (isPremium || isAdmin) return;
+    if (isPremiumRef.current || isAdminRef.current) return;
 
     let cancelled = false;
     const unsubscribers: (() => void)[] = [];
@@ -115,5 +125,6 @@ export function useAutoInterstitial(): void {
       clearTimeout(timer);
       unsubscribers.forEach((unsub) => unsub());
     };
-  }, [isReady, isPremium, isAdmin]);
+    }, []),
+  );
 }

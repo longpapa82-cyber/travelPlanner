@@ -30,12 +30,17 @@ import {
 import { useRewardedAd, useInterstitialAd, getTripVisitSnapshot, shouldShowAdOnVisit } from '../../components/ads';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { getFrequencySnapshot, AdFrequencySnapshot } from '../../components/ads/adFrequency';
+import { usePremium } from '../../contexts/PremiumContext';
 
 export default function AdDebugScreen() {
   const { showToast } = useToast();
   const { show: showRewardedAd, isLoaded, isLoading, error: adError, reload } = useRewardedAd();
   // Live load state for the full-screen ad types that were previously undiagnosable.
   const { isLoaded: interstitialLoaded, show: showInterstitial } = useInterstitialAd();
+  // The ad guards key off these — if either is true, ALL auto ads are blocked
+  // (premium + operational admin are ad-free). Surface them so we never have to
+  // guess whether "no ad" means a real failure or just an ad-free account.
+  const { isPremium, isAdmin } = usePremium();
 
   const [debugInfo, setDebugInfo] = useState<AdDebugInfo | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -202,6 +207,11 @@ export default function AdDebugScreen() {
             label="Mode"
             value={__DEV__ ? 'Development' : 'Production'}
             success={true}
+          />
+          <StatusItem
+            label="Account"
+            value={isAdmin ? 'Admin (ads OFF)' : isPremium ? 'Premium (ads OFF)' : 'Normal (ads ON)'}
+            success={!isAdmin && !isPremium}
           />
         </View>
       </View>
