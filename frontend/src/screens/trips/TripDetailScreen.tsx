@@ -22,6 +22,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // Removed GestureHandlerRootView to prevent nested gesture conflicts
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
@@ -63,6 +64,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { theme, isDark } = useTheme();
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation('trips');
   const { showToast } = useToast();
   const { confirm } = useConfirm();
@@ -478,7 +480,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     <View style={styles.container}>
         {/* Completed Trip Banner */}
         {trip.status === 'completed' && (
-          <View style={[styles.completedBanner, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100] }]}>
+          <View style={[styles.completedBanner, { paddingTop: insets.top + 16, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100] }]}>
             <Icon name="lock" size={20} color={colors.neutral[500]} />
             <View style={styles.completedBannerTextContainer}>
               <Text style={[styles.completedBannerTitle, { color: theme.colors.text }]}>
@@ -493,7 +495,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
 
         {/* AI Failed Banner */}
         {trip.aiStatus === 'failed' && (
-          <View style={[styles.completedBanner, { backgroundColor: isDark ? '#3B2E1A' : '#FFF7ED' }]}>
+          <View style={[styles.completedBanner, { paddingTop: insets.top + 16, backgroundColor: isDark ? '#3B2E1A' : '#FFF7ED' }]}>
             <Icon name="robot-off" size={20} color="#F59E0B" />
             <View style={styles.completedBannerTextContainer}>
               <Text style={[styles.completedBannerTitle, { color: theme.colors.text }]}>
