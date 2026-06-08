@@ -9,11 +9,18 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **Android** | 1.4.3 (versionCode 294) | **프로덕션 출시 완료** ✅ — 2026-06-03 (회원탈퇴 키보드 UX/jank 수정 + 신규기능) |
 | **iOS** | 1.4.3 (B86) | **App Store 출시 완료** ✅ — 2026-06-03 (심사 통과) |
 | **서버** | 39차 | https://mytravel-planner.com 운영 중 |
-| **브랜치** | `main` | PR #3 병합 + 기술부채 정리 완료 (CI 핵심 6 job 초록) |
+| **브랜치** | `fix/auto-ads-frequency` | 🔄 자동광고 노출개선 — **실기기 검증 완료·미커밋** (main에서 분기) — 다음 할 일 #0 참조 |
 
 ---
 
 ## ⚠️ 다음 할 일
+
+0. **🔄 자동광고 노출 개선 — 실기기 검증 완료, 커밋 대기** (브랜치 `fix/auto-ads-frequency`, 2026-06-08)
+   - **증상**: 배너는 정상인데 자동 전면/앱오픈 광고가 거의 안 나옴. "없어도 문제, 너무 많을 필요는 없음".
+   - **진단**: 버그 아님 — **트리거 부족**이 핵심. 자동 전면광고 호출 지점이 여행 생성/수정 2곳뿐(둘 다 저빈도), 앱에서 제일 자주 쓰는 **TripDetail 열람엔 광고 0개**. + 앱오픈 "백그라운드 30초" 조건이 드물게 충족. (이전 세션의 단일 빈도카운터 공유 문제는 타입별 캡으로 이미 분리.)
+   - **적용한 수정(JS 레이어만, 네이티브/빌드 변화 없음)**: ①`useAppOpenAd.native.ts` 백그라운드 30s→**15s** + 복귀 시 ~2s 로드대기 ②`tripVisitAdPolicy.ts`(신규) TripDetail 진입 **영구누적 카운터** + `shouldShowAdOnVisit`(첫방문 스킵+3회마다) ③`TripDetailScreen.tsx` 진입 시 방문 트리거(premium/admin 가드) ④`AdDebugScreen.tsx` "Trip Visit Trigger" 섹션 추가 ⑤`__tests__/tripVisitAdPolicy.test.ts`(신규) 단위테스트 10개. (이전: `adFrequency.ts` 타입별 캡+getFrequencySnapshot, useInterstitial waitForLoad, AdDebug admin 연결.)
+   - **검증 ✅ 실기기 완료**: tsc 0/eslint 0/단위테스트 10/10. **실폰(Galaxy A12) debug+Metro로 Ad Debug 화면 직접 확인** — "Trip Visit Trigger" 섹션 표시(새 코드 증명), "Frequency Caps"에 appOpen **2/4 실제노출**+글로벌쿨다운 카운트다운 등 타입별 캡 작동 눈으로 확인. 앱오픈 광고 `gms.ads.AdActivity` 실제 표시(15s 완화 효과 실증).
+   - **다음**: ①**커밋**(`fix/auto-ads-frequency`, 광고 7파일+신규 2파일) ②**OTA 배포** — JS만 변경이라 OTA 가능. iOS B86 `Channel:production` 구독✅, **Android는 채널 미검증**(내부테스터 선배포로 확인 후 전체). runtimeVersion=1.4.3 매칭. ③빈도숫자(POLICY/GLOBAL_COOLDOWN_MS/AD_EVERY_N_VISITS) 실데이터 보고 튜닝. ⚠️출시 안 된 변경 — 의도 확인 전 출시경로 금지.
 
 1. **1.4.3 출시 후 모니터링** — iOS/Android 양 플랫폼 프로덕션 출시 완료(2026-06-03). 크래시율·에러로그·실제 결제 집계·리뷰 모니터링
 2. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인

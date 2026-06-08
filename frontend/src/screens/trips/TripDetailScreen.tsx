@@ -41,7 +41,8 @@ import { ShareModal } from '../../components/ShareModal';
 import { TripMapView } from '../../components/TripMapView';
 import { BudgetSummary } from '../../components/BudgetSummary';
 import TripPhotoGallery from '../../components/TripPhotoGallery';
-import { AdBanner } from '../../components/ads';
+import { AdBanner, useInterstitialAd, registerTripVisit } from '../../components/ads';
+import { usePremium } from '../../contexts/PremiumContext';
 import AffiliateLink, { hasAffiliateProvider } from '../../components/ads/AffiliateLink';
 import { getDestinationImageUrl } from '../../utils/images';
 import TripHero from './TripHero';
@@ -66,9 +67,27 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const { showToast } = useToast();
   const { confirm } = useConfirm();
   const { user } = useAuth();
+  const { isPremium, isAdmin } = usePremium();
+  const { show: showInterstitial } = useInterstitialAd();
 
   useEffect(() => {
   }, [tripId, route.params]);
+
+  // Trip-detail visit ad trigger — the highest-volume surface in the app.
+  // Counts lifetime visits and, on every Nth visit (policy in tripVisitAdPolicy),
+  // attempts an interstitial. Fire-and-forget; the global cooldown + session cap
+  // in adFrequency prevent over-exposure. Runs once per screen mount.
+  const visitTrackedRef = useRef(false);
+  useEffect(() => {
+    if (!tripId || visitTrackedRef.current) return;
+    if (isPremium || isAdmin) return; // no ads for premium / admin
+    visitTrackedRef.current = true;
+    registerTripVisit()
+      .then(({ shouldShowAd }) => {
+        if (shouldShowAd) showInterstitial().catch(() => {});
+      })
+      .catch(() => {});
+  }, [tripId, isPremium, isAdmin, showInterstitial]);
 
   // Early return if tripId is missing
   useEffect(() => {

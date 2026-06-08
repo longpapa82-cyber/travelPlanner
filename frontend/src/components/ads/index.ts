@@ -5,5 +5,10 @@ export { default as AffiliateLink } from './AffiliateLink';
 export { useInterstitialAd } from './useInterstitialAd';
 export { useAppOpenAd } from './useAppOpenAd';
 export { useRewardedAd } from './useRewardedAd';
+export {
+  registerTripVisit,
+  getTripVisitSnapshot,
+  shouldShowAdOnVisit,
+} from './tripVisitAdPolicy';
 export type { AffiliateProvider } from './AffiliateLink';
 export type { AdMobBannerSize } from './AdMobBanner';

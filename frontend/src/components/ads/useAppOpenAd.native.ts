@@ -17,7 +17,7 @@ import {
   TestIds,
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
-import { canShowFullScreenAd, recordFullScreenAdShown } from './adFrequency';
+import { canShowAd, recordAdShown } from './adFrequency';
 import { usePremium } from '../../contexts/PremiumContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useGDPRConsent } from '../../hooks/useGDPRConsent';
@@ -32,6 +32,20 @@ const APP_OPEN_UNIT_ID = __DEV__
 
 /** Delay before reloading after ad close to prevent rapid native SDK resource churn */
 const RELOAD_DELAY_MS = 10000;
+/**
+ * Minimum time the app must spend in the background before a foreground return
+ * is treated as a fresh "app open" (rather than a quick ad/transition bounce).
+ * Lowered from 30s → 15s to surface app-open ads more often. The 60s global
+ * cooldown in adFrequency still prevents stacking with a just-closed ad.
+ */
+const MIN_BACKGROUND_MS = 15000;
+/**
+ * On foreground return, if the ad hasn't finished loading yet, poll briefly for
+ * it instead of silently skipping (mirrors the interstitial's waitForLoad).
+ * Trades a tiny delay for a higher show rate when the return beats the load.
+ */
+const SHOW_WAIT_TIMEOUT_MS = 2000;
+const SHOW_WAIT_POLL_MS = 100;
 
 export function useAppOpenAd() {
   // Hook must be called unconditionally (Rules of Hooks)
@@ -114,19 +128,30 @@ export function useAppOpenAd() {
       if (nextState === 'active' && backgroundTimestamp.current > 0) {
         const bgDuration = Date.now() - backgroundTimestamp.current;
         backgroundTimestamp.current = 0;
-        if (bgDuration < 30000) return; // Skip if background < 30s (ad transition)
+        if (bgDuration < MIN_BACKGROUND_MS) return; // Skip quick bounce (ad transition)
         // V186 (Invariant 36 강화): logout 진행 중 ad show 차단
         if (isLoggingOutRef.current) return;
-        const canShow = await canShowFullScreenAd();
+        const canShow = await canShowAd('appOpen');
+        if (!canShow || isPremiumRef.current || isLoggingOutRef.current || !adRef.current) return;
+
+        // Wait briefly for an in-flight load instead of skipping on a cold return.
+        if (!isLoadedRef.current) {
+          const deadline = Date.now() + SHOW_WAIT_TIMEOUT_MS;
+          while (Date.now() < deadline && !isLoadedRef.current) {
+            if (!mountedRef.current) return;
+            await new Promise((r) => setTimeout(r, SHOW_WAIT_POLL_MS));
+          }
+        }
+
+        // Re-check guards after the wait (premium/logout state may have changed).
         if (
-          canShow &&
           isLoadedRef.current &&
           adRef.current &&
           !isPremiumRef.current &&
           !isLoggingOutRef.current
         ) {
           await adRef.current.show();
-          await recordFullScreenAdShown();
+          await recordAdShown('appOpen');
         }
       }
     };

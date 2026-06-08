@@ -831,6 +831,11 @@ const ProfileScreen = ({ navigation }: any) => {
             <Text style={styles.menuText}>{t('menu.admin')}</Text>
             <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
           </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdDebug')} accessibilityRole="button" accessibilityLabel="Ad Debug">
+            <Icon name="bug-outline" size={24} color={theme.colors.primary} />
+            <Text style={styles.menuText}>Ad Debug</Text>
+            <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+          </TouchableOpacity>
         </View>
       )}
 

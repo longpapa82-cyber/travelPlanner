@@ -75,7 +75,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { showToast } = useToast();
   const { confirm } = useConfirm();
   const { t } = useTranslation('trips');
-  const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
+  const { show: showInterstitial } = useInterstitialAd();
   const { isPremium, isAdmin } = usePremium();
 
   // Derive translated arrays from META constants
@@ -247,7 +247,9 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
       });
 
       setTimeout(async () => {
-        if (!isPremium && !isAdmin && isAdLoaded) {
+        // isAdLoaded gate removed — showInterstitial() now waits briefly for an
+        // in-flight load and no-ops if nothing is available.
+        if (!isPremium && !isAdmin) {
           // Race against 10s timeout to prevent infinite hang on Android Activity destroy
           await Promise.race([
             showInterstitial().catch(() => {}),
