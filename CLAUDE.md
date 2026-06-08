@@ -9,18 +9,20 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **Android** | 1.4.3 (versionCode 294) | **프로덕션 출시 완료** ✅ — 2026-06-03 (회원탈퇴 키보드 UX/jank 수정 + 신규기능) |
 | **iOS** | 1.4.3 (B86) | **App Store 출시 완료** ✅ — 2026-06-03 (심사 통과) |
 | **서버** | 39차 | https://mytravel-planner.com 운영 중 |
-| **브랜치** | `fix/auto-ads-frequency` | 🔄 자동광고 노출개선 — **실기기 검증 완료·미커밋** (main에서 분기) — 다음 할 일 #0 참조 |
+| **브랜치** | `fix/auto-ads-frequency` | 🔄 자동광고 노출개선 — **iOS OTA 반영✅ / Android 재빌드 대기**(커밋 2c6e54e0+503b249c, push됨) — 다음 할 일 #0 참조 |
 
 ---
 
 ## ⚠️ 다음 할 일
 
-0. **🔄 자동광고 노출 개선 — 실기기 검증 완료, 커밋 대기** (브랜치 `fix/auto-ads-frequency`, 2026-06-08)
-   - **증상**: 배너는 정상인데 자동 전면/앱오픈 광고가 거의 안 나옴. "없어도 문제, 너무 많을 필요는 없음".
-   - **진단**: 버그 아님 — **트리거 부족**이 핵심. 자동 전면광고 호출 지점이 여행 생성/수정 2곳뿐(둘 다 저빈도), 앱에서 제일 자주 쓰는 **TripDetail 열람엔 광고 0개**. + 앱오픈 "백그라운드 30초" 조건이 드물게 충족. (이전 세션의 단일 빈도카운터 공유 문제는 타입별 캡으로 이미 분리.)
-   - **적용한 수정(JS 레이어만, 네이티브/빌드 변화 없음)**: ①`useAppOpenAd.native.ts` 백그라운드 30s→**15s** + 복귀 시 ~2s 로드대기 ②`tripVisitAdPolicy.ts`(신규) TripDetail 진입 **영구누적 카운터** + `shouldShowAdOnVisit`(첫방문 스킵+3회마다) ③`TripDetailScreen.tsx` 진입 시 방문 트리거(premium/admin 가드) ④`AdDebugScreen.tsx` "Trip Visit Trigger" 섹션 추가 ⑤`__tests__/tripVisitAdPolicy.test.ts`(신규) 단위테스트 10개. (이전: `adFrequency.ts` 타입별 캡+getFrequencySnapshot, useInterstitial waitForLoad, AdDebug admin 연결.)
-   - **검증 ✅ 실기기 완료**: tsc 0/eslint 0/단위테스트 10/10. **실폰(Galaxy A12) debug+Metro로 Ad Debug 화면 직접 확인** — "Trip Visit Trigger" 섹션 표시(새 코드 증명), "Frequency Caps"에 appOpen **2/4 실제노출**+글로벌쿨다운 카운트다운 등 타입별 캡 작동 눈으로 확인. 앱오픈 광고 `gms.ads.AdActivity` 실제 표시(15s 완화 효과 실증).
-   - **다음**: ①**커밋**(`fix/auto-ads-frequency`, 광고 7파일+신규 2파일) ②**OTA 배포** — JS만 변경이라 OTA 가능. iOS B86 `Channel:production` 구독✅, **Android는 채널 미검증**(내부테스터 선배포로 확인 후 전체). runtimeVersion=1.4.3 매칭. ③빈도숫자(POLICY/GLOBAL_COOLDOWN_MS/AD_EVERY_N_VISITS) 실데이터 보고 튜닝. ⚠️출시 안 된 변경 — 의도 확인 전 출시경로 금지.
+0. **🔄 자동광고 노출 개선 — iOS OTA 반영 완료 / Android 재빌드 대기** (브랜치 `fix/auto-ads-frequency`, 2026-06-08)
+   - **⚠️ 서비스 영향 없음**: 이번 변경은 광고를 더 뜨게 하는 방향(트리거 추가·조건 완화)이라 퇴행 위험 0. iOS는 개선 코드 반영됨, Android는 옛 코드(이전과 동일). 양쪽 다 기능 저하 없음. **다음 세션에 Android 재빌드만 이어서 하면 됨.**
+   - **증상**: 자동 전면/앱오픈 광고가 거의 안 나옴. "없어도 문제, 너무 많을 필요는 없음".
+   - **진단**: 버그 아님 — **트리거 부족**. 전면광고 호출 지점이 여행 생성/수정 2곳뿐(저빈도), 제일 자주 쓰는 **TripDetail 열람엔 광고 0개**. + 앱오픈 "백그라운드 30초" 조건이 드물게 충족.
+   - **적용한 수정(JS 레이어, 네이티브 무변화)**: ①`useAppOpenAd` 백그라운드 30s→**15s**+복귀 로드대기 ②`tripVisitAdPolicy.ts`(신규) TripDetail 영구누적 카운터 + `shouldShowAdOnVisit`(첫방문 스킵+3회마다) ③`TripDetailScreen` 방문 트리거(premium/admin 가드) ④`AdDebugScreen` "Trip Visit Trigger" 섹션 ⑤단위테스트 10개. (이전: `adFrequency.ts` 타입별 캡, useInterstitial waitForLoad, AdDebug admin 연결.)
+   - **검증 ✅ 완료**: tsc 0/eslint 0/테스트 10/10. **실기기 검증** — iOS 스토어 OTA 앱의 Ad Debug에서 "Mode:Production"+"Trip Visit Trigger" 섹션+"appOpen 1/4 실제노출"+타입별 Frequency Caps 작동 직접 확인. ⭐**admin 계정은 전면광고 차단(`!isAdmin` 가드)**이라 AI생성/TripDetail 광고 안 뜸이 정상. 앱오픈만 admin 가드 없어 노출. 실노출 검증은 **일반(비admin) 계정** 필요. 실제 AdMob은 fill 100% 아님.
+   - **배포 현황**: 커밋 `2c6e54e0`(광고 15파일) + `503b249c`(eas.json channel). origin push됨. **iOS: ✅ OTA 반영 완료**(`eas update --branch production`, group `8fedde43`, runtime 1.4.3). **Android: ❌ OTA 불가** — 스토어 294 AAB가 로컬 gradlew 빌드라 OTA 채널 미구독(eas.json에 channel 추가했으나 다음 빌드부터 적용).
+   - **다음 세션 할 일**: ①**Android AAB 재빌드+Play 재출시**(channel 메타 포함 = OTA 영구활성화, 이번 광고변경도 네이티브 포함). EAS 클라우드면 channel 자동주입, 로컬 gradlew면 `expo prebuild --clean`으로 AndroidManifest에 `EXPO_UPDATES_CHANNEL` 주입 확인 필수 + versionCode 295 + reanimated 회피([[build_reanimated_worklets_race]]). ②`503b249c` push ③PR/main 병합 ④빈도숫자 튜닝(POLICY/GLOBAL_COOLDOWN_MS/AD_EVERY_N_VISITS) 실데이터 보고. 상세 → 메모리 [auto_ads_frequency_20260608.md].
 
 1. **1.4.3 출시 후 모니터링** — iOS/Android 양 플랫폼 프로덕션 출시 완료(2026-06-03). 크래시율·에러로그·실제 결제 집계·리뷰 모니터링
 2. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
