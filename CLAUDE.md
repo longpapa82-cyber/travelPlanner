@@ -9,20 +9,20 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **Android** | 1.4.3 (versionCode 294) | **프로덕션 출시 완료** ✅ — 2026-06-03 (회원탈퇴 키보드 UX/jank 수정 + 신규기능) |
 | **iOS** | 1.4.3 (B86) | **App Store 출시 완료** ✅ — 2026-06-03 (심사 통과) |
 | **서버** | 39차 | https://mytravel-planner.com 운영 중 |
-| **브랜치** | `fix/auto-ads-frequency` | 🔄 자동광고 노출개선 — **iOS OTA 반영✅ / Android 재빌드 대기**(커밋 2c6e54e0+503b249c, push됨) — 다음 할 일 #0 참조 |
+| **브랜치** | `fix/auto-ads-frequency` | 🚧 자동광고 노출개선 — 코드수정·2차 OTA 완료(커밋 b005e970+9720b6bf+07c00703), **실노출 검증이 진단 막힘으로 보류** — 다음 할 일 #0 참조 |
 
 ---
 
 ## ⚠️ 다음 할 일
 
-0. **🔄 자동광고 노출 개선 — iOS OTA 반영 완료 / Android 재빌드 대기** (브랜치 `fix/auto-ads-frequency`, 2026-06-08)
-   - **⚠️ 서비스 영향 없음**: 이번 변경은 광고를 더 뜨게 하는 방향(트리거 추가·조건 완화)이라 퇴행 위험 0. iOS는 개선 코드 반영됨, Android는 옛 코드(이전과 동일). 양쪽 다 기능 저하 없음. **다음 세션에 Android 재빌드만 이어서 하면 됨.**
-   - **증상**: 자동 전면/앱오픈 광고가 거의 안 나옴. "없어도 문제, 너무 많을 필요는 없음".
-   - **진단**: 버그 아님 — **트리거 부족**. 전면광고 호출 지점이 여행 생성/수정 2곳뿐(저빈도), 제일 자주 쓰는 **TripDetail 열람엔 광고 0개**. + 앱오픈 "백그라운드 30초" 조건이 드물게 충족.
-   - **적용한 수정(JS 레이어, 네이티브 무변화)**: ①`useAppOpenAd` 백그라운드 30s→**15s**+복귀 로드대기 ②`tripVisitAdPolicy.ts`(신규) TripDetail 영구누적 카운터 + `shouldShowAdOnVisit`(첫방문 스킵+3회마다) ③`TripDetailScreen` 방문 트리거(premium/admin 가드) ④`AdDebugScreen` "Trip Visit Trigger" 섹션 ⑤단위테스트 10개. (이전: `adFrequency.ts` 타입별 캡, useInterstitial waitForLoad, AdDebug admin 연결.)
-   - **검증 ✅ 완료**: tsc 0/eslint 0/테스트 10/10. **실기기 검증** — iOS 스토어 OTA 앱의 Ad Debug에서 "Mode:Production"+"Trip Visit Trigger" 섹션+"appOpen 1/4 실제노출"+타입별 Frequency Caps 작동 직접 확인. ⭐**admin 계정은 전면광고 차단(`!isAdmin` 가드)**이라 AI생성/TripDetail 광고 안 뜸이 정상. 앱오픈만 admin 가드 없어 노출. 실노출 검증은 **일반(비admin) 계정** 필요. 실제 AdMob은 fill 100% 아님.
-   - **배포 현황**: 커밋 `2c6e54e0`(광고 15파일) + `503b249c`(eas.json channel). origin push됨. **iOS: ✅ OTA 반영 완료**(`eas update --branch production`, group `8fedde43`, runtime 1.4.3). **Android: ❌ OTA 불가** — 스토어 294 AAB가 로컬 gradlew 빌드라 OTA 채널 미구독(eas.json에 channel 추가했으나 다음 빌드부터 적용).
-   - **다음 세션 할 일**: ①**Android AAB 재빌드+Play 재출시**(channel 메타 포함 = OTA 영구활성화, 이번 광고변경도 네이티브 포함). EAS 클라우드면 channel 자동주입, 로컬 gradlew면 `expo prebuild --clean`으로 AndroidManifest에 `EXPO_UPDATES_CHANNEL` 주입 확인 필수 + versionCode 295 + reanimated 회피([[build_reanimated_worklets_race]]). ②`503b249c` push ③PR/main 병합 ④빈도숫자 튜닝(POLICY/GLOBAL_COOLDOWN_MS/AD_EVERY_N_VISITS) 실데이터 보고. 상세 → 메모리 [auto_ads_frequency_20260608.md].
+0. **🚧 자동 전면광고 노출 개선 — 코드수정·2차 OTA 완료, 실노출 검증이 진단 막힘으로 보류** (브랜치 `fix/auto-ads-frequency`, 2026-06-09)
+   - **⚠️ 서비스 영향 없음**: 광고를 더 뜨게 하는 방향이라 퇴행 위험 0. 종료여행 safe-area 버그는 실기기 확인 완료(✅).
+   - **증상**: 일반 계정(a090723·prime0919)에서 AI생성·여행목록 대기·TripDetail 모두 자동 전면광고 안 뜸.
+   - **근본원인 (2차 진단)**: ①**자동노출 1회 소진** — TripListScreen은 탭 화면이라 마운트 1회 후 언마운트 안 됨 → 기존 `useEffect`는 앱 세션당 단 1번만 15초 타이머 무장. → **`useFocusEffect`로 전환**(포커스마다 재무장). ②근본진단=**load↔show 갭** + iOS NPA 낮은 fill + 드문 트리거. 같은 AdMob계정 myBaby(`~/projects/myBaby/frontend/src/services/adService.ts`)는 'LOADED 콜백서 즉시 show'라 잘 됨 → 그 패턴 이식.
+   - **적용한 수정(JS, 네이티브 무변화)**: ①`useAutoInterstitial`(신규 native+web stub) — TripList 진입 15s 후 fresh load→LOADED 즉시 show, useFocusEffect 재무장, 가드(premium/admin/logout/빈도캡/consent) 전부 유지 ②`AdDebugScreen`에 **Account 행**(Admin/Premium=ads OFF, Normal=ads ON) ③종료여행 safe-area 배너 수정. tsc 0/eslint 0/테스트 10/10.
+   - **🚧 검증 막힘 (다음 세션 시작점)**: 일반계정 광고 안 뜨는데 **확정 진단 불가**. **Ad Debug 메뉴가 `isServiceAdmin`(=`longpapa82@gmail.com`만, `ProfileScreen.tsx:826`)에게만 보임**. a090723·prime0919는 Ad Debug 자체가 안 보임 → 광고 떠야 할 일반계정엔 진단화면 없음 ↔ 진단화면 보이는 longpapa82는 admin이라 광고 차단(`!isAdmin`). **상호배타**. ⚠️6:50 Ad Debug 스샷(interstitial Loaded·빈도캡 ready·Test버튼 뜸)은 전부 **longpapa82(admin)** — admin이라 Test만 뜨고 자동은 정상 차단.
+   - **배포 현황**: 커밋 `07c00703`+`b005e970`+`9720b6bf`(전부 커밋·로컬). **iOS 2차 OTA 완료**(`eas update --branch production`, group `5c452f8d`, runtime 1.4.3). Android는 채널 미구독(재빌드 필요).
+   - **다음 세션 할 일**: ①**prime0919에 Ad Debug 임시허용**(`ProfileScreen.tsx:826` isServiceAdmin 게이트에 prime0919 일시추가 또는 임시플래그)→OTA→그 계정 Ad Debug 열어 **Account=Normal(ads ON) 확인 + Interstitial Loaded 여부 + 여행목록 15초 자동노출** 확인→**반드시 원복**→OTA. ②Normal·Loaded인데도 안 뜨면 useAutoInterstitial show 경로 추가조사. ③NPA no-fill 가능성(여러 번 시도). ④검증 후 PR/main 병합. ⑤Android 재빌드(versionCode 295, OTA채널, reanimated 회피 [[build_reanimated_worklets_race]]). 상세 → 메모리 [auto_interstitial_mybaby_pattern.md], 이전 → [auto_ads_frequency_20260608.md].
 
 1. **1.4.3 출시 후 모니터링** — iOS/Android 양 플랫폼 프로덕션 출시 완료(2026-06-03). 크래시율·에러로그·실제 결제 집계·리뷰 모니터링
 2. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
