@@ -34,6 +34,7 @@ import {
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
 import { canShowAd, recordAdShown } from './adFrequency';
+import { logAutoIntl } from './autoInterstitialDiag'; // ⚠️ TEMP diag (2026-06-09)
 import { usePremium } from '../../contexts/PremiumContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useGDPRConsent } from '../../hooks/useGDPRConsent';
@@ -81,18 +82,13 @@ export function useAutoInterstitial(): void {
   // host screen, so the auto ad gets a fresh chance per visit.
   useFocusEffect(
     useCallback(() => {
-    // DIAG (2026-06-09): log BEFORE the early-return guards so we can tell
-    // whether useFocusEffect even fires and which guard (if any) blocks arming.
-    console.log('[AutoIntl] 👁️ focus fired', {
-      isReady: isReadyRef.current,
-      hasUnitId: !!INTERSTITIAL_UNIT_ID,
-      premium: isPremiumRef.current,
-      admin: isAdminRef.current,
-    });
+    // ⚠️ TEMP DIAG (2026-06-09): record to AsyncStorage (Ad Debug reads it).
+    // console.log is invisible on production Hermes builds, so we trace on-device.
+    logAutoIntl(`focus: ready=${isReadyRef.current} unit=${!!INTERSTITIAL_UNIT_ID} prem=${isPremiumRef.current} admin=${isAdminRef.current}`);
     // Don't even arm the timer until consent has resolved and ads are eligible.
-    if (!isReadyRef.current) { console.log('[AutoIntl] ⛔ blocked: !isReady'); return; }
-    if (!INTERSTITIAL_UNIT_ID) { console.log('[AutoIntl] ⛔ blocked: no unit id'); return; }
-    if (isPremiumRef.current || isAdminRef.current) { console.log('[AutoIntl] ⛔ blocked: premium/admin'); return; }
+    if (!isReadyRef.current) { logAutoIntl('BLOCKED !isReady'); return; }
+    if (!INTERSTITIAL_UNIT_ID) { logAutoIntl('BLOCKED no unit id'); return; }
+    if (isPremiumRef.current || isAdminRef.current) { logAutoIntl('BLOCKED premium/admin'); return; }
 
     let cancelled = false;
     const unsubscribers: (() => void)[] = [];
@@ -101,40 +97,40 @@ export function useAutoInterstitial(): void {
       if (cancelled) return;
       // Re-check guards at fire time (state may have changed during the delay).
       if (isPremiumRef.current || isAdminRef.current || isLoggingOutRef.current) {
-        console.log('[AutoIntl] ⛔ guard blocked', { premium: isPremiumRef.current, admin: isAdminRef.current, loggingOut: isLoggingOutRef.current });
+        logAutoIntl(`BLOCKED at fire: prem=${isPremiumRef.current} admin=${isAdminRef.current} logout=${isLoggingOutRef.current}`);
         return;
       }
       // Respect the frequency cap before requesting an ad we couldn't show.
       const allowed = await canShowAd('interstitial');
-      console.log('[AutoIntl] ⏱️ timer fired, canShowAd(interstitial)=', allowed);
+      logAutoIntl(`timer fired, canShowAd=${allowed}`);
       if (cancelled || !allowed) return;
 
       const ad = InterstitialAd.createForAdRequest(INTERSTITIAL_UNIT_ID, {
         requestNonPersonalizedAdsOnly: true,
       });
-      console.log('[AutoIntl] 📋 load() requested, unit=', INTERSTITIAL_UNIT_ID);
+      logAutoIntl('load() requested');
 
       unsubscribers.push(
         ad.addAdEventListener(AdEventType.LOADED, () => {
-          console.log('[AutoIntl] ✅ LOADED — calling show()');
+          logAutoIntl('✅ LOADED — calling show()');
           // Re-check guards once more right before the native show.
           if (cancelled || isPremiumRef.current || isAdminRef.current || isLoggingOutRef.current) {
-            console.log('[AutoIntl] ⛔ guard blocked at show time');
+            logAutoIntl('BLOCKED at show time');
             return;
           }
-          ad.show().catch((e) => console.log('[AutoIntl] ❌ show() threw', String(e)));
+          ad.show().catch((e) => logAutoIntl(`show() threw ${String(e)}`));
           recordAdShown('interstitial').catch(() => {});
         }),
       );
 
       // no-fill / network error and close: handled (and listeners cleaned up
       // below) so the app is never trapped behind the native full-screen ad.
-      unsubscribers.push(ad.addAdEventListener(AdEventType.ERROR, (e) => console.log('[AutoIntl] ❌ ERROR (no-fill/network)', JSON.stringify(e))));
-      unsubscribers.push(ad.addAdEventListener(AdEventType.CLOSED, () => console.log('[AutoIntl] 🔒 CLOSED')));
+      unsubscribers.push(ad.addAdEventListener(AdEventType.ERROR, (e) => logAutoIntl(`❌ ERROR (no-fill/net) ${JSON.stringify(e)}`)));
+      unsubscribers.push(ad.addAdEventListener(AdEventType.CLOSED, () => logAutoIntl('CLOSED')));
 
       ad.load();
     }, FIRST_SHOW_DELAY_MS);
-    console.log('[AutoIntl] 🔫 armed: will attempt in', FIRST_SHOW_DELAY_MS / 1000, 's');
+    logAutoIntl(`🔫 armed: attempt in ${FIRST_SHOW_DELAY_MS / 1000}s`);
 
     return () => {
       cancelled = true;
