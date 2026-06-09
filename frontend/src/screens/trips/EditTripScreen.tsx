@@ -366,19 +366,9 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
             colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.6)']}
             style={styles.heroGradient}
           >
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-              disabled={isSaving}
-              accessibilityRole="button"
-              accessibilityLabel={t('common:back', { defaultValue: 'Go back' })}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-              <View style={styles.backButtonInner}>
-                <Icon name="arrow-left" size={24} color={colors.neutral[0]} />
-              </View>
-            </TouchableOpacity>
-
+            {/* No hero back button here: EditTrip uses the native stack header
+                (title "여행 수정" + its own back), so a hero back would be a
+                duplicate. The native header already handles the safe area. */}
             <Animated.View
               style={[
                 styles.heroContent,
@@ -831,18 +821,10 @@ const createStyles = (theme: any, isDark: boolean) =>
     heroGradient: {
       flex: 1,
       padding: 20,
-      justifyContent: 'space-between',
-    },
-    backButton: {
-      alignSelf: 'flex-start',
-    },
-    backButtonInner: {
-      width: 44,
-      height: 44,
-      borderRadius: 22,
-      backgroundColor: 'rgba(0,0,0,0.3)',
-      alignItems: 'center',
-      justifyContent: 'center',
+      // No hero back button anymore (native header owns it), so anchor the
+      // title/warning copy to the bottom of the image instead of spreading
+      // them with space-between (which floated the copy to the top).
+      justifyContent: 'flex-end',
     },
     heroContent: {
       paddingBottom: 20,

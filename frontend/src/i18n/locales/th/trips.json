@@ -230,7 +230,8 @@
     },
     "status": {
       "ongoing": "กำลังดำเนินการ",
-      "completed": "เสร็จสิ้น"
+      "completed": "เสร็จสิ้น",
+      "aiFailed": "AI ล้มเหลว"
     },
     "completedBanner": {
       "title": "ทริปเสร็จสิ้นแล้ว",

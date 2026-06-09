@@ -238,7 +238,8 @@
     },
     "status": {
       "ongoing": "Ongoing",
-      "completed": "Completed"
+      "completed": "Completed",
+      "aiFailed": "AI failed"
     },
     "completedBanner": {
       "title": "Trip Completed",

@@ -22,7 +22,6 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // Removed GestureHandlerRootView to prevent nested gesture conflicts
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
@@ -64,7 +63,6 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { theme, isDark } = useTheme();
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation('trips');
   const { showToast } = useToast();
   const { confirm } = useConfirm();
@@ -76,19 +74,22 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [tripId, route.params]);
 
   // Trip-detail visit ad trigger — the highest-volume surface in the app.
-  // Counts lifetime visits and, on every Nth visit (policy in tripVisitAdPolicy),
-  // attempts an interstitial. Fire-and-forget; the global cooldown + session cap
-  // in adFrequency prevent over-exposure. Runs once per screen mount.
+  // V (2026-06-09): trigger on EVERY visit (was: only every Nth via the visit
+  // cadence). The Nth-visit cadence made the trigger too sparse — Ad Debug
+  // confirmed the interstitial is consistently `ready` yet rarely fired because
+  // the visit count was rarely an Nth boundary AND coincided with the cooldown.
+  // Now we attempt on every entry and let adFrequency (15s global cooldown +
+  // 90s per-type minInterval) be the real exposure cap — same "always attempt,
+  // caps gate it" model App Open uses, which surfaces reliably.
+  // registerTripVisit() is still called to keep the lifetime counter (Ad Debug),
+  // but its shouldShowAd verdict no longer gates the show.
   const visitTrackedRef = useRef(false);
   useEffect(() => {
     if (!tripId || visitTrackedRef.current) return;
     if (isPremium || isAdmin) return; // no ads for premium / admin
     visitTrackedRef.current = true;
-    registerTripVisit()
-      .then(({ shouldShowAd }) => {
-        if (shouldShowAd) showInterstitial().catch(() => {});
-      })
-      .catch(() => {});
+    registerTripVisit().catch(() => {}); // count only; does not gate the ad
+    showInterstitial().catch(() => {}); // adFrequency caps decide if it shows
   }, [tripId, isPremium, isAdmin, showInterstitial]);
 
   // Early return if tripId is missing
@@ -478,35 +479,9 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   // Removing local GestureHandlerRootView to prevent nested gesture contexts
   return (
     <View style={styles.container}>
-        {/* Completed Trip Banner */}
-        {trip.status === 'completed' && (
-          <View style={[styles.completedBanner, { paddingTop: insets.top + 16, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100] }]}>
-            <Icon name="lock" size={20} color={colors.neutral[500]} />
-            <View style={styles.completedBannerTextContainer}>
-              <Text style={[styles.completedBannerTitle, { color: theme.colors.text }]}>
-                {t('detail.completedBanner.title')}
-              </Text>
-              <Text style={[styles.completedBannerMessage, { color: theme.colors.textSecondary }]}>
-                {t('detail.completedBanner.description')}
-              </Text>
-            </View>
-          </View>
-        )}
-
-        {/* AI Failed Banner */}
-        {trip.aiStatus === 'failed' && (
-          <View style={[styles.completedBanner, { paddingTop: insets.top + 16, backgroundColor: isDark ? '#3B2E1A' : '#FFF7ED' }]}>
-            <Icon name="robot-off" size={20} color="#F59E0B" />
-            <View style={styles.completedBannerTextContainer}>
-              <Text style={[styles.completedBannerTitle, { color: theme.colors.text }]}>
-                {t('detail.aiFailedWarning', { defaultValue: 'AI 일정 생성 실패' })}
-              </Text>
-              <Text style={[styles.completedBannerMessage, { color: theme.colors.textSecondary }]}>
-                {t('detail.aiFailedMessage', { defaultValue: 'AI가 일정을 생성하지 못했습니다. 수동으로 활동을 추가해주세요.' })}
-              </Text>
-            </View>
-          </View>
-        )}
+        {/* Status (completed / AI-failed) is now shown as a chip overlaid on the
+            hero (TripHero) instead of a separate banner block above it — the old
+            banner pushed the hero's back button down. See TripHero statusChip. */}
 
         {/* Hero Section */}
         <TripHero
@@ -850,27 +825,6 @@ const createStyles = (theme: any, isDark: boolean) =>
     emptyMessage: {
       fontSize: 16,
       textAlign: 'center',
-    },
-    completedBanner: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 12,
-      paddingHorizontal: 20,
-      paddingVertical: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.border,
-    },
-    completedBannerTextContainer: {
-      flex: 1,
-    },
-    completedBannerTitle: {
-      fontSize: 16,
-      fontWeight: '700',
-      marginBottom: 4,
-    },
-    completedBannerMessage: {
-      fontSize: 13,
-      lineHeight: 18,
     },
     affiliateSection: {
       marginHorizontal: 20,

@@ -230,7 +230,8 @@
     },
     "status": {
       "ongoing": "جارية",
-      "completed": "مكتملة"
+      "completed": "مكتملة",
+      "aiFailed": "فشل AI"
     },
     "completedBanner": {
       "title": "اكتملت الرحلة",

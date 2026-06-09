@@ -238,7 +238,8 @@
     },
     "status": {
       "ongoing": "진행중",
-      "completed": "완료"
+      "completed": "완료",
+      "aiFailed": "AI 실패"
     },
     "completedBanner": {
       "title": "여행 완료",

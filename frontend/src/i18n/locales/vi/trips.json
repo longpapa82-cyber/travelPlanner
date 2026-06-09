@@ -230,7 +230,8 @@
     },
     "status": {
       "ongoing": "Đang diễn ra",
-      "completed": "Đã hoàn thành"
+      "completed": "Đã hoàn thành",
+      "aiFailed": "AI thất bại"
     },
     "completedBanner": {
       "title": "Chuyến đi đã hoàn thành",
