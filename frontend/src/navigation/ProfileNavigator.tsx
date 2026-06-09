@@ -11,6 +11,7 @@ import ErrorLogScreen from '../screens/main/ErrorLogScreen';
 import AnnouncementManagementScreen from '../screens/main/AnnouncementManagementScreen';
 import AnnouncementFormScreen from '../screens/main/AnnouncementFormScreen';
 import ApiUsageDashboardScreen from '../screens/main/ApiUsageDashboardScreen';
+import AdDebugScreen from '../screens/debug/AdDebugScreen';
 import HelpScreen from '../screens/main/HelpScreen';
 import TermsScreen from '../screens/main/TermsScreen';
 import PrivacyPolicyScreen from '../screens/main/PrivacyPolicyScreen';
@@ -87,6 +88,11 @@ const ProfileNavigator = () => {
             ? tAdmin('announcements.editTitle')
             : tAdmin('announcements.createTitle'),
         })}
+      />
+      <Stack.Screen
+        name="AdDebug"
+        component={AdDebugScreen}
+        options={{ title: 'Ad Debug' }}
       />
       <Stack.Screen
         name="Help"

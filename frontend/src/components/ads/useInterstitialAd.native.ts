@@ -18,7 +18,7 @@ import {
   TestIds,
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
-import { canShowFullScreenAd, recordFullScreenAdShown } from './adFrequency';
+import { canShowAd, recordAdShown } from './adFrequency';
 
 import { useGDPRConsent } from '../../hooks/useGDPRConsent';
 
@@ -32,6 +32,13 @@ const INTERSTITIAL_UNIT_ID = __DEV__
 
 /** Delay before reloading after ad close to prevent rapid native memory churn */
 const RELOAD_DELAY_MS = 5000;
+/**
+ * When show() is called but the ad hasn't finished loading yet, wait up to this
+ * long for the in-flight load() to complete instead of silently giving up.
+ * Trades a tiny delay for a much higher show rate on fast taps.
+ */
+const SHOW_WAIT_TIMEOUT_MS = 2500;
+const SHOW_WAIT_POLL_MS = 100;
 
 export function useInterstitialAd() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -39,6 +46,13 @@ export function useInterstitialAd() {
   const adRef = useRef<InterstitialAd | null>(null);
   const mountedRef = useRef(true);
   const reloadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Mirror isLoaded in a ref so show()'s loop reads the latest value without
+  // being re-created on every load (avoids stale-closure misses).
+  const isLoadedRef = useRef(false);
+  const setLoaded = (v: boolean) => {
+    isLoadedRef.current = v;
+    if (mountedRef.current) setIsLoaded(v);
+  };
 
   useEffect(() => {
     if (!isReady) return;
@@ -52,11 +66,11 @@ export function useInterstitialAd() {
     });
 
     const loadedUnsub = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-      if (mountedRef.current) setIsLoaded(true);
+      setLoaded(true);
     });
 
     const closedUnsub = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
-      if (mountedRef.current) setIsLoaded(false);
+      setLoaded(false);
       // Delay reload to prevent rapid native SDK resource churn
       reloadTimerRef.current = setTimeout(() => {
         if (mountedRef.current && adRef.current) {
@@ -66,7 +80,7 @@ export function useInterstitialAd() {
     });
 
     const errorUnsub = interstitial.addAdEventListener(AdEventType.ERROR, () => {
-      if (mountedRef.current) setIsLoaded(false);
+      setLoaded(false);
     });
 
     adRef.current = interstitial;
@@ -82,13 +96,33 @@ export function useInterstitialAd() {
     };
   }, [isReady, canShowPersonalizedAds]);
 
-  const show = useCallback(async () => {
-    const canShow = await canShowFullScreenAd();
-    if (canShow && isLoaded && adRef.current) {
-      await adRef.current.show();
-      await recordFullScreenAdShown();
+  /** Resolve once the ad is loaded, or after the timeout — whichever comes first. */
+  const waitForLoad = useCallback(async (): Promise<boolean> => {
+    if (isLoadedRef.current) return true;
+    if (!adRef.current) return false;
+    // Kick a load in case none is in flight (cheap no-op if already loading).
+    try { adRef.current.load(); } catch { /* ignore */ }
+
+    const deadline = Date.now() + SHOW_WAIT_TIMEOUT_MS;
+    while (Date.now() < deadline) {
+      if (!mountedRef.current) return false;
+      if (isLoadedRef.current) return true;
+      await new Promise((r) => setTimeout(r, SHOW_WAIT_POLL_MS));
     }
-  }, [isLoaded]);
+    return isLoadedRef.current;
+  }, []);
+
+  const show = useCallback(async () => {
+    // Check frequency cap FIRST — don't bother waiting for a load we can't show.
+    const canShow = await canShowAd('interstitial');
+    if (!canShow) return;
+
+    const ready = await waitForLoad();
+    if (ready && adRef.current) {
+      await adRef.current.show();
+      await recordAdShown('interstitial');
+    }
+  }, [waitForLoad]);
 
   return { isLoaded, show };
 }

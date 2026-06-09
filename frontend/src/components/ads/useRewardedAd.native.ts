@@ -20,7 +20,7 @@ import {
 import mobileAds from 'react-native-google-mobile-ads';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
-import { canShowFullScreenAd, recordFullScreenAdShown } from './adFrequency';
+import { recordAdShown } from './adFrequency';
 import { useGDPRConsent } from '../../hooks/useGDPRConsent';
 
 const extra = Constants.expoConfig?.extra || {};
@@ -332,8 +332,10 @@ export function useRewardedAd(): {
           }
         );
 
-        // Record BEFORE show to prevent AppOpenAd race condition
-        recordFullScreenAdShown();
+        // Record BEFORE show to prevent AppOpenAd race condition.
+        // Rewarded is uncapped, but this still bumps the global cooldown so an
+        // app-open ad can't fire the instant the reward ad closes.
+        recordAdShown('rewarded');
 
         // Show the ad
         console.log('[useRewardedAd] Showing ad...');

@@ -22,6 +22,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // Removed GestureHandlerRootView to prevent nested gesture conflicts
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
@@ -41,7 +42,8 @@ import { ShareModal } from '../../components/ShareModal';
 import { TripMapView } from '../../components/TripMapView';
 import { BudgetSummary } from '../../components/BudgetSummary';
 import TripPhotoGallery from '../../components/TripPhotoGallery';
-import { AdBanner } from '../../components/ads';
+import { AdBanner, useInterstitialAd, registerTripVisit } from '../../components/ads';
+import { usePremium } from '../../contexts/PremiumContext';
 import AffiliateLink, { hasAffiliateProvider } from '../../components/ads/AffiliateLink';
 import { getDestinationImageUrl } from '../../utils/images';
 import TripHero from './TripHero';
@@ -62,13 +64,32 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { theme, isDark } = useTheme();
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation('trips');
   const { showToast } = useToast();
   const { confirm } = useConfirm();
   const { user } = useAuth();
+  const { isPremium, isAdmin } = usePremium();
+  const { show: showInterstitial } = useInterstitialAd();
 
   useEffect(() => {
   }, [tripId, route.params]);
+
+  // Trip-detail visit ad trigger — the highest-volume surface in the app.
+  // Counts lifetime visits and, on every Nth visit (policy in tripVisitAdPolicy),
+  // attempts an interstitial. Fire-and-forget; the global cooldown + session cap
+  // in adFrequency prevent over-exposure. Runs once per screen mount.
+  const visitTrackedRef = useRef(false);
+  useEffect(() => {
+    if (!tripId || visitTrackedRef.current) return;
+    if (isPremium || isAdmin) return; // no ads for premium / admin
+    visitTrackedRef.current = true;
+    registerTripVisit()
+      .then(({ shouldShowAd }) => {
+        if (shouldShowAd) showInterstitial().catch(() => {});
+      })
+      .catch(() => {});
+  }, [tripId, isPremium, isAdmin, showInterstitial]);
 
   // Early return if tripId is missing
   useEffect(() => {
@@ -459,7 +480,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     <View style={styles.container}>
         {/* Completed Trip Banner */}
         {trip.status === 'completed' && (
-          <View style={[styles.completedBanner, { backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100] }]}>
+          <View style={[styles.completedBanner, { paddingTop: insets.top + 16, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[100] }]}>
             <Icon name="lock" size={20} color={colors.neutral[500]} />
             <View style={styles.completedBannerTextContainer}>
               <Text style={[styles.completedBannerTitle, { color: theme.colors.text }]}>
@@ -474,7 +495,7 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
 
         {/* AI Failed Banner */}
         {trip.aiStatus === 'failed' && (
-          <View style={[styles.completedBanner, { backgroundColor: isDark ? '#3B2E1A' : '#FFF7ED' }]}>
+          <View style={[styles.completedBanner, { paddingTop: insets.top + 16, backgroundColor: isDark ? '#3B2E1A' : '#FFF7ED' }]}>
             <Icon name="robot-off" size={20} color="#F59E0B" />
             <View style={styles.completedBannerTextContainer}>
               <Text style={[styles.completedBannerTitle, { color: theme.colors.text }]}>

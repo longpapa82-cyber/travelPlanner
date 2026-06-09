@@ -119,7 +119,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   const { showToast } = useToast();
   const { scheduleTripReminders } = useNotifications();
   const { t } = useTranslation('trips');
-  const { show: showInterstitial, isLoaded: isAdLoaded } = useInterstitialAd();
+  const { show: showInterstitial } = useInterstitialAd();
   const { show: showRewarded, isLoaded: isRewardedLoaded, reload: reloadRewardedAd } = useRewardedAd();
   const [insightsUnlocked, setInsightsUnlocked] = useState(false);
   // Cooldown: hide rewarded ad button for 3 min after watching (prevent immediate re-show)
@@ -533,8 +533,11 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
       }
 
       // Fire-and-forget interstitial ad — never await, never block navigation
-      // This prevents white screen from Android Activity destruction during ad display
-      const willShowAd = !isPremium && !isAdmin && isAdLoaded;
+      // This prevents white screen from Android Activity destruction during ad display.
+      // isAdLoaded gate removed — showInterstitial() now waits briefly for an
+      // in-flight load and no-ops if nothing is available. We still use this
+      // flag only to decide whether to defer the post-ad toast.
+      const willShowAd = !isPremium && !isAdmin;
       if (willShowAd) {
         showInterstitial().catch(() => {});
       }
@@ -681,8 +684,9 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
                   return;
                 }
 
-                // Show ad in parallel with navigation (non-blocking)
-                if (!isPremium && !isAdmin && isAdLoaded) {
+                // Show ad in parallel with navigation (non-blocking).
+                // isAdLoaded gate removed — show() waits briefly then no-ops.
+                if (!isPremium && !isAdmin) {
                   // Don't await - let ad show in parallel with navigation
                   showInterstitial().catch(() => {});
                 }

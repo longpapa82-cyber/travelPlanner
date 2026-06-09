@@ -17,7 +17,6 @@ import {
   RefreshControl,
   Platform,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 
@@ -28,19 +27,27 @@ import {
   resetAds,
   AdDebugInfo,
 } from '../../utils/adDebugger';
-import { useRewardedAd } from '../../components/ads';
+import { useRewardedAd, useInterstitialAd, getTripVisitSnapshot, shouldShowAdOnVisit } from '../../components/ads';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
-import { runAdDiagnostics, formatDiagnosticsReport, testAdDisplay } from '../../utils/adDiagnostics';
+import { getFrequencySnapshot, AdFrequencySnapshot } from '../../components/ads/adFrequency';
+import { usePremium } from '../../contexts/PremiumContext';
 
 export default function AdDebugScreen() {
-  const { t } = useTranslation();
   const { showToast } = useToast();
   const { show: showRewardedAd, isLoaded, isLoading, error: adError, reload } = useRewardedAd();
+  // Live load state for the full-screen ad types that were previously undiagnosable.
+  const { isLoaded: interstitialLoaded, show: showInterstitial } = useInterstitialAd();
+  // The ad guards key off these — if either is true, ALL auto ads are blocked
+  // (premium + operational admin are ad-free). Surface them so we never have to
+  // guess whether "no ad" means a real failure or just an ad-free account.
+  const { isPremium, isAdmin } = usePremium();
 
   const [debugInfo, setDebugInfo] = useState<AdDebugInfo | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [testResult, setTestResult] = useState<any>(null);
   const [isTestingAd, setIsTestingAd] = useState(false);
+  const [freq, setFreq] = useState<AdFrequencySnapshot | null>(null);
+  const [visitCount, setVisitCount] = useState<number | null>(null);
 
   useEffect(() => {
     loadDebugInfo();
@@ -50,8 +57,29 @@ export default function AdDebugScreen() {
     try {
       const info = await collectAdDebugInfo();
       setDebugInfo(info);
+      const snapshot = await getFrequencySnapshot();
+      setFreq(snapshot);
+      const visit = await getTripVisitSnapshot();
+      setVisitCount(visit.visitCount);
     } catch (error) {
       console.error('Failed to load debug info:', error);
+    }
+  };
+
+  /** How many more trip-detail visits until the next ad-eligible visit. */
+  const visitsUntilNextAd = (count: number): number => {
+    let n = 1;
+    while (!shouldShowAdOnVisit(count + n) && n < 100) n++;
+    return n;
+  };
+
+  const handleTestInterstitial = async () => {
+    try {
+      await showInterstitial();
+      const snapshot = await getFrequencySnapshot();
+      setFreq(snapshot);
+    } catch (error) {
+      Alert.alert('Error', `Interstitial failed: ${error}`);
     }
   };
 
@@ -180,8 +208,87 @@ export default function AdDebugScreen() {
             value={__DEV__ ? 'Development' : 'Production'}
             success={true}
           />
+          <StatusItem
+            label="Account"
+            value={isAdmin ? 'Admin (ads OFF)' : isPremium ? 'Premium (ads OFF)' : 'Normal (ads ON)'}
+            success={!isAdmin && !isPremium}
+          />
         </View>
       </View>
+
+      {/* Full-Screen Ad State (interstitial / app-open were previously undiagnosable) */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Full-Screen Ads</Text>
+        <View style={styles.statusGrid}>
+          <StatusItem
+            label="Interstitial"
+            value={interstitialLoaded ? 'Loaded' : 'Not Loaded'}
+            success={interstitialLoaded}
+          />
+          <StatusItem
+            label="Rewarded"
+            value={isLoaded ? 'Loaded' : 'Not Loaded'}
+            success={isLoaded}
+          />
+        </View>
+        <TouchableOpacity
+          style={[styles.button, styles.primaryButton, { marginTop: 12 }]}
+          onPress={handleTestInterstitial}
+        >
+          <Ionicons name="play-circle-outline" size={20} color="white" />
+          <Text style={styles.buttonText}>Test Interstitial</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Frequency Cap State — explains WHY an auto ad did/didn't fire */}
+      {freq && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Frequency Caps</Text>
+          <Text style={styles.hashHelp}>
+            Global cooldown remaining: {Math.ceil(freq.globalCooldownRemainingMs / 1000)}s
+          </Text>
+          {(['interstitial', 'appOpen', 'rewarded'] as const).map((type) => {
+            const s = freq.perType[type];
+            const ok = s.blockedReason === 'ok';
+            return (
+              <View key={type} style={styles.suggestion}>
+                <Ionicons
+                  name={ok ? 'checkmark-circle' : 'close-circle'}
+                  size={18}
+                  color={ok ? '#10B981' : '#EF4444'}
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={styles.suggestionText}>
+                  {type}: {s.sessionCount}
+                  {s.maxSessionCount === null ? '/∞' : `/${s.maxSessionCount}`} shown
+                  {ok
+                    ? ' — ready'
+                    : ` — blocked (${s.blockedReason}${
+                        s.intervalRemainingMs > 0
+                          ? `, ${Math.ceil(s.intervalRemainingMs / 1000)}s left`
+                          : ''
+                      })`}
+                </Text>
+              </View>
+            );
+          })}
+        </View>
+      )}
+
+      {/* Trip-Detail Visit Trigger — drives interstitials on the highest-volume screen */}
+      {visitCount !== null && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Trip Visit Trigger</Text>
+          <Text style={styles.hashHelp}>
+            Lifetime trip-detail visits: {visitCount}
+          </Text>
+          <Text style={styles.hashHelp}>
+            {shouldShowAdOnVisit(visitCount)
+              ? 'Current count is ad-eligible'
+              : `Next ad-eligible visit in ${visitsUntilNextAd(visitCount)} visit(s)`}
+          </Text>
+        </View>
+      )}
 
       {/* Device Info */}
       {debugInfo?.deviceHash && (
@@ -308,7 +415,7 @@ export default function AdDebugScreen() {
           3. Add the hash to ALPHA_TEST_DEVICE_HASHES in initAds.native.ts{'\n'}
           4. Rebuild the app with: eas build --profile preview{'\n'}
           5. Test ads should then work on your device{'\n\n'}
-          If ads still don't work after adding device hash:{'\n'}
+          If ads still don&apos;t work after adding device hash:{'\n'}
           • Check AdMob account approval status{'\n'}
           • Verify ad unit IDs are correct{'\n'}
           • Wait 24-48 hours for new ad units to activate{'\n'}

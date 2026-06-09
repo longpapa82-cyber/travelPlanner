@@ -38,7 +38,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/core/Button';
 import { WeatherWidget } from '../../components/WeatherWidget';
-import { AdBanner } from '../../components/ads';
+import { AdBanner, useAutoInterstitial } from '../../components/ads';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { useConfirm } from '../../components/feedback/ConfirmDialog';
 import { getDestinationImageUrl } from '../../utils/images';
@@ -83,6 +83,11 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
   const { confirm } = useConfirm();
   const insets = useSafeAreaInsets();
   const [fetchError, setFetchError] = useState(false);
+
+  // Auto-interstitial (myBaby pattern): on this high-traffic screen, load a
+  // fresh interstitial after a short delay and show it the instant it loads.
+  // All exposure stays gated by the frequency caps + premium/admin guards.
+  useAutoInterstitial();
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
