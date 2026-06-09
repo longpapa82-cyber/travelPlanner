@@ -9,7 +9,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **Android** | 1.4.3 (versionCode 294) | **프로덕션 출시 완료** ✅ — 2026-06-03 (회원탈퇴 키보드 UX/jank 수정 + 신규기능) |
 | **iOS** | 1.4.3 (B86) | **App Store 출시 완료** ✅ — 2026-06-03 (심사 통과) |
 | **서버** | 39차 | https://mytravel-planner.com 운영 중 |
-| **브랜치** | `fix/auto-ads-frequency` | 🚧 자동광고 노출개선 — 코드수정·2차 OTA 완료(커밋 b005e970+9720b6bf+07c00703), **실노출 검증이 진단 막힘으로 보류** — 다음 할 일 #0 참조 |
+| **브랜치** | `fix/auto-ads-frequency` | 🚧 자동광고 노출개선 — 코드수정+진단게이트해제·3차 OTA 완료(커밋 b005e970+9720b6bf+07c00703+ec05d782), **prime0919로 실노출 검증 대기**(검증 후 임시코드 원복 필수) — 다음 할 일 #0 참조 |
 
 ---
 
@@ -20,9 +20,9 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
    - **증상**: 일반 계정(a090723·prime0919)에서 AI생성·여행목록 대기·TripDetail 모두 자동 전면광고 안 뜸.
    - **근본원인 (2차 진단)**: ①**자동노출 1회 소진** — TripListScreen은 탭 화면이라 마운트 1회 후 언마운트 안 됨 → 기존 `useEffect`는 앱 세션당 단 1번만 15초 타이머 무장. → **`useFocusEffect`로 전환**(포커스마다 재무장). ②근본진단=**load↔show 갭** + iOS NPA 낮은 fill + 드문 트리거. 같은 AdMob계정 myBaby(`~/projects/myBaby/frontend/src/services/adService.ts`)는 'LOADED 콜백서 즉시 show'라 잘 됨 → 그 패턴 이식.
    - **적용한 수정(JS, 네이티브 무변화)**: ①`useAutoInterstitial`(신규 native+web stub) — TripList 진입 15s 후 fresh load→LOADED 즉시 show, useFocusEffect 재무장, 가드(premium/admin/logout/빈도캡/consent) 전부 유지 ②`AdDebugScreen`에 **Account 행**(Admin/Premium=ads OFF, Normal=ads ON) ③종료여행 safe-area 배너 수정. tsc 0/eslint 0/테스트 10/10.
-   - **🚧 검증 막힘 (다음 세션 시작점)**: 일반계정 광고 안 뜨는데 **확정 진단 불가**. **Ad Debug 메뉴가 `isServiceAdmin`(=`longpapa82@gmail.com`만, `ProfileScreen.tsx:826`)에게만 보임**. a090723·prime0919는 Ad Debug 자체가 안 보임 → 광고 떠야 할 일반계정엔 진단화면 없음 ↔ 진단화면 보이는 longpapa82는 admin이라 광고 차단(`!isAdmin`). **상호배타**. ⚠️6:50 Ad Debug 스샷(interstitial Loaded·빈도캡 ready·Test버튼 뜸)은 전부 **longpapa82(admin)** — admin이라 Test만 뜨고 자동은 정상 차단.
-   - **배포 현황**: 커밋 `07c00703`+`b005e970`+`9720b6bf`(전부 커밋·로컬). **iOS 2차 OTA 완료**(`eas update --branch production`, group `5c452f8d`, runtime 1.4.3). Android는 채널 미구독(재빌드 필요).
-   - **다음 세션 할 일**: ①**prime0919에 Ad Debug 임시허용**(`ProfileScreen.tsx:826` isServiceAdmin 게이트에 prime0919 일시추가 또는 임시플래그)→OTA→그 계정 Ad Debug 열어 **Account=Normal(ads ON) 확인 + Interstitial Loaded 여부 + 여행목록 15초 자동노출** 확인→**반드시 원복**→OTA. ②Normal·Loaded인데도 안 뜨면 useAutoInterstitial show 경로 추가조사. ③NPA no-fill 가능성(여러 번 시도). ④검증 후 PR/main 병합. ⑤Android 재빌드(versionCode 295, OTA채널, reanimated 회피 [[build_reanimated_worklets_race]]). 상세 → 메모리 [auto_interstitial_mybaby_pattern.md], 이전 → [auto_ads_frequency_20260608.md].
+   - **✅ 진단 게이트 해제 (3차 OTA, 2026-06-09)**: 이전 막힘=Ad Debug가 `isServiceAdmin`(longpapa82만)에게만 보이는데 longpapa82·hoonjae723 **둘 다 서버 `ADMIN_EMAILS`에 포함**(프로덕션 env 직접 확인: `ADMIN_EMAILS=longpapa82@gmail.com,hoonjae723@gmail.com`, DB role은 셋 다 user)→isAdmin→자동광고 정상 차단→진단↔노출 **상호배타**. **해결**: prime0919는 role=user+ADMIN_EMAILS 밖→광고 ON인 **진짜 일반계정**이라 진단 적합. `PremiumContext.tsx`에 **`TEMP_AD_DEBUG_EMAILS=['prime0919@naver.com']`+`isAdDebugAllowed` 플래그** 신설(Ad Debug 메뉴만 게이트, 수익 대시보드는 isServiceAdmin 유지→prime0919 재무화면 미노출). isAdmin/광고 게이팅 무영향. tsc 0/eslint 0(신규경고0)/PremiumContext 테스트 11/11.
+   - **배포 현황**: 커밋 `07c00703`+`b005e970`+`9720b6bf`+**`ec05d782`(prime0919 Ad Debug 임시허용)**(전부 커밋·로컬). **iOS 3차 OTA 완료**(`eas update --branch production`, **group `b32c2a4c-2482-472e-93ea-12c80803986c`**, runtime 1.4.3, iOS+Android). Android는 채널 미구독(재빌드 필요).
+   - **⚠️ 다음 세션 할 일**: ①**prime0919로 로그인**→앱 콜드재시작(OTA 수신)→프로필>**Ad Debug** 진입→**Account=Normal(ads ON) 확인 + Interstitial Loaded 여부 + 여행목록 15초 자동노출** 확인. ②**검증 후 반드시 원복**: `PremiumContext.tsx`의 `TEMP_AD_DEBUG_EMAILS`를 `[]`로 되돌리고 OTA 재배포(출시본에 남으면 일반사용자 진단화면 노출). ③Normal·Loaded인데도 안 뜨면 useAutoInterstitial show 경로 추가조사. ④NPA no-fill 가능성(여러 번 시도). ⑤검증·원복 후 PR/main 병합. ⑥Android 재빌드(versionCode 295, OTA채널, reanimated 회피 [[build_reanimated_worklets_race]]). 상세 → 메모리 [auto_interstitial_mybaby_pattern.md], 이전 → [auto_ads_frequency_20260608.md].
 
 1. **1.4.3 출시 후 모니터링** — iOS/Android 양 플랫폼 프로덕션 출시 완료(2026-06-03). 크래시율·에러로그·실제 결제 집계·리뷰 모니터링
 2. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
