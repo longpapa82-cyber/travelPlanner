@@ -67,8 +67,6 @@ export function useAutoInterstitial(): void {
   // Latest-value refs so the focus callback / delayed timer act on current
   // state without needing these as dependencies (useFocusEffect re-runs on
   // every focus regardless, so we don't want a stale-closure tax either).
-  const isReadyRef = useRef(isReady);
-  isReadyRef.current = isReady;
   const isPremiumRef = useRef(isPremium);
   isPremiumRef.current = isPremium;
   const isAdminRef = useRef(isAdmin);
@@ -80,13 +78,19 @@ export function useAutoInterstitial(): void {
   // and never unmounts, so a plain useEffect gave only a single ad chance for
   // the whole app session. useFocusEffect fires each time the user lands on the
   // host screen, so the auto ad gets a fresh chance per visit.
+  //
+  // V (2026-06-09): `isReady` is in the deps so this callback is recreated when
+  // consent resolves. react-navigation re-runs the focus effect on a new
+  // callback while the screen is focused — so if focus happened BEFORE consent
+  // was ready (the original bug: BLOCKED !isReady), arming now retries the
+  // instant isReady flips true instead of waiting for the next manual focus.
   useFocusEffect(
     useCallback(() => {
     // ⚠️ TEMP DIAG (2026-06-09): record to AsyncStorage (Ad Debug reads it).
     // console.log is invisible on production Hermes builds, so we trace on-device.
-    logAutoIntl(`focus: ready=${isReadyRef.current} unit=${!!INTERSTITIAL_UNIT_ID} prem=${isPremiumRef.current} admin=${isAdminRef.current}`);
+    logAutoIntl(`focus: ready=${isReady} unit=${!!INTERSTITIAL_UNIT_ID} prem=${isPremiumRef.current} admin=${isAdminRef.current}`);
     // Don't even arm the timer until consent has resolved and ads are eligible.
-    if (!isReadyRef.current) { logAutoIntl('BLOCKED !isReady'); return; }
+    if (!isReady) { logAutoIntl('BLOCKED !isReady'); return; }
     if (!INTERSTITIAL_UNIT_ID) { logAutoIntl('BLOCKED no unit id'); return; }
     if (isPremiumRef.current || isAdminRef.current) { logAutoIntl('BLOCKED premium/admin'); return; }
 
@@ -137,6 +141,6 @@ export function useAutoInterstitial(): void {
       clearTimeout(timer);
       unsubscribers.forEach((unsub) => unsub());
     };
-    }, []),
+    }, [isReady]),
   );
 }
