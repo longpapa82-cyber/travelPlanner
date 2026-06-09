@@ -230,7 +230,8 @@
     },
     "status": {
       "ongoing": "Laufend",
-      "completed": "Abgeschlossen"
+      "completed": "Abgeschlossen",
+      "aiFailed": "KI-Fehler"
     },
     "completedBanner": {
       "title": "Reise abgeschlossen",

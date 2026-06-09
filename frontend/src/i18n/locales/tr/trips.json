@@ -230,7 +230,8 @@
     },
     "status": {
       "ongoing": "Devam Eden",
-      "completed": "Tamamlanan"
+      "completed": "Tamamlanan",
+      "aiFailed": "AI başarısız"
     },
     "completedBanner": {
       "title": "Gezi Tamamlandı",

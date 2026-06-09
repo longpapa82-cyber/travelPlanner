@@ -102,6 +102,22 @@ const TripHero: React.FC<TripHeroProps> = ({
             </View>
           </TouchableOpacity>
 
+          {/* Status chip — overlays the hero instead of a separate banner block
+              that pushed the back button down. Reuses the existing chip look
+              (heroDayBadge) for consistency. Completed = read-only signal. */}
+          {trip.status === 'completed' && (
+            <View style={styles.statusChip}>
+              <Icon name="lock" size={13} color={colors.neutral[0]} />
+              <Text style={styles.statusChipText}>{t('detail.status.completed')}</Text>
+            </View>
+          )}
+          {trip.aiStatus === 'failed' && trip.status !== 'completed' && (
+            <View style={[styles.statusChip, styles.statusChipWarning]}>
+              <Icon name="robot-off" size={13} color={colors.neutral[0]} />
+              <Text style={styles.statusChipText}>{t('detail.status.aiFailed', { defaultValue: 'AI 실패' })}</Text>
+            </View>
+          )}
+
           <View style={styles.rightButtons}>
             {isOwner && trip.status !== 'completed' && (
               <TouchableOpacity
@@ -325,6 +341,25 @@ const createStyles = (theme: any, isDark: boolean, safeAreaTop: number) =>
     },
     backButton: {
       alignSelf: 'flex-start',
+    },
+    statusChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 5,
+      backgroundColor: 'rgba(0,0,0,0.45)',
+      paddingHorizontal: 12,
+      paddingVertical: 7,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: 'rgba(255,255,255,0.25)',
+    },
+    statusChipWarning: {
+      backgroundColor: 'rgba(180,83,9,0.6)',
+    },
+    statusChipText: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.neutral[0],
     },
     rightButtons: {
       flexDirection: 'row',

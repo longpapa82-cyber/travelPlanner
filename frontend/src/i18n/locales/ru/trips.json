@@ -230,7 +230,8 @@
     },
     "status": {
       "ongoing": "Текущая",
-      "completed": "Завершённая"
+      "completed": "Завершённая",
+      "aiFailed": "Сбой ИИ"
     },
     "completedBanner": {
       "title": "Поездка завершена",

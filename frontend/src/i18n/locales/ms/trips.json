@@ -230,7 +230,8 @@
     },
     "status": {
       "ongoing": "Sedang Berjalan",
-      "completed": "Selesai"
+      "completed": "Selesai",
+      "aiFailed": "AI gagal"
     },
     "completedBanner": {
       "title": "Perjalanan Selesai",

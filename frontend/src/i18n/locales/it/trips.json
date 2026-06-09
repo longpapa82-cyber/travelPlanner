@@ -230,7 +230,8 @@
     },
     "status": {
       "ongoing": "In corso",
-      "completed": "Completato"
+      "completed": "Completato",
+      "aiFailed": "IA fallita"
     },
     "completedBanner": {
       "title": "Viaggio completato",

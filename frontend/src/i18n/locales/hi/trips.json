@@ -230,7 +230,8 @@
     },
     "status": {
       "ongoing": "चल रही",
-      "completed": "पूर्ण"
+      "completed": "पूर्ण",
+      "aiFailed": "AI विफल"
     },
     "completedBanner": {
       "title": "यात्रा पूर्ण",
