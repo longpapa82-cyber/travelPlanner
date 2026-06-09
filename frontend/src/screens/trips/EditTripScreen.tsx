@@ -821,7 +821,10 @@ const createStyles = (theme: any, isDark: boolean) =>
     heroGradient: {
       flex: 1,
       padding: 20,
-      justifyContent: 'space-between',
+      // No hero back button anymore (native header owns it), so anchor the
+      // title/warning copy to the bottom of the image instead of spreading
+      // them with space-between (which floated the copy to the top).
+      justifyContent: 'flex-end',
     },
     heroContent: {
       paddingBottom: 20,
