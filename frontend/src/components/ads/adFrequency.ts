@@ -31,8 +31,16 @@ const STORAGE_KEY_PREFIX = '@ad_last_shown:';
 const STORAGE_KEY_GLOBAL = '@ad_last_fullscreen_shown'; // kept = legacy global timestamp
 
 // ── Tunables (revenue ⇄ UX trade-off — adjust here) ────────────────────────
-/** Minimum gap between ANY two full-screen ads, regardless of type. */
-const GLOBAL_COOLDOWN_MS = 60 * 1000; // 1 minute
+/**
+ * Minimum gap between ANY two full-screen ads, regardless of type.
+ * Lowered 60s→15s (2026-06-09): the global cooldown's only job is to stop two
+ * DIFFERENT ad types from stacking back-to-back (jarring). At 60s it instead
+ * let frequent app-open ads (each refreshes this global timestamp) suppress
+ * auto-interstitials almost entirely for users who background/foreground often.
+ * 15s still prevents a true back-to-back stack; each type's own minInterval
+ * (interstitial 90s, appOpen 4min) remains the real per-type exposure cap.
+ */
+const GLOBAL_COOLDOWN_MS = 15 * 1000; // 15 seconds
 
 interface AdTypePolicy {
   /** Minimum gap between two ads OF THIS TYPE. */
