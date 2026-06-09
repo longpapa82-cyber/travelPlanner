@@ -50,8 +50,8 @@ async function writeVisitCount(count: number): Promise<void> {
  *
  * This is the core revenue ⇄ UX lever. Things to weigh:
  *   - Return `true` every Nth visit. Smaller N = more ads (more revenue, more
- *     annoyance on repeat-checking the same trip). We agreed on a "moderate"
- *     posture, so something in the 3–4 range is reasonable.
+ *     annoyance on repeat-checking the same trip). Currently N=2 (raised from a
+ *     more conservative 3) — adFrequency's caps keep actual exposure moderate.
  *   - Should the FIRST visit ever show an ad? Showing an ad before the user has
  *     even seen their trip once is the most jarring case — consider skipping
  *     low counts so content lands first.
@@ -67,8 +67,13 @@ async function writeVisitCount(count: number): Promise<void> {
  */
 /** Visits before the very first ad — let the user see a trip before any ad. */
 const FREE_VISITS = 1;
-/** After the free visits, attempt an ad on every Nth visit. */
-const AD_EVERY_N_VISITS = 3;
+/**
+ * After the free visits, attempt an ad on every Nth visit.
+ * Lowered 3→2 (2026-06-09) to surface in-trip interstitials more often — the
+ * 60s global cooldown + 90s per-type interval in adFrequency still cap actual
+ * exposure, so this raises attempt cadence without back-to-back ads.
+ */
+const AD_EVERY_N_VISITS = 2;
 
 export function shouldShowAdOnVisit(visitCount: number): boolean {
   // Skip the earliest visits so content always lands first (least jarring).

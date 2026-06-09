@@ -19,18 +19,15 @@ describe('tripVisitAdPolicy', () => {
       expect(shouldShowAdOnVisit(1)).toBe(false);
     });
 
-    it('does not show on the second visit (not yet an Nth boundary)', () => {
-      expect(shouldShowAdOnVisit(2)).toBe(false);
-    });
-
-    it('shows on every 3rd visit', () => {
-      expect(shouldShowAdOnVisit(3)).toBe(true);
+    it('shows on every 2nd visit (N=2 boundary)', () => {
+      expect(shouldShowAdOnVisit(2)).toBe(true);
+      expect(shouldShowAdOnVisit(4)).toBe(true);
       expect(shouldShowAdOnVisit(6)).toBe(true);
-      expect(shouldShowAdOnVisit(9)).toBe(true);
+      expect(shouldShowAdOnVisit(8)).toBe(true);
     });
 
-    it('does not show on non-boundary visits', () => {
-      expect(shouldShowAdOnVisit(4)).toBe(false);
+    it('does not show on odd (non-boundary) visits past the free visit', () => {
+      expect(shouldShowAdOnVisit(3)).toBe(false);
       expect(shouldShowAdOnVisit(5)).toBe(false);
       expect(shouldShowAdOnVisit(7)).toBe(false);
     });
@@ -47,14 +44,14 @@ describe('tripVisitAdPolicy', () => {
       expect(mockSetItem).toHaveBeenCalledWith('@trip_detail_visit_count', '1');
     });
 
-    it('increments an existing counter and flags an ad on the 3rd visit', async () => {
-      mockGetItem.mockResolvedValue('2');
+    it('increments an existing counter and flags an ad on an even (Nth) visit', async () => {
+      mockGetItem.mockResolvedValue('1');
 
       const result = await registerTripVisit();
 
-      expect(result.visitCount).toBe(3);
+      expect(result.visitCount).toBe(2);
       expect(result.shouldShowAd).toBe(true);
-      expect(mockSetItem).toHaveBeenCalledWith('@trip_detail_visit_count', '3');
+      expect(mockSetItem).toHaveBeenCalledWith('@trip_detail_visit_count', '2');
     });
 
     it('treats a corrupt stored value as 0', async () => {
