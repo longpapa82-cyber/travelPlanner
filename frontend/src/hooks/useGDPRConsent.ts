@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
+import { logAutoIntl } from '../components/ads/autoInterstitialDiag'; // ⚠️ TEMP diag (2026-06-09)
 
 type ConsentStatus = 'unknown' | 'required' | 'not_required' | 'obtained';
 
@@ -24,10 +25,12 @@ export function useGDPRConsent(): GDPRConsentResult {
 
   useEffect(() => {
     let mounted = true;
+    logAutoIntl('GDPR: effect start'); // ⚠️ TEMP diag
 
     // Safety timeout: if initialization hangs, proceed with non-personalized ads
     const safetyTimeout = setTimeout(async () => {
       if (mounted && !isReady) {
+        logAutoIntl('GDPR: 5s TIMEOUT → isReady=true'); // ⚠️ TEMP diag
         console.log('[useGDPRConsent] Timeout — proceeding without consent result');
         let attGranted = false;
         if (Platform.OS === 'ios') {
@@ -44,15 +47,18 @@ export function useGDPRConsent(): GDPRConsentResult {
 
     (async () => {
       try {
+        logAutoIntl('GDPR: before initializeAds()'); // ⚠️ TEMP diag
         const { AdsConsent, AdsConsentStatus } = await import('react-native-google-mobile-ads');
         const { initializeAds, getATTStatus } = await import('../utils/initAds.native');
 
         // Wait for the central ad initialization flow to complete (handles UMP + ATT prompts)
         await initializeAds();
+        logAutoIntl('GDPR: initializeAds() done'); // ⚠️ TEMP diag
 
         if (!mounted) return;
 
         const consentInfo = await AdsConsent.requestInfoUpdate();
+        logAutoIntl(`GDPR: requestInfoUpdate done status=${consentInfo.status}`); // ⚠️ TEMP diag
         let gdprPersonalized = true;
         let status: ConsentStatus = 'not_required';
 
@@ -85,6 +91,7 @@ export function useGDPRConsent(): GDPRConsentResult {
           setCanShowPersonalizedAds(allowed);
         }
       } catch (error) {
+        logAutoIntl(`GDPR: CATCH ${String(error).slice(0, 60)}`); // ⚠️ TEMP diag
         console.error('[useGDPRConsent] Error checking consent:', error);
         if (mounted) {
           setConsentStatus('unknown');
@@ -96,7 +103,7 @@ export function useGDPRConsent(): GDPRConsentResult {
           setCanShowPersonalizedAds(Platform.OS === 'ios' ? attGranted : true);
         }
       } finally {
-        if (mounted) setIsReady(true);
+        if (mounted) { logAutoIntl('GDPR: finally → isReady=true'); setIsReady(true); } // ⚠️ TEMP diag
       }
     })();
 
