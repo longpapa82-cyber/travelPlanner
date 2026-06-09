@@ -84,6 +84,10 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const [fetchError, setFetchError] = useState(false);
 
+  // DIAG (2026-06-09): build marker — confirms THIS OTA bundle is running and
+  // that TripList mounts the auto-interstitial hook. If this never appears in
+  // the device log, the OTA was not applied (stale bundle).
+  console.log('[AutoIntl] 🏷️ TripList render — build diag-c046+');
   // Auto-interstitial (myBaby pattern): on this high-traffic screen, load a
   // fresh interstitial after a short delay and show it the instant it loads.
   // All exposure stays gated by the frequency caps + premium/admin guards.

@@ -81,10 +81,18 @@ export function useAutoInterstitial(): void {
   // host screen, so the auto ad gets a fresh chance per visit.
   useFocusEffect(
     useCallback(() => {
+    // DIAG (2026-06-09): log BEFORE the early-return guards so we can tell
+    // whether useFocusEffect even fires and which guard (if any) blocks arming.
+    console.log('[AutoIntl] 👁️ focus fired', {
+      isReady: isReadyRef.current,
+      hasUnitId: !!INTERSTITIAL_UNIT_ID,
+      premium: isPremiumRef.current,
+      admin: isAdminRef.current,
+    });
     // Don't even arm the timer until consent has resolved and ads are eligible.
-    if (!isReadyRef.current) return;
-    if (!INTERSTITIAL_UNIT_ID) return;
-    if (isPremiumRef.current || isAdminRef.current) return;
+    if (!isReadyRef.current) { console.log('[AutoIntl] ⛔ blocked: !isReady'); return; }
+    if (!INTERSTITIAL_UNIT_ID) { console.log('[AutoIntl] ⛔ blocked: no unit id'); return; }
+    if (isPremiumRef.current || isAdminRef.current) { console.log('[AutoIntl] ⛔ blocked: premium/admin'); return; }
 
     let cancelled = false;
     const unsubscribers: (() => void)[] = [];
