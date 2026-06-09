@@ -38,7 +38,7 @@ const SERVICE_ADMIN_EMAILS = ['longpapa82@gmail.com'];
  * auto-interstitials fail to surface. prime0919 is role=user, free, not in
  * ADMIN_EMAILS → ads ON. Revert to [] before release.
  */
-const TEMP_AD_DEBUG_EMAILS = ['prime0919@naver.com'];
+const TEMP_AD_DEBUG_EMAILS = ['prime0919@naver.com', 'jjangpapa82@gmail.com'];
 
 export type PaywallContext = 'ai_limit' | 'general';
 
