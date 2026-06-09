@@ -24,7 +24,6 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { TripsStackParamList, Trip } from '../../types';
 import { colors } from '../../constants/theme';
@@ -293,8 +292,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const duration = calculateDuration();
-  const insets = useSafeAreaInsets();
-  const styles = createStyles(theme, isDark, insets.top);
+  const styles = createStyles(theme, isDark);
 
   if (isLoading) {
     const skelBg = isDark ? colors.neutral[700] : colors.neutral[200];
@@ -368,19 +366,9 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
             colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.6)']}
             style={styles.heroGradient}
           >
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-              disabled={isSaving}
-              accessibilityRole="button"
-              accessibilityLabel={t('common:back', { defaultValue: 'Go back' })}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-              <View style={styles.backButtonInner}>
-                <Icon name="arrow-left" size={24} color={colors.neutral[0]} />
-              </View>
-            </TouchableOpacity>
-
+            {/* No hero back button here: EditTrip uses the native stack header
+                (title "여행 수정" + its own back), so a hero back would be a
+                duplicate. The native header already handles the safe area. */}
             <Animated.View
               style={[
                 styles.heroContent,
@@ -791,7 +779,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   );
 };
 
-const createStyles = (theme: any, isDark: boolean, safeAreaTop: number) =>
+const createStyles = (theme: any, isDark: boolean) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -828,26 +816,12 @@ const createStyles = (theme: any, isDark: boolean, safeAreaTop: number) =>
     },
     hero: {
       width: '100%',
-      height: 240 + safeAreaTop,
+      height: 240,
     },
     heroGradient: {
       flex: 1,
       padding: 20,
-      // Push header below the status bar / notch (safe-area + 12). Was
-      // padding:20 only → back button overlapped the OS status bar.
-      paddingTop: safeAreaTop + 12,
       justifyContent: 'space-between',
-    },
-    backButton: {
-      alignSelf: 'flex-start',
-    },
-    backButtonInner: {
-      width: 44,
-      height: 44,
-      borderRadius: 22,
-      backgroundColor: 'rgba(0,0,0,0.3)',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     heroContent: {
       paddingBottom: 20,
