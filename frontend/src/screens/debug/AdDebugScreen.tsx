@@ -30,7 +30,6 @@ import {
 import { useRewardedAd, useInterstitialAd, getTripVisitSnapshot, shouldShowAdOnVisit } from '../../components/ads';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { getFrequencySnapshot, AdFrequencySnapshot } from '../../components/ads/adFrequency';
-import { readAutoIntlDiag, clearAutoIntlDiag } from '../../components/ads/autoInterstitialDiag'; // ⚠️ TEMP diag
 import { usePremium } from '../../contexts/PremiumContext';
 
 export default function AdDebugScreen() {
@@ -49,7 +48,6 @@ export default function AdDebugScreen() {
   const [isTestingAd, setIsTestingAd] = useState(false);
   const [freq, setFreq] = useState<AdFrequencySnapshot | null>(null);
   const [visitCount, setVisitCount] = useState<number | null>(null);
-  const [autoIntlDiag, setAutoIntlDiag] = useState<string>(''); // ⚠️ TEMP diag
 
   useEffect(() => {
     loadDebugInfo();
@@ -63,7 +61,6 @@ export default function AdDebugScreen() {
       setFreq(snapshot);
       const visit = await getTripVisitSnapshot();
       setVisitCount(visit.visitCount);
-      setAutoIntlDiag(await readAutoIntlDiag()); // ⚠️ TEMP diag
     } catch (error) {
       console.error('Failed to load debug info:', error);
     }
@@ -292,25 +289,6 @@ export default function AdDebugScreen() {
           </Text>
         </View>
       )}
-
-      {/* ⚠️ TEMP DIAG (2026-06-09): on-device trace of useAutoInterstitial (TripList).
-          console.log is invisible on production Hermes, so the hook writes its
-          progress to AsyncStorage and we render it here. Remove with the diag code. */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Auto-Interstitial Trace (TEMP)</Text>
-        <Text style={styles.hashHelp}>
-          Visit 여행목록(TripList), wait 15s, then refresh this screen.
-        </Text>
-        <Text style={[styles.hashHelp, { fontFamily: 'Courier', fontSize: 11 }]}>
-          {autoIntlDiag || '(no auto-interstitial activity yet)'}
-        </Text>
-        <TouchableOpacity
-          style={[styles.button, { marginTop: 12, backgroundColor: '#888' }]}
-          onPress={async () => { await clearAutoIntlDiag(); setAutoIntlDiag(await readAutoIntlDiag()); }}
-        >
-          <Text style={styles.buttonText}>Clear Trace</Text>
-        </TouchableOpacity>
-      </View>
 
       {/* Device Info */}
       {debugInfo?.deviceHash && (

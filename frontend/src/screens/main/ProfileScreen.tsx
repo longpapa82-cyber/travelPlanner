@@ -48,7 +48,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const { isDark, toggleTheme, theme } = useTheme();
   const { showToast } = useToast();
   const { confirm } = useConfirm();
-  const { isPremium, isAdmin, isServiceAdmin, isAdDebugAllowed, showPaywall, aiTripsRemaining, aiTripsLimit, aiTripsUsed, markLoggingOut } = usePremium();
+  const { isPremium, isAdmin, isServiceAdmin, showPaywall, aiTripsRemaining, aiTripsLimit, aiTripsUsed, markLoggingOut } = usePremium();
   const { t: tPremium } = useTranslation('premium');
   const { t: tTutorial } = useTranslation('tutorial');
   const { resetTutorial } = useTutorial();
@@ -823,24 +823,19 @@ const ProfileScreen = ({ navigation }: any) => {
         )}
       </View>
 
-      {/* isAdDebugAllowed = isServiceAdmin OR temp diagnosis list (2026-06-09). */}
-      {(isServiceAdmin || isAdDebugAllowed) && (
+      {isServiceAdmin && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('sections.admin')}</Text>
-          {isServiceAdmin && (
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdminDashboard')} accessibilityRole="button" accessibilityLabel={t('menu.admin')}>
-              <Icon name="shield-crown-outline" size={24} color={theme.colors.primary} />
-              <Text style={styles.menuText}>{t('menu.admin')}</Text>
-              <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
-            </TouchableOpacity>
-          )}
-          {isAdDebugAllowed && (
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdDebug')} accessibilityRole="button" accessibilityLabel="Ad Debug">
-              <Icon name="bug-outline" size={24} color={theme.colors.primary} />
-              <Text style={styles.menuText}>Ad Debug</Text>
-              <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdminDashboard')} accessibilityRole="button" accessibilityLabel={t('menu.admin')}>
+            <Icon name="shield-crown-outline" size={24} color={theme.colors.primary} />
+            <Text style={styles.menuText}>{t('menu.admin')}</Text>
+            <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdDebug')} accessibilityRole="button" accessibilityLabel="Ad Debug">
+            <Icon name="bug-outline" size={24} color={theme.colors.primary} />
+            <Text style={styles.menuText}>Ad Debug</Text>
+            <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
+          </TouchableOpacity>
         </View>
       )}
 

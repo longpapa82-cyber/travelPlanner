@@ -18,7 +18,6 @@
 
 import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
-import { logAutoIntl } from '../components/ads/autoInterstitialDiag'; // ⚠️ TEMP diag (2026-06-09)
 
 type ConsentStatus = 'unknown' | 'required' | 'not_required' | 'obtained';
 
@@ -55,7 +54,6 @@ function resolveConsentOnce(): Promise<void> {
     let settled = false;
     const safety = setTimeout(async () => {
       if (settled || sharedState.isReady) return;
-      logAutoIntl('GDPR: 5s TIMEOUT → isReady=true'); // ⚠️ TEMP diag
       let attGranted = false;
       if (Platform.OS === 'ios') {
         try {
@@ -71,15 +69,12 @@ function resolveConsentOnce(): Promise<void> {
     }, 5000);
 
     try {
-      logAutoIntl('GDPR: before initializeAds()'); // ⚠️ TEMP diag
       const { AdsConsent, AdsConsentStatus } = await import('react-native-google-mobile-ads');
       const { initializeAds, getATTStatus } = await import('../utils/initAds.native');
 
       await initializeAds();
-      logAutoIntl('GDPR: initializeAds() done'); // ⚠️ TEMP diag
 
       const consentInfo = await AdsConsent.requestInfoUpdate();
-      logAutoIntl(`GDPR: requestInfoUpdate done status=${consentInfo.status}`); // ⚠️ TEMP diag
       let gdprPersonalized = true;
       let status: ConsentStatus = 'not_required';
 
@@ -106,7 +101,6 @@ function resolveConsentOnce(): Promise<void> {
       const allowed = gdprPersonalized && attGranted;
       publish({ consentStatus: status, canShowPersonalizedAds: allowed });
     } catch (error) {
-      logAutoIntl(`GDPR: CATCH ${String(error).slice(0, 60)}`); // ⚠️ TEMP diag
       console.error('[useGDPRConsent] Error checking consent:', error);
       let attGranted = false;
       try {
@@ -120,7 +114,6 @@ function resolveConsentOnce(): Promise<void> {
     } finally {
       settled = true;
       clearTimeout(safety);
-      logAutoIntl('GDPR: finally → isReady=true'); // ⚠️ TEMP diag
       publish({ isReady: true });
     }
   })();

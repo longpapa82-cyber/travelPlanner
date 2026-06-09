@@ -34,7 +34,6 @@ import {
 } from 'react-native-google-mobile-ads';
 import Constants from 'expo-constants';
 import { canShowAd, recordAdShown } from './adFrequency';
-import { logAutoIntl } from './autoInterstitialDiag'; // ⚠️ TEMP diag (2026-06-09)
 import { usePremium } from '../../contexts/PremiumContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useGDPRConsent } from '../../hooks/useGDPRConsent';
@@ -86,13 +85,10 @@ export function useAutoInterstitial(): void {
   // instant isReady flips true instead of waiting for the next manual focus.
   useFocusEffect(
     useCallback(() => {
-    // ⚠️ TEMP DIAG (2026-06-09): record to AsyncStorage (Ad Debug reads it).
-    // console.log is invisible on production Hermes builds, so we trace on-device.
-    logAutoIntl(`focus: ready=${isReady} unit=${!!INTERSTITIAL_UNIT_ID} prem=${isPremiumRef.current} admin=${isAdminRef.current}`);
     // Don't even arm the timer until consent has resolved and ads are eligible.
-    if (!isReady) { logAutoIntl('BLOCKED !isReady'); return; }
-    if (!INTERSTITIAL_UNIT_ID) { logAutoIntl('BLOCKED no unit id'); return; }
-    if (isPremiumRef.current || isAdminRef.current) { logAutoIntl('BLOCKED premium/admin'); return; }
+    if (!isReady) return;
+    if (!INTERSTITIAL_UNIT_ID) return;
+    if (isPremiumRef.current || isAdminRef.current) return;
 
     let cancelled = false;
     const unsubscribers: (() => void)[] = [];
@@ -100,41 +96,33 @@ export function useAutoInterstitial(): void {
     const timer = setTimeout(async () => {
       if (cancelled) return;
       // Re-check guards at fire time (state may have changed during the delay).
-      if (isPremiumRef.current || isAdminRef.current || isLoggingOutRef.current) {
-        logAutoIntl(`BLOCKED at fire: prem=${isPremiumRef.current} admin=${isAdminRef.current} logout=${isLoggingOutRef.current}`);
-        return;
-      }
+      if (isPremiumRef.current || isAdminRef.current || isLoggingOutRef.current) return;
       // Respect the frequency cap before requesting an ad we couldn't show.
       const allowed = await canShowAd('interstitial');
-      logAutoIntl(`timer fired, canShowAd=${allowed}`);
       if (cancelled || !allowed) return;
 
       const ad = InterstitialAd.createForAdRequest(INTERSTITIAL_UNIT_ID, {
         requestNonPersonalizedAdsOnly: true,
       });
-      logAutoIntl('load() requested');
 
       unsubscribers.push(
         ad.addAdEventListener(AdEventType.LOADED, () => {
-          logAutoIntl('✅ LOADED — calling show()');
           // Re-check guards once more right before the native show.
           if (cancelled || isPremiumRef.current || isAdminRef.current || isLoggingOutRef.current) {
-            logAutoIntl('BLOCKED at show time');
             return;
           }
-          ad.show().catch((e) => logAutoIntl(`show() threw ${String(e)}`));
+          ad.show().catch(() => {});
           recordAdShown('interstitial').catch(() => {});
         }),
       );
 
       // no-fill / network error and close: handled (and listeners cleaned up
       // below) so the app is never trapped behind the native full-screen ad.
-      unsubscribers.push(ad.addAdEventListener(AdEventType.ERROR, (e) => logAutoIntl(`❌ ERROR (no-fill/net) ${JSON.stringify(e)}`)));
-      unsubscribers.push(ad.addAdEventListener(AdEventType.CLOSED, () => logAutoIntl('CLOSED')));
+      unsubscribers.push(ad.addAdEventListener(AdEventType.ERROR, () => {}));
+      unsubscribers.push(ad.addAdEventListener(AdEventType.CLOSED, () => {}));
 
       ad.load();
     }, FIRST_SHOW_DELAY_MS);
-    logAutoIntl(`🔫 armed: attempt in ${FIRST_SHOW_DELAY_MS / 1000}s`);
 
     return () => {
       cancelled = true;

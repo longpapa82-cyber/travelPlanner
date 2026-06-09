@@ -31,15 +31,6 @@ const AI_TRIPS_FREE_LIMIT = 3;
  */
 const SERVICE_ADMIN_EMAILS = ['longpapa82@gmail.com'];
 
-/*
- * ⚠️ TEMP — REMOVE AFTER AUTO-AD DIAGNOSIS (2026-06-09)
- * Grants the Ad Debug screen ONLY (not the revenue dashboard) to a real normal
- * account so we can inspect the live ad-frequency snapshot + loaded state while
- * auto-interstitials fail to surface. prime0919 is role=user, free, not in
- * ADMIN_EMAILS → ads ON. Revert to [] before release.
- */
-const TEMP_AD_DEBUG_EMAILS = ['prime0919@naver.com', 'jjangpapa82@gmail.com'];
-
 export type PaywallContext = 'ai_limit' | 'general';
 
 interface PremiumContextType {
@@ -52,8 +43,6 @@ interface PremiumContextType {
   isAiLimitReached: boolean;
   isAdmin: boolean;
   isServiceAdmin: boolean;
-  /** ⚠️ TEMP (2026-06-09): gates Ad Debug only. Revert TEMP_AD_DEBUG_EMAILS. */
-  isAdDebugAllowed: boolean;
   expiresAt?: string;
   startedAt?: string;
   planType?: 'monthly' | 'yearly';
@@ -366,12 +355,6 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const isServiceAdmin = !!(
     user?.email && SERVICE_ADMIN_EMAILS.includes(user.email.toLowerCase())
   );
-  // ⚠️ TEMP (2026-06-09): Ad Debug for service admins OR temp diagnosis list.
-  // Does NOT affect isAdmin/ad gating — a temp account stays a normal account.
-  const isAdDebugAllowed = !!(
-    isServiceAdmin ||
-    (user?.email && TEMP_AD_DEBUG_EMAILS.includes(user.email.toLowerCase()))
-  );
   const isProfileLoaded = user?.aiTripsUsedThisMonth !== undefined;
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
   const AI_TRIPS_PREMIUM_LIMIT = 30;
@@ -484,7 +467,6 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     isProfileLoaded,
     isAdmin,
     isServiceAdmin,
-    isAdDebugAllowed,
     subscriptionTier: isPremium ? 'premium' : 'free',
     aiTripsRemaining,
     aiTripsUsed,
@@ -501,7 +483,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     refreshStatus,
     markPremium,
     markLoggingOut,
-  }), [isPremium, isProfileLoaded, isAdmin, isServiceAdmin, isAdDebugAllowed, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, expiresAt, user?.subscriptionStartedAt, planType, user?.subscriptionPlatform, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
+  }), [isPremium, isProfileLoaded, isAdmin, isServiceAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, expiresAt, user?.subscriptionStartedAt, planType, user?.subscriptionPlatform, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
 
   return (
     <PremiumContext.Provider value={value}>
