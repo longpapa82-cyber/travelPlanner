@@ -6,21 +6,22 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 | 플랫폼 | 버전 | 상태 |
 |--------|------|------|
-| **Android** | 1.4.3 (versionCode 294) | **프로덕션 출시 완료** ✅ — 2026-06-03 (회원탈퇴 키보드 UX/jank 수정 + 신규기능) |
-| **iOS** | 1.4.3 (B86) | **App Store 출시 완료** ✅ — 2026-06-03 (심사 통과) |
+| **Android** | 1.4.3 (versionCode 300) | 프로덕션 출시 완료(v294) ✅. **v300 알파 draft 등록**(자동광고 근본수정+UI개선, OTA채널) — Play Console 출시노트+rollout 확정 대기 |
+| **iOS** | 1.4.3 (B86) | **App Store 출시 완료** ✅ — 2026-06-03. 자동광고 근본수정+UI개선은 OTA 반영·검증 완료 |
 | **서버** | 39차 | https://mytravel-planner.com 운영 중 |
-| **브랜치** | `main` | ✅ 자동광고 노출개선 **PR #4 main 병합 완료**(squash `595e5e2d`). prime0919 실노출 검증 완료, 진단게이트 원복, iOS OTA 반영. ⏭️ **Android 재빌드(versionCode 295)만 남음** — 다음 할 일 #0 참조 |
+| **브랜치** | `main` | ✅ 자동광고 근본수정(consent 싱글톤)+UI개선 **PR #6 병합 완료**(squash `0b165fb2`). Android v300 알파등록. 다음 할 일 #0 참조 |
 
 ---
 
 ## ⚠️ 다음 할 일
 
-0. **✅ 자동 전면광고 노출 개선 — main 병합 완료(PR #4), Android 재빌드만 남음** (2026-06-09)
-   - **🎯 최종 결론**: "일반계정에서 자동광고 안 뜸"은 **버그 아님**. prime0919(진짜 일반계정)로 Ad Debug 진단→Account=Normal·Interstitial=Loaded·cooldown 0 전부 통과, **TripDetail 21회차(3의 배수=ad-eligible)에서 자동 전면광고 정상 노출 확인**. 원인=차단 가드가 아니라 **cadence 정책(`tripVisitAdPolicy.ts`: 3회 방문마다 1회, 1회차 무광고) 못 맞춤 + admin 계정(longpapa82·hoonjae723, 둘 다 서버 ADMIN_EMAILS→isAdmin→정상 차단)으로만 테스트**한 조합. load→trigger→show 전 구간 일반계정 정상 작동.
-   - **🔑 교훈**: ①**광고 진단은 반드시 role=user+ADMIN_EMAILS 밖 일반계정으로**(admin은 광고 정상 차단이라 무의미). 서버 env 확인: `ssh ... grep ADMIN_EMAILS backend/.env`. ②`isServiceAdmin`(프론트 하드코딩·화면노출용) ≠ `isAdmin`(서버권위·광고/쿼터 게이트), 독립. ③TripDetail 자동광고엔 cadence 게이트(`AD_EVERY_N_VISITS=3`) 존재 — "매번 안 뜸"은 정상.
-   - **변경(JS only, 네이티브 무변화)**: `useAutoInterstitial`(TripList 15s 후 LOADED 즉시 show, useFocusEffect 재무장) + `tripVisitAdPolicy`(TripDetail 방문 cadence) + `useInterstitialAd` waitForLoad(2.5s) + `AdDebugScreen` 진단행 + 종료여행 safe-area 수정. 진단용 임시 게이트(`ec05d782`)는 **원복됨**(`9fc2dde5`, net 0).
-   - **병합·배포**: **PR #4 squash 병합 완료**(main `595e5e2d`, origin 브랜치 삭제). CI 6 job 초록(E2E만 알려진 timeout·운영무관). iOS OTA 반영 완료(원복본 group `af5fe98f`).
-   - **⏭️ 남은 일**: ①**Android 재빌드**(versionCode 295, OTA채널, reanimated 회피 [[build_reanimated_worklets_race]]) — Android는 OTA 채널 미구독이라 이 자동광고 개선 전체가 재빌드 전까지 미적용. **별도 세션 권장**(고난도). ②(선택) cadence 3→2(`tripVisitAdPolicy.ts` `AD_EVERY_N_VISITS`) — 수익↑·UX↓, 사용자 "지금 유지" 선택. 상세 → 메모리 [auto_interstitial_mybaby_pattern.md].
+0. **✅ 자동 전면광고 근본해결 + UI개선 — PR #6 병합완료, Android v300 알파등록** (2026-06-09~10)
+   - **🎯 진짜 근본원인**(직전 "cadence 때문" 결론은 부분적 오진): `useGDPRConsent`가 5개 광고훅(AdBanner×3·useAutoInterstitial·useInterstitialAd·useAppOpenAd·useRewardedAd)에서 **per-instance로 동작→isReady 파편화**→`useAutoInterstitial`이 TripList focus 시점 자기 인스턴스 `isReady=false`로 매번 `BLOCKED !isReady`. (admin·no-fill·cadence·쿨다운 다 진범 아니었음.) on-device 진단(AsyncStorage→AdDebug Trace)으로 확정.
+   - **수정**: ①`useGDPRConsent` **싱글톤화**(resolveConsentOnce promise가드+sharedState+subscribers) ②`useAutoInterstitial` **isReady 재무장**(useFocusEffect deps=[isReady]). jjangpapa82 일반계정서 정상노출 검증. 부수: 글로벌쿨다운 60→15s, cadence 3→2+매진입시도.
+   - **UI 4건**: 완료여행 히어로칩(배너제거·back밀림 해소), hero safe-area `safeAreaTop+12` 통일(생성/상세), 여행수정 중복back 제거+카피 flex-end. i18n `detail.status.aiFailed` 17개 추가.
+   - **🔑 교훈**: ①전역상태(consent/SDK-init)를 per-instance hook으로 두지 말 것(모듈 싱글톤+구독). ②**production Hermes는 console.log를 syslog로 안 보냄** → 진단은 on-device(AsyncStorage→화면)로. ③광고 진단은 role=user+ADMIN_EMAILS밖 일반계정(prime0919·jjangpapa82). 상세 → 메모리 [auto_interstitial_consent_singleton_fix.md].
+   - **병합·배포**: **PR #6 squash 병합**(main `0b165fb2`, CI 6 job 초록·E2E만 timeout). iOS OTA 검증완료. **Android v300 알파 draft 등록**(build 663aa4f8, OTA채널 박힘). 진단 임시코드 전부 원복.
+   - **⏭️ 남은 일**: ①**Play Console에서 v300 알파 출시노트+rollout 확정**(현재 draft) ②(점검) ExpensesScreen safe-area(일반헤더·insets 없음, 겹침 가능성) — 미처리.
 
 1. **1.4.3 출시 후 모니터링** — iOS/Android 양 플랫폼 프로덕션 출시 완료(2026-06-03). 크래시율·에러로그·실제 결제 집계·리뷰 모니터링
 2. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
