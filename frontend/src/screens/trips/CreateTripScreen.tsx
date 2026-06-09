@@ -32,6 +32,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { TripsStackParamList } from '../../types';
@@ -886,7 +887,8 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const duration = calculateDuration();
 
-  const styles = useMemo(() => createStyles(theme, isDark), [theme, isDark]);
+  const insets = useSafeAreaInsets();
+  const styles = useMemo(() => createStyles(theme, isDark, insets.top), [theme, isDark, insets.top]);
 
   return (
     <KeyboardAvoidingView
@@ -1916,7 +1918,7 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
   );
 };
 
-const createStyles = (theme: any, isDark: boolean) =>
+const createStyles = (theme: any, isDark: boolean, safeAreaTop: number) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -1930,11 +1932,15 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
     hero: {
       width: '100%',
-      height: 240,
+      height: 240 + safeAreaTop,
     },
     heroGradient: {
       flex: 1,
       padding: 20,
+      // Push header below the status bar / notch with a small breathing gap
+      // (safe-area + 12). Was padding:20 only → back button overlapped the
+      // OS status bar and was untappable.
+      paddingTop: safeAreaTop + 12,
       justifyContent: 'space-between',
     },
     backButton: {

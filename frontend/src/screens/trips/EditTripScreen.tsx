@@ -24,6 +24,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { TripsStackParamList, Trip } from '../../types';
 import { colors } from '../../constants/theme';
@@ -292,7 +293,8 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const duration = calculateDuration();
-  const styles = createStyles(theme, isDark);
+  const insets = useSafeAreaInsets();
+  const styles = createStyles(theme, isDark, insets.top);
 
   if (isLoading) {
     const skelBg = isDark ? colors.neutral[700] : colors.neutral[200];
@@ -789,7 +791,7 @@ const EditTripScreen: React.FC<Props> = ({ navigation, route }) => {
   );
 };
 
-const createStyles = (theme: any, isDark: boolean) =>
+const createStyles = (theme: any, isDark: boolean, safeAreaTop: number) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -826,11 +828,14 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
     hero: {
       width: '100%',
-      height: 240,
+      height: 240 + safeAreaTop,
     },
     heroGradient: {
       flex: 1,
       padding: 20,
+      // Push header below the status bar / notch (safe-area + 12). Was
+      // padding:20 only → back button overlapped the OS status bar.
+      paddingTop: safeAreaTop + 12,
       justifyContent: 'space-between',
     },
     backButton: {

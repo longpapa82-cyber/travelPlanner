@@ -330,7 +330,10 @@ const createStyles = (theme: any, isDark: boolean, safeAreaTop: number) =>
     heroGradient: {
       flex: 1,
       padding: 20,
-      paddingTop: 20 + safeAreaTop,
+      // safe-area + 12: header sits just below the status bar with a small gap.
+      // Was 20 + safeAreaTop, which pushed the buttons too far down on
+      // large-notch devices (looked detached from the status bar).
+      paddingTop: safeAreaTop + 12,
       justifyContent: 'space-between',
     },
     headerButtons: {
