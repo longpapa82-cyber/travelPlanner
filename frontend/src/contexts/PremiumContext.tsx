@@ -31,18 +31,6 @@ const AI_TRIPS_FREE_LIMIT = 3;
  */
 const SERVICE_ADMIN_EMAILS = ['longpapa82@gmail.com'];
 
-/*
- * ⚠️ TEMP — REMOVE AFTER AUTO-AD VERIFICATION (fix/auto-ads-frequency, 2026-06-09)
- * Accounts here can open the Ad Debug screen ONLY (not the revenue dashboard).
- * Purpose: longpapa82/hoonjae723 are both in the server ADMIN_EMAILS env, so
- * they are isAdmin → auto-interstitials are correctly suppressed, which makes
- * the "ads don't show on a normal account" symptom impossible to reproduce on
- * them. prime0919 is a real normal account (role=user, NOT in ADMIN_EMAILS →
- * ads ON), so granting it Ad Debug lets us diagnose the live normal-account ad
- * state. This must be reverted (set back to []) before any production release.
- */
-const TEMP_AD_DEBUG_EMAILS = ['prime0919@naver.com'];
-
 export type PaywallContext = 'ai_limit' | 'general';
 
 interface PremiumContextType {
@@ -55,12 +43,6 @@ interface PremiumContextType {
   isAiLimitReached: boolean;
   isAdmin: boolean;
   isServiceAdmin: boolean;
-  /**
-   * ⚠️ TEMP (2026-06-09): gates the Ad Debug screen only. True for service
-   * admins OR accounts in TEMP_AD_DEBUG_EMAILS. Remove the temp list before
-   * release — see TEMP_AD_DEBUG_EMAILS comment.
-   */
-  isAdDebugAllowed: boolean;
   expiresAt?: string;
   startedAt?: string;
   planType?: 'monthly' | 'yearly';
@@ -373,14 +355,6 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   const isServiceAdmin = !!(
     user?.email && SERVICE_ADMIN_EMAILS.includes(user.email.toLowerCase())
   );
-  // ⚠️ TEMP (2026-06-09): Ad Debug visible to service admins OR the temp
-  // diagnosis allow-list. Note this does NOT affect isAdmin / ad gating —
-  // a TEMP_AD_DEBUG_EMAILS account stays a normal account (ads ON), which is
-  // exactly what we need to diagnose. Revert TEMP_AD_DEBUG_EMAILS to [] later.
-  const isAdDebugAllowed = !!(
-    isServiceAdmin ||
-    (user?.email && TEMP_AD_DEBUG_EMAILS.includes(user.email.toLowerCase()))
-  );
   const isProfileLoaded = user?.aiTripsUsedThisMonth !== undefined;
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
   const AI_TRIPS_PREMIUM_LIMIT = 30;
@@ -493,7 +467,6 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     isProfileLoaded,
     isAdmin,
     isServiceAdmin,
-    isAdDebugAllowed,
     subscriptionTier: isPremium ? 'premium' : 'free',
     aiTripsRemaining,
     aiTripsUsed,
@@ -510,7 +483,7 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     refreshStatus,
     markPremium,
     markLoggingOut,
-  }), [isPremium, isProfileLoaded, isAdmin, isServiceAdmin, isAdDebugAllowed, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, expiresAt, user?.subscriptionStartedAt, planType, user?.subscriptionPlatform, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
+  }), [isPremium, isProfileLoaded, isAdmin, isServiceAdmin, aiTripsRemaining, aiTripsUsed, aiTripsLimit, isAiLimitReached, expiresAt, user?.subscriptionStartedAt, planType, user?.subscriptionPlatform, isPaywallVisible, paywallContext, showPaywall, hidePaywall, refreshStatus, markPremium, markLoggingOut]);
 
   return (
     <PremiumContext.Provider value={value}>
