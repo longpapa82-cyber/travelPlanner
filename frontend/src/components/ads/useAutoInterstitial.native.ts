@@ -92,33 +92,41 @@ export function useAutoInterstitial(): void {
     const timer = setTimeout(async () => {
       if (cancelled) return;
       // Re-check guards at fire time (state may have changed during the delay).
-      if (isPremiumRef.current || isAdminRef.current || isLoggingOutRef.current) return;
+      if (isPremiumRef.current || isAdminRef.current || isLoggingOutRef.current) {
+        console.log('[AutoIntl] ⛔ guard blocked', { premium: isPremiumRef.current, admin: isAdminRef.current, loggingOut: isLoggingOutRef.current });
+        return;
+      }
       // Respect the frequency cap before requesting an ad we couldn't show.
       const allowed = await canShowAd('interstitial');
+      console.log('[AutoIntl] ⏱️ timer fired, canShowAd(interstitial)=', allowed);
       if (cancelled || !allowed) return;
 
       const ad = InterstitialAd.createForAdRequest(INTERSTITIAL_UNIT_ID, {
         requestNonPersonalizedAdsOnly: true,
       });
+      console.log('[AutoIntl] 📋 load() requested, unit=', INTERSTITIAL_UNIT_ID);
 
       unsubscribers.push(
         ad.addAdEventListener(AdEventType.LOADED, () => {
+          console.log('[AutoIntl] ✅ LOADED — calling show()');
           // Re-check guards once more right before the native show.
           if (cancelled || isPremiumRef.current || isAdminRef.current || isLoggingOutRef.current) {
+            console.log('[AutoIntl] ⛔ guard blocked at show time');
             return;
           }
-          ad.show().catch(() => {});
+          ad.show().catch((e) => console.log('[AutoIntl] ❌ show() threw', String(e)));
           recordAdShown('interstitial').catch(() => {});
         }),
       );
 
       // no-fill / network error and close: handled (and listeners cleaned up
       // below) so the app is never trapped behind the native full-screen ad.
-      unsubscribers.push(ad.addAdEventListener(AdEventType.ERROR, () => {}));
-      unsubscribers.push(ad.addAdEventListener(AdEventType.CLOSED, () => {}));
+      unsubscribers.push(ad.addAdEventListener(AdEventType.ERROR, (e) => console.log('[AutoIntl] ❌ ERROR (no-fill/network)', JSON.stringify(e))));
+      unsubscribers.push(ad.addAdEventListener(AdEventType.CLOSED, () => console.log('[AutoIntl] 🔒 CLOSED')));
 
       ad.load();
     }, FIRST_SHOW_DELAY_MS);
+    console.log('[AutoIntl] 🔫 armed: will attempt in', FIRST_SHOW_DELAY_MS / 1000, 's');
 
     return () => {
       cancelled = true;
