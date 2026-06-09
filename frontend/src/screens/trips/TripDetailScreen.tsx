@@ -76,19 +76,22 @@ const TripDetailScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [tripId, route.params]);
 
   // Trip-detail visit ad trigger — the highest-volume surface in the app.
-  // Counts lifetime visits and, on every Nth visit (policy in tripVisitAdPolicy),
-  // attempts an interstitial. Fire-and-forget; the global cooldown + session cap
-  // in adFrequency prevent over-exposure. Runs once per screen mount.
+  // V (2026-06-09): trigger on EVERY visit (was: only every Nth via the visit
+  // cadence). The Nth-visit cadence made the trigger too sparse — Ad Debug
+  // confirmed the interstitial is consistently `ready` yet rarely fired because
+  // the visit count was rarely an Nth boundary AND coincided with the cooldown.
+  // Now we attempt on every entry and let adFrequency (15s global cooldown +
+  // 90s per-type minInterval) be the real exposure cap — same "always attempt,
+  // caps gate it" model App Open uses, which surfaces reliably.
+  // registerTripVisit() is still called to keep the lifetime counter (Ad Debug),
+  // but its shouldShowAd verdict no longer gates the show.
   const visitTrackedRef = useRef(false);
   useEffect(() => {
     if (!tripId || visitTrackedRef.current) return;
     if (isPremium || isAdmin) return; // no ads for premium / admin
     visitTrackedRef.current = true;
-    registerTripVisit()
-      .then(({ shouldShowAd }) => {
-        if (shouldShowAd) showInterstitial().catch(() => {});
-      })
-      .catch(() => {});
+    registerTripVisit().catch(() => {}); // count only; does not gate the ad
+    showInterstitial().catch(() => {}); // adFrequency caps decide if it shows
   }, [tripId, isPremium, isAdmin, showInterstitial]);
 
   // Early return if tripId is missing
