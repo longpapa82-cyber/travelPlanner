@@ -540,6 +540,56 @@ describe('AIService', () => {
       expect(templateService.saveFromAI).toHaveBeenCalled();
     }, 15000);
 
+    // ── Partial-success preservation (long trips) ────────────────────────
+    // A long trip routes to generateParallelItineraries (per-day calls).
+    // Even when many days fail, the successfully generated days MUST be
+    // preserved instead of throwing away the entire trip. Only a total
+    // wipe-out (zero days succeed) is treated as a genuine AI failure.
+    const longTrip = (days: number) => ({
+      ...tripContext,
+      startDate: new Date('2025-07-01'),
+      endDate: new Date(
+        new Date('2025-07-01').getTime() + (days - 1) * 24 * 60 * 60 * 1000,
+      ),
+    });
+
+    it('preserves succeeded days when >50% of days fail on a long trip', async () => {
+      cacheManager.get.mockResolvedValue(null);
+      // 10-day trip: make a majority (6) of the per-day calls fail, the rest
+      // succeed. Old behaviour threw "Too many days failed" and lost
+      // everything; new behaviour must return all 10 days with the failed
+      // ones as empty itineraries.
+      let call = 0;
+      openaiCreate.mockImplementation(() => {
+        call++;
+        // Fail 6 of the first 10 day-calls, succeed on the others.
+        if (call % 10 < 6) {
+          return Promise.reject(new Error('OpenAI 500'));
+        }
+        return Promise.resolve(mockStream(mockActivitiesResponse));
+      });
+
+      const result = await service.generateAllItineraries(longTrip(10));
+
+      // Must not throw; must return one entry per day (sorted, gap-filled).
+      expect(result.length).toBe(10);
+      const succeeded = result.filter((r) => r.activities.length > 0);
+      const empty = result.filter((r) => r.activities.length === 0);
+      expect(succeeded.length).toBeGreaterThan(0);
+      expect(empty.length).toBeGreaterThan(0);
+    }, 20000);
+
+    it('throws only when zero days succeed on a long trip', async () => {
+      cacheManager.get.mockResolvedValue(null);
+      // Every per-day call fails → genuine total failure → must throw so the
+      // caller marks aiStatus = "failed".
+      openaiCreate.mockRejectedValue(new Error('OpenAI down'));
+
+      await expect(
+        service.generateAllItineraries(longTrip(10)),
+      ).rejects.toThrow();
+    }, 20000);
+
     it('should inject weatherByDay into the prompt when provided', async () => {
       openaiCreate.mockResolvedValue(mockStream(mockFullTripResponse(2)));
 

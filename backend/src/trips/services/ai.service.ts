@@ -520,6 +520,7 @@ Return JSON:
         enrichedContext,
         totalDays,
         signal,
+        progress$,
       );
     } else {
       itineraries = await this.generateParallelItineraries(
@@ -562,6 +563,7 @@ Return JSON:
     tripContext: TripContext,
     totalDays: number,
     signal?: AbortSignal,
+    progress$?: Subject<TripCreationProgress>,
   ): Promise<{ dayNumber: number; date: Date; activities: ActivityDto[] }[]> {
     if (!this.openai) {
       this.logger.warn('OpenAI not configured, returning empty itineraries');
@@ -694,7 +696,12 @@ Return JSON:
       this.logger.error(
         `Full trip generation failed, falling back to parallel: ${getErrorMessage(error)}`,
       );
-      return this.generateParallelItineraries(tripContext, totalDays, signal);
+      return this.generateParallelItineraries(
+        tripContext,
+        totalDays,
+        signal,
+        progress$,
+      );
     }
   }
 
@@ -714,7 +721,11 @@ Return JSON:
     // good enough for inter-batch deduplication without sacrificing parallelism.
     const BATCH_SIZE = 8;
     let failedDays = 0;
+    // Days that produced at least one activity — the real success signal.
     let completedDays = 0;
+    // Days whose per-day call has returned (success OR silent-empty) — drives
+    // the UI progress bar only, so it advances even on empty days.
+    let processedDays = 0;
     const itineraries: {
       dayNumber: number;
       date: Date;
@@ -751,10 +762,10 @@ Return JSON:
               ? locationsAtBatchStart
               : undefined,
           ).then((activities) => {
-            completedDays++;
+            processedDays++;
             progress$?.next({
               step: 'ai_generating',
-              dayProgress: { completed: completedDays, total: totalDays },
+              dayProgress: { completed: processedDays, total: totalDays },
             });
             return { dayNumber, date, activities };
           }),
@@ -765,9 +776,20 @@ Return JSON:
       for (const result of batchResults) {
         if (result.status === 'fulfilled') {
           itineraries.push(result.value);
-          // Collect location titles from this batch to exclude in subsequent batches.
-          for (const activity of result.value.activities) {
-            if (activity.title) usedLocations.push(activity.title);
+          // A day counts as "completed" only when it actually has activities.
+          // generateDailyItinerary swallows per-day errors and returns [] on
+          // failure, so a fulfilled-but-empty result is a silent failure — not
+          // a real day. Counting non-empty days is what lets us distinguish a
+          // genuine total wipe-out (mark aiStatus=failed) from a partial
+          // success we want to preserve.
+          if (result.value.activities.length > 0) {
+            completedDays++;
+            // Collect location titles from this batch to exclude in subsequent batches.
+            for (const activity of result.value.activities) {
+              if (activity.title) usedLocations.push(activity.title);
+            }
+          } else {
+            failedDays++;
           }
         } else {
           failedDays++;
@@ -798,10 +820,20 @@ Return JSON:
       }
     }
 
-    // If more than 50% of days failed, throw to trigger fallback in caller
-    if (failedDays > totalDays * 0.5) {
+    // Throw ONLY on a total wipe-out — zero days produced any activities.
+    // Previously this fired at >50% failure, which (a) discarded a large
+    // amount of successfully generated content and (b) was effectively dead
+    // code because generateDailyItinerary never rejects (it returns []). A
+    // genuine total failure must still propagate so the caller marks the trip
+    // aiStatus = 'failed' instead of silently saving an all-empty itinerary.
+    //
+    // Note: a partial success (e.g. 29/31 days) does NOT throw — the caller
+    // keeps aiStatus = 'success' and the few empty days remain editable by the
+    // user. There is intentionally no 'partial' status: a mostly-complete trip
+    // is treated as a success rather than flagging it as failed.
+    if (completedDays === 0) {
       throw new Error(
-        `Too many days failed in parallel generation: ${failedDays}/${totalDays}`,
+        `AI generation produced no activities for any of ${totalDays} days`,
       );
     }
 
