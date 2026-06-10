@@ -18,12 +18,14 @@ jest.mock('openai', () => {
   }));
 });
 
-// Helper to create async iterable stream mock matching OpenAI streaming API
-function mockStream(content: string) {
+// Helper to create async iterable stream mock matching OpenAI streaming API.
+// finishReason defaults to 'stop'; pass 'length' to simulate a max_tokens
+// truncation (the model cutting off mid-JSON).
+function mockStream(content: string, finishReason: string = 'stop') {
   const chunks = [
-    { choices: [{ delta: { content } }], usage: null },
+    { choices: [{ delta: { content }, finish_reason: null }], usage: null },
     {
-      choices: [{ delta: {} }],
+      choices: [{ delta: {}, finish_reason: finishReason }],
       usage: { prompt_tokens: 100, completion_tokens: 200, total_tokens: 300 },
     },
   ];
@@ -42,6 +44,7 @@ describe('AIService', () => {
   let analyticsService: jest.Mocked<Partial<AnalyticsService>>;
   let templateService: jest.Mocked<Partial<TemplateService>>;
   let timezoneService: jest.Mocked<Partial<TimezoneService>>;
+  let apiUsageLog: jest.Mock;
   let openaiCreate: jest.Mock;
 
   const tripContext = {
@@ -99,6 +102,7 @@ describe('AIService', () => {
         { latitude: 35.6654, longitude: 139.7707 },
       ]),
     };
+    apiUsageLog = jest.fn().mockResolvedValue(undefined);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -113,7 +117,7 @@ describe('AIService', () => {
         { provide: TimezoneService, useValue: timezoneService },
         {
           provide: ApiUsageService,
-          useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) },
+          useValue: { logApiUsage: apiUsageLog },
         },
       ],
     }).compile();
@@ -220,6 +224,28 @@ describe('AIService', () => {
       expect(result[1].title).toBe('Lunch at Tsukiji Market');
       // No cache set — weather context differs per request
       expect(cacheManager.set).not.toHaveBeenCalled();
+    });
+
+    it('logs a truncation error when the model hits max_tokens (finish_reason=length)', async () => {
+      // Simulate a max_tokens cutoff: valid JSON content but finish_reason=length.
+      openaiCreate.mockResolvedValue(
+        mockStream(mockActivitiesResponse, 'length'),
+      );
+
+      await service.generateDailyItinerary(
+        tripContext,
+        1,
+        new Date('2025-07-01'),
+      );
+
+      // Truncation must be surfaced explicitly as an error log for the dashboard,
+      // not silently swallowed.
+      expect(apiUsageLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'error',
+          errorCode: expect.stringContaining('truncated_max_tokens'),
+        }),
+      );
     });
 
     it('should include geocoded coordinates in activities', async () => {
@@ -539,6 +565,56 @@ describe('AIService', () => {
       // Auto-save to template DB must still happen (for analytics/warmup)
       expect(templateService.saveFromAI).toHaveBeenCalled();
     }, 15000);
+
+    // ── Partial-success preservation (long trips) ────────────────────────
+    // A long trip routes to generateParallelItineraries (per-day calls).
+    // Even when many days fail, the successfully generated days MUST be
+    // preserved instead of throwing away the entire trip. Only a total
+    // wipe-out (zero days succeed) is treated as a genuine AI failure.
+    const longTrip = (days: number) => ({
+      ...tripContext,
+      startDate: new Date('2025-07-01'),
+      endDate: new Date(
+        new Date('2025-07-01').getTime() + (days - 1) * 24 * 60 * 60 * 1000,
+      ),
+    });
+
+    it('preserves succeeded days when >50% of days fail on a long trip', async () => {
+      cacheManager.get.mockResolvedValue(null);
+      // 10-day trip: make a majority (6) of the per-day calls fail, the rest
+      // succeed. Old behaviour threw "Too many days failed" and lost
+      // everything; new behaviour must return all 10 days with the failed
+      // ones as empty itineraries.
+      let call = 0;
+      openaiCreate.mockImplementation(() => {
+        call++;
+        // Fail 6 of the first 10 day-calls, succeed on the others.
+        if (call % 10 < 6) {
+          return Promise.reject(new Error('OpenAI 500'));
+        }
+        return Promise.resolve(mockStream(mockActivitiesResponse));
+      });
+
+      const result = await service.generateAllItineraries(longTrip(10));
+
+      // Must not throw; must return one entry per day (sorted, gap-filled).
+      expect(result.length).toBe(10);
+      const succeeded = result.filter((r) => r.activities.length > 0);
+      const empty = result.filter((r) => r.activities.length === 0);
+      expect(succeeded.length).toBeGreaterThan(0);
+      expect(empty.length).toBeGreaterThan(0);
+    }, 20000);
+
+    it('throws only when zero days succeed on a long trip', async () => {
+      cacheManager.get.mockResolvedValue(null);
+      // Every per-day call fails → genuine total failure → must throw so the
+      // caller marks aiStatus = "failed".
+      openaiCreate.mockRejectedValue(new Error('OpenAI down'));
+
+      await expect(
+        service.generateAllItineraries(longTrip(10)),
+      ).rejects.toThrow();
+    }, 20000);
 
     it('should inject weatherByDay into the prompt when provided', async () => {
       openaiCreate.mockResolvedValue(mockStream(mockFullTripResponse(2)));
