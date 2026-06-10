@@ -588,8 +588,14 @@ Return JSON:
       );
 
       const langName = LANGUAGE_NAMES[lang] || 'Korean';
-      // max_tokens: ~350-400 tokens/day after description shortening
-      const maxTokens = totalDays <= 3 ? 2048 : totalDays <= 5 ? 3072 : 4096;
+      // Size the output budget to the day count instead of a flat cap.
+      // A flat 4096 truncated longer full-trip JSON mid-string, producing
+      // "Unterminated string in JSON" parse failures (→ empty itinerary).
+      // ~700 tokens/day covers activities + JSON structure overhead with
+      // headroom; +1024 base for the envelope. Floor 2048, ceil 8192
+      // (full-trip only runs for ≤7 days, so this never exceeds the model's
+      // output limit).
+      const maxTokens = Math.min(8192, Math.max(2048, totalDays * 700 + 1024));
 
       const content = await this.openaiBreaker.run(() =>
         withRetry(
@@ -1025,6 +1031,7 @@ Return JSON:
     );
 
     let content = '';
+    let finishReason: string | null = null;
     let usage: {
       prompt_tokens: number;
       completion_tokens: number;
@@ -1036,9 +1043,33 @@ Return JSON:
       if (delta) {
         content += delta;
       }
+      const reason = chunk.choices[0]?.finish_reason;
+      if (reason) {
+        finishReason = reason;
+      }
       if (chunk.usage) {
         usage = chunk.usage;
       }
+    }
+
+    // finish_reason === 'length' means the model hit max_tokens and the JSON
+    // was cut off mid-stream — JSON.parse will then throw "Unterminated
+    // string". Surface this explicitly so token-budget shortfalls are
+    // observable in logs/dashboard instead of masquerading as generic parse
+    // errors that silently fall back to an empty itinerary.
+    if (finishReason === 'length') {
+      this.logger.warn(
+        `AI ${label} truncated by max_tokens (${maxTokens}) — finish_reason=length, content length=${content.length}. Increase token budget for this day count.`,
+      );
+      this.apiUsageService
+        .logApiUsage({
+          provider: 'openai',
+          feature: 'ai_trip',
+          status: 'error',
+          errorCode: `truncated_max_tokens_${maxTokens}`,
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
     }
 
     const elapsed = Date.now() - startTime;

@@ -18,12 +18,14 @@ jest.mock('openai', () => {
   }));
 });
 
-// Helper to create async iterable stream mock matching OpenAI streaming API
-function mockStream(content: string) {
+// Helper to create async iterable stream mock matching OpenAI streaming API.
+// finishReason defaults to 'stop'; pass 'length' to simulate a max_tokens
+// truncation (the model cutting off mid-JSON).
+function mockStream(content: string, finishReason: string = 'stop') {
   const chunks = [
-    { choices: [{ delta: { content } }], usage: null },
+    { choices: [{ delta: { content }, finish_reason: null }], usage: null },
     {
-      choices: [{ delta: {} }],
+      choices: [{ delta: {}, finish_reason: finishReason }],
       usage: { prompt_tokens: 100, completion_tokens: 200, total_tokens: 300 },
     },
   ];
@@ -42,6 +44,7 @@ describe('AIService', () => {
   let analyticsService: jest.Mocked<Partial<AnalyticsService>>;
   let templateService: jest.Mocked<Partial<TemplateService>>;
   let timezoneService: jest.Mocked<Partial<TimezoneService>>;
+  let apiUsageLog: jest.Mock;
   let openaiCreate: jest.Mock;
 
   const tripContext = {
@@ -99,6 +102,7 @@ describe('AIService', () => {
         { latitude: 35.6654, longitude: 139.7707 },
       ]),
     };
+    apiUsageLog = jest.fn().mockResolvedValue(undefined);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -113,7 +117,7 @@ describe('AIService', () => {
         { provide: TimezoneService, useValue: timezoneService },
         {
           provide: ApiUsageService,
-          useValue: { logApiUsage: jest.fn().mockResolvedValue(undefined) },
+          useValue: { logApiUsage: apiUsageLog },
         },
       ],
     }).compile();
@@ -220,6 +224,28 @@ describe('AIService', () => {
       expect(result[1].title).toBe('Lunch at Tsukiji Market');
       // No cache set — weather context differs per request
       expect(cacheManager.set).not.toHaveBeenCalled();
+    });
+
+    it('logs a truncation error when the model hits max_tokens (finish_reason=length)', async () => {
+      // Simulate a max_tokens cutoff: valid JSON content but finish_reason=length.
+      openaiCreate.mockResolvedValue(
+        mockStream(mockActivitiesResponse, 'length'),
+      );
+
+      await service.generateDailyItinerary(
+        tripContext,
+        1,
+        new Date('2025-07-01'),
+      );
+
+      // Truncation must be surfaced explicitly as an error log for the dashboard,
+      // not silently swallowed.
+      expect(apiUsageLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'error',
+          errorCode: expect.stringContaining('truncated_max_tokens'),
+        }),
+      );
     });
 
     it('should include geocoded coordinates in activities', async () => {
