@@ -53,7 +53,7 @@ export default ({ config }) => ({
     edgeToEdgeEnabled: false,
     softwareKeyboardLayoutMode: 'pan',
     package: 'com.longpapa82.travelplanner',
-    versionCode: config.android?.versionCode ?? 288,
+    versionCode: config.android?.versionCode ?? 301,
     // V189.1 P0-D: explicit permission whitelist.
     //
     // V189.0 listed READ_MEDIA_IMAGES so the photo picker would work on
