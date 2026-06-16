@@ -67,6 +67,12 @@ const AdminDashboardScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
+    // White wrapper: the bottom-tab scene leaves a ~insets.bottom gap below the
+    // ScrollView (it ends above the tab bar), and the screen-grey container bg
+    // showed through there as a grey band hiding the last card. A white parent
+    // makes that gap white so it blends with the cards. paddingBottom keeps the
+    // last card clear of the tab bar.
+    <View style={{ flex: 1, backgroundColor: theme.colors.white }}>
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: bottomPad }}>
       <View style={styles.header}>
         <Icon name="shield-crown-outline" size={36} color={theme.colors.primary} />
@@ -141,6 +147,7 @@ const AdminDashboardScreen: React.FC<Props> = ({ navigation }) => {
 
       <View style={{ height: 40 }} />
     </ScrollView>
+    </View>
   );
 };
 
