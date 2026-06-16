@@ -59,7 +59,7 @@ const AdminDashboardScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: 'red' }]}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Icon name="shield-crown-outline" size={36} color={theme.colors.primary} />
         <Text style={[styles.title, { color: theme.colors.text }]}>{t('title')}</Text>

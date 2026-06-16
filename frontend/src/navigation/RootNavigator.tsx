@@ -386,7 +386,13 @@ const RootNavigator = () => {
         ...(isDark ? DarkTheme : DefaultTheme),
         colors: {
           ...(isDark ? DarkTheme.colors : DefaultTheme.colors),
-          background: theme.colors.background,
+          // This is the scene-container background behind every screen. When a
+          // screen's ScrollView doesn't fill the scene (admin screens leave a
+          // ~insets.bottom strip above the tab bar), this colour shows through.
+          // Light mode previously used the grey app background (neutral[50]),
+          // producing a grey band that hid the last card. Use white so the
+          // strip blends with the white cards. Dark mode keeps its dark bg.
+          background: isDark ? theme.colors.background : theme.colors.white,
           card: theme.colors.card,
           text: theme.colors.text,
           primary: theme.colors.primary,
