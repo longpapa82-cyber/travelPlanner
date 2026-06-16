@@ -59,7 +59,14 @@ const AdminDashboardScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      // The scene ends ~insets.bottom above the tab bar, so the last menu card
+      // gets clipped there. A generous bottom inset on the scroll content lifts
+      // the last card clear of that edge (scene bg is now white, so the extra
+      // space is invisible). 96 ≈ tab bar height + nav inset + breathing room.
+      contentContainerStyle={{ paddingBottom: 96 }}
+    >
       <View style={styles.header}>
         <Icon name="shield-crown-outline" size={36} color={theme.colors.primary} />
         <Text style={[styles.title, { color: theme.colors.text }]}>{t('title')}</Text>
