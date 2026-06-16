@@ -18,7 +18,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: { sub: string; email: string; scope?: string }) {
-    const user = await this.usersService.findById(payload.sub);
+    // Use the non-throwing lookup so a token whose subject no longer exists
+    // (e.g. deleted account still holding a valid access token) returns 401
+    // Unauthorized — not the 404 that findById would throw. The 401 lets the
+    // client's interceptor refresh/clear tokens and log out cleanly.
+    const user = await this.usersService.findByIdOrNull(payload.sub);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }

@@ -264,6 +264,42 @@ describe('UsersService', () => {
     });
   });
 
+  describe('findByIdOrNull', () => {
+    it('should return user if found', async () => {
+      // Arrange
+      repository.findOne.mockResolvedValue(mockUser);
+
+      // Act
+      const result = await service.findByIdOrNull(mockUser.id);
+
+      // Assert
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { id: mockUser.id },
+      });
+      expect(result).toEqual(mockUser);
+    });
+
+    it('should return null (not throw) when user not found', async () => {
+      // Arrange
+      repository.findOne.mockResolvedValue(null);
+
+      // Act
+      const result = await service.findByIdOrNull('non-existent-id');
+
+      // Assert: deleted-user tokens must not surface as 404
+      expect(result).toBeNull();
+    });
+
+    it('should return null without hitting the repository for empty id', async () => {
+      // Act
+      const result = await service.findByIdOrNull('');
+
+      // Assert
+      expect(result).toBeNull();
+      expect(repository.findOne).not.toHaveBeenCalled();
+    });
+  });
+
   describe('findByEmail', () => {
     it('should return user if found by email', async () => {
       // Arrange
