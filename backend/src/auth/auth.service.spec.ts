@@ -516,6 +516,9 @@ describe('AuthService', () => {
         // and the other subscription/quota fields consumed by the client.
         // mockUser has no admin role/email, so isAdmin is false.
         isAdmin: false,
+        // V188: service-admin flag (env SERVICE_ADMIN_EMAILS OR DB role).
+        // mockUser is neither, so false.
+        isServiceAdmin: false,
         subscriptionTier: mockUser.subscriptionTier,
         subscriptionPlatform: mockUser.subscriptionPlatform,
         subscriptionExpiresAt: mockUser.subscriptionExpiresAt,

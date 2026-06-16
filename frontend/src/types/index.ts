@@ -11,6 +11,12 @@ export interface User {
   isTwoFactorEnabled?: boolean;
   /** V174 (P0-3): server-side operational admin flag (env OR DB role). */
   isAdmin?: boolean;
+  /**
+   * V188: server-side service-admin flag (SERVICE_ADMIN_EMAILS env OR DB role).
+   * Gates the in-app admin menu. Narrower than isAdmin — replaces the former
+   * hardcoded SERVICE_ADMIN_EMAILS list so admins can be added server-side.
+   */
+  isServiceAdmin?: boolean;
   travelPreferences?: TripPreferences;
   subscriptionTier?: SubscriptionTier;
   subscriptionPlatform?: string;

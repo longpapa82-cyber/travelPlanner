@@ -27,7 +27,10 @@ import {
   TokenPayload,
 } from './interfaces/auth-response.interface';
 import { t, SupportedLang } from '../common/i18n';
-import { isOperationalAdmin } from '../common/utils/admin-check';
+import {
+  isOperationalAdmin,
+  isServiceAdmin,
+} from '../common/utils/admin-check';
 import { getErrorMessage } from '../common/types/request.types';
 import { isEmailDomainDeliverable } from '../common/email-domain';
 import { AuditService } from '../admin/audit.service';
@@ -545,6 +548,11 @@ export class AuthService {
     // divergence. `isOperationalAdmin` mirrors the quota-bypass check in
     // `trips.service.ts` and the UI flag in `subscription.service.ts`.
     const isAdmin = isOperationalAdmin(user.email, user.role);
+    // V188: service-admin (narrower than operational admin) gates the in-app
+    // admin menu. Returned as its own flag so the frontend stops deriving it
+    // from a hardcoded list — same single-source-of-truth fix V174 applied to
+    // isAdmin. Sourced from SERVICE_ADMIN_EMAILS env OR DB role=admin.
+    const isServiceAdminFlag = isServiceAdmin(user.email, user.role);
     return {
       id: user.id,
       email: user.email,
@@ -554,6 +562,7 @@ export class AuthService {
       isEmailVerified: user.isEmailVerified,
       isTwoFactorEnabled: user.isTwoFactorEnabled,
       isAdmin,
+      isServiceAdmin: isServiceAdminFlag,
       subscriptionTier: user.subscriptionTier,
       subscriptionPlatform: user.subscriptionPlatform,
       subscriptionExpiresAt: user.subscriptionExpiresAt,

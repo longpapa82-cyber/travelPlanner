@@ -24,12 +24,12 @@ const AI_TRIPS_FREE_LIMIT = 3;
  * Removing the fallback aligns frontend with the V174 backend isAdmin field
  * already returned by /auth/me.
  *
- * SERVICE_ADMIN_EMAILS is kept for the security-admin-only screens (revenue
- * dashboard, manual subscription override). Service admin is a stricter
- * subset of operational admin — it gates the financial controls and is
- * intentionally not derived from the env list.
+ * V188: service-admin is now ALSO server-authoritative. The hardcoded
+ * SERVICE_ADMIN_EMAILS list was removed — the backend computes isServiceAdmin
+ * (SERVICE_ADMIN_EMAILS env OR DB role) and returns it on /auth/me, so service
+ * admins can be added/removed server-side without an app rebuild. This is the
+ * same single-source-of-truth fix V176 applied to isAdmin.
  */
-const SERVICE_ADMIN_EMAILS = ['longpapa82@gmail.com'];
 
 export type PaywallContext = 'ai_limit' | 'general';
 
@@ -352,9 +352,9 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   // lands is harmless — the paywall and aiTripsLimit UI gate on
   // isProfileLoaded, so admins see neutral state during cold start.
   const isAdmin = user?.isAdmin === true;
-  const isServiceAdmin = !!(
-    user?.email && SERVICE_ADMIN_EMAILS.includes(user.email.toLowerCase())
-  );
+  // V188: server-authoritative (was a hardcoded email list). Falls back to
+  // false during the brief pre-/auth/me window, same as isAdmin.
+  const isServiceAdmin = user?.isServiceAdmin === true;
   const isProfileLoaded = user?.aiTripsUsedThisMonth !== undefined;
   const aiTripsUsed = user?.aiTripsUsedThisMonth ?? 0;
   const AI_TRIPS_PREMIUM_LIMIT = 30;
