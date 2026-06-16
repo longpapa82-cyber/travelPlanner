@@ -187,7 +187,12 @@ const UserManagementScreen: React.FC<Props> = ({ navigation }) => {
         data={users}
         keyExtractor={(item) => item.id}
         renderItem={renderUser}
-        contentContainerStyle={{ paddingBottom: tabBarHeight + 16 }}
+        // flexGrow lets the white ListFooterComponent stretch to fill the
+        // viewport when the member list is short — otherwise the grey screen
+        // background (container) shows through below the last white user row,
+        // appearing as a grey band above the tab bar. Header card spacing
+        // (section marginTop) stays grey since the header is not stretched.
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: tabBarHeight + 16 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         ListHeaderComponent={
           <>
@@ -239,14 +244,19 @@ const UserManagementScreen: React.FC<Props> = ({ navigation }) => {
           )
         }
         ListFooterComponent={
-          page < totalPages ? (
-            <TouchableOpacity
-              style={[styles.loadMore, { borderColor: theme.colors.border }]}
-              onPress={() => fetchUsers(page + 1)}
-            >
-              <Text style={{ color: theme.colors.primary, fontWeight: '600' }}>{t('users.loadMore')}</Text>
-            </TouchableOpacity>
-          ) : null
+          // flex:1 white filler absorbs the leftover viewport (paired with
+          // contentContainerStyle.flexGrow) so no grey background shows below
+          // the last row on short lists. The load-more button sits on top of it.
+          <View style={{ flex: 1, backgroundColor: theme.colors.white }}>
+            {page < totalPages ? (
+              <TouchableOpacity
+                style={[styles.loadMore, { borderColor: theme.colors.border }]}
+                onPress={() => fetchUsers(page + 1)}
+              >
+                <Text style={{ color: theme.colors.primary, fontWeight: '600' }}>{t('users.loadMore')}</Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
         }
       />
     </View>
