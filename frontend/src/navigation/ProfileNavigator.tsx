@@ -33,7 +33,13 @@ const ProfileNavigator = () => {
 
   return (
     <Stack.Navigator
-      screenOptions={makeStackScreenOptions(theme.colors.primary)}
+      screenOptions={{
+        ...makeStackScreenOptions(theme.colors.primary),
+        // DIAGNOSTIC: temporarily paint the scene content area red to confirm
+        // whether the grey gap below admin ScrollViews is the native-stack
+        // contentStyle background. Revert to theme bg / white once confirmed.
+        contentStyle: { backgroundColor: 'red' },
+      }}
     >
       <Stack.Screen
         name="ProfileMain"

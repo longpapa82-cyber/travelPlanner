@@ -8,14 +8,30 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 |--------|------|------|
 | **Android** | 1.4.3 (versionCode 300) | **v300 프로덕션 전체출시 신청 완료** 🔄 (2026-06-10) — 자동광고 근본수정+UI개선. Google 검토 전 자동검사(~14분) → 검토 → 출시. 이전 v294 프로덕션 출시 완료 ✅ |
 | **iOS** | 1.4.3 (B86) | **App Store 출시 완료** ✅ — 2026-06-03. 자동광고 근본수정+UI개선은 OTA 반영·검증 완료 |
-| **서버** | 39차 | https://mytravel-planner.com 운영 중. **AI 빈 일정 근본수정 배포 완료** ✅ (2026-06-10, 전 앱버전 즉시적용) |
-| **브랜치** | `main` | ✅ 자동광고 PR #6(`0b165fb2`) + **AI 빈 일정 PR #8 병합 완료**(squash `87f456ce`). 다음 할 일 #0 참조 |
+| **서버** | 41차 | https://mytravel-planner.com 운영 중. **재인증 게이트+서버권위+2FA 일반화 배포 완료** ✅ (2026-06-16, OTA production 발행 2회): `POST /auth/reauth`, `isServiceAdmin` env 전환, `getReauthMethod` 2FA/비번/setup_2fa 분기 |
+| **브랜치** | `main` | ✅ **재인증 게이트+2FA 일반화 PR #11**(squash `551cfef1`) 병합 완료. 다음 할 일 #0 참조 |
 
 ---
 
 ## ⚠️ 다음 할 일
 
-0. **🔄 AI 여행 빈 일정("AI 실패" 칩) 근본해결 — PR #8 병합·서버배포 완료** (2026-06-10)
+0. **✅ 재인증 게이트("sudo mode") + 서비스관리자 서버권위 전환 + 2FA 일반화 — PR #11 병합·서버배포·OTA 완료** (2026-06-16)
+   - **재인증 게이트**: AdminDashboard·AdDebug 진입 시 매번 본인 재인증. `POST /auth/reauth`(JwtAuthGuard+Throttle, userId 토큰 추출·body 아님). 전용 Redis 카운터(`reauth_attempts:`) brute-force 방어(10회 15분 잠금·로그인 카운터와 분리). 모달은 탈퇴 모달 키보드 UX(animationType none+onShow focus+Android flex-end) 재사용. 세션 1회 인증.
+   - **서비스관리자 서버권위 전환**: 기존 프론트 하드코딩 `SERVICE_ADMIN_EMAILS` → `admin-check.ts`에 `isServiceAdmin(email, role)` 신설(env OR DB role=admin). `getProfile`이 `isServiceAdmin` 포함 내려줌. **이후 서비스관리자 추가는 서버 env 한 줄(앱 재빌드 불필요)**. 서버 `.env`에 `SERVICE_ADMIN_EMAILS=longpapa82,hoonjae723` 추가.
+   - **2FA 일반화(근본 해결)**: 비번 전용 재인증은 소셜 계정(비번 없음)에 구멍. 주 관리자 longpapa82가 **google 계정**(DB 확인)이라 재인증 불가. `getReauthMethod` 신설: 2FA 켜짐→TOTP/백업코드, 2FA없음+email→비번, 2FA없음+소셜→REAUTH_SETUP_2FA(2FA 설정 유도, AdminGuard는 서버에서 계속 보호). `getProfile`에 `reauthMethod` 힌트 포함. 프론트 `openAdminArea` 분기.
+   - **검증·배포**: 백엔드 테스트 92개 통과(신규 16개), tsc·lint clean, i18n 17개. **서버 프로덕션 배포**(rsync+docker, `/auth/reauth` 401·옛 `/auth/verify-password` 404 검증·health 200·SERVICE_ADMIN_EMAILS 컨테이너 로드 확인). **OTA production 2회 발행**(iOS+Android). **PR #11 squash 병합**(main `551cfef1`).
+   - **⚠️ 한계(정직)**: 소셜+2FA없음 계정은 재인증 면제(2FA 설정 유도만). 실제 보안 경계는 서버 AdminGuard. 상세·교훈 → 메모리 [admin_reauth_2fa_gate.md].
+   - **⏭️ 실기기 검증 필요**: ①hoonjae723(email) 관리자 메뉴→비번 모달 정답/오답 ②longpapa82(google) 관리자 메뉴→2FA 설정 유도→설정 후 TOTP 재인증. OTA 반영(앱 재시작 1~2회) 후.
+
+-1. **✅ 오류 점검 + auth 수정 2건 — PR #9·#10 병합·서버배포 완료** (2026-06-16)
+   - **점검**: 운영 `error_logs`/`api_usage` 점검 → 정상noise·504(6-09 2건 인프라성)·AI(PR #8로 근절, `truncated_max_tokens`/JSON잘림 신규 0건) 조치불요. 실제 수정 2건 발견.
+   - **수정①(PR #9 `c82eca64`) 탈퇴유저 404→401**: `jwt.strategy.ts`가 throw하는 `findById` 호출 → 자기 `if(!user) throw Unauthorized`가 **죽은 가드**(PR #8 AI버그와 동일 안티패턴 3번째). 탈퇴계정 토큰이 404로 새어 클라 401 refresh/logout 복구경로를 못 탐(28건/6 distinct 유저). `usersService.findByIdOrNull`(non-throwing) 신설로 401 정정. security-reviewer가 옛 404를 MEDIUM info-leak 확인. **2기기 실기기 검증**(한쪽 탈퇴→나머지 자동 로그아웃).
+   - **수정②(PR #10 `7bf054d6`) 이메일 도메인 검증**: 미존재 이메일 가입→SMTP bounce→관리자 메일함 반송알림 누적. **bounce 제목은 Gmail 자동생성이라 변경불가** → 예방책: 가입 진입부 도메인 MX(없으면 A/AAAA implicit-MX) 검증, **NXDOMAIN/ENODATA만 거부·나머지(SERVFAIL/timeout) fail-open**. `common/email-domain.ts`(Node 내장 dns·무패키지)+i18n 17개. 프로덕션 E2E(NXDOMAIN→400, 정상→201, SERVFAIL→fail-open) 검증.
+   - **⚠️ 한계(정직)**: 최초 신고 `hoonkae723@gmail.com`은 **로컬파트(메일박스) 오타라 못 막음**(SMTP 한계). SERVFAIL 도메인(`@gmial.com`)도 fail-open 통과. 완전 미존재 도메인만 거름.
+   - **배포**: 둘 다 서버사이드 → **앱빌드 불필요·rsync+docker 즉시적용**·healthy·핵심 CI 6잡 초록(E2E만 기존 timeout). 상세·교훈 → 메모리 [email_domain_deliverability_check.md], [error_log_triage.md].
+   - **⏭️ 모니터링**: error_logs `NotFoundException 404 "User with ID"` 신규 0건 + 관리자 bounce 알림 빈도 추적.
+
+1. **✅ AI 여행 빈 일정("AI 실패" 칩) 근본해결 — PR #8 병합·서버배포 완료** (2026-06-10)
    - **증상**: iOS 일부 여행 상세에 "AI 실패" 칩 + "일정 없음"(빈 일정). 예: 뉴욕 31일.
    - **진단(DB확정)**: `aiStatus='failed'`는 DB 전체 **단 1건**(뉴욕31일, itin 0행). 칩 자체는 정상동작 — UI버그 아님.
    - **근본원인 2겹**: ①`generateDailyItinerary`가 에러를 `[]`로 swallow → 상위 `failedDays>50% throw`가 **죽은코드**가 되고 **빈 일정을 success로 위장 저장**(silent failure) ②full-trip `maxTokens` 고정(4096) → 긴 JSON 잘림(`Unterminated string in JSON`).
@@ -23,7 +39,7 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
    - **배포**: **서버사이드라 앱빌드 불필요 — rsync+docker로 전 앱버전 즉시적용**·healthy·HTTPS200. **PR #8 squash 병합**(main `87f456ce`, 핵심 CI 6 job 초록·E2E만 기존 timeout). 기존 실패 뉴욕 1건은 사용자 결정으로 그대로 둠. 상세·교훈 → 메모리 [ai_empty_itinerary_partial_preservation.md].
    - **⏭️ 모니터링**: `truncated_max_tokens` 로그 발생 추적(토큰부족 조기발견).
 
-1. **🔄 자동 전면광고 근본해결 + UI개선 — PR #6 병합완료, Android v300 프로덕션 신청** (2026-06-09~10)
+2. **✅ 자동 전면광고 근본해결 + UI개선 — PR #6 병합완료, Android v300 프로덕션 신청** (2026-06-09~10)
    - **🎯 진짜 근본원인**(직전 "cadence 때문" 결론은 부분적 오진): `useGDPRConsent`가 5개 광고훅(AdBanner×3·useAutoInterstitial·useInterstitialAd·useAppOpenAd·useRewardedAd)에서 **per-instance로 동작→isReady 파편화**→`useAutoInterstitial`이 TripList focus 시점 자기 인스턴스 `isReady=false`로 매번 `BLOCKED !isReady`. (admin·no-fill·cadence·쿨다운 다 진범 아니었음.) on-device 진단(AsyncStorage→AdDebug Trace)으로 확정.
    - **수정**: ①`useGDPRConsent` **싱글톤화**(resolveConsentOnce promise가드+sharedState+subscribers) ②`useAutoInterstitial` **isReady 재무장**(useFocusEffect deps=[isReady]). jjangpapa82 일반계정서 정상노출 검증. 부수: 글로벌쿨다운 60→15s, cadence 3→2+매진입시도.
    - **UI 4건**: 완료여행 히어로칩(배너제거·back밀림 해소), hero safe-area `safeAreaTop+12` 통일(생성/상세), 여행수정 중복back 제거+카피 flex-end. i18n `detail.status.aiFailed` 17개 추가.
@@ -31,11 +47,11 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
    - **병합·배포**: **PR #6 squash 병합**(main `0b165fb2`, CI 6 job 초록·E2E만 timeout). iOS OTA 검증완료. 진단 임시코드 전부 원복.
    - **⏭️ 남은 일**: ①**Android v300 프로덕션 전체출시 신청 완료**(2026-06-10) — Google 검토 결과 대기 → 승인 시 자동 게시. ②(점검) ExpensesScreen safe-area(일반헤더·insets 없음, 겹침 가능성) — 미처리.
 
-2. **1.4.3 출시 후 모니터링** — iOS/Android 양 플랫폼 프로덕션 출시 완료(2026-06-03). 크래시율·에러로그·실제 결제 집계·리뷰 모니터링
-2. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
-4. **⚠️ Android 16+ edge-to-edge (별도 세션 권장)**: `edgeToEdgeEnabled:false`는 임시 방편 — targetSdkVersion 36이 강제 적용하는 미래 시점 대비 필요. **고난도·고리스크**: edge-to-edge를 켜면 상태바/네비바 뒤로 콘텐츠가 깔려 18개 화면 safe-area 전수 재검증 + StatusBar/네비바 색상 로직(2곳) 재작업 + "파란 배경 깜빡임" 버그(과거 withAndroidDeferEdgeToEdge 시도→실패 이력) 재대응 필요. 실기기 육안 QA 필수 + 새 빌드/알파 재출시 수반. **현재 운영/출시 영향 없음** — 충분한 QA 시간 확보 후 전용 세션에서 진행.
-5. **(별도 세션) E2E Playwright 테스트 안정화**: E2E **인프라 부채는 전부 해결**됨 — Docker 빌드(plugins), backend 부팅(consent_audit_logs 인덱스 중복), frontend webServer(expo export→dist, serve dist:8081) 3겹 모두 통과 확인. 남은 건 **실제 Playwright 테스트가 20분 timeout 초과(cancelled)** — 테스트 시나리오별 hang/느림 조사 필요(셀렉터 대기, 네트워크 등). 운영 무관·테스트 코드 영역. CI Docker job은 ECONNRESET flaky(재시도 시 통과).
-6. **(낮음) GitHub 자동배포 워크플로 정비**: `.github/workflows/deploy.yml`이 VPS secret 미설정으로 시작부터 실패 — **현재 미사용**(실 배포는 수동 rsync, [deploy.md](docs/operations/deploy.md)). 자동 CI/CD 도입 시에만 의미. 운영 무관.
+3. **1.4.3 출시 후 모니터링** — iOS/Android 양 플랫폼 프로덕션 출시 완료(2026-06-03). 크래시율·에러로그·실제 결제 집계·리뷰 모니터링
+4. **실제 프로덕션 결제 모니터링**: 수익 대시보드에 실제 결제 정상 집계 확인
+5. **⚠️ Android 16+ edge-to-edge (별도 세션 권장)**: `edgeToEdgeEnabled:false`는 임시 방편 — targetSdkVersion 36이 강제 적용하는 미래 시점 대비 필요. **고난도·고리스크**: edge-to-edge를 켜면 상태바/네비바 뒤로 콘텐츠가 깔려 18개 화면 safe-area 전수 재검증 + StatusBar/네비바 색상 로직(2곳) 재작업 + "파란 배경 깜빡임" 버그(과거 withAndroidDeferEdgeToEdge 시도→실패 이력) 재대응 필요. 실기기 육안 QA 필수 + 새 빌드/알파 재출시 수반. **현재 운영/출시 영향 없음** — 충분한 QA 시간 확보 후 전용 세션에서 진행.
+6. **(별도 세션) E2E Playwright 테스트 안정화**: E2E **인프라 부채는 전부 해결**됨 — Docker 빌드(plugins), backend 부팅(consent_audit_logs 인덱스 중복), frontend webServer(expo export→dist, serve dist:8081) 3겹 모두 통과 확인. 남은 건 **실제 Playwright 테스트가 20분 timeout 초과(cancelled)** — 테스트 시나리오별 hang/느림 조사 필요(셀렉터 대기, 네트워크 등). 운영 무관·테스트 코드 영역. CI Docker job은 ECONNRESET flaky(재시도 시 통과).
+7. **(낮음) GitHub 자동배포 워크플로 정비**: `.github/workflows/deploy.yml`이 VPS secret 미설정으로 시작부터 실패 — **현재 미사용**(실 배포는 수동 rsync, [deploy.md](docs/operations/deploy.md)). 자동 CI/CD 도입 시에만 의미. 운영 무관.
 
 > ✅ **2026-06-02 해결 완료**: 백엔드 CI 부채(ERESOLVE/테스트31/lint25/coverage) + Sentry 전면 제거 + Static Content Validation(권한 검증 오탐 + 마케팅 문구) + Docker frontend 빌드(plugins 누락) + E2E 인프라 3겹(Docker/backend 인덱스/frontend webServer). CI 핵심 6 job 초록(E2E 실제 테스트 timeout만 별도 과제로 잔존).
 
