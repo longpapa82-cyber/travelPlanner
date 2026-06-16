@@ -622,6 +622,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
               placeholderTextColor={theme.colors.textSecondary}
               value={searchText}
               onChangeText={handleSearchChange}
+              importantForAutofill="no"
               accessibilityLabel={t('list.accessibility.search')}
               accessibilityHint={t('list.accessibility.searchHint')}
             />
@@ -818,6 +819,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                 placeholderTextColor={theme.colors.textSecondary}
                 value={advancedFilters.country}
                 onChangeText={(v) => setAdvancedFilters(f => ({ ...f, country: v }))}
+                importantForAutofill="no"
               />
             </View>
 
@@ -834,6 +836,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                   value={advancedFilters.startDateFrom}
                   onChangeText={(v) => setAdvancedFilters(f => ({ ...f, startDateFrom: v }))}
                   keyboardType="numbers-and-punctuation"
+                  importantForAutofill="no"
                 />
                 <Text style={{ color: theme.colors.textSecondary }}>~</Text>
                 <TextInput
@@ -843,6 +846,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                   value={advancedFilters.startDateTo}
                   onChangeText={(v) => setAdvancedFilters(f => ({ ...f, startDateTo: v }))}
                   keyboardType="numbers-and-punctuation"
+                  importantForAutofill="no"
                 />
               </View>
             </View>
@@ -860,6 +864,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                   value={advancedFilters.budgetMin}
                   onChangeText={(v) => setAdvancedFilters(f => ({ ...f, budgetMin: v }))}
                   keyboardType="numeric"
+                  importantForAutofill="no"
                 />
                 <Text style={{ color: theme.colors.textSecondary }}>~</Text>
                 <TextInput
@@ -869,6 +874,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                   value={advancedFilters.budgetMax}
                   onChangeText={(v) => setAdvancedFilters(f => ({ ...f, budgetMax: v }))}
                   keyboardType="numeric"
+                  importantForAutofill="no"
                 />
               </View>
             </View>

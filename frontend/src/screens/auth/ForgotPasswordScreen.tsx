@@ -132,6 +132,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     autoComplete="email"
+                    importantForAutofill="no"
                     editable={!isLoading}
                     accessibilityLabel={t('forgotPassword.email')}
                     accessibilityHint={t('forgotPassword.emailPlaceholder')}

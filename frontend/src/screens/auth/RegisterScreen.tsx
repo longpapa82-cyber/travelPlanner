@@ -287,6 +287,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 onChangeText={setName}
                 autoCapitalize="words"
                 autoComplete="name"
+                importantForAutofill="no"
                 editable={!isLoading}
                 accessibilityLabel={t('register.name')}
               />
@@ -305,6 +306,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 autoComplete="email"
+                importantForAutofill="no"
                 inputMode="email"
                 editable={!isLoading}
                 accessibilityLabel={t('register.email')}

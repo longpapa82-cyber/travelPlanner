@@ -153,6 +153,7 @@ const HelpScreen: React.FC<Props> = () => {
           value={searchQuery}
           onChangeText={setSearchQuery}
           returnKeyType="search"
+          importantForAutofill="no"
           accessibilityLabel={t('help.searchPlaceholder')}
         />
         {searchQuery.length > 0 && (

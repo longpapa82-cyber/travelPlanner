@@ -82,8 +82,8 @@ export const Input: React.FC<InputProps> = ({
           accessible
           accessibilityLabel={label || placeholder}
           accessibilityState={{ disabled }}
-          // Disable password manager prompts on Android
-          importantForAutofill={type === 'password' ? 'no' : 'auto'}
+          // Disable Android autofill for all types — fixes placeholder letter-spacing bug
+          importantForAutofill="no"
         />
 
         {type === 'password' && (

@@ -212,6 +212,7 @@ const CollaboratorSection: React.FC<CollaboratorSectionProps> = ({
               autoCapitalize="none"
               autoCorrect={false}
               autoComplete="email"
+              importantForAutofill="no"
               inputMode="email"
               returnKeyType="send"
               onSubmitEditing={handleInviteCollaborator}
