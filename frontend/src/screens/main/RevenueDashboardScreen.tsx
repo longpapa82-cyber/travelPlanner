@@ -103,6 +103,7 @@ const RevenueDashboardScreen = ({ navigation }: any) => {
   return (
     <ScrollView
       style={styles.container}
+      contentContainerStyle={{ paddingBottom: 96 }}
       refreshControl={
         <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} tintColor={theme.colors.primary} />
       }

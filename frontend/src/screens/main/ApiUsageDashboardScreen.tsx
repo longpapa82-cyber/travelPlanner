@@ -352,6 +352,7 @@ const ApiUsageDashboardScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <ScrollView
       style={styles.container}
+      contentContainerStyle={{ paddingBottom: 96 }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
     >
       {renderSummaryCards()}

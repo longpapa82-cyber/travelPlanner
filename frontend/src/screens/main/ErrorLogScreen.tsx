@@ -287,6 +287,7 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
         data={logs}
         keyExtractor={(item) => item.id}
         renderItem={renderLog}
+        contentContainerStyle={{ paddingBottom: 96 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         ListHeaderComponent={
           <>

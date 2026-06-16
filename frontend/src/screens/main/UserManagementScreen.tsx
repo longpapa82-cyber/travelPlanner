@@ -185,6 +185,7 @@ const UserManagementScreen: React.FC<Props> = ({ navigation }) => {
         data={users}
         keyExtractor={(item) => item.id}
         renderItem={renderUser}
+        contentContainerStyle={{ paddingBottom: 96 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         ListHeaderComponent={
           <>

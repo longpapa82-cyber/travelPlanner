@@ -179,7 +179,7 @@ const AnnouncementManagementScreen: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  list: { padding: 16, paddingBottom: 80 },
+  list: { padding: 16, paddingBottom: 96 },
   card: {
     borderRadius: 12,
     padding: 16,
