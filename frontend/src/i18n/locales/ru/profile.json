@@ -87,6 +87,16 @@
       "passwordRequired": "Введите пароль"
     }
   },
+  "reauth": {
+    "title": "Подтверждение доступа администратора",
+    "passwordConfirm": "Введите пароль ещё раз, чтобы продолжить",
+    "passwordPlaceholder": "Введите пароль",
+    "confirmButton": "Подтвердить",
+    "alerts": {
+      "failed": "Пароль не совпадает",
+      "passwordRequired": "Пожалуйста, введите пароль"
+    }
+  },
   "exportData": {
     "button": "Экспортировать мои данные",
     "success": "Данные успешно загружены",

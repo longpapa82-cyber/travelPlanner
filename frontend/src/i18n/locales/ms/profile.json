@@ -87,6 +87,16 @@
       "passwordRequired": "Sila masukkan kata laluan anda"
     }
   },
+  "reauth": {
+    "title": "Sahkan akses pentadbir",
+    "passwordConfirm": "Masukkan semula kata laluan anda untuk meneruskan",
+    "passwordPlaceholder": "Masukkan kata laluan",
+    "confirmButton": "Sahkan",
+    "alerts": {
+      "failed": "Kata laluan tidak sepadan",
+      "passwordRequired": "Sila masukkan kata laluan anda"
+    }
+  },
   "exportData": {
     "button": "Eksport data saya",
     "success": "Data berjaya dimuat turun",

@@ -87,6 +87,16 @@
       "passwordRequired": "Veuillez entrer votre mot de passe"
     }
   },
+  "reauth": {
+    "title": "Confirmer l'accès administrateur",
+    "passwordConfirm": "Saisissez à nouveau votre mot de passe pour continuer",
+    "passwordPlaceholder": "Saisir le mot de passe",
+    "confirmButton": "Confirmer",
+    "alerts": {
+      "failed": "Le mot de passe ne correspond pas",
+      "passwordRequired": "Veuillez saisir votre mot de passe"
+    }
+  },
   "exportData": {
     "button": "Exporter mes données",
     "success": "Données téléchargées avec succès",

@@ -87,6 +87,16 @@
       "passwordRequired": "パスワードを入力してください"
     }
   },
+  "reauth": {
+    "title": "管理者アクセスの確認",
+    "passwordConfirm": "続行するにはパスワードを再入力してください",
+    "passwordPlaceholder": "パスワードを入力",
+    "confirmButton": "確認",
+    "alerts": {
+      "failed": "パスワードが一致しません",
+      "passwordRequired": "パスワードを入力してください"
+    }
+  },
   "exportData": {
     "button": "データをエクスポート",
     "success": "データがダウンロードされました",

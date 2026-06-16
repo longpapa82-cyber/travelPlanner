@@ -87,6 +87,16 @@
       "passwordRequired": "يرجى إدخال كلمة المرور"
     }
   },
+  "reauth": {
+    "title": "تأكيد وصول المسؤول",
+    "passwordConfirm": "أعد إدخال كلمة المرور للمتابعة",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "confirmButton": "تأكيد",
+    "alerts": {
+      "failed": "كلمة المرور غير متطابقة",
+      "passwordRequired": "يرجى إدخال كلمة المرور"
+    }
+  },
   "exportData": {
     "button": "تصدير بياناتي",
     "success": "تم تنزيل البيانات بنجاح",

@@ -87,6 +87,16 @@
       "passwordRequired": "Por favor, insira sua senha"
     }
   },
+  "reauth": {
+    "title": "Confirmar acesso de administrador",
+    "passwordConfirm": "Digite a sua senha novamente para continuar",
+    "passwordPlaceholder": "Inserir senha",
+    "confirmButton": "Confirmar",
+    "alerts": {
+      "failed": "A senha não corresponde",
+      "passwordRequired": "Por favor, insira a sua senha"
+    }
+  },
   "exportData": {
     "button": "Exportar meus dados",
     "success": "Dados baixados com sucesso",

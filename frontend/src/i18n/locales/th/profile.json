@@ -87,6 +87,16 @@
       "passwordRequired": "กรุณาใส่รหัสผ่าน"
     }
   },
+  "reauth": {
+    "title": "ยืนยันการเข้าถึงของผู้ดูแลระบบ",
+    "passwordConfirm": "กรอกรหัสผ่านอีกครั้งเพื่อดำเนินการต่อ",
+    "passwordPlaceholder": "กรอกรหัสผ่าน",
+    "confirmButton": "ยืนยัน",
+    "alerts": {
+      "failed": "รหัสผ่านไม่ตรงกัน",
+      "passwordRequired": "กรุณากรอกรหัสผ่าน"
+    }
+  },
   "exportData": {
     "button": "ส่งออกข้อมูลของฉัน",
     "success": "ดาวน์โหลดข้อมูลสำเร็จ",

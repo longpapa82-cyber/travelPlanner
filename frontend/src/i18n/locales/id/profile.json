@@ -87,6 +87,16 @@
       "passwordRequired": "Silakan masukkan kata sandi Anda"
     }
   },
+  "reauth": {
+    "title": "Konfirmasi akses admin",
+    "passwordConfirm": "Masukkan kembali kata sandi Anda untuk melanjutkan",
+    "passwordPlaceholder": "Masukkan kata sandi",
+    "confirmButton": "Konfirmasi",
+    "alerts": {
+      "failed": "Kata sandi tidak cocok",
+      "passwordRequired": "Silakan masukkan kata sandi Anda"
+    }
+  },
   "exportData": {
     "button": "Ekspor data saya",
     "success": "Data berhasil diunduh",

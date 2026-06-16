@@ -921,4 +921,75 @@ describe('AuthService', () => {
       expect(jwtService.signAsync).toHaveBeenCalledTimes(2);
     });
   });
+
+  describe('verifyPassword (re-authentication gate)', () => {
+    const emailUser = {
+      ...mockUser,
+      id: 'admin-id',
+      email: 'admin@example.com',
+      provider: AuthProvider.EMAIL,
+    };
+
+    it('returns { verified: true } when the password matches the caller', async () => {
+      cacheManager.get.mockResolvedValue(undefined); // no prior failures
+      usersService.findById.mockResolvedValue(emailUser as any);
+      usersService.findByEmail.mockResolvedValue(emailUser as any);
+      usersService.validatePassword.mockResolvedValue(true);
+
+      const result = await service.verifyPassword('admin-id', 'correct-pw');
+
+      expect(result).toEqual({ verified: true });
+      // userId-derived email is what we re-fetch the hash with — never the body.
+      expect(usersService.findByEmail).toHaveBeenCalledWith(
+        'admin@example.com',
+      );
+      // Success clears the re-auth attempt counter.
+      expect(cacheManager.del).toHaveBeenCalledWith('reauth_attempts:admin-id');
+    });
+
+    it('throws INVALID_CREDENTIALS and increments the counter on wrong password', async () => {
+      cacheManager.get.mockResolvedValue(undefined);
+      usersService.findById.mockResolvedValue(emailUser as any);
+      usersService.findByEmail.mockResolvedValue(emailUser as any);
+      usersService.validatePassword.mockResolvedValue(false);
+
+      await expect(
+        service.verifyPassword('admin-id', 'wrong-pw'),
+      ).rejects.toThrow(UnauthorizedException);
+      expect(cacheManager.set).toHaveBeenCalledWith(
+        'reauth_attempts:admin-id',
+        1,
+        expect.any(Number),
+      );
+      expect(cacheManager.del).not.toHaveBeenCalled();
+    });
+
+    it('rejects OAuth-only accounts before any password comparison', async () => {
+      cacheManager.get.mockResolvedValue(undefined);
+      usersService.findById.mockResolvedValue({
+        ...mockUser,
+        id: 'social-id',
+        provider: AuthProvider.GOOGLE,
+        email: 'social@example.com',
+      } as any);
+
+      await expect(
+        service.verifyPassword('social-id', 'anything'),
+      ).rejects.toThrow(UnauthorizedException);
+      // Must short-circuit: no hash fetch, no bcrypt compare.
+      expect(usersService.findByEmail).not.toHaveBeenCalled();
+      expect(usersService.validatePassword).not.toHaveBeenCalled();
+    });
+
+    it('locks out after too many failed attempts', async () => {
+      cacheManager.get.mockResolvedValue(10); // at the lockout threshold
+      usersService.findById.mockResolvedValue(emailUser as any);
+
+      await expect(
+        service.verifyPassword('admin-id', 'correct-pw'),
+      ).rejects.toThrow(); // HttpException 423 LOCKED
+      // Locked out before reaching the password check.
+      expect(usersService.validatePassword).not.toHaveBeenCalled();
+    });
+  });
 });

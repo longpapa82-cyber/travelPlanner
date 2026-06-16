@@ -87,6 +87,16 @@
       "passwordRequired": "请输入密码"
     }
   },
+  "reauth": {
+    "title": "确认管理员访问权限",
+    "passwordConfirm": "请重新输入密码以继续",
+    "passwordPlaceholder": "输入密码",
+    "confirmButton": "确认",
+    "alerts": {
+      "failed": "密码不匹配",
+      "passwordRequired": "请输入密码"
+    }
+  },
   "exportData": {
     "button": "导出我的数据",
     "success": "数据已下载",

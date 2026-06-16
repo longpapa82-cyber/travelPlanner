@@ -87,6 +87,16 @@
       "passwordRequired": "Lütfen şifrenizi girin"
     }
   },
+  "reauth": {
+    "title": "Yönetici erişimini onayla",
+    "passwordConfirm": "Devam etmek için şifrenizi tekrar girin",
+    "passwordPlaceholder": "Şifre girin",
+    "confirmButton": "Onayla",
+    "alerts": {
+      "failed": "Şifre eşleşmiyor",
+      "passwordRequired": "Lütfen şifrenizi girin"
+    }
+  },
   "exportData": {
     "button": "Verilerimi dışa aktar",
     "success": "Veriler başarıyla indirildi",

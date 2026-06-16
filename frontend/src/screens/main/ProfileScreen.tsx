@@ -191,6 +191,17 @@ const ProfileScreen = ({ navigation }: any) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const deletePasswordInputRef = useRef<TextInput>(null);
 
+  // Re-authentication gate for the service-admin area ("sudo mode"). A logged-in
+  // admin re-confirms their own password before the admin screens open. The
+  // password is verified server-side; we only navigate on { verified: true }.
+  // Grace period: session-only (re-prompt on every entry — no timestamp held).
+  const [showReauth, setShowReauth] = useState(false);
+  const [reauthPassword, setReauthPassword] = useState('');
+  const [isReauthing, setIsReauthing] = useState(false);
+  // The admin route the gate is protecting; navigated to only after success.
+  const reauthTargetRef = useRef<'AdminDashboard' | 'AdDebug' | null>(null);
+  const reauthInputRef = useRef<TextInput>(null);
+
   const showPlaySubscriptionWarningIfNeeded = async (): Promise<boolean> => {
     if (!isPremium) return true;
     return new Promise((resolve) => {
@@ -302,6 +313,49 @@ const ProfileScreen = ({ navigation }: any) => {
       showToast({ type: 'error', message: error.response?.data?.message || t('deleteAccount.alerts.failed'), position: 'top' });
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  // Open the re-auth gate for an admin route. OAuth-only accounts have no
+  // password to confirm, so the server would reject with REAUTH_NO_PASSWORD;
+  // we detect that locally and navigate straight through (the admin gate is
+  // still enforced server-side by AdminGuard on every admin API call).
+  const openAdminArea = (target: 'AdminDashboard' | 'AdDebug') => {
+    if (user?.provider !== 'email') {
+      navigation.navigate(target);
+      return;
+    }
+    reauthTargetRef.current = target;
+    setReauthPassword('');
+    setShowReauth(true);
+  };
+
+  const handleConfirmReauth = async () => {
+    Keyboard.dismiss();
+    if (!reauthPassword.trim()) {
+      showToast({ type: 'warning', message: t('reauth.alerts.passwordRequired'), position: 'top' });
+      return;
+    }
+    setIsReauthing(true);
+    try {
+      await apiService.verifyPassword(reauthPassword);
+      const target = reauthTargetRef.current;
+      setShowReauth(false);
+      setReauthPassword('');
+      if (target) navigation.navigate(target);
+    } catch (error: any) {
+      const code = error.response?.data?.code;
+      // OAuth-only account somehow reached here — let them through (server
+      // still gates the admin APIs). Closes the modal cleanly.
+      if (code === 'REAUTH_NO_PASSWORD') {
+        const target = reauthTargetRef.current;
+        setShowReauth(false);
+        if (target) navigation.navigate(target);
+        return;
+      }
+      showToast({ type: 'error', message: error.response?.data?.message || t('reauth.alerts.failed'), position: 'top' });
+    } finally {
+      setIsReauthing(false);
     }
   };
 
@@ -826,12 +880,12 @@ const ProfileScreen = ({ navigation }: any) => {
       {isServiceAdmin && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('sections.admin')}</Text>
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdminDashboard')} accessibilityRole="button" accessibilityLabel={t('menu.admin')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => openAdminArea('AdminDashboard')} accessibilityRole="button" accessibilityLabel={t('menu.admin')}>
             <Icon name="shield-crown-outline" size={24} color={theme.colors.primary} />
             <Text style={styles.menuText}>{t('menu.admin')}</Text>
             <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdDebug')} accessibilityRole="button" accessibilityLabel="Ad Debug">
+          <TouchableOpacity style={styles.menuItem} onPress={() => openAdminArea('AdDebug')} accessibilityRole="button" accessibilityLabel="Ad Debug">
             <Icon name="bug-outline" size={24} color={theme.colors.primary} />
             <Text style={styles.menuText}>Ad Debug</Text>
             <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
@@ -1096,6 +1150,68 @@ const ProfileScreen = ({ navigation }: any) => {
                   <Button variant="primary" fullWidth onPress={handleConfirmDelete} loading={isDeleting} disabled={isDeleting}
                     style={{ backgroundColor: colors.error.main }}>
                     {t('deleteAccount.button')}
+                  </Button>
+                </View>
+              </View>
+            </Pressable>
+          </KeyboardAvoidingView>
+        </Pressable>
+      </Modal>
+
+      {/* Admin Re-authentication (서비스 관리자 비밀번호 재확인) Modal.
+          Mirrors the delete-account modal's keyboard handling (animationType
+          none + onShow focus + Android flex-end) so the password field and
+          keyboard activate immediately without the jank that dynamic
+          justifyContent switching caused. */}
+      <Modal
+        visible={showReauth}
+        transparent
+        animationType="none"
+        onRequestClose={() => setShowReauth(false)}
+        onShow={() => {
+          reauthInputRef.current?.focus();
+        }}
+      >
+        <Pressable
+          style={{
+            flex: 1,
+            justifyContent: Platform.OS === 'android' ? 'flex-end' : 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            padding: 20,
+            paddingBottom: Platform.OS === 'android' ? 12 : 20,
+          }}
+          onPress={() => Keyboard.dismiss()}
+        >
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} enabled={Platform.OS === 'ios'} style={{ width: '100%' }}>
+            <Pressable onPress={(e) => e.stopPropagation()}>
+              <View style={[styles.deleteModalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+                <View style={styles.modalHeader}>
+                  <Text style={[styles.modalTitle, { color: theme.colors.text }]}>{t('reauth.title')}</Text>
+                  <TouchableOpacity onPress={() => setShowReauth(false)}>
+                    <Icon name="close" size={24} color={theme.colors.textSecondary} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.modalBody}>
+                  <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('reauth.passwordConfirm')}</Text>
+                  <TextInput
+                    ref={reauthInputRef}
+                    style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
+                    value={reauthPassword}
+                    onChangeText={setReauthPassword}
+                    placeholder={t('reauth.passwordPlaceholder')}
+                    placeholderTextColor={theme.colors.textSecondary}
+                    secureTextEntry
+                    autoComplete="off"
+                    importantForAutofill="no"
+                    autoCapitalize="none"
+                    editable={!isReauthing}
+                    autoFocus
+                    returnKeyType="done"
+                    onSubmitEditing={handleConfirmReauth}
+                  />
+                  <Button variant="primary" fullWidth onPress={handleConfirmReauth} loading={isReauthing} disabled={isReauthing}>
+                    {t('reauth.confirmButton')}
                   </Button>
                 </View>
               </View>

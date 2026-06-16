@@ -332,6 +332,94 @@ export class AuthService {
     };
   }
 
+  /**
+   * Re-authentication gate. An already-logged-in user re-confirms their own
+   * password before entering a sensitive area (service admin). This is the
+   * "sudo mode" pattern: possessing a valid access token is not enough; the
+   * caller must prove live knowledge of the password.
+   *
+   * Security properties:
+   *  - The caller is bound to their own token: userId comes from JwtAuthGuard,
+   *    NOT from the request body, so a user can only re-verify *their own*
+   *    password.
+   *  - Brute-force is dampened by a dedicated Redis counter (separate from the
+   *    login counter so a re-auth attack cannot lock out the normal login
+   *    path, and vice versa) plus the controller-level @Throttle.
+   *  - OAuth-only accounts (Google/Apple/Kakao) have no passwordHash. They
+   *    cannot satisfy a password challenge, so we reject with a distinct code
+   *    the client can branch on to skip the password modal entirely.
+   *
+   * Returns `{ verified: true }` on success. Throws UnauthorizedException with
+   * a stable `code` otherwise. Does NOT issue new tokens — re-auth is a
+   * confirmation, not a fresh login.
+   */
+  private readonly REAUTH_MAX_ATTEMPTS = 10;
+  private readonly REAUTH_LOCKOUT_TTL = 15 * 60 * 1000; // 15 minutes
+
+  async verifyPassword(
+    userId: string,
+    password: string,
+    lang: SupportedLang = 'ko',
+  ): Promise<{ verified: true }> {
+    // Resolve the caller's own account. findById does not select passwordHash
+    // (select:false), so we re-fetch via findByEmail which addSelect()s it —
+    // the same hash-bearing path login() uses.
+    const profile = await this.usersService.findById(userId);
+
+    const lockKey = `reauth_attempts:${userId}`;
+    const attempts = await this.cacheManager.get<number>(lockKey);
+    if (
+      attempts !== null &&
+      attempts !== undefined &&
+      attempts >= this.REAUTH_MAX_ATTEMPTS
+    ) {
+      throw new HttpException(
+        {
+          code: AUTH_ERROR_CODES.ACCOUNT_LOCKED,
+          message: t('auth.account.locked', lang),
+        },
+        HttpStatus.LOCKED,
+      );
+    }
+
+    // OAuth-only accounts can't be password-challenged. Surface a distinct
+    // code so the client skips the modal instead of showing "wrong password".
+    if (profile.provider !== AuthProvider.EMAIL || !profile.email) {
+      throw new UnauthorizedException({
+        code: AUTH_ERROR_CODES.REAUTH_NO_PASSWORD,
+        message: t('auth.reauth.noPassword', lang),
+      });
+    }
+
+    const user = await this.usersService.findByEmail(profile.email);
+    const isPasswordValid =
+      !!user && (await this.usersService.validatePassword(user, password));
+
+    if (!isPasswordValid) {
+      const current = (await this.cacheManager.get<number>(lockKey)) || 0;
+      await this.cacheManager.set(
+        lockKey,
+        current + 1,
+        this.REAUTH_LOCKOUT_TTL,
+      );
+      this.auditService
+        .log({
+          userId,
+          action: AuditAction.LOGIN_FAILED,
+          metadata: { reason: 'reauth_invalid_password' },
+        })
+        .catch(() => {});
+      throw new UnauthorizedException({
+        code: AUTH_ERROR_CODES.INVALID_CREDENTIALS,
+        message: t('auth.invalid.credentials', lang),
+      });
+    }
+
+    // Success — clear the re-auth attempt counter.
+    await this.cacheManager.del(lockKey);
+    return { verified: true };
+  }
+
   private async incrementLoginAttempts(lockKey: string): Promise<void> {
     const current = (await this.cacheManager.get<number>(lockKey)) || 0;
     await this.cacheManager.set(lockKey, current + 1, this.LOGIN_LOCKOUT_TTL);

@@ -305,6 +305,21 @@ class ApiService {
     return response.data;
   }
 
+  /*
+   * Re-authentication gate ("sudo mode"): an already-logged-in user re-confirms
+   * their own password before entering a sensitive area (service admin). The
+   * password is verified server-side against the stored hash; we only receive
+   * { verified: true } or a 401 with a stable `code`. Does NOT issue new tokens.
+   *
+   * Callers should let the axios error propagate and branch on the backend
+   * `code` (e.g. REAUTH_NO_PASSWORD for OAuth-only accounts) via the standard
+   * error-handling path.
+   */
+  async verifyPassword(password: string): Promise<{ verified: true }> {
+    const response = await this.api.post('/auth/verify-password', { password });
+    return response.data as { verified: true };
+  }
+
   async register(email: string, password: string, name: string): Promise<RegisterResponse> {
     const response = await this.api.post('/auth/register', { email, password, name });
     return response.data as RegisterResponse;

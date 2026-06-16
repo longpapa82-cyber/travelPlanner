@@ -87,6 +87,16 @@
       "passwordRequired": "Bitte geben Sie Ihr Passwort ein"
     }
   },
+  "reauth": {
+    "title": "Administratorzugriff bestätigen",
+    "passwordConfirm": "Geben Sie Ihr Passwort erneut ein, um fortzufahren",
+    "passwordPlaceholder": "Passwort eingeben",
+    "confirmButton": "Bestätigen",
+    "alerts": {
+      "failed": "Das Passwort stimmt nicht überein",
+      "passwordRequired": "Bitte geben Sie Ihr Passwort ein"
+    }
+  },
   "exportData": {
     "button": "Meine Daten exportieren",
     "success": "Daten erfolgreich heruntergeladen",

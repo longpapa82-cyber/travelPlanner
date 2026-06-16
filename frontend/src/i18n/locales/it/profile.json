@@ -87,6 +87,16 @@
       "passwordRequired": "Inserisci la tua password"
     }
   },
+  "reauth": {
+    "title": "Conferma accesso amministratore",
+    "passwordConfirm": "Inserisci di nuovo la password per continuare",
+    "passwordPlaceholder": "Inserisci la password",
+    "confirmButton": "Conferma",
+    "alerts": {
+      "failed": "La password non corrisponde",
+      "passwordRequired": "Inserisci la tua password"
+    }
+  },
   "exportData": {
     "button": "Esporta i miei dati",
     "success": "Dati scaricati con successo",

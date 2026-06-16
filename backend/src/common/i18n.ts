@@ -778,6 +778,25 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     tr: 'Çok fazla başarısız giriş denemesi nedeniyle hesap geçici olarak kilitlendi. 15 dakika sonra tekrar deneyin.',
     ms: 'Akaun dikunci sementara kerana terlalu banyak percubaan log masuk yang gagal. Cuba lagi dalam 15 minit.',
   },
+  'auth.reauth.noPassword': {
+    ko: '소셜 로그인 계정은 비밀번호 확인을 사용할 수 없습니다.',
+    en: 'Password confirmation is not available for social login accounts.',
+    ja: 'ソーシャルログインアカウントではパスワード確認を使用できません。',
+    zh: '社交登录账户无法使用密码确认。',
+    es: 'La confirmación de contraseña no está disponible para cuentas de inicio de sesión social.',
+    de: 'Die Passwortbestätigung ist für Social-Login-Konten nicht verfügbar.',
+    fr: 'La confirmation du mot de passe n’est pas disponible pour les comptes de connexion sociale.',
+    th: 'การยืนยันรหัสผ่านไม่สามารถใช้ได้กับบัญชีที่เข้าสู่ระบบผ่านโซเชียล',
+    vi: 'Xác nhận mật khẩu không khả dụng cho tài khoản đăng nhập mạng xã hội.',
+    pt: 'A confirmação de senha não está disponível para contas de login social.',
+    ar: 'تأكيد كلمة المرور غير متاح لحسابات تسجيل الدخول عبر وسائل التواصل الاجتماعي.',
+    id: 'Konfirmasi kata sandi tidak tersedia untuk akun login sosial.',
+    hi: 'सोशल लॉगिन खातों के लिए पासवर्ड पुष्टि उपलब्ध नहीं है।',
+    it: 'La conferma della password non è disponibile per gli account di accesso social.',
+    ru: 'Подтверждение пароля недоступно для аккаунтов социального входа.',
+    tr: 'Sosyal giriş hesapları için parola onayı kullanılamaz.',
+    ms: 'Pengesahan kata laluan tidak tersedia untuk akaun log masuk sosial.',
+  },
 };
 
 export function parseLang(acceptLanguage?: string): SupportedLang {

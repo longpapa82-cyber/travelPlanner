@@ -87,6 +87,16 @@
       "passwordRequired": "Please enter your password"
     }
   },
+  "reauth": {
+    "title": "Confirm admin access",
+    "passwordConfirm": "Re-enter your password to continue",
+    "passwordPlaceholder": "Enter password",
+    "confirmButton": "Confirm",
+    "alerts": {
+      "failed": "Password does not match",
+      "passwordRequired": "Please enter your password"
+    }
+  },
   "exportData": {
     "button": "Export My Data",
     "success": "Data downloaded successfully",

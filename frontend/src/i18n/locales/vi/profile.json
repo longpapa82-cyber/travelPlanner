@@ -87,6 +87,16 @@
       "passwordRequired": "Vui lòng nhập mật khẩu"
     }
   },
+  "reauth": {
+    "title": "Xác nhận quyền truy cập quản trị",
+    "passwordConfirm": "Nhập lại mật khẩu của bạn để tiếp tục",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "confirmButton": "Xác nhận",
+    "alerts": {
+      "failed": "Mật khẩu không khớp",
+      "passwordRequired": "Vui lòng nhập mật khẩu của bạn"
+    }
+  },
   "exportData": {
     "button": "Xuất dữ liệu của tôi",
     "success": "Dữ liệu đã được tải xuống",
