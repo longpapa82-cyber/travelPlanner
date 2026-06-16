@@ -237,6 +237,21 @@ export class UsersService {
     return user;
   }
 
+  /**
+   * Non-throwing variant of findById. Returns null when the user does not
+   * exist instead of throwing NotFoundException.
+   *
+   * Used by JwtStrategy.validate: a token whose subject no longer exists
+   * (deleted account still holding a valid 15-min access token) must surface
+   * as 401 Unauthorized, not 404. Calling findById there made the strategy's
+   * own `if (!user) throw UnauthorizedException` dead code and leaked 404s to
+   * authenticated clients, bypassing their token-refresh/logout recovery path.
+   */
+  async findByIdOrNull(id: string): Promise<User | null> {
+    if (!id) return null;
+    return this.userRepository.findOne({ where: { id } });
+  }
+
   async findProfileById(id: string): Promise<Partial<User>> {
     if (!id) return null as any;
     const user = await this.userRepository.findOne({
