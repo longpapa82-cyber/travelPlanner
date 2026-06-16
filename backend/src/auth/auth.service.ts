@@ -29,6 +29,7 @@ import {
 import { t, SupportedLang } from '../common/i18n';
 import { isOperationalAdmin } from '../common/utils/admin-check';
 import { getErrorMessage } from '../common/types/request.types';
+import { isEmailDomainDeliverable } from '../common/email-domain';
 import { AuditService } from '../admin/audit.service';
 import { AuditAction } from '../admin/entities/audit-log.entity';
 import { detectPlatform } from '../common/utils/platform-detector';
@@ -91,6 +92,20 @@ export class AuthService {
     //   name, clear stale verification code) so a user who abandoned the
     //   verification step can complete signup without being permanently
     //   blocked by their own orphaned row.
+
+    // Best-effort domain deliverability check (fail-open) to catch obvious
+    // domain typos (e.g. "@gmial.com") before SMTP triggers a bounce. Only
+    // rejects when the domain CONCLUSIVELY cannot receive mail; transient DNS
+    // issues pass through so a real user is never blocked. Cannot validate the
+    // mailbox/local-part — only the domain.
+    const domainCheck = await isEmailDomainDeliverable(registerDto.email);
+    if (!domainCheck.deliverable) {
+      throw new BadRequestException({
+        code: AUTH_ERROR_CODES.EMAIL_DOMAIN_UNDELIVERABLE,
+        message: t('auth.invalid.email.domain', lang),
+      });
+    }
+
     const existingUser = await this.usersService.findByEmail(registerDto.email);
 
     let user;
