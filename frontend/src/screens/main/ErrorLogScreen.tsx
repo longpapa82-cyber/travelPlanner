@@ -5,7 +5,6 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
@@ -25,7 +24,6 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation('admin');
   const { isDark, theme } = useTheme();
   const { isAdmin } = usePremium();
-  const tabBarHeight = useBottomTabBarHeight();
 
   useEffect(() => {
     if (!isAdmin) navigation.goBack();
@@ -289,7 +287,6 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
         data={logs}
         keyExtractor={(item) => item.id}
         renderItem={renderLog}
-        contentContainerStyle={{ paddingBottom: tabBarHeight + 16 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         ListHeaderComponent={
           <>

@@ -4,7 +4,6 @@ import {
   ActivityIndicator, RefreshControl,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
@@ -61,7 +60,6 @@ type PeriodKey = '7d' | '30d' | 'mtd';
 const ApiUsageDashboardScreen: React.FC<Props> = ({ navigation }) => {
   const { isDark, theme } = useTheme();
   const { isAdmin } = usePremium();
-  const tabBarHeight = useBottomTabBarHeight();
 
   React.useEffect(() => {
     if (!isAdmin) navigation.goBack();
@@ -354,7 +352,6 @@ const ApiUsageDashboardScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={{ paddingBottom: tabBarHeight + 16 }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
     >
       {renderSummaryCards()}
