@@ -33,14 +33,7 @@ const ProfileNavigator = () => {
 
   return (
     <Stack.Navigator
-      screenOptions={{
-        ...makeStackScreenOptions(theme.colors.primary),
-        // native-stack applies a bottom safe-area inset to the scene; on admin
-        // ScrollView screens that inset strip showed the screen-grey scene
-        // background as a band hiding the last card. Paint the scene white so
-        // the strip blends with the white cards (light) / theme bg (dark).
-        contentStyle: { backgroundColor: theme.colors.white },
-      }}
+      screenOptions={makeStackScreenOptions(theme.colors.primary)}
     >
       <Stack.Screen
         name="ProfileMain"

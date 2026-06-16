@@ -59,6 +59,10 @@ const AdminDashboardScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
+    // DIAGNOSTIC: red root wrapper. If the grey gap below the last card turns
+    // red, the gap is inside the screen root (fixable here). If it stays grey,
+    // the gap is the native-stack scene padding (fix at navigator/tab level).
+    <View style={{ flex: 1, backgroundColor: 'red' }}>
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Icon name="shield-crown-outline" size={36} color={theme.colors.primary} />
@@ -133,6 +137,7 @@ const AdminDashboardScreen: React.FC<Props> = ({ navigation }) => {
 
       <View style={{ height: 40 }} />
     </ScrollView>
+    </View>
   );
 };
 
