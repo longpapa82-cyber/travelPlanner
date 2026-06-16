@@ -35,10 +35,11 @@ const ProfileNavigator = () => {
     <Stack.Navigator
       screenOptions={{
         ...makeStackScreenOptions(theme.colors.primary),
-        // DIAGNOSTIC: temporarily paint the scene content area red to confirm
-        // whether the grey gap below admin ScrollViews is the native-stack
-        // contentStyle background. Revert to theme bg / white once confirmed.
-        contentStyle: { backgroundColor: 'red' },
+        // native-stack applies a bottom safe-area inset to the scene; on admin
+        // ScrollView screens that inset strip showed the screen-grey scene
+        // background as a band hiding the last card. Paint the scene white so
+        // the strip blends with the white cards (light) / theme bg (dark).
+        contentStyle: { backgroundColor: theme.colors.white },
       }}
     >
       <Stack.Screen
