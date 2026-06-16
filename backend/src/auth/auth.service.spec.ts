@@ -12,12 +12,20 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthResponse } from './interfaces/auth-response.interface';
 import { isEmailDomainDeliverable } from '../common/email-domain';
+import { verifySync } from 'otplib';
 
 jest.mock('../common/email-domain');
 const mockIsEmailDomainDeliverable =
   isEmailDomainDeliverable as jest.MockedFunction<
     typeof isEmailDomainDeliverable
   >;
+
+// Mock otplib so TOTP re-auth tests can force valid/invalid without a real secret.
+jest.mock('otplib', () => ({
+  ...jest.requireActual('otplib'),
+  verifySync: jest.fn(),
+}));
+const mockVerifySync = verifySync as jest.MockedFunction<typeof verifySync>;
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -72,6 +80,8 @@ describe('AuthService', () => {
         .mockResolvedValue('mock-verification-token'),
       refreshUnverifiedRegistration: jest.fn(),
       hardDeleteUnverifiedUser: jest.fn().mockResolvedValue(undefined),
+      findByIdWithTwoFactor: jest.fn(),
+      updateBackupCodes: jest.fn().mockResolvedValue(undefined),
     };
 
     const mockJwtService = {
@@ -516,6 +526,11 @@ describe('AuthService', () => {
         // and the other subscription/quota fields consumed by the client.
         // mockUser has no admin role/email, so isAdmin is false.
         isAdmin: false,
+        // V188: service-admin flag (env SERVICE_ADMIN_EMAILS OR DB role).
+        // mockUser is neither, so false.
+        isServiceAdmin: false,
+        // V188: re-auth method hint. mockUser is email + 2FA off → password.
+        reauthMethod: 'password',
         subscriptionTier: mockUser.subscriptionTier,
         subscriptionPlatform: mockUser.subscriptionPlatform,
         subscriptionExpiresAt: mockUser.subscriptionExpiresAt,
@@ -919,6 +934,145 @@ describe('AuthService', () => {
       expect(authResult.accessToken).toBe(mockTokens.accessToken);
       expect(authResult.refreshToken).toBe(mockTokens.refreshToken);
       expect(jwtService.signAsync).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('getReauthMethod', () => {
+    it('2FA enabled → totp regardless of provider', () => {
+      expect(service.getReauthMethod(AuthProvider.GOOGLE, true)).toBe('totp');
+      expect(service.getReauthMethod(AuthProvider.EMAIL, true)).toBe('totp');
+    });
+    it('2FA off + email → password', () => {
+      expect(service.getReauthMethod(AuthProvider.EMAIL, false)).toBe(
+        'password',
+      );
+    });
+    it('2FA off + social → setup_2fa', () => {
+      expect(service.getReauthMethod(AuthProvider.GOOGLE, false)).toBe(
+        'setup_2fa',
+      );
+      expect(service.getReauthMethod(AuthProvider.APPLE, false)).toBe(
+        'setup_2fa',
+      );
+    });
+  });
+
+  describe('verifyReauth (re-authentication gate)', () => {
+    const emailUser = {
+      ...mockUser,
+      id: 'admin-id',
+      email: 'admin@example.com',
+      provider: AuthProvider.EMAIL,
+      isTwoFactorEnabled: false,
+    };
+
+    // --- password factor (2FA off, email) ---
+    it('password factor: verified when password matches', async () => {
+      cacheManager.get.mockResolvedValue(undefined);
+      usersService.findById.mockResolvedValue(emailUser as any);
+      usersService.findByEmail.mockResolvedValue(emailUser as any);
+      usersService.validatePassword.mockResolvedValue(true);
+
+      const result = await service.verifyReauth('admin-id', 'correct-pw');
+
+      expect(result).toEqual({ verified: true });
+      expect(usersService.findByEmail).toHaveBeenCalledWith(
+        'admin@example.com',
+      );
+      expect(cacheManager.del).toHaveBeenCalledWith('reauth_attempts:admin-id');
+    });
+
+    it('password factor: wrong password → INVALID_CREDENTIALS + counter++', async () => {
+      cacheManager.get.mockResolvedValue(undefined);
+      usersService.findById.mockResolvedValue(emailUser as any);
+      usersService.findByEmail.mockResolvedValue(emailUser as any);
+      usersService.validatePassword.mockResolvedValue(false);
+
+      await expect(service.verifyReauth('admin-id', 'wrong')).rejects.toThrow(
+        UnauthorizedException,
+      );
+      expect(cacheManager.set).toHaveBeenCalledWith(
+        'reauth_attempts:admin-id',
+        1,
+        expect.any(Number),
+      );
+      expect(cacheManager.del).not.toHaveBeenCalled();
+    });
+
+    // --- TOTP factor (2FA on, ANY provider incl. social) ---
+    it('totp factor: social account with 2FA passes via valid TOTP code', async () => {
+      const socialAdmin = {
+        ...mockUser,
+        id: 'social-admin',
+        provider: AuthProvider.GOOGLE,
+        email: 'svc@example.com',
+        isTwoFactorEnabled: true,
+      };
+      cacheManager.get.mockResolvedValue(undefined);
+      usersService.findById.mockResolvedValue(socialAdmin as any);
+      usersService.findByIdWithTwoFactor.mockResolvedValue({
+        ...socialAdmin,
+        twoFactorSecret: 'SECRET',
+        twoFactorBackupCodes: [],
+      } as any);
+      mockVerifySync.mockReturnValue({ valid: true } as any);
+
+      const result = await service.verifyReauth('social-admin', '123456');
+
+      expect(result).toEqual({ verified: true });
+      // Password path must NOT be touched for a 2FA account.
+      expect(usersService.validatePassword).not.toHaveBeenCalled();
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'reauth_attempts:social-admin',
+      );
+    });
+
+    it('totp factor: invalid code → INVALID_CREDENTIALS', async () => {
+      const socialAdmin = {
+        ...mockUser,
+        id: 'social-admin',
+        provider: AuthProvider.GOOGLE,
+        isTwoFactorEnabled: true,
+      };
+      cacheManager.get.mockResolvedValue(undefined);
+      usersService.findById.mockResolvedValue(socialAdmin as any);
+      usersService.findByIdWithTwoFactor.mockResolvedValue({
+        ...socialAdmin,
+        twoFactorSecret: 'SECRET',
+        twoFactorBackupCodes: [],
+      } as any);
+      mockVerifySync.mockReturnValue({ valid: false } as any);
+
+      await expect(
+        service.verifyReauth('social-admin', '000000'),
+      ).rejects.toThrow(UnauthorizedException);
+    });
+
+    // --- setup_2fa (social, no 2FA) — the residual gap, nudged not blocked ---
+    it('social account without 2FA → REAUTH_SETUP_2FA, no factor check', async () => {
+      cacheManager.get.mockResolvedValue(undefined);
+      usersService.findById.mockResolvedValue({
+        ...mockUser,
+        id: 'social-id',
+        provider: AuthProvider.GOOGLE,
+        isTwoFactorEnabled: false,
+      } as any);
+
+      await expect(
+        service.verifyReauth('social-id', 'anything'),
+      ).rejects.toThrow(UnauthorizedException);
+      expect(usersService.findByEmail).not.toHaveBeenCalled();
+      expect(usersService.findByIdWithTwoFactor).not.toHaveBeenCalled();
+    });
+
+    it('locks out after too many failed attempts', async () => {
+      cacheManager.get.mockResolvedValue(10);
+      usersService.findById.mockResolvedValue(emailUser as any);
+
+      await expect(
+        service.verifyReauth('admin-id', 'correct-pw'),
+      ).rejects.toThrow();
+      expect(usersService.validatePassword).not.toHaveBeenCalled();
     });
   });
 });

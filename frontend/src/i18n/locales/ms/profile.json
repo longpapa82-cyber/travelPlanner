@@ -87,6 +87,23 @@
       "passwordRequired": "Sila masukkan kata laluan anda"
     }
   },
+  "reauth": {
+    "title": "Sahkan akses pentadbir",
+    "passwordConfirm": "Masukkan semula kata laluan anda untuk meneruskan",
+    "passwordPlaceholder": "Masukkan kata laluan",
+    "confirmButton": "Sahkan",
+    "totpConfirm": "Masukkan kod dari aplikasi pengesah anda",
+    "totpPlaceholder": "Kod 6 digit",
+    "setup2fa": {
+      "title": "Pengesahan dua faktor diperlukan",
+      "message": "Demi keselamatan pentadbir, sila sediakan pengesahan dua faktor (2FA) terlebih dahulu.",
+      "goToSetup": "Sediakan 2FA"
+    },
+    "alerts": {
+      "failed": "Kata laluan tidak sepadan",
+      "passwordRequired": "Sila masukkan kata laluan anda"
+    }
+  },
   "exportData": {
     "button": "Eksport data saya",
     "success": "Data berjaya dimuat turun",

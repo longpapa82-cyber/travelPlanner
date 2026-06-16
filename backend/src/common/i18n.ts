@@ -778,6 +778,25 @@ const translations: Record<string, Record<SupportedLang, string>> = {
     tr: 'Çok fazla başarısız giriş denemesi nedeniyle hesap geçici olarak kilitlendi. 15 dakika sonra tekrar deneyin.',
     ms: 'Akaun dikunci sementara kerana terlalu banyak percubaan log masuk yang gagal. Cuba lagi dalam 15 minit.',
   },
+  'auth.reauth.setup2fa': {
+    ko: '관리자 보안을 위해 2단계 인증(2FA)을 먼저 설정해주세요.',
+    en: 'Please set up two-factor authentication (2FA) first for admin security.',
+    ja: '管理者セキュリティのため、まず二段階認証（2FA）を設定してください。',
+    zh: '为了管理员安全，请先设置两步验证（2FA）。',
+    es: 'Configura primero la autenticación de dos factores (2FA) para la seguridad de administrador.',
+    de: 'Bitte richten Sie zuerst die Zwei-Faktor-Authentifizierung (2FA) für die Admin-Sicherheit ein.',
+    fr: 'Veuillez d’abord configurer l’authentification à deux facteurs (2FA) pour la sécurité administrateur.',
+    th: 'โปรดตั้งค่าการยืนยันตัวตนสองขั้นตอน (2FA) ก่อนเพื่อความปลอดภัยของผู้ดูแลระบบ',
+    vi: 'Vui lòng thiết lập xác thực hai yếu tố (2FA) trước để bảo mật quản trị viên.',
+    pt: 'Configure primeiro a autenticação de dois fatores (2FA) para a segurança de administrador.',
+    ar: 'يرجى إعداد المصادقة الثنائية (2FA) أولاً لأمان المسؤول.',
+    id: 'Harap siapkan autentikasi dua faktor (2FA) terlebih dahulu untuk keamanan admin.',
+    hi: 'व्यवस्थापक सुरक्षा के लिए कृपया पहले दो-कारक प्रमाणीकरण (2FA) सेट करें।',
+    it: 'Configura prima l’autenticazione a due fattori (2FA) per la sicurezza amministratore.',
+    ru: 'Пожалуйста, сначала настройте двухфакторную аутентификацию (2FA) для безопасности администратора.',
+    tr: 'Yönetici güvenliği için lütfen önce iki faktörlü kimlik doğrulamayı (2FA) ayarlayın.',
+    ms: 'Sila sediakan pengesahan dua faktor (2FA) dahulu untuk keselamatan pentadbir.',
+  },
 };
 
 export function parseLang(acceptLanguage?: string): SupportedLang {

@@ -191,6 +191,17 @@ const ProfileScreen = ({ navigation }: any) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const deletePasswordInputRef = useRef<TextInput>(null);
 
+  // Re-authentication gate for the service-admin area ("sudo mode"). A logged-in
+  // admin re-confirms their own password before the admin screens open. The
+  // password is verified server-side; we only navigate on { verified: true }.
+  // Grace period: session-only (re-prompt on every entry — no timestamp held).
+  const [showReauth, setShowReauth] = useState(false);
+  const [reauthPassword, setReauthPassword] = useState('');
+  const [isReauthing, setIsReauthing] = useState(false);
+  // The admin route the gate is protecting; navigated to only after success.
+  const reauthTargetRef = useRef<'AdminDashboard' | 'AdDebug' | null>(null);
+  const reauthInputRef = useRef<TextInput>(null);
+
   const showPlaySubscriptionWarningIfNeeded = async (): Promise<boolean> => {
     if (!isPremium) return true;
     return new Promise((resolve) => {
@@ -304,6 +315,72 @@ const ProfileScreen = ({ navigation }: any) => {
       setIsDeleting(false);
     }
   };
+
+  // Open the re-auth gate for an admin route. The factor is decided by the
+  // server (user.reauthMethod):
+  //  - 'totp'     → 2FA enabled (any provider): ask for authenticator/backup code
+  //  - 'password' → 2FA off, email account: ask for password
+  //  - 'setup_2fa'→ 2FA off, social account: nudge to enable 2FA, then pass
+  //    (admin APIs stay gated server-side by AdminGuard).
+  const openAdminArea = (target: 'AdminDashboard' | 'AdDebug') => {
+    const method = user?.reauthMethod;
+
+    if (method === 'setup_2fa') {
+      reauthTargetRef.current = target;
+      confirm({
+        title: t('reauth.setup2fa.title'),
+        message: t('reauth.setup2fa.message'),
+        confirmText: t('reauth.setup2fa.goToSetup'),
+        cancelText: tCommon('cancel'),
+      }).then((ok) => {
+        if (ok) {
+          navigation.navigate('TwoFactorSettings');
+        } else {
+          // User declined to set up 2FA — still let them in (server-gated).
+          navigation.navigate(target);
+        }
+      });
+      return;
+    }
+
+    // totp / password (and the undefined cold-start case) → password-style modal.
+    reauthTargetRef.current = target;
+    setReauthPassword('');
+    setShowReauth(true);
+  };
+
+  const handleConfirmReauth = async () => {
+    Keyboard.dismiss();
+    if (!reauthPassword.trim()) {
+      showToast({ type: 'warning', message: t('reauth.alerts.passwordRequired'), position: 'top' });
+      return;
+    }
+    setIsReauthing(true);
+    try {
+      await apiService.reauth(reauthPassword);
+      const target = reauthTargetRef.current;
+      setShowReauth(false);
+      setReauthPassword('');
+      if (target) navigation.navigate(target);
+    } catch (error: any) {
+      const code = error.response?.data?.code;
+      // Social account with no 2FA reached the server — nudge to setup, then
+      // let them through (server still gates the admin APIs). Closes the modal.
+      if (code === 'REAUTH_SETUP_2FA') {
+        const target = reauthTargetRef.current;
+        setShowReauth(false);
+        showToast({ type: 'warning', message: error.response?.data?.message || t('reauth.setup2fa.message'), position: 'top' });
+        if (target) navigation.navigate(target);
+        return;
+      }
+      showToast({ type: 'error', message: error.response?.data?.message || t('reauth.alerts.failed'), position: 'top' });
+    } finally {
+      setIsReauthing(false);
+    }
+  };
+
+  // The modal asks for a TOTP code when 2FA is on, otherwise a password.
+  const reauthIsTotp = user?.reauthMethod === 'totp';
 
   const handleExportData = async () => {
     setIsExporting(true);
@@ -826,12 +903,12 @@ const ProfileScreen = ({ navigation }: any) => {
       {isServiceAdmin && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('sections.admin')}</Text>
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdminDashboard')} accessibilityRole="button" accessibilityLabel={t('menu.admin')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => openAdminArea('AdminDashboard')} accessibilityRole="button" accessibilityLabel={t('menu.admin')}>
             <Icon name="shield-crown-outline" size={24} color={theme.colors.primary} />
             <Text style={styles.menuText}>{t('menu.admin')}</Text>
             <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdDebug')} accessibilityRole="button" accessibilityLabel="Ad Debug">
+          <TouchableOpacity style={styles.menuItem} onPress={() => openAdminArea('AdDebug')} accessibilityRole="button" accessibilityLabel="Ad Debug">
             <Icon name="bug-outline" size={24} color={theme.colors.primary} />
             <Text style={styles.menuText}>Ad Debug</Text>
             <Icon name="chevron-right" size={24} color={theme.colors.textSecondary} />
@@ -1096,6 +1173,72 @@ const ProfileScreen = ({ navigation }: any) => {
                   <Button variant="primary" fullWidth onPress={handleConfirmDelete} loading={isDeleting} disabled={isDeleting}
                     style={{ backgroundColor: colors.error.main }}>
                     {t('deleteAccount.button')}
+                  </Button>
+                </View>
+              </View>
+            </Pressable>
+          </KeyboardAvoidingView>
+        </Pressable>
+      </Modal>
+
+      {/* Admin Re-authentication (서비스 관리자 비밀번호 재확인) Modal.
+          Mirrors the delete-account modal's keyboard handling (animationType
+          none + onShow focus + Android flex-end) so the password field and
+          keyboard activate immediately without the jank that dynamic
+          justifyContent switching caused. */}
+      <Modal
+        visible={showReauth}
+        transparent
+        animationType="none"
+        onRequestClose={() => setShowReauth(false)}
+        onShow={() => {
+          reauthInputRef.current?.focus();
+        }}
+      >
+        <Pressable
+          style={{
+            flex: 1,
+            justifyContent: Platform.OS === 'android' ? 'flex-end' : 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            padding: 20,
+            paddingBottom: Platform.OS === 'android' ? 12 : 20,
+          }}
+          onPress={() => Keyboard.dismiss()}
+        >
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} enabled={Platform.OS === 'ios'} style={{ width: '100%' }}>
+            <Pressable onPress={(e) => e.stopPropagation()}>
+              <View style={[styles.deleteModalContent, { backgroundColor: isDark ? colors.neutral[900] : colors.neutral[0] }]}>
+                <View style={styles.modalHeader}>
+                  <Text style={[styles.modalTitle, { color: theme.colors.text }]}>{t('reauth.title')}</Text>
+                  <TouchableOpacity onPress={() => setShowReauth(false)}>
+                    <Icon name="close" size={24} color={theme.colors.textSecondary} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.modalBody}>
+                  <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>
+                    {reauthIsTotp ? t('reauth.totpConfirm') : t('reauth.passwordConfirm')}
+                  </Text>
+                  <TextInput
+                    ref={reauthInputRef}
+                    style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
+                    value={reauthPassword}
+                    onChangeText={setReauthPassword}
+                    placeholder={reauthIsTotp ? t('reauth.totpPlaceholder') : t('reauth.passwordPlaceholder')}
+                    placeholderTextColor={theme.colors.textSecondary}
+                    // TOTP: visible numeric code (6 digits). Password: masked.
+                    secureTextEntry={!reauthIsTotp}
+                    keyboardType={reauthIsTotp ? 'number-pad' : 'default'}
+                    autoComplete="off"
+                    importantForAutofill="no"
+                    autoCapitalize="none"
+                    editable={!isReauthing}
+                    autoFocus
+                    returnKeyType="done"
+                    onSubmitEditing={handleConfirmReauth}
+                  />
+                  <Button variant="primary" fullWidth onPress={handleConfirmReauth} loading={isReauthing} disabled={isReauthing}>
+                    {t('reauth.confirmButton')}
                   </Button>
                 </View>
               </View>

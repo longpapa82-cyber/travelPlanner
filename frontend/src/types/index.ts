@@ -11,6 +11,19 @@ export interface User {
   isTwoFactorEnabled?: boolean;
   /** V174 (P0-3): server-side operational admin flag (env OR DB role). */
   isAdmin?: boolean;
+  /**
+   * V188: server-side service-admin flag (SERVICE_ADMIN_EMAILS env OR DB role).
+   * Gates the in-app admin menu. Narrower than isAdmin — replaces the former
+   * hardcoded SERVICE_ADMIN_EMAILS list so admins can be added server-side.
+   */
+  isServiceAdmin?: boolean;
+  /**
+   * V188: which factor the re-auth gate (service-admin entry) will demand.
+   * - 'totp': 2FA enabled (any provider) → authenticator/backup code
+   * - 'password': 2FA off, email account → password
+   * - 'setup_2fa': 2FA off, social account → nudge to enable 2FA, then pass
+   */
+  reauthMethod?: 'totp' | 'password' | 'setup_2fa';
   travelPreferences?: TripPreferences;
   subscriptionTier?: SubscriptionTier;
   subscriptionPlatform?: string;

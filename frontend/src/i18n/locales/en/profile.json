@@ -87,6 +87,23 @@
       "passwordRequired": "Please enter your password"
     }
   },
+  "reauth": {
+    "title": "Confirm admin access",
+    "passwordConfirm": "Re-enter your password to continue",
+    "passwordPlaceholder": "Enter password",
+    "confirmButton": "Confirm",
+    "totpConfirm": "Enter the code from your authenticator app",
+    "totpPlaceholder": "6-digit code",
+    "setup2fa": {
+      "title": "Two-factor authentication required",
+      "message": "Please set up two-factor authentication (2FA) first for admin security.",
+      "goToSetup": "Set up 2FA"
+    },
+    "alerts": {
+      "failed": "Password does not match",
+      "passwordRequired": "Please enter your password"
+    }
+  },
   "exportData": {
     "button": "Export My Data",
     "success": "Data downloaded successfully",

@@ -87,6 +87,23 @@
       "passwordRequired": "비밀번호를 입력해주세요"
     }
   },
+  "reauth": {
+    "title": "관리자 접근 확인",
+    "passwordConfirm": "계속하려면 비밀번호를 다시 입력하세요",
+    "passwordPlaceholder": "비밀번호 입력",
+    "confirmButton": "확인",
+    "totpConfirm": "인증 앱의 코드를 입력하세요",
+    "totpPlaceholder": "6자리 코드",
+    "setup2fa": {
+      "title": "2단계 인증 필요",
+      "message": "관리자 보안을 위해 2단계 인증(2FA)을 먼저 설정해주세요.",
+      "goToSetup": "2FA 설정하기"
+    },
+    "alerts": {
+      "failed": "비밀번호가 일치하지 않습니다",
+      "passwordRequired": "비밀번호를 입력해주세요"
+    }
+  },
   "exportData": {
     "button": "내 데이터 내보내기",
     "success": "데이터가 다운로드되었습니다",

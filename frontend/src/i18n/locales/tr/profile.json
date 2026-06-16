@@ -87,6 +87,23 @@
       "passwordRequired": "Lütfen şifrenizi girin"
     }
   },
+  "reauth": {
+    "title": "Yönetici erişimini onayla",
+    "passwordConfirm": "Devam etmek için şifrenizi tekrar girin",
+    "passwordPlaceholder": "Şifre girin",
+    "confirmButton": "Onayla",
+    "totpConfirm": "Kimlik doğrulama uygulamanızdaki kodu girin",
+    "totpPlaceholder": "6 haneli kod",
+    "setup2fa": {
+      "title": "İki faktörlü kimlik doğrulama gerekli",
+      "message": "Yönetici güvenliği için lütfen önce iki faktörlü kimlik doğrulamayı (2FA) ayarlayın.",
+      "goToSetup": "2FA'yı ayarla"
+    },
+    "alerts": {
+      "failed": "Şifre eşleşmiyor",
+      "passwordRequired": "Lütfen şifrenizi girin"
+    }
+  },
   "exportData": {
     "button": "Verilerimi dışa aktar",
     "success": "Veriler başarıyla indirildi",

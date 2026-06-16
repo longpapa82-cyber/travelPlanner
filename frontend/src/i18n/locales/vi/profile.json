@@ -87,6 +87,23 @@
       "passwordRequired": "Vui lòng nhập mật khẩu"
     }
   },
+  "reauth": {
+    "title": "Xác nhận quyền truy cập quản trị",
+    "passwordConfirm": "Nhập lại mật khẩu của bạn để tiếp tục",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "confirmButton": "Xác nhận",
+    "totpConfirm": "Nhập mã từ ứng dụng xác thực của bạn",
+    "totpPlaceholder": "Mã 6 chữ số",
+    "setup2fa": {
+      "title": "Yêu cầu xác thực hai yếu tố",
+      "message": "Để bảo mật quản trị viên, vui lòng thiết lập xác thực hai yếu tố (2FA) trước.",
+      "goToSetup": "Thiết lập 2FA"
+    },
+    "alerts": {
+      "failed": "Mật khẩu không khớp",
+      "passwordRequired": "Vui lòng nhập mật khẩu của bạn"
+    }
+  },
   "exportData": {
     "button": "Xuất dữ liệu của tôi",
     "success": "Dữ liệu đã được tải xuống",

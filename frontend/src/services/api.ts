@@ -305,6 +305,21 @@ class ApiService {
     return response.data;
   }
 
+  /*
+   * Re-authentication gate ("sudo mode"): an already-logged-in user re-confirms
+   * a live factor before entering a sensitive area (service admin). `credential`
+   * is a password (2FA off, email) or a TOTP/backup code (2FA on) — the server
+   * picks the factor by account state (see user.reauthMethod). We only receive
+   * { verified: true } or a 401 with a stable `code`. Does NOT issue new tokens.
+   *
+   * Callers branch on the backend `code` (e.g. REAUTH_SETUP_2FA for a social
+   * account with no 2FA) via the standard error-handling path.
+   */
+  async reauth(credential: string): Promise<{ verified: true }> {
+    const response = await this.api.post('/auth/reauth', { credential });
+    return response.data as { verified: true };
+  }
+
   async register(email: string, password: string, name: string): Promise<RegisterResponse> {
     const response = await this.api.post('/auth/register', { email, password, name });
     return response.data as RegisterResponse;

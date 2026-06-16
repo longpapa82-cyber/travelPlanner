@@ -29,6 +29,18 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? '')
   .filter(Boolean);
 
 /**
+ * Service-admin allowlist. A *narrower* class than operational admin: it gates
+ * the in-app admin menu (revenue dashboard, manual subscription override, user
+ * management, error logs). Sourced from its OWN env var `SERVICE_ADMIN_EMAILS`
+ * — deliberately separate from ADMIN_EMAILS so an operational admin (quota
+ * bypass) is not automatically granted the financial/destructive admin UI.
+ */
+const SERVICE_ADMIN_EMAILS = (process.env.SERVICE_ADMIN_EMAILS ?? '')
+  .split(',')
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
+
+/**
  * Soft admin check for quota bypass and UI flag. Honors both DB role and
  * the ADMIN_EMAILS env list (OR-combined). Treats `email`/`role` as
  * optional so it can be called with partial user rows.
@@ -51,4 +63,25 @@ export function isOperationalAdmin(
  */
 export function isSecurityAdmin(role: string | null | undefined): boolean {
   return role === 'admin';
+}
+
+/**
+ * Service-admin check for the in-app admin menu (revenue dashboard, manual
+ * subscription override, user management). Grants when the email is in
+ * SERVICE_ADMIN_EMAILS OR the DB role is admin — the DB role is OR'd in so a
+ * future migration to pure role-based admin (the security-preferred path) works
+ * without touching the env list.
+ *
+ * This intentionally does NOT honor ADMIN_EMAILS: operational admin (quota
+ * bypass) is a wider, lower-trust class. Keeping the lists separate means
+ * adding someone to ADMIN_EMAILS for unlimited AI trips does not also hand them
+ * the financial/destructive admin screens.
+ */
+export function isServiceAdmin(
+  email: string | null | undefined,
+  role: string | null | undefined,
+): boolean {
+  if (role === 'admin') return true;
+  if (!email) return false;
+  return SERVICE_ADMIN_EMAILS.includes(email.toLowerCase());
 }

@@ -15,6 +15,10 @@ export const AUTH_ERROR_CODES = {
   ACCOUNT_DELETED: 'ACCOUNT_DELETED',
   TWO_FACTOR_REQUIRED: 'TWO_FACTOR_REQUIRED',
   INVALID_TWO_FACTOR: 'INVALID_TWO_FACTOR',
+  // Re-authentication: a social account with no 2FA has no factor to challenge.
+  // The client nudges the user to enable 2FA, then lets them through (admin APIs
+  // stay gated by AdminGuard). Supersedes the password-only REAUTH_NO_PASSWORD.
+  REAUTH_SETUP_2FA: 'REAUTH_SETUP_2FA',
 } as const;
 
 export type AuthErrorCode =
