@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -35,6 +36,7 @@ const TYPE_COLORS: Record<string, string> = {
 const AnnouncementManagementScreen: React.FC<Props> = ({ navigation }) => {
   const { t, i18n } = useTranslation('admin');
   const { theme } = useTheme();
+  const tabBarHeight = useBottomTabBarHeight();
   const [announcements, setAnnouncements] = useState<AnnouncementAdmin[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -149,7 +151,7 @@ const AnnouncementManagementScreen: React.FC<Props> = ({ navigation }) => {
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={() => fetchAnnouncements(1)} />
         }
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, { paddingBottom: tabBarHeight + 80 }]}
         ListEmptyComponent={
           !isLoading ? (
             <View style={styles.empty}>

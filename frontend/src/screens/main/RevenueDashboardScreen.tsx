@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -38,6 +39,7 @@ const RevenueDashboardScreen = ({ navigation }: any) => {
   const { t } = useTranslation(['profile', 'admin']);
   const { theme, isDark } = useTheme();
   const { isAdmin } = usePremium();
+  const tabBarHeight = useBottomTabBarHeight();
 
   React.useEffect(() => {
     if (!isAdmin) navigation.goBack();
@@ -103,6 +105,7 @@ const RevenueDashboardScreen = ({ navigation }: any) => {
   return (
     <ScrollView
       style={styles.container}
+      contentContainerStyle={{ paddingBottom: tabBarHeight + 16 }}
       refreshControl={
         <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} tintColor={theme.colors.primary} />
       }
