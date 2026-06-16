@@ -570,6 +570,7 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
 
       <ScrollView
         style={styles.content}
+        contentContainerStyle={{ paddingBottom: 96 }}
         removeClippedSubviews={Platform.OS !== 'web'}
         onScroll={handleScroll}
         scrollEventThrottle={400}

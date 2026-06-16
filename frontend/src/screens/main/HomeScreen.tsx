@@ -247,6 +247,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const scrollContent = (
     <ScrollView
       style={styles.container}
+      contentContainerStyle={{ paddingBottom: 96 }}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />

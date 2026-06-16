@@ -309,7 +309,7 @@ const createStyles = (theme: any, isDark: boolean) =>
       alignItems: 'center',
     },
     listContent: {
-      paddingBottom: 20,
+      paddingBottom: 96,
     },
     card: {
       marginHorizontal: 16,

@@ -568,6 +568,7 @@ const ProfileScreen = ({ navigation }: any) => {
       </View>
       <ScrollView
         style={styles.container}
+        contentContainerStyle={{ paddingBottom: 96 }}
         refreshControl={
           <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
         }

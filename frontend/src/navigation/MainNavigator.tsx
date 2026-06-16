@@ -124,7 +124,12 @@ const MainNavigator = () => {
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.textSecondary,
+        // position:absolute floats the tab bar over the scene so each screen's
+        // scroll area extends full-height (behind the bar) instead of being cut
+        // ~insets.bottom above it — which clipped content while scrolling on
+        // admin screens. Screens add bottom padding to clear the floating bar.
         tabBarStyle: {
+          position: 'absolute',
           backgroundColor: isDark ? darkColors.background.secondary : colors.neutral[0],
           borderTopWidth: 1,
           borderTopColor: isDark ? darkColors.border.light : colors.neutral[200],

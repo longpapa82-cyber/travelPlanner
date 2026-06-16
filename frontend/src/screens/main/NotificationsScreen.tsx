@@ -347,7 +347,7 @@ const NotificationsScreen = () => {
         data={notifications}
         renderItem={renderItem}
         keyExtractor={item => item.id}
-        contentContainerStyle={notifications.length === 0 ? styles.emptyContainer : undefined}
+        contentContainerStyle={notifications.length === 0 ? styles.emptyContainer : styles.listContent}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
@@ -473,6 +473,9 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
     emptyContainer: {
       flex: 1,
+    },
+    listContent: {
+      paddingBottom: 96,
     },
     emptyState: {
       flex: 1,
