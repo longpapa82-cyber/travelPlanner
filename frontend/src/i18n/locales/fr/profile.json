@@ -92,6 +92,13 @@
     "passwordConfirm": "Saisissez à nouveau votre mot de passe pour continuer",
     "passwordPlaceholder": "Saisir le mot de passe",
     "confirmButton": "Confirmer",
+    "totpConfirm": "Saisissez le code de votre application d'authentification",
+    "totpPlaceholder": "Code à 6 chiffres",
+    "setup2fa": {
+      "title": "Authentification à deux facteurs requise",
+      "message": "Pour la sécurité de l'administrateur, veuillez d'abord configurer l'authentification à deux facteurs (2FA).",
+      "goToSetup": "Configurer la 2FA"
+    },
     "alerts": {
       "failed": "Le mot de passe ne correspond pas",
       "passwordRequired": "Veuillez saisir votre mot de passe"

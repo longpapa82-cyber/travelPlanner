@@ -92,6 +92,13 @@
     "passwordConfirm": "请重新输入密码以继续",
     "passwordPlaceholder": "输入密码",
     "confirmButton": "确认",
+    "totpConfirm": "请输入身份验证器应用中的代码",
+    "totpPlaceholder": "6位验证码",
+    "setup2fa": {
+      "title": "需要双重验证",
+      "message": "为保障管理员安全，请先设置双重验证（2FA）。",
+      "goToSetup": "设置 2FA"
+    },
     "alerts": {
       "failed": "密码不匹配",
       "passwordRequired": "请输入密码"

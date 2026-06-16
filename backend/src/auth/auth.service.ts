@@ -336,37 +336,50 @@ export class AuthService {
   }
 
   /**
-   * Re-authentication gate. An already-logged-in user re-confirms their own
-   * password before entering a sensitive area (service admin). This is the
-   * "sudo mode" pattern: possessing a valid access token is not enough; the
-   * caller must prove live knowledge of the password.
+   * Re-authentication gate ("sudo mode"). An already-logged-in user re-confirms
+   * a live authentication factor before entering a sensitive area (service
+   * admin). Possessing a valid access token is not enough.
+   *
+   * The factor is chosen by ACCOUNT STATE, not by the caller (server-authoritative):
+   *  - 2FA enabled (ANY provider, incl. Google/Apple) → TOTP code or backup code.
+   *    This is what lets a social-login admin re-authenticate at all — they have
+   *    no password, but TOTP is provider-independent.
+   *  - 2FA disabled + email provider → password.
+   *  - 2FA disabled + social provider → cannot challenge (REAUTH_SETUP_2FA). The
+   *    client nudges them to enable 2FA; the admin APIs stay gated by AdminGuard.
+   *
+   * Use `getReauthMethod()` so the client knows which input to collect. The
+   * verification itself always happens here.
    *
    * Security properties:
-   *  - The caller is bound to their own token: userId comes from JwtAuthGuard,
-   *    NOT from the request body, so a user can only re-verify *their own*
-   *    password.
-   *  - Brute-force is dampened by a dedicated Redis counter (separate from the
-   *    login counter so a re-auth attack cannot lock out the normal login
-   *    path, and vice versa) plus the controller-level @Throttle.
-   *  - OAuth-only accounts (Google/Apple/Kakao) have no passwordHash. They
-   *    cannot satisfy a password challenge, so we reject with a distinct code
-   *    the client can branch on to skip the password modal entirely.
-   *
-   * Returns `{ verified: true }` on success. Throws UnauthorizedException with
-   * a stable `code` otherwise. Does NOT issue new tokens — re-auth is a
-   * confirmation, not a fresh login.
+   *  - Caller bound to their own token: userId comes from JwtAuthGuard, never
+   *    the body — a user can only re-verify themselves.
+   *  - Dedicated Redis counter (separate from login + from 2fa-login counters)
+   *    plus controller @Throttle dampen brute force.
+   *  - Returns { verified: true } on success; throws with a stable `code`
+   *    otherwise. Never issues new tokens — re-auth is a confirmation.
    */
   private readonly REAUTH_MAX_ATTEMPTS = 10;
   private readonly REAUTH_LOCKOUT_TTL = 15 * 60 * 1000; // 15 minutes
 
-  async verifyPassword(
+  /**
+   * Which factor a given user must present for re-auth. Pure read — no side
+   * effects — so getProfile() can surface it as a UX hint.
+   */
+  getReauthMethod(
+    provider: AuthProvider,
+    isTwoFactorEnabled: boolean,
+  ): 'totp' | 'password' | 'setup_2fa' {
+    if (isTwoFactorEnabled) return 'totp';
+    if (provider === AuthProvider.EMAIL) return 'password';
+    return 'setup_2fa';
+  }
+
+  async verifyReauth(
     userId: string,
-    password: string,
+    credential: string,
     lang: SupportedLang = 'ko',
   ): Promise<{ verified: true }> {
-    // Resolve the caller's own account. findById does not select passwordHash
-    // (select:false), so we re-fetch via findByEmail which addSelect()s it —
-    // the same hash-bearing path login() uses.
     const profile = await this.usersService.findById(userId);
 
     const lockKey = `reauth_attempts:${userId}`;
@@ -385,20 +398,26 @@ export class AuthService {
       );
     }
 
-    // OAuth-only accounts can't be password-challenged. Surface a distinct
-    // code so the client skips the modal instead of showing "wrong password".
-    if (profile.provider !== AuthProvider.EMAIL || !profile.email) {
+    const method = this.getReauthMethod(
+      profile.provider,
+      profile.isTwoFactorEnabled,
+    );
+
+    // Social account with no 2FA — nothing to challenge. The client should have
+    // routed to 2FA setup; surface a distinct code so it doesn't show "wrong".
+    if (method === 'setup_2fa') {
       throw new UnauthorizedException({
-        code: AUTH_ERROR_CODES.REAUTH_NO_PASSWORD,
-        message: t('auth.reauth.noPassword', lang),
+        code: AUTH_ERROR_CODES.REAUTH_SETUP_2FA,
+        message: t('auth.reauth.setup2fa', lang),
       });
     }
 
-    const user = await this.usersService.findByEmail(profile.email);
-    const isPasswordValid =
-      !!user && (await this.usersService.validatePassword(user, password));
+    const isValid =
+      method === 'totp'
+        ? await this.verifyTotpCredential(userId, credential)
+        : await this.verifyPasswordCredential(profile.email, credential);
 
-    if (!isPasswordValid) {
+    if (!isValid) {
       const current = (await this.cacheManager.get<number>(lockKey)) || 0;
       await this.cacheManager.set(
         lockKey,
@@ -409,7 +428,7 @@ export class AuthService {
         .log({
           userId,
           action: AuditAction.LOGIN_FAILED,
-          metadata: { reason: 'reauth_invalid_password' },
+          metadata: { reason: `reauth_invalid_${method}` },
         })
         .catch(() => {});
       throw new UnauthorizedException({
@@ -418,9 +437,52 @@ export class AuthService {
       });
     }
 
-    // Success — clear the re-auth attempt counter.
     await this.cacheManager.del(lockKey);
     return { verified: true };
+  }
+
+  /** Password factor: re-fetch via findByEmail (addSelects passwordHash). */
+  private async verifyPasswordCredential(
+    email: string | null | undefined,
+    password: string,
+  ): Promise<boolean> {
+    if (!email) return false;
+    const user = await this.usersService.findByEmail(email);
+    return !!user && (await this.usersService.validatePassword(user, password));
+  }
+
+  /** TOTP factor: 6-digit authenticator code OR a one-time backup code. */
+  private async verifyTotpCredential(
+    userId: string,
+    code: string,
+  ): Promise<boolean> {
+    const user = await this.usersService.findByIdWithTwoFactor(userId);
+    if (!user.twoFactorSecret) return false;
+
+    // TOTP first (verifySync throws on non-numeric input — e.g. a backup code).
+    try {
+      if (verifySync({ token: code, secret: user.twoFactorSecret }).valid) {
+        return true;
+      }
+    } catch {
+      // fall through to backup-code check
+    }
+
+    // Backup code fallback — single-use, consumed on success.
+    if (user.twoFactorBackupCodes) {
+      const codeHash = this.hashBackupCode(code.toUpperCase(), user.id);
+      const idx = user.twoFactorBackupCodes.indexOf(codeHash);
+      if (idx !== -1) {
+        const remaining = [...user.twoFactorBackupCodes];
+        remaining.splice(idx, 1);
+        await this.usersService.updateBackupCodes(user.id, remaining);
+        this.logger.warn(
+          `2FA backup code used for re-auth by user ${user.id}. Remaining: ${remaining.length}`,
+        );
+        return true;
+      }
+    }
+    return false;
   }
 
   private async incrementLoginAttempts(lockKey: string): Promise<void> {
@@ -553,6 +615,13 @@ export class AuthService {
     // from a hardcoded list — same single-source-of-truth fix V174 applied to
     // isAdmin. Sourced from SERVICE_ADMIN_EMAILS env OR DB role=admin.
     const isServiceAdminFlag = isServiceAdmin(user.email, user.role);
+    // V188: tells the client which factor the re-auth gate will demand
+    // (totp | password | setup_2fa) so it shows the right modal. Verification
+    // itself is server-side in verifyReauth().
+    const reauthMethod = this.getReauthMethod(
+      user.provider,
+      user.isTwoFactorEnabled,
+    );
     return {
       id: user.id,
       email: user.email,
@@ -563,6 +632,7 @@ export class AuthService {
       isTwoFactorEnabled: user.isTwoFactorEnabled,
       isAdmin,
       isServiceAdmin: isServiceAdminFlag,
+      reauthMethod,
       subscriptionTier: user.subscriptionTier,
       subscriptionPlatform: user.subscriptionPlatform,
       subscriptionExpiresAt: user.subscriptionExpiresAt,

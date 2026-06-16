@@ -16,7 +16,7 @@ import { AuthService, OAuthUserData } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { RegisterForceDto } from './dto/register-force.dto';
 import { LoginDto } from './dto/login.dto';
-import { VerifyPasswordDto } from './dto/verify-password.dto';
+import { ReauthDto } from './dto/reauth.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ExchangeOAuthCodeDto } from './dto/exchange-oauth-code.dto';
 import { VerifyTwoFactorDto, TwoFactorLoginDto } from './dto/two-factor.dto';
@@ -104,22 +104,24 @@ export class AuthController {
     return this.authService.getProfile(userId);
   }
 
-  // Re-authentication gate ("sudo mode"): a logged-in user re-confirms their
-  // own password before entering a sensitive area (service admin). userId comes
-  // from the guard, never the body, so callers can only re-verify themselves.
-  // Throttled to 5/min on top of the service-layer Redis attempt counter.
-  @Post('verify-password')
+  // Re-authentication gate ("sudo mode"): a logged-in user re-confirms a live
+  // factor before entering a sensitive area (service admin). The server picks
+  // the factor by account state (TOTP if 2FA on, else password) — see
+  // verifyReauth. The `credential` carries whichever the client collected.
+  // userId comes from the guard, never the body. Throttled to 5/min on top of
+  // the service-layer Redis attempt counter.
+  @Post('reauth')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @Throttle({ short: { ttl: 60000, limit: 5 } })
-  async verifyPassword(
+  async reauth(
     @CurrentUser('userId') userId: string,
-    @Body() dto: VerifyPasswordDto,
+    @Body() dto: ReauthDto,
     @Headers('accept-language') acceptLanguage?: string,
   ) {
-    return this.authService.verifyPassword(
+    return this.authService.verifyReauth(
       userId,
-      dto.password,
+      dto.credential,
       parseLang(acceptLanguage),
     );
   }

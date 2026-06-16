@@ -316,15 +316,34 @@ const ProfileScreen = ({ navigation }: any) => {
     }
   };
 
-  // Open the re-auth gate for an admin route. OAuth-only accounts have no
-  // password to confirm, so the server would reject with REAUTH_NO_PASSWORD;
-  // we detect that locally and navigate straight through (the admin gate is
-  // still enforced server-side by AdminGuard on every admin API call).
+  // Open the re-auth gate for an admin route. The factor is decided by the
+  // server (user.reauthMethod):
+  //  - 'totp'     → 2FA enabled (any provider): ask for authenticator/backup code
+  //  - 'password' → 2FA off, email account: ask for password
+  //  - 'setup_2fa'→ 2FA off, social account: nudge to enable 2FA, then pass
+  //    (admin APIs stay gated server-side by AdminGuard).
   const openAdminArea = (target: 'AdminDashboard' | 'AdDebug') => {
-    if (user?.provider !== 'email') {
-      navigation.navigate(target);
+    const method = user?.reauthMethod;
+
+    if (method === 'setup_2fa') {
+      reauthTargetRef.current = target;
+      confirm({
+        title: t('reauth.setup2fa.title'),
+        message: t('reauth.setup2fa.message'),
+        confirmText: t('reauth.setup2fa.goToSetup'),
+        cancelText: tCommon('cancel'),
+      }).then((ok) => {
+        if (ok) {
+          navigation.navigate('TwoFactorSettings');
+        } else {
+          // User declined to set up 2FA — still let them in (server-gated).
+          navigation.navigate(target);
+        }
+      });
       return;
     }
+
+    // totp / password (and the undefined cold-start case) → password-style modal.
     reauthTargetRef.current = target;
     setReauthPassword('');
     setShowReauth(true);
@@ -338,18 +357,19 @@ const ProfileScreen = ({ navigation }: any) => {
     }
     setIsReauthing(true);
     try {
-      await apiService.verifyPassword(reauthPassword);
+      await apiService.reauth(reauthPassword);
       const target = reauthTargetRef.current;
       setShowReauth(false);
       setReauthPassword('');
       if (target) navigation.navigate(target);
     } catch (error: any) {
       const code = error.response?.data?.code;
-      // OAuth-only account somehow reached here — let them through (server
-      // still gates the admin APIs). Closes the modal cleanly.
-      if (code === 'REAUTH_NO_PASSWORD') {
+      // Social account with no 2FA reached the server — nudge to setup, then
+      // let them through (server still gates the admin APIs). Closes the modal.
+      if (code === 'REAUTH_SETUP_2FA') {
         const target = reauthTargetRef.current;
         setShowReauth(false);
+        showToast({ type: 'warning', message: error.response?.data?.message || t('reauth.setup2fa.message'), position: 'top' });
         if (target) navigation.navigate(target);
         return;
       }
@@ -358,6 +378,9 @@ const ProfileScreen = ({ navigation }: any) => {
       setIsReauthing(false);
     }
   };
+
+  // The modal asks for a TOTP code when 2FA is on, otherwise a password.
+  const reauthIsTotp = user?.reauthMethod === 'totp';
 
   const handleExportData = async () => {
     setIsExporting(true);
@@ -1193,15 +1216,19 @@ const ProfileScreen = ({ navigation }: any) => {
                   </TouchableOpacity>
                 </View>
                 <View style={styles.modalBody}>
-                  <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>{t('reauth.passwordConfirm')}</Text>
+                  <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>
+                    {reauthIsTotp ? t('reauth.totpConfirm') : t('reauth.passwordConfirm')}
+                  </Text>
                   <TextInput
                     ref={reauthInputRef}
                     style={[styles.modalInput, { color: theme.colors.text, borderColor: theme.colors.border, backgroundColor: isDark ? colors.neutral[800] : colors.neutral[50] }]}
                     value={reauthPassword}
                     onChangeText={setReauthPassword}
-                    placeholder={t('reauth.passwordPlaceholder')}
+                    placeholder={reauthIsTotp ? t('reauth.totpPlaceholder') : t('reauth.passwordPlaceholder')}
                     placeholderTextColor={theme.colors.textSecondary}
-                    secureTextEntry
+                    // TOTP: visible numeric code (6 digits). Password: masked.
+                    secureTextEntry={!reauthIsTotp}
+                    keyboardType={reauthIsTotp ? 'number-pad' : 'default'}
                     autoComplete="off"
                     importantForAutofill="no"
                     autoCapitalize="none"

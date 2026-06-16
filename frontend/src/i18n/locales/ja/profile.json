@@ -92,6 +92,13 @@
     "passwordConfirm": "続行するにはパスワードを再入力してください",
     "passwordPlaceholder": "パスワードを入力",
     "confirmButton": "確認",
+    "totpConfirm": "認証アプリのコードを入力してください",
+    "totpPlaceholder": "6桁のコード",
+    "setup2fa": {
+      "title": "二段階認証が必要です",
+      "message": "管理者のセキュリティのため、まず二段階認証（2FA）を設定してください。",
+      "goToSetup": "2FAを設定する"
+    },
     "alerts": {
       "failed": "パスワードが一致しません",
       "passwordRequired": "パスワードを入力してください"

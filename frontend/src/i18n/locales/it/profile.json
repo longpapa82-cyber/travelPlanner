@@ -92,6 +92,13 @@
     "passwordConfirm": "Inserisci di nuovo la password per continuare",
     "passwordPlaceholder": "Inserisci la password",
     "confirmButton": "Conferma",
+    "totpConfirm": "Inserisci il codice dalla tua app di autenticazione",
+    "totpPlaceholder": "Codice a 6 cifre",
+    "setup2fa": {
+      "title": "Autenticazione a due fattori richiesta",
+      "message": "Per la sicurezza dell'amministratore, configura prima l'autenticazione a due fattori (2FA).",
+      "goToSetup": "Configura 2FA"
+    },
     "alerts": {
       "failed": "La password non corrisponde",
       "passwordRequired": "Inserisci la tua password"

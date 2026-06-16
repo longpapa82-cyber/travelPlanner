@@ -17,6 +17,13 @@ export interface User {
    * hardcoded SERVICE_ADMIN_EMAILS list so admins can be added server-side.
    */
   isServiceAdmin?: boolean;
+  /**
+   * V188: which factor the re-auth gate (service-admin entry) will demand.
+   * - 'totp': 2FA enabled (any provider) → authenticator/backup code
+   * - 'password': 2FA off, email account → password
+   * - 'setup_2fa': 2FA off, social account → nudge to enable 2FA, then pass
+   */
+  reauthMethod?: 'totp' | 'password' | 'setup_2fa';
   travelPreferences?: TripPreferences;
   subscriptionTier?: SubscriptionTier;
   subscriptionPlatform?: string;

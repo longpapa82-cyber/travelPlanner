@@ -92,6 +92,13 @@
     "passwordConfirm": "Digite a sua senha novamente para continuar",
     "passwordPlaceholder": "Inserir senha",
     "confirmButton": "Confirmar",
+    "totpConfirm": "Insira o código do seu aplicativo autenticador",
+    "totpPlaceholder": "Código de 6 dígitos",
+    "setup2fa": {
+      "title": "Autenticação de dois fatores necessária",
+      "message": "Para a segurança do administrador, configure primeiro a autenticação de dois fatores (2FA).",
+      "goToSetup": "Configurar 2FA"
+    },
     "alerts": {
       "failed": "A senha não corresponde",
       "passwordRequired": "Por favor, insira a sua senha"

@@ -92,6 +92,13 @@
     "passwordConfirm": "Masukkan kembali kata sandi Anda untuk melanjutkan",
     "passwordPlaceholder": "Masukkan kata sandi",
     "confirmButton": "Konfirmasi",
+    "totpConfirm": "Masukkan kode dari aplikasi autentikator Anda",
+    "totpPlaceholder": "Kode 6 digit",
+    "setup2fa": {
+      "title": "Autentikasi dua faktor diperlukan",
+      "message": "Demi keamanan admin, harap siapkan autentikasi dua faktor (2FA) terlebih dahulu.",
+      "goToSetup": "Siapkan 2FA"
+    },
     "alerts": {
       "failed": "Kata sandi tidak cocok",
       "passwordRequired": "Silakan masukkan kata sandi Anda"
