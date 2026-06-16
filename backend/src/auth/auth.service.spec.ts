@@ -11,6 +11,13 @@ import { AuthProvider } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthResponse } from './interfaces/auth-response.interface';
+import { isEmailDomainDeliverable } from '../common/email-domain';
+
+jest.mock('../common/email-domain');
+const mockIsEmailDomainDeliverable =
+  isEmailDomainDeliverable as jest.MockedFunction<
+    typeof isEmailDomainDeliverable
+  >;
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -45,6 +52,12 @@ describe('AuthService', () => {
   };
 
   beforeEach(async () => {
+    // Default: domain is deliverable so existing register tests are unaffected.
+    mockIsEmailDomainDeliverable.mockResolvedValue({
+      deliverable: true,
+      reason: 'has_mx',
+    });
+
     const mockUsersService = {
       findByEmail: jest.fn(),
       create: jest.fn(),
@@ -125,6 +138,35 @@ describe('AuthService', () => {
       password: 'StrongPassword123!',
       name: 'New User',
     };
+
+    it('rejects when the email domain is conclusively undeliverable', async () => {
+      mockIsEmailDomainDeliverable.mockResolvedValue({
+        deliverable: false,
+        reason: 'no_records',
+      });
+
+      await expect(service.register(registerDto)).rejects.toThrow(
+        BadRequestException,
+      );
+      // Must short-circuit before any DB write or lookup.
+      expect(usersService.findByEmail).not.toHaveBeenCalled();
+      expect(usersService.create).not.toHaveBeenCalled();
+    });
+
+    it('proceeds normally when the domain check fails open (inconclusive DNS)', async () => {
+      mockIsEmailDomainDeliverable.mockResolvedValue({
+        deliverable: true,
+        reason: 'check_skipped',
+      });
+      usersService.findByEmail.mockResolvedValue(null);
+      usersService.create.mockResolvedValue(mockUser as any);
+      jwtService.signAsync.mockResolvedValueOnce('mock-resume-token');
+
+      const result = await service.register(registerDto);
+
+      expect(result.action).toBe('created');
+      expect(usersService.create).toHaveBeenCalled();
+    });
 
     it('creates a new user and returns a resume token (not full auth)', async () => {
       usersService.findByEmail.mockResolvedValue(null);
