@@ -239,11 +239,18 @@ class ApiService {
           // string so admin can filter + group. `routeName` placeholder is
           // populated elsewhere where a navigation ref is available; for
           // the pure interceptor path we can at least tag the endpoint.
+          // 504 Gateway Timeout is a transient upstream/gateway congestion
+          // signal that the client self-recovers from on the next call (see
+          // memory error_log_triage: 504s arrive in tight bursts across
+          // unrelated GET endpoints, not as endpoint bugs). Demote to
+          // 'warning' so genuine 'error' signals stay legible in the
+          // error_logs dashboard. Other 5xx remain 'error'.
+          const severity = status === 504 ? 'warning' : 'error';
           this.reportError({
             errorMessage: `[API ${status}] ${error.config?.method?.toUpperCase()} ${url}`,
             stackTrace: (error.response?.data as any)?.message || error.message,
             screen: 'ApiInterceptor',
-            severity: 'error',
+            severity,
             deviceOS: Platform.OS,
             appVersion: Constants.expoConfig?.version,
             errorName: error?.name || 'ApiError',
