@@ -9,13 +9,20 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 | **Android** | 1.4.3 (versionCode 302) | **v302 알파 draft 제출 완료** 🔄 (2026-06-16) — 스크롤 클리핑 근본해결(tabBarStyle position:absolute). Play Console 출시노트+rollout 확정 대기. v300 프로덕션 전체출시 신청(2026-06-10) Google 검토 대기 🔄 |
 | **iOS** | 1.4.3 (B86) | **App Store 출시 완료** ✅ — 2026-06-03. 자동광고 근본수정+UI개선은 OTA 반영·검증 완료 |
 | **서버** | 41차 | https://mytravel-planner.com 운영 중. **재인증 게이트+서버권위+2FA 일반화 배포 완료** ✅ (2026-06-16, OTA production 발행 2회): `POST /auth/reauth`, `isServiceAdmin` env 전환, `getReauthMethod` 2FA/비번/setup_2fa 분기 |
-| **브랜치** | `main` / `fix/ui-android-letterspacing-tabbar` | ✅ PR #11 병합. fix/ui-android-letterspacing-tabbar(스크롤 클리핑 수정·v302) **main 미병합** — Play Console rollout 확정 후 병합. 다음 할 일 #0 참조 |
+| **브랜치** | `main` / `fix/ui-android-letterspacing-tabbar` | ✅ PR #11 병합. fix/ui-android-letterspacing-tabbar(스크롤 클리핑 수정·v302·**504 severity 강등 2026-06-17**) **main 미병합** — Play Console rollout 확정 후 병합. 다음 할 일 #0 참조 |
 
 ---
 
 ## ⚠️ 다음 할 일
 
-0. **🔄 admin 화면 스크롤 클리핑 근본해결 + v302 알파 draft 제출 — Play Console rollout 확정 대기** (2026-06-16)
+0. **✅ 오류 내역 점검 + 504 severity 강등 (조치 1건)** (2026-06-17)
+   - **점검(DB 직접 조회 4·14일)**: PR #8·#9·#10 수정 전부 유지 — `User with ID not found` 404 **0건**(PR#9 배포 이후), `truncated_max_tokens`/`Unterminated JSON` **0건**(14일), 504 제외 실제 error/fatal **0건**(7일). **긴급 코드 버그 없음.**
+   - **유일 신호 504(인프라성, 버그 아님)**: 06-16 14:54·14:55(61초 내 `/analytics/popular-destinations`·`/notifications/unread-count`), 06-09 15:45~51(`/trips`·`/announcements`·`/notifications`). 무관 GET들이 좁은 시간창 동시 504 = 게이트웨이 순간 정체(엔드포인트 버그라면 한 엔드포인트·여러 시간대로 몰림).
+   - **조치**: `frontend/src/services/api.ts` 5xx auto-reporting 인터셉터에서 **504만 `error`→`warning` 강등**(`severity = status === 504 ? 'warning' : 'error'`). 자가복구되는 504가 대시보드 노이즈 유발하던 것 정정·실제 error 신호 가독성 개선. 나머지 5xx(500/502/503)는 error 유지. tsc clean.
+   - **커밋**(브랜치 fix/ui-android-letterspacing-tabbar): `7dc52bb4`(504 강등) + `67e4a5ae`(versionCode 302) + `bae79d21`(CLAUDE.md). 작업트리 clean.
+   - **⏭️ 반영 시점**: 504 강등은 **코드 변경뿐 → 다음 앱 빌드 때 반영**(서버 배포 불필요). 상세 → 메모리 [error_log_triage.md].
+
+0-1. **🔄 admin 화면 스크롤 클리핑 근본해결 + v302 알파 draft 제출 — Play Console rollout 확정 대기** (2026-06-16)
    - **증상**: Android admin 화면(AdminDashboard 등) 하단 회색 띠 + 스크롤 중 콘텐츠 클리핑.
    - **오진 교훈**: paddingBottom/contentStyle 등 화면 단위 수정 OTA 6~7회 반복했으나 효과 없음. OTA 미반영 오판까지 했으나 OTA는 정상(EAS 대시보드+adb 마커로 확인). 진단 자체가 틀렸던 것. 사용자 "스크롤 중 잘린다" 발언이 결정적 단서.
    - **진짜 원인**: bottom-tab scene이 ScrollView에 하단 inset을 주어 scene이 화면 전체를 차지 못함 → 스크롤 클리핑. 회색 띠는 NavigationContainer `theme.colors.background`(neutral[50]) 노출 부수증상. adb uiautomator dump + screencap 픽셀 측정으로 확정.
