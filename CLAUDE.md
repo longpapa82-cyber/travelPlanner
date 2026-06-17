@@ -6,16 +6,26 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 | 플랫폼 | 버전 | 상태 |
 |--------|------|------|
-| **Android** | 1.4.3 (versionCode 300) | **v300 프로덕션 전체출시 신청 완료** 🔄 (2026-06-10) — 자동광고 근본수정+UI개선. Google 검토 전 자동검사(~14분) → 검토 → 출시. 이전 v294 프로덕션 출시 완료 ✅ |
+| **Android** | 1.4.3 (versionCode 302) | **v302 알파 draft 제출 완료** 🔄 (2026-06-16) — 스크롤 클리핑 근본해결(tabBarStyle position:absolute). Play Console 출시노트+rollout 확정 대기. v300 프로덕션 전체출시 신청(2026-06-10) Google 검토 대기 🔄 |
 | **iOS** | 1.4.3 (B86) | **App Store 출시 완료** ✅ — 2026-06-03. 자동광고 근본수정+UI개선은 OTA 반영·검증 완료 |
 | **서버** | 41차 | https://mytravel-planner.com 운영 중. **재인증 게이트+서버권위+2FA 일반화 배포 완료** ✅ (2026-06-16, OTA production 발행 2회): `POST /auth/reauth`, `isServiceAdmin` env 전환, `getReauthMethod` 2FA/비번/setup_2fa 분기 |
-| **브랜치** | `main` | ✅ **재인증 게이트+2FA 일반화 PR #11**(squash `551cfef1`) 병합 완료. 다음 할 일 #0 참조 |
+| **브랜치** | `main` / `fix/ui-android-letterspacing-tabbar` | ✅ PR #11 병합. fix/ui-android-letterspacing-tabbar(스크롤 클리핑 수정·v302) **main 미병합** — Play Console rollout 확정 후 병합. 다음 할 일 #0 참조 |
 
 ---
 
 ## ⚠️ 다음 할 일
 
-0. **✅ 재인증 게이트("sudo mode") + 서비스관리자 서버권위 전환 + 2FA 일반화 — PR #11 병합·서버배포·OTA 완료** (2026-06-16)
+0. **🔄 admin 화면 스크롤 클리핑 근본해결 + v302 알파 draft 제출 — Play Console rollout 확정 대기** (2026-06-16)
+   - **증상**: Android admin 화면(AdminDashboard 등) 하단 회색 띠 + 스크롤 중 콘텐츠 클리핑.
+   - **오진 교훈**: paddingBottom/contentStyle 등 화면 단위 수정 OTA 6~7회 반복했으나 효과 없음. OTA 미반영 오판까지 했으나 OTA는 정상(EAS 대시보드+adb 마커로 확인). 진단 자체가 틀렸던 것. 사용자 "스크롤 중 잘린다" 발언이 결정적 단서.
+   - **진짜 원인**: bottom-tab scene이 ScrollView에 하단 inset을 주어 scene이 화면 전체를 차지 못함 → 스크롤 클리핑. 회색 띠는 NavigationContainer `theme.colors.background`(neutral[50]) 노출 부수증상. adb uiautomator dump + screencap 픽셀 측정으로 확정.
+   - **근본 수정**: ①`tabBarStyle: position:'absolute'`로 scene 전체 확장(클리핑 해소) ②메인 탭 5개+admin 6개 화면 `contentContainerStyle paddingBottom 96`(뜬 탭바 회피) ③NavigationContainer theme 라이트 배경 흰색(회색 잔흔 제거). APK 직접설치+adb 측정 검증, 사용자 확인.
+   - **v302 빌드**: EAS 클라우드(60e5f0a9) → `eas submit --profile alpha` → Play 알파 draft(submission 8b928924). app.json versionCode 300→301 수정(app.config.js 폴백보다 우선).
+   - **카카오 로그인 웹 이동**: debug 서명이 assetlinks.json SHA256 3개에 없어 App Links verify 실패 → 웹 폴백. release 서명(v302)에서 정상. 코드 버그 아님·조치 불필요.
+   - **⚠️ 브랜치 미병합**: fix/ui-android-letterspacing-tabbar → main 병합 아직 안 함. Play Console rollout 확정 후 병합.
+   - **⏭️ 남은 일**: Play Console에서 v302 출시노트+rollout 확정. 상세·교훈 → 메모리 [admin_scroll_clipping_tabbar_fix.md].
+
+-1. **✅ 재인증 게이트("sudo mode") + 서비스관리자 서버권위 전환 + 2FA 일반화 — PR #11 병합·서버배포·OTA 완료** (2026-06-16)
    - **재인증 게이트**: AdminDashboard·AdDebug 진입 시 매번 본인 재인증. `POST /auth/reauth`(JwtAuthGuard+Throttle, userId 토큰 추출·body 아님). 전용 Redis 카운터(`reauth_attempts:`) brute-force 방어(10회 15분 잠금·로그인 카운터와 분리). 모달은 탈퇴 모달 키보드 UX(animationType none+onShow focus+Android flex-end) 재사용. 세션 1회 인증.
    - **서비스관리자 서버권위 전환**: 기존 프론트 하드코딩 `SERVICE_ADMIN_EMAILS` → `admin-check.ts`에 `isServiceAdmin(email, role)` 신설(env OR DB role=admin). `getProfile`이 `isServiceAdmin` 포함 내려줌. **이후 서비스관리자 추가는 서버 env 한 줄(앱 재빌드 불필요)**. 서버 `.env`에 `SERVICE_ADMIN_EMAILS=longpapa82,hoonjae723` 추가.
    - **2FA 일반화(근본 해결)**: 비번 전용 재인증은 소셜 계정(비번 없음)에 구멍. 주 관리자 longpapa82가 **google 계정**(DB 확인)이라 재인증 불가. `getReauthMethod` 신설: 2FA 켜짐→TOTP/백업코드, 2FA없음+email→비번, 2FA없음+소셜→REAUTH_SETUP_2FA(2FA 설정 유도, AdminGuard는 서버에서 계속 보호). `getProfile`에 `reauthMethod` 힌트 포함. 프론트 `openAdminArea` 분기.
@@ -84,11 +94,11 @@ xcrun altool --upload-app --type ios --file ../build-ios-BXX.ipa \
 
 ---
 
-## 🤖 Android 최신 빌드: versionCode 294 (1.4.3) — Play 비공개 테스트 업로드 완료(draft) ✅
+## 🤖 Android 최신 빌드: versionCode 302 (1.4.3) — Play 알파 draft 제출 완료 🔄
 
-**v294 수정 내역**: 회원탈퇴 모달 키보드 등장 시 팝업 튐(jank) 제거. 키보드 표시 시 justifyContent를 center→flex-end로 동적 전환하던 로직이 pan 모드와 비동기라 팝업이 한 번 튀던 현상 → 동적 전환 제거하고 Android는 flex-end 고정(iOS는 center 유지·정상). eas submit alpha 트랙 draft 업로드 (2026-06-02).
+**v302 수정 내역**: admin 화면 스크롤 클리핑 근본해결(tabBarStyle position:absolute + contentContainerStyle paddingBottom 96 전체 탭 화면). EAS 클라우드 빌드(60e5f0a9), submission 8b928924. Play Console 출시노트+rollout 확정 대기. 브랜치 fix/ui-android-letterspacing-tabbar(main 미병합).
 
-**v293 수정 내역**: 회원탈퇴 모달 키보드 UX(animationType none+onShow 즉시 focus, 키보드 위 정렬) + 신규기능(AI 일자별 진행률·딥링크 보안·게스트모드 revert 등). versionCode 291→293.
+**v294 수정 내역**: 회원탈퇴 모달 키보드 등장 시 팝업 튐(jank) 제거. versionCode 293→294. eas submit alpha 트랙 draft 업로드 (2026-06-02).
 
 **⚠️ AAB 출시 빌드 절차**: EAS local이 reanimated/worklets 레이스로 실패하므로 `prebuild --clean` → keystore 주입(EAS 메타데이터 base64에서 추출, SHA-1 `68:5E...`) → `org.gradle.parallel=false` → `gradlew :app:bundleRelease` → `eas submit --platform android --profile alpha`(service account 자동 업로드, track=alpha/draft).
 
