@@ -15,7 +15,12 @@ bkit Feature Usage Report를 응답 끝에 포함하지 마세요.
 
 ## ⚠️ 다음 할 일
 
-0. **✅ 오류 내역 점검 + 504 severity 강등 (조치 1건)** (2026-06-17)
+0. **✅ 오류 내역 재점검 + CreateTripScreen transient timeout 강등 (조치 1건, triage 후보 B 처리)** (2026-06-18)
+   - **점검**: 06-17 504 강등 후 미결 항목 재점검 → 2026-06-01 triage가 기록한 **보류 후보 (B)**가 그대로 열려 있었음. `timeout of 30000ms exceeded`(자가복구되는 클라 timeout)가 여전히 `error`로 보고됨. **504 강등으로는 안 잡힘** — 클라 timeout은 HTTP status가 없어(`ECONNABORTED`/`!error.response`) `status>=500` 인터셉터를 안 타고, `CreateTripScreen.tsx` 화면 catch가 무조건 `severity:'error'`로 보고하던 비대칭(같은 블록 `tripCreated` 분기는 이미 warning).
+   - **조치**: `frontend/src/screens/trips/CreateTripScreen.tsx` createTrip catch에서 **전송계층 일시장애만 `error`→`warning` 강등**(`isTransient = error.code==='ECONNABORTED' || error.message==='TRIP_CREATION_TIMEOUT' || !error.response`). 결정 가드는 `!error.response`(서버 HTTP 응답 없음). 서버가 4xx/5xx 명시 응답하면 `error` 유지. 504 강등과 동일 철학. tsc clean.
+   - **⏭️ 반영 시점**: 클라 코드 변경뿐 → **다음 앱 빌드 때 반영**(서버 무관). 브랜치 fix/ui-android-letterspacing-tabbar(main 미병합). 남은 보류 후보 A(AI 생성 지연 근본대응)만 별도 세션. 상세 → 메모리 [error_log_triage.md].
+
+0-0. **✅ 오류 내역 점검 + 504 severity 강등 (조치 1건)** (2026-06-17)
    - **점검(DB 직접 조회 4·14일)**: PR #8·#9·#10 수정 전부 유지 — `User with ID not found` 404 **0건**(PR#9 배포 이후), `truncated_max_tokens`/`Unterminated JSON` **0건**(14일), 504 제외 실제 error/fatal **0건**(7일). **긴급 코드 버그 없음.**
    - **유일 신호 504(인프라성, 버그 아님)**: 06-16 14:54·14:55(61초 내 `/analytics/popular-destinations`·`/notifications/unread-count`), 06-09 15:45~51(`/trips`·`/announcements`·`/notifications`). 무관 GET들이 좁은 시간창 동시 504 = 게이트웨이 순간 정체(엔드포인트 버그라면 한 엔드포인트·여러 시간대로 몰림).
    - **조치**: `frontend/src/services/api.ts` 5xx auto-reporting 인터셉터에서 **504만 `error`→`warning` 강등**(`severity = status === 504 ? 'warning' : 'error'`). 자가복구되는 504가 대시보드 노이즈 유발하던 것 정정·실제 error 신호 가독성 개선. 나머지 5xx(500/502/503)는 error 유지. tsc clean.

@@ -736,11 +736,24 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
         message = serverMsg || t('create.alerts.createFailed');
       }
 
+      // Demote self-recovering transient failures (client-side timeout /
+      // network drop, which carry no server response) to 'warning', mirroring
+      // the 504 demotion in api.ts. A genuine server error response (4xx/5xx)
+      // keeps 'error'. See memory error_log_triage candidate (B):
+      // "timeout of 30000ms exceeded" self-recovers via the polling retry loop.
+      // The decisive guard is `!error.response` (no HTTP response = transport-
+      // layer failure); the two explicit checks document the common shapes.
+      const isTransient =
+        error.code === 'ECONNABORTED' ||           // axios timeout
+        error.message === 'TRIP_CREATION_TIMEOUT' || // polling maxPolls exceeded
+        !error.response;                            // no server response at all
+      const severity = isTransient ? 'warning' : 'error';
+
       // Log error to backend for admin visibility
       apiService.reportError({
         errorMessage: error.message || message,
         screen: 'CreateTripScreen',
-        severity: 'error',
+        severity,
         stackTrace: error.stack,
       }).catch(() => {});
 
