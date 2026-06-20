@@ -1884,8 +1884,6 @@ const CreateTripScreen: React.FC<Props> = ({ navigation, route }) => {
             </Button>
           </View>
         </Animated.View>
-
-        <View style={{ height: 40 }} />
       </ScrollView>
       {/* AI Usage Consent Modal (Apple App Store requirement) */}
       <Modal
@@ -1942,6 +1940,10 @@ const createStyles = (theme: any, isDark: boolean, safeAreaTop: number) =>
     },
     scrollContent: {
       flexGrow: 1,
+      // Tab bar is position:absolute and floats over scenes, so scroll
+      // content needs bottom padding to keep the last element (the create
+      // button) above it. Matches the 96 used by other tab screens.
+      paddingBottom: 96,
     },
     hero: {
       width: '100%',

@@ -786,6 +786,10 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
     contentContainer: {
       paddingTop: 20,
+      // Tab bar is position:absolute and floats over scenes, so the last
+      // content (collaborators / add-activity) needs bottom padding to clear
+      // it. Matches the 96 used by other tab screens.
+      paddingBottom: 96,
     },
     descriptionCard: {
       flexDirection: 'row',
