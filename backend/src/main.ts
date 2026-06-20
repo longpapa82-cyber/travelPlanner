@@ -11,6 +11,7 @@ import helmet from 'helmet';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ResponseEnvelopeInterceptor } from './common/interceptors/response-envelope.interceptor';
 import { AppModule } from './app.module';
+import { persistErrorLog } from './common/services/error-log.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -142,6 +143,29 @@ async function bootstrap() {
   exceptionFilter.setDataSource(dataSource);
   app.useGlobalFilters(exceptionFilter);
 
+  // Process-level safety net. Without these, an uncaught exception or unhandled
+  // promise rejection outside any HTTP request (the bulk of background work)
+  // dies with only a syslog line — invisible to the admin error dashboard.
+  // Record as `fatal` so SRE can page on it. Do not exit on unhandledRejection
+  // (Node default is non-fatal); for uncaughtException we record then rethrow
+  // intent via a delayed exit so the process can be restarted by the orchestrator.
+  process.on('unhandledRejection', (reason) => {
+    void persistErrorLog(dataSource, {
+      error: reason,
+      source: 'process.unhandledRejection',
+      routeName: 'process:unhandledRejection',
+      severity: 'fatal',
+    });
+  });
+  process.on('uncaughtException', (err) => {
+    void persistErrorLog(dataSource, {
+      error: err,
+      source: 'process.uncaughtException',
+      routeName: 'process:uncaughtException',
+      severity: 'fatal',
+    });
+  });
+
   // Global response envelope interceptor
   app.useGlobalInterceptors(new ResponseEnvelopeInterceptor());
 
@@ -180,4 +204,15 @@ async function bootstrap() {
     console.log(`Swagger docs: http://localhost:${port}/${apiPrefix}/docs`);
   }
 }
-void bootstrap();
+bootstrap().catch((err) => {
+  // Boot failure (DB connection, port bind, missing required env). The DB may
+  // be unavailable here, so error_logs persistence is not guaranteed — emit a
+  // structured, greppable line and exit non-zero so the orchestrator restarts
+  // and the failure is visible in container/systemd logs instead of a silent
+  // unhandled rejection from the previous `void bootstrap()`.
+  // eslint-disable-next-line no-console
+  console.error(
+    `[BOOTSTRAP_FAILED] ${err instanceof Error ? err.stack || err.message : String(err)}`,
+  );
+  process.exit(1);
+});

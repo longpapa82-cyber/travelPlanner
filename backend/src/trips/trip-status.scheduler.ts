@@ -6,6 +6,7 @@ import { Trip, TripStatus } from './entities/trip.entity';
 import { AIService } from './services/ai.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/entities/notification.entity';
+import { ErrorLogService } from '../common/services/error-log.service';
 
 /**
  * TripStatusScheduler
@@ -27,6 +28,9 @@ export class TripStatusScheduler {
     @Optional()
     @Inject(NotificationsService)
     private notificationsService?: NotificationsService,
+    @Optional()
+    @Inject(ErrorLogService)
+    private errorLogService?: ErrorLogService,
   ) {}
 
   /**
@@ -125,6 +129,12 @@ export class TripStatusScheduler {
         'Failed to update trip statuses',
         error instanceof Error ? error.stack : undefined,
       );
+      void this.errorLogService?.record({
+        error,
+        source: 'Cron tripStatusUpdate',
+        routeName: 'cron:trip-status-update',
+        severity: 'error',
+      });
     }
   }
 
@@ -218,6 +228,12 @@ export class TripStatusScheduler {
       }
     } catch (error) {
       this.logger.error('Failed to send departure reminders', error);
+      void this.errorLogService?.record({
+        error,
+        source: 'Cron departureReminders',
+        routeName: 'cron:departure-reminders',
+        severity: 'error',
+      });
     }
   }
 
@@ -268,6 +284,13 @@ export class TripStatusScheduler {
         'Template refresh failed',
         error instanceof Error ? error.stack : undefined,
       );
+      void this.errorLogService?.record({
+        error,
+        source: 'Cron templateRefresh',
+        routeName: 'cron:template-refresh',
+        // Template cache staleness is non-blocking → warning, not error.
+        severity: 'warning',
+      });
     }
   }
 }

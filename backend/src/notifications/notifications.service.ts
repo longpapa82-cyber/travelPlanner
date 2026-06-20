@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Notification, NotificationType } from './entities/notification.entity';
 import { User } from '../users/entities/user.entity';
+import { ErrorLogService } from '../common/services/error-log.service';
 
 interface ExpoPushMessage {
   to: string;
@@ -22,6 +23,9 @@ export class NotificationsService {
     private readonly notificationRepository: Repository<Notification>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @Optional()
+    @Inject(ErrorLogService)
+    private readonly errorLogService?: ErrorLogService,
   ) {}
 
   async create(
@@ -181,6 +185,17 @@ export class NotificationsService {
       this.logger.log(`Push sent: ${messages.length} messages`);
     } catch (error) {
       this.logger.error('Failed to send push notifications', error);
+      // Push delivery runs outside any HTTP request (fire-and-forget from
+      // create()/cron), so the global filter never sees it. Record as
+      // `warning`: delivery failures are often transient (expired Expo tokens,
+      // network) and self-recover, so they should not drown out real errors —
+      // same philosophy as the 504 demotion.
+      void this.errorLogService?.record({
+        error,
+        source: 'Push notification delivery',
+        routeName: 'background:push-send',
+        severity: 'warning',
+      });
     }
   }
 }

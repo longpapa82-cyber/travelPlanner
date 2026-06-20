@@ -31,6 +31,7 @@ import { CorrelationIdMiddleware } from './common/middleware/correlation-id.midd
 import { LifecycleService } from './common/lifecycle.service';
 
 import { AppCacheModule } from './common/cache.module';
+import { ErrorLogModule } from './common/services/error-log.service';
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import oauthConfig from './config/oauth.config';
@@ -83,6 +84,10 @@ import emailConfig from './config/email.config';
 
     // Cache Module - Redis/Memory caching
     AppCacheModule,
+
+    // Error logging — @Global, lets any background/non-HTTP path
+    // (cron, async jobs, webhook internals) persist to error_logs.
+    ErrorLogModule,
 
     // Entity for AppController (sitemap, OG tags)
     TypeOrmFeatureModule.forFeature([Trip]),

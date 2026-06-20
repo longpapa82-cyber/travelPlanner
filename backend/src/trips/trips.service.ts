@@ -29,6 +29,7 @@ import { updateItinerariesCompletionStatus } from './helpers/trip-progress.helpe
 import { QueryTripsDto, SortBy, SortOrder } from './dto/query-trips.dto';
 import { getErrorMessage } from '../common/types/request.types';
 import { ErrorLog } from '../admin/entities/error-log.entity';
+import { persistErrorLog } from '../common/services/error-log.service';
 import { isOperationalAdmin } from '../common/utils/admin-check';
 import { Subject } from 'rxjs';
 
@@ -657,6 +658,18 @@ export class TripsService {
           this.logger.log(
             `Falling back to empty itineraries for trip ${savedTrip.id}`,
           );
+
+          // This runs in the polling/background phase after the HTTP response,
+          // so AllExceptionsFilter never sees it. Persist directly so an AI
+          // generation failure (the empty-itinerary fallback) is visible on
+          // the admin dashboard instead of only in syslog.
+          void persistErrorLog(this.dataSource, {
+            error,
+            source: 'AI itinerary generation (background)',
+            routeName: 'background:ai-generation',
+            userId,
+            severity: 'error',
+          });
 
           finalAiStatus = 'failed';
           progress$?.next({
