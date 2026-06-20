@@ -42,6 +42,7 @@ import { AdBanner, useAutoInterstitial } from '../../components/ads';
 import { useToast } from '../../components/feedback/Toast/ToastContext';
 import { useConfirm } from '../../components/feedback/ConfirmDialog';
 import { getDestinationImageUrl } from '../../utils/images';
+import DatePickerField from '../../components/core/DatePicker';
 
 type TripListScreenNavigationProp = NativeStackNavigationProp<TripsStackParamList, 'TripList'>;
 
@@ -830,25 +831,23 @@ const TripListScreen: React.FC<Props> = ({ navigation }) => {
                 {t('list.advancedFilters.dateRange')}
               </Text>
               <View style={styles.advFilterRowInner}>
-                <TextInput
-                  style={[styles.advFilterInputHalf, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
-                  placeholder={t('list.advancedFilters.dateFrom')}
-                  placeholderTextColor={theme.colors.textSecondary}
-                  value={advancedFilters.startDateFrom}
-                  onChangeText={(v) => setAdvancedFilters(f => ({ ...f, startDateFrom: v }))}
-                  keyboardType="numbers-and-punctuation"
-                  importantForAutofill="no"
-                />
+                <View style={styles.advFilterPickerHalf}>
+                  <DatePickerField
+                    label={t('list.advancedFilters.dateFrom')}
+                    value={advancedFilters.startDateFrom}
+                    onChange={(v) => setAdvancedFilters(f => ({ ...f, startDateFrom: v }))}
+                    maximumDate={advancedFilters.startDateTo ? new Date(advancedFilters.startDateTo + 'T00:00:00') : undefined}
+                  />
+                </View>
                 <Text style={{ color: theme.colors.textSecondary }}>~</Text>
-                <TextInput
-                  style={[styles.advFilterInputHalf, { color: theme.colors.text, borderColor: isDark ? colors.neutral[600] : colors.neutral[300] }]}
-                  placeholder={t('list.advancedFilters.dateTo')}
-                  placeholderTextColor={theme.colors.textSecondary}
-                  value={advancedFilters.startDateTo}
-                  onChangeText={(v) => setAdvancedFilters(f => ({ ...f, startDateTo: v }))}
-                  keyboardType="numbers-and-punctuation"
-                  importantForAutofill="no"
-                />
+                <View style={styles.advFilterPickerHalf}>
+                  <DatePickerField
+                    label={t('list.advancedFilters.dateTo')}
+                    value={advancedFilters.startDateTo}
+                    onChange={(v) => setAdvancedFilters(f => ({ ...f, startDateTo: v }))}
+                    minimumDate={advancedFilters.startDateFrom ? new Date(advancedFilters.startDateFrom + 'T00:00:00') : undefined}
+                  />
+                </View>
               </View>
             </View>
 
@@ -1336,6 +1335,9 @@ const createStyles = (theme: any, isDark: boolean) =>
       paddingHorizontal: 12,
       paddingVertical: 8,
       fontSize: 14,
+    },
+    advFilterPickerHalf: {
+      flex: 1,
     },
     advFilterActions: {
       flexDirection: 'row',
