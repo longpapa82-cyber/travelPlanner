@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "筛选",
-      "country": "国家",
-      "countryPlaceholder": "输入国家",
+      "country": "目的地",
+      "countryPlaceholder": "输入目的地",
       "dateRange": "出发日期范围",
       "dateFrom": "从",
       "dateTo": "到",

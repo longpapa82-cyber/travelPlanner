@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "الفلاتر",
-      "country": "الدولة",
-      "countryPlaceholder": "أدخل الدولة",
+      "country": "الوجهة",
+      "countryPlaceholder": "أدخل الوجهة",
       "dateRange": "نطاق تاريخ المغادرة",
       "dateFrom": "من",
       "dateTo": "إلى",

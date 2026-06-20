@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "Filtreler",
-      "country": "Ülke",
-      "countryPlaceholder": "Ülke girin",
+      "country": "Varış noktası",
+      "countryPlaceholder": "Varış noktası girin",
       "dateRange": "Gidiş tarihi aralığı",
       "dateFrom": "Başlangıç",
       "dateTo": "Bitiş",

@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "Filtres",
-      "country": "Pays",
-      "countryPlaceholder": "Entrez un pays",
+      "country": "Destination",
+      "countryPlaceholder": "Entrez une destination",
       "dateRange": "Période de départ",
       "dateFrom": "Du",
       "dateTo": "Au",

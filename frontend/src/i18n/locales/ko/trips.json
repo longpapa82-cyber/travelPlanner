@@ -198,8 +198,8 @@
     },
     "advancedFilters": {
       "toggle": "상세 필터",
-      "country": "국가",
-      "countryPlaceholder": "국가명 입력",
+      "country": "목적지",
+      "countryPlaceholder": "목적지 입력",
       "dateRange": "출발일 범위",
       "dateFrom": "시작",
       "dateTo": "종료",

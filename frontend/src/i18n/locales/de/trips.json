@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "Filter",
-      "country": "Land",
-      "countryPlaceholder": "Land eingeben",
+      "country": "Reiseziel",
+      "countryPlaceholder": "Reiseziel eingeben",
       "dateRange": "Abreisezeitraum",
       "dateFrom": "Von",
       "dateTo": "Bis",

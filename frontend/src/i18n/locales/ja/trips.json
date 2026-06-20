@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "詳細フィルター",
-      "country": "国",
-      "countryPlaceholder": "国名を入力",
+      "country": "目的地",
+      "countryPlaceholder": "目的地を入力",
       "dateRange": "出発日範囲",
       "dateFrom": "開始",
       "dateTo": "終了",

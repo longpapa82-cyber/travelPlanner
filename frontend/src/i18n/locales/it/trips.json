@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "Filtri",
-      "country": "Paese",
-      "countryPlaceholder": "Inserisci il paese",
+      "country": "Destinazione",
+      "countryPlaceholder": "Inserisci la destinazione",
       "dateRange": "Intervallo date di partenza",
       "dateFrom": "Da",
       "dateTo": "A",

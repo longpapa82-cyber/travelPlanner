@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "ตัวกรอง",
-      "country": "ประเทศ",
-      "countryPlaceholder": "กรอกชื่อประเทศ",
+      "country": "จุดหมายปลายทาง",
+      "countryPlaceholder": "กรอกจุดหมายปลายทาง",
       "dateRange": "ช่วงวันออกเดินทาง",
       "dateFrom": "ตั้งแต่",
       "dateTo": "ถึง",

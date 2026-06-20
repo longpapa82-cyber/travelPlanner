@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "Bộ lọc",
-      "country": "Quốc gia",
-      "countryPlaceholder": "Nhập quốc gia",
+      "country": "Điểm đến",
+      "countryPlaceholder": "Nhập điểm đến",
       "dateRange": "Khoảng ngày khởi hành",
       "dateFrom": "Từ",
       "dateTo": "Đến",

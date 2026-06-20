@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "Фильтры",
-      "country": "Страна",
-      "countryPlaceholder": "Введите страну",
+      "country": "Направление",
+      "countryPlaceholder": "Введите направление",
       "dateRange": "Диапазон дат отправления",
       "dateFrom": "С",
       "dateTo": "По",

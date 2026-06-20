@@ -473,6 +473,34 @@ describe('TripsService', () => {
       expect(result).toBeDefined();
     });
 
+    it('should match destination when filtering by country (country/city are NULL for user trips)', async () => {
+      const queryBuilder = {
+        createQueryBuilder: jest.fn().mockReturnThis(),
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        leftJoin: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([mockTrip]),
+        getCount: jest.fn().mockResolvedValue(1),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
+      };
+
+      tripRepository.createQueryBuilder = jest
+        .fn()
+        .mockReturnValue(queryBuilder);
+      tripStatusScheduler.validateAndUpdateTripStatus.mockResolvedValue(false);
+
+      const result = await service.findAll(mockUserId, { country: '뉴욕' });
+
+      expect(queryBuilder.andWhere).toHaveBeenCalledWith(
+        '(trip.country ILIKE :country OR trip.city ILIKE :country OR trip.destination ILIKE :country)',
+        { country: '%뉴욕%' },
+      );
+      expect(result).toBeDefined();
+    });
+
     it('should filter trips by status', async () => {
       const queryBuilder = {
         createQueryBuilder: jest.fn().mockReturnThis(),

@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "Penapis",
-      "country": "Negara",
-      "countryPlaceholder": "Masukkan negara",
+      "country": "Destinasi",
+      "countryPlaceholder": "Masukkan destinasi",
       "dateRange": "Julat tarikh berlepas",
       "dateFrom": "Dari",
       "dateTo": "Hingga",

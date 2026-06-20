@@ -198,8 +198,8 @@
     },
     "advancedFilters": {
       "toggle": "Filters",
-      "country": "Country",
-      "countryPlaceholder": "Enter country",
+      "country": "Destination",
+      "countryPlaceholder": "Enter destination",
       "dateRange": "Departure date range",
       "dateFrom": "From",
       "dateTo": "To",

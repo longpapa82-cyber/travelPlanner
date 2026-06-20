@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "Filtros",
-      "country": "País",
-      "countryPlaceholder": "Digite o país",
+      "country": "Destino",
+      "countryPlaceholder": "Digite o destino",
       "dateRange": "Período de partida",
       "dateFrom": "De",
       "dateTo": "Até",

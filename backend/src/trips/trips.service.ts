@@ -844,11 +844,17 @@ export class TripsService {
       queryBuilder.andWhere('trip.status = :status', { status });
     }
 
-    // Country filter
+    // Destination filter (labeled "목적지" on client). Historically only
+    // matched trip.country, but country/city are NULL for all user-created
+    // trips (location is stored in trip.destination), so the filter always
+    // returned zero. Match destination/country/city to mirror search behavior.
     if (country) {
-      queryBuilder.andWhere('trip.country ILIKE :country', {
-        country: `%${country}%`,
-      });
+      queryBuilder.andWhere(
+        '(trip.country ILIKE :country OR trip.city ILIKE :country OR trip.destination ILIKE :country)',
+        {
+          country: `%${country}%`,
+        },
+      );
     }
 
     // Date range filter

@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "फ़िल्टर",
-      "country": "देश",
-      "countryPlaceholder": "देश दर्ज करें",
+      "country": "गंतव्य",
+      "countryPlaceholder": "गंतव्य दर्ज करें",
       "dateRange": "प्रस्थान तिथि सीमा",
       "dateFrom": "से",
       "dateTo": "तक",

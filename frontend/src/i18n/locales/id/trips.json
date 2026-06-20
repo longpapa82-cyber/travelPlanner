@@ -190,8 +190,8 @@
     },
     "advancedFilters": {
       "toggle": "Filter",
-      "country": "Negara",
-      "countryPlaceholder": "Masukkan negara",
+      "country": "Tujuan",
+      "countryPlaceholder": "Masukkan tujuan",
       "dateRange": "Rentang tanggal keberangkatan",
       "dateFrom": "Dari",
       "dateTo": "Hingga",
