@@ -703,18 +703,35 @@ class ApiService {
     page?: number;
     limit?: number;
   }) {
+    // Offline cache is keyed by status only, so it MUST NOT serve advanced
+    // filter requests (country/date/budget) — otherwise a filtered request
+    // could read/write the same `trips:<status>` key as the unfiltered list
+    // and return the full list, making filters appear to do nothing.
+    // Only the unfiltered first page of a status list is cacheable.
+    const isFiltered =
+      !!params?.country ||
+      !!params?.startDateFrom ||
+      !!params?.startDateTo ||
+      params?.budgetMin !== undefined ||
+      params?.budgetMax !== undefined ||
+      !!params?.search ||
+      (params?.page !== undefined && params.page > 1);
+    const cacheKey = `trips:${params?.status || 'all'}`;
     try {
       const response = await this.api.get('/trips', { params });
       const data = response.data;
-      // Cache trips for offline use
-      const cacheKey = `trips:${params?.status || 'all'}`;
-      offlineCache.set(cacheKey, data).catch(() => {});
+      // Cache only the unfiltered base list for offline use
+      if (!isFiltered) {
+        offlineCache.set(cacheKey, data).catch(() => {});
+      }
       return data;
     } catch (error) {
-      // Return cached data if network fails
-      const cacheKey = `trips:${params?.status || 'all'}`;
-      const cached = await offlineCache.get(cacheKey);
-      if (cached) return cached;
+      // Return cached data if network fails — but never for filtered requests,
+      // which have no dedicated cache entry and would leak the full list.
+      if (!isFiltered) {
+        const cached = await offlineCache.get(cacheKey);
+        if (cached) return cached;
+      }
       throw error;
     }
   }

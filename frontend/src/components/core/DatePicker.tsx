@@ -84,10 +84,15 @@ const DatePickerField: React.FC<DatePickerProps> = ({
         onPress={() => !disabled && setShowPicker(true)}
         disabled={disabled}
       >
-        <Text style={[styles.dateText, { color: value ? theme.colors.text : theme.colors.textSecondary }]}>
+        <Text
+          style={[styles.dateText, { color: value ? theme.colors.text : theme.colors.textSecondary }]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.8}
+        >
           {value ? formatForDisplay(value) : 'YYYY-MM-DD'}
         </Text>
-        <Icon name="calendar" size={20} color={theme.colors.primary} />
+        <Icon name="calendar" size={20} color={theme.colors.primary} style={styles.dateIcon} />
       </TouchableOpacity>
 
       {showPicker && Platform.OS === 'android' && (
@@ -169,6 +174,10 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     fontWeight: '500',
+    flexShrink: 1,
+  },
+  dateIcon: {
+    marginLeft: 6,
   },
   modalOverlay: {
     flex: 1,
