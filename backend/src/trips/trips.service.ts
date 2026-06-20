@@ -867,12 +867,25 @@ export class TripsService {
       queryBuilder.andWhere('trip.startDate <= :startDateTo', { startDateTo });
     }
 
-    // Budget range filter
+    // Budget range filter.
+    // The detail screen shows "예상 비용" = the sum of each itinerary
+    // activity's estimatedCost (activities live in itineraries.activities
+    // JSONB). Users expect the budget filter to match that visible number,
+    // but trip.totalBudget (the optional user-entered total) is NULL for
+    // virtually all trips, so filtering on it returned nothing. Filter on
+    // COALESCE(totalBudget, activity-cost sum) so the filter matches what the
+    // user actually sees, while still honoring an explicit total when set.
+    const tripBudgetExpr = `COALESCE(trip."totalBudget", (
+      SELECT COALESCE(SUM((act->>'estimatedCost')::numeric), 0)
+      FROM itineraries i, jsonb_array_elements(i.activities) AS act
+      WHERE i."tripId" = trip.id
+        AND jsonb_typeof(i.activities) = 'array'
+    ))`;
     if (budgetMin !== undefined) {
-      queryBuilder.andWhere('trip.totalBudget >= :budgetMin', { budgetMin });
+      queryBuilder.andWhere(`${tripBudgetExpr} >= :budgetMin`, { budgetMin });
     }
     if (budgetMax !== undefined) {
-      queryBuilder.andWhere('trip.totalBudget <= :budgetMax', { budgetMax });
+      queryBuilder.andWhere(`${tripBudgetExpr} <= :budgetMax`, { budgetMax });
     }
 
     // Get total count before pagination
