@@ -20,12 +20,15 @@ import { ScenarioService } from './scenario.service';
 import { buildScenarioKey, Scenario } from './scenario.pool';
 import { SelfBlogPublisher } from './self-blog.publisher';
 
+/** A channel result is either a real run status or 'skipped' when toggled off. */
+type ChannelStatus = ViralPostStatus | 'skipped';
+
 export interface MarketingRunSummary {
   ran: boolean;
   reason?: string;
   scenarioKey?: string;
-  selfBlog?: { status: ViralPostStatus; url?: string; error?: string };
-  naver?: { status: ViralPostStatus; error?: string };
+  selfBlog?: { status: ChannelStatus; url?: string; error?: string };
+  naver?: { status: ChannelStatus; error?: string };
 }
 
 /**
@@ -94,8 +97,23 @@ export class MarketingScheduler {
       const scenario = await this.scenarioService.pickFreshScenario();
       const scenarioKey = buildScenarioKey(scenario);
 
-      const selfBlog = await this.runSelfBlog(scenario, scenarioKey);
-      const naver = await this.runNaverDraft(scenario, scenarioKey);
+      // Per-channel toggles. In the current infra the backend cannot write to
+      // the nginx-served public dir, so SELF_BLOG_ENABLED=false runs the Naver
+      // email draft alone (zero infra change). A disabled channel does no
+      // content generation (no OpenAI spend) and logs no error.
+      const selfBlogEnabled = this.configService.get<boolean>(
+        'marketing.selfBlogEnabled',
+      );
+      const naverEmailEnabled = this.configService.get<boolean>(
+        'marketing.naverEmailEnabled',
+      );
+
+      const selfBlog = selfBlogEnabled
+        ? await this.runSelfBlog(scenario, scenarioKey)
+        : { status: 'skipped' as const };
+      const naver = naverEmailEnabled
+        ? await this.runNaverDraft(scenario, scenarioKey)
+        : { status: 'skipped' as const };
 
       this.logger.log(
         `Marketing run complete: self-blog=${selfBlog.status} naver=${naver.status}`,
