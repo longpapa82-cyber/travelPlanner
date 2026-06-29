@@ -18,7 +18,18 @@ import * as path from 'path';
  * - SITE_URL: canonical origin for blog URLs / sitemap entries.
  * - MARKETING_EMAIL_TO: recipient of the daily Naver draft (fallback SMTP_FROM).
  * - ADSENSE_CLIENT: AdSense publisher id injected into generated posts.
+ * - PEXELS_API_KEY: Pexels stock-image API key. When empty/unset the daily run
+ *   degrades to text-only (fail-open) — images are an enhancement, never a
+ *   dependency. NEVER hardcode the key; env only.
+ * - MARKETING_IMAGE_COUNT: how many destination photos to fetch per run, clamped
+ *   to 0..3 (0 = explicit opt-out / text-only). Defaults to 2.
  */
+function clampImageCount(raw: string): number {
+  const parsed = parseInt(raw, 10);
+  const n = Number.isNaN(parsed) ? 0 : parsed;
+  return Math.min(Math.max(n, 0), 3);
+}
+
 export default registerAs('marketing', () => ({
   enabled: process.env.MARKETING_ENABLED === 'true',
   selfBlogEnabled: process.env.SELF_BLOG_ENABLED !== 'false',
@@ -29,4 +40,6 @@ export default registerAs('marketing', () => ({
   siteUrl: process.env.SITE_URL || 'https://mytravel-planner.com',
   emailTo: process.env.MARKETING_EMAIL_TO || process.env.SMTP_FROM || '',
   adsenseClient: process.env.ADSENSE_CLIENT || 'ca-pub-7330738950092177',
+  pexelsApiKey: process.env.PEXELS_API_KEY || '',
+  imageCount: clampImageCount(process.env.MARKETING_IMAGE_COUNT || '2'),
 }));

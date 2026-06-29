@@ -15,6 +15,12 @@ export interface Destination {
   readonly name: string;
   /** URL-safe romanized fragment used in slugs (e.g. "tokyo"). */
   readonly slug: string;
+  /**
+   * Human-readable English search term for stock-image lookup (e.g. "Hong Kong",
+   * "Jeju Island", "Nha Trang"). Better than the romanized slug for image search.
+   * Optional: ScenarioService falls back to a readable form of the slug.
+   */
+  readonly imageQuery?: string;
 }
 
 export interface Scenario {
@@ -26,6 +32,12 @@ export interface Scenario {
   readonly persona: string;
   readonly emphasis: string;
   readonly structure: string;
+  /**
+   * English stock-image search term carried from the chosen Destination (or a
+   * readable form of the slug). Used ONLY by the image fetch — intentionally NOT
+   * part of buildScenarioKey so adding it cannot change dedup keys.
+   */
+  readonly imageQuery: string;
 }
 
 export interface Duration {
@@ -33,40 +45,40 @@ export interface Duration {
   readonly days: number;
 }
 
-/** ~32 destinations (Korean name + romanized slug fragment). */
+/** ~32 destinations (Korean name + romanized slug fragment + English image query). */
 export const DESTINATIONS: readonly Destination[] = Object.freeze([
-  { name: '도쿄', slug: 'tokyo' },
-  { name: '교토', slug: 'kyoto' },
-  { name: '오사카', slug: 'osaka' },
-  { name: '후쿠오카', slug: 'fukuoka' },
-  { name: '삿포로', slug: 'sapporo' },
-  { name: '서울', slug: 'seoul' },
-  { name: '부산', slug: 'busan' },
-  { name: '제주', slug: 'jeju' },
-  { name: '방콕', slug: 'bangkok' },
-  { name: '치앙마이', slug: 'chiangmai' },
-  { name: '싱가포르', slug: 'singapore' },
-  { name: '발리', slug: 'bali' },
-  { name: '다낭', slug: 'danang' },
-  { name: '호치민', slug: 'hochiminh' },
-  { name: '쿠알라룸푸르', slug: 'kualalumpur' },
-  { name: '타이베이', slug: 'taipei' },
-  { name: '홍콩', slug: 'hongkong' },
-  { name: '파리', slug: 'paris' },
-  { name: '런던', slug: 'london' },
-  { name: '바르셀로나', slug: 'barcelona' },
-  { name: '로마', slug: 'rome' },
-  { name: '프라하', slug: 'prague' },
-  { name: '암스테르담', slug: 'amsterdam' },
-  { name: '빈', slug: 'vienna' },
-  { name: '이스탄불', slug: 'istanbul' },
-  { name: '뉴욕', slug: 'newyork' },
-  { name: '하와이', slug: 'hawaii' },
-  { name: '시드니', slug: 'sydney' },
-  { name: '두바이', slug: 'dubai' },
-  { name: '세부', slug: 'cebu' },
-  { name: '나트랑', slug: 'nhatrang' },
-  { name: '괌', slug: 'guam' },
+  { name: '도쿄', slug: 'tokyo', imageQuery: 'Tokyo' },
+  { name: '교토', slug: 'kyoto', imageQuery: 'Kyoto' },
+  { name: '오사카', slug: 'osaka', imageQuery: 'Osaka' },
+  { name: '후쿠오카', slug: 'fukuoka', imageQuery: 'Fukuoka' },
+  { name: '삿포로', slug: 'sapporo', imageQuery: 'Sapporo' },
+  { name: '서울', slug: 'seoul', imageQuery: 'Seoul' },
+  { name: '부산', slug: 'busan', imageQuery: 'Busan' },
+  { name: '제주', slug: 'jeju', imageQuery: 'Jeju Island' },
+  { name: '방콕', slug: 'bangkok', imageQuery: 'Bangkok' },
+  { name: '치앙마이', slug: 'chiangmai', imageQuery: 'Chiang Mai' },
+  { name: '싱가포르', slug: 'singapore', imageQuery: 'Singapore' },
+  { name: '발리', slug: 'bali', imageQuery: 'Bali' },
+  { name: '다낭', slug: 'danang', imageQuery: 'Da Nang' },
+  { name: '호치민', slug: 'hochiminh', imageQuery: 'Ho Chi Minh City' },
+  { name: '쿠알라룸푸르', slug: 'kualalumpur', imageQuery: 'Kuala Lumpur' },
+  { name: '타이베이', slug: 'taipei', imageQuery: 'Taipei' },
+  { name: '홍콩', slug: 'hongkong', imageQuery: 'Hong Kong' },
+  { name: '파리', slug: 'paris', imageQuery: 'Paris' },
+  { name: '런던', slug: 'london', imageQuery: 'London' },
+  { name: '바르셀로나', slug: 'barcelona', imageQuery: 'Barcelona' },
+  { name: '로마', slug: 'rome', imageQuery: 'Rome' },
+  { name: '프라하', slug: 'prague', imageQuery: 'Prague' },
+  { name: '암스테르담', slug: 'amsterdam', imageQuery: 'Amsterdam' },
+  { name: '빈', slug: 'vienna', imageQuery: 'Vienna' },
+  { name: '이스탄불', slug: 'istanbul', imageQuery: 'Istanbul' },
+  { name: '뉴욕', slug: 'newyork', imageQuery: 'New York City' },
+  { name: '하와이', slug: 'hawaii', imageQuery: 'Hawaii' },
+  { name: '시드니', slug: 'sydney', imageQuery: 'Sydney' },
+  { name: '두바이', slug: 'dubai', imageQuery: 'Dubai' },
+  { name: '세부', slug: 'cebu', imageQuery: 'Cebu' },
+  { name: '나트랑', slug: 'nhatrang', imageQuery: 'Nha Trang' },
+  { name: '괌', slug: 'guam', imageQuery: 'Guam' },
 ]);
 
 /** ~8 travel companions / trip framings. */
@@ -161,6 +173,16 @@ function pickRandom<T>(pool: readonly T[]): T {
   return pool[index];
 }
 
+/**
+ * Readable fallback for a romanized slug when a Destination has no explicit
+ * imageQuery (capitalize first letter, e.g. 'tokyo' -> 'Tokyo'). Pure helper.
+ */
+export function readableSlug(slug: string): string {
+  const trimmed = slug.trim();
+  if (trimmed === '') return 'travel';
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+}
+
 function assembleScenario(): Scenario {
   const destination = pickRandom(DESTINATIONS);
   const duration = pickRandom(DURATIONS);
@@ -173,6 +195,7 @@ function assembleScenario(): Scenario {
     persona: pickRandom(PERSONAS),
     emphasis: pickRandom(EMPHASES),
     structure: pickRandom(STRUCTURES),
+    imageQuery: destination.imageQuery ?? readableSlug(destination.slug),
   };
 }
 

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { ContentResult } from './content.service';
+import { MarketingImage } from './image.types';
 import {
   renderBlogCard,
   renderBlogPostHtml,
@@ -64,14 +65,17 @@ export class SelfBlogPublisher {
     );
   }
 
-  async publish(content: ContentResult): Promise<SelfBlogPublishResult> {
+  async publish(
+    content: ContentResult,
+    images: readonly MarketingImage[] = [],
+  ): Promise<SelfBlogPublishResult> {
     const blogDir = this.blogDir;
     await fs.mkdir(blogDir, { recursive: true });
 
     const filePath = path.join(blogDir, `${content.slug}.html`);
     const url = `${this.siteUrl}/blog/${content.slug}`;
 
-    const postWritten = await this.writePostHtml(filePath, content);
+    const postWritten = await this.writePostHtml(filePath, content, images);
     const indexUpdated = await this.insertIndexCard(blogDir, content);
     const sitemapUpdated = await this.appendSitemapUrl(content.slug);
 
@@ -88,14 +92,18 @@ export class SelfBlogPublisher {
   private async writePostHtml(
     filePath: string,
     content: ContentResult,
+    images: readonly MarketingImage[],
   ): Promise<boolean> {
     if (await this.fileExists(filePath)) {
       this.logger.warn(`Post already exists, skipping: ${filePath}`);
       return false;
     }
+    // Self-blog embeds the Pexels-hosted src URL directly (no file saving) —
+    // Pexels permits hotlinking, which keeps publishing simple/static.
     const html = renderBlogPostHtml(content, {
       siteUrl: this.siteUrl,
       adsenseClient: this.adsenseClient,
+      images,
     });
     await this.atomicWrite(filePath, html);
     return true;

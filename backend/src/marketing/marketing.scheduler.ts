@@ -16,6 +16,8 @@ import {
   OpenAiNotConfiguredError,
 } from './content.service';
 import { NaverEmailPublisher } from './naver-email.publisher';
+import { PexelsService } from './pexels.service';
+import { MarketingImage } from './image.types';
 import { ScenarioService } from './scenario.service';
 import { buildScenarioKey, Scenario } from './scenario.pool';
 import { SelfBlogPublisher } from './self-blog.publisher';
@@ -56,6 +58,7 @@ export class MarketingScheduler {
     private readonly contentService: MarketingContentService,
     private readonly selfBlogPublisher: SelfBlogPublisher,
     private readonly naverEmailPublisher: NaverEmailPublisher,
+    private readonly pexelsService: PexelsService,
     @Optional()
     @Inject(ErrorLogService)
     private readonly errorLogService?: ErrorLogService,
@@ -108,11 +111,25 @@ export class MarketingScheduler {
         'marketing.naverEmailEnabled',
       );
 
+      // Fetch Pexels photos ONCE per run (at most one API hit/day) and reuse for
+      // BOTH channels. fetchImages is fail-open (NEVER throws) — it lives OUTSIDE
+      // the channel try/catch on purpose: an image problem can never mark a
+      // channel FAILED or block the email; both channels just render text-only
+      // when the array is empty. withBuffers downloads bytes for email
+      // attachments (self-blog reuses the same descriptors via srcUrl).
+      const imageCount =
+        this.configService.get<number>('marketing.imageCount') ?? 0;
+      const images: MarketingImage[] = await this.pexelsService.fetchImages(
+        scenario.imageQuery,
+        imageCount,
+        { withBuffers: true },
+      );
+
       const selfBlog = selfBlogEnabled
-        ? await this.runSelfBlog(scenario, scenarioKey)
+        ? await this.runSelfBlog(scenario, scenarioKey, images)
         : { status: 'skipped' as const };
       const naver = naverEmailEnabled
-        ? await this.runNaverDraft(scenario, scenarioKey)
+        ? await this.runNaverDraft(scenario, scenarioKey, images)
         : { status: 'skipped' as const };
 
       this.logger.log(
@@ -138,11 +155,12 @@ export class MarketingScheduler {
   private async runSelfBlog(
     scenario: Scenario,
     scenarioKey: string,
+    images: readonly MarketingImage[],
   ): Promise<{ status: ViralPostStatus; url?: string; error?: string }> {
     let content: ContentResult | undefined;
     try {
       content = await this.contentService.generate(scenario, 'self_blog');
-      const result = await this.selfBlogPublisher.publish(content);
+      const result = await this.selfBlogPublisher.publish(content, images);
       await this.persist({
         scenario,
         scenarioKey,
@@ -182,11 +200,12 @@ export class MarketingScheduler {
   private async runNaverDraft(
     scenario: Scenario,
     scenarioKey: string,
+    images: readonly MarketingImage[],
   ): Promise<{ status: ViralPostStatus; error?: string }> {
     let content: ContentResult | undefined;
     try {
       content = await this.contentService.generate(scenario, 'naver_draft');
-      await this.naverEmailPublisher.sendDraft(scenario, content);
+      await this.naverEmailPublisher.sendDraft(scenario, content, images);
       await this.persist({
         scenario,
         scenarioKey,

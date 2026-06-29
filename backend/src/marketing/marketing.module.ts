@@ -5,6 +5,7 @@ import { EmailModule } from '../email/email.module';
 import { ViralPost } from './entities/viral-post.entity';
 import { MarketingContentService } from './content.service';
 import { NaverEmailPublisher } from './naver-email.publisher';
+import { PexelsService } from './pexels.service';
 import { ScenarioService } from './scenario.service';
 import { SelfBlogPublisher } from './self-blog.publisher';
 import { MarketingScheduler } from './marketing.scheduler';
@@ -26,6 +27,7 @@ import { MarketingScheduler } from './marketing.scheduler';
     MarketingContentService,
     SelfBlogPublisher,
     NaverEmailPublisher,
+    PexelsService,
     MarketingScheduler,
   ],
   exports: [MarketingScheduler],

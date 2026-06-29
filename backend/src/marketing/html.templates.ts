@@ -1,4 +1,5 @@
 import type { ContentResult } from './content.service';
+import type { MarketingImage } from './image.types';
 
 /**
  * Pure string builders + escaping for the self-blog publisher. Kept separate so
@@ -43,9 +44,48 @@ function formatDateLabel(isoDate: string): string {
   return isoDate.replace(/-/g, '.');
 }
 
+const PEXELS_URL = 'https://www.pexels.com';
+
+/**
+ * Render one Pexels photo as a captioned <figure>. Every dynamic value (src URL,
+ * alt, photographer, photographer URL) is escaped for attribute/text context.
+ * The photographer link is only emitted when photographerUrl validated to an
+ * http(s) URL upstream; otherwise the name renders as plain text. Pexels asks
+ * crediting photographers when possible → caption: "Photo by X on Pexels".
+ *
+ * @param image  the photo descriptor
+ * @param eager  first image may load eagerly (LCP); rest lazy
+ */
+export function renderImageFigure(
+  image: MarketingImage,
+  eager = false,
+): string {
+  const src = escapeHtml(image.srcUrl);
+  const alt = escapeHtml(image.alt);
+  const photographer = escapeHtml(image.photographer);
+  const dims =
+    image.width > 0 && image.height > 0
+      ? ` width="${image.width}" height="${image.height}"`
+      : '';
+  const loading = eager
+    ? ' loading="eager" fetchpriority="high"'
+    : ' loading="lazy"';
+
+  const credit = image.photographerUrl.startsWith('http')
+    ? `Photo by <a href="${escapeHtml(image.photographerUrl)}" rel="nofollow noopener" target="_blank">${photographer}</a> on <a href="${PEXELS_URL}" rel="nofollow noopener" target="_blank">Pexels</a>`
+    : `Photo by ${photographer} on <a href="${PEXELS_URL}" rel="nofollow noopener" target="_blank">Pexels</a>`;
+
+  return `  <figure class="post-figure">
+    <img src="${src}" alt="${alt}"${dims}${loading} />
+    <figcaption>${credit}</figcaption>
+  </figure>`;
+}
+
 interface RenderOptions {
   siteUrl?: string;
   adsenseClient?: string;
+  /** Optional Pexels photos embedded into the post (first near top, rest stacked). */
+  images?: readonly MarketingImage[];
 }
 
 export function renderBlogPostHtml(
@@ -62,6 +102,20 @@ export function renderBlogPostHtml(
   // content.bodyHtml already has every heading/paragraph escaped by the content
   // service (only structural <h2>/<p> tags are raw), so it is inserted as-is.
   const body = content.bodyHtml;
+
+  // Image placement is deterministic (no fragile section parsing): the first
+  // figure sits at the top of the body (eager/LCP), the remaining figures are
+  // stacked immediately after it. escapeHtml is applied inside renderImageFigure.
+  const images = options.images ?? [];
+  const leadFigure =
+    images.length > 0 ? renderImageFigure(images[0], true) : '';
+  const stackedFigures = images
+    .slice(1)
+    .map((img) => renderImageFigure(img, false))
+    .join('\n');
+  const figureBlock = [leadFigure, stackedFigures]
+    .filter((part) => part !== '')
+    .join('\n');
 
   const jsonLd = {
     title: escapeJsonString(content.title),
@@ -147,6 +201,11 @@ export function renderBlogPostHtml(
     .content ul, .content ol { margin: 1rem 0 1rem 1.5rem; color: #374151; }
     .content li { margin-bottom: 0.5rem; }
     .content strong { color: #1e293b; }
+    .post-figure { margin: 1.5rem 0; }
+    .post-figure img { display: block; width: 100%; height: auto; border-radius: 0.75rem; }
+    .post-figure figcaption { margin-top: 0.5rem; font-size: 0.8rem; color: #94a3b8; text-align: center; }
+    .post-figure figcaption a { color: #4A90D9; }
+    .post-figure figcaption a:hover { text-decoration: underline; }
     .ad-section { text-align: center; margin: 2rem 0; }
     .cta-box { background: linear-gradient(135deg, #4A90D9, #3a7bc8); color: #fff; border-radius: 1rem; padding: 2rem; text-align: center; margin: 2.5rem 0; }
     .cta-box h3 { color: #fff; font-size: 1.2rem; margin-bottom: 0.75rem; }
@@ -192,7 +251,7 @@ export function renderBlogPostHtml(
     <h1>${title}</h1>
     <p class="article-meta">${dateLabel} | myTravel 사용자 후기</p>
   </div>
-
+${figureBlock ? `\n${figureBlock}\n` : ''}
 ${body}
 
   <div class="ad-section">
