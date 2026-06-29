@@ -7,6 +7,8 @@ export default registerAs('email', () => ({
   user: process.env.SMTP_USER || '',
   pass: process.env.SMTP_PASS || '',
   from: process.env.SMTP_FROM || 'noreply@travelplanner.com',
+  // Recipient for the daily marketing Naver draft email. Falls back to SMTP_FROM.
+  marketingTo: process.env.MARKETING_EMAIL_TO || process.env.SMTP_FROM || '',
   frontendUrl:
     process.env.FRONTEND_URL ||
     (process.env.NODE_ENV === 'production'

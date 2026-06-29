@@ -215,6 +215,116 @@ export class EmailService {
     }
   }
 
+  /**
+   * Send a raw inline-HTML email (no .hbs template). Used by feature flows that
+   * build their own body — e.g. the marketing Naver-draft publisher. Reuses the
+   * same MailerService transport + configured `from` default, and mirrors the
+   * existing try/catch + apiUsage logging style. Throws on delivery failure so
+   * the caller can record the failure.
+   */
+  async sendRawHtml(to: string, subject: string, html: string): Promise<void> {
+    const startTime = Date.now();
+    try {
+      const result = (await this.mailerService.sendMail({
+        to,
+        subject,
+        html,
+      })) as { message?: string } | undefined;
+
+      if (this.isDev && result?.message) {
+        this.logger.debug(
+          `[DEV] Raw HTML email to ${maskEmail(to)}: ${subject}`,
+        );
+      }
+
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'email',
+          feature: 'email',
+          status: 'success',
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
+      this.logger.log(`Raw HTML email sent to ${maskEmail(to)}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to send raw HTML email to ${maskEmail(to)}: ${getErrorMessage(error)}`,
+      );
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'email',
+          feature: 'email',
+          status: 'error',
+          errorCode: getErrorMessage(error).slice(0, 100),
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
+      throw error;
+    }
+  }
+
+  /**
+   * Send a raw inline-HTML email WITH file attachments. Used by the marketing
+   * Naver-draft publisher to attach Pexels stock photos the operator uploads to
+   * Naver by hand. nodemailer accepts attachments as { filename, content(Buffer),
+   * contentType, cid }. Mirrors sendRawHtml's try/catch + apiUsage + maskEmail +
+   * throw style so a delivery failure is reported to the caller.
+   */
+  async sendRawHtmlWithAttachments(
+    to: string,
+    subject: string,
+    html: string,
+    attachments: Array<{
+      filename: string;
+      content: Buffer;
+      contentType?: string;
+      cid?: string;
+    }>,
+  ): Promise<void> {
+    const startTime = Date.now();
+    try {
+      const result = (await this.mailerService.sendMail({
+        to,
+        subject,
+        html,
+        attachments,
+      })) as { message?: string } | undefined;
+
+      if (this.isDev && result?.message) {
+        this.logger.debug(
+          `[DEV] Raw HTML email (with ${attachments.length} attachment(s)) ` +
+            `to ${maskEmail(to)}: ${subject}`,
+        );
+      }
+
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'email',
+          feature: 'email',
+          status: 'success',
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
+      this.logger.log(
+        `Raw HTML email with attachments sent to ${maskEmail(to)}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to send raw HTML email with attachments to ${maskEmail(to)}: ${getErrorMessage(error)}`,
+      );
+      this.apiUsageService
+        ?.logApiUsage({
+          provider: 'email',
+          feature: 'email',
+          status: 'error',
+          errorCode: getErrorMessage(error).slice(0, 100),
+          latencyMs: Date.now() - startTime,
+        })
+        .catch(() => {});
+      throw error;
+    }
+  }
+
   async sendPasswordResetEmail(
     email: string,
     name: string,
