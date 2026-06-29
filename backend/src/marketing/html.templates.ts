@@ -28,15 +28,27 @@ export function escapeHtml(input: string): string {
  * form-feed, newline, carriage return, etc.) are encoded as \uXXXX so model text
  * with a stray control char can never produce invalid JSON-LD.
  */
+const CONTROL_CHAR_MAX = 0x1f;
+
 function escapeJsonString(input: string): string {
-  return input
+  const pre = input
     .replace(/\\/g, '\\\\')
     .replace(/"/g, '\\"')
-    .replace(/</g, '\\u003c')
-    .replace(
-      /[\u0000-\u001f]/g,
-      (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'),
-    );
+    .replace(/</g, '\\u003c');
+
+  // Encode any remaining C0 control char (U+0000–U+001F: tab, newline, etc.) as
+  // \uXXXX so a stray control char in model output can never break the JSON-LD.
+  // Done by codepoint scan (no regex) to avoid a no-control-regex lint conflict
+  // while still covering the full control range.
+  let out = '';
+  for (const ch of pre) {
+    const code = ch.charCodeAt(0);
+    out +=
+      code <= CONTROL_CHAR_MAX
+        ? '\\u' + code.toString(16).padStart(4, '0')
+        : ch;
+  }
+  return out;
 }
 
 function formatDateLabel(isoDate: string): string {
