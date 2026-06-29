@@ -26,6 +26,7 @@ import { AdminModule } from './admin/admin.module';
 import { SocialModule } from './social/social.module';
 import { PlacesModule } from './places/places.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { MarketingModule } from './marketing/marketing.module';
 // import { StripeModule } from './stripe/stripe.module';
 import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
 import { LifecycleService } from './common/lifecycle.service';
@@ -36,13 +37,20 @@ import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import oauthConfig from './config/oauth.config';
 import emailConfig from './config/email.config';
+import marketingConfig from './config/marketing.config';
 
 @Module({
   imports: [
     // Config Module - Load environment variables
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, jwtConfig, oauthConfig, emailConfig],
+      load: [
+        databaseConfig,
+        jwtConfig,
+        oauthConfig,
+        emailConfig,
+        marketingConfig,
+      ],
       envFilePath: ['.env'],
     }),
 
@@ -103,6 +111,7 @@ import emailConfig from './config/email.config';
     SocialModule,
     PlacesModule,
     SubscriptionModule,
+    MarketingModule,
     // StripeModule,
   ],
   controllers: [AppController],
