@@ -2,7 +2,7 @@
 
 ## 서버
 - **IP**: `46.62.201.127`
-- **도메인**: `mytravel-planner.com` | DNS: Cloudflare (Proxied)
+- **도메인**: `mytravel-planner.com` | 레지스트라(구매처): **Cloudflare Registrar** (계정 `Longpapa82@gmail.com`, 대시보드 https://dash.cloudflare.com → 도메인 등록) | DNS: Cloudflare (Proxied) | 만료일 **2027-02-27** (자동갱신 여부 확인 권장)
 - **SSH 키**: `~/.ssh/travelplanner-oci`
 
 ## 앱 식별자
