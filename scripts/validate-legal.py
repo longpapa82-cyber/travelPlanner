@@ -49,15 +49,17 @@ def validate_locale(locale: str) -> tuple[list[str], list[str]]:
     data = json.loads(path.read_text())
 
     # P0-A: terms business info — find any article whose content contains
-    # "AI Soft" + the actual representative email.
+    # the company name ("AI Soft" or Korean registered name "에이아이소프트")
+    # + the actual representative email.
     terms_articles = data.get('terms', {}).get('articles', {})
     biz_found = any(
-        'AI Soft' in (v.get('content', '') or '') and
+        ('AI Soft' in (v.get('content', '') or '') or
+         '에이아이소프트' in (v.get('content', '') or '')) and
         'longpapa82@gmail.com' in (v.get('content', '') or '')
         for v in terms_articles.values()
     )
     if not biz_found:
-        p0_failures.append('terms missing business-info article (AI Soft + email)')
+        p0_failures.append('terms missing business-info article (company name + email)')
 
     # P0-B: privacy.art3 contains required third parties.
     art3_content = (
