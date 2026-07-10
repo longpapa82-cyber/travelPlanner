@@ -1,0 +1,18 @@
+{
+  "missing": [
+    {"slug":"ai-restaurant-recommendation","langs":["ja"]},
+    {"slug":"tokyo-3day-course","langs":["ko","ja"]},
+    {"slug":"osaka-kyoto-course","langs":["ko","en","ja"]},
+    {"slug":"bangkok-4day-course","langs":["ko","en","ja"]},
+    {"slug":"danang-hoian-course","langs":["ko","en","ja"]},
+    {"slug":"taipei-3day-course","langs":["ko","en","ja"]},
+    {"slug":"seasonal-best-destinations","langs":["ko","en","ja"]},
+    {"slug":"local-experience-tips","langs":["ko","en","ja"]},
+    {"slug":"jetlag-management-guide","langs":["ko","en","ja"]},
+    {"slug":"long-flight-comfort-tips","langs":["ko","en","ja"]},
+    {"slug":"travel-app-recommendations","langs":["ko","en","ja"]},
+    {"slug":"travel-emergency-guide","langs":["ko","en","ja"]},
+    {"slug":"travel-photography-spots","langs":["ko","en","ja"]},
+    {"slug":"sustainable-travel-guide","langs":["ko","en","ja"]}
+  ]
+}
