@@ -5,6 +5,7 @@ import { Cron } from '@nestjs/schedule';
 import { User } from '../users/entities/user.entity';
 import { Trip } from '../trips/entities/trip.entity';
 import { ErrorLog } from './entities/error-log.entity';
+import { kstMidnightUtc } from '../common/kst';
 
 @Injectable()
 export class AdminService {
@@ -67,11 +68,13 @@ export class AdminService {
 
   // ─── User Management ───────────────────────────
 
-  async getUserStats() {
+  async getUserStats(now: Date = new Date()) {
     const totalUsers = await this.userRepository.count();
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // KST midnight — container runs UTC, so a naive setHours(0,0,0,0) would
+    // count from UTC midnight (= 09:00 KST), leaking yesterday's KST rows into
+    // "오늘" during 00:00–09:00 KST.
+    const today = kstMidnightUtc(now);
 
     const todaySignups = await this.userRepository
       .createQueryBuilder('u')
@@ -97,10 +100,13 @@ export class AdminService {
 
     const dailySignups = await this.userRepository
       .createQueryBuilder('u')
-      .select("TO_CHAR(u.createdAt, 'YYYY-MM-DD')", 'date')
+      .select(
+        "TO_CHAR(u.createdAt AT TIME ZONE 'Asia/Seoul', 'YYYY-MM-DD')",
+        'date',
+      )
       .addSelect('COUNT(*)', 'count')
       .where('u.createdAt >= :thirtyDaysAgo', { thirtyDaysAgo })
-      .groupBy("TO_CHAR(u.createdAt, 'YYYY-MM-DD')")
+      .groupBy("TO_CHAR(u.createdAt AT TIME ZONE 'Asia/Seoul', 'YYYY-MM-DD')")
       .orderBy('date', 'ASC')
       .getRawMany();
 
@@ -152,7 +158,10 @@ export class AdminService {
     // Daily active by platform (30 days)
     const dailyActiveByPlatform = await this.userRepository
       .createQueryBuilder('u')
-      .select("TO_CHAR(u.lastLoginAt, 'YYYY-MM-DD')", 'date')
+      .select(
+        "TO_CHAR(u.lastLoginAt AT TIME ZONE 'Asia/Seoul', 'YYYY-MM-DD')",
+        'date',
+      )
       .addSelect(
         `SUM(CASE WHEN u.lastPlatform = 'web' THEN 1 ELSE 0 END)`,
         'web',
@@ -166,7 +175,7 @@ export class AdminService {
         'android',
       )
       .where('u.lastLoginAt >= :thirtyDaysAgo', { thirtyDaysAgo })
-      .groupBy("TO_CHAR(u.lastLoginAt, 'YYYY-MM-DD')")
+      .groupBy("TO_CHAR(u.lastLoginAt AT TIME ZONE 'Asia/Seoul', 'YYYY-MM-DD')")
       .orderBy('date', 'ASC')
       .getRawMany();
 
@@ -242,9 +251,9 @@ export class AdminService {
     return this.errorLogRepository.save(log);
   }
 
-  async getErrorLogStats() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  async getErrorLogStats(now: Date = new Date()) {
+    // KST midnight (see getUserStats) so "오늘 오류" counts the Korean day.
+    const today = kstMidnightUtc(now);
 
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);

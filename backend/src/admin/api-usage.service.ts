@@ -7,6 +7,7 @@ import {
   ApiFeature,
   ApiStatus,
 } from './entities/api-usage.entity';
+import { kstMidnightUtc, kstMonthStartUtc, kstParts } from '../common/kst';
 
 export interface ApiUsageSummary {
   today: {
@@ -80,23 +81,38 @@ export class ApiUsageService {
     }
   }
 
-  async getApiUsageSummary(): Promise<ApiUsageSummary> {
-    const now = new Date();
-    const todayStart = new Date(now);
-    todayStart.setHours(0, 0, 0, 0);
+  async getApiUsageSummary(now: Date = new Date()): Promise<ApiUsageSummary> {
+    // KST anchoring — the container runs UTC, so a naive local-time boundary
+    // would key "today"/MTD off UTC midnight (= 09:00 KST) and roll the day/month
+    // 9 hours late in Korea. All of these anchor to the Asia/Seoul calendar.
+    const todayStart = kstMidnightUtc(now);
 
-    const mtdStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const mtdStart = kstMonthStartUtc(now);
 
-    // Compare same-day MTD of previous month (e.g., Apr 9 MTD vs Mar 1-9)
-    const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    // KST calendar parts (month is 1-based). JS Date months are 0-based, so we
+    // pass kstMonth - 1 into Date.UTC to name the current month, and kstMonth - 2
+    // for the previous month; Date.UTC normalizes year rollover (e.g. Jan → Dec).
+    const { year: kstYear, month: kstMonth, day: kstDay } = kstParts(now);
+
+    // Compare same-day MTD of previous month (e.g., Apr 9 MTD vs Mar 1-9), in KST.
+    const prevMonthAnchor = new Date(Date.UTC(kstYear, kstMonth - 2, 1));
+    const prevMonthStart = kstMonthStartUtc(prevMonthAnchor);
+    // End of the same KST day-of-month a month earlier: take KST midnight of the
+    // day *after* it, then step back 1ms. Date.UTC yields the calendar y/m/d we
+    // then reinterpret at +09:00 (we only read the date fields, not the instant).
+    const prevDayAfter = new Date(
+      Date.UTC(
+        prevMonthAnchor.getUTCFullYear(),
+        prevMonthAnchor.getUTCMonth(),
+        kstDay + 1,
+      ),
+    );
+    const pmm = String(prevDayAfter.getUTCMonth() + 1).padStart(2, '0');
+    const pdd = String(prevDayAfter.getUTCDate()).padStart(2, '0');
     const prevMonthSameDayEnd = new Date(
-      now.getFullYear(),
-      now.getMonth() - 1,
-      now.getDate(),
-      23,
-      59,
-      59,
-      999,
+      new Date(
+        `${prevDayAfter.getUTCFullYear()}-${pmm}-${pdd}T00:00:00+09:00`,
+      ).getTime() - 1,
     );
 
     // Today stats
@@ -142,13 +158,9 @@ export class ApiUsageService {
       totalCalls: parseInt(prevMonthRows?.calls || '0', 10),
     };
 
-    // Forecast: extrapolate MTD to full month
-    const dayOfMonth = now.getDate();
-    const daysInMonth = new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      0,
-    ).getDate();
+    // Forecast: extrapolate MTD to full month (KST calendar).
+    const dayOfMonth = kstDay;
+    const daysInMonth = new Date(Date.UTC(kstYear, kstMonth, 0)).getUTCDate();
     const forecast =
       dayOfMonth > 0 ? (mtd.totalCost / dayOfMonth) * daysInMonth : 0;
 
@@ -183,12 +195,15 @@ export class ApiUsageService {
   async getApiUsageDaily(from: Date, to: Date): Promise<DailyUsage[]> {
     const rows = await this.apiUsageRepo
       .createQueryBuilder('u')
-      .select("TO_CHAR(u.createdAt, 'YYYY-MM-DD')", 'date')
+      .select(
+        "TO_CHAR(u.createdAt AT TIME ZONE 'Asia/Seoul', 'YYYY-MM-DD')",
+        'date',
+      )
       .addSelect('u.provider', 'provider')
       .addSelect('SUM(u.costUsd)', 'cost')
       .addSelect('COUNT(*)::int', 'calls')
       .where('u.createdAt >= :from AND u.createdAt <= :to', { from, to })
-      .groupBy("TO_CHAR(u.createdAt, 'YYYY-MM-DD')")
+      .groupBy("TO_CHAR(u.createdAt AT TIME ZONE 'Asia/Seoul', 'YYYY-MM-DD')")
       .addGroupBy('u.provider')
       .orderBy('date', 'ASC')
       .getRawMany();
@@ -230,7 +245,10 @@ export class ApiUsageService {
 
     const rows = await this.apiUsageRepo
       .createQueryBuilder('u')
-      .select('EXTRACT(MONTH FROM u.createdAt)::int', 'month')
+      .select(
+        "EXTRACT(MONTH FROM u.createdAt AT TIME ZONE 'Asia/Seoul')::int",
+        'month',
+      )
       .addSelect('u.provider', 'provider')
       .addSelect('SUM(u.costUsd)', 'cost')
       .addSelect('COUNT(*)::int', 'calls')
@@ -238,7 +256,7 @@ export class ApiUsageService {
         yearStart,
         yearEnd,
       })
-      .groupBy('EXTRACT(MONTH FROM u.createdAt)')
+      .groupBy("EXTRACT(MONTH FROM u.createdAt AT TIME ZONE 'Asia/Seoul')")
       .addGroupBy('u.provider')
       .orderBy('month', 'ASC')
       .getRawMany();
