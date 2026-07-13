@@ -269,11 +269,13 @@
       "openInMaps": "Открыть в Google Картах",
       "tapToOpen": "Нажмите, чтобы открыть карту",
       "durationMin": "{{min}} мин.",
-      "openInGoogleMaps": "Buka di Google Maps",
-      "openInAppleMaps": "Buka di Apple Maps",
-      "cancel": "Batal",
-      "selectMapsApp": "Pilih Aplikasi Peta",
-      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
+      "openInGoogleMaps": "Открыть в Google Картах",
+      "openInAppleMaps": "Открыть в Apple Картах",
+      "cancel": "Отмена",
+      "selectMapsApp": "Выбрать приложение карт",
+      "selectMapsAppMessage": "Какое приложение карт вы хотите использовать?",
+      "openFailedTitle": "Не удалось открыть карту",
+      "openFailedMessage": "Пожалуйста, повторите попытку позже."
     },
     "budget": {
       "title": "Сводка бюджета",

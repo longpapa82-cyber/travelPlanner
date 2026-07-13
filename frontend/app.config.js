@@ -16,7 +16,7 @@ export default ({ config }) => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.longpapa82.travelplanner',
-    buildNumber: '86',
+    buildNumber: '87',
     usesAppleSignIn: true,
     associatedDomains: [
       'applinks:mytravel-planner.com',
@@ -27,6 +27,11 @@ export default ({ config }) => ({
           CFBundleURLSchemes: ['travelplanner'],
         },
       ],
+      // canOpenURL() returns false for any scheme not listed here (iOS 9+),
+      // so TripMapView's "구글맵으로 열기" silently failed even when the app
+      // was installed. Declare the map schemes we probe so the app-open path
+      // (comgooglemaps / Apple Maps) works instead of falling through.
+      LSApplicationQueriesSchemes: ['comgooglemaps', 'maps'],
       NSPhotoLibraryUsageDescription:
         'MyTravel needs access to your photo library to add photos to your trips.',
       ITSAppUsesNonExemptEncryption: false,
@@ -113,6 +118,7 @@ export default ({ config }) => ({
   },
   plugins: [
     './plugins/withDisableWebViewAutofill',
+    './plugins/withAndroidMapQueries',
     './plugins/withAndroidSplashImageWidth',
     './plugins/withAndroidSplashAnimationDuration',
     './plugins/withAndroidWindowBackground',

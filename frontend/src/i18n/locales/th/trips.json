@@ -269,11 +269,13 @@
       "openInMaps": "ดูใน Google Maps",
       "tapToOpen": "แตะเพื่อเปิดแผนที่",
       "durationMin": "{{min}} นาที",
-      "openInGoogleMaps": "Buka di Google Maps",
-      "openInAppleMaps": "Buka di Apple Maps",
-      "cancel": "Batal",
-      "selectMapsApp": "Pilih Aplikasi Peta",
-      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
+      "openInGoogleMaps": "เปิดใน Google Maps",
+      "openInAppleMaps": "เปิดใน Apple Maps",
+      "cancel": "ยกเลิก",
+      "selectMapsApp": "เลือกแอปแผนที่",
+      "selectMapsAppMessage": "คุณต้องการใช้แอปแผนที่ใด?",
+      "openFailedTitle": "ไม่สามารถเปิดแผนที่ได้",
+      "openFailedMessage": "โปรดลองอีกครั้งในอีกสักครู่"
     },
     "budget": {
       "title": "สรุปงบประมาณ",

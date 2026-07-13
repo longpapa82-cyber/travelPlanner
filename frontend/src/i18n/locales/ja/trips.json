@@ -269,11 +269,13 @@
       "openInMaps": "Google Mapsで表示",
       "tapToOpen": "タップして地図を開く",
       "durationMin": "{{min}}分",
-      "openInGoogleMaps": "Buka di Google Maps",
-      "openInAppleMaps": "Buka di Apple Maps",
-      "cancel": "Batal",
-      "selectMapsApp": "Pilih Aplikasi Peta",
-      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
+      "openInGoogleMaps": "Google マップで開く",
+      "openInAppleMaps": "Apple マップで開く",
+      "cancel": "キャンセル",
+      "selectMapsApp": "地図アプリを選択",
+      "selectMapsAppMessage": "どの地図アプリで開きますか？",
+      "openFailedTitle": "地図を開けませんでした",
+      "openFailedMessage": "しばらくしてからもう一度お試しください。"
     },
     "budget": {
       "title": "予算概要",

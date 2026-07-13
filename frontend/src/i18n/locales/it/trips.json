@@ -269,11 +269,13 @@
       "openInMaps": "Visualizza in Google Maps",
       "tapToOpen": "Tocca per aprire la mappa",
       "durationMin": "{{min}}min",
-      "openInGoogleMaps": "Buka di Google Maps",
-      "openInAppleMaps": "Buka di Apple Maps",
-      "cancel": "Batal",
-      "selectMapsApp": "Pilih Aplikasi Peta",
-      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
+      "openInGoogleMaps": "Apri in Google Maps",
+      "openInAppleMaps": "Apri in Apple Mappe",
+      "cancel": "Annulla",
+      "selectMapsApp": "Scegli app mappe",
+      "selectMapsAppMessage": "Quale app mappe vuoi usare?",
+      "openFailedTitle": "Impossibile aprire la mappa",
+      "openFailedMessage": "Riprova tra un momento."
     },
     "budget": {
       "title": "Riepilogo budget",

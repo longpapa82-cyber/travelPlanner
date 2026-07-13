@@ -269,11 +269,13 @@
       "openInMaps": "Google Haritalar'da görüntüle",
       "tapToOpen": "Haritayı açmak için dokunun",
       "durationMin": "{{min}}dk",
-      "openInGoogleMaps": "Buka di Google Maps",
-      "openInAppleMaps": "Buka di Apple Maps",
-      "cancel": "Batal",
-      "selectMapsApp": "Pilih Aplikasi Peta",
-      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
+      "openInGoogleMaps": "Google Haritalar'da aç",
+      "openInAppleMaps": "Apple Haritalar'da aç",
+      "cancel": "İptal",
+      "selectMapsApp": "Harita uygulaması seç",
+      "selectMapsAppMessage": "Hangi harita uygulamasını kullanmak istersiniz?",
+      "openFailedTitle": "Harita açılamadı",
+      "openFailedMessage": "Lütfen birazdan tekrar deneyin."
     },
     "budget": {
       "title": "Bütçe Özeti",
