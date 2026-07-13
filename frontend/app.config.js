@@ -183,6 +183,11 @@ export default ({ config }) => ({
           mainActivityLaunchMode: 'singleTask',
         },
         ios: {
+          // AdMob 계열 Google pod(AppCheckCore, GoogleUtilities, RecaptchaInterop)이
+          // Swift로 전환되면서 static 라이브러리 통합 불가 에러 발생
+          // ("cannot yet be integrated as static libraries"). useFrameworks:'static'은
+          // 이 pod들을 정적 프레임워크로 링크해 문제를 해소한다. Hermes/RN 0.81과 호환.
+          useFrameworks: 'static',
           privacyManifests: {
             NSPrivacyAccessedAPITypes: [
               {
