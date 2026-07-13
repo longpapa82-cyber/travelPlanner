@@ -2,7 +2,7 @@ export default ({ config }) => ({
   ...config,
   name: 'MyTravel',
   slug: 'travel-planner',
-  version: '1.4.3',
+  version: '1.4.4',
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
