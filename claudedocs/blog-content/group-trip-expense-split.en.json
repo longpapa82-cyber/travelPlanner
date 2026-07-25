@@ -1,0 +1,53 @@
+{
+  "slug": "group-trip-expense-split",
+  "lang": "en",
+  "title": "Splitting Group Travel Expenses Without the Calculator Headache",
+  "metaTitle": "How to Split Group Travel Expenses — Who Owes Whom - myTravel Blog",
+  "description": "How to divide and settle travel costs with friends. Equal splits, exact amounts, and settling up with the fewest transfers, explained with real examples.",
+  "ogDescription": "Kill the group-expense headache — let the app figure out who owes whom, with the fewest possible transfers.",
+  "publishedDate": "2026-07-25",
+  "category": "budget",
+  "sections": [
+    {
+      "h2": "The Real Headache Starts When the Trip Ends",
+      "html": "  <p>The trip itself was fun, but there is always that awkward moment on the way home when the group chat goes quiet. It is the moment someone finally asks: <strong>\"So, who owes who how much?\"</strong> If the first dinner went on A's card, the taxis were cash from B, the hotel was prepaid by C, and the convenience-store runs were whoever happened to be at the register, reconciling all of that by hand is harder than it looks.</p>\n  <p>Most people shrug it off during the trip with \"we'll settle up later.\" Then the trip ends, the receipts scatter, memories fade, and it usually ends in a rough \"let's just split it evenly\" — or someone quietly eating a loss and feeling off about it.</p>\n  <p>This guide walks through how to <strong>split travel costs fairly and cleanly</strong>, and how to hand the settlement math off to an app instead of doing it yourself — with real numbers.</p>"
+    },
+    {
+      "h2": "Why Hand-Calculated Settlements Always Drift",
+      "html": "  <p>Settling up is hard not because the amounts are large, but because <strong>the person who paid and the people splitting the cost change every time</strong>. Four of you traveled, but some expenses involved only three, some only two, and one person skipped the drinks so they are out of that line item entirely.</p>\n  <p>There is one more trap. People usually compare only \"how much each person paid,\" when what actually matters is <strong>the gap between what you paid and what you owed</strong>. If A paid $300 but their fair share was $200, they should get $100 back. If B paid nothing but their share was $150, they owe $150. Juggling both numbers at once in your head is where mistakes creep in.</p>\n  <p>A spreadsheet makes it accurate, but managing a table on your phone mid-trip is tedious, and once you pass 20 or 30 line items the formulas get fragile.</p>"
+    },
+    {
+      "h2": "Decide First: Equal Split or Exact Amounts",
+      "html": "  <p>There are two main ways to divide a cost. The key is picking the one that fits each expense.</p>\n  <p><strong>1) Equal split</strong> — divide evenly by the number of people involved. A $120 dinner shared by four is $30 each. Amounts that do not divide cleanly (say, $100 across three people) are handled by the app down to the smallest unit, so you never argue about \"who eats the extra cent.\" Most meals, taxis, and lodging fit here.</p>\n  <p><strong>2) Exact amounts</strong> — set each person's share directly. If someone had the expensive entrée and someone else only a drink, you can split it precisely: \"$40, $40, $20.\" The total has to match exactly, and myTravel warns you before saving if the entered shares do not add up to the total, catching arithmetic slips.</p>\n  <p>Tip: when in doubt, default to an equal split and only use exact amounts for the clearly lopsided items. <strong>A pace everyone accepts</strong> protects friendships better than perfect fairness.</p>"
+    },
+    {
+      "h2": "The Core: 'Who Owes Whom' in the Fewest Transfers",
+      "html": "  <p>The most confusing part of settling up is the <strong>actual transfer step</strong>. If four people each owe a little to each other, you can end up with a tangle of payments — A→B, B→C, C→A — and no one can even tell who has paid and who hasn't.</p>\n  <p>myTravel totals every expense, computes each person's <strong>net balance</strong> (what they will ultimately receive or pay), and then proposes a settlement route with <strong>the fewest possible transfers</strong>. Here is an example.</p>\n  <p>Say four people end up with these net balances: A +$60 (to receive), B −$40 (to pay), C +$10, D −$30. Paying each other off one by one gets messy, but the app automatically produces a route where <strong>\"B → A $40, D → A $20, D → C $10\"</strong> — just three transfers — brings everyone to zero. The app does the math; you make the transfers however you like (bank transfer, a payment app, or cash).</p>\n  <p>Note that the app does not move money for you. It builds the <strong>answer sheet</strong> — \"send this to that person and you're settled\" — while the actual transfers are yours to make. Even that one thing shrinks the settlement conversation from hours to minutes.</p>"
+    },
+    {
+      "h2": "Currencies and Categories: Small Habits That Pay Off Later",
+      "html": "  <p>On an international trip, recording each expense <strong>in the local currency</strong> keeps things from getting muddled. myTravel lets you set a currency per expense — KRW, USD, JPY, EUR, GBP, THB, CNY and more. It does not, however, auto-convert between currencies and add them up, so within a single trip it is best to <strong>stick to one currency where you can</strong>, or track each currency separately.</p>\n  <p>Also, tagging each expense with a <strong>category</strong> (food, transport, lodging, activities, shopping, other) lets you later see at a glance \"how much did we spend on food this trip?\" That helps not just with settling up but with budgeting your next trip. For setting a budget up front, see <a href=\"/blog/ai-budget-planning-en\">planning a travel budget with AI</a>.</p>"
+    },
+    {
+      "h2": "Mark Items Settled to Track 'Paid or Not'",
+      "html": "  <p>Seeing the settlement route is not the finish line. If you do not <strong>record</strong> whether the transfers actually happened, the \"wait, did I send that?\" confusion returns a few days later.</p>\n  <p>In myTravel you can <strong>mark an item as settled</strong>. Once checked, that share drops out of the balance calculation, so only what remains stays visible. For an item split among several people, you can see progress like \"2 of 3 settled,\" making it obvious who still owes you.</p>\n  <p>That turns settling up from \"a thing you remember\" into \"a checklist you clear.\"</p>"
+    },
+    {
+      "h2": "Wrap-Up: A Good Trip Ends With a Clean Settlement",
+      "html": "  <p>Money feels minor, but it is the fastest way to strain a friendship after a trip. Three things matter. First, <strong>log each expense as it happens</strong> (batch it after the trip and you will always miss some). Second, <strong>mix equal splits and exact amounts</strong> to fit each item. Third, let a tool do the math and <strong>keep people to transferring and confirming</strong>.</p>\n  <p>myTravel's expense feature lets you record spending together with your fellow travelers and automatically computes each person's net balance and the minimal transfer route. If you want to manage everything from planning to settling in one place, give it a try on your next trip. You might also like <a href=\"/blog/cheap-flight-booking-guide-en\">how to book cheaper flights</a> and <a href=\"/blog/travel-app-recommendations-en\">useful travel apps</a>.</p>"
+    }
+  ],
+  "adAfterSection": 3,
+  "related": [
+    { "href": "/blog/ai-budget-planning-en", "text": "Planning a Travel Budget With AI: Flights, Lodging, Food" },
+    { "href": "/blog/cheap-flight-booking-guide-en", "text": "How to Book Cheaper Flights: Timing, Days, and Tricks" },
+    { "href": "/blog/currency-exchange-timing-en", "text": "When and How Much to Exchange for Overseas Travel" },
+    { "href": "/blog/travel-app-recommendations-en", "text": "Useful Travel Apps: From Planning to Settling Up" },
+    { "href": "/blog/ai-itinerary-customizing-en", "text": "Customizing AI Itineraries Into a Trip That's Truly Yours" }
+  ],
+  "alternates": {
+    "ko": "/blog/group-trip-expense-split",
+    "en": "/blog/group-trip-expense-split-en",
+    "ja": "/blog/group-trip-expense-split-ja"
+  }
+}

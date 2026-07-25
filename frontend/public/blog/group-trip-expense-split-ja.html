@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192-v2.png" />
+  <meta name="theme-color" content="#4A90D9" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>旅行費用の割り勘・精算 完全ガイド — 誰が誰にいくら - myTravel ブログ</title>
+  <meta name="description" content="友だちとの旅行費用を分けて精算する方法。均等割り・個別指定・最少送金での精算計算まで、実際の数字で解説します。" />
+  <link rel="canonical" href="https://mytravel-planner.com/blog/group-trip-expense-split-ja" />
+  <link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/group-trip-expense-split" />
+  <link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/group-trip-expense-split-en" />
+  <link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/group-trip-expense-split-ja" />
+  <link rel="alternate" hreflang="x-default" href="https://mytravel-planner.com/blog/group-trip-expense-split" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="旅行の割り勘・精算、もう電卓とにらめっこしない" />
+  <meta property="og:description" content="割り勘の面倒をなくす — 誰が誰にいくら払えばいいかを、最少の送金回数でアプリが計算します。" />
+  <meta property="og:url" content="https://mytravel-planner.com/blog/group-trip-expense-split-ja" />
+  <meta property="og:site_name" content="myTravel" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="article:published_time" content="2026-07-25" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="旅行の割り勘・精算、もう電卓とにらめっこしない" />
+  <meta name="twitter:description" content="割り勘の面倒をなくす — 誰が誰にいくら払えばいいかを、最少の送金回数でアプリが計算します。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "旅行の割り勘・精算、もう電卓とにらめっこしない",
+  "description": "割り勘の面倒をなくす — 誰が誰にいくら払えばいいかを、最少の送金回数でアプリが計算します。",
+  "url": "https://mytravel-planner.com/blog/group-trip-expense-split-ja",
+  "datePublished": "2026-07-25",
+  "dateModified": "2026-07-25",
+  "author": {
+    "@type": "Organization",
+    "name": "myTravel"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "myTravel",
+    "url": "https://mytravel-planner.com"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://mytravel-planner.com/blog/group-trip-expense-split-ja"
+  },
+  "inLanguage": "ja"
+}
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #4A90D9; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #4A90D9; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #4A90D9; color: #fff; }
+    .btn-primary:hover { background: #3a7bc8; }
+    .nav a.btn-primary { color: #fff; }
+    .breadcrumb { max-width: 800px; margin: 0 auto; padding: 1rem 1.5rem; font-size: 0.85rem; color: #64748b; }
+    .breadcrumb a { color: #4A90D9; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .content { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    .content .article-header { margin-bottom: 2rem; }
+    .content .article-header h1 { font-size: 1.75rem; font-weight: 700; color: #1e293b; line-height: 1.4; margin-bottom: 0.75rem; }
+    .content .article-meta { font-size: 0.85rem; color: #94a3b8; }
+    .content h2 { font-size: 1.3rem; font-weight: 700; color: #1e293b; margin: 2.5rem 0 1rem; padding-left: 1rem; border-left: 4px solid #4A90D9; }
+    .content h3 { font-size: 1.1rem; font-weight: 600; color: #334155; margin: 1.5rem 0 0.75rem; }
+    .content p { color: #374151; margin-bottom: 1rem; font-size: 1rem; }
+    .content ul, .content ol { margin: 1rem 0 1rem 1.5rem; color: #374151; }
+    .content li { margin-bottom: 0.5rem; }
+    .content strong { color: #1e293b; }
+    .content .tip-box { background: rgba(74,144,217,0.1); border: 1px solid #bfdbfe; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .content .tip-box strong { color: #4A90D9; }
+    .ad-section { text-align: center; margin: 2rem 0; }
+    .cta-box { background: linear-gradient(135deg, #4A90D9, #3a7bc8); color: #fff; border-radius: 1rem; padding: 2rem; text-align: center; margin: 2.5rem 0; }
+    .cta-box h3 { color: #fff; font-size: 1.2rem; margin-bottom: 0.75rem; }
+    .cta-box p { color: rgba(255,255,255,0.9); margin-bottom: 1.25rem; }
+    .cta-box .btn-cta { background: #fff; color: #4A90D9; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; display: inline-block; transition: all 0.2s; }
+    .cta-box .btn-cta:hover { background: #f0f9ff; transform: translateY(-2px); }
+    .related { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; }
+    .related h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; border-left: none; padding-left: 0; }
+    .related-links { display: flex; flex-direction: column; gap: 0.75rem; }
+    .related-links a { color: #4A90D9; font-weight: 500; }
+    .related-links a:hover { text-decoration: underline; }
+    .footer { background: #0f1e3c; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer-brand-name { font-size: 1.2rem; font-weight: 700; color: #4A90D9; margin-bottom: 0.75rem; }
+    .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
+    .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .footer a:hover { color: #fff; }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #1e3460; text-align: center; font-size: 0.85rem; }
+    .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
+    .hero { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 1rem; text-align: center; }
+    .hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .hero p { color: #64748b; font-size: 1.05rem; }
+    .blog-intro { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 2rem; }
+    .blog-intro p { color: #475569; margin-bottom: 1rem; font-size: 1rem; }
+    .blog-grid { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+    .blog-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 2rem; transition: all 0.3s; display: flex; flex-direction: column; }
+    .blog-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); border-color: #4A90D9; }
+    .blog-card .card-icon { width: 3rem; height: 3rem; background: rgba(74,144,217,0.1); border-radius: 0.875rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; flex-shrink: 0; }
+    .blog-card .card-icon svg { width: 1.5rem; height: 1.5rem; color: #4A90D9; }
+    .blog-card h2 { font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 0.75rem; line-height: 1.4; }
+    .blog-card .card-excerpt { color: #475569; font-size: 0.92rem; flex: 1; margin-bottom: 1rem; line-height: 1.6; }
+    .blog-card .card-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; }
+    .blog-card .card-date { color: #94a3b8; }
+    .blog-card .card-link { color: #4A90D9; font-weight: 600; }
+    .cat-head { max-width: 1200px; margin: 1.5rem auto 0; padding: 0 1.5rem; font-size: 1.2rem; font-weight: 700; color: #1e293b; border-left: 4px solid #4A90D9; padding-left: 0.75rem; }
+    .cta-section { background: linear-gradient(135deg, #4A90D9, #3a7bc8); color: #fff; padding: 3rem 1.5rem; text-align: center; margin-top: 2rem; }
+    .cta-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .cta-section p { font-size: 1rem; opacity: 0.9; margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .cta-section .btn-cta { background: #fff; color: #4A90D9; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; transition: all 0.2s; display: inline-block; }
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .content .article-header h1 { font-size: 1.35rem; }
+      .content h2 { font-size: 1.15rem; }
+      .hero h1 { font-size: 1.5rem; }
+      .blog-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">myTravel</a>
+    <nav class="nav">
+      <a href="/">ホーム</a>
+      <a href="/about">紹介</a>
+      <a href="/guides/">ガイド</a>
+      <a href="/blog" style="color:#4A90D9;font-weight:600;">ブログ</a>
+      <a href="/contact">お問い合わせ</a>
+      <a href="/login" class="btn btn-primary">ログイン</a>
+    </nav>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="/">ホーム</a> &gt; <a href="/blog">ブログ</a> &gt; <strong>旅行の割り勘・精算、もう電卓とにらめっこしない</strong>
+</div>
+
+<article class="content">
+  <div class="article-header">
+    <h1>旅行の割り勘・精算、もう電卓とにらめっこしない</h1>
+    <p class="article-meta">2026-07-25 | myTravel チーム</p>
+  </div>
+
+  <h2>旅行が終わってから始まる本当の悩み：精算</h2>
+  <p>旅行自体は楽しかったのに、帰り道でグループチャットが急に静かになる瞬間があります。<strong>「で、結局誰が誰にいくら払うの？」</strong>という質問が出るときです。初日の夕食はAがカードで、タクシー代はBが現金で、宿はCが事前決済、コンビニはその都度別の人が払った——これを手作業で合わせるのは思ったより複雑です。</p>
+  <p>多くの人は旅行中は「あとで精算すればいいや」と流します。ところが旅行が終わるとレシートは散らばり、記憶もあいまいになり、結局ざっくり「均等でいくらずつ」で済ませたり、誰かが損を飲み込んでモヤモヤしたまま終わったりしがちです。</p>
+  <p>この記事では、旅行費用を<strong>公平にすっきり分ける方法</strong>と、精算の計算を自分でやらずにアプリに任せる方法を、実際の数字とともに整理しました。</p>
+
+  <h2>なぜ手計算の精算は必ずズレるのか</h2>
+  <p>精算が難しいのは、金額が大きいからではなく、<strong>支払った人と分担する人が毎回変わるから</strong>です。4人で行っても、ある支出は3人だけ、ある支出は2人だけ、誰かはお酒を飲まないのでその項目からは外れる、といった具合です。</p>
+  <p>さらにもう一つの落とし穴があります。人はたいてい「各自が支払った合計」だけを比べますが、本当に大事なのは<strong>「各自が負担すべき額」との差</strong>です。Aが3万円払っても本人の取り分が2万円なら1万円を受け取るべきですし、Bが一円も払っていなくても取り分が1.5万円なら1.5万円を払う必要があります。この二つを頭の中で同時に回そうとすると、ミスが生まれます。</p>
+  <p>表計算にすれば正確にはなりますが、旅行中にスマホで表を管理するのは手間ですし、項目が20〜30を超えると数式が崩れやすくなります。</p>
+
+  <h2>まず決める：均等割りか、個別指定か</h2>
+  <p>費用の分け方は大きく二つ。支出ごとに合う方を選んで使うのがコツです。</p>
+  <p><strong>1) 均等割り</strong> — 参加した人数で等分します。4人で食べた1.2万円の夕食なら各自3千円です。割り切れない金額（例：1万円 ÷ 3人）はアプリが最小単位まで自動で処理するので、「3,333円で1円は誰が？」と悩む必要はありません。ほとんどの食事・タクシー・宿がこれに当てはまります。</p>
+  <p><strong>2) 個別指定</strong> — 一人ひとりの負担額を直接決めます。誰かは高いメニュー、誰かはドリンクだけ、という場合に「A 4千円、B 4千円、C 2千円」のように正確に分けられます。合計が総額とぴったり合う必要がありますが、myTravel は入力した分担額の合計が総額と合わないと保存前に知らせてくれるので、計算ミスを防げます。</p>
+  <p>ヒント：迷ったら均等割りを基本にして、明らかに不公平な項目だけ個別指定にしましょう。完璧な公平さより<strong>みんなが納得できるスピード</strong>が、旅行後の関係を守ります。</p>
+
+  <div class="ad-section">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-7330738950092177"
+         data-ad-slot="2397004834"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <h2>核心：「誰が誰にいくら」を最少の送金で</h2>
+  <p>精算で一番ややこしいのが<strong>実際の送金の段階</strong>です。4人が互いに少しずつ払い合うとなると、最悪の場合、何度も送金が行き交います。A→B、B→C、C→A…こうなると、誰が送ったか送っていないかの把握すら難しくなります。</p>
+  <p>myTravel はすべての支出をまとめて各自の<strong>純残高</strong>（最終的に受け取る額または支払う額）を計算し、<strong>送金回数が最も少なくなるように</strong>精算ルートを提案します。例を挙げましょう。</p>
+  <p>4人の純残高がこうなったとします：甲 +6千円（受取）、乙 −4千円（支払）、丙 +1千円、丁 −3千円。一人ずつ払い合うと複雑ですが、アプリは<strong>「乙 → 甲 4千円、丁 → 甲 2千円、丁 → 丙 1千円」</strong>のわずか3回の送金で全員がゼロになるルートを自動で導き出します。計算はアプリ、送金はみなさんが各自の好きな方法（銀行振込・送金アプリ・現金）で行えばOKです。</p>
+  <p>なお、アプリが自動でお金を送金するわけではありません。「誰が誰にいくら送れば精算完了」という<strong>答え合わせの表</strong>を作ってくれるもので、実際の送金は各自で行います。これ一つだけでも、精算の話し合いが数時間から数分に縮まります。</p>
+
+  <h2>通貨とカテゴリ、こう使うと後がラク</h2>
+  <p>海外旅行なら、支出を<strong>現地通貨のまま記録</strong>するほうが混乱しません。myTravel は円・ドル・ウォン・ユーロ・ポンド・バーツ・元などの通貨を支出ごとに指定できます。ただし異なる通貨を自動で換算して合算はしないので、一つの旅行の中では<strong>できるだけ一つの通貨に統一</strong>するか、通貨ごとに分けて管理するのがおすすめです。</p>
+  <p>また、支出を入力するときに<strong>カテゴリ</strong>（食費・交通・宿泊・アクティビティ・買い物・その他）も選んでおくと、あとで「今回の旅行で食費にいくら使った？」がひと目で分かります。精算だけでなく、次の旅行の予算を立てるときの参考にもなります。予算をあらかじめ立てる方法は <a href="/blog/ai-budget-planning-ja">AIで旅行予算を立てる</a> の記事で詳しく扱っています。</p>
+
+  <h2>精算済みマークで「もらった・もらってない」を追跡</h2>
+  <p>精算ルートを確認したら終わり、ではありません。実際に送金が行われたかを<strong>記録しておかないと</strong>、数日後に「あれ、送ったっけ？」という混乱がまた始まります。</p>
+  <p>myTravel では精算が済んだ項目を<strong>精算済みとしてマーク</strong>できます。済みにチェックするとその分は残高計算から外れるので、残りの金額だけがすっきり見えます。複数人で分けた項目なら「3人中2人が精算済み」のように進捗も確認できるので、誰からまだ受け取っていないかがひと目で分かります。</p>
+  <p>こうすると精算が「記憶に頼る作業」から「チェックリストを消す作業」に変わります。</p>
+
+  <h2>まとめ：楽しい旅の締めくくりは、すっきりした精算から</h2>
+  <p>お金の問題は些細に見えても、旅行後の関係を最も簡単にこじらせる部分です。ポイントは三つ。第一に、<strong>支出が発生するたびにその都度記録</strong>すること（旅行後にまとめてやると必ず抜けます）。第二に、項目に合わせて<strong>均等割りと個別指定を混ぜて</strong>使うこと。第三に、計算はツールに任せ、<strong>人は送金と確認だけ</strong>にすること。</p>
+  <p>myTravel の費用機能は、同行者と一緒に支出を記録し、各自の純残高と最少の送金ルートを自動で計算します。計画から精算まで一か所で管理したいなら、次の旅行でぜひ活用してみてください。あわせて <a href="/blog/cheap-flight-booking-guide-ja">航空券を安く予約する方法</a> や <a href="/blog/travel-app-recommendations-ja">旅行に役立つアプリ</a> もご覧ください。</p>
+
+  <div class="cta-box">
+    <h3>AIであなただけの旅行プランを作りましょう</h3>
+    <p>目的地を選ぶだけで、AIが最適な旅行プランを自動生成します。無料で始めましょう！</p>
+    <a href="/trips/create" class="btn-cta">旅行プランを作成</a>
+  </div>
+
+  <div class="related">
+    <h3>関連記事</h3>
+    <div class="related-links">
+      <a href="/blog/ai-budget-planning-ja">AIで旅行予算を立てる：航空・宿・食費の計画法</a>
+      <a href="/blog/cheap-flight-booking-guide-ja">航空券を安く予約する方法：時期・曜日・コツ</a>
+      <a href="/blog/currency-exchange-timing-ja">海外旅行の両替、いつ・いくらするのが得か</a>
+      <a href="/blog/travel-app-recommendations-ja">旅行に役立つアプリ：計画から精算まで</a>
+      <a href="/blog/ai-itinerary-customizing-ja">AIおすすめ日程を自分の旅にするカスタマイズ実践法</a>
+    </div>
+  </div>
+</article>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">myTravel</div>
+      <p style="font-size:0.9rem;">AIによる旅行プランニング。<br/>目的地を選ぶだけでオーダーメイドの日程が完成します。</p>
+      <div class="langs" style="margin-top:1rem;"><span class="lang-badge">🇰🇷 한국어</span><span class="lang-badge">🇺🇸 English</span><span class="lang-badge">🇯🇵 日本語</span><span class="lang-badge">🇨🇳 中文</span><span class="lang-badge">🇪🇸 Español</span><span class="lang-badge">🇩🇪 Deutsch</span><span class="lang-badge">🇫🇷 Français</span><span class="lang-badge">🇹🇭 ไทย</span><span class="lang-badge">🇻🇳 Tiếng Việt</span><span class="lang-badge">🇧🇷 Português</span><span class="lang-badge">🇸🇦 العربية</span><span class="lang-badge">🇮🇩 Bahasa</span><span class="lang-badge">🇮🇳 हिन्दी</span><span class="lang-badge">🇮🇹 Italiano</span><span class="lang-badge">🇷🇺 Русский</span><span class="lang-badge">🇹🇷 Türkçe</span><span class="lang-badge">🇲🇾 Melayu</span></div>
+    </div>
+    <div>
+      <h4>サービス</h4>
+      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner">アプリDL (Android)</a>
+      <a href="https://apps.apple.com/app/id6766147060">アプリDL (iOS)</a>
+      <a href="/guides/">旅行ガイド</a>
+      <a href="/blog">ブログ</a>
+      <a href="/about">サービス紹介</a>
+      <a href="/contact">お問い合わせ</a>
+    </div>
+    <div>
+      <h4>ポリシー</h4>
+      <a href="/terms">利用規約</a>
+      <a href="/privacy">プライバシーポリシー</a>
+      <a href="/faq">FAQ</a>
+      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:longpapa82@gmail.com" style="display:inline;">longpapa82@gmail.com</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 AI Soft. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
