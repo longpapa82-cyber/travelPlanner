@@ -1,0 +1,68 @@
+{
+  "slug": "pet-travel-guide",
+  "lang": "en",
+  "title": "Traveling With Your Pet: A Practical Guide From Paperwork to Transport",
+  "metaTitle": "Traveling With Your Pet: A Practical Guide From Paperwork to Transport - myTravel Blog",
+  "description": "Planning a trip with your dog or cat? Here's how to handle health certificates, carriers, pet-friendly stays, transport rules, and on-the-ground safety.",
+  "ogDescription": "A practical guide to traveling with pets: paperwork, carriers, transport, and pet-friendly lodging.",
+  "publishedDate": "2026-07-10",
+  "category": "theme",
+  "sections": [
+    {
+      "h2": "Start With the Paperwork — It Takes Longer Than You Think",
+      "html": "  <p>The single biggest mistake first-time pet travelers make is treating documentation as a last-minute task. Health requirements for pets are set by the <strong>destination</strong>, not your home country, and some steps have to happen in a strict order weeks or even months ahead.</p>\n  <p>Here's the sequence most destinations require, in the order you'll actually do it:</p>\n  <ol>\n    <li><strong>Microchip first.</strong> An ISO 11784/11785 compliant 15-digit microchip must be implanted before the rabies vaccination. If you vaccinate first and chip later, many countries make you redo the vaccine.</li>\n    <li><strong>Rabies vaccination.</strong> Usually valid only if given at least 21 days before travel, and your pet must be at least 12 weeks old at the time.</li>\n    <li><strong>Rabies titer blood test.</strong> Rabies-free and rabies-controlled regions (much of the EU, Japan, Hawaii, Australia) require a blood test proving antibody levels, often with a 30-day to several-month waiting period after.</li>\n    <li><strong>Health certificate.</strong> Issued by a licensed vet, typically valid for only 10 days before entry, sometimes needing government endorsement.</li>\n  </ol>\n  <p>For a rabies-controlled destination like Japan, the full process can run 6-7 months from first microchip to arrival. Start counting backward from your travel date the moment you decide to bring your pet.</p>\n  <div class=\"tip-box\"><strong>Tip:</strong> When you build your itinerary in myTravel, set your trip start date first, then work backward on paper for each vaccination and test deadline. Having the confirmed dates in one place keeps the timeline honest — miss one window and the whole trip can slip.</div>"
+    },
+    {
+      "h2": "Choosing and Fitting the Right Carrier",
+      "html": "  <p>The carrier is where comfort and compliance meet. Airlines, trains, and ferries all have their own size and ventilation rules, so pick the carrier around the strictest leg of your journey.</p>\n  <h3>Cabin vs. cargo</h3>\n  <p>Most airlines allow small pets (typically under 8kg including the carrier) in the cabin under the seat in front of you. The under-seat clearance is usually around 45 x 35 x 20cm, but it varies by aircraft, so confirm the exact figure for your specific route. Larger animals travel in the temperature-controlled hold as checked baggage or cargo.</p>\n  <h3>Fit test</h3>\n  <p>Your pet should be able to <strong>stand up, turn around, and lie down</strong> in a natural position. Measure from nose to tail base for length and from the floor to the top of the head (or ear tips for upright ears) for height, then add a few centimeters.</p>\n  <ul>\n    <li>Introduce the carrier at home 2-3 weeks early — leave it open with treats and bedding inside so it becomes a safe space, not a trap.</li>\n    <li>Line it with an absorbent puppy pad and pack a spare.</li>\n    <li>Attach a label with your name, phone number, and destination address.</li>\n    <li>Freeze a small water dish so it melts slowly instead of spilling during boarding.</li>\n  </ul>\n  <p>Skip sedatives unless your vet specifically prescribes them. At altitude, sedation can affect breathing and balance, and most airlines discourage it.</p>"
+    },
+    {
+      "h2": "Getting There: Planes, Trains, and Cars",
+      "html": "  <p>Each mode of transport comes with its own rhythm. Match the method to your pet's temperament and the trip length.</p>\n  <h3>By air</h3>\n  <p>Book the pet slot as early as you book your own seat — airlines cap the number of animals per flight. Choose direct routes to avoid the stress of transfers, and favor early-morning or late-evening departures in hot months to sidestep tarmac heat, which can ground cargo pets entirely.</p>\n  <h3>By train</h3>\n  <p>Rail is often the most pet-friendly option. Many European rail networks allow small pets in carriers for free and larger leashed, muzzled dogs for a reduced fare. Reserve a spot where possible and aim for quieter off-peak departures.</p>\n  <h3>By car</h3>\n  <p>For road trips, secure your pet with a crash-tested harness or a fixed crate — an unrestrained animal is a danger to everyone in the car. Plan a stop every 2-3 hours for water and a leg stretch, and <strong>never</strong> leave a pet in a parked car. Interior temperatures can climb 10-15°C above outside air within 15 minutes, even with windows cracked.</p>\n  <div class=\"tip-box\"><strong>Tip:</strong> Use myTravel's day-by-day itinerary to slot in rest stops and pet breaks between destinations. Seeing the driving legs laid out visually makes it obvious where your dog needs a walk before the next stretch.</div>"
+    },
+    {
+      "h2": "Finding Genuinely Pet-Friendly Stays",
+      "html": "  <p>\"Pet-friendly\" is a spectrum. Some places welcome a 3kg cat but balk at a 30kg retriever; others charge a cleaning fee that changes your budget. Confirm the details in writing before you book.</p>\n  <p>Ask about each of these:</p>\n  <ul>\n    <li><strong>Size and number limits</strong> — many properties cap weight or allow only one pet.</li>\n    <li><strong>Fees</strong> — a per-night charge, a flat cleaning fee, or a refundable deposit.</li>\n    <li><strong>Left-alone policy</strong> — can your pet stay in the room while you go out, or must it be crated or accompanied?</li>\n    <li><strong>Nearby green space</strong> — a park or grassy area within a short walk saves a lot of stress on both of you.</li>\n  </ul>\n  <p>Ground-floor rooms near an exit make midnight bathroom trips far easier. And bring your pet's own bed or a familiar blanket — the smell of home settles most animals in an unfamiliar room within a night or two.</p>"
+    },
+    {
+      "h2": "Packing for Two: The Pet Bag",
+      "html": "  <p>Your pet needs its own kit, and much of it can't be bought easily abroad. Pack these in a dedicated bag so nothing gets buried at the bottom of a suitcase:</p>\n  <ul>\n    <li><strong>Food</strong> — enough of their usual brand for the whole trip plus a few extra days; abrupt diet changes cause stomach upset.</li>\n    <li><strong>Medications</strong> — flea/tick prevention, any prescriptions, and a copy of the prescription in case you need a refill.</li>\n    <li><strong>Collapsible bowls</strong> and a portable water bottle.</li>\n    <li><strong>Waste bags</strong> — far more than you think you'll need.</li>\n    <li><strong>Leash, spare leash, and a well-fitted harness.</strong></li>\n    <li><strong>Comfort items</strong> — a favorite toy and that familiar blanket.</li>\n    <li><strong>A recent photo</strong> of your pet on your phone, in case they go missing and you need to show locals.</li>\n    <li><strong>Copies of all health documents</strong>, both printed and photographed on your phone.</li>\n  </ul>\n  <p>A small pet first-aid kit — tweezers for ticks, saline for eyes, gauze, and pet-safe antiseptic — is worth its weight, especially for rural or outdoor trips.</p>"
+    },
+    {
+      "h2": "On the Ground: Local Rules and Safety",
+      "html": "  <p>Once you arrive, the details shift from paperwork to daily awareness. A few habits prevent most problems.</p>\n  <h3>Know the local rules</h3>\n  <p>Leash laws, muzzle requirements for certain breeds, and off-limits zones like beaches or historic sites vary widely by city and even by neighborhood. A quick search for the specific area before you head out saves an awkward fine or a turned-away visit.</p>\n  <h3>Watch the environment</h3>\n  <ul>\n    <li><strong>Heat and pavement.</strong> If asphalt is too hot for the back of your hand for five seconds, it's too hot for paws. Walk on grass or shift to early morning and evening.</li>\n    <li><strong>Local hazards.</strong> Unfamiliar plants, insects, stray animals, and street food scraps can all cause trouble. Keep your pet close in crowds.</li>\n    <li><strong>Water.</strong> Sudden changes in water source can upset digestion — bottled or filtered water for the first few days helps.</li>\n  </ul>\n  <h3>Have a vet plan</h3>\n  <p>Before you travel, note the location and hours of an emergency vet clinic near your accommodation and program the number into your phone. In a real emergency you won't want to be searching from scratch in a language you don't speak.</p>\n  <div class=\"tip-box\"><strong>Tip:</strong> Save nearby vet clinics and pet-friendly parks as notes on the relevant day in your myTravel itinerary. When something comes up mid-trip, the information is already sitting on the right date instead of scattered across screenshots.</div>"
+    },
+    {
+      "h2": "A Calm Trip Is a Planned Trip",
+      "html": "  <p>Traveling with a pet rewards preparation more than almost any other kind of trip. The paperwork timeline is unforgiving, the transport rules are specific, and small comforts — a familiar blanket, a known food, a nearby patch of grass — make the difference between a stressed animal and a happy one.</p>\n  <p>Map out your dates, work every deadline backward from arrival, and keep your documents, carrier measurements, and vet contacts in one place. When your logistics are settled, both you and your companion can actually enjoy the trip.</p>\n  <p>Ready to lay it all out? <strong>Plan your pet-friendly trip in myTravel</strong> and build a day-by-day itinerary at <a href=\"/trips/create\">/trips/create</a>.</p>"
+    }
+  ],
+  "adAfterSection": 3,
+  "related": [
+    {
+      "href": "/blog/solo-female-travel-safety-en",
+      "text": "Solo Female Travel Safety: A Practical Guide to Lodging, Getting Around, and Nights Out"
+    },
+    {
+      "href": "/blog/workation-guide-en",
+      "text": "The Complete Workation Guide: How to Work and Travel at the Same Time"
+    },
+    {
+      "href": "/blog/senior-travel-guide-en",
+      "text": "Senior Travel Guide: Planning a Relaxed Trip With Your Parents"
+    },
+    {
+      "href": "/blog/visa-guide-for-travelers-en",
+      "text": "The Complete Visa Guide for International Travelers: Visa-Free, Visa-on-Arrival, and eVisas Explained"
+    },
+    {
+      "href": "/blog/passport-renewal-guide-en",
+      "text": "Passport Renewal Guide: From the Six-Month Rule to Emergency Replacements"
+    }
+  ],
+  "alternates": {
+    "ko": "/blog/pet-travel-guide",
+    "en": "/blog/pet-travel-guide-en",
+    "ja": "/blog/pet-travel-guide-ja"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "slug": "ai-itinerary-customizing",
+  "lang": "en",
+  "title": "How to Customize an AI Itinerary Until It Actually Feels Like Your Trip",
+  "metaTitle": "How to Customize an AI Itinerary Until It Actually Feels Like Your Trip - myTravel Blog",
+  "description": "An AI-generated itinerary is a first draft, not a final plan. Learn how to adjust pacing, protect free time, and shape the schedule around your real travel style.",
+  "ogDescription": "Turn an AI draft itinerary into a plan that fits your pace, budget, and travel style.",
+  "publishedDate": "2026-07-10",
+  "category": "ai",
+  "sections": [
+    {
+      "h2": "Treat the AI Draft as a Starting Point, Not a Verdict",
+      "html": "  <p>When myTravel generates a trip, it hands you a complete day-by-day itinerary in about 10 to 30 seconds. That draft is genuinely useful: it clusters attractions by neighborhood, sequences them in a logical order, and fills the gaps you would have spent hours researching. But here is the mindset shift that separates a good trip from a stressful one: <strong>the AI draft is a first pass, not a finished plan.</strong></p>\n  <p>The AI does not know that you sleep until 10am on vacation, that you hate rushing through museums, or that your partner needs a long lunch to recharge. It optimizes for coverage and geographic efficiency. You optimize for how you actually want to feel each day. Those two goals overlap a lot, but not completely, and the last 20 percent is where a plan becomes <em>yours</em>.</p>\n  <p>The good news is that customizing takes far less effort than building from scratch. You are editing, not authoring. Most travelers can turn a generic draft into a personal plan in 15 to 20 minutes of focused adjustments.</p>"
+    },
+    {
+      "h2": "Start by Reading the Whole Trip, Not Just Day One",
+      "html": "  <p>The most common mistake is diving into Day 1 and polishing it to perfection before you have even glanced at Day 5. You end up with one beautifully tuned day and a back half that quietly fell apart.</p>\n  <p>Instead, scan the entire itinerary first and look for structural problems before you touch details:</p>\n  <ul>\n    <li><strong>Backtracking:</strong> Does the plan send you across the city and back on the same day? AI clustering is good but not perfect, especially when a must-see sits in an awkward location.</li>\n    <li><strong>Front-loading:</strong> Many drafts pack the highlights into the first two days and leave the tail end thin. If your energy fades toward the end of a trip, you may want the opposite.</li>\n    <li><strong>Duplication:</strong> Two temples in one morning, three viewpoints in an afternoon. Similar experiences stacked together get repetitive fast.</li>\n    <li><strong>Opening days:</strong> Check that nothing critical is scheduled on a Monday if that museum closes on Mondays.</li>\n  </ul>\n  <p>Fixing structure first means you will not waste time fine-tuning a day you are about to move or delete entirely.</p>"
+    },
+    {
+      "h2": "Dial the Intensity Up or Down to Match Your Pace",
+      "html": "  <p>Intensity is the single biggest lever you control. A default AI draft usually assumes a moderate pace: three to four significant stops per day. That works for a lot of people and overwhelms plenty of others.</p>\n  <h3>If the draft feels too packed</h3>\n  <ul>\n    <li>Cut each day down to one anchor activity plus one or two flexible options. You do not have to see everything.</li>\n    <li>Remove the stop that requires the most travel time relative to what you get out of it.</li>\n    <li>Convert a rigid \"visit X then Y then Z\" morning into \"pick two of these three depending on the weather.\"</li>\n  </ul>\n  <h3>If the draft feels too thin</h3>\n  <ul>\n    <li>Add a second neighborhood to explore after your main stop, ideally one that is walkable from where the day ends.</li>\n    <li>Slot in an evening activity, since AI drafts often go quiet after dinner.</li>\n    <li>Build in a day trip if the destination has a strong option within an hour or two.</li>\n  </ul>\n  <div class=\"tip-box\"><strong>Try this in myTravel:</strong> Rather than hand-editing a draft that is off in pace, adjust your inputs and regenerate. Free accounts get 3 AI trip generations per month and premium accounts get 30, so it is worth spending one regeneration to get the intensity right, then editing the details by hand from there.</div>"
+    },
+    {
+      "h2": "Protect Free Time on Purpose",
+      "html": "  <p>An itinerary that is scheduled minute to minute looks impressive and feels miserable. The stops you remember most on a trip are often the unplanned ones: the cafe you stumbled into, the street market you wandered through, the extra hour you spent at a viewpoint because the light was perfect.</p>\n  <p>AI drafts tend to fill available hours because empty space looks like a gap to optimize. Your job is to deliberately put some of that space back. A few concrete rules that work well:</p>\n  <ol>\n    <li><strong>Leave one half-day open per three days of travel.</strong> Label it explicitly so you do not feel tempted to cram it.</li>\n    <li><strong>Add buffer time between major stops.</strong> Transit always takes longer than planned once you factor in getting lost, waiting for a table, or simply slowing down.</li>\n    <li><strong>Never schedule anything time-sensitive right after a long transfer.</strong> A missed train or a delayed flight should not cascade into a missed reservation.</li>\n    <li><strong>Keep the first evening light.</strong> You will be tired and disoriented on arrival day. Let it breathe.</li>\n  </ol>\n  <p>Free time is not wasted time. It is the margin that keeps the rest of the plan from collapsing when reality disagrees with the schedule.</p>"
+    },
+    {
+      "h2": "Reshape the Plan Around Your Actual Preferences",
+      "html": "  <p>This is where a generic draft becomes a personal one. The AI gives you a well-known-attractions plan by default because that is the safe average. But you are not average, so tell it what you care about.</p>\n  <p>Think about the specific lens you travel through and edit toward it:</p>\n  <ul>\n    <li><strong>Food-first travelers:</strong> Anchor days around meals and markets rather than sights. Move a museum to make room for a long lunch in a neighborhood known for it.</li>\n    <li><strong>Slow travelers:</strong> Cut the number of cities or districts. Depth over breadth. One area explored fully beats five rushed.</li>\n    <li><strong>Photographers:</strong> Reorder stops to hit outdoor locations during golden hour and save interiors for midday.</li>\n    <li><strong>Traveling with kids:</strong> Break the day around nap times and low-energy afternoons, and keep backup indoor options for bad weather.</li>\n    <li><strong>Budget-conscious travelers:</strong> Swap paid attractions for free ones where the experience is comparable, and track your spending as you go.</li>\n  </ul>\n  <div class=\"tip-box\"><strong>Honest note on budget:</strong> myTravel supports 7 currencies for expense tracking, so if your trip crosses borders you can log costs in the local currency and still see where your money is going without doing conversion math in your head.</div>\n  <p>When you regenerate with clearer preferences baked into your inputs, the draft comes back noticeably closer to what you actually want, which means less manual editing afterward.</p>"
+    },
+    {
+      "h2": "Lock In Your Plan and Keep It Flexible on the Road",
+      "html": "  <p>Once the structure, pacing, and preferences feel right, resist the urge to over-engineer the last details. A plan that is 85 percent settled and 15 percent open is more resilient than one that is 100 percent locked.</p>\n  <p>A few final habits that keep a customized itinerary useful once you are actually traveling:</p>\n  <ul>\n    <li><strong>Rank each day's stops.</strong> Know your one non-negotiable and your two nice-to-haves, so when time runs short you cut the right thing without agonizing.</li>\n    <li><strong>Save alternatives near your anchors.</strong> If a spot is closed or crowded, a walkable backup keeps the day intact.</li>\n    <li><strong>Revisit the plan each evening.</strong> Shift tomorrow based on how today actually went, not how you imagined it two weeks ago.</li>\n    <li><strong>Let some days stay loose on purpose.</strong> The freedom to follow a recommendation from a local is worth more than rigid adherence to a schedule.</li>\n  </ul>\n  <div class=\"tip-box\"><strong>Keep it all in one place:</strong> With myTravel you can save your customized itinerary, track expenses across the trip, and like the plans that inspire you, so your adjustments and your notes stay together instead of scattered across screenshots and chat threads.</div>\n  <p>The AI does the heavy lifting of building a coherent draft in about 10 to 30 seconds. Your customization is what turns that draft into a trip that fits how you actually like to travel. Ready to build one? Head to <strong>/trips/create</strong> and start with a draft you can make your own.</p>"
+    }
+  ],
+  "adAfterSection": 3,
+  "related": [
+    {
+      "href": "/blog/ai-budget-planning-en",
+      "text": "Planning a Travel Budget with AI: Flights, Stays, and Food"
+    },
+    {
+      "href": "/blog/ai-restaurant-recommendation-en",
+      "text": "How to Use AI Restaurant Recommendations to Plan a Real Food Trip"
+    },
+    {
+      "href": "/blog/visa-guide-for-travelers-en",
+      "text": "The Complete Visa Guide for International Travelers: Visa-Free, Visa-on-Arrival, and eVisas Explained"
+    },
+    {
+      "href": "/blog/passport-renewal-guide-en",
+      "text": "Passport Renewal Guide: From the Six-Month Rule to Emergency Replacements"
+    },
+    {
+      "href": "/blog/travel-vaccination-guide-en",
+      "text": "Travel Vaccination Guide: Region-by-Region Shots You Actually Need"
+    }
+  ],
+  "alternates": {
+    "ko": "/blog/ai-itinerary-customizing",
+    "en": "/blog/ai-itinerary-customizing-en",
+    "ja": "/blog/ai-itinerary-customizing-ja"
+  }
+}

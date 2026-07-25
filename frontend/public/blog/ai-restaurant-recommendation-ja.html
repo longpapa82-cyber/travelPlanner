@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192-v2.png" />
+  <meta name="theme-color" content="#4A90D9" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIグルメ提案の活用術：現地の名店を見つけて食旅を計画する - myTravel ブログ</title>
+  <meta name="description" content="AI提案と旅行者データを組み合わせて、現地の隠れた名店を発掘し、グルメ中心の旅程を組み立てる方法を紹介します。予算・アレルギー・営業時間まで考慮した実践的な食旅プランの作り方をmyTravelで解説します。" />
+  <link rel="canonical" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation-ja" />
+  <link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation" />
+  <link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation-en" />
+  <link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation-ja" />
+  <link rel="alternate" hreflang="x-default" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="AIグルメ提案の活用術：現地の名店を見つけて食旅を計画する" />
+  <meta property="og:description" content="AI提案と旅行者データで現地の名店を発掘し、グルメ中心の旅程を組む実践術。予算や動線まで考慮した食旅の計画方法を紹介します。" />
+  <meta property="og:url" content="https://mytravel-planner.com/blog/ai-restaurant-recommendation-ja" />
+  <meta property="og:site_name" content="myTravel" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="article:published_time" content="2026-07-10" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AIグルメ提案の活用術：現地の名店を見つけて食旅を計画する" />
+  <meta name="twitter:description" content="AI提案と旅行者データで現地の名店を発掘し、グルメ中心の旅程を組む実践術。予算や動線まで考慮した食旅の計画方法を紹介します。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AIグルメ提案の活用術：現地の名店を見つけて食旅を計画する",
+  "description": "AI提案と旅行者データで現地の名店を発掘し、グルメ中心の旅程を組む実践術。予算や動線まで考慮した食旅の計画方法を紹介します。",
+  "url": "https://mytravel-planner.com/blog/ai-restaurant-recommendation-ja",
+  "datePublished": "2026-07-10",
+  "dateModified": "2026-07-10",
+  "author": {
+    "@type": "Organization",
+    "name": "myTravel"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "myTravel",
+    "url": "https://mytravel-planner.com"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://mytravel-planner.com/blog/ai-restaurant-recommendation-ja"
+  },
+  "inLanguage": "ja"
+}
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #4A90D9; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #4A90D9; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #4A90D9; color: #fff; }
+    .btn-primary:hover { background: #3a7bc8; }
+    .nav a.btn-primary { color: #fff; }
+    .breadcrumb { max-width: 800px; margin: 0 auto; padding: 1rem 1.5rem; font-size: 0.85rem; color: #64748b; }
+    .breadcrumb a { color: #4A90D9; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .content { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    .content .article-header { margin-bottom: 2rem; }
+    .content .article-header h1 { font-size: 1.75rem; font-weight: 700; color: #1e293b; line-height: 1.4; margin-bottom: 0.75rem; }
+    .content .article-meta { font-size: 0.85rem; color: #94a3b8; }
+    .content h2 { font-size: 1.3rem; font-weight: 700; color: #1e293b; margin: 2.5rem 0 1rem; padding-left: 1rem; border-left: 4px solid #4A90D9; }
+    .content h3 { font-size: 1.1rem; font-weight: 600; color: #334155; margin: 1.5rem 0 0.75rem; }
+    .content p { color: #374151; margin-bottom: 1rem; font-size: 1rem; }
+    .content ul, .content ol { margin: 1rem 0 1rem 1.5rem; color: #374151; }
+    .content li { margin-bottom: 0.5rem; }
+    .content strong { color: #1e293b; }
+    .content .tip-box { background: rgba(74,144,217,0.1); border: 1px solid #bfdbfe; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .content .tip-box strong { color: #4A90D9; }
+    .ad-section { text-align: center; margin: 2rem 0; }
+    .cta-box { background: linear-gradient(135deg, #4A90D9, #3a7bc8); color: #fff; border-radius: 1rem; padding: 2rem; text-align: center; margin: 2.5rem 0; }
+    .cta-box h3 { color: #fff; font-size: 1.2rem; margin-bottom: 0.75rem; }
+    .cta-box p { color: rgba(255,255,255,0.9); margin-bottom: 1.25rem; }
+    .cta-box .btn-cta { background: #fff; color: #4A90D9; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; display: inline-block; transition: all 0.2s; }
+    .cta-box .btn-cta:hover { background: #f0f9ff; transform: translateY(-2px); }
+    .related { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; }
+    .related h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; border-left: none; padding-left: 0; }
+    .related-links { display: flex; flex-direction: column; gap: 0.75rem; }
+    .related-links a { color: #4A90D9; font-weight: 500; }
+    .related-links a:hover { text-decoration: underline; }
+    .footer { background: #0f1e3c; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer-brand-name { font-size: 1.2rem; font-weight: 700; color: #4A90D9; margin-bottom: 0.75rem; }
+    .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
+    .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .footer a:hover { color: #fff; }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #1e3460; text-align: center; font-size: 0.85rem; }
+    .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
+    .hero { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 1rem; text-align: center; }
+    .hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .hero p { color: #64748b; font-size: 1.05rem; }
+    .blog-intro { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 2rem; }
+    .blog-intro p { color: #475569; margin-bottom: 1rem; font-size: 1rem; }
+    .blog-grid { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+    .blog-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 2rem; transition: all 0.3s; display: flex; flex-direction: column; }
+    .blog-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); border-color: #4A90D9; }
+    .blog-card .card-icon { width: 3rem; height: 3rem; background: rgba(74,144,217,0.1); border-radius: 0.875rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; flex-shrink: 0; }
+    .blog-card .card-icon svg { width: 1.5rem; height: 1.5rem; color: #4A90D9; }
+    .blog-card h2 { font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 0.75rem; line-height: 1.4; }
+    .blog-card .card-excerpt { color: #475569; font-size: 0.92rem; flex: 1; margin-bottom: 1rem; line-height: 1.6; }
+    .blog-card .card-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; }
+    .blog-card .card-date { color: #94a3b8; }
+    .blog-card .card-link { color: #4A90D9; font-weight: 600; }
+    .cat-head { max-width: 1200px; margin: 1.5rem auto 0; padding: 0 1.5rem; font-size: 1.2rem; font-weight: 700; color: #1e293b; border-left: 4px solid #4A90D9; padding-left: 0.75rem; }
+    .cta-section { background: linear-gradient(135deg, #4A90D9, #3a7bc8); color: #fff; padding: 3rem 1.5rem; text-align: center; margin-top: 2rem; }
+    .cta-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .cta-section p { font-size: 1rem; opacity: 0.9; margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .cta-section .btn-cta { background: #fff; color: #4A90D9; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; transition: all 0.2s; display: inline-block; }
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .content .article-header h1 { font-size: 1.35rem; }
+      .content h2 { font-size: 1.15rem; }
+      .hero h1 { font-size: 1.5rem; }
+      .blog-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">myTravel</a>
+    <nav class="nav">
+      <a href="/">ホーム</a>
+      <a href="/about">紹介</a>
+      <a href="/guides/">ガイド</a>
+      <a href="/blog" style="color:#4A90D9;font-weight:600;">ブログ</a>
+      <a href="/contact">お問い合わせ</a>
+      <a href="/login" class="btn btn-primary">ログイン</a>
+    </nav>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="/">ホーム</a> &gt; <a href="/blog">ブログ</a> &gt; <strong>AIグルメ提案の活用術：現地の名店を見つけて食旅を計画する</strong>
+</div>
+
+<article class="content">
+  <div class="article-header">
+    <h1>AIグルメ提案の活用術：現地の名店を見つけて食旅を計画する</h1>
+    <p class="article-meta">2026-07-10 | myTravel チーム</p>
+  </div>
+
+  <h2>「観光地の高いだけの店」を避けたい人へ</h2>
+  <p>せっかくの旅行で、駅前や観光名所のすぐ横にある店に入ってみたら、値段は高いのに味は今ひとつ——そんな経験はありませんか。旅の楽しみの大きな部分は「食」にあります。だからこそ、事前のリサーチ次第で満足度は大きく変わります。</p>
+  <p>しかし、旅行前に一軒ずつグルメサイトを開いて、口コミを読み、地図で場所を確認し、営業時間をチェックし……という作業は想像以上に手間がかかります。特に海外では、言語の壁もあって現地の評判を読み解くのが難しいものです。</p>
+  <p>ここで役立つのが、AIによるグルメ提案です。行き先・旅行スタイル・予算といった条件を伝えるだけで、その土地に合った食事の候補を旅程の中に組み込んでくれます。この記事では、<strong>AI提案と旅行者データを組み合わせて現地の名店を発掘し、食を軸にした旅程を組み立てる具体的な方法</strong>を紹介します。</p>
+
+  <h2>AIグルメ提案が「観光客向けの店」を避けられる理由</h2>
+  <p>AIによる食事提案が単なる「有名店リスト」と違うのは、複数の条件を同時に考慮できる点にあります。人間が頭の中で処理しようとすると疲れてしまう組み合わせを、AIは一度に整理してくれます。</p>
+  <ul>
+    <li><strong>移動動線との整合性</strong>：午前に訪れる観光スポットと、午後の予定の間に無理なく立ち寄れる店を選ぶ</li>
+    <li><strong>予算帯</strong>：1食あたりの目安を伝えれば、身の丈に合った価格帯の候補に絞れる</li>
+    <li><strong>食事のジャンル</strong>：ローカルフード中心か、名物料理を一つずつ制覇するか、といった方向性</li>
+    <li><strong>時間帯</strong>：朝食が強い街、夜市が名物の街など、その土地ならではの食事時間を反映</li>
+  </ul>
+  <p>たとえば台北を旅するなら、昼は小籠包の名店、夕方は士林や饒河街の夜市で食べ歩き、という「その街らしい食のリズム」を旅程に落とし込めます。バンコクなら屋台のカオマンガイやボートヌードルを移動途中に挟む、といった具合です。観光地のど真ん中にある店ばかりを並べるのではなく、動線と食のバランスを取った提案が得られるのが強みです。</p>
+  <div class="tip-box"><strong>myTravelのAI旅程生成</strong>：行き先と日程を入力すると、観光スポットだけでなく食事のタイミングも織り込んだ日別プランを自動で作成します。AI生成には通常10〜30秒ほどかかります。無料プランでは月3回、プレミアムプランでは月30回まで生成できるので、行き先やテーマを変えて何度か試しながら、自分好みの食旅プランに近づけていけます。</div>
+
+  <h2>旅行者データを組み合わせて精度を上げる</h2>
+  <p>AIの提案は便利ですが、それだけに頼るのではなく、実際に旅した人たちのデータと掛け合わせることで精度がぐっと上がります。両者は役割が異なります。</p>
+  <h3>AIが得意なこと</h3>
+  <ul>
+    <li>大量の情報を整理して、条件に合う候補を素早く提示する</li>
+    <li>旅程全体の流れの中に食事を自然に配置する</li>
+    <li>予算やジャンルといった条件変更に即座に対応する</li>
+  </ul>
+  <h3>旅行者データが得意なこと</h3>
+  <ul>
+    <li>「最近行ったら味が落ちていた」といった鮮度の高い実感</li>
+    <li>写真から伝わる盛り付けや店の雰囲気</li>
+    <li>混雑する時間帯や、予約が必要かどうかの生の情報</li>
+  </ul>
+  <p>おすすめの使い方は、まずAIに大枠の候補を出してもらい、その中から気になった店を旅行者の投稿や評価で裏取りする、という二段構えです。myTravelでは他の旅行者が公開した旅程を見て、良いと思ったプランに「いいね」を付けて後から見返せます。同じ行き先を旅した人がどんな食事を組み込んでいたかを参考にすれば、AI提案の候補を絞り込む判断材料になります。</p>
+
+  <div class="ad-section">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-7330738950092177"
+         data-ad-slot="2397004834"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <h2>食旅の旅程を組み立てる5ステップ</h2>
+  <p>実際にグルメ中心の旅程を組む流れを、順を追って見ていきましょう。</p>
+  <ol>
+    <li><strong>食のテーマを決める</strong>：「ラーメン食べ歩き」「市場と屋台巡り」「一都市一名物」など、軸を一つ決めると全体がまとまります</li>
+    <li><strong>1食あたりの予算を設定する</strong>：昼は軽めに1,500円、夜はしっかり4,000円、といった配分を先に決めておくと候補が絞りやすくなります</li>
+    <li><strong>AIに旅程を生成させる</strong>：行き先・日程・テーマ・予算を入力して、食事を含んだ日別プランを作成します</li>
+    <li><strong>旅行者データで裏取りする</strong>：提案された店を評価や投稿写真で確認し、ピンとこないものは差し替えます</li>
+    <li><strong>営業時間と定休日を最終確認する</strong>：人気店ほど昼休みや不定休があるため、公式情報で必ずチェックします</li>
+  </ol>
+  <p>この5ステップを踏むと、「行き当たりばったりで結局チェーン店」という失敗を避けられます。特に④の裏取りと⑤の営業時間確認は、AI提案をそのまま鵜呑みにしないための大事な工程です。AIは店の存在や大まかな評判は把握できても、直近の閉店や営業時間の変更まではカバーしきれないことがあるからです。</p>
+  <div class="tip-box"><strong>myTravelの旅程編集</strong>：AIが生成した日別プランは、後から自由に並べ替えたり店を差し替えたりできます。裏取りの結果、別の店に変えたくなったときも、その日の予定の中でスポットを追加・削除するだけ。動線を崩さずに自分好みのグルメプランへ調整できます。</div>
+
+  <h2>アレルギー・宗教・好みへの配慮</h2>
+  <p>食旅を計画するうえで見落としがちなのが、食事制限への配慮です。自分自身はもちろん、同行者に配慮が必要なケースもあります。</p>
+  <ul>
+    <li><strong>アレルギー</strong>：甲殻類やナッツなど、命に関わる制限がある場合は特に慎重に</li>
+    <li><strong>宗教上の制限</strong>：ハラールやベジタリアン対応の店を事前に把握しておく</li>
+    <li><strong>苦手なもの</strong>：パクチーや香辛料が強い料理など、好みに合わせた調整</li>
+  </ul>
+  <p>AIに提案を求める際、こうした条件を一緒に伝えておくと、最初から制限に合った候補を出してもらいやすくなります。たとえば「ベジタリアン対応の店を多めに」「辛すぎない料理中心で」といった指定です。</p>
+  <p>ただし、AIの提案はあくまで出発点として捉えることが大切です。実際の食材やアレルギー対応の可否は、現地で店に直接確認するのが確実です。特に海外では、メニューに書かれていない調味料が使われていることもあります。事前に翻訳したアレルギー説明のメモを用意しておくと、現地でのコミュニケーションがスムーズになります。</p>
+
+  <h2>食旅を「予算内」で楽しむコツ</h2>
+  <p>グルメ旅行は、気を抜くと食費が想定を大きく超えてしまいがちです。1食ごとの満足度を保ちつつ予算内に収めるには、メリハリが鍵になります。</p>
+  <ul>
+    <li><strong>高い店と安い店を交互に</strong>：全食を高級店にせず、屋台やローカル食堂を織り交ぜて全体のバランスを取る</li>
+    <li><strong>ランチを活用する</strong>：同じ店でも昼のコースは夜より手頃なことが多く、憧れの店を賢く体験できる</li>
+    <li><strong>朝食は宿や市場で軽く</strong>：一日の食事のうち、力を入れる回とそうでない回を分ける</li>
+    <li><strong>食費を旅程に記録しておく</strong>：使った金額を都度メモしておくと、後半の予算配分を調整しやすい</li>
+  </ul>
+  <p>myTravelでは旅程に沿って支出を記録できるので、食費が予算に対してどのくらいの進み具合かを旅の途中でも把握できます。対応している7通貨の範囲で現地通貨のまま記録できるため、海外旅行でも「今どのくらい使ったか」を感覚だけに頼らず確認できます。前半で使いすぎたと気づけば、後半のプランを調整する判断もしやすくなります。</p>
+  <div class="tip-box"><strong>myTravelの支出管理</strong>：日別の旅程に食事の支出を記録すれば、カテゴリーごとの合計が見えるようになります。7通貨に対応しているので、現地で使った金額をそのまま入力するだけ。旅の後半で予算配分を見直したいときにも役立ちます。</div>
+
+  <h2>まとめ：AIと人の知恵を組み合わせた食旅を</h2>
+  <p>現地の名店を発掘し、食を軸にした旅程を組み立てるうえで大切なのは、AIの整理力と旅行者データの実感、そして自分の好みや制約をうまく組み合わせることです。</p>
+  <ul>
+    <li>AIに食のテーマ・予算・食事制限を伝えて、動線に沿った候補を出してもらう</li>
+    <li>提案された店を旅行者の評価や投稿で裏取りし、鮮度を確認する</li>
+    <li>営業時間や定休日は公式情報で最終チェックする</li>
+    <li>高い店と安い店にメリハリをつけ、支出を記録しながら予算内に収める</li>
+  </ul>
+  <p>AIはあくまで強力な「たたき台」を用意してくれる存在です。最後の一手間——裏取りと現地での確認——を惜しまなければ、観光客向けの店を避けて、その土地でしか味わえない一皿にたどり着けます。次の食旅の計画は、<strong>myTravel</strong>の<a href="/trips/create">AI旅程生成</a>から始めてみてください。行き先とテーマを入力するだけで、食事を織り込んだ日別プランのたたき台がすぐに手に入ります。</p>
+
+  <div class="cta-box">
+    <h3>AIであなただけの旅行プランを作りましょう</h3>
+    <p>目的地を選ぶだけで、AIが最適な旅行プランを自動生成します。無料で始めましょう！</p>
+    <a href="/trips/create" class="btn-cta">旅行プランを作成</a>
+  </div>
+
+  <div class="related">
+    <h3>関連記事</h3>
+    <div class="related-links">
+      <a href="/blog/ai-itinerary-customizing-ja">AIが作った旅程を「自分仕様」に仕上げる — 200%活用するカスタマイズ術</a>
+      <a href="/blog/ai-budget-planning-ja">AIで旅行予算を組む：航空券・宿泊・食費の計画術</a>
+      <a href="/blog/visa-guide-for-travelers-ja">海外旅行のビザ完全ガイド:ビザ免除・到着ビザ・電子ビザを徹底整理</a>
+      <a href="/blog/passport-renewal-guide-ja">パスポート取得・更新の完全ガイド：有効期限から緊急発給まで</a>
+      <a href="/blog/travel-vaccination-guide-ja">海外旅行の予防接種ガイド：地域別の必須・推奨ワクチンと接種スケジュール</a>
+    </div>
+  </div>
+</article>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">myTravel</div>
+      <p style="font-size:0.9rem;">AIによる旅行プランニング。<br/>目的地を選ぶだけでオーダーメイドの日程が完成します。</p>
+      <div class="langs" style="margin-top:1rem;"><span class="lang-badge">🇰🇷 한국어</span><span class="lang-badge">🇺🇸 English</span><span class="lang-badge">🇯🇵 日本語</span><span class="lang-badge">🇨🇳 中文</span><span class="lang-badge">🇪🇸 Español</span><span class="lang-badge">🇩🇪 Deutsch</span><span class="lang-badge">🇫🇷 Français</span><span class="lang-badge">🇹🇭 ไทย</span><span class="lang-badge">🇻🇳 Tiếng Việt</span><span class="lang-badge">🇧🇷 Português</span><span class="lang-badge">🇸🇦 العربية</span><span class="lang-badge">🇮🇩 Bahasa</span><span class="lang-badge">🇮🇳 हिन्दी</span><span class="lang-badge">🇮🇹 Italiano</span><span class="lang-badge">🇷🇺 Русский</span><span class="lang-badge">🇹🇷 Türkçe</span><span class="lang-badge">🇲🇾 Melayu</span></div>
+    </div>
+    <div>
+      <h4>サービス</h4>
+      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner">アプリDL (Android)</a>
+      <a href="https://apps.apple.com/app/id6766147060">アプリDL (iOS)</a>
+      <a href="/guides/">旅行ガイド</a>
+      <a href="/blog">ブログ</a>
+      <a href="/about">サービス紹介</a>
+      <a href="/contact">お問い合わせ</a>
+    </div>
+    <div>
+      <h4>ポリシー</h4>
+      <a href="/terms">利用規約</a>
+      <a href="/privacy">プライバシーポリシー</a>
+      <a href="/faq">FAQ</a>
+      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:longpapa82@gmail.com" style="display:inline;">longpapa82@gmail.com</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 AI Soft. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
