@@ -12,6 +12,7 @@ export interface ContentEntry {
 }
 
 export const BLOG_ENTRIES: ContentEntry[] = [
+  { slug: "accommodation-choosing-guide", langs: { en: "2026-07-25", ja: "2026-07-25", ko: "2026-07-25" } },
   { slug: "accommodation-saving-tips", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },
   { slug: "ai-budget-planning", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },
   { slug: "ai-itinerary-customizing", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },
@@ -30,6 +31,7 @@ export const BLOG_ENTRIES: ContentEntry[] = [
   { slug: "family-travel-planning", langs: { ko: "2026-07-10" } },
   { slug: "first-solo-travel", langs: { ko: "2026-07-10" } },
   { slug: "group-trip-expense-split", langs: { en: "2026-07-25", ja: "2026-07-25", ko: "2026-07-25" } },
+  { slug: "group-trip-planning", langs: { en: "2026-07-25", ja: "2026-07-25", ko: "2026-07-25" } },
   { slug: "japan-transport-pass-guide", langs: { ko: "2026-07-10" } },
   { slug: "jetlag-management-guide", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },
   { slug: "local-experience-tips", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },
@@ -54,6 +56,7 @@ export const BLOG_ENTRIES: ContentEntry[] = [
   { slug: "travel-internet-guide", langs: { ko: "2026-07-10" } },
   { slug: "travel-journal-tips", langs: { ko: "2026-07-10" } },
   { slug: "travel-photography-spots", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },
+  { slug: "travel-safety-guide", langs: { en: "2026-07-25", ja: "2026-07-25", ko: "2026-07-25" } },
   { slug: "travel-vaccination-guide", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },
   { slug: "visa-guide-for-travelers", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },
   { slug: "workation-guide", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },

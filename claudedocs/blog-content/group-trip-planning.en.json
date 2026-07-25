@@ -1,0 +1,49 @@
+{
+  "slug": "group-trip-planning",
+  "lang": "en",
+  "title": "How to Plan a Group Trip Together Without the Group-Chat Chaos",
+  "metaTitle": "Planning a Group Trip Together — Roles and Sharing - myTravel Blog",
+  "description": "How to plan an itinerary with friends and family. Split editor and viewer roles, pull everything into one plan, and share the finished trip by link.",
+  "ogDescription": "Pull your scattered group plans into one place — divide roles, plan together, and share the finished itinerary by link.",
+  "publishedDate": "2026-07-25",
+  "category": "prep",
+  "sections": [
+    {
+      "h2": "The More People, the More the Plan Falls Apart",
+      "html": "  <p>Traveling alone, you just decide. But a trip with three or four friends ramps up the difficulty from the planning stage. One person drops a restaurant link, another posts a screenshot, another just says \"I heard that place is great\" and moves on. You end up <strong>scrolling far up the group chat just to find what someone said yesterday</strong>.</p>\n  <p>It is common to be scrambling on the day itself — \"what was the address of that café?\", \"what did we decide to do on day two?\" When the information never lands in one place, the plan scatters no matter how much you discuss it.</p>\n  <p>This guide covers how several people can <strong>build one itinerary together</strong>, and how dividing roles keeps the planning clean instead of chaotic.</p>"
+    },
+    {
+      "h2": "First, Pull Everything Into One Itinerary",
+      "html": "  <p>The first step in planning a group trip is choosing <strong>one place where information won't scatter</strong>. A group chat is great for talking but weak for managing a plan — it isn't organized in time order, and important links get buried under small talk.</p>\n  <p>In myTravel you create a trip, then <strong>invite your travel companions by email</strong> to join the same itinerary. Invitees get a notification and can open the same trip in their own app. Now, instead of digging through the chat for \"that thing from yesterday,\" everyone discusses while <strong>looking at the same itinerary</strong>.</p>\n  <p>Add activities by day and you get a time-ordered view of what happens each morning and afternoon. Rather than tossing a restaurant into the chat as a link, add it as an activity on the right day — and there's no wandering around on the day of.</p>"
+    },
+    {
+      "h2": "Divide Roles So Too Many Cooks Don't Spoil the Trip",
+      "html": "  <p>\"Too many cooks spoil the broth\" applies to trip planning too. If everyone touches everything at once, nothing gets organized. That is why <strong>dividing roles</strong> is key.</p>\n  <p>myTravel lets you give companions one of two roles. An <strong>Editor</strong> can add and edit activities in the itinerary; a <strong>Viewer</strong> can only see the finished plan. For example, the two or three people actually building the trip are Editors, while someone just tagging along to check details is a Viewer. That makes it <strong>clear who manages the itinerary</strong>, reducing the mess of edits colliding.</p>\n  <p>Note that myTravel's shared editing is not several people editing the same screen live in real time. Edits are saved and then reflected, and you see the latest state when you reopen or refresh. So it works best to <strong>divide roles</strong> — one person sets the overall frame while others fill in their assigned parts.</p>"
+    },
+    {
+      "h2": "In Practice: Split It Up Like This",
+      "html": "  <p>Say four people are taking a 3-night trip. Splitting roles like this speeds up planning.</p>\n  <p><strong>1) One lead</strong> — creates the trip and sets the frame first (dates, city, lodging area). This person invites the others as Editors or Viewers.<br><strong>2) Divide ownership</strong> — \"A takes day-one food, B takes day-two sightseeing, C takes transport\" — Editors split by day or theme and fill in their parts.<br><strong>3) Confirm as Viewers</strong> — people not deeply involved in planning stay Viewers and simply check the finished itinerary.</p>\n  <p>When budget comes up, the way to record spending together and settle up later is covered in detail in <a href=\"/blog/group-trip-expense-split-en\">the group expense-splitting guide</a>. Managing planning and settlement inside the same trip is far smoother.</p>"
+    },
+    {
+      "h2": "Share the Finished Plan by Link",
+      "html": "  <p>Once the plan is mostly done, you sometimes need to show it to people who don't use the app — family curious about the itinerary, or a friend who'd rather not install anything.</p>\n  <p>myTravel lets you turn a trip into a <strong>share link</strong>. Whoever receives it can view the itinerary <strong>read-only</strong> without the app, and you can set how long it stays live (say 7, 30, or 90 days). Turn sharing off and the link stops working. You can show \"here's the plan\" cleanly, with no worry about anyone accidentally editing it.</p>"
+    },
+    {
+      "h2": "Wrap-Up: With Group Trips, the Tool Does Half the Work",
+      "html": "  <p>The most common failure on group trips isn't a bad plan — it's <strong>scattered information</strong>. Three things matter. First, gather information <strong>in one itinerary, not the group chat</strong>. Second, <strong>divide Editor and Viewer roles</strong> so ownership is clear. Third, <strong>share the finished plan by link</strong> so everyone sees the same picture.</p>\n  <p>myTravel's group-trip features support email invites, Editor/Viewer roles, and read-only share links. On your next group trip, start with one itinerary instead of the group chat. You might also like the <a href=\"/blog/group-trip-expense-split-en\">expense-splitting guide</a> and <a href=\"/blog/ai-itinerary-customizing-en\">customizing AI itineraries</a>.</p>"
+    }
+  ],
+  "adAfterSection": 3,
+  "related": [
+    { "href": "/blog/group-trip-expense-split-en", "text": "Splitting Group Travel Expenses Without the Calculator Headache" },
+    { "href": "/blog/ai-itinerary-customizing-en", "text": "Customizing AI Itineraries Into a Trip That's Truly Yours" },
+    { "href": "/blog/ai-budget-planning-en", "text": "Planning a Travel Budget With AI: Flights, Lodging, Food" },
+    { "href": "/blog/family-travel-planning", "text": "Planning a Family Trip: Traveling Abroad With Kids" },
+    { "href": "/blog/travel-app-recommendations-en", "text": "Useful Travel Apps: From Planning to Settling Up" }
+  ],
+  "alternates": {
+    "ko": "/blog/group-trip-planning",
+    "en": "/blog/group-trip-planning-en",
+    "ja": "/blog/group-trip-planning-ja"
+  }
+}

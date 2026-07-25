@@ -1,0 +1,49 @@
+{
+  "slug": "travel-safety-guide",
+  "lang": "en",
+  "title": "A Travel Safety Guide: From Pickpockets to Emergencies",
+  "metaTitle": "Travel Safety Guide — Pickpockets, Scams, and Emergencies - myTravel Blog",
+  "description": "How to prevent pickpocketing and scams abroad, avoid risky areas, handle a lost passport and emergencies, and prepare emergency contacts. Practical safety habits.",
+  "ogDescription": "From preventing pickpockets and scams to handling a lost passport and emergencies — practical habits to keep yourself safe abroad.",
+  "publishedDate": "2026-07-25",
+  "category": "theme",
+  "sections": [
+    {
+      "h2": "Safety Is Preparation, Not Luck",
+      "html": "  <p>Listen to travelers who ran into trouble and most will say they were \"unlucky.\" But look closely and many of those situations were <strong>avoidable if you'd known in advance</strong>. The places pickpockets gather, the common scam tactics, and the steps for a lost passport are mostly predictable.</p>\n  <p>Safety isn't being scared into doing nothing — it's <strong>building a few basics into habit</strong>. Do that and you can actually enjoy the trip with peace of mind. This guide covers four practical areas: preventing pickpockets and scams, avoiding risk, handling emergencies, and preparing ahead.</p>"
+    },
+    {
+      "h2": "Pickpockets and Scams: The Moments They Target Are Predictable",
+      "html": "  <p>Pickpocketing doesn't happen at random. It targets <strong>moments when crowds gather and attention scatters</strong>: packed subways and buses, the entrances to landmarks, the second you set your bag down for a photo, or the instant someone talks to you to steal your focus.</p>\n  <p>The basic rules are simple. Keep <strong>important items in front of you or inside</strong> your clothing, and never put a wallet or phone in a back pocket. Don't keep all your cash and cards in one place — split them so losing one doesn't end the trip. Look up common scams (fake bracelets, signature requests, overly friendly approaches, rigged taxi meters) beforehand so you recognize them the moment they happen.</p>\n  <p>The more tourists a city gets, the more developed these tactics are, so it's worth searching <strong>\"(city name) travel scams\"</strong> before you go.</p>"
+    },
+    {
+      "h2": "Avoiding Risky Areas and Times",
+      "html": "  <p>Every city has districts best avoided at night. The problem is that travelers don't know the boundaries. Asking your lodging host or front desk <strong>\"are there areas I should avoid at night?\"</strong> gets you information only locals know.</p>\n  <p>It's also wise to avoid <strong>walking alone down unfamiliar alleys late at night</strong> or staring at a map for a long time in an empty area. Check directions inside a shop or a well-lit spot, and set your destination in advance to cut down on wandering. Organizing your routes and lodging location in your itinerary ahead of time reduces the time you spend exposed and disoriented on the ground.</p>\n  <p>If you're a woman traveling alone, there are extra considerations, covered in more depth in the <a href=\"/blog/solo-female-travel-safety-en\">solo female travel safety guide</a>.</p>"
+    },
+    {
+      "h2": "Emergencies: Handling a Lost Passport, Injury, or Theft",
+      "html": "  <p>However careful you are, things can still happen. What matters is <strong>staying calm and working through it in order</strong>.</p>\n  <p><strong>Lost passport</strong> — the most common emergency. Saving a copy of your passport photo page (phone and cloud) makes reissuance far faster. File a loss report with local police, then get a travel certificate or emergency passport from the nearest embassy or consulate. For reissuance steps, see the <a href=\"/blog/passport-renewal-guide-en\">passport renewal guide</a>.<br><strong>Theft or injury</strong> — travel insurance can reimburse you, so always keep the police report (theft) or medical records (injury). What to prepare for these is covered in the <a href=\"/blog/travel-emergency-guide-en\">travel emergency preparedness guide</a>.</p>"
+    },
+    {
+      "h2": "Preparing Ahead: Half the Battle Is Won Before You Go",
+      "html": "  <p>Half of emergency response is finished in your <strong>pre-trip prep</strong>. Sort these before departure.</p>\n  <p><strong>1) Emergency contacts</strong> — note your embassy/consulate, local emergency numbers (police, ambulance), and your card-loss reporting line.<br><strong>2) Copies of key documents</strong> — save passport, tickets, and booking confirmations as photos or in the cloud.<br><strong>3) Medications and prescriptions</strong> — pack your personal medicine and, if needed, an English prescription.<br><strong>4) Share your itinerary with family</strong> — share your plan with family or a friend so they know where you are if contact drops.</p>\n  <p>Sharing your plan by link is handy here. myTravel lets you share an itinerary as a <strong>read-only link</strong>, so even family who don't use the app can easily know \"which city you'll be in on which day.\"</p>"
+    },
+    {
+      "h2": "Wrap-Up: You're As Safe As You Are Informed",
+      "html": "  <p>The core of travel safety isn't special gear — it's <strong>a few habits and some preparation</strong>. Keep belongings in front and split up, avoid risky areas and times by asking locals, save a passport copy and emergency contacts ahead, and share your itinerary with family. Just these four prevent or quickly resolve most incidents.</p>\n  <p>For more on what to prepare, see the <a href=\"/blog/travel-emergency-guide-en\">travel emergency preparedness guide</a> and the <a href=\"/blog/carry-on-essentials-guide-en\">carry-on essentials guide</a>. A prepared trip is the most carefree trip.</p>"
+    }
+  ],
+  "adAfterSection": 3,
+  "related": [
+    { "href": "/blog/solo-female-travel-safety-en", "text": "Solo Female Travel Safety: From Lodging to Getting Around" },
+    { "href": "/blog/travel-emergency-guide-en", "text": "Travel Emergency Preparedness: Injury, Illness, and Loss" },
+    { "href": "/blog/passport-renewal-guide-en", "text": "Passport Renewal Guide: Timing, Documents, Cautions" },
+    { "href": "/blog/carry-on-essentials-guide-en", "text": "Carry-On Essentials: What to Keep Within Reach" },
+    { "href": "/blog/first-solo-travel", "text": "A First Solo Trip: From Prep to Staying Safe" }
+  ],
+  "alternates": {
+    "ko": "/blog/travel-safety-guide",
+    "en": "/blog/travel-safety-guide-en",
+    "ja": "/blog/travel-safety-guide-ja"
+  }
+}
