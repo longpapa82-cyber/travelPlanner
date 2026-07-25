@@ -1,0 +1,49 @@
+{
+  "slug": "trip-planning-checklist",
+  "lang": "ja",
+  "title": "旅行準備チェックリスト：出発30日前から当日まで",
+  "metaTitle": "旅行準備チェックリスト — 一か月前から当日までやること - myTravel ブログ",
+  "description": "海外旅行の準備を、いつ何から始めるか時期別に整理したチェックリスト。航空・宿・書類から出発当日の確認事項まで、漏れなく揃える方法。",
+  "ogDescription": "いつ、何から？30日前から出発当日までの時期別チェックリストで、忘れ物なく準備しましょう。",
+  "publishedDate": "2026-07-25",
+  "category": "prep",
+  "sections": [
+    {
+      "h2": "旅行準備は「何を」より「いつ」が大事",
+      "html": "  <p>持ち物リストはネットにあふれています。でも本当に大事なのはリストの長さではなく、<strong>順序とタイミング</strong>です。航空券は早く買うほど安く、ビザは発給に時間がかかり、両替と荷造りは出発直前がちょうどいい。順序が入り乱れると、どれだけ頑張って準備しても抜けが出ます。</p>\n  <p>この記事では旅行準備を<strong>30日前 → 7日前 → 前日 → 当日</strong>の四段階に分け、それぞれの時点で何をすべきかをチェックリストで整理しました。順番どおりに進めれば、忘れ物なく出発できます。</p>"
+    },
+    {
+      "h2": "30日前：大きなものから確定する",
+      "html": "  <p>一か月前には<strong>時間がかかる、または早いほど有利なもの</strong>を処理します。</p>\n  <p><strong>☐ 航空券の予約</strong> — 繁忙期ほど早いほうが有利。予約の最適時期は <a href=\"/blog/cheap-flight-booking-guide-ja\">航空券を安く予約する方法</a> を参考に。<br><strong>☐ 宿の予約</strong> — 無料キャンセル可能なオプションなら早く押さえても安全。タイプ選びは <a href=\"/blog/accommodation-choosing-guide-ja\">宿選びガイド</a> で。<br><strong>☐ パスポートの有効期限確認</strong> — 満了まで6か月未満だと入国拒否の可能性があるので更新を。<br><strong>☐ ビザの確認</strong> — 必要かどうかと発給期間を先に調べます。<a href=\"/blog/visa-guide-for-travelers-ja\">ビザガイド</a> 参照。<br><strong>☐ おおまかな日程作り</strong> — 何日にどの都市にいるか大枠を決めます。</p>"
+    },
+    {
+      "h2": "7日前：詳細を埋めて予防する",
+      "html": "  <p>一週間前には<strong>詳細な日程と安全・健康</strong>を整えます。</p>\n  <p><strong>☐ 詳細日程の完成</strong> — 日付ごとの活動、移動動線、グルメを整理。複数人なら <a href=\"/blog/group-trip-planning-ja\">一緒に計画を立てる方法</a> を活用。<br><strong>☐ 旅行保険の加入</strong> — 出発前に加入してこそ補償されます。<br><strong>☐ データ・通信の準備</strong> — SIM・eSIM・ローミングから選択。<a href=\"/blog/roaming-vs-esim-guide-ja\">ローミング vs eSIM ガイド</a> 参照。<br><strong>☐ 必要なら予防接種・常備薬</strong> — <a href=\"/blog/travel-vaccination-guide-ja\">予防接種ガイド</a> を確認。<br><strong>☐ 重要書類のコピー保存</strong> — パスポート・航空券・予約確認書を写真・クラウドに。</p>"
+    },
+    {
+      "h2": "前日：荷造りと最終確認",
+      "html": "  <p>前日には<strong>荷造りと最後の確認</strong>をします。</p>\n  <p><strong>☐ 荷造り</strong> — 機内持ち込みと預け入れを分け、貴重品・常備薬・充電器は機内持ち込みに。<a href=\"/blog/carry-on-essentials-guide-ja\">機内持ち込み必需品ガイド</a> を参考に。<br><strong>☐ 両替またはカード確認</strong> — 少額の現金と海外で使えるカードを準備。<br><strong>☐ チェックイン・座席確認</strong> — オンラインチェックインが可能なら事前に。<br><strong>☐ 空港への移動計画</strong> — 出発時刻から逆算して家を出る時刻を決めます。<br><strong>☐ 日程を家族と共有</strong> — 非常時に備えて共有しておきます。</p>"
+    },
+    {
+      "h2": "当日：出る前の最終点検",
+      "html": "  <p>出発当日、家を出る前の5分が大きなトラブルを防ぎます。</p>\n  <p><strong>☐ パスポート・財布・スマホ</strong> — この三つがあれば大抵は解決します。ドアの前でもう一度確認。<br><strong>☐ 充電器・モバイルバッテリー</strong> — 特にモバイルバッテリーは預け入れ不可なので機内持ち込みに。<br><strong>☐ 家の片付け</strong> — ガス・電気・水道、窓の施錠、ゴミ処理。<br><strong>☐ 空港に余裕を持って</strong> — 国際線は通常2〜3時間前の到着を推奨。それに合わせて家を出ましょう。</p>"
+    },
+    {
+      "h2": "まとめ：チェックリストが旅の半分",
+      "html": "  <p>準備がよくできた旅は現地でゆとりがあります。逆に何か抜けると、着いた途端にその収拾で初日をつぶします。<strong>30日前に大きなもの、7日前に詳細、前日に荷造り、当日に最終点検</strong> — この順番さえ守れば、忘れ物なく出発できます。</p>\n  <p>このチェックリストの日程と持ち物をアプリにまとめておけば、いつ何をしたかがひと目で管理できます。詳細な日程作りは <a href=\"/blog/ai-itinerary-customizing-ja\">AI日程のカスタマイズ</a> を、予算管理は <a href=\"/blog/ai-budget-planning-ja\">AIで予算を立てる</a> を併せてご覧ください。</p>"
+    }
+  ],
+  "adAfterSection": 3,
+  "related": [
+    { "href": "/blog/cheap-flight-booking-guide-ja", "text": "航空券を安く予約する方法：時期・曜日・コツ" },
+    { "href": "/blog/accommodation-choosing-guide-ja", "text": "ホテル vs Airbnb vs ゲストハウス：宿選び" },
+    { "href": "/blog/visa-guide-for-travelers-ja", "text": "海外旅行ビザ完全ガイド：ビザ免除・到着ビザ・電子ビザ" },
+    { "href": "/blog/carry-on-essentials-guide-ja", "text": "機内持ち込みの必需品：手元に置くべきもの" },
+    { "href": "/blog/group-trip-planning-ja", "text": "友だちと旅行計画を一緒に立てる方法" }
+  ],
+  "alternates": {
+    "ko": "/blog/trip-planning-checklist",
+    "en": "/blog/trip-planning-checklist-en",
+    "ja": "/blog/trip-planning-checklist-ja"
+  }
+}

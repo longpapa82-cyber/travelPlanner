@@ -1,0 +1,49 @@
+{
+  "slug": "travel-etiquette-guide",
+  "lang": "en",
+  "title": "A Travel Etiquette Guide: Cultural Manners That Vary by Country",
+  "metaTitle": "Travel Etiquette Guide — Culture, Manners, and Tipping by Country - myTravel Blog",
+  "description": "A cultural etiquette guide so you don't offend while traveling. Greetings, dining, dress, tipping, religious sites, and photo manners that differ by country.",
+  "ogDescription": "Manners vary by country, and not knowing can offend — greetings, dining, dress, tipping, and temple etiquette, all in one guide.",
+  "publishedDate": "2026-07-25",
+  "category": "theme",
+  "sections": [
+    {
+      "h2": "An 'I Didn't Know' Mistake Is Still a Mistake",
+      "html": "  <p>Behavior that feels natural to us can be <strong>read as rude locally</strong>. Even with no bad intent, not knowing a culture's manners can make someone uncomfortable without meaning to. Conversely, knowing and keeping one small courtesy can visibly change how locals treat you.</p>\n  <p>Travel etiquette isn't memorizing rules — it's <strong>an attitude of respect toward the people of a country</strong>. This guide lays out the broad patterns of how manners differ across six areas: greetings, dining, dress, tipping, religious sites, and photography.</p>"
+    },
+    {
+      "h2": "Greetings and Gestures: Same Action, Different Meaning",
+      "html": "  <p>Greetings vary widely by culture. Handshakes, light hugs, cheek kisses, pressed palms, a slight bow — the default differs by region. When meeting someone for the first time, it's safest to <strong>follow whatever they do first</strong>.</p>\n  <p>Watch your hand gestures. A gesture that's nothing to us can be an insult somewhere. Notably, <strong>pointing at people with a finger, handing things with the left hand, patting someone's head, or pointing at objects with your foot</strong> are considered rude in certain cultures. Searching \"(country) cultural manners for travelers\" before you go helps you avoid big blunders.</p>"
+    },
+    {
+      "h2": "Dining and Dress: Follow the Country's Rules",
+      "html": "  <p>Dining etiquette differs by country. Eating with sound is polite in some places and rude in others, and utensil use, toasting customs, and paying culture all vary. In a local restaurant, <strong>observe what those around you do</strong> and follow suit — that's generally safe.</p>\n  <p>Dress matters especially at <strong>religious sites</strong>. Conservative cultures and places of worship often require covering the shoulders and knees. Packing a thin scarf or a long garment is useful when you suddenly need to enter a temple or church. Even in a beach city with relaxed dress, it's better to be modest downtown or at religious sites.</p>"
+    },
+    {
+      "h2": "Tipping: Completely Different by Country",
+      "html": "  <p>Tipping is what travelers find most confusing — because it's <strong>completely different by country</strong>.</p>\n  <p>In some countries tipping is <strong>effectively expected</strong>: not giving a set percentage (say 15–20%) at restaurants, taxis, and hotels reads as rude. In others there's no tipping culture at all, and a tip may make people <strong>awkward or lead them to refuse it</strong>. Elsewhere a service charge is already built into the bill. It's worth learning the tipping norms of the country you're visiting, and keeping small cash handy so you're not caught out when a tip is expected.</p>"
+    },
+    {
+      "h2": "Religious Sites and Photography",
+      "html": "  <p>Temples, churches, and mosques are <strong>sacred spaces</strong> before they're attractions. Follow the rules: places where you remove your shoes, areas you can't enter, and spots where you must be quiet. Signs at the entrance or the behavior of locals will guide you.</p>\n  <p>Photography needs manners too. <strong>Ask permission before photographing people</strong> — especially children, religious rituals, and vendors. Always obey no-photography signs and military sites; in some countries, taking photos can be a legal issue. For capturing beautiful shots, see the <a href=\"/blog/travel-photography-spots-en\">travel photo spots guide</a>.</p>"
+    },
+    {
+      "h2": "Wrap-Up: Respect Is the Best Etiquette",
+      "html": "  <p>You don't need to memorize every rule of travel etiquette. The core is one thing: <strong>first ask \"what's the right way to do this here?\", and when unsure, observe locals and follow</strong>. Knowing just these six — greetings, dining, dress, tipping, religious sites, photography — avoids most mistakes.</p>\n  <p>A prepared traveler is welcomed. For traveling safely, see the <a href=\"/blog/travel-safety-guide-en\">travel safety guide</a>; for enjoying local culture deeply, see <a href=\"/blog/local-experience-tips-en\">enjoying local experiences</a>.</p>"
+    }
+  ],
+  "adAfterSection": 3,
+  "related": [
+    { "href": "/blog/travel-safety-guide-en", "text": "A Travel Safety Guide: From Pickpockets to Emergencies" },
+    { "href": "/blog/local-experience-tips-en", "text": "Enjoying Experiences You Can Only Have Locally" },
+    { "href": "/blog/local-food-guide-en", "text": "How to Enjoy Local Food Right: From Ordering to Hygiene" },
+    { "href": "/blog/travel-photography-spots-en", "text": "Travel Photo Spots: How to Get That Perfect Shot" },
+    { "href": "/blog/solo-female-travel-safety-en", "text": "Solo Female Travel Safety: From Lodging to Getting Around" }
+  ],
+  "alternates": {
+    "ko": "/blog/travel-etiquette-guide",
+    "en": "/blog/travel-etiquette-guide-en",
+    "ja": "/blog/travel-etiquette-guide-ja"
+  }
+}
