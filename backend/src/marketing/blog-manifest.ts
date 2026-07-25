@@ -29,6 +29,7 @@ export const BLOG_ENTRIES: ContentEntry[] = [
   { slug: "europe-culture-differences", langs: { ko: "2026-07-10" } },
   { slug: "family-travel-planning", langs: { ko: "2026-07-10" } },
   { slug: "first-solo-travel", langs: { ko: "2026-07-10" } },
+  { slug: "group-trip-expense-split", langs: { en: "2026-07-25", ja: "2026-07-25", ko: "2026-07-25" } },
   { slug: "japan-transport-pass-guide", langs: { ko: "2026-07-10" } },
   { slug: "jetlag-management-guide", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },
   { slug: "local-experience-tips", langs: { en: "2026-07-10", ja: "2026-07-10", ko: "2026-07-10" } },
