@@ -506,11 +506,38 @@ def main() -> int:
     print(f'Files with failures: {files_with_failures}')
     print(f'Total failures: {total_failures}')
 
+    # Sitemap manifest freshness: every published blog/guide page must be in
+    # backend/src/marketing/blog-manifest.ts, or it becomes a "ghost page"
+    # (exists on disk, invisible to search engines). generate-blog-manifest.py
+    # --check re-scans the files and diffs against the committed manifest.
+    manifest_stale = _check_blog_manifest()
+    if manifest_stale:
+        total_failures += 1
+
     if total_failures:
         print('\nFAIL: fix factual inconsistencies before Alpha submission')
         return 1
     print('\nPASS: all static content + i18n + docs factually consistent')
     return 0
+
+
+def _check_blog_manifest() -> bool:
+    """Return True if the sitemap manifest is stale (a failure)."""
+    import subprocess
+
+    script = ROOT / 'scripts' / 'generate-blog-manifest.py'
+    if not script.exists():
+        return False
+    result = subprocess.run(
+        [sys.executable, str(script), '--check'],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        print('\n[blog-manifest]')
+        print(f'  FAIL: {result.stderr.strip() or result.stdout.strip()}')
+        return True
+    return False
 
 
 if __name__ == '__main__':

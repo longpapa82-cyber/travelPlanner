@@ -13,6 +13,56 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Trip } from './trips/entities/trip.entity';
 import { AppService } from './app.service';
 import { isShuttingDown } from './common/lifecycle.service';
+import {
+  BLOG_ENTRIES,
+  GUIDE_ENTRIES,
+  type ContentEntry,
+  type ContentLang,
+} from './marketing/blog-manifest';
+
+/** Path for a content page URL. Korean is canonical (no lang suffix). */
+function contentPath(section: string, slug: string, lang: ContentLang): string {
+  const suffix = lang === 'ko' ? '' : `-${lang}`;
+  return `/${section}/${slug}${suffix}`;
+}
+
+/**
+ * Render one `<url>` block per language variant of a content entry, each with
+ * reciprocal `<xhtml:link hreflang>` alternates so Google links the language
+ * cluster. Korean doubles as `x-default`.
+ */
+function renderContentUrls(
+  entry: ContentEntry,
+  section: string,
+  baseUrl: string,
+  changefreq: string,
+  priority: string,
+  fallbackDate: string,
+): string {
+  const langs = Object.keys(entry.langs) as ContentLang[];
+  const alternates = langs
+    .map(
+      (lang) =>
+        `    <xhtml:link rel="alternate" hreflang="${lang}" href="${baseUrl}${contentPath(section, entry.slug, lang)}" />`,
+    )
+    .join('\n');
+  const xDefault = entry.langs.ko
+    ? `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${contentPath(section, entry.slug, 'ko')}" />`
+    : '';
+
+  return langs
+    .map((lang) => {
+      const lastmod = entry.langs[lang] || fallbackDate;
+      return `  <url>
+    <loc>${baseUrl}${contentPath(section, entry.slug, lang)}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+${alternates}${xDefault}
+  </url>`;
+    })
+    .join('\n');
+}
 
 @Controller()
 export class AppController {
@@ -108,6 +158,9 @@ export class AppController {
       .take(1000)
       .getMany();
 
+    // Main pages + section indexes. Individual blog posts and destination
+    // guides are generated from the file-scanned manifest below, so adding a
+    // page never requires editing this controller.
     const staticUrls = [
       // Main pages
       { loc: '/', changefreq: 'daily', priority: '1.0' },
@@ -117,115 +170,10 @@ export class AppController {
       { loc: '/privacy', changefreq: 'monthly', priority: '0.7' },
       { loc: '/terms', changefreq: 'monthly', priority: '0.7' },
       { loc: '/faq', changefreq: 'monthly', priority: '0.8' },
-      // Guides index
+      // Section indexes
       { loc: '/guides', changefreq: 'weekly', priority: '0.9' },
-      // Guides — Asia
-      { loc: '/guides/tokyo', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/osaka', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/kyoto', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/seoul', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/bangkok', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/singapore', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/ho-chi-minh', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/kuala-lumpur', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/bali', changefreq: 'monthly', priority: '0.85' },
-      // Guides — Europe
-      { loc: '/guides/paris', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/london', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/barcelona', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/rome', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/prague', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/amsterdam', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/istanbul', changefreq: 'monthly', priority: '0.85' },
-      // Guides — Americas/Oceania/Middle East
-      { loc: '/guides/new-york', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/hawaii', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/sydney', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/dubai', changefreq: 'monthly', priority: '0.85' },
-      // English Guides
       { loc: '/guides/index-en', changefreq: 'weekly', priority: '0.9' },
-      { loc: '/guides/tokyo-en', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/osaka-en', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/seoul-en', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/bangkok-en', changefreq: 'monthly', priority: '0.85' },
-      { loc: '/guides/paris-en', changefreq: 'monthly', priority: '0.85' },
-      // Blog
       { loc: '/blog', changefreq: 'weekly', priority: '0.8' },
-      {
-        loc: '/blog/ai-travel-planning-tips',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/packing-checklist',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/budget-travel-guide',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/first-solo-travel',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/travel-insurance-guide',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/japan-transport-pass-guide',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/europe-culture-differences',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/southeast-asia-rainy-season',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/smartphone-travel-photography',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/currency-exchange-guide',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/airport-time-saving-tips',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/travel-internet-guide',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/family-travel-planning',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/travel-journal-tips',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
-      {
-        loc: '/blog/long-term-travel-guide',
-        changefreq: 'monthly',
-        priority: '0.75',
-      },
     ];
 
     const staticEntries = staticUrls
@@ -239,6 +187,16 @@ export class AppController {
       )
       .join('\n');
 
+    // Blog posts + destination guides with reciprocal hreflang alternates,
+    // driven entirely by the auto-generated manifest.
+    const blogEntries = BLOG_ENTRIES.map((e) =>
+      renderContentUrls(e, 'blog', baseUrl, 'monthly', '0.75', now),
+    ).join('\n');
+
+    const guideEntries = GUIDE_ENTRIES.map((e) =>
+      renderContentUrls(e, 'guides', baseUrl, 'monthly', '0.85', now),
+    ).join('\n');
+
     const tripEntries = publicTrips
       .map(
         (t) => `  <url>
@@ -251,8 +209,10 @@ export class AppController {
       .join('\n');
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${staticEntries}
+${blogEntries}
+${guideEntries}
 ${tripEntries}
 </urlset>`;
 
