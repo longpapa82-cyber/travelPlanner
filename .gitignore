@@ -61,6 +61,11 @@ frontend/android/
 frontend/ios/
 frontend/web-build/
 
+# Android SDK components (installed locally, never commit — regenerable)
+frontend/platforms/
+frontend/build-tools/
+frontend/platform-tools/
+
 # Secrets
 *.pem
 *.key
