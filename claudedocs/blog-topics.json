@@ -276,6 +276,55 @@
       "icon": "heart",
       "titleKo": "여행 에티켓 가이드: 나라마다 다른 문화 매너",
       "descKo": "여행지에서 실수하지 않기 위한 문화 에티켓 가이드. 인사·식사·복장·팁 문화, 종교 시설 예절, 사진 촬영 매너까지 나라마다 다른 매너를 정리했습니다."
+    },
+    {
+      "slug": "budget-travel-guide",
+      "category": "budget",
+      "icon": "coin",
+      "titleKo": "저예산 여행의 기술: 돈 아끼는 10가지 방법",
+      "descKo": "적은 예산으로도 충분히 즐거운 해외여행이 가능합니다. 항공권 절약부터 현지 맛집, 무료 관광지까지 알뜰 여행의 비법을 공개합니다."
+    },
+    {
+      "slug": "currency-exchange-guide",
+      "category": "budget",
+      "icon": "coin",
+      "titleKo": "해외여행 환전 완벽 가이드: 어디서, 언제, 얼마나?",
+      "descKo": "어디서, 언제, 얼마나 환전해야 할까요? 방법별 장단점부터 환율 모니터링, 환전 사기 주의사항까지 환전의 모든 것을 알려드립니다."
+    },
+    {
+      "slug": "packing-checklist",
+      "category": "prep",
+      "icon": "bag",
+      "titleKo": "해외여행 짐 싸기 완벽 체크리스트",
+      "descKo": "여권부터 충전기, 상비약까지 카테고리별 완벽 체크리스트로 아무것도 빠뜨리지 않고 짐을 쌀 수 있습니다."
+    },
+    {
+      "slug": "ai-travel-planning-tips",
+      "category": "ai",
+      "icon": "map",
+      "titleKo": "AI로 여행 계획 세우는 5가지 팁",
+      "descKo": "AI 여행 플래너를 200% 활용하는 방법. 목적지 정보 입력부터 일정 검토, 현지 정보 반영까지 똑똑하게 여행을 계획하는 팁을 소개합니다."
+    },
+    {
+      "slug": "first-solo-travel",
+      "category": "tips",
+      "icon": "compass",
+      "titleKo": "첫 혼자 여행 가이드: 준비부터 안전까지",
+      "descKo": "처음 떠나는 혼자 여행, 무엇을 준비해야 할까요? 목적지 선택부터 숙소, 안전 수칙, 외로움 극복까지 혼행 초보를 위한 모든 것을 담았습니다."
+    },
+    {
+      "slug": "travel-insurance-guide",
+      "category": "prep",
+      "icon": "shield",
+      "titleKo": "여행자 보험 가이드: 꼭 알아야 할 5가지",
+      "descKo": "여행자 보험, 왜 필요하고 어떻게 고를까요? 보장 범위부터 청구 방법까지 여행자 보험의 핵심을 정리했습니다."
+    },
+    {
+      "slug": "travel-internet-guide",
+      "category": "prep",
+      "icon": "wifi",
+      "titleKo": "여행 중 인터넷 사용 가이드: 유심 vs eSIM vs 포켓WiFi",
+      "descKo": "유심, eSIM, 포켓와이파이 중 무엇을 선택해야 할까요? 각 방식의 장단점과 비용을 비교하고 국가별 추천까지 정리했습니다."
     }
   ]
 }
