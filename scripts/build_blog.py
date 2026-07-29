@@ -410,7 +410,8 @@ CATEGORY_LABELS_KO = {
 }
 CATEGORY_ORDER = ['ai', 'destination', 'prep', 'budget', 'theme', 'tips']
 
-# Existing 15 KO articles (slug, title, excerpt, date, icon, category) — kept in index.
+# DEPRECATED: index cards now come from canonical *.ko.json (see cmd_index).
+# This array is only referenced by the unused cmd_sitemap (real sitemap = generate-blog-manifest.py).
 EXISTING_KO_CARDS = [
     ('ai-travel-planning-tips', 'AI로 여행 계획 세우는 5가지 팁', 'AI 여행 플래너를 200% 활용하는 방법을 알려드립니다. 구체적인 정보 입력부터 현지 날씨 활용, 효율적인 동선 짜기까지 실전 팁을 확인해 보세요.', '2026.02.15', 'sparkle', 'ai'),
     ('packing-checklist', '해외여행 짐 싸기 완벽 체크리스트', '여권부터 전자기기까지, 해외여행에 꼭 필요한 짐 목록을 카테고리별로 정리했습니다. 기내 가방과 수화물 분리 팁도 함께 확인하세요.', '2026.02.10', 'bag', 'prep'),
@@ -431,14 +432,28 @@ EXISTING_KO_CARDS = [
 
 
 def cmd_index() -> int:
-    """Regenerate KO blog/index.html: existing 15 + new KO topics, grouped by category."""
+    """Regenerate KO blog/index.html from canonical KO JSON (single source of truth).
+
+    Every ko article contributes exactly one card, deduped by slug. Icon is looked
+    up from blog-topics.json (icon registry); date/title/excerpt come from the JSON.
+    """
     s = STRINGS['ko']
     topics = json.loads(TOPICS.read_text(encoding='utf-8'))['topics']
-    # Build card list: (slug, title, excerpt, date, icon, category)
-    cards = list(EXISTING_KO_CARDS)
-    for t in topics:
-        cards.append((t['slug'], t['titleKo'], t['descKo'],
-                      '2026.07.10', t.get('icon', 'map'), t['category']))
+    icon_by_slug = {t['slug']: t.get('icon', 'map') for t in topics}
+    # Build one card per KO canonical article — JSON is the single source of truth.
+    seen: set[str] = set()
+    cards = []
+    for jf in sorted(CONTENT_DIR.glob('*.ko.json')):
+        d = json.loads(jf.read_text(encoding='utf-8'))
+        slug = d['slug']
+        if slug in seen:
+            continue
+        seen.add(slug)
+        date = d['publishedDate'].replace('-', '.')  # 2026-02-05 -> 2026.02.05
+        icon = icon_by_slug.get(slug, 'map')
+        cards.append((slug, d['title'], d['description'], date, icon, d['category']))
+    # Newest first within grouping; category grouping preserved below.
+    cards.sort(key=lambda c: c[3], reverse=True)
     # Group by category
     by_cat: dict[str, list] = {}
     for c in cards:
