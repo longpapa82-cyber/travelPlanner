@@ -308,7 +308,7 @@
     {
       "slug": "first-solo-travel",
       "category": "tips",
-      "icon": "compass",
+      "icon": "map",
       "titleKo": "첫 혼자 여행 가이드: 준비부터 안전까지",
       "descKo": "처음 떠나는 혼자 여행, 무엇을 준비해야 할까요? 목적지 선택부터 숙소, 안전 수칙, 외로움 극복까지 혼행 초보를 위한 모든 것을 담았습니다."
     },
@@ -325,6 +325,62 @@
       "icon": "wifi",
       "titleKo": "여행 중 인터넷 사용 가이드: 유심 vs eSIM vs 포켓WiFi",
       "descKo": "유심, eSIM, 포켓와이파이 중 무엇을 선택해야 할까요? 각 방식의 장단점과 비용을 비교하고 국가별 추천까지 정리했습니다."
+    },
+    {
+      "slug": "airport-time-saving-tips",
+      "category": "tips",
+      "icon": "plane",
+      "titleKo": "공항에서 시간 절약하는 7가지 방법",
+      "descKo": "공항에서 낭비하는 시간을 줄이는 법. 온라인 체크인부터 패스트트랙, 면세점 사전예약까지 공항을 빠르게 통과하는 팁을 정리했습니다."
+    },
+    {
+      "slug": "europe-culture-differences",
+      "category": "tips",
+      "icon": "map",
+      "titleKo": "유럽 여행 시 꼭 알아야 할 문화 차이 10가지",
+      "descKo": "팁 문화부터 식사 매너, 상점 영업시간까지. 유럽 여행에서 당황하지 않도록 나라별 문화 차이와 에티켓을 정리했습니다."
+    },
+    {
+      "slug": "family-travel-planning",
+      "category": "tips",
+      "icon": "heart",
+      "titleKo": "가족 여행 계획 세우는 법: 아이와 함께하는 해외여행",
+      "descKo": "아이와 함께하는 해외여행, 무엇을 준비해야 할까요? 여행지 선택부터 숙소, 연령별 일정, 비상 상황 대비까지 가족 여행의 모든 것을 담았습니다."
+    },
+    {
+      "slug": "japan-transport-pass-guide",
+      "category": "destination",
+      "icon": "plane",
+      "titleKo": "일본 여행 필수 교통패스 완벽 가이드",
+      "descKo": "JR패스부터 지역별 교통패스, IC카드까지. 일본 여행에서 교통비를 아끼는 방법을 총정리했습니다."
+    },
+    {
+      "slug": "long-term-travel-guide",
+      "category": "theme",
+      "icon": "bag",
+      "titleKo": "장기 여행 준비 가이드: 한 달 이상 여행하기",
+      "descKo": "한 달 이상의 장기 여행, 무엇을 준비해야 할까요? 예산 계획부터 짐 싸기, 건강·재정 관리, 복귀 준비까지 안내합니다."
+    },
+    {
+      "slug": "smartphone-travel-photography",
+      "category": "tips",
+      "icon": "camera",
+      "titleKo": "여행 사진 잘 찍는 10가지 팁: 스마트폰 활용법",
+      "descKo": "스마트폰만으로 인생샷 남기는 법. 구도부터 골든아워, 야경, 후편집까지 여행 사진을 잘 찍는 실전 팁을 소개합니다."
+    },
+    {
+      "slug": "southeast-asia-rainy-season",
+      "category": "destination",
+      "icon": "leaf",
+      "titleKo": "동남아시아 우기 여행의 장단점과 준비법",
+      "descKo": "동남아 우기 여행, 피해야 할까요? 국가별 우기 시기부터 장단점, 실내 활동, 준비물까지 우기 여행의 모든 것을 정리했습니다."
+    },
+    {
+      "slug": "travel-journal-tips",
+      "category": "tips",
+      "icon": "doc",
+      "titleKo": "여행 일기 쓰는 법: 추억을 오래 간직하는 방법",
+      "descKo": "여행의 추억을 오래 간직하는 법. 기록의 핵심 요소부터 도구 선택, 사진과 함께 남기는 방법까지 여행 일기 작성 팁을 소개합니다."
     }
   ]
 }
