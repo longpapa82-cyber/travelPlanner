@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192-v2.png" />
+  <meta name="theme-color" content="#4A90D9" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Two Weeks Away, Something New Every Day — How AI Keeps From Repeating the Same Places - myTravel Blog</title>
+  <meta name="description" content="The longer the trip, the easier it is for the itinerary to grow stale. We explain in plain terms how myTravel's AI uses 8-day batch parallel generation and an 'exclusion list' to avoid placing the same spot twice and to route each day differently." />
+  <link rel="canonical" href="https://mytravel-planner.com/blog/ai-diverse-itinerary-en" />
+  <link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-diverse-itinerary" />
+  <link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-diverse-itinerary-en" />
+  <link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-diverse-itinerary-ja" />
+  <link rel="alternate" hreflang="x-default" href="https://mytravel-planner.com/blog/ai-diverse-itinerary" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Two Weeks Away, Something New Every Day — How AI Keeps From Repeating the Same Places" />
+  <meta property="og:description" content="How AI avoids placing the same spot twice on a long trip — 8-day batch parallel generation and an exclusion list for a fresh itinerary every day." />
+  <meta property="og:url" content="https://mytravel-planner.com/blog/ai-diverse-itinerary-en" />
+  <meta property="og:site_name" content="myTravel" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="article:published_time" content="2026-07-29" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Two Weeks Away, Something New Every Day — How AI Keeps From Repeating the Same Places" />
+  <meta name="twitter:description" content="How AI avoids placing the same spot twice on a long trip — 8-day batch parallel generation and an exclusion list for a fresh itinerary every day." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Two Weeks Away, Something New Every Day — How AI Keeps From Repeating the Same Places",
+  "description": "How AI avoids placing the same spot twice on a long trip — 8-day batch parallel generation and an exclusion list for a fresh itinerary every day.",
+  "url": "https://mytravel-planner.com/blog/ai-diverse-itinerary-en",
+  "datePublished": "2026-07-29",
+  "dateModified": "2026-07-29",
+  "author": {
+    "@type": "Organization",
+    "name": "myTravel"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "myTravel",
+    "url": "https://mytravel-planner.com"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://mytravel-planner.com/blog/ai-diverse-itinerary-en"
+  },
+  "inLanguage": "en"
+}
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #4A90D9; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #4A90D9; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #4A90D9; color: #fff; }
+    .btn-primary:hover { background: #3a7bc8; }
+    .nav a.btn-primary { color: #fff; }
+    .breadcrumb { max-width: 800px; margin: 0 auto; padding: 1rem 1.5rem; font-size: 0.85rem; color: #64748b; }
+    .breadcrumb a { color: #4A90D9; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .content { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    .content .article-header { margin-bottom: 2rem; }
+    .content .article-header h1 { font-size: 1.75rem; font-weight: 700; color: #1e293b; line-height: 1.4; margin-bottom: 0.75rem; }
+    .content .article-meta { font-size: 0.85rem; color: #94a3b8; }
+    .content h2 { font-size: 1.3rem; font-weight: 700; color: #1e293b; margin: 2.5rem 0 1rem; padding-left: 1rem; border-left: 4px solid #4A90D9; }
+    .content h3 { font-size: 1.1rem; font-weight: 600; color: #334155; margin: 1.5rem 0 0.75rem; }
+    .content p { color: #374151; margin-bottom: 1rem; font-size: 1rem; }
+    .content ul, .content ol { margin: 1rem 0 1rem 1.5rem; color: #374151; }
+    .content li { margin-bottom: 0.5rem; }
+    .content strong { color: #1e293b; }
+    .content .tip-box { background: rgba(74,144,217,0.1); border: 1px solid #bfdbfe; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .content .tip-box strong { color: #4A90D9; }
+    .content .highlight-box { background: #fef3c7; border: 1px solid #fde68a; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .content .highlight-box strong { color: #b45309; }
+    .content .warning-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .content .warning-box strong { color: #dc2626; }
+    .content .checklist { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 1rem 0; }
+    .content .checklist li { list-style: none; padding-left: 1.5rem; position: relative; }
+    .content .checklist li::before { content: "±0"; position: absolute; left: 0; color: #4A90D9; }
+    .content .compare-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+    .content .compare-table th { background: #f1f5f9; padding: 0.75rem 1rem; text-align: left; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
+    .content .compare-table td { padding: 0.75rem 1rem; border-bottom: 1px solid #e2e8f0; }
+    .content .compare-table tr:hover { background: #f8fafc; }
+    .ad-section { text-align: center; margin: 2rem 0; }
+    .cta-box { background: linear-gradient(135deg, #4A90D9, #3a7bc8); color: #fff; border-radius: 1rem; padding: 2rem; text-align: center; margin: 2.5rem 0; }
+    .cta-box h3 { color: #fff; font-size: 1.2rem; margin-bottom: 0.75rem; }
+    .cta-box p { color: rgba(255,255,255,0.9); margin-bottom: 1.25rem; }
+    .cta-box .btn-cta { background: #fff; color: #4A90D9; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; display: inline-block; transition: all 0.2s; }
+    .cta-box .btn-cta:hover { background: #f0f9ff; transform: translateY(-2px); }
+    .related { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; }
+    .related h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; border-left: none; padding-left: 0; }
+    .related-links { display: flex; flex-direction: column; gap: 0.75rem; }
+    .related-links a { color: #4A90D9; font-weight: 500; }
+    .related-links a:hover { text-decoration: underline; }
+    .footer { background: #0f1e3c; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer-brand-name { font-size: 1.2rem; font-weight: 700; color: #4A90D9; margin-bottom: 0.75rem; }
+    .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
+    .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .footer a:hover { color: #fff; }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #1e3460; text-align: center; font-size: 0.85rem; }
+    .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
+    .hero { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 1rem; text-align: center; }
+    .hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .hero p { color: #64748b; font-size: 1.05rem; }
+    .blog-intro { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 2rem; }
+    .blog-intro p { color: #475569; margin-bottom: 1rem; font-size: 1rem; }
+    .blog-grid { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+    .blog-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 2rem; transition: all 0.3s; display: flex; flex-direction: column; }
+    .blog-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); border-color: #4A90D9; }
+    .blog-card .card-icon { width: 3rem; height: 3rem; background: rgba(74,144,217,0.1); border-radius: 0.875rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; flex-shrink: 0; }
+    .blog-card .card-icon svg { width: 1.5rem; height: 1.5rem; color: #4A90D9; }
+    .blog-card h2 { font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 0.75rem; line-height: 1.4; }
+    .blog-card .card-excerpt { color: #475569; font-size: 0.92rem; flex: 1; margin-bottom: 1rem; line-height: 1.6; }
+    .blog-card .card-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; }
+    .blog-card .card-date { color: #94a3b8; }
+    .blog-card .card-link { color: #4A90D9; font-weight: 600; }
+    .cat-head { max-width: 1200px; margin: 1.5rem auto 0; padding: 0 1.5rem; font-size: 1.2rem; font-weight: 700; color: #1e293b; border-left: 4px solid #4A90D9; padding-left: 0.75rem; }
+    .cta-section { background: linear-gradient(135deg, #4A90D9, #3a7bc8); color: #fff; padding: 3rem 1.5rem; text-align: center; margin-top: 2rem; }
+    .cta-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .cta-section p { font-size: 1rem; opacity: 0.9; margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .cta-section .btn-cta { background: #fff; color: #4A90D9; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; transition: all 0.2s; display: inline-block; }
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .content .article-header h1 { font-size: 1.35rem; }
+      .content h2 { font-size: 1.15rem; }
+      .hero h1 { font-size: 1.5rem; }
+      .blog-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">myTravel</a>
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/guides/">Guides</a>
+      <a href="/blog" style="color:#4A90D9;font-weight:600;">Blog</a>
+      <a href="/contact">Contact</a>
+      <a href="/login" class="btn btn-primary">Log in</a>
+    </nav>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="/">Home</a> &gt; <a href="/blog">Blog</a> &gt; <strong>Two Weeks Away, Something New Every Day — How AI Keeps From Repeating the Same Places</strong>
+</div>
+
+<article class="content">
+  <div class="article-header">
+    <h1>Two Weeks Away, Something New Every Day — How AI Keeps From Repeating the Same Places</h1>
+    <p class="article-meta">2026-07-29 | myTravel Team</p>
+  </div>
+
+  <p>Planning a three- or four-day trip isn't hard. You pick a handful of headline sights and tidy up the route, and you're done. But once a trip stretches to ten days, two weeks, or a month, the story changes. There's plenty to see, yet at some point you start thinking, 'Wait, I passed through that same square yesterday,' or 'It feels like I keep circling markets with the same vibe.' Anyone who has actually traveled for a long stretch knows the trap: the longer the trip, the more easily the itinerary <strong>settles into monotonous repetition</strong>.</p>
+
+  <p>myTravel's AI itinerary generation tackles this problem head-on. Especially on trips of eight days or more, it is designed not to reinsert places it has already used into later days. In this article, we'll unpack what happens behind the scenes — 'how the AI avoids placing the same spot twice' — including the technical background, in a way general readers can follow. Once you understand the mechanism, you can use AI itineraries far more cleverly.</p>
+
+  <h2>The real reason itineraries repeat on longer trips</h2>
+  <p>First, we should pin down why itineraries tend to repeat on longer trips. For a short trip, just picking 'the top 5 in this city' is enough. But a two-week trip needs, at roughly three to four activities a day, <strong>more than 40 to 50 places</strong>. Whether a person plans it by hand or an AI does, filling in this many places naturally leads to overlap.</p>
+  <p>When people plan by hand, they unwittingly reach for the same spot they've already used. 'Oh, that observation deck was great' — and so a similar lookout ends up on both day 3 and day 5. AI faces the same risk. Especially when a trip is so long it's hard to handle in one pass, splitting the itinerary into several pieces means <strong>each piece doesn't know what the others included</strong>, so a famous landmark can get picked twice.</p>
+  <div class="tip-box"><strong>The core problem</strong> When a long itinerary is built in several chunks, the same place shows up multiple times unless those chunks share 'what each one included.' How that sharing is handled is the fork in the road toward a varied itinerary.</div>
+
+  <h2>Short trips and long trips: the AI approaches them differently</h2>
+  <p>myTravel's AI uses two approaches depending on trip length. This distinction is the starting point for the whole article.</p>
+  <h3>7 days or fewer — generated all at once</h3>
+  <p>For a trip of a week or less, the AI <strong>generates the entire itinerary in one pass</strong>. Because it builds with the whole picture in view, it's simply unlikely to place a spot from the first day again on the last. The AI is aware, as a whole, that 'I've already included this on this trip.'</p>
+  <h3>8 days or more — split into 8-day batches, generated in parallel</h3>
+  <p>Once a trip runs to eight days or more, the story changes. Arranging 40 to 50 or more places precisely in one pass is a demanding task even for AI. So myTravel handles long trips by <strong>splitting them into 8-day batches (groups)</strong>. For example, a 16-day trip is divided into a '1–8 days' batch and a '9–16 days' batch.</p>
+  <p>And it builds these batches <strong>in parallel</strong> — that is, at the same time. Instead of waiting to make them one after another, it processes several batches side by side, so a long trip doesn't stretch generation time without limit. Up to this point, one question arises: 'If you split them and make them separately, won't they overlap?' The mechanism that solves exactly that is the 'exclusion list' in the next section.</p>
+
+  <h2>The 'exclusion list' — the note an earlier batch hands to the next</h2>
+  <p>The core idea is surprisingly intuitive. The earlier batch passes the list of places it has already used to the next batch, saying <strong>'don't include these.'</strong> This list is called the exclusion list.</p>
+  <p>Here's an analogy. Suppose several people split the work of writing one travel book. If each writes with no coordination, the same restaurant shows up twice — once in A's chapter and once in B's. But if A finishes first and hands over a list saying 'these are the places I wrote about,' B fills their chapter with new places, avoiding that list. The AI's exclusion list plays exactly this 'handing over the list' role.</p>
+  <h3>What actually happens, in order</h3>
+  <ol>
+    <li>The first batch (days 1–8) builds its itinerary and keeps a list of which places it included.</li>
+    <li>When building the next batch (days 9–16), that list is passed along as 'already used.'</li>
+    <li>The next batch avoids the places on that list and fills its itinerary with fresh areas and sights that haven't appeared yet.</li>
+  </ol>
+  <p>As a result, even while splitting into batches and building them quickly in parallel, it can <strong>prevent the same place from appearing twice</strong> across the whole trip. It's a structure that catches both hares — speed (parallel) and variety (duplicate prevention) — at once.</p>
+  <div class="tip-box"><strong>Why this matters</strong> Without an exclusion list, you get awkward duplicates like 'Tokyo Tower on day 3 and Tokyo Tower again on day 9.' This single note keeps the back half of a long trip from becoming a rerun of the front half.</div>
+
+  <div class="ad-section">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-7330738950092177"
+         data-ad-slot="2397004834"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <h2>Preventing duplicates alone doesn't make it varied — regional and route distribution</h2>
+  <p>Not placing the same spot twice, on its own, doesn't add up to true variety. Even if the places differ, it still feels monotonous when every day circles <strong>a similar character, a similar neighborhood</strong>. So on top of preventing duplicates, the AI tries to arrange each day around <strong>different areas and routes</strong>.</p>
+  <p>In a big city, for example, it builds a flow where the day's 'theme' doesn't overlap — one day a historic, traditional district, another day a modern downtown, another day nature and parks, another day a day trip to a nearby small town. This way, the traveler wakes up each morning expecting 'today I'm going somewhere different from yesterday.'</p>
+  <h3>What a varied long itinerary looks like</h3>
+  <ul>
+    <li><strong>Regional distribution</strong>: one day downtown, one day the outskirts, one day a nearby town — the stage keeps changing.</li>
+    <li><strong>Route optimization</strong>: within a single day, nearby spots are grouped to cut down on travel, but when the date changes, the stage itself moves.</li>
+    <li><strong>Contrast in character</strong>: after an active day comes a relaxed one, creating a rhythm.</li>
+  </ul>
+  <p>In other words, 'no duplicates' is a <strong>necessary condition</strong> for variety, not a sufficient one. myTravel's AI applies duplicate prevention together with regional and thematic distribution, so that even on a long trip, each day feels fresh.</p>
+
+  <h2>Generation time and usage terms — knowing them honestly</h2>
+  <p>Once you understand the mechanism, it helps to know exactly what the experience is like in practice. AI itinerary generation isn't something that finishes in a magical instant. myTravel's AI itinerary generation takes roughly <strong>10 to 90 seconds</strong>.</p>
+  <p>The longer the trip and the more places to fill, the more time it takes. That said, as explained above, long trips build their batches <strong>in parallel</strong>, so doubling the number of days doesn't double the wait. Thanks to several batches running at the same time, even a long trip finishes within a reasonable amount of time.</p>
+  <h3>Usage terms at a glance</h3>
+  <ul>
+    <li><strong>Generation time</strong>: about 10 to 90 seconds. The longer and more complex the trip, the closer to the upper end.</li>
+    <li><strong>Generation count</strong>: free members can generate up to 3 times a month, and premium members up to 30 times a month.</li>
+    <li><strong>Duration limit</strong>: a trip generated by AI in one pass can be up to 31 days.</li>
+  </ul>
+  <div class="tip-box"><strong>How to use it efficiently</strong> Since the number of generations is fixed, rather than re-generating over and over because a draft isn't quite to your liking, refining the result by hand is far more economical. That's why the manual editing covered in the next section matters.</div>
+
+  <h2>Layering yourself onto the AI draft — manual editing after generation</h2>
+  <p>Once the AI has built a varied framework free of duplicates, it's time to layer <strong>your own taste</strong> on top. myTravel lets you freely <strong>edit by hand</strong> the itinerary the AI created, after generation. An AI draft isn't an answer key — it's an excellent starting point.</p>
+  <h3>Refine it like this after generation</h3>
+  <ul>
+    <li><strong>Reorder</strong>: if you're a morning person, move outdoor activities earlier; if you prefer evenings, push night-view spots later.</li>
+    <li><strong>Add or remove activities</strong>: drop places you're not interested in, and add the ones you really want to visit.</li>
+    <li><strong>Make room</strong>: on a packed day, trim activities to create 'breathing time.' The longer the trip, the more valuable a rest day becomes.</li>
+    <li><strong>Use notes</strong>: attach personal hints like 'be sure to try the dessert here' or 'go in the morning, it's quieter.'</li>
+  </ul>
+  <p>There's one thing you should be sure to know here. myTravel's AI is a tool that helps with <strong>planning</strong> an itinerary. It <strong>does not book or pay for flights or accommodations in real time</strong>. Once the AI proposes a varied route, the actual execution — booking and payment — is something you carry out yourself at each provider. Knowing this boundary keeps you from mistaking the AI for an all-in-one travel agency and lets you use it appropriately as a 'smart planning assistant.'</p>
+
+  <h2>A practical checklist for making a long trip varied</h2>
+  <p>Now that we've laid out the mechanism and how to use it, let's condense it into a checklist you can put to work right away when planning a long trip.</p>
+  <ul>
+    <li><strong>For trips over 8 days, trust the AI's automatic duplicate prevention</strong>: batch parallel generation and the exclusion list keep the back half from being a rerun.</li>
+    <li><strong>After you get the draft, look for 'days with overlapping themes'</strong>: if days of a similar character are clustered together, move one to a different stage.</li>
+    <li><strong>Deliberately insert rest days in the middle</strong>: on a long trip, managing your energy is what drives satisfaction. Leave a relaxed day with just one activity.</li>
+    <li><strong>Save your generation count</strong>: refining by hand instead of re-generating saves your monthly usage.</li>
+    <li><strong>Handle booking and payment separately</strong>: the AI goes up to planning. Do the actual reservations separately, once confirmed.</li>
+  </ul>
+  <p>Just keeping these five in mind turns a two-week trip from 'a repeat of similar days' into <strong>a journey that leads to a new stage every day</strong>.</p>
+
+  <h2>Wrapping up: understanding the mechanism makes AI more dependable</h2>
+  <p>The secret to not placing the same spot twice on a long trip came down, in the end, to a simple but powerful idea: 'telling what came later about what was used before.' myTravel's AI builds trips of 7 days or fewer all at once, and long trips of 8 days or more by splitting them into 8-day batches generated in parallel — but with the <strong>exclusion list</strong>, it hands the places already used to the next batch to prevent duplicates. And on top of that, it adds regional and thematic distribution to make each day distinctive.</p>
+  <p>Of course, what the AI creates is not an answer but a good starting point. Generation takes 10 to 90 seconds, you can create up to 31 days within a free limit of 3 times a month or a premium limit of 30 times a month, and the resulting itinerary can be refined by hand anytime. The actual execution, like booking and payment, remains your part.</p>
+  <p>The next time you plan a long trip, enter your destination and a generous span in myTravel and get an AI draft. We encourage you to check out an itinerary filled with new places all the way to the back half, and then finish it by layering your own taste on top, following the mechanism you learned today. The longer the trip, the more variety doesn't come on its own — it comes from a good tool and a little bit of tinkering.</p>
+
+  <div class="cta-box">
+    <h3>Create your own trip itinerary with AI</h3>
+    <p>Just pick a destination and AI generates an optimized travel plan. Start for free!</p>
+    <a href="/trips/create" class="btn-cta">Start planning</a>
+  </div>
+
+  <div class="related">
+    <h3>Related articles</h3>
+    <div class="related-links">
+      <a href="/blog/ai-itinerary-customizing">AI-Recommended Itineraries: A Practical Guide to Customizing Them Into 200% Your Own Trip</a>
+      <a href="/blog/ai-travel-planning-tips">5 Tips for Planning Your Trip With AI</a>
+      <a href="/blog/long-term-travel-guide">Long-Term Travel Prep Guide: Traveling for a Month or More</a>
+      <a href="/blog/ai-budget-planning">Building a Travel Budget With AI: Planning Flights, Lodging, and Food</a>
+      <a href="/blog/local-experience-tips">How to Travel Like a Local: Tips for Local Experiences</a>
+    </div>
+  </div>
+</article>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">myTravel</div>
+      <p style="font-size:0.9rem;">AI-powered travel planning.<br/>Pick a destination and get a tailored itinerary.</p>
+      <div class="langs" style="margin-top:1rem;"><span class="lang-badge">🇰🇷 한국어</span><span class="lang-badge">🇺🇸 English</span><span class="lang-badge">🇯🇵 日本語</span><span class="lang-badge">🇨🇳 中文</span><span class="lang-badge">🇪🇸 Español</span><span class="lang-badge">🇩🇪 Deutsch</span><span class="lang-badge">🇫🇷 Français</span><span class="lang-badge">🇹🇭 ไทย</span><span class="lang-badge">🇻🇳 Tiếng Việt</span><span class="lang-badge">🇧🇷 Português</span><span class="lang-badge">🇸🇦 العربية</span><span class="lang-badge">🇮🇩 Bahasa</span><span class="lang-badge">🇮🇳 हिन्दी</span><span class="lang-badge">🇮🇹 Italiano</span><span class="lang-badge">🇷🇺 Русский</span><span class="lang-badge">🇹🇷 Türkçe</span><span class="lang-badge">🇲🇾 Melayu</span></div>
+    </div>
+    <div>
+      <h4>Service</h4>
+      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner">Download (Android)</a>
+      <a href="https://apps.apple.com/app/id6766147060">Download (iOS)</a>
+      <a href="/guides/">Travel Guides</a>
+      <a href="/blog">Blog</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </div>
+    <div>
+      <h4>Policy</h4>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/faq">FAQ</a>
+      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:longpapa82@gmail.com" style="display:inline;">longpapa82@gmail.com</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 AI Soft. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
