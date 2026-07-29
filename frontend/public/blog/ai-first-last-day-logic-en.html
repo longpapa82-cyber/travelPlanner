@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192-v2.png" />
+  <meta name="theme-color" content="#4A90D9" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why Does an AI Itinerary Start With Hotel Check-In? The Logic Behind First and Last Days - myTravel Blog</title>
+  <meta name="description" content="A look at why an AI travel itinerary keeps the first day light with a hotel check-in and wraps up the last day with only a morning before heading to the airport. We break down myTravel's scheduling logic, which accounts for jet lag, travel fatigue, and check-in times, in plain language." />
+  <link rel="canonical" href="https://mytravel-planner.com/blog/ai-first-last-day-logic-en" />
+  <link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-first-last-day-logic" />
+  <link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-first-last-day-logic-en" />
+  <link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-first-last-day-logic-ja" />
+  <link rel="alternate" hreflang="x-default" href="https://mytravel-planner.com/blog/ai-first-last-day-logic" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Why Does an AI Itinerary Start With Hotel Check-In? The Logic Behind First and Last Days" />
+  <meta property="og:description" content="Why an AI itinerary opens with a hotel check-in and keeps the last day light — a plain-language walkthrough of myTravel's scheduling logic that factors in jet lag, travel fatigue, and check-in times." />
+  <meta property="og:url" content="https://mytravel-planner.com/blog/ai-first-last-day-logic-en" />
+  <meta property="og:site_name" content="myTravel" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="article:published_time" content="2026-07-29" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Why Does an AI Itinerary Start With Hotel Check-In? The Logic Behind First and Last Days" />
+  <meta name="twitter:description" content="Why an AI itinerary opens with a hotel check-in and keeps the last day light — a plain-language walkthrough of myTravel's scheduling logic that factors in jet lag, travel fatigue, and check-in times." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7330738950092177" crossorigin="anonymous"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Why Does an AI Itinerary Start With Hotel Check-In? The Logic Behind First and Last Days",
+  "description": "Why an AI itinerary opens with a hotel check-in and keeps the last day light — a plain-language walkthrough of myTravel's scheduling logic that factors in jet lag, travel fatigue, and check-in times.",
+  "url": "https://mytravel-planner.com/blog/ai-first-last-day-logic-en",
+  "datePublished": "2026-07-29",
+  "dateModified": "2026-07-29",
+  "author": {
+    "@type": "Organization",
+    "name": "myTravel"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "myTravel",
+    "url": "https://mytravel-planner.com"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://mytravel-planner.com/blog/ai-first-last-day-logic-en"
+  },
+  "inLanguage": "en"
+}
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a202c; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.25rem; font-weight: 700; color: #4A90D9; }
+    .nav { display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; }
+    .nav a { color: #475569; transition: color 0.2s; }
+    .nav a:hover { color: #4A90D9; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-primary { background: #4A90D9; color: #fff; }
+    .btn-primary:hover { background: #3a7bc8; }
+    .nav a.btn-primary { color: #fff; }
+    .breadcrumb { max-width: 800px; margin: 0 auto; padding: 1rem 1.5rem; font-size: 0.85rem; color: #64748b; }
+    .breadcrumb a { color: #4A90D9; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .content { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    .content .article-header { margin-bottom: 2rem; }
+    .content .article-header h1 { font-size: 1.75rem; font-weight: 700; color: #1e293b; line-height: 1.4; margin-bottom: 0.75rem; }
+    .content .article-meta { font-size: 0.85rem; color: #94a3b8; }
+    .content h2 { font-size: 1.3rem; font-weight: 700; color: #1e293b; margin: 2.5rem 0 1rem; padding-left: 1rem; border-left: 4px solid #4A90D9; }
+    .content h3 { font-size: 1.1rem; font-weight: 600; color: #334155; margin: 1.5rem 0 0.75rem; }
+    .content p { color: #374151; margin-bottom: 1rem; font-size: 1rem; }
+    .content ul, .content ol { margin: 1rem 0 1rem 1.5rem; color: #374151; }
+    .content li { margin-bottom: 0.5rem; }
+    .content strong { color: #1e293b; }
+    .content .tip-box { background: rgba(74,144,217,0.1); border: 1px solid #bfdbfe; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .content .tip-box strong { color: #4A90D9; }
+    .content .highlight-box { background: #fef3c7; border: 1px solid #fde68a; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .content .highlight-box strong { color: #b45309; }
+    .content .warning-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .content .warning-box strong { color: #dc2626; }
+    .content .checklist { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1.25rem 1.5rem; margin: 1rem 0; }
+    .content .checklist li { list-style: none; padding-left: 1.5rem; position: relative; }
+    .content .checklist li::before { content: "±0"; position: absolute; left: 0; color: #4A90D9; }
+    .content .compare-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+    .content .compare-table th { background: #f1f5f9; padding: 0.75rem 1rem; text-align: left; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
+    .content .compare-table td { padding: 0.75rem 1rem; border-bottom: 1px solid #e2e8f0; }
+    .content .compare-table tr:hover { background: #f8fafc; }
+    .ad-section { text-align: center; margin: 2rem 0; }
+    .cta-box { background: linear-gradient(135deg, #4A90D9, #3a7bc8); color: #fff; border-radius: 1rem; padding: 2rem; text-align: center; margin: 2.5rem 0; }
+    .cta-box h3 { color: #fff; font-size: 1.2rem; margin-bottom: 0.75rem; }
+    .cta-box p { color: rgba(255,255,255,0.9); margin-bottom: 1.25rem; }
+    .cta-box .btn-cta { background: #fff; color: #4A90D9; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; display: inline-block; transition: all 0.2s; }
+    .cta-box .btn-cta:hover { background: #f0f9ff; transform: translateY(-2px); }
+    .related { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; }
+    .related h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; border-left: none; padding-left: 0; }
+    .related-links { display: flex; flex-direction: column; gap: 0.75rem; }
+    .related-links a { color: #4A90D9; font-weight: 500; }
+    .related-links a:hover { text-decoration: underline; }
+    .footer { background: #0f1e3c; color: #94a3b8; padding: 3rem 1.5rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer-brand-name { font-size: 1.2rem; font-weight: 700; color: #4A90D9; margin-bottom: 0.75rem; }
+    .footer h4 { color: #e2e8f0; font-weight: 600; margin-bottom: 0.75rem; }
+    .footer a { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .footer a:hover { color: #fff; }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid #1e3460; text-align: center; font-size: 0.85rem; }
+    .langs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .lang-badge { background: #334155; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.75rem; }
+    .hero { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 1rem; text-align: center; }
+    .hero h1 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    .hero p { color: #64748b; font-size: 1.05rem; }
+    .blog-intro { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 2rem; }
+    .blog-intro p { color: #475569; margin-bottom: 1rem; font-size: 1rem; }
+    .blog-grid { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+    .blog-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 2rem; transition: all 0.3s; display: flex; flex-direction: column; }
+    .blog-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); border-color: #4A90D9; }
+    .blog-card .card-icon { width: 3rem; height: 3rem; background: rgba(74,144,217,0.1); border-radius: 0.875rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; flex-shrink: 0; }
+    .blog-card .card-icon svg { width: 1.5rem; height: 1.5rem; color: #4A90D9; }
+    .blog-card h2 { font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 0.75rem; line-height: 1.4; }
+    .blog-card .card-excerpt { color: #475569; font-size: 0.92rem; flex: 1; margin-bottom: 1rem; line-height: 1.6; }
+    .blog-card .card-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; }
+    .blog-card .card-date { color: #94a3b8; }
+    .blog-card .card-link { color: #4A90D9; font-weight: 600; }
+    .cat-head { max-width: 1200px; margin: 1.5rem auto 0; padding: 0 1.5rem; font-size: 1.2rem; font-weight: 700; color: #1e293b; border-left: 4px solid #4A90D9; padding-left: 0.75rem; }
+    .cta-section { background: linear-gradient(135deg, #4A90D9, #3a7bc8); color: #fff; padding: 3rem 1.5rem; text-align: center; margin-top: 2rem; }
+    .cta-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .cta-section p { font-size: 1rem; opacity: 0.9; margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .cta-section .btn-cta { background: #fff; color: #4A90D9; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; transition: all 0.2s; display: inline-block; }
+    @media (max-width: 768px) {
+      .nav { display: none; }
+      .content .article-header h1 { font-size: 1.35rem; }
+      .content h2 { font-size: 1.15rem; }
+      .hero h1 { font-size: 1.5rem; }
+      .blog-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">myTravel</a>
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/guides/">Guides</a>
+      <a href="/blog" style="color:#4A90D9;font-weight:600;">Blog</a>
+      <a href="/contact">Contact</a>
+      <a href="/login" class="btn btn-primary">Log in</a>
+    </nav>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="/">Home</a> &gt; <a href="/blog">Blog</a> &gt; <strong>Why Does an AI Itinerary Start With Hotel Check-In? The Logic Behind First and Last Days</strong>
+</div>
+
+<article class="content">
+  <div class="article-header">
+    <h1>Why Does an AI Itinerary Start With Hotel Check-In? The Logic Behind First and Last Days</h1>
+    <p class="article-meta">2026-07-29 | myTravel Team</p>
+  </div>
+
+  <p>If you've ever built a travel itinerary with AI, you've probably had a moment like this: "Why is the first day so empty?" or "Why did it drop a hotel check-in right after arrival?" On the flip side, the last day often has just one or two stops in the morning before heading to the airport. At first glance it might look like the AI got lazy, but this is actually <strong>by design</strong>.</p>
+
+  <p>myTravel's AI itinerary generator deliberately keeps the first and last days light because it takes the realities of long-haul international travel into account. It's the result of factoring in variables like jet lag, flight fatigue, hotel check-in times, and airport transfers. In this article, we'll unpack the logic behind why the AI shapes the beginning and end of a trip the way it does — and how you can make the most of it.</p>
+
+  <h2>Why the First Day Starts With 'Hotel Check-In'</h2>
+  <p>When you generate an international trip itinerary with AI on myTravel, the first activity of day one is often a <strong>hotel check-in at 1:00 PM (13:00)</strong>. It can seem a little odd at first. It's the first day of the trip — why does a hotel come up before any sightseeing?</p>
+  <p>The reason is that it mirrors how travel actually unfolds. Long-haul international flights often land at the destination airport in the late morning or around midday, and just getting from the airport to your accommodation in the city can take an hour or two. Dragging a large suitcase straight to a landmark isn't very realistic. So the AI sets aside <strong>time to drop your bags at the accommodation first</strong> as the starting point of the itinerary.</p>
+  <p>There's a reason for the 1:00 PM slot, too. Most hotels around the world have a check-in time around 2–3 PM, and even if you arrive early, you can usually leave your luggage and take a short break. The AI places the first activity around this realistic check-in window to ease the confusion right after arrival.</p>
+  <div class="tip-box"><strong>Good to know</strong> The AI only adds 'hotel check-in' to the itinerary as an activity — it doesn't actually book the hotel or handle check-in for you. You'll need to arrange your accommodation separately, and this itinerary item is closer to a route cue that says 'drop your bags around this time.'</div>
+
+  <h2>Why Only 2–3 Activities Go on the First Day</h2>
+  <p>After the hotel check-in, the activities the AI schedules for the first day are usually <strong>just 2–3, and light ones at that</strong>. Think low-effort options like a walk near the accommodation, dinner at a nearby restaurant, or a neighborhood café. There's a clear reason it doesn't drop a large museum across town or a full-day course on day one.</p>
+  <h3>Three reasons for keeping the first day light</h3>
+  <ul>
+    <li><strong>Flight fatigue</strong>: After a long flight, your body feels heavy and your focus dips. Cramming a demanding schedule into arrival day carries over into the next day.</li>
+    <li><strong>Adjusting to the time difference</strong>: The bigger the time difference, the more your body is still adapting to local time on arrival day. Light outdoor activity can actually help you adjust to jet lag, but an intense schedule backfires.</li>
+    <li><strong>Uncertain arrival time</strong>: Flight delays, immigration lines, and baggage claim hold-ups mean your actual free time is easily shorter than expected. Leaving some slack lets you absorb these variables.</li>
+  </ul>
+  <p>In other words, the AI plans the itinerary with the mindset of 'the first day is for settling in,' not 'pack the first day full.' It's a buffer designed to protect your condition for the whole trip.</p>
+
+  <h2>Why the Last Day Is Morning-Only, and Capped at Two Activities</h2>
+  <p>Look at the last-day itinerary at the end of a trip and you'll see the AI adds <strong>only morning activities, capped at two</strong>, then wraps up with the airport transfer. Just like the first day, this reflects the fact that the last day isn't a full day either.</p>
+  <p>Return flights often depart in the afternoon or evening. But you need to arrive at the airport two to three hours before departure, and once you add the transfer time from the city to the airport plus checkout and packing, the afternoon effectively fills up with transit and waiting. That's why the AI <strong>limits the time you can enjoy at ease on the last day to the morning</strong>.</p>
+  <h3>A typical last-day flow</h3>
+  <ul>
+    <li><strong>Morning</strong>: One or two light activities near the accommodation (a last bit of shopping, a café you missed, a short walk, and so on).</li>
+    <li><strong>Around noon</strong>: Checkout and packing.</li>
+    <li><strong>Afternoon</strong>: Transfer to the airport, check-in, departure.</li>
+  </ul>
+  <p>If the AI slotted a full-day course on the city's outskirts on the last day, the risk of missing your flight would rise sharply. So on the last day especially, the AI doesn't overreach — it prioritizes getting you to the airport safely.</p>
+
+  <div class="ad-section">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-7330738950092177"
+         data-ad-slot="2397004834"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <h2>Why Domestic and Short-Haul Trips Are Planned Differently</h2>
+  <p>The special handling of first and last days described so far applies most strongly to <strong>long-haul international travel</strong>. For domestic trips or nearby short-haul travel, this handling is far less pronounced.</p>
+  <p>The reason is simple. Domestic and short-haul trips have short travel times and little to no time difference, so your condition on arrival day isn't badly affected. Leave in the morning and you can reach your destination around midday and start sightseeing right away. There's no real need to leave the first day largely empty.</p>
+  <h3>First- and last-day differences by trip type</h3>
+  <ul>
+    <li><strong>Long-haul international travel</strong>: First day is a hotel check-in plus 2–3 light activities; the last day is morning-only with a maximum of two. Jet lag and flight fatigue are heavily reflected.</li>
+    <li><strong>Domestic and short-haul travel</strong>: You can handle a relatively normal schedule from day one. With less of the special buffer applied, the first day gets filled in fully too.</li>
+  </ul>
+  <p>In other words, the AI adjusts the intensity of the first and last days depending on the destination and travel distance. It's not 'always leave the first day empty' — it makes realistic judgments to match the nature of the trip.</p>
+  <div class="tip-box"><strong>Note</strong> An AI itinerary is generated by analyzing the destination, duration, and trip details, so it usually takes about 10–90 seconds. Wait a moment for the result, and you can see the first- and last-day arrangement tailored to your trip type.</div>
+
+  <h2>The Principle Running Through the AI's Scheduling Logic: A Realistic Route</h2>
+  <p>A hotel check-in on the first day, a morning-only last day — there's one principle running through both. Namely, it plans <strong>'a route you can actually walk, not an ideal on paper.'</strong></p>
+  <p>Many people build itineraries that look perfect on a map but fall apart once they're on the ground. They overcommit to three spots on arrival day and burn out from the first day, or they get greedy on the last day and end up scrambling on the way to the airport. The AI is designed to avoid these common mistakes ahead of time.</p>
+  <h3>Real-world variables the AI factors into the itinerary</h3>
+  <ul>
+    <li><strong>Check-in and checkout times</strong>: It places the baggage-drop point to match the hours you can actually use the accommodation.</li>
+    <li><strong>Travel fatigue and jet lag</strong>: The longer the haul, the lower the intensity right after arrival.</li>
+    <li><strong>Airport transfer slack</strong>: It leaves the last-day afternoon open to safely secure your departure time.</li>
+  </ul>
+  <p>An itinerary built this way may not be flashy, but it's closer to <strong>an itinerary you can actually keep</strong>. And the most important thing in travel isn't how packed the schedule is — it's whether your body can keep up with the plan.</p>
+
+  <h2>The AI Draft Is a Starting Point — You Can Refine It Yourself</h2>
+  <p>Here's something worth remembering: the first- and last-day itinerary the AI puts together is <strong>not the definitive answer, but a reasonable starting point</strong>. On myTravel, you don't have to leave the AI-generated itinerary as-is — you can freely adjust it yourself.</p>
+  <h3>Adjust it this way if this is you</h3>
+  <ul>
+    <li><strong>If your arrival is early, in the pre-dawn or morning hours</strong>: Feel free to add a few more activities to the first day. If your energy holds up, fill in the afternoon the AI left open.</li>
+    <li><strong>If your return flight departs late at night</strong>: You have room to add one more activity to the last-day afternoon. Just leave plenty of time for the airport transfer.</li>
+    <li><strong>If you handle jet lag well</strong>: You can trim the first-day buffer and adjust the itinerary to be a bit fuller.</li>
+  </ul>
+  <p>On myTravel, you're free to <strong>add, delete, and reorder</strong> each activity. You might slot a favorite local spot only you know right after the hotel check-in the AI added, or add one more place you didn't get to on the last-day morning. Once you understand the AI's logic, it becomes much easier to decide what to leave alone and what to change.</p>
+  <div class="tip-box"><strong>Usage note</strong> AI itinerary generation is available up to 3 times a month for free members and up to 30 times a month for premium members, and you can create a trip of up to 31 days at a time. Rather than repeatedly re-generating drafts, refining a single generated itinerary by hand is the way to save both time and your remaining uses.</div>
+
+  <h2>Wrapping Up: Understanding the First and Last Days Makes Travel Easier</h2>
+  <p>The AI keeping the first day light from the hotel check-in and scheduling the last day for the morning only isn't laziness — it's <strong>consideration for protecting the whole trip</strong>. This design, which buffers the fatigue and jet lag right after arrival and secures enough slack so you don't miss your return flight, reflects the realities that repeat across countless trips.</p>
+  <p>Once you know this logic, you'll see AI itineraries differently. Instead of 'why is this so empty?', it reads as 'ah, this is the time to settle in' or 'this leaves room to get to the airport.' And when you refine the itinerary to match your own arrival and departure times and energy on that understanding, the AI's reasonable draft becomes fully your own trip.</p>
+  <p>If you're planning your next trip, enter your destination and dates on myTravel and get an AI itinerary. See for yourself how the first and last days come together, adjust it to fit you with the logic you understood today, and travel will feel a lot more comfortable right from the planning stage.</p>
+
+  <div class="cta-box">
+    <h3>Create your own trip itinerary with AI</h3>
+    <p>Just pick a destination and AI generates an optimized travel plan. Start for free!</p>
+    <a href="/trips/create" class="btn-cta">Start planning</a>
+  </div>
+
+  <div class="related">
+    <h3>Related articles</h3>
+    <div class="related-links">
+      <a href="/blog/ai-itinerary-customizing">AI-Recommended Itineraries: A Practical Guide to Customizing Them Into 200% Your Own Trip</a>
+      <a href="/blog/ai-travel-planning-tips">5 Tips for Planning a Trip With AI</a>
+      <a href="/blog/jetlag-management-guide">A Jet Lag Guide: How to Manage Your Condition While Traveling</a>
+      <a href="/blog/long-flight-comfort-tips">How to Make a Long-Haul Flight More Comfortable</a>
+      <a href="/blog/trip-planning-checklist">A Travel Prep Checklist: From D-30 to Departure Day</a>
+    </div>
+  </div>
+</article>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">myTravel</div>
+      <p style="font-size:0.9rem;">AI-powered travel planning.<br/>Pick a destination and get a tailored itinerary.</p>
+      <div class="langs" style="margin-top:1rem;"><span class="lang-badge">🇰🇷 한국어</span><span class="lang-badge">🇺🇸 English</span><span class="lang-badge">🇯🇵 日本語</span><span class="lang-badge">🇨🇳 中文</span><span class="lang-badge">🇪🇸 Español</span><span class="lang-badge">🇩🇪 Deutsch</span><span class="lang-badge">🇫🇷 Français</span><span class="lang-badge">🇹🇭 ไทย</span><span class="lang-badge">🇻🇳 Tiếng Việt</span><span class="lang-badge">🇧🇷 Português</span><span class="lang-badge">🇸🇦 العربية</span><span class="lang-badge">🇮🇩 Bahasa</span><span class="lang-badge">🇮🇳 हिन्दी</span><span class="lang-badge">🇮🇹 Italiano</span><span class="lang-badge">🇷🇺 Русский</span><span class="lang-badge">🇹🇷 Türkçe</span><span class="lang-badge">🇲🇾 Melayu</span></div>
+    </div>
+    <div>
+      <h4>Service</h4>
+      <a href="https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner">Download (Android)</a>
+      <a href="https://apps.apple.com/app/id6766147060">Download (iOS)</a>
+      <a href="/guides/">Travel Guides</a>
+      <a href="/blog">Blog</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </div>
+    <div>
+      <h4>Policy</h4>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/faq">FAQ</a>
+      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:longpapa82@gmail.com" style="display:inline;">longpapa82@gmail.com</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 AI Soft. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
