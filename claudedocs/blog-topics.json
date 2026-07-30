@@ -21,7 +21,10 @@
       "southeast-asia-rainy-season",
       "travel-insurance-guide",
       "travel-internet-guide",
-      "travel-journal-tips"
+      "travel-journal-tips",
+      "singapore-3day-course",
+      "bali-4day-course",
+      "seoul-3day-course"
     ]
   },
   "topics": [
@@ -423,6 +426,27 @@
       "icon": "map",
       "titleKo": "런던 3박 4일 코스: 빅벤부터 대영박물관까지 핵심 동선",
       "descKo": "런던 첫 여행을 위한 3박 4일 코스. 빅벤·버킹엄궁·대영박물관을 지역별로 묶은 일자별 동선과 오이스터 카드 교통 팁을 정리했습니다."
+    },
+    {
+      "slug": "singapore-3day-course",
+      "category": "destination",
+      "icon": "map",
+      "titleKo": "싱가포르 2박 3일 첫 여행 코스: 마리나베이·센토사·차이나타운 동선 정리",
+      "descKo": "마리나베이·센토사·차이나타운을 효율적으로 도는 싱가포르 2박 3일 첫 여행 코스와 동선, 호커센터 맛집, 예산 가이드."
+    },
+    {
+      "slug": "bali-4day-course",
+      "category": "destination",
+      "icon": "map",
+      "titleKo": "발리 3박 4일 코스: 우붓 문화와 남부 해변을 균형 있게 도는 법",
+      "descKo": "우붓 문화와 남부 해변, 울루와뚜 선셋까지 휴양과 관광을 균형 있게 도는 발리 3박 4일 코스와 동선, 교통, 예산 가이드."
+    },
+    {
+      "slug": "seoul-3day-course",
+      "category": "destination",
+      "icon": "map",
+      "titleKo": "서울 2박 3일 코스: 고궁·한강·핫플레이스를 하루씩 알차게 도는 법",
+      "descKo": "경복궁·북촌·명동·남산·한강·홍대·성수를 하루씩 묶어 도는 서울 2박 3일 코스와 동선, 교통, 예산 가이드."
     }
   ]
 }
