@@ -27,7 +27,11 @@
       "seoul-3day-course",
       "barcelona-course",
       "amsterdam-course",
-      "prague-course"
+      "prague-course",
+      "dubai-course",
+      "istanbul-course",
+      "sydney-course",
+      "new-york-course"
     ]
   },
   "topics": [
@@ -471,6 +475,34 @@
       "icon": "map",
       "titleKo": "프라하 3박 4일 첫 여행 코스: 구시가지·카를교·프라하성 도보 동선 완전 정리",
       "descKo": "구시가지·카를교·프라하성을 걸어서 도는 프라하 3박 4일 첫 여행 코스와 동선, 교통, 예산 가이드."
+    },
+    {
+      "slug": "dubai-course",
+      "category": "destination",
+      "icon": "map",
+      "titleKo": "두바이 3박 4일 첫 여행 코스: 부르즈칼리파·올드두바이·사막 사파리 동선 완전 정리",
+      "descKo": "다운타운·올드두바이·사막 사파리·마리나를 효율적으로 도는 두바이 3박 4일 첫 여행 코스와 동선, 교통, 예산 가이드."
+    },
+    {
+      "slug": "istanbul-course",
+      "category": "destination",
+      "icon": "map",
+      "titleKo": "이스탄불 3박 4일 첫 여행 코스: 술탄아흐메트·그랜드바자르·보스포루스 동선 완전 정리",
+      "descKo": "술탄아흐메트·그랜드바자르·보스포루스를 효율적으로 도는 이스탄불 3박 4일 첫 여행 코스와 동선, 교통, 예산 가이드."
+    },
+    {
+      "slug": "sydney-course",
+      "category": "destination",
+      "icon": "map",
+      "titleKo": "시드니 3박 4일 첫 여행 코스: 하버·해변·블루마운틴 동선 완전 정리",
+      "descKo": "오페라하우스·본다이비치·블루마운틴을 효율적으로 도는 시드니 3박 4일 첫 여행 코스와 동선, 교통, 예산 가이드."
+    },
+    {
+      "slug": "new-york-course",
+      "category": "destination",
+      "icon": "map",
+      "titleKo": "뉴욕 3박 4일 첫 여행 코스: 미드타운·다운타운·센트럴파크 동선 완전 정리",
+      "descKo": "미드타운·다운타운·센트럴파크를 효율적으로 도는 뉴욕 3박 4일 첫 여행 코스와 동선, 교통, 예산 가이드."
     }
   ]
 }
