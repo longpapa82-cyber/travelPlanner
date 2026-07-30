@@ -1884,4 +1884,112 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/dubai-course</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/dubai-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/dubai-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/dubai-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/dubai-course-en</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/dubai-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/dubai-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/dubai-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/dubai-course-ja</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/dubai-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/dubai-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/dubai-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/istanbul-course</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/istanbul-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/istanbul-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/istanbul-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/istanbul-course-en</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/istanbul-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/istanbul-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/istanbul-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/istanbul-course-ja</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/istanbul-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/istanbul-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/istanbul-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/sydney-course</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/sydney-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/sydney-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/sydney-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/sydney-course-en</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/sydney-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/sydney-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/sydney-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/sydney-course-ja</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/sydney-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/sydney-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/sydney-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/new-york-course</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/new-york-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/new-york-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/new-york-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/new-york-course-en</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/new-york-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/new-york-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/new-york-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://mytravel-planner.com/blog/new-york-course-ja</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/new-york-course"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/new-york-course-en"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/new-york-course-ja"/>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
