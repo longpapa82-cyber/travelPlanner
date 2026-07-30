@@ -7,6 +7,18 @@ import { Trip } from '../trips/entities/trip.entity';
 import { ErrorLog } from './entities/error-log.entity';
 import { kstMidnightUtc } from '../common/kst';
 
+/**
+ * Internal / bot accounts to exclude from operator-facing stats and the member
+ * list. hoonjae723@gmail.com is a real admin account, but the aisoftsale unified
+ * admin dashboard logs in AS this account every ~10 minutes (server-side, UA
+ * "node") to poll each service. That floods audit_logs with LOGIN events and
+ * keeps its lastLoginAt/lastActiveAt pinned to "now", so it always sat at the
+ * top of the member list and masked real user activity. Excluding it here keeps
+ * "이용자 현황" honest. (The systemic fix — the dashboard using long-lived
+ * refresh tokens instead of full re-login — lives in the aisoftsale-admin repo.)
+ */
+const INTERNAL_EMAILS = ['hoonjae723@gmail.com'];
+
 @Injectable()
 export class AdminService {
   private readonly logger = new Logger(AdminService.name);
@@ -81,9 +93,15 @@ export class AdminService {
       .where('u.createdAt >= :today', { today })
       .getCount();
 
+    // Active counts exclude internal/bot accounts (see INTERNAL_EMAILS): the
+    // dashboard's ~10-min automated logins would otherwise count hoonjae723 as
+    // "active" every single day and week, inflating these numbers by 1.
     const todayActive = await this.userRepository
       .createQueryBuilder('u')
       .where('u.lastLoginAt >= :today', { today })
+      .andWhere('(u.email IS NULL OR u.email NOT IN (:...internalEmails))', {
+        internalEmails: INTERNAL_EMAILS,
+      })
       .getCount();
 
     const weekAgo = new Date();
@@ -92,6 +110,9 @@ export class AdminService {
     const weeklyActive = await this.userRepository
       .createQueryBuilder('u')
       .where('u.lastLoginAt >= :weekAgo', { weekAgo })
+      .andWhere('(u.email IS NULL OR u.email NOT IN (:...internalEmails))', {
+        internalEmails: INTERNAL_EMAILS,
+      })
       .getCount();
 
     // Daily signups for last 30 days
@@ -202,9 +223,19 @@ export class AdminService {
         'u.profileImage',
         'u.isEmailVerified',
         'u.lastLoginAt',
+        'u.lastActiveAt',
         'u.createdAt',
       ])
-      .orderBy('COALESCE(u.lastLoginAt, u.createdAt)', 'DESC');
+      // Order by recent activity (falls back to login, then signup) so users
+      // with a live session surface at the top even without a full re-login.
+      .orderBy('COALESCE(u.lastActiveAt, u.lastLoginAt, u.createdAt)', 'DESC');
+
+    // Exclude internal/bot accounts (see INTERNAL_EMAILS) so automated dashboard
+    // logins don't dominate the "최근 접속" ordering or mask real user activity.
+    qb.andWhere(
+      '(u.email IS NULL OR u.email NOT IN (:...internalEmails))',
+      { internalEmails: INTERNAL_EMAILS },
+    );
 
     if (search) {
       qb.andWhere('(u.name ILIKE :search OR u.email ILIKE :search)', {
@@ -394,8 +425,8 @@ export class AdminService {
   async getSubscriptionStats() {
     const now = new Date();
 
-    // Test accounts excluded from revenue stats (sandbox/internal testers)
-    const TEST_EMAILS = ['hoonjae723@gmail.com'];
+    // Internal/bot accounts excluded from revenue stats (see INTERNAL_EMAILS).
+    const TEST_EMAILS = INTERNAL_EMAILS;
 
     // Active subscribers by platform and tier
     const subsRaw = await this.userRepository

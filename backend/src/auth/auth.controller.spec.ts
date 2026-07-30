@@ -306,6 +306,7 @@ describe('AuthController (Integration)', () => {
       expect(response.body).toEqual(mockAuthResponse);
       expect(authService.refreshToken).toHaveBeenCalledWith(
         refreshDto.refreshToken,
+        undefined, // no user-agent header in this test request
       );
       expect(authService.refreshToken).toHaveBeenCalledTimes(1);
     });
@@ -337,6 +338,7 @@ describe('AuthController (Integration)', () => {
 
       expect(authService.refreshToken).toHaveBeenCalledWith(
         refreshDto.refreshToken,
+        undefined, // no user-agent header in this test request
       );
     });
 
@@ -357,6 +359,7 @@ describe('AuthController (Integration)', () => {
 
       expect(authService.refreshToken).toHaveBeenCalledWith(
         refreshDto.refreshToken,
+        undefined, // no user-agent header in this test request
       );
     });
   });

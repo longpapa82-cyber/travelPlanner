@@ -87,8 +87,11 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @Throttle({ short: { ttl: 60000, limit: 10 } })
-  async refresh(@Body() refreshTokenDto: RefreshTokenDto) {
-    return this.authService.refreshToken(refreshTokenDto.refreshToken);
+  async refresh(@Body() refreshTokenDto: RefreshTokenDto, @Req() req: Request) {
+    return this.authService.refreshToken(
+      refreshTokenDto.refreshToken,
+      req.headers['user-agent'],
+    );
   }
 
   @Post('logout')
