@@ -170,7 +170,7 @@ const UserManagementScreen: React.FC<Props> = ({ navigation }) => {
       </View>
       <View style={styles.userMeta}>
         <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>
-          {t('users.lastLogin')}: {formatDate(item.lastLoginAt)}
+          {t('users.lastLogin')}: {formatDate(item.lastActiveAt ?? item.lastLoginAt)}
         </Text>
         <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>
           {t('users.signupDate')}: {new Date(item.createdAt).toLocaleDateString()}

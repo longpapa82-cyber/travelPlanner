@@ -111,6 +111,13 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   lastLoginAt?: Date;
 
+  // Last time the user was seen active (updated on full login AND on token
+  // refresh). lastLoginAt only tracks full re-authentication, so long-lived
+  // sessions that silently refresh look stale in the admin list; lastActiveAt
+  // reflects actual recent access. Refresh throttles writes to token lifetime.
+  @Column({ type: 'timestamp', nullable: true })
+  lastActiveAt?: Date;
+
   @Column({ type: 'varchar', length: 10, nullable: true })
   lastPlatform?: 'web' | 'ios' | 'android';
 

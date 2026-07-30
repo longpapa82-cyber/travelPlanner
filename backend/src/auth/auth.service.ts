@@ -495,7 +495,10 @@ export class AuthService {
     }
   }
 
-  async refreshToken(refreshToken: string): Promise<AuthResponse> {
+  async refreshToken(
+    refreshToken: string,
+    userAgent?: string,
+  ): Promise<AuthResponse> {
     try {
       // Verify refresh token with refresh secret
       const payload = await this.jwtService.verifyAsync<
@@ -557,6 +560,10 @@ export class AuthService {
 
       // Get user to include in response
       const user = await this.usersService.findById(payload.sub);
+
+      // A successful refresh means the session is active — record it so the
+      // admin "이용자 현황" list reflects recent access, not just last full login.
+      this.updateActivityMetadata(user.id, userAgent);
 
       // Generate new tokens (with new jti)
       const tokens = await this.generateTokens(payload.sub, payload.email);
@@ -1367,14 +1374,31 @@ export class AuthService {
   }
 
   private updateLoginMetadata(userId: string, userAgent?: string): void {
+    const now = new Date();
     this.usersService
       .update(userId, {
-        lastLoginAt: new Date(),
+        lastLoginAt: now,
+        lastActiveAt: now,
         lastPlatform: detectPlatform(userAgent),
         lastUserAgent: userAgent?.slice(0, 500),
       })
       .catch((err) => {
         this.logger.warn(`Failed to update login metadata: ${err.message}`);
+      });
+  }
+
+  // Refresh happens on a valid long-lived session without full re-auth, so it
+  // updates lastActiveAt (not lastLoginAt). Write frequency is naturally
+  // throttled to the access-token lifetime. Fire-and-forget: never block or
+  // fail a token refresh on a metadata write.
+  private updateActivityMetadata(userId: string, userAgent?: string): void {
+    this.usersService
+      .update(userId, {
+        lastActiveAt: new Date(),
+        lastPlatform: detectPlatform(userAgent),
+      })
+      .catch((err) => {
+        this.logger.warn(`Failed to update activity metadata: ${err.message}`);
       });
   }
 }
