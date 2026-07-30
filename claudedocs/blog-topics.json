@@ -24,7 +24,10 @@
       "travel-journal-tips",
       "singapore-3day-course",
       "bali-4day-course",
-      "seoul-3day-course"
+      "seoul-3day-course",
+      "barcelona-course",
+      "amsterdam-course",
+      "prague-course"
     ]
   },
   "topics": [
@@ -447,6 +450,27 @@
       "icon": "map",
       "titleKo": "서울 2박 3일 코스: 고궁·한강·핫플레이스를 하루씩 알차게 도는 법",
       "descKo": "경복궁·북촌·명동·남산·한강·홍대·성수를 하루씩 묶어 도는 서울 2박 3일 코스와 동선, 교통, 예산 가이드."
+    },
+    {
+      "slug": "barcelona-course",
+      "category": "destination",
+      "icon": "map",
+      "titleKo": "바르셀로나 3박 4일 코스: 가우디부터 고딕지구·해변까지 핵심 동선",
+      "descKo": "가우디 건축·고딕지구·해변을 효율적으로 도는 바르셀로나 3박 4일 첫 여행 코스와 동선, 교통, 예산 가이드."
+    },
+    {
+      "slug": "amsterdam-course",
+      "category": "destination",
+      "icon": "map",
+      "titleKo": "암스테르담 3박 4일 첫 여행 코스: 운하·미술관·근교 풍차마을 동선 완전 정리",
+      "descKo": "운하·미술관·근교 풍차마을을 효율적으로 도는 암스테르담 3박 4일 첫 여행 코스와 동선, 교통, 예산 가이드."
+    },
+    {
+      "slug": "prague-course",
+      "category": "destination",
+      "icon": "map",
+      "titleKo": "프라하 3박 4일 첫 여행 코스: 구시가지·카를교·프라하성 도보 동선 완전 정리",
+      "descKo": "구시가지·카를교·프라하성을 걸어서 도는 프라하 3박 4일 첫 여행 코스와 동선, 교통, 예산 가이드."
     }
   ]
 }
