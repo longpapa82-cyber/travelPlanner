@@ -30,16 +30,31 @@
     },
     {
       "h2": "정리: 체크리스트가 여행의 절반이다",
-      "html": "  <p>준비를 잘한 여행은 현지에서 여유롭습니다. 반대로 뭔가 빠뜨리면, 도착하자마자 그것부터 수습하느라 첫날을 날립니다. <strong>D-30에 큰 것, D-7에 세부, D-1에 짐, 당일에 최종 점검</strong> — 이 순서만 지키면 빠뜨리는 것 없이 떠날 수 있습니다.</p>\n  <p>이 체크리스트의 일정과 준비물을 앱에 정리해 두면, 언제 무엇을 했는지 한눈에 관리할 수 있습니다. 상세 일정을 짜는 방법은 <a href=\"/blog/ai-itinerary-customizing\">AI 일정 커스터마이징</a>을, 예산 관리는 <a href=\"/blog/ai-budget-planning\">AI 예산 짜기</a>를 함께 참고하세요.</p>"
+      "html": "  <p>준비를 잘한 여행은 현지에서 여유롭습니다. 반대로 뭔가 빠뜨리면, 도착하자마자 그것부터 수습하느라 첫날을 날립니다. <strong>D-30에 큰 것, D-7에 세부, D-1에 짐, 당일에 최종 점검</strong> — 이 순서만 지키면 빠뜨리는 것 없이 떠날 수 있습니다.</p>\n  <p>이 체크리스트의 일정과 준비물을 앱에 정리해 두면, 언제 무엇을 했는지 한눈에 관리할 수 있습니다. 상세 일정을 짜는 방법은 AI 일정 커스터마이징을, 예산 관리는 AI 예산 짜기를 함께 참고하세요.</p>"
     }
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/cheap-flight-booking-guide", "text": "항공권 저렴하게 예약하는 법: 시기·요일·꿀팁" },
-    { "href": "/blog/accommodation-choosing-guide", "text": "호텔 vs 에어비앤비 vs 게스트하우스: 숙소 선택법" },
-    { "href": "/blog/visa-guide-for-travelers", "text": "해외여행 비자 완벽 가이드: 무비자·도착비자·전자비자" },
-    { "href": "/blog/carry-on-essentials-guide", "text": "기내 필수품 가이드: 손 닿는 곳에 둘 것" },
-    { "href": "/blog/group-trip-planning", "text": "친구들과 여행 계획 같이 짜는 법: 단톡방 혼란 없이" }
+    {
+      "href": "/blog/cheap-flight-booking-guide",
+      "text": "항공권 저렴하게 예약하는 법: 시기·요일·꿀팁"
+    },
+    {
+      "href": "/blog/accommodation-choosing-guide",
+      "text": "호텔 vs 에어비앤비 vs 게스트하우스: 숙소 선택법"
+    },
+    {
+      "href": "/blog/visa-guide-for-travelers",
+      "text": "해외여행 비자 완벽 가이드: 무비자·도착비자·전자비자"
+    },
+    {
+      "href": "/blog/carry-on-essentials-guide",
+      "text": "기내 필수품 가이드: 손 닿는 곳에 둘 것"
+    },
+    {
+      "href": "/blog/group-trip-planning",
+      "text": "친구들과 여행 계획 같이 짜는 법: 단톡방 혼란 없이"
+    }
   ],
   "alternates": {
     "ko": "/blog/trip-planning-checklist",

@@ -30,16 +30,23 @@
     },
     {
       "h2": "Wrap-Up: With Group Trips, the Tool Does Half the Work",
-      "html": "  <p>The most common failure on group trips isn't a bad plan — it's <strong>scattered information</strong>. Three things matter. First, gather information <strong>in one itinerary, not the group chat</strong>. Second, <strong>divide Editor and Viewer roles</strong> so ownership is clear. Third, <strong>share the finished plan by link</strong> so everyone sees the same picture.</p>\n  <p>myTravel's group-trip features support email invites, Editor/Viewer roles, and read-only share links. On your next group trip, start with one itinerary instead of the group chat. You might also like the <a href=\"/blog/group-trip-expense-split-en\">expense-splitting guide</a> and <a href=\"/blog/ai-itinerary-customizing-en\">customizing AI itineraries</a>.</p>"
+      "html": "  <p>The most common failure on group trips isn't a bad plan — it's <strong>scattered information</strong>. Three things matter. First, gather information <strong>in one itinerary, not the group chat</strong>. Second, <strong>divide Editor and Viewer roles</strong> so ownership is clear. Third, <strong>share the finished plan by link</strong> so everyone sees the same picture.</p>\n  <p>myTravel's group-trip features support email invites, Editor/Viewer roles, and read-only share links. On your next group trip, start with one itinerary instead of the group chat. You might also like the <a href=\"/blog/group-trip-expense-split-en\">expense-splitting guide</a> and customizing AI itineraries.</p>"
     }
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/group-trip-expense-split-en", "text": "Splitting Group Travel Expenses Without the Calculator Headache" },
-    { "href": "/blog/ai-itinerary-customizing-en", "text": "Customizing AI Itineraries Into a Trip That's Truly Yours" },
-    { "href": "/blog/ai-budget-planning-en", "text": "Planning a Travel Budget With AI: Flights, Lodging, Food" },
-    { "href": "/blog/family-travel-planning", "text": "Planning a Family Trip: Traveling Abroad With Kids" },
-    { "href": "/blog/travel-app-recommendations-en", "text": "Useful Travel Apps: From Planning to Settling Up" }
+    {
+      "href": "/blog/group-trip-expense-split-en",
+      "text": "Splitting Group Travel Expenses Without the Calculator Headache"
+    },
+    {
+      "href": "/blog/family-travel-planning",
+      "text": "Planning a Family Trip: Traveling Abroad With Kids"
+    },
+    {
+      "href": "/blog/travel-app-recommendations-en",
+      "text": "Useful Travel Apps: From Planning to Settling Up"
+    }
   ],
   "alternates": {
     "ko": "/blog/group-trip-planning",

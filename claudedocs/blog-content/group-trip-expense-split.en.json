@@ -26,7 +26,7 @@
     },
     {
       "h2": "Currencies and Categories: Small Habits That Pay Off Later",
-      "html": "  <p>On an international trip, recording each expense <strong>in the local currency</strong> keeps things from getting muddled. myTravel lets you set a currency per expense — KRW, USD, JPY, EUR, GBP, THB, CNY and more. It does not, however, auto-convert between currencies and add them up, so within a single trip it is best to <strong>stick to one currency where you can</strong>, or track each currency separately.</p>\n  <p>Also, tagging each expense with a <strong>category</strong> (food, transport, lodging, activities, shopping, other) lets you later see at a glance \"how much did we spend on food this trip?\" That helps not just with settling up but with budgeting your next trip. For setting a budget up front, see <a href=\"/blog/ai-budget-planning-en\">planning a travel budget with AI</a>.</p>"
+      "html": "  <p>On an international trip, recording each expense <strong>in the local currency</strong> keeps things from getting muddled. myTravel lets you set a currency per expense — KRW, USD, JPY, EUR, GBP, THB, CNY and more. It does not, however, auto-convert between currencies and add them up, so within a single trip it is best to <strong>stick to one currency where you can</strong>, or track each currency separately.</p>\n  <p>Also, tagging each expense with a <strong>category</strong> (food, transport, lodging, activities, shopping, other) lets you later see at a glance \"how much did we spend on food this trip?\" That helps not just with settling up but with budgeting your next trip. For setting a budget up front, see planning a travel budget with AI.</p>"
     },
     {
       "h2": "Mark Items Settled to Track 'Paid or Not'",
@@ -39,11 +39,18 @@
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/ai-budget-planning-en", "text": "Planning a Travel Budget With AI: Flights, Lodging, Food" },
-    { "href": "/blog/cheap-flight-booking-guide-en", "text": "How to Book Cheaper Flights: Timing, Days, and Tricks" },
-    { "href": "/blog/currency-exchange-timing-en", "text": "When and How Much to Exchange for Overseas Travel" },
-    { "href": "/blog/travel-app-recommendations-en", "text": "Useful Travel Apps: From Planning to Settling Up" },
-    { "href": "/blog/ai-itinerary-customizing-en", "text": "Customizing AI Itineraries Into a Trip That's Truly Yours" }
+    {
+      "href": "/blog/cheap-flight-booking-guide-en",
+      "text": "How to Book Cheaper Flights: Timing, Days, and Tricks"
+    },
+    {
+      "href": "/blog/currency-exchange-timing-en",
+      "text": "When and How Much to Exchange for Overseas Travel"
+    },
+    {
+      "href": "/blog/travel-app-recommendations-en",
+      "text": "Useful Travel Apps: From Planning to Settling Up"
+    }
   ],
   "alternates": {
     "ko": "/blog/group-trip-expense-split",

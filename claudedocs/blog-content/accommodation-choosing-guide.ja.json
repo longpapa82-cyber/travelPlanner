@@ -30,16 +30,27 @@
     },
     {
       "h2": "まとめ：正解は旅ごとに変わる",
-      "html": "  <p>宿に絶対的な正解はありません。<strong>ゆっくり休むのが目的ならホテル、人数が多いか長く滞在するなら Airbnb、予算と出会いが優先ならゲストハウス</strong> — こう旅行の性格に合わせればOK。そしてどのタイプでも<strong>立地・キャンセル規定・最近のレビュー</strong>の三つを確認すれば、大きな失敗は避けられます。</p>\n  <p>予算をあらかじめ立てて宿泊費の割合を決めたいなら <a href=\"/blog/ai-budget-planning-ja\">AIで旅行予算を立てる</a> を、複数人で宿泊費を分けるなら <a href=\"/blog/group-trip-expense-split-ja\">割り勘・精算ガイド</a> を併せてご覧ください。</p>"
+      "html": "  <p>宿に絶対的な正解はありません。<strong>ゆっくり休むのが目的ならホテル、人数が多いか長く滞在するなら Airbnb、予算と出会いが優先ならゲストハウス</strong> — こう旅行の性格に合わせればOK。そしてどのタイプでも<strong>立地・キャンセル規定・最近のレビュー</strong>の三つを確認すれば、大きな失敗は避けられます。</p>\n  <p>予算をあらかじめ立てて宿泊費の割合を決めたいなら AIで旅行予算を立てる を、複数人で宿泊費を分けるなら <a href=\"/blog/group-trip-expense-split-ja\">割り勘・精算ガイド</a> を併せてご覧ください。</p>"
     }
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/ai-budget-planning-ja", "text": "AIで旅行予算を立てる：航空・宿・食費の計画法" },
-    { "href": "/blog/accommodation-saving-tips-ja", "text": "宿泊費を節約する方法：予約タイミングと隠れコスト" },
-    { "href": "/blog/group-trip-expense-split-ja", "text": "旅行の割り勘・精算、もう電卓とにらめっこしない" },
-    { "href": "/blog/solo-female-travel-safety-ja", "text": "女性一人旅の安全ガイド：宿から移動まで" },
-    { "href": "/blog/first-solo-travel", "text": "はじめての一人旅ガイド：準備から安全まで" }
+    {
+      "href": "/blog/accommodation-saving-tips-ja",
+      "text": "宿泊費を節約する方法：予約タイミングと隠れコスト"
+    },
+    {
+      "href": "/blog/group-trip-expense-split-ja",
+      "text": "旅行の割り勘・精算、もう電卓とにらめっこしない"
+    },
+    {
+      "href": "/blog/solo-female-travel-safety-ja",
+      "text": "女性一人旅の安全ガイド：宿から移動まで"
+    },
+    {
+      "href": "/blog/first-solo-travel",
+      "text": "はじめての一人旅ガイド：準備から安全まで"
+    }
   ],
   "alternates": {
     "ko": "/blog/accommodation-choosing-guide",

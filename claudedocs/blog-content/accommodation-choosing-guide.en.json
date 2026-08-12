@@ -30,16 +30,27 @@
     },
     {
       "h2": "Wrap-Up: The Right Answer Changes by Trip",
-      "html": "  <p>There's no absolute best. <strong>Hotel to rest easy, Airbnb for larger groups or longer stays, guesthouse when budget and meeting people come first</strong> — match the nature of the trip. And whatever the type, checking <strong>location, cancellation policy, and recent reviews</strong> avoids the big failures.</p>\n  <p>To set a budget up front and decide how much goes to lodging, see <a href=\"/blog/ai-budget-planning-en\">planning a travel budget with AI</a>; if several people split the lodging cost, see the <a href=\"/blog/group-trip-expense-split-en\">expense-splitting guide</a>.</p>"
+      "html": "  <p>There's no absolute best. <strong>Hotel to rest easy, Airbnb for larger groups or longer stays, guesthouse when budget and meeting people come first</strong> — match the nature of the trip. And whatever the type, checking <strong>location, cancellation policy, and recent reviews</strong> avoids the big failures.</p>\n  <p>To set a budget up front and decide how much goes to lodging, see planning a travel budget with AI; if several people split the lodging cost, see the <a href=\"/blog/group-trip-expense-split-en\">expense-splitting guide</a>.</p>"
     }
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/ai-budget-planning-en", "text": "Planning a Travel Budget With AI: Flights, Lodging, Food" },
-    { "href": "/blog/accommodation-saving-tips-en", "text": "Saving on Lodging: Booking Timing and Hidden Costs" },
-    { "href": "/blog/group-trip-expense-split-en", "text": "Splitting Group Travel Expenses Without the Calculator Headache" },
-    { "href": "/blog/solo-female-travel-safety-en", "text": "Solo Female Travel Safety: From Lodging to Getting Around" },
-    { "href": "/blog/first-solo-travel", "text": "A First Solo Trip: From Prep to Staying Safe" }
+    {
+      "href": "/blog/accommodation-saving-tips-en",
+      "text": "Saving on Lodging: Booking Timing and Hidden Costs"
+    },
+    {
+      "href": "/blog/group-trip-expense-split-en",
+      "text": "Splitting Group Travel Expenses Without the Calculator Headache"
+    },
+    {
+      "href": "/blog/solo-female-travel-safety-en",
+      "text": "Solo Female Travel Safety: From Lodging to Getting Around"
+    },
+    {
+      "href": "/blog/first-solo-travel",
+      "text": "A First Solo Trip: From Prep to Staying Safe"
+    }
   ],
   "alternates": {
     "ko": "/blog/accommodation-choosing-guide",

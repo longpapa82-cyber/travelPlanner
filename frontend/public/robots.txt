@@ -1,3 +1,10 @@
+# AdSense crawlers — explicit unrestricted access (recommended by Google)
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
 User-agent: *
 Allow: /
 Allow: /about

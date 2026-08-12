@@ -26,7 +26,7 @@
     },
     {
       "h2": "通貨とカテゴリ、こう使うと後がラク",
-      "html": "  <p>海外旅行なら、支出を<strong>現地通貨のまま記録</strong>するほうが混乱しません。myTravel は円・ドル・ウォン・ユーロ・ポンド・バーツ・元などの通貨を支出ごとに指定できます。ただし異なる通貨を自動で換算して合算はしないので、一つの旅行の中では<strong>できるだけ一つの通貨に統一</strong>するか、通貨ごとに分けて管理するのがおすすめです。</p>\n  <p>また、支出を入力するときに<strong>カテゴリ</strong>（食費・交通・宿泊・アクティビティ・買い物・その他）も選んでおくと、あとで「今回の旅行で食費にいくら使った？」がひと目で分かります。精算だけでなく、次の旅行の予算を立てるときの参考にもなります。予算をあらかじめ立てる方法は <a href=\"/blog/ai-budget-planning-ja\">AIで旅行予算を立てる</a> の記事で詳しく扱っています。</p>"
+      "html": "  <p>海外旅行なら、支出を<strong>現地通貨のまま記録</strong>するほうが混乱しません。myTravel は円・ドル・ウォン・ユーロ・ポンド・バーツ・元などの通貨を支出ごとに指定できます。ただし異なる通貨を自動で換算して合算はしないので、一つの旅行の中では<strong>できるだけ一つの通貨に統一</strong>するか、通貨ごとに分けて管理するのがおすすめです。</p>\n  <p>また、支出を入力するときに<strong>カテゴリ</strong>（食費・交通・宿泊・アクティビティ・買い物・その他）も選んでおくと、あとで「今回の旅行で食費にいくら使った？」がひと目で分かります。精算だけでなく、次の旅行の予算を立てるときの参考にもなります。予算をあらかじめ立てる方法は AIで旅行予算を立てる の記事で詳しく扱っています。</p>"
     },
     {
       "h2": "精算済みマークで「もらった・もらってない」を追跡",
@@ -39,11 +39,18 @@
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/ai-budget-planning-ja", "text": "AIで旅行予算を立てる：航空・宿・食費の計画法" },
-    { "href": "/blog/cheap-flight-booking-guide-ja", "text": "航空券を安く予約する方法：時期・曜日・コツ" },
-    { "href": "/blog/currency-exchange-timing-ja", "text": "海外旅行の両替、いつ・いくらするのが得か" },
-    { "href": "/blog/travel-app-recommendations-ja", "text": "旅行に役立つアプリ：計画から精算まで" },
-    { "href": "/blog/ai-itinerary-customizing-ja", "text": "AIおすすめ日程を自分の旅にするカスタマイズ実践法" }
+    {
+      "href": "/blog/cheap-flight-booking-guide-ja",
+      "text": "航空券を安く予約する方法：時期・曜日・コツ"
+    },
+    {
+      "href": "/blog/currency-exchange-timing-ja",
+      "text": "海外旅行の両替、いつ・いくらするのが得か"
+    },
+    {
+      "href": "/blog/travel-app-recommendations-ja",
+      "text": "旅行に役立つアプリ：計画から精算まで"
+    }
   ],
   "alternates": {
     "ko": "/blog/group-trip-expense-split",

@@ -30,16 +30,23 @@
     },
     {
       "h2": "Wrap-Up: Deliciously, and Safely",
-      "html": "  <p>The key to enjoying local food is balancing two things: <strong>the adventurousness to skip the traps and find real flavor</strong>, and <strong>the caution to check turnover, cooking state, and water</strong>. Know the signature dishes and spots in advance, keep to the hygiene rules, and you can fully experience a country's flavors without an upset stomach.</p>\n  <p>Adding the spots you want to try to your itinerary keeps you from wandering. For building the detailed plan, see <a href=\"/blog/ai-itinerary-customizing-en\">customizing AI itineraries</a>; for keeping food costs within budget, see <a href=\"/blog/ai-budget-planning-en\">planning a budget with AI</a>.</p>"
+      "html": "  <p>The key to enjoying local food is balancing two things: <strong>the adventurousness to skip the traps and find real flavor</strong>, and <strong>the caution to check turnover, cooking state, and water</strong>. Know the signature dishes and spots in advance, keep to the hygiene rules, and you can fully experience a country's flavors without an upset stomach.</p>\n  <p>Adding the spots you want to try to your itinerary keeps you from wandering. For building the detailed plan, see customizing AI itineraries; for keeping food costs within budget, see planning a budget with AI.</p>"
     }
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/local-experience-tips-en", "text": "Enjoying Experiences You Can Only Have Locally" },
-    { "href": "/blog/travel-emergency-guide-en", "text": "Travel Emergency Preparedness: Injury, Illness, and Loss" },
-    { "href": "/blog/ai-restaurant-recommendation-en", "text": "AI Restaurant Picks That Match Local Tastes" },
-    { "href": "/blog/ai-itinerary-customizing-en", "text": "Customizing AI Itineraries Into a Trip That's Truly Yours" },
-    { "href": "/blog/travel-safety-guide-en", "text": "A Travel Safety Guide: From Pickpockets to Emergencies" }
+    {
+      "href": "/blog/local-experience-tips-en",
+      "text": "Enjoying Experiences You Can Only Have Locally"
+    },
+    {
+      "href": "/blog/travel-emergency-guide-en",
+      "text": "Travel Emergency Preparedness: Injury, Illness, and Loss"
+    },
+    {
+      "href": "/blog/travel-safety-guide-en",
+      "text": "A Travel Safety Guide: From Pickpockets to Emergencies"
+    }
   ],
   "alternates": {
     "ko": "/blog/local-food-guide",

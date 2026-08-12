@@ -30,16 +30,23 @@
     },
     {
       "h2": "まとめ：一緒に立てる旅行は、ツールが半分を解決する",
-      "html": "  <p>複数人の旅行で最も多い失敗は、計画が悪いからではなく<strong>情報が散らばるから</strong>起きます。ポイントは三つ。第一に、<strong>グループチャットではなく一つの旅程に</strong>情報を集めること。第二に、<strong>編集者と閲覧者に役割を分けて</strong>管理の主体を明確にすること。第三に、完成した計画は<strong>リンクで共有</strong>して全員が同じ絵を見ること。</p>\n  <p>myTravel の共同旅行機能は、メール招待・編集者／閲覧者の役割・閲覧専用の共有リンクをすべてサポートします。次のグループ旅行では、チャットの代わりに一つの旅程から始めてみてください。あわせて <a href=\"/blog/group-trip-expense-split-ja\">旅行の割り勘・精算ガイド</a> や <a href=\"/blog/ai-itinerary-customizing-ja\">AIおすすめ日程のカスタマイズ</a> もご覧ください。</p>"
+      "html": "  <p>複数人の旅行で最も多い失敗は、計画が悪いからではなく<strong>情報が散らばるから</strong>起きます。ポイントは三つ。第一に、<strong>グループチャットではなく一つの旅程に</strong>情報を集めること。第二に、<strong>編集者と閲覧者に役割を分けて</strong>管理の主体を明確にすること。第三に、完成した計画は<strong>リンクで共有</strong>して全員が同じ絵を見ること。</p>\n  <p>myTravel の共同旅行機能は、メール招待・編集者／閲覧者の役割・閲覧専用の共有リンクをすべてサポートします。次のグループ旅行では、チャットの代わりに一つの旅程から始めてみてください。あわせて <a href=\"/blog/group-trip-expense-split-ja\">旅行の割り勘・精算ガイド</a> や AIおすすめ日程のカスタマイズ もご覧ください。</p>"
     }
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/group-trip-expense-split-ja", "text": "旅行の割り勘・精算、もう電卓とにらめっこしない" },
-    { "href": "/blog/ai-itinerary-customizing-ja", "text": "AIおすすめ日程を自分の旅にするカスタマイズ実践法" },
-    { "href": "/blog/ai-budget-planning-ja", "text": "AIで旅行予算を立てる：航空・宿・食費の計画法" },
-    { "href": "/blog/family-travel-planning", "text": "家族旅行の計画の立て方：子どもと行く海外旅行" },
-    { "href": "/blog/travel-app-recommendations-ja", "text": "旅行に役立つアプリ：計画から精算まで" }
+    {
+      "href": "/blog/group-trip-expense-split-ja",
+      "text": "旅行の割り勘・精算、もう電卓とにらめっこしない"
+    },
+    {
+      "href": "/blog/family-travel-planning",
+      "text": "家族旅行の計画の立て方：子どもと行く海外旅行"
+    },
+    {
+      "href": "/blog/travel-app-recommendations-ja",
+      "text": "旅行に役立つアプリ：計画から精算まで"
+    }
   ],
   "alternates": {
     "ko": "/blog/group-trip-planning",
