@@ -94,12 +94,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mytravel-planner.com/blog/ai-travel-planning-tips</loc>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://mytravel-planner.com/blog/packing-checklist</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
@@ -530,87 +524,6 @@
     <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/pet-travel-guide"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/pet-travel-guide-en"/>
     <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/pet-travel-guide-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-itinerary-customizing</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-itinerary-customizing"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-itinerary-customizing-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-itinerary-customizing-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-itinerary-customizing-en</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-itinerary-customizing"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-itinerary-customizing-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-itinerary-customizing-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-itinerary-customizing-ja</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-itinerary-customizing"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-itinerary-customizing-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-itinerary-customizing-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-budget-planning</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-budget-planning"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-budget-planning-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-budget-planning-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-budget-planning-en</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-budget-planning"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-budget-planning-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-budget-planning-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-budget-planning-ja</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-budget-planning"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-budget-planning-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-budget-planning-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-restaurant-recommendation</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-restaurant-recommendation-en</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-restaurant-recommendation-ja</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-restaurant-recommendation-ja"/>
     <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1237,33 +1150,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://mytravel-planner.com/blog/ai-travel-planning-tips</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-travel-planning-tips"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-travel-planning-tips-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-travel-planning-tips-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-travel-planning-tips-en</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-travel-planning-tips"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-travel-planning-tips-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-travel-planning-tips-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-travel-planning-tips-ja</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-travel-planning-tips"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-travel-planning-tips-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-travel-planning-tips-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://mytravel-planner.com/blog/first-solo-travel</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/first-solo-travel"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/first-solo-travel-en"/>
@@ -1556,87 +1442,6 @@
     <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/travel-journal-tips"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/travel-journal-tips-en"/>
     <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/travel-journal-tips-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-weather-itinerary</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-weather-itinerary"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-weather-itinerary-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-weather-itinerary-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-weather-itinerary-en</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-weather-itinerary"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-weather-itinerary-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-weather-itinerary-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-weather-itinerary-ja</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-weather-itinerary"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-weather-itinerary-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-weather-itinerary-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-first-last-day-logic</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-first-last-day-logic"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-first-last-day-logic-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-first-last-day-logic-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-first-last-day-logic-en</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-first-last-day-logic"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-first-last-day-logic-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-first-last-day-logic-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-first-last-day-logic-ja</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-first-last-day-logic"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-first-last-day-logic-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-first-last-day-logic-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-diverse-itinerary</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-diverse-itinerary"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-diverse-itinerary-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-diverse-itinerary-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-diverse-itinerary-en</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-diverse-itinerary"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-diverse-itinerary-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-diverse-itinerary-ja"/>
-    <lastmod>2026-07-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://mytravel-planner.com/blog/ai-diverse-itinerary-ja</loc>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://mytravel-planner.com/blog/ai-diverse-itinerary"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mytravel-planner.com/blog/ai-diverse-itinerary-en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://mytravel-planner.com/blog/ai-diverse-itinerary-ja"/>
     <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

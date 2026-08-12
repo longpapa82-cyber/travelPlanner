@@ -30,16 +30,23 @@
     },
     {
       "h2": "まとめ：おいしく、そして安全に",
-      "html": "  <p>現地グルメをちゃんと楽しむ核心は、二つのバランスです。<strong>観光客の罠を避けて本当の味を探す冒険心</strong>と、<strong>回転・調理状態・水を確認する慎重さ</strong>。あらかじめ代表料理と名店を知り、衛生基準さえ守れば、お腹を壊す心配なくその国の味を存分に体験できます。</p>\n  <p>行きたい店を先に日程に入れておけば現地で迷いません。詳細な日程作りは <a href=\"/blog/ai-itinerary-customizing-ja\">AI日程のカスタマイズ</a> を、予算内で食費を管理する方法は <a href=\"/blog/ai-budget-planning-ja\">AIで予算を立てる</a> を併せてご覧ください。</p>"
+      "html": "  <p>現地グルメをちゃんと楽しむ核心は、二つのバランスです。<strong>観光客の罠を避けて本当の味を探す冒険心</strong>と、<strong>回転・調理状態・水を確認する慎重さ</strong>。あらかじめ代表料理と名店を知り、衛生基準さえ守れば、お腹を壊す心配なくその国の味を存分に体験できます。</p>\n  <p>行きたい店を先に日程に入れておけば現地で迷いません。詳細な日程作りは AI日程のカスタマイズ を、予算内で食費を管理する方法は AIで予算を立てる を併せてご覧ください。</p>"
     }
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/local-experience-tips-ja", "text": "現地でしかできない体験を楽しむ方法" },
-    { "href": "/blog/travel-emergency-guide-ja", "text": "旅行の緊急事態への備えガイド：けが・病気・紛失の対処" },
-    { "href": "/blog/ai-restaurant-recommendation-ja", "text": "AIグルメおすすめ、現地の好みまで反映する方法" },
-    { "href": "/blog/ai-itinerary-customizing-ja", "text": "AIおすすめ日程を自分の旅にするカスタマイズ実践法" },
-    { "href": "/blog/travel-safety-guide-ja", "text": "海外旅行の安全ガイド：スリから緊急事態まで" }
+    {
+      "href": "/blog/local-experience-tips-ja",
+      "text": "現地でしかできない体験を楽しむ方法"
+    },
+    {
+      "href": "/blog/travel-emergency-guide-ja",
+      "text": "旅行の緊急事態への備えガイド：けが・病気・紛失の対処"
+    },
+    {
+      "href": "/blog/travel-safety-guide-ja",
+      "text": "海外旅行の安全ガイド：スリから緊急事態まで"
+    }
   ],
   "alternates": {
     "ko": "/blog/local-food-guide",

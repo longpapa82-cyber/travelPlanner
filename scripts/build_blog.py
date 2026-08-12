@@ -45,6 +45,18 @@ BASE_URL = 'https://mytravel-planner.com'
 AD_CLIENT = 'ca-pub-7330738950092177'
 AD_SLOT = '2397004834'
 
+# ── Author identity (E-E-A-T signal) ─────────────────────────────────
+# Real named author, linked to the /about bio page so Google can resolve
+# the byline to a genuine person. Used in both the visible byline and the
+# BlogPosting JSON-LD author field.
+AUTHOR_NAME = '박훈재'
+AUTHOR_NAME_EN = 'Hoonjae Park'
+AUTHOR_URL = f'{BASE_URL}/about'
+
+# Default social/OG image (reuses the deployed brand icon). Gives every
+# BlogPosting a valid schema.org `image` — required for Rich Results.
+OG_IMAGE = f'{BASE_URL}/assets/icon-512-v2.png'
+
 # ── i18n chrome strings ──────────────────────────────────────────────
 STRINGS = {
     'ko': {
@@ -53,7 +65,7 @@ STRINGS = {
         'blogCrumb': '블로그', 'relatedTitle': '관련 글',
         'ctaTitle': 'AI로 나만의 여행 일정을 만들어 보세요',
         'ctaBody': '목적지만 선택하면 AI가 최적의 여행 계획을 자동으로 생성합니다. 무료로 시작하세요!',
-        'ctaBtn': '여행 계획 시작하기', 'author': 'myTravel 팀',
+        'ctaBtn': '여행 계획 시작하기', 'author': f'{AUTHOR_NAME} · myTravel 여행 콘텐츠 팀',
         'brandDesc': 'AI 기반 여행 계획 서비스.<br/>목적지만 선택하면 맞춤 일정이 완성됩니다.',
         'svcHead': '서비스', 'appAndroid': '앱 다운로드 (Android)', 'appIos': '앱 다운로드 (iOS)',
         'guidesLink': '여행 가이드', 'aboutLink': '서비스 소개', 'contactLink': '문의하기',
@@ -66,7 +78,7 @@ STRINGS = {
         'blogCrumb': 'Blog', 'relatedTitle': 'Related articles',
         'ctaTitle': 'Create your own trip itinerary with AI',
         'ctaBody': 'Just pick a destination and AI generates an optimized travel plan. Start for free!',
-        'ctaBtn': 'Start planning', 'author': 'myTravel Team',
+        'ctaBtn': 'Start planning', 'author': f'{AUTHOR_NAME_EN} · myTravel Travel Content Team',
         'brandDesc': 'AI-powered travel planning.<br/>Pick a destination and get a tailored itinerary.',
         'svcHead': 'Service', 'appAndroid': 'Download (Android)', 'appIos': 'Download (iOS)',
         'guidesLink': 'Travel Guides', 'aboutLink': 'About', 'contactLink': 'Contact',
@@ -79,7 +91,7 @@ STRINGS = {
         'blogCrumb': 'ブログ', 'relatedTitle': '関連記事',
         'ctaTitle': 'AIであなただけの旅行プランを作りましょう',
         'ctaBody': '目的地を選ぶだけで、AIが最適な旅行プランを自動生成します。無料で始めましょう！',
-        'ctaBtn': '旅行プランを作成', 'author': 'myTravel チーム',
+        'ctaBtn': '旅行プランを作成', 'author': f'{AUTHOR_NAME_EN} · myTravel 旅行コンテンツチーム',
         'brandDesc': 'AIによる旅行プランニング。<br/>目的地を選ぶだけでオーダーメイドの日程が完成します。',
         'svcHead': 'サービス', 'appAndroid': 'アプリDL (Android)', 'appIos': 'アプリDL (iOS)',
         'guidesLink': '旅行ガイド', 'aboutLink': 'サービス紹介', 'contactLink': 'お問い合わせ',
@@ -253,7 +265,7 @@ def footer_html(s: dict) -> str:
       <a href="/terms">{s['terms']}</a>
       <a href="/privacy">{s['privacy']}</a>
       <a href="/faq">{s['faq']}</a>
-      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:longpapa82@gmail.com" style="display:inline;">longpapa82@gmail.com</a></p>
+      <p style="margin-top:1rem;font-size:0.85rem;">📧 <a href="mailto:support@mytravel-planner.com" style="display:inline;">support@mytravel-planner.com</a></p>
     </div>
   </div>
   <div class="footer-bottom">
@@ -312,8 +324,12 @@ def render_article(data: dict) -> str:
         "headline": data['title'], "description": data['ogDescription'],
         "url": url, "datePublished": data['publishedDate'],
         "dateModified": data['publishedDate'],
-        "author": {"@type": "Organization", "name": "myTravel"},
-        "publisher": {"@type": "Organization", "name": "myTravel", "url": BASE_URL},
+        "author": {"@type": "Person", "name": AUTHOR_NAME, "url": AUTHOR_URL},
+        "publisher": {
+            "@type": "Organization", "name": "myTravel", "url": BASE_URL,
+            "logo": {"@type": "ImageObject", "url": OG_IMAGE},
+        },
+        "image": {"@type": "ImageObject", "url": OG_IMAGE, "width": 512, "height": 512},
         "mainEntityOfPage": {"@type": "WebPage", "@id": url},
         "inLanguage": lang,
     }, ensure_ascii=False, indent=2)
@@ -332,8 +348,10 @@ def render_article(data: dict) -> str:
   <meta property="og:url" content="{url}" />
   <meta property="og:site_name" content="myTravel" />
   <meta property="og:locale" content="{s['locale']}" />
+  <meta property="og:image" content="{OG_IMAGE}" />
   <meta property="article:published_time" content="{data['publishedDate']}" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="{OG_IMAGE}" />
   <meta name="twitter:title" content="{data['title']}" />
   <meta name="twitter:description" content="{data['ogDescription']}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -413,7 +431,6 @@ CATEGORY_ORDER = ['ai', 'destination', 'prep', 'budget', 'theme', 'tips']
 # DEPRECATED: index cards now come from canonical *.ko.json (see cmd_index).
 # This array is only referenced by the unused cmd_sitemap (real sitemap = generate-blog-manifest.py).
 EXISTING_KO_CARDS = [
-    ('ai-travel-planning-tips', 'AI로 여행 계획 세우는 5가지 팁', 'AI 여행 플래너를 200% 활용하는 방법을 알려드립니다. 구체적인 정보 입력부터 현지 날씨 활용, 효율적인 동선 짜기까지 실전 팁을 확인해 보세요.', '2026.02.15', 'sparkle', 'ai'),
     ('packing-checklist', '해외여행 짐 싸기 완벽 체크리스트', '여권부터 전자기기까지, 해외여행에 꼭 필요한 짐 목록을 카테고리별로 정리했습니다. 기내 가방과 수화물 분리 팁도 함께 확인하세요.', '2026.02.10', 'bag', 'prep'),
     ('budget-travel-guide', '저예산 여행의 기술: 돈 아끼는 10가지 방법', '적은 예산으로도 충분히 즐거운 해외여행이 가능합니다. 항공권 절약부터 현지 맛집, 무료 관광지까지 알뜰 여행의 비법을 공개합니다.', '2026.02.05', 'coin', 'budget'),
     ('first-solo-travel', '첫 혼자 여행 가이드: 준비부터 안전까지', '혼자 떠나는 첫 여행이 두려우신가요? 목적지 선택부터 숙소 예약, 현지 안전 수칙까지 솔로 트래블러를 위한 모든 것을 담았습니다.', '2026.01.28', 'shield', 'theme'),

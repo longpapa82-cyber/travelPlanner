@@ -30,16 +30,31 @@
     },
     {
       "h2": "まとめ：チェックリストが旅の半分",
-      "html": "  <p>準備がよくできた旅は現地でゆとりがあります。逆に何か抜けると、着いた途端にその収拾で初日をつぶします。<strong>30日前に大きなもの、7日前に詳細、前日に荷造り、当日に最終点検</strong> — この順番さえ守れば、忘れ物なく出発できます。</p>\n  <p>このチェックリストの日程と持ち物をアプリにまとめておけば、いつ何をしたかがひと目で管理できます。詳細な日程作りは <a href=\"/blog/ai-itinerary-customizing-ja\">AI日程のカスタマイズ</a> を、予算管理は <a href=\"/blog/ai-budget-planning-ja\">AIで予算を立てる</a> を併せてご覧ください。</p>"
+      "html": "  <p>準備がよくできた旅は現地でゆとりがあります。逆に何か抜けると、着いた途端にその収拾で初日をつぶします。<strong>30日前に大きなもの、7日前に詳細、前日に荷造り、当日に最終点検</strong> — この順番さえ守れば、忘れ物なく出発できます。</p>\n  <p>このチェックリストの日程と持ち物をアプリにまとめておけば、いつ何をしたかがひと目で管理できます。詳細な日程作りは AI日程のカスタマイズ を、予算管理は AIで予算を立てる を併せてご覧ください。</p>"
     }
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/cheap-flight-booking-guide-ja", "text": "航空券を安く予約する方法：時期・曜日・コツ" },
-    { "href": "/blog/accommodation-choosing-guide-ja", "text": "ホテル vs Airbnb vs ゲストハウス：宿選び" },
-    { "href": "/blog/visa-guide-for-travelers-ja", "text": "海外旅行ビザ完全ガイド：ビザ免除・到着ビザ・電子ビザ" },
-    { "href": "/blog/carry-on-essentials-guide-ja", "text": "機内持ち込みの必需品：手元に置くべきもの" },
-    { "href": "/blog/group-trip-planning-ja", "text": "友だちと旅行計画を一緒に立てる方法" }
+    {
+      "href": "/blog/cheap-flight-booking-guide-ja",
+      "text": "航空券を安く予約する方法：時期・曜日・コツ"
+    },
+    {
+      "href": "/blog/accommodation-choosing-guide-ja",
+      "text": "ホテル vs Airbnb vs ゲストハウス：宿選び"
+    },
+    {
+      "href": "/blog/visa-guide-for-travelers-ja",
+      "text": "海外旅行ビザ完全ガイド：ビザ免除・到着ビザ・電子ビザ"
+    },
+    {
+      "href": "/blog/carry-on-essentials-guide-ja",
+      "text": "機内持ち込みの必需品：手元に置くべきもの"
+    },
+    {
+      "href": "/blog/group-trip-planning-ja",
+      "text": "友だちと旅行計画を一緒に立てる方法"
+    }
   ],
   "alternates": {
     "ko": "/blog/trip-planning-checklist",

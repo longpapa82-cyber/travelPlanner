@@ -127,27 +127,6 @@
       "descKo": "반려동물 검역·서류, 이동장, 반려동물 동반 숙소·교통, 현지 주의사항까지 함께하는 여행 준비법."
     },
     {
-      "slug": "ai-itinerary-customizing",
-      "category": "ai",
-      "icon": "sparkle",
-      "titleKo": "AI 추천 일정 200% 커스터마이징하는 법",
-      "descKo": "AI가 만든 초안 일정을 내 여행 스타일에 맞게 다듬는 법 — 강도 조절, 여유 시간 확보, 취향 반영 실전 가이드."
-    },
-    {
-      "slug": "ai-budget-planning",
-      "category": "ai",
-      "icon": "sparkle",
-      "titleKo": "AI로 여행 예산 짜기: 항공·숙소·식비 계획법",
-      "descKo": "AI 여행 플래너를 활용해 항목별 예산을 세우고 지출을 관리하는 법 — 현실적인 예산 계획의 기술."
-    },
-    {
-      "slug": "ai-restaurant-recommendation",
-      "category": "ai",
-      "icon": "sparkle",
-      "titleKo": "AI 맛집 추천 활용법: 현지 미식 여행 계획하기",
-      "descKo": "AI 추천과 여행자 데이터를 결합해 현지 맛집을 발굴하고 미식 중심 일정을 짜는 방법을 소개합니다."
-    },
-    {
       "slug": "tokyo-3day-course",
       "category": "destination",
       "icon": "map",
@@ -309,13 +288,6 @@
       "descKo": "여권부터 충전기, 상비약까지 카테고리별 완벽 체크리스트로 아무것도 빠뜨리지 않고 짐을 쌀 수 있습니다."
     },
     {
-      "slug": "ai-travel-planning-tips",
-      "category": "ai",
-      "icon": "map",
-      "titleKo": "AI로 여행 계획 세우는 5가지 팁",
-      "descKo": "AI 여행 플래너를 200% 활용하는 방법. 목적지 정보 입력부터 일정 검토, 현지 정보 반영까지 똑똑하게 여행을 계획하는 팁을 소개합니다."
-    },
-    {
       "slug": "first-solo-travel",
       "category": "tips",
       "icon": "map",
@@ -391,27 +363,6 @@
       "icon": "doc",
       "titleKo": "여행 일기 쓰는 법: 추억을 오래 간직하는 방법",
       "descKo": "여행의 추억을 오래 간직하는 법. 기록의 핵심 요소부터 도구 선택, 사진과 함께 남기는 방법까지 여행 일기 작성 팁을 소개합니다."
-    },
-    {
-      "slug": "ai-weather-itinerary",
-      "category": "ai",
-      "icon": "sparkle",
-      "titleKo": "AI가 날씨 예보까지 계산해 일정을 짜준다면? 비 오는 날 걱정 끝",
-      "descKo": "AI가 날씨 예보를 반영해 비 오는 날엔 실내 활동을 추천합니다. 날씨 기반 일정 생성의 원리와 여행 중 날씨 대비법을 정리했습니다."
-    },
-    {
-      "slug": "ai-first-last-day-logic",
-      "category": "ai",
-      "icon": "clock",
-      "titleKo": "AI 일정은 왜 첫날 호텔 체크인부터 시작할까? 여행 첫날·마지막날 로직",
-      "descKo": "AI가 첫날은 호텔 체크인부터, 마지막날은 가볍게 짜는 이유. 시차와 이동 피로를 고려한 현실적인 일정 설계 원리를 설명합니다."
-    },
-    {
-      "slug": "ai-diverse-itinerary",
-      "category": "ai",
-      "icon": "sparkle",
-      "titleKo": "2주 여행인데 매일 색다르게 — AI가 같은 장소를 반복하지 않는 법",
-      "descKo": "긴 여행에서도 매일 다른 곳을 즐기는 법. AI가 같은 장소를 두 번 넣지 않고 다채로운 일정을 만드는 원리를 알기 쉽게 풀었습니다."
     },
     {
       "slug": "paris-course",
@@ -503,6 +454,34 @@
       "icon": "map",
       "titleKo": "뉴욕 3박 4일 첫 여행 코스: 미드타운·다운타운·센트럴파크 동선 완전 정리",
       "descKo": "미드타운·다운타운·센트럴파크를 효율적으로 도는 뉴욕 3박 4일 첫 여행 코스와 동선, 교통, 예산 가이드."
+    },
+    {
+      "slug": "tax-refund-shopping-guide",
+      "category": "budget",
+      "icon": "coin",
+      "titleKo": "해외 쇼핑 세금 환급 완벽 가이드",
+      "descKo": "택스리펀드(Tax Refund)의 원리부터 국가별 환급률, 공항 세관 절차, 현금·카드 환급 비교, 대행사 수수료까지. 해외 쇼핑에서 부가세를 돌려받는 실전 방법을 정리했습니다."
+    },
+    {
+      "slug": "rental-car-abroad-guide",
+      "category": "prep",
+      "icon": "doc",
+      "titleKo": "해외 렌터카 완벽 가이드: 예약부터 보험, 운전까지",
+      "descKo": "해외 렌터카 예약 방법부터 국제운전면허증 준비, CDW·LDW·SLI·PAI 보험 종류, 좌측통행·연료·주차 등 현지 운전 주의사항과 반납·분쟁 예방까지 한 번에 정리했습니다."
+    },
+    {
+      "slug": "tipping-culture-by-country",
+      "category": "tips",
+      "icon": "coin",
+      "titleKo": "국가별 팁 문화 완벽 정리: 얼마를, 언제, 어떻게",
+      "descKo": "미국·유럽·아시아 국가별 팁 문화를 한눈에 정리했습니다. 레스토랑·호텔·택시·투어 상황별로 얼마를 언제 어떻게 줘야 하는지, 팁이 없는 나라는 어디인지까지 실전 가이드로 담았습니다."
+    },
+    {
+      "slug": "overseas-payment-safety",
+      "category": "budget",
+      "icon": "shield",
+      "titleKo": "해외 결제 안전 가이드: 카드·현금·환율 함정 피하기",
+      "descKo": "해외여행 결제, 어떻게 하면 안전하고 손해 없이 할 수 있을까요? DCC 함정, 해외 결제 수수료 구조, 트래블카드 vs 신용카드 비교, 카드 분실·스키밍 대처법까지 실전 노하우를 정리했습니다."
     }
   ]
 }

@@ -30,16 +30,23 @@
     },
     {
       "h2": "정리: 함께 짜는 여행, 도구가 반을 해결한다",
-      "html": "  <p>여럿이 가는 여행에서 가장 흔한 실패는 계획이 나빠서가 아니라, <strong>정보가 흩어져서</strong> 생깁니다. 핵심은 세 가지입니다. 첫째, <strong>단톡방이 아니라 하나의 일정에</strong> 정보를 모으세요. 둘째, <strong>편집자와 뷰어로 역할을 나눠</strong> 관리 주체를 분명히 하세요. 셋째, 완성된 계획은 <strong>링크로 공유</strong>해 모두가 같은 그림을 보게 하세요.</p>\n  <p>myTravel의 공동 여행 기능은 이메일 초대, 편집자/뷰어 역할, 읽기 전용 공유 링크를 모두 지원합니다. 다음 그룹 여행에서 단톡방 대신 하나의 일정으로 시작해 보세요. 함께 보면 좋은 글로 <a href=\"/blog/group-trip-expense-split\">여행 경비 정산 가이드</a>와 <a href=\"/blog/ai-itinerary-customizing\">AI 추천 일정 커스터마이징</a>도 준비되어 있습니다.</p>"
+      "html": "  <p>여럿이 가는 여행에서 가장 흔한 실패는 계획이 나빠서가 아니라, <strong>정보가 흩어져서</strong> 생깁니다. 핵심은 세 가지입니다. 첫째, <strong>단톡방이 아니라 하나의 일정에</strong> 정보를 모으세요. 둘째, <strong>편집자와 뷰어로 역할을 나눠</strong> 관리 주체를 분명히 하세요. 셋째, 완성된 계획은 <strong>링크로 공유</strong>해 모두가 같은 그림을 보게 하세요.</p>\n  <p>myTravel의 공동 여행 기능은 이메일 초대, 편집자/뷰어 역할, 읽기 전용 공유 링크를 모두 지원합니다. 다음 그룹 여행에서 단톡방 대신 하나의 일정으로 시작해 보세요. 함께 보면 좋은 글로 <a href=\"/blog/group-trip-expense-split\">여행 경비 정산 가이드</a>와 AI 추천 일정 커스터마이징도 준비되어 있습니다.</p>"
     }
   ],
   "adAfterSection": 3,
   "related": [
-    { "href": "/blog/group-trip-expense-split", "text": "여행 경비 N빵 정산, 더 이상 계산기 붙잡지 마세요" },
-    { "href": "/blog/ai-itinerary-customizing", "text": "AI 추천 일정, 내 여행으로 만드는 커스터마이징 실전법" },
-    { "href": "/blog/ai-budget-planning", "text": "AI로 여행 예산 짜기: 항공·숙소·식비 계획법" },
-    { "href": "/blog/family-travel-planning", "text": "가족 여행 계획 세우는 법: 아이와 함께하는 해외여행" },
-    { "href": "/blog/travel-app-recommendations", "text": "여행에 유용한 앱 추천: 계획부터 정산까지" }
+    {
+      "href": "/blog/group-trip-expense-split",
+      "text": "여행 경비 N빵 정산, 더 이상 계산기 붙잡지 마세요"
+    },
+    {
+      "href": "/blog/family-travel-planning",
+      "text": "가족 여행 계획 세우는 법: 아이와 함께하는 해외여행"
+    },
+    {
+      "href": "/blog/travel-app-recommendations",
+      "text": "여행에 유용한 앱 추천: 계획부터 정산까지"
+    }
   ],
   "alternates": {
     "ko": "/blog/group-trip-planning",
