@@ -44,7 +44,7 @@
     "url": "https://mytravel-planner.com",
     "description": "AI-powered travel planning service. Just pick a destination and get the tailored itinerary instantly.",
     "applicationCategory": "TravelApplication",
-    "operatingSystem": "Web",
+    "operatingSystem": "iOS, Android, Web",
     "inLanguage": ["ko", "en", "ja", "zh", "es", "de", "fr", "th", "vi", "pt", "ar", "id", "hi", "it", "ru", "tr", "ms"],
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "author": { "@type": "Organization", "name": "myTravel" }
@@ -386,14 +386,14 @@
 </head>
 <body>
 
-<!-- Smart App Banner (Android Only) -->
+<!-- Smart App Banner (iOS + Android) -->
 <div id="smartAppBanner" class="smart-app-banner">
   <div class="banner-content">
     <div class="banner-icon"><img src="/assets/icon-192-v2.png" width="44" height="44" alt="myTravel" style="border-radius:10px;display:block;width:100%;height:100%;object-fit:cover;"/></div>
     <div class="banner-text">
       <h4>myTravel</h4>
       <p id="bannerTagline">AI Creates Your Personalized Trip</p>
-      <div class="banner-rating">Free on Google Play</div>
+      <div class="banner-rating" id="bannerStore">Free on Google Play</div>
     </div>
   </div>
   <div class="banner-actions">
@@ -769,9 +769,12 @@
     // else 데스크톱: 두 버튼 모두 노출(HTML 기본값 유지)
   })();
 
-  // Smart App Banner Logic
+  // Smart App Banner Logic (iOS + Android)
   (function() {
     'use strict';
+
+    const IS_IOS     = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const IS_ANDROID = /Android/i.test(navigator.userAgent);
 
     const BANNER_VARIANTS = {
       A: 'AI Creates Your Personalized Trip',
@@ -781,15 +784,12 @@
 
     const CONFIG = {
       playStoreURL: 'https://play.google.com/store/apps/details?id=com.longpapa82.travelplanner',
+      appStoreURL:  'https://apps.apple.com/app/id6766147060',
       storageKey: 'smartBanner_dismissed',
       variantKey: 'smartBanner_variant',
       showDelay: 500, // Optimized from 2000ms (0.5s for faster visibility)
       dismissDuration: 4 * 60 * 60 * 1000, // 4 hours in milliseconds
     };
-
-    function isMobile() {
-      return /Android/i.test(navigator.userAgent);
-    }
 
     function wasDismissedRecently() {
       const dismissed = localStorage.getItem(CONFIG.storageKey);
@@ -827,20 +827,29 @@
         tagline.textContent = BANNER_VARIANTS[variant];
       }
 
+      const storeEl = document.getElementById('bannerStore');
+      if (storeEl) {
+        storeEl.textContent = IS_IOS ? 'Free on the App Store' : 'Free on Google Play';
+      }
+
       banner.classList.add('show');
       trackEvent('banner_view', {
         variant: variant,
+        platform: IS_IOS ? 'ios' : 'android',
         page: window.location.pathname
       });
     }
 
     window.handleBannerInstall = function() {
       const variant = getVariant();
+      // iOS does not support Play Store's &referrer deep link → use plain App Store URL.
+      const storeURL = IS_IOS ? CONFIG.appStoreURL : CONFIG.playStoreURL;
       const deepLink = encodeURIComponent(window.location.pathname + window.location.search);
-      const url = CONFIG.playStoreURL + '&referrer=' + deepLink;
+      const url = IS_IOS ? storeURL : storeURL + '&referrer=' + deepLink;
 
       trackEvent('banner_click', {
         variant: variant,
+        platform: IS_IOS ? 'ios' : 'android',
         page: window.location.pathname
       });
 
@@ -858,11 +867,12 @@
 
       trackEvent('banner_dismiss', {
         variant: getVariant(),
+        platform: IS_IOS ? 'ios' : 'android',
         page: window.location.pathname
       });
     };
 
-    if (isMobile() && !wasDismissedRecently()) {
+    if ((IS_IOS || IS_ANDROID) && !wasDismissedRecently()) {
       setTimeout(showBanner, CONFIG.showDelay);
     }
   })();
