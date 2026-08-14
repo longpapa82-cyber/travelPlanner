@@ -170,6 +170,7 @@ export class AppController {
       { loc: '/privacy', changefreq: 'monthly', priority: '0.7' },
       { loc: '/terms', changefreq: 'monthly', priority: '0.7' },
       { loc: '/faq', changefreq: 'monthly', priority: '0.8' },
+      { loc: '/faq-en', changefreq: 'monthly', priority: '0.8' },
       // Section indexes
       { loc: '/guides', changefreq: 'weekly', priority: '0.9' },
       { loc: '/guides/index-en', changefreq: 'weekly', priority: '0.9' },
