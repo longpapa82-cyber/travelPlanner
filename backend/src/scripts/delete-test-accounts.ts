@@ -7,13 +7,14 @@
  * blacklist, RevenueCat + Apple cleanup.
  *
  * Manifest format (from claudedocs/test-account-deletion-manifest.csv):
- *   id,email,provider,createdAt,tripCount   (one account per line, no header)
+ *   id,email,provider,createdAt,tripCount   (one account per line, header ok)
  *
- * Usage (run from backend/):
+ * Lives under src/ so `nest build` compiles it to dist/scripts/. In production
+ * (compiled, no ts-node) run the built JS inside the backend container:
  *   # dry run — prints what WOULD be deleted, touches nothing (default):
- *   ts-node -r tsconfig-paths/register scripts/delete-test-accounts.ts <manifest.csv>
+ *   node dist/scripts/delete-test-accounts.js <manifest.csv>
  *   # real deletion — requires explicit flag:
- *   ts-node -r tsconfig-paths/register scripts/delete-test-accounts.ts <manifest.csv> --execute
+ *   node dist/scripts/delete-test-accounts.js <manifest.csv> --execute
  *
  * Failure policy: continue-on-error. A failed account is collected and
  * reported; the remaining accounts are still processed. Exit code is non-zero
@@ -23,8 +24,8 @@
  */
 import { NestFactory } from '@nestjs/core';
 import { readFileSync } from 'fs';
-import { AppModule } from '../src/app.module';
-import { UsersService } from '../src/users/users.service';
+import { AppModule } from '../app.module';
+import { UsersService } from '../users/users.service';
 
 interface ManifestRow {
   id: string;
