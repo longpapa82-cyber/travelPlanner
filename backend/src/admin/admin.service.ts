@@ -8,16 +8,36 @@ import { ErrorLog } from './entities/error-log.entity';
 import { kstMidnightUtc } from '../common/kst';
 
 /**
- * Internal / bot accounts to exclude from operator-facing stats and the member
- * list. hoonjae723@gmail.com is a real admin account, but the aisoftsale unified
- * admin dashboard logs in AS this account every ~10 minutes (server-side, UA
- * "node") to poll each service. That floods audit_logs with LOGIN events and
- * keeps its lastLoginAt/lastActiveAt pinned to "now", so it always sat at the
- * top of the member list and masked real user activity. Excluding it here keeps
- * "이용자 현황" honest. (The systemic fix — the dashboard using long-lived
- * refresh tokens instead of full re-login — lives in the aisoftsale-admin repo.)
+ * Internal / bot accounts to exclude from operator-facing ACTIVE stats (DAU/WAU)
+ * and the member list. The aisoftsale unified admin dashboard logs in AS an admin
+ * account every ~10 minutes (server-side, UA "node") to poll each service, which
+ * pins its lastLoginAt to "now" and inflates active counts by 1 ("오늘 활성 1"
+ * phantom). The operator also self-signs-up with these accounts to smoke-test.
+ *
+ * Kept in EXACT sync with the admin's memberFilter.ts (EXCLUDED_ADMIN_EMAILS) and
+ * myPet's 0083 migration so display layer and every source exclude the same set
+ * (CR-01). Exact email match only — never LIKE '%admin%' (would drop real users).
  */
-const INTERNAL_EMAILS = ['hoonjae723@gmail.com'];
+const INTERNAL_EMAILS = [
+  'longpapa82@gmail.com',
+  'hoonjae723@gmail.com',
+  'hoonjae072@gmail.com',
+];
+/** Synthetic uptime/app-review bots (e.g. reviewer@cloudtestlabaccounts.com). */
+const INTERNAL_EMAIL_DOMAIN = 'cloudtestlabaccounts.com';
+
+/**
+ * SQL WHERE fragment (+ params) that excludes internal/bot accounts from an
+ * active-user query. Applied identically to DAU, WAU, and the per-platform daily
+ * breakdown so the three never drift. A NULL email is kept (can't identify → don't
+ * silently drop a real row); an exact admin email or the test domain is excluded.
+ */
+const EXCLUDE_INTERNAL_SQL =
+  '(u.email IS NULL OR (u.email NOT IN (:...internalEmails) AND u.email NOT ILIKE :internalDomain))';
+const EXCLUDE_INTERNAL_PARAMS = {
+  internalEmails: INTERNAL_EMAILS,
+  internalDomain: `%@${INTERNAL_EMAIL_DOMAIN}`,
+};
 
 @Injectable()
 export class AdminService {
@@ -99,9 +119,7 @@ export class AdminService {
     const todayActive = await this.userRepository
       .createQueryBuilder('u')
       .where('u.lastLoginAt >= :today', { today })
-      .andWhere('(u.email IS NULL OR u.email NOT IN (:...internalEmails))', {
-        internalEmails: INTERNAL_EMAILS,
-      })
+      .andWhere(EXCLUDE_INTERNAL_SQL, EXCLUDE_INTERNAL_PARAMS)
       .getCount();
 
     const weekAgo = new Date();
@@ -110,9 +128,7 @@ export class AdminService {
     const weeklyActive = await this.userRepository
       .createQueryBuilder('u')
       .where('u.lastLoginAt >= :weekAgo', { weekAgo })
-      .andWhere('(u.email IS NULL OR u.email NOT IN (:...internalEmails))', {
-        internalEmails: INTERNAL_EMAILS,
-      })
+      .andWhere(EXCLUDE_INTERNAL_SQL, EXCLUDE_INTERNAL_PARAMS)
       .getCount();
 
     // Daily signups for last 30 days
@@ -196,6 +212,10 @@ export class AdminService {
         'android',
       )
       .where('u.lastLoginAt >= :thirtyDaysAgo', { thirtyDaysAgo })
+      // Same internal/bot exclusion as DAU/WAU so the daily breakdown agrees with
+      // the headline active counts (previously this query had no exclusion → its
+      // per-day totals were inflated by the admin poll login).
+      .andWhere(EXCLUDE_INTERNAL_SQL, EXCLUDE_INTERNAL_PARAMS)
       .groupBy("TO_CHAR(u.lastLoginAt AT TIME ZONE 'Asia/Seoul', 'YYYY-MM-DD')")
       .orderBy('date', 'ASC')
       .getRawMany();
