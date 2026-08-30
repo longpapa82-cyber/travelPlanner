@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../contexts/ThemeContext';
 import { colors } from '../../constants/theme';
 import { ProfileStackParamList } from '../../types';
@@ -32,6 +33,13 @@ const AdminDashboardScreen: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation('admin');
   const { isDark, theme } = useTheme();
   const { isAdmin } = usePremium();
+  const insets = useSafeAreaInsets();
+  // The bottom tab bar (MainNavigator) is `60 + insets.bottom` tall and sits
+  // above this stack's content. ScrollView content must clear it or the last
+  // card hides behind the grey tab-bar strip. Computed from insets directly
+  // (not useBottomTabBarHeight) so it's reliable inside this nested stack.
+  const TAB_BAR_HEIGHT = 60;
+  const bottomPad = TAB_BAR_HEIGHT + insets.bottom + 16;
 
   React.useEffect(() => {
     if (!isAdmin) navigation.goBack();
@@ -59,7 +67,7 @@ const AdminDashboardScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: bottomPad }}>
       <View style={styles.header}>
         <Icon name="shield-crown-outline" size={36} color={theme.colors.primary} />
         <Text style={[styles.title, { color: theme.colors.text }]}>{t('title')}</Text>
