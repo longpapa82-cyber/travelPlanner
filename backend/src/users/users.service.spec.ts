@@ -574,4 +574,42 @@ describe('UsersService', () => {
       );
     });
   });
+
+  describe('removeByAdmin', () => {
+    it('should delete an EMAIL-provider user WITHOUT requiring a password', async () => {
+      // Admin bulk cleanup path: password re-auth is skipped, but the same
+      // transaction + cache blacklist as remove() must still run. bcrypt.compare
+      // must NOT be consulted (no password to verify).
+      const emailUser = { ...mockUser, provider: AuthProvider.EMAIL };
+      repository.findOne.mockResolvedValue(emailUser);
+
+      // Act
+      await service.removeByAdmin(mockUser.id);
+
+      // Assert — same lookup + transaction as remove(), no password check
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { id: mockUser.id },
+        select: [
+          'id',
+          'provider',
+          'passwordHash',
+          'revenuecatAppUserId',
+          'appleRefreshToken',
+        ],
+      });
+      expect(bcrypt.compare).not.toHaveBeenCalled();
+      const ds = (
+        service as unknown as { dataSource: { transaction: jest.Mock } }
+      ).dataSource;
+      expect(ds.transaction).toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException if user does not exist', async () => {
+      repository.findOne.mockResolvedValue(null);
+
+      await expect(service.removeByAdmin('non-existent-id')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
 });

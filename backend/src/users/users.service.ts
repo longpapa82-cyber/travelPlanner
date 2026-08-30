@@ -451,20 +451,60 @@ export class UsersService {
       }
     }
 
-    // Wrap the destructive write in a transaction so cascading FK deletes
-    // (trips, expenses, consents, etc.) either all succeed or all roll back.
-    //
-    // V187 P1-C (Security #1): error_logs.userId is a plain varchar — no FK,
-    // so deleting the user does NOT cascade. PII fields (userEmail,
-    // deviceModel, userAgent, breadcrumbs) would persist until the 90-day
-    // cron purge, violating GDPR Art. 17 "without undue delay" and PIPA §21
-    // immediate-erasure principle.
-    //
-    // The fix is in-transaction PII anonymization: keep userId for stats
-    // continuity (so the row is still attributable to "a user that existed
-    // at this time") but null out every direct identifier. The anonymized
-    // row is preserved for SRE/operational analysis but contains nothing
-    // that would link back to the deleted natural person.
+    await this.purgeUserAccount(user);
+  }
+
+  /**
+   * Admin-only account termination for operational cleanup (e.g. removing
+   * QA/test accounts in bulk). Identical to remove() EXCEPT it skips the
+   * password re-authentication gate — the caller is an authenticated admin
+   * script, not the account owner. There is intentionally NO HTTP endpoint
+   * for this path; it is only reachable from server-side scripts, so the
+   * external attack surface is zero.
+   *
+   * Every downstream guarantee of remove() still holds: atomic transaction,
+   * error_logs PII anonymization, cascading FK deletes, 30-day refresh-token
+   * blacklist, RevenueCat subscriber deletion, and Apple token revocation.
+   */
+  async removeByAdmin(id: string): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: [
+        'id',
+        'provider',
+        'passwordHash',
+        'revenuecatAppUserId',
+        'appleRefreshToken',
+      ],
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.purgeUserAccount(user);
+  }
+
+  /**
+   * Shared destructive teardown for both remove() (owner-initiated) and
+   * removeByAdmin() (operational). Assumes the caller has already loaded the
+   * user (with the select fields below) and performed any authorization.
+   *
+   * Wrap the destructive write in a transaction so cascading FK deletes
+   * (trips, expenses, consents, etc.) either all succeed or all roll back.
+   *
+   * V187 P1-C (Security #1): error_logs.userId is a plain varchar — no FK,
+   * so deleting the user does NOT cascade. PII fields (userEmail,
+   * deviceModel, userAgent, breadcrumbs) would persist until the 90-day
+   * cron purge, violating GDPR Art. 17 "without undue delay" and PIPA §21
+   * immediate-erasure principle.
+   *
+   * The fix is in-transaction PII anonymization: keep userId for stats
+   * continuity (so the row is still attributable to "a user that existed
+   * at this time") but null out every direct identifier. The anonymized
+   * row is preserved for SRE/operational analysis but contains nothing
+   * that would link back to the deleted natural person.
+   */
+  private async purgeUserAccount(user: User): Promise<void> {
+    const id = user.id;
+
     await this.dataSource.transaction(async (manager) => {
       // Anonymize first so a partial failure doesn't leave PII orphaned.
       await manager
@@ -531,8 +571,14 @@ export class UsersService {
 
     // iOS Guideline 5.1.1(v): revoke Apple refresh token on account deletion.
     // fail-close: failure is logged but does not block the deletion.
+    //
+    // The token is read from the already-loaded `user` object rather than a
+    // fresh DB lookup: by this point the users row has been DELETEd inside the
+    // transaction above, so re-fetching would always return null and the
+    // revoke would silently no-op (previous bug). `user.appleRefreshToken` was
+    // selected at load time and is still in memory here.
     if (user.provider === AuthProvider.APPLE) {
-      await this.revokeAppleToken(id);
+      await this.revokeAppleToken(id, user.appleRefreshToken);
     }
   }
 
@@ -545,19 +591,20 @@ export class UsersService {
     });
   }
 
-  private async revokeAppleToken(userId: string): Promise<void> {
-    const userWithToken = await this.userRepository.findOne({
-      where: { id: userId },
-      select: ['id', 'appleRefreshToken'],
-    });
-    if (!userWithToken?.appleRefreshToken) return;
+  private async revokeAppleToken(
+    userId: string,
+    appleRefreshToken?: string,
+  ): Promise<void> {
+    // The caller passes the token it already loaded before deleting the user
+    // row. No DB re-fetch here: the row is gone by the time this runs.
+    if (!appleRefreshToken) return;
 
     try {
       const clientSecret = this.generateAppleClientSecret();
       const params = new URLSearchParams({
         client_id: process.env.APPLE_CLIENT_ID ?? '',
         client_secret: clientSecret,
-        token: userWithToken.appleRefreshToken,
+        token: appleRefreshToken,
         token_type_hint: 'refresh_token',
       });
       const res = await fetch('https://appleid.apple.com/auth/revoke', {
