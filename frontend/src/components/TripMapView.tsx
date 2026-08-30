@@ -174,22 +174,37 @@ const TripMapViewInner: React.FC<Props> = ({ itineraries, destination }) => {
   }, [center, filteredActivities]);
 
   const openInMapsApp = useCallback((latitude: number, longitude: number) => {
+    // Always-available web fallback. Google Maps web opens in-app on any device
+    // and requires no scheme declaration, so it is the guaranteed last resort.
+    const webUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+
+    // Open a native-app scheme, falling back to the browser on ANY failure.
+    // We do NOT gate on canOpenURL alone: even after declaring the schemes
+    // (iOS LSApplicationQueriesSchemes / Android <queries>), canOpenURL can
+    // still return false or openURL can reject (app missing/crashes). Chaining
+    // .catch onto the web fallback guarantees the tap never silently no-ops.
+    const openWithFallback = (appUrl: string) => {
+      Linking.canOpenURL(appUrl)
+        .then((supported) =>
+          Linking.openURL(supported ? appUrl : webUrl)
+        )
+        .catch(() => {
+          Linking.openURL(webUrl).catch(() => {
+            // Absolute last resort: surface the failure instead of swallowing it.
+            Alert.alert(t('detail.map.openFailedTitle'), t('detail.map.openFailedMessage'));
+          });
+        });
+    };
+
     const buttons = [
       {
         text: t('detail.map.openInGoogleMaps'),
         onPress: () => {
-          const url = Platform.select({
+          const appUrl = Platform.select({
             ios: `comgooglemaps://?q=${latitude},${longitude}`,
             android: `geo:${latitude},${longitude}?q=${latitude},${longitude}`,
           });
-          Linking.canOpenURL(url!).then((supported) => {
-            if (supported) {
-              Linking.openURL(url!);
-            } else {
-              // Fallback to browser if Google Maps app not installed
-              Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`);
-            }
-          });
+          openWithFallback(appUrl!);
         },
       },
       { text: t('detail.map.cancel'), style: 'cancel' as const },
@@ -200,8 +215,7 @@ const TripMapViewInner: React.FC<Props> = ({ itineraries, destination }) => {
       buttons.splice(1, 0, {
         text: t('detail.map.openInAppleMaps'),
         onPress: () => {
-          const url = `maps://?q=${latitude},${longitude}`;
-          Linking.openURL(url);
+          openWithFallback(`maps://?q=${latitude},${longitude}`);
         },
       });
     }

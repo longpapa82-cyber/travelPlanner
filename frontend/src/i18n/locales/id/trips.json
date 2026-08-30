@@ -273,7 +273,9 @@
       "openInAppleMaps": "Buka di Apple Maps",
       "cancel": "Batal",
       "selectMapsApp": "Pilih Aplikasi Peta",
-      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
+      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?",
+      "openFailedTitle": "Tidak dapat membuka peta",
+      "openFailedMessage": "Silakan coba lagi sebentar."
     },
     "budget": {
       "title": "Ringkasan Anggaran",

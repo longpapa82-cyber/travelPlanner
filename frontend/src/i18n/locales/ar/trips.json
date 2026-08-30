@@ -269,11 +269,13 @@
       "openInMaps": "عرض في خرائط Google",
       "tapToOpen": "اضغط لفتح الخريطة",
       "durationMin": "{{min}} دقيقة",
-      "openInGoogleMaps": "Buka di Google Maps",
-      "openInAppleMaps": "Buka di Apple Maps",
-      "cancel": "Batal",
-      "selectMapsApp": "Pilih Aplikasi Peta",
-      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
+      "openInGoogleMaps": "الفتح في خرائط Google",
+      "openInAppleMaps": "الفتح في خرائط Apple",
+      "cancel": "إلغاء",
+      "selectMapsApp": "اختيار تطبيق الخرائط",
+      "selectMapsAppMessage": "أي تطبيق خرائط تريد استخدامه؟",
+      "openFailedTitle": "تعذّر فتح الخرائط",
+      "openFailedMessage": "يرجى المحاولة مرة أخرى بعد قليل."
     },
     "budget": {
       "title": "ملخص الميزانية",

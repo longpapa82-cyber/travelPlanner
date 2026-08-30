@@ -2,7 +2,7 @@ export default ({ config }) => ({
   ...config,
   name: 'MyTravel',
   slug: 'travel-planner',
-  version: '1.4.3',
+  version: '1.4.4',
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
@@ -16,7 +16,7 @@ export default ({ config }) => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.longpapa82.travelplanner',
-    buildNumber: '86',
+    buildNumber: '87',
     usesAppleSignIn: true,
     associatedDomains: [
       'applinks:mytravel-planner.com',
@@ -27,6 +27,11 @@ export default ({ config }) => ({
           CFBundleURLSchemes: ['travelplanner'],
         },
       ],
+      // canOpenURL() returns false for any scheme not listed here (iOS 9+),
+      // so TripMapView's "구글맵으로 열기" silently failed even when the app
+      // was installed. Declare the map schemes we probe so the app-open path
+      // (comgooglemaps / Apple Maps) works instead of falling through.
+      LSApplicationQueriesSchemes: ['comgooglemaps', 'maps'],
       NSPhotoLibraryUsageDescription:
         'MyTravel needs access to your photo library to add photos to your trips.',
       ITSAppUsesNonExemptEncryption: false,
@@ -113,6 +118,7 @@ export default ({ config }) => ({
   },
   plugins: [
     './plugins/withDisableWebViewAutofill',
+    './plugins/withAndroidMapQueries',
     './plugins/withAndroidSplashImageWidth',
     './plugins/withAndroidSplashAnimationDuration',
     './plugins/withAndroidWindowBackground',
@@ -177,6 +183,11 @@ export default ({ config }) => ({
           mainActivityLaunchMode: 'singleTask',
         },
         ios: {
+          // AdMob 계열 Google pod(AppCheckCore, GoogleUtilities, RecaptchaInterop)이
+          // Swift로 전환되면서 static 라이브러리 통합 불가 에러 발생
+          // ("cannot yet be integrated as static libraries"). useFrameworks:'static'은
+          // 이 pod들을 정적 프레임워크로 링크해 문제를 해소한다. Hermes/RN 0.81과 호환.
+          useFrameworks: 'static',
           privacyManifests: {
             NSPrivacyAccessedAPITypes: [
               {

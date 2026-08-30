@@ -281,7 +281,9 @@
       "openInAppleMaps": "Apple Maps에서 열기",
       "cancel": "취소",
       "selectMapsApp": "지도 앱 선택",
-      "selectMapsAppMessage": "어떤 지도 앱으로 열까요?"
+      "selectMapsAppMessage": "어떤 지도 앱으로 열까요?",
+      "openFailedTitle": "지도를 열 수 없습니다",
+      "openFailedMessage": "잠시 후 다시 시도해 주세요."
     },
     "budget": {
       "title": "예산 요약",

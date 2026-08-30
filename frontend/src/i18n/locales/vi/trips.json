@@ -269,11 +269,13 @@
       "openInMaps": "Xem trên Google Maps",
       "tapToOpen": "Chạm để mở bản đồ",
       "durationMin": "{{min}} phút",
-      "openInGoogleMaps": "Buka di Google Maps",
-      "openInAppleMaps": "Buka di Apple Maps",
-      "cancel": "Batal",
-      "selectMapsApp": "Pilih Aplikasi Peta",
-      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
+      "openInGoogleMaps": "Mở trong Google Maps",
+      "openInAppleMaps": "Mở trong Apple Maps",
+      "cancel": "Hủy",
+      "selectMapsApp": "Chọn ứng dụng bản đồ",
+      "selectMapsAppMessage": "Bạn muốn dùng ứng dụng bản đồ nào?",
+      "openFailedTitle": "Không thể mở bản đồ",
+      "openFailedMessage": "Vui lòng thử lại sau giây lát."
     },
     "budget": {
       "title": "Tóm tắt ngân sách",

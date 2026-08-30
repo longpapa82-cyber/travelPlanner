@@ -269,11 +269,13 @@
       "openInMaps": "Google Maps में देखें",
       "tapToOpen": "मानचित्र खोलने के लिए टैप करें",
       "durationMin": "{{min}} मिनट",
-      "openInGoogleMaps": "Buka di Google Maps",
-      "openInAppleMaps": "Buka di Apple Maps",
-      "cancel": "Batal",
-      "selectMapsApp": "Pilih Aplikasi Peta",
-      "selectMapsAppMessage": "Aplikasi peta mana yang anda mahu gunakan?"
+      "openInGoogleMaps": "Google Maps में खोलें",
+      "openInAppleMaps": "Apple Maps में खोलें",
+      "cancel": "रद्द करें",
+      "selectMapsApp": "मैप ऐप चुनें",
+      "selectMapsAppMessage": "आप कौन सा मैप ऐप उपयोग करना चाहते हैं?",
+      "openFailedTitle": "मैप नहीं खोल सके",
+      "openFailedMessage": "कृपया थोड़ी देर बाद फिर से प्रयास करें।"
     },
     "budget": {
       "title": "बजट सारांश",
