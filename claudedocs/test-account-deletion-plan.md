@@ -2,8 +2,21 @@
 
 > 작성일: 2026-08-30 · 대상: mytravel-planner.com 운영 DB (`travelplanner-postgres-1`)
 > 최초 선택: Activity heuristic + Direct SQL + Production (최고위험 조합)
-> **→ "추천 단계"로 개정**: 명시 ID 명단 고정 + `usersService.remove()` 경유 삭제.
+> **→ "추천 단계"로 개정**: 명시 ID 명단 고정 + `usersService.removeByAdmin()` 경유 삭제.
 > 실측으로 위험 대부분 소거됨 (아래 §0.1).
+
+---
+
+## ✅ 실행 완료 기록 (2026-08-30 04:36 UTC)
+
+- **삭제 완료: 테스트 계정 82개 전원** (전체 유저 195 → 113, 정확히 −82).
+- 경로: `removeByAdmin()` × 82 (트랜잭션 · error_logs PII 익명화 · CASCADE FK 삭제 · Redis 30일 블랙리스트 · RevenueCat/Apple 정리).
+- 대상 도메인: `test.com` 71 · `example.com` 6 · `cloudtestlabaccounts.com` 4 · `mytravel-planner.com` 1.
+- 검증: 테스트계정 잔존 0 · CASCADE 고아(trips) 0 · error_logs PII 잔존 0 · 서버 HTTPS 200.
+- **백업(롤백 보험)**: 서버 `/root/backup-pre-testdel-20260830-0436.dump` (2.6M, `pg_restore`).
+- 명단 CSV(`test-account-deletion-manifest.csv`)는 삭제 계정 이메일 PII 박제 회피 위해 정리 시 제거. 개별 계정 기록은 위 백업 dump가 담당.
+- ⚠️ `cloudtestlabaccounts.com`은 Google Play 자동리뷰가 재생성할 수 있음(정상).
+- 일회성 스크립트(`src/scripts/delete-test-accounts.ts`)는 정리 시 제거 — 다음 정상 배포의 `nest build`가 dist에서 자연 제거.
 
 ---
 
