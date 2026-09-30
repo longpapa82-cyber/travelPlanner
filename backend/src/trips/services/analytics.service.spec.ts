@@ -350,4 +350,66 @@ describe('AnalyticsService', () => {
       expect(result.topActivities).toEqual([]);
     });
   });
+
+  // ── in-memory TTL cache ──
+  // Both heavy endpoints full-load 3 months of trips with itineraries; the
+  // cache prevents repeated full scans (production 504 RCA).
+
+  describe('caching', () => {
+    it('serves popular destinations from cache within TTL (one DB query)', async () => {
+      mockRepository.find.mockResolvedValue([createMockTrip()]);
+
+      const first = await service.getPopularDestinations(10);
+      const second = await service.getPopularDestinations(10);
+
+      expect(mockRepository.find).toHaveBeenCalledTimes(1);
+      expect(second).toEqual(first);
+    });
+
+    it('uses separate cache entries per limit parameter', async () => {
+      mockRepository.find.mockResolvedValue([createMockTrip()]);
+
+      await service.getPopularDestinations(10);
+      await service.getPopularDestinations(5);
+
+      expect(mockRepository.find).toHaveBeenCalledTimes(2);
+    });
+
+    it('caches destination recommendations per destination', async () => {
+      mockRepository.find.mockResolvedValue([
+        createMockTrip({ destination: 'Tokyo' }),
+      ]);
+
+      await service.getDestinationRecommendations('Tokyo');
+      await service.getDestinationRecommendations('Tokyo');
+      await service.getDestinationRecommendations('Paris');
+
+      expect(mockRepository.find).toHaveBeenCalledTimes(2);
+    });
+
+    it('refetches after TTL (10 minutes) expires', async () => {
+      const nowSpy = jest.spyOn(Date, 'now');
+      const base = 1_700_000_000_000;
+      nowSpy.mockReturnValue(base);
+      mockRepository.find.mockResolvedValue([createMockTrip()]);
+
+      await service.getPopularDestinations();
+      nowSpy.mockReturnValue(base + 10 * 60 * 1000 + 1);
+      await service.getPopularDestinations();
+
+      expect(mockRepository.find).toHaveBeenCalledTimes(2);
+      nowSpy.mockRestore();
+    });
+
+    it('does not cache error fallbacks', async () => {
+      mockRepository.find.mockRejectedValueOnce(new Error('DB down'));
+
+      const first = await service.getPopularDestinations();
+      expect(first).toEqual([]);
+
+      mockRepository.find.mockResolvedValue([createMockTrip()]);
+      const second = await service.getPopularDestinations();
+      expect(second).toHaveLength(1);
+    });
+  });
 });
