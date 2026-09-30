@@ -101,13 +101,18 @@ export class TripsService {
     threshold: number,
     tripId: string,
     userId: string,
+    tripDays?: number,
   ): void {
+    // tripDays: itinerary length in days — long trips legitimately push
+    // ai_generating past the threshold, so admins need it to separate
+    // "slow because 14-day trip" from "slow because provider degraded".
+    const daysContext = tripDays !== undefined ? `, days: ${tripDays}` : '';
     this.dataSource
       .getRepository(ErrorLog)
       .save({
         userId,
         errorMessage:
-          `[TripCreation] SLOW: ${phase} took ${elapsed}ms (threshold: ${threshold}ms, tripId: ${tripId})`.slice(
+          `[TripCreation] SLOW: ${phase} took ${elapsed}ms (threshold: ${threshold}ms, tripId: ${tripId}${daysContext})`.slice(
             0,
             500,
           ),
@@ -612,6 +617,7 @@ export class TripsService {
               SLOW_THRESHOLDS.ai_generating,
               savedTrip.id,
               userId,
+              numberOfDays,
             );
           }
           throwIfCancelled();
