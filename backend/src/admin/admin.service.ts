@@ -252,10 +252,9 @@ export class AdminService {
 
     // Exclude internal/bot accounts (see INTERNAL_EMAILS) so automated dashboard
     // logins don't dominate the "최근 접속" ordering or mask real user activity.
-    qb.andWhere(
-      '(u.email IS NULL OR u.email NOT IN (:...internalEmails))',
-      { internalEmails: INTERNAL_EMAILS },
-    );
+    qb.andWhere('(u.email IS NULL OR u.email NOT IN (:...internalEmails))', {
+      internalEmails: INTERNAL_EMAILS,
+    });
 
     if (search) {
       qb.andWhere('(u.name ILIKE :search OR u.email ILIKE :search)', {
@@ -302,6 +301,16 @@ export class AdminService {
     return this.errorLogRepository.save(log);
   }
 
+  /**
+   * 사용자-기인 클라이언트 오류(4xx: 비밀번호 오입력 401, Throttler 429,
+   * malformed body 400 등)는 서버 결함이 아니므로 어드민 오류 피드·통계에서
+   * 기본 제외한다. 기록(all-exceptions.filter)은 전량 유지 — 숨길 뿐 지우지
+   * 않으며, getErrorLogs(includeClientErrors=true)로 언제든 조회 가능.
+   * httpStatus가 null인 행(순수 클라이언트 오류·SLOW 로그)은 계속 노출.
+   */
+  private static readonly EXCLUDE_CLIENT_4XX =
+    '(e.httpStatus IS NULL OR e.httpStatus < 400 OR e.httpStatus >= 500)';
+
   async getErrorLogStats(now: Date = new Date()) {
     // KST midnight (see getUserStats) so "오늘 오류" counts the Korean day.
     const today = kstMidnightUtc(now);
@@ -312,22 +321,26 @@ export class AdminService {
     const todayErrors = await this.errorLogRepository
       .createQueryBuilder('e')
       .where('e.createdAt >= :today', { today })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .getCount();
 
     const weeklyErrors = await this.errorLogRepository
       .createQueryBuilder('e')
       .where('e.createdAt >= :weekAgo', { weekAgo })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .getCount();
 
     const unresolvedErrors = await this.errorLogRepository
       .createQueryBuilder('e')
       .where('e.isResolved = false')
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .getCount();
 
     const affectedUsers = await this.errorLogRepository
       .createQueryBuilder('e')
       .select('COUNT(DISTINCT e.userId)', 'count')
       .where('e.createdAt >= :weekAgo', { weekAgo })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .getRawOne();
 
     // Top errors
@@ -338,6 +351,7 @@ export class AdminService {
       .addSelect('COUNT(*)', 'count')
       .addSelect('MAX(e.createdAt)', 'lastOccurrence')
       .where('e.createdAt >= :weekAgo', { weekAgo })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .groupBy('e.errorMessage')
       .addGroupBy('e.screen')
       .orderBy('count', 'DESC')
@@ -353,6 +367,7 @@ export class AdminService {
       .select("TO_CHAR(e.createdAt, 'YYYY-MM-DD HH24')", 'hour')
       .addSelect('COUNT(*)', 'count')
       .where('e.createdAt >= :dayAgo', { dayAgo })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .groupBy("TO_CHAR(e.createdAt, 'YYYY-MM-DD HH24')")
       .orderBy('hour', 'ASC')
       .getRawMany();
@@ -375,6 +390,7 @@ export class AdminService {
         'warning',
       )
       .where('e.createdAt >= :weekAgo', { weekAgo })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .groupBy('e.platform')
       .getRawMany();
 
@@ -416,10 +432,15 @@ export class AdminService {
     severity?: string,
     resolved?: boolean,
     platform?: string,
+    includeClientErrors = false,
   ) {
     const qb = this.errorLogRepository
       .createQueryBuilder('e')
       .orderBy('e.createdAt', 'DESC');
+
+    if (!includeClientErrors) {
+      qb.andWhere(AdminService.EXCLUDE_CLIENT_4XX);
+    }
 
     if (severity) {
       qb.andWhere('e.severity = :severity', { severity });

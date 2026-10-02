@@ -72,6 +72,8 @@ export class AdminController {
     @Query('severity') severity?: string,
     @Query('resolved') resolved?: string,
     @Query('platform') platform?: string,
+    // 사용자-기인 4xx(인증 실패·Throttler 등)는 기본 제외 — true로 opt-in 조회.
+    @Query('includeClientErrors') includeClientErrors?: string,
   ) {
     return this.adminService.getErrorLogs(
       Math.max(1, parseInt(page || '1', 10) || 1),
@@ -79,6 +81,7 @@ export class AdminController {
       severity,
       resolved !== undefined ? resolved === 'true' : undefined,
       platform,
+      includeClientErrors === 'true',
     );
   }
 
