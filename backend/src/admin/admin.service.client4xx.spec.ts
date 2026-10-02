@@ -14,7 +14,8 @@ import { User } from '../users/entities/user.entity';
 import { Trip } from '../trips/entities/trip.entity';
 import { ErrorLog } from './entities/error-log.entity';
 
-const EXCLUDE_CLAUSE = '(e.httpStatus IS NULL OR e.httpStatus < 400 OR e.httpStatus >= 500)';
+const EXCLUDE_CLAUSE =
+  '(e.httpStatus IS NULL OR e.httpStatus < 400 OR e.httpStatus >= 500)';
 
 /** Chainable qb stub that records every where/andWhere clause string. */
 function makeQueryBuilder(capturedClauses: string[]) {
@@ -74,7 +75,9 @@ describe('AdminService — 사용자-기인 4xx 어드민 피드 제외', () => 
 
   it('getErrorLogStats: 모든 집계 쿼리(건수 4종+top+trend+platform)에 제외 조건을 적용한다', async () => {
     await service.getErrorLogStats();
-    const excludeCount = capturedClauses.filter((c) => c === EXCLUDE_CLAUSE).length;
+    const excludeCount = capturedClauses.filter(
+      (c) => c === EXCLUDE_CLAUSE,
+    ).length;
     // today·weekly·unresolved·affectedUsers·topErrors·hourlyTrend·platformBreakdown = 7
     expect(excludeCount).toBe(7);
   });
