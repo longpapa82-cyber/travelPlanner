@@ -25,6 +25,7 @@ import { ApiUsageService } from './api-usage.service';
 import { AuditAction } from './entities/audit-log.entity';
 import { CreateErrorLogDto } from './dto/create-error-log.dto';
 import { CreateAnnouncementDto } from './dto/create-announcement.dto';
+import { isExpectedFlowErrorMessage } from '../common/services/expected-flow-errors';
 import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
 import { detectPlatform } from '../common/utils/platform-detector';
 import { parseLang } from '../common/i18n';
@@ -251,43 +252,14 @@ export class AnnouncementsPublicController {
 export class ErrorLogController {
   constructor(private readonly adminService: AdminService) {}
 
-  /**
-   * V115 (V114-7): Expected-flow error messages that the client should NOT
-   * persist to the error_logs table. These are business-rule outcomes
-   * (quota reached, user-initiated cancel, rate limit) — noise that drowns
-   * out real signals in the admin dashboard.
-   *
-   * Matched as case-insensitive substring to tolerate minor wording drift.
-   */
-  // V115 (Gate 5 H1 fix): lowercase every pattern since isExpectedFlowError()
-  // lowercases the incoming message before substring matching — a mixed-case
-  // literal would never match.
-  // V187 P0-A: Removed silent-drop patterns that masked real failures.
-  // 'network error' / 'timeout of' / 'api 504' / 'authentication required'
-  // were dropping legitimate signals during V186 (subscription preflight fails,
-  // manual trip creation timeouts, token-expiry mid-flow). Only true business-rule
-  // outcomes that produce no actionable signal should be filtered here.
-  private static readonly IGNORED_PATTERNS = [
-    'monthly ai generation limit',
-    'ai 생성 제한',
-    'trip creation cancelled',
-    '여행 생성 취소',
-    'paywallerror',
-    'aborterror',
-    'request cancelled',
-  ];
-
-  private isExpectedFlowError(message: string): boolean {
-    const m = message.toLowerCase();
-    return ErrorLogController.IGNORED_PATTERNS.some((p) => m.includes(p));
-  }
-
   @Post()
   @Throttle({ short: { ttl: 60000, limit: 30 } })
   createErrorLog(@Req() req: any, @Body() dto: CreateErrorLogDto) {
-    // Silently drop expected-flow errors. Return 201 so the client's
-    // fire-and-forget logger doesn't retry or surface a failure toast.
-    if (this.isExpectedFlowError(dto.errorMessage ?? '')) {
+    // E05: expected-flow exclusion now shares one source of truth with the
+    // global filter (expected-flow-errors.ts) — the client reports by message
+    // (name is often lost), so it uses the message-substring axis. Silently
+    // drop and return 201 so the fire-and-forget logger doesn't retry.
+    if (isExpectedFlowErrorMessage(dto.errorMessage ?? '')) {
       return { filtered: true };
     }
     const ua = req.headers['user-agent'] as string | undefined;

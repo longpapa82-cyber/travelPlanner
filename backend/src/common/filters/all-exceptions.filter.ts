@@ -10,6 +10,7 @@ import { Request, Response } from 'express';
 import { DataSource } from 'typeorm';
 import { ErrorLog } from '../../admin/entities/error-log.entity';
 import { detectPlatform } from '../utils/platform-detector';
+import { isExpectedFlowErrorName } from '../services/expected-flow-errors';
 
 /**
  * Global exception filter that:
@@ -215,22 +216,6 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
   }
 
   /**
-   * Expected-flow error names that should never be persisted to ErrorLog.
-   * These represent user-initiated or business-rule outcomes (paywall,
-   * cancellation, explicit validation failures), not operational faults.
-   * Logging them pollutes the admin error dashboard and triggers false
-   * alerts on legitimate cancellation paths.
-   */
-  private static readonly EXPECTED_ERROR_NAMES = new Set<string>([
-    'PaywallError',
-    'QuotaExceededError',
-    'AbortError',
-    'CancelledError',
-    'CancelledException',
-    'RequestCancelledException',
-  ]);
-
-  /**
    * Determines if an error should be logged to the database.
    * Logs:
    * - All 5xx errors (server errors) — except expected cancellation/abort
@@ -239,8 +224,10 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
    * - 400 on auth endpoints (validation failures)
    */
   private shouldLogError(status: number, path: string, error: string): boolean {
-    // Never log expected-flow errors regardless of status
-    if (AllExceptionsFilter.EXPECTED_ERROR_NAMES.has(error)) return false;
+    // E05: single source of truth for expected-flow exclusion (shared with the
+    // client-report controller) — was a local name Set that drifted from the
+    // controller's message-substring list.
+    if (isExpectedFlowErrorName(error)) return false;
 
     // Always log 5xx errors
     if (status >= 500) return true;

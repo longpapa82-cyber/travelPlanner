@@ -15,9 +15,15 @@ import { ErrorLog } from '../../admin/entities/error-log.entity';
  * land a row in error_logs.
  *
  * The core writer is a plain function (`persistErrorLog`) so callers without a
- * DI context (the exception filter, which receives DataSource via a setter, and
- * the process-level handlers wired in main.ts) can use the exact same path as
- * DI-injected callers (cron, services) going through ErrorLogService.
+ * DI context (e.g. the exception filter, which receives DataSource via a
+ * setter) can use the exact same path as DI-injected callers (cron, services)
+ * going through ErrorLogService.
+ *
+ * E18 (doc accuracy, 2026-10): an earlier version of this comment claimed
+ * process-level handlers (uncaughtException/unhandledRejection) were "wired in
+ * main.ts". They are NOT — main.ts only registers the global filter. Wiring
+ * those handlers to this writer remains open work (audit E02). Do not assume a
+ * process crash lands in error_logs today.
  */
 
 export interface ErrorLogContext {
