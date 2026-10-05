@@ -57,20 +57,50 @@ export class AdminService {
   // Runs at 09:00 daily (after overnight traffic accumulates). If no entries
   // arrived in 24h but the app is in active testing, something is swallowing
   // errors upstream. Logs a WARN so Sentry/infra monitoring can alert.
+  //
+  // E16 (GPT 감사): a total-row count alone misses *partial* collection failure.
+  // The server filter and the client reporter write via independent paths — if
+  // the client path breaks (E03/E04-class contract bug) while the server filter
+  // keeps writing, the total stays non-zero and this check looked healthy. We
+  // now break the window down by source and WARN when the server path has rows
+  // but the client path contributed none (a one-sided outage signal).
   @Cron('0 9 * * *')
   async checkErrorLogsHealthcheck(): Promise<void> {
     const since = new Date();
     since.setDate(since.getDate() - 1);
-    const count = await this.errorLogRepository
+
+    const total = await this.errorLogRepository
       .createQueryBuilder('el')
       .where('el.createdAt >= :since', { since })
       .getCount();
-    if (count === 0) {
+
+    // Client-reported rows come through POST /error-logs and carry an app
+    // platform (ios/android) or the interceptor screen; server-filter rows are
+    // tagged with "METHOD /path". Count the client contribution explicitly.
+    const clientCount = await this.errorLogRepository
+      .createQueryBuilder('el')
+      .where('el.createdAt >= :since', { since })
+      .andWhere(
+        "(el.platform IN ('ios','android') OR el.screen = 'ApiInterceptor' OR el.screen LIKE 'ErrorBoundary%')",
+      )
+      .getCount();
+
+    if (total === 0) {
       this.logger.warn(
         '[HealthCheck] error_logs: 0 entries in the last 24h — possible silent failure in the reporting pipeline',
       );
+      return;
+    }
+
+    const serverCount = total - clientCount;
+    if (clientCount === 0 && serverCount > 0) {
+      this.logger.warn(
+        `[HealthCheck] error_logs: ${serverCount} server rows but 0 client reports in 24h — possible one-sided client-reporting outage (check POST /error-logs contract)`,
+      );
     } else {
-      this.logger.log(`[HealthCheck] error_logs: ${count} entries in last 24h`);
+      this.logger.log(
+        `[HealthCheck] error_logs: ${total} entries in last 24h (server=${serverCount}, client=${clientCount})`,
+      );
     }
   }
 
