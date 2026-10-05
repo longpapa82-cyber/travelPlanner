@@ -11,6 +11,7 @@ import { DataSource } from 'typeorm';
 import { ErrorLog } from '../../admin/entities/error-log.entity';
 import { detectPlatform } from '../utils/platform-detector';
 import { isExpectedFlowErrorName } from '../services/expected-flow-errors';
+import { maskPii } from '../utils/sanitize';
 
 /**
  * Global exception filter that:
@@ -168,12 +169,14 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         .save({
           userId: jwtUser?.userId,
           userEmail: jwtUser?.email,
-          errorMessage: errorMessage.slice(0, 500),
+          // E13: mask PII (email/JWT/credential kv) in free-text before persist.
+          errorMessage: maskPii(errorMessage.slice(0, 500)),
           errorName:
             exception instanceof Error
               ? exception.name?.slice(0, 100)
               : undefined,
-          stackTrace: exception instanceof Error ? exception.stack : undefined,
+          stackTrace:
+            exception instanceof Error ? maskPii(exception.stack) : undefined,
           severity: this.getSeverity(status),
           platform: detectPlatform(ua),
           screen: `${request.method} ${request.path}`.slice(0, 200),

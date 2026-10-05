@@ -9,6 +9,7 @@ import {
   ArrayMaxSize,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { maskPii } from '../../common/utils/sanitize';
 
 /**
  * V187 P1-C (Security #2): per-breadcrumb size cap.
@@ -66,6 +67,9 @@ const sanitizeBreadcrumbs = (
 const MAX_BREADCRUMBS = 50;
 
 export class CreateErrorLogDto {
+  // E13: mask PII (email/JWT/credential kv) on the client-report path too, so
+  // all three write paths (filter, service, this DTO) redact consistently.
+  @Transform(({ value }) => maskPii(value) ?? value)
   @IsString()
   @MaxLength(500)
   errorMessage: string;
@@ -76,10 +80,14 @@ export class CreateErrorLogDto {
   // @IsString validation, so array-shaped reports are no longer rejected with
   // 400 (which silently dropped the client-side device/app-version context of
   // every 5xx). String clients are unaffected (pass-through).
+  // E13: mask PII after the array→string normalization.
   @IsOptional()
-  @Transform(({ value }) =>
-    Array.isArray(value) ? value.map((v) => String(v)).join('\n') : value,
-  )
+  @Transform(({ value }) => {
+    const joined = Array.isArray(value)
+      ? value.map((v) => String(v)).join('\n')
+      : value;
+    return maskPii(joined) ?? joined;
+  })
   @IsString()
   @MaxLength(10000)
   stackTrace?: string;

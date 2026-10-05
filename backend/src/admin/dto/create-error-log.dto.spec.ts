@@ -18,6 +18,28 @@ async function validateDto(input: Record<string, unknown>) {
   return { dto, errors };
 }
 
+describe('CreateErrorLogDto — E13 PII 마스킹', () => {
+  it('errorMessage의 이메일·토큰을 마스킹한다', async () => {
+    const { dto, errors } = await validateDto({
+      errorMessage: 'login failed for alice@example.com token=abc123',
+    });
+    expect(errors).toHaveLength(0);
+    expect(dto.errorMessage).toContain('a***@***');
+    expect(dto.errorMessage).toContain('token=[redacted]');
+    expect(dto.errorMessage).not.toContain('alice@example.com');
+  });
+
+  it('stackTrace의 PII도 배열 정규화 후 마스킹한다', async () => {
+    const { dto, errors } = await validateDto({
+      errorMessage: 'boom',
+      stackTrace: ['at handler (bob@test.io)', 'password=hunter2'],
+    });
+    expect(errors).toHaveLength(0);
+    expect(dto.stackTrace).toContain('b***@***');
+    expect(dto.stackTrace).toContain('password=[redacted]');
+  });
+});
+
 describe('CreateErrorLogDto — E03 stackTrace 타입 계약', () => {
   it('문자열 stackTrace는 그대로 통과한다 (하위호환)', async () => {
     const { dto, errors } = await validateDto({

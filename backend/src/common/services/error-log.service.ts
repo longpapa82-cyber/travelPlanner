@@ -1,6 +1,7 @@
 import { Global, Injectable, Logger, Module } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { ErrorLog } from '../../admin/entities/error-log.entity';
+import { maskPii } from '../utils/sanitize';
 
 /**
  * Centralized error-log persistence.
@@ -64,9 +65,10 @@ export async function persistErrorLog(
     await dataSource.getRepository(ErrorLog).save({
       userId: ctx.userId,
       userEmail: ctx.userEmail,
-      errorMessage: extractMessage(err).slice(0, 500),
+      // E13: mask PII (email/JWT/credential kv) in free-text before persisting.
+      errorMessage: maskPii(extractMessage(err).slice(0, 500)),
       errorName: err instanceof Error ? err.name?.slice(0, 100) : undefined,
-      stackTrace: err instanceof Error ? err.stack : undefined,
+      stackTrace: err instanceof Error ? maskPii(err.stack) : undefined,
       severity: ctx.severity ?? 'error',
       platform: ctx.platform,
       screen: ctx.source.slice(0, 200),
