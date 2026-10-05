@@ -89,7 +89,16 @@
     "loadFailed": "오류 목록을 불러오지 못했습니다",
     "resolveFailed": "해결 처리에 실패했습니다",
     "showingStale": "(마지막 갱신 {{time}})",
-    "retry": "다시 시도"
+    "retry": "다시 시도",
+    "includeClient": "4xx 포함",
+    "clientHiddenHint": "사용자 기인 4xx(401·429·400)는 기본 숨김입니다. 통계에는 반영되지 않습니다.",
+    "clientIncludedHint": "사용자 기인 4xx를 포함해 표시 중입니다.",
+    "errorName": "오류 유형",
+    "httpStatus": "HTTP 상태",
+    "route": "경로",
+    "deviceModel": "기기 모델",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "브레드크럼"
   },
   "announcements": {
     "title": "공지사항",

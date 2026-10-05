@@ -89,7 +89,16 @@
     "resolveFailed": "标记为已解决失败",
     "showingStale": "(最后更新 {{time}})",
     "retry": "重试",
-    "platform": "平台"
+    "platform": "平台",
+    "includeClient": "包含 4xx",
+    "clientHiddenHint": "用户引起的 4xx（401/429/400）默认隐藏，且不计入统计。",
+    "clientIncludedHint": "正在显示用户引起的 4xx 错误。",
+    "errorName": "错误类型",
+    "httpStatus": "HTTP 状态",
+    "route": "路由",
+    "deviceModel": "设备型号",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "面包屑"
   },
   "announcements": {
     "title": "Announcements",

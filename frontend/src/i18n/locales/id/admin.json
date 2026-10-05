@@ -89,7 +89,16 @@
     "resolveFailed": "Gagal menandai sebagai terselesaikan",
     "showingStale": "(terakhir diperbarui {{time}})",
     "retry": "Coba lagi",
-    "platform": "Platform"
+    "platform": "Platform",
+    "includeClient": "Sertakan 4xx",
+    "clientHiddenHint": "Error 4xx akibat pengguna (401/429/400) disembunyikan secara bawaan dan tidak dihitung dalam statistik.",
+    "clientIncludedHint": "Menampilkan error 4xx akibat pengguna.",
+    "errorName": "Jenis error",
+    "httpStatus": "Status HTTP",
+    "route": "Rute",
+    "deviceModel": "Model perangkat",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "Breadcrumb"
   },
   "announcements": {
     "title": "Announcements",

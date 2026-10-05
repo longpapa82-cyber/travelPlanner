@@ -1122,7 +1122,7 @@ class ApiService {
     return response.data;
   }
 
-  async getAdminErrorLogs(params: { page?: number; limit?: number; severity?: string; resolved?: boolean; platform?: string }) {
+  async getAdminErrorLogs(params: { page?: number; limit?: number; severity?: string; resolved?: boolean; platform?: string; includeClientErrors?: boolean }) {
     const response = await this.api.get('/admin/error-logs', { params });
     return response.data;
   }

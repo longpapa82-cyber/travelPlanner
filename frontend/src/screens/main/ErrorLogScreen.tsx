@@ -36,6 +36,11 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
   const [severity, setSeverity] = useState('');
   const [platformFilter, setPlatformFilter] = useState('');
   const [unresolvedOnly, setUnresolvedOnly] = useState(false);
+  // E09: by default the feed hides user-attributable 4xx (401/429/400). Admins
+  // had no way to know those were hidden, nor to inspect them when a real auth/
+  // subscription regression surfaces as a 4xx. This toggle opts into the raw
+  // feed (backend `includeClientErrors=true`); stats stay server-fixed.
+  const [includeClientErrors, setIncludeClientErrors] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [expandedLog, setExpandedLog] = useState<string | null>(null);
@@ -65,6 +70,7 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
         severity: severity || undefined,
         resolved: unresolvedOnly ? false : undefined,
         platform: platformFilter || undefined,
+        includeClientErrors: includeClientErrors || undefined,
       });
       setLogs(prev => reset ? data.logs : [...prev, ...data.logs]);
       setTotalPages(data.totalPages);
@@ -79,9 +85,9 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [severity, unresolvedOnly, platformFilter]);
+  }, [severity, unresolvedOnly, platformFilter, includeClientErrors]);
 
-  useEffect(() => { fetchStats(); fetchLogs(1, true); }, [severity, unresolvedOnly, platformFilter]);
+  useEffect(() => { fetchStats(); fetchLogs(1, true); }, [severity, unresolvedOnly, platformFilter, includeClientErrors]);
 
   const handleRefresh = useCallback(() => {
     setRefreshing(true);
@@ -210,6 +216,18 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
           ))}
         </View>
+        {/* E09: client-4xx inclusion toggle + disclosure that the feed hides them by default. */}
+        <View style={[styles.filterRow, { marginTop: 8 }]}>
+          <TouchableOpacity
+            style={[styles.filterChip, includeClientErrors && { backgroundColor: theme.colors.primary }]}
+            onPress={() => setIncludeClientErrors(!includeClientErrors)}
+          >
+            <Text style={[styles.filterText, includeClientErrors && { color: '#fff' }]}>{t('errors.includeClient')}</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.filterHint}>
+          {includeClientErrors ? t('errors.clientIncludedHint') : t('errors.clientHiddenHint')}
+        </Text>
       </View>
     );
   };
@@ -221,7 +239,7 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
         <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
           {t('errors.topErrors')}
         </Text>
-        {stats.topErrors.slice(0, 5).map((err: any, i: number) => (
+        {stats.topErrors.slice(0, 10).map((err: any, i: number) => (
           <View key={i} style={[styles.topErrorRow, { borderBottomColor: theme.colors.border }]}>
             <View style={styles.topErrorInfo}>
               <Text style={[styles.topErrorMsg, { color: theme.colors.text }]} numberOfLines={1}>
@@ -270,9 +288,32 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
         </View>
         {isExpanded && (
           <View style={styles.logDetail}>
+            {/* E11: surface the V174 diagnostic fields that were stored but never
+                rendered, so the admin can narrow a cause from the screen (error
+                class, HTTP status, route, device model, UA, breadcrumbs). Stack
+                trace no longer capped at 8 lines once expanded. */}
+            <View style={styles.logDetailRow}>
+              {item.errorName && <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>{t('errors.errorName')}: {item.errorName}</Text>}
+              {typeof item.httpStatus === 'number' && <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>{t('errors.httpStatus')}: {item.httpStatus}</Text>}
+              {item.routeName && <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>{t('errors.route')}: {item.routeName}</Text>}
+              {item.deviceModel && <Text style={[styles.metaText, { color: theme.colors.textSecondary }]}>{t('errors.deviceModel')}: {item.deviceModel}</Text>}
+            </View>
             {item.stackTrace && (
-              <Text style={[styles.stackTrace, { color: theme.colors.textSecondary }]} numberOfLines={8}>
+              <Text style={[styles.stackTrace, { color: theme.colors.textSecondary }]} selectable>
                 {item.stackTrace}
+              </Text>
+            )}
+            {Array.isArray(item.breadcrumbs) && item.breadcrumbs.length > 0 && (
+              <View style={{ marginTop: 6 }}>
+                <Text style={[styles.metaText, { color: theme.colors.textSecondary, fontWeight: '600' }]}>{t('errors.breadcrumbs')}</Text>
+                <Text style={[styles.stackTrace, { color: theme.colors.textSecondary }]} selectable>
+                  {JSON.stringify(item.breadcrumbs, null, 2)}
+                </Text>
+              </View>
+            )}
+            {item.userAgent && (
+              <Text style={[styles.metaText, { color: theme.colors.textSecondary, marginTop: 4 }]} selectable>
+                {t('errors.userAgent')}: {item.userAgent}
               </Text>
             )}
             <View style={styles.logDetailRow}>
@@ -434,6 +475,10 @@ const createStyles = (theme: any, isDark: boolean) =>
     },
     errorBannerText: { flex: 1, color: '#DC2626', fontSize: 13 },
     errorBannerRetry: { color: '#DC2626', fontWeight: '700', fontSize: 13 },
+    filterHint: {
+      marginTop: 6, fontSize: 11,
+      color: isDark ? '#94A3B8' : '#64748B',
+    },
   });
 
 export default ErrorLogScreen;

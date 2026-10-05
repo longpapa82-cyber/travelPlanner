@@ -89,7 +89,16 @@
     "resolveFailed": "Không thể đánh dấu là đã giải quyết",
     "showingStale": "(cập nhật lần cuối {{time}})",
     "retry": "Thử lại",
-    "platform": "Nền tảng"
+    "platform": "Nền tảng",
+    "includeClient": "Bao gồm 4xx",
+    "clientHiddenHint": "Lỗi 4xx do người dùng gây ra (401/429/400) được ẩn theo mặc định và không tính vào thống kê.",
+    "clientIncludedHint": "Đang hiển thị các lỗi 4xx do người dùng gây ra.",
+    "errorName": "Loại lỗi",
+    "httpStatus": "Trạng thái HTTP",
+    "route": "Tuyến",
+    "deviceModel": "Kiểu thiết bị",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "Đường dẫn điều hướng"
   },
   "announcements": {
     "title": "Announcements",

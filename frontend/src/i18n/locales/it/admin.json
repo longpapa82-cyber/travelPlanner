@@ -89,7 +89,16 @@
     "resolveFailed": "Impossibile contrassegnare come risolto",
     "showingStale": "(ultimo aggiornamento {{time}})",
     "retry": "Riprova",
-    "platform": "Piattaforma"
+    "platform": "Piattaforma",
+    "includeClient": "Includi 4xx",
+    "clientHiddenHint": "Gli errori 4xx attribuibili all'utente (401/429/400) sono nascosti per impostazione predefinita ed esclusi dalle statistiche.",
+    "clientIncludedHint": "Visualizzazione degli errori 4xx attribuibili all'utente.",
+    "errorName": "Tipo di errore",
+    "httpStatus": "Stato HTTP",
+    "route": "Percorso",
+    "deviceModel": "Modello dispositivo",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "Breadcrumb"
   },
   "announcements": {
     "title": "Announcements",
