@@ -89,7 +89,16 @@
     "resolveFailed": "فشل وضع علامة كمحلول",
     "showingStale": "(آخر تحديث {{time}})",
     "retry": "إعادة المحاولة",
-    "platform": "المنصة"
+    "platform": "المنصة",
+    "includeClient": "تضمين 4xx",
+    "clientHiddenHint": "أخطاء 4xx المنسوبة للمستخدم (401/429/400) مخفية افتراضيًا ومستبعدة من الإحصاءات.",
+    "clientIncludedHint": "يتم عرض أخطاء 4xx المنسوبة للمستخدم.",
+    "errorName": "نوع الخطأ",
+    "httpStatus": "حالة HTTP",
+    "route": "المسار",
+    "deviceModel": "طراز الجهاز",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "مسار التنقل"
   },
   "announcements": {
     "title": "Announcements",

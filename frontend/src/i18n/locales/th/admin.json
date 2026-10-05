@@ -89,7 +89,16 @@
     "resolveFailed": "ทำเครื่องหมายว่าแก้ไขแล้วไม่สำเร็จ",
     "showingStale": "(อัปเดตล่าสุด {{time}})",
     "retry": "ลองอีกครั้ง",
-    "platform": "แพลตฟอร์ม"
+    "platform": "แพลตฟอร์ม",
+    "includeClient": "รวม 4xx",
+    "clientHiddenHint": "ข้อผิดพลาด 4xx ที่เกิดจากผู้ใช้ (401/429/400) จะถูกซ่อนตามค่าเริ่มต้นและไม่นับรวมในสถิติ",
+    "clientIncludedHint": "กำลังแสดงข้อผิดพลาด 4xx ที่เกิดจากผู้ใช้",
+    "errorName": "ประเภทข้อผิดพลาด",
+    "httpStatus": "สถานะ HTTP",
+    "route": "เส้นทาง",
+    "deviceModel": "รุ่นอุปกรณ์",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "เบรดครัมบ์"
   },
   "announcements": {
     "title": "Announcements",

@@ -89,7 +89,16 @@
     "loadFailed": "Failed to load error logs",
     "resolveFailed": "Failed to mark as resolved",
     "showingStale": "(last updated {{time}})",
-    "retry": "Retry"
+    "retry": "Retry",
+    "includeClient": "Include 4xx",
+    "clientHiddenHint": "User-attributable 4xx (401/429/400) are hidden by default and excluded from stats.",
+    "clientIncludedHint": "Showing user-attributable 4xx errors.",
+    "errorName": "Error type",
+    "httpStatus": "HTTP status",
+    "route": "Route",
+    "deviceModel": "Device model",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "Breadcrumbs"
   },
   "announcements": {
     "title": "Announcements",

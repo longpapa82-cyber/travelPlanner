@@ -89,7 +89,16 @@
     "resolveFailed": "解決済みへの変更に失敗しました",
     "showingStale": "(最終更新 {{time}})",
     "retry": "再試行",
-    "platform": "プラットフォーム"
+    "platform": "プラットフォーム",
+    "includeClient": "4xx を含める",
+    "clientHiddenHint": "ユーザー起因の 4xx（401・429・400）は既定で非表示で、統計には反映されません。",
+    "clientIncludedHint": "ユーザー起因の 4xx を含めて表示しています。",
+    "errorName": "エラー種別",
+    "httpStatus": "HTTP ステータス",
+    "route": "ルート",
+    "deviceModel": "デバイスモデル",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "パンくずリスト"
   },
   "announcements": {
     "title": "お知らせ",

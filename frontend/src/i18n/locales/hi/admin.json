@@ -89,7 +89,16 @@
     "resolveFailed": "हल किया गया के रूप में चिह्नित करने में विफल",
     "showingStale": "(अंतिम अपडेट {{time}})",
     "retry": "पुनः प्रयास करें",
-    "platform": "प्लेटफ़ॉर्म"
+    "platform": "प्लेटफ़ॉर्म",
+    "includeClient": "4xx शामिल करें",
+    "clientHiddenHint": "उपयोगकर्ता-जनित 4xx (401/429/400) डिफ़ॉल्ट रूप से छिपे होते हैं और आँकड़ों से बाहर रखे जाते हैं।",
+    "clientIncludedHint": "उपयोगकर्ता-जनित 4xx त्रुटियाँ दिखाई जा रही हैं।",
+    "errorName": "त्रुटि प्रकार",
+    "httpStatus": "HTTP स्थिति",
+    "route": "रूट",
+    "deviceModel": "डिवाइस मॉडल",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "ब्रेडक्रंब"
   },
   "announcements": {
     "title": "Announcements",

@@ -89,7 +89,16 @@
     "resolveFailed": "Çözüldü olarak işaretlenemedi",
     "showingStale": "(son güncelleme {{time}})",
     "retry": "Yeniden dene",
-    "platform": "Platform"
+    "platform": "Platform",
+    "includeClient": "4xx'i dahil et",
+    "clientHiddenHint": "Kullanıcı kaynaklı 4xx hataları (401/429/400) varsayılan olarak gizlidir ve istatistiklere dahil edilmez.",
+    "clientIncludedHint": "Kullanıcı kaynaklı 4xx hataları gösteriliyor.",
+    "errorName": "Hata türü",
+    "httpStatus": "HTTP durumu",
+    "route": "Rota",
+    "deviceModel": "Cihaz modeli",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "İçerik haritası"
   },
   "announcements": {
     "title": "Announcements",

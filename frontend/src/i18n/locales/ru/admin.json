@@ -89,7 +89,16 @@
     "resolveFailed": "Не удалось отметить как решённое",
     "showingStale": "(последнее обновление {{time}})",
     "retry": "Повторить",
-    "platform": "Платформа"
+    "platform": "Платформа",
+    "includeClient": "Включить 4xx",
+    "clientHiddenHint": "Ошибки 4xx по вине пользователя (401/429/400) скрыты по умолчанию и не учитываются в статистике.",
+    "clientIncludedHint": "Показаны ошибки 4xx по вине пользователя.",
+    "errorName": "Тип ошибки",
+    "httpStatus": "HTTP-статус",
+    "route": "Маршрут",
+    "deviceModel": "Модель устройства",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "Навигационная цепочка"
   },
   "announcements": {
     "title": "Announcements",

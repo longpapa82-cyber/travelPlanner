@@ -89,7 +89,16 @@
     "resolveFailed": "Falha ao marcar como resolvido",
     "showingStale": "(última atualização {{time}})",
     "retry": "Tentar novamente",
-    "platform": "Plataforma"
+    "platform": "Plataforma",
+    "includeClient": "Incluir 4xx",
+    "clientHiddenHint": "Erros 4xx atribuíveis ao usuário (401/429/400) ficam ocultos por padrão e são excluídos das estatísticas.",
+    "clientIncludedHint": "Exibindo erros 4xx atribuíveis ao usuário.",
+    "errorName": "Tipo de erro",
+    "httpStatus": "Status HTTP",
+    "route": "Rota",
+    "deviceModel": "Modelo do dispositivo",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "Trilha de navegação"
   },
   "announcements": {
     "title": "Announcements",

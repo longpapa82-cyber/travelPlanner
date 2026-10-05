@@ -89,7 +89,16 @@
     "resolveFailed": "Als gelöst markieren fehlgeschlagen",
     "showingStale": "(zuletzt aktualisiert {{time}})",
     "retry": "Erneut versuchen",
-    "platform": "Plattform"
+    "platform": "Plattform",
+    "includeClient": "4xx einbeziehen",
+    "clientHiddenHint": "Nutzerbedingte 4xx-Fehler (401/429/400) sind standardmäßig ausgeblendet und werden nicht in die Statistik einbezogen.",
+    "clientIncludedHint": "Nutzerbedingte 4xx-Fehler werden angezeigt.",
+    "errorName": "Fehlertyp",
+    "httpStatus": "HTTP-Status",
+    "route": "Route",
+    "deviceModel": "Gerätemodell",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "Breadcrumbs"
   },
   "announcements": {
     "title": "Announcements",

@@ -89,7 +89,16 @@
     "resolveFailed": "Échec du marquage comme résolu",
     "showingStale": "(dernière mise à jour {{time}})",
     "retry": "Réessayer",
-    "platform": "Plateforme"
+    "platform": "Plateforme",
+    "includeClient": "Inclure les 4xx",
+    "clientHiddenHint": "Les erreurs 4xx imputables à l'utilisateur (401/429/400) sont masquées par défaut et exclues des statistiques.",
+    "clientIncludedHint": "Affichage des erreurs 4xx imputables à l'utilisateur.",
+    "errorName": "Type d'erreur",
+    "httpStatus": "Statut HTTP",
+    "route": "Route",
+    "deviceModel": "Modèle d'appareil",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "Fil d'Ariane"
   },
   "announcements": {
     "title": "Announcements",

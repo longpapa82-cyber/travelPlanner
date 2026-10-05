@@ -89,7 +89,16 @@
     "resolveFailed": "Gagal menanda sebagai selesai",
     "showingStale": "(kemas kini terakhir {{time}})",
     "retry": "Cuba semula",
-    "platform": "Platform"
+    "platform": "Platform",
+    "includeClient": "Sertakan 4xx",
+    "clientHiddenHint": "Ralat 4xx berpunca daripada pengguna (401/429/400) disembunyikan secara lalai dan dikecualikan daripada statistik.",
+    "clientIncludedHint": "Memaparkan ralat 4xx berpunca daripada pengguna.",
+    "errorName": "Jenis ralat",
+    "httpStatus": "Status HTTP",
+    "route": "Laluan",
+    "deviceModel": "Model peranti",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "Breadcrumb"
   },
   "announcements": {
     "title": "Announcements",

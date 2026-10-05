@@ -89,7 +89,16 @@
     "resolveFailed": "No se pudo marcar como resuelto",
     "showingStale": "(última actualización {{time}})",
     "retry": "Reintentar",
-    "platform": "Plataforma"
+    "platform": "Plataforma",
+    "includeClient": "Incluir 4xx",
+    "clientHiddenHint": "Los errores 4xx atribuibles al usuario (401/429/400) están ocultos por defecto y excluidos de las estadísticas.",
+    "clientIncludedHint": "Mostrando errores 4xx atribuibles al usuario.",
+    "errorName": "Tipo de error",
+    "httpStatus": "Estado HTTP",
+    "route": "Ruta",
+    "deviceModel": "Modelo de dispositivo",
+    "userAgent": "User-Agent",
+    "breadcrumbs": "Ruta de navegación"
   },
   "announcements": {
     "title": "Announcements",
