@@ -85,6 +85,10 @@
     "noErrors": "Ошибки не найдены",
     "loadMore": "Загрузить ещё",
     "occurrences": "раз",
+    "loadFailed": "Не удалось загрузить журналы ошибок",
+    "resolveFailed": "Не удалось отметить как решённое",
+    "showingStale": "(последнее обновление {{time}})",
+    "retry": "Повторить",
     "platform": "Платформа"
   },
   "announcements": {

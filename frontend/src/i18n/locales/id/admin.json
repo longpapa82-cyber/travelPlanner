@@ -85,6 +85,10 @@
     "noErrors": "Tidak ada kesalahan ditemukan",
     "loadMore": "Muat Lagi",
     "occurrences": "kali",
+    "loadFailed": "Gagal memuat log kesalahan",
+    "resolveFailed": "Gagal menandai sebagai terselesaikan",
+    "showingStale": "(terakhir diperbarui {{time}})",
+    "retry": "Coba lagi",
     "platform": "Platform"
   },
   "announcements": {

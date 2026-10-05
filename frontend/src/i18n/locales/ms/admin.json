@@ -85,6 +85,10 @@
     "noErrors": "Tiada ralat ditemui",
     "loadMore": "Muat Lagi",
     "occurrences": "kali",
+    "loadFailed": "Gagal memuatkan log ralat",
+    "resolveFailed": "Gagal menanda sebagai selesai",
+    "showingStale": "(kemas kini terakhir {{time}})",
+    "retry": "Cuba semula",
     "platform": "Platform"
   },
   "announcements": {

@@ -239,9 +239,18 @@ class ApiService {
           // string so admin can filter + group. `routeName` placeholder is
           // populated elsewhere where a navigation ref is available; for
           // the pure interceptor path we can at least tag the endpoint.
+          // E03: the backend filter returns `message` as a string[]. Join it
+          // into a string here so `stackTrace` honors the DTO's string contract.
+          // (The server DTO also normalizes arrays defensively, protecting
+          // clients that haven't received this OTA; this closes the contract on
+          // the producer side for fresh reports.)
+          const rawStack = (error.response?.data as any)?.message;
+          const stackTrace = Array.isArray(rawStack)
+            ? rawStack.map((m: unknown) => String(m)).join('\n')
+            : rawStack || error.message;
           this.reportError({
             errorMessage: `[API ${status}] ${error.config?.method?.toUpperCase()} ${url}`,
-            stackTrace: (error.response?.data as any)?.message || error.message,
+            stackTrace,
             screen: 'ApiInterceptor',
             severity: 'error',
             deviceOS: Platform.OS,
@@ -1237,10 +1246,26 @@ class ApiService {
       if (queue.length === 0) return;
       const remaining: Array<Record<string, unknown>> = [];
       for (const item of queue) {
+        // E04: strip local-only queue metadata (`queuedAt`) before POST. The
+        // server DTO runs with forbidNonWhitelisted:true, so sending queuedAt
+        // caused "property queuedAt should not exist" 400s — permanently
+        // jamming every queued report. A 400 means the payload is structurally
+        // invalid (not a transient failure), so we DROP it instead of retrying
+        // forever; only network/5xx keep the item queued for a later drain.
+        const { queuedAt: _queuedAt, ...payload } = item;
         try {
-          await this.api.post('/error-logs', item);
-        } catch {
-          remaining.push(item);
+          await this.api.post('/error-logs', payload);
+        } catch (err) {
+          const status = (err as { response?: { status?: number } })?.response
+            ?.status;
+          const isPermanentReject =
+            typeof status === 'number' && status >= 400 && status < 500;
+          if (isPermanentReject) {
+            this.warnReportFailure(err, 'minimal-retry');
+            // drop: re-sending an unaccepted payload will never succeed.
+          } else {
+            remaining.push(item);
+          }
         }
       }
       if (remaining.length === 0) {

@@ -85,6 +85,10 @@
     "noErrors": "لم يتم العثور على أخطاء",
     "loadMore": "تحميل المزيد",
     "occurrences": "مرات",
+    "loadFailed": "فشل تحميل سجلات الأخطاء",
+    "resolveFailed": "فشل وضع علامة كمحلول",
+    "showingStale": "(آخر تحديث {{time}})",
+    "retry": "إعادة المحاولة",
     "platform": "المنصة"
   },
   "announcements": {

@@ -85,6 +85,10 @@
     "noErrors": "Không tìm thấy lỗi",
     "loadMore": "Xem thêm",
     "occurrences": "lần",
+    "loadFailed": "Không thể tải nhật ký lỗi",
+    "resolveFailed": "Không thể đánh dấu là đã giải quyết",
+    "showingStale": "(cập nhật lần cuối {{time}})",
+    "retry": "Thử lại",
     "platform": "Nền tảng"
   },
   "announcements": {

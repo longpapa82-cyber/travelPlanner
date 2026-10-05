@@ -239,6 +239,49 @@ describe('AllExceptionsFilter', () => {
     });
   });
 
+  describe('non-HttpException mapping', () => {
+    it('maps BadRequestError (body-parser malformed payload) to 400, not 500', () => {
+      // Production RCA: bot traffic sending broken JSON to POST /user/register
+      // surfaced as BadRequestError (non-Nest, http-errors family) and was
+      // recorded as a 500 "An unexpected error occurred" — a client fault
+      // misclassified as a server fault.
+      const exception = new Error('Unexpected token < in JSON at position 0');
+      exception.name = 'BadRequestError';
+      mockRequest.path = '/api/user/register';
+      mockRequest.url = '/api/user/register';
+
+      filter.catch(exception, mockHost);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(400);
+      const body = mockResponse.json.mock.calls[0][0];
+      expect(body.statusCode).toBe(400);
+      expect(body.error).toBe('BadRequestError');
+      // Original parse detail must not leak to the client
+      expect(JSON.stringify(body)).not.toContain('Unexpected token');
+    });
+
+    it('does not persist BadRequestError to error_logs (bot noise)', () => {
+      const exception = new Error('request aborted');
+      exception.name = 'BadRequestError';
+      mockRequest.path = '/';
+      mockRequest.url = '/';
+
+      filter.catch(exception, mockHost);
+
+      expect(mockRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('still maps unknown non-Http exceptions to 500', () => {
+      const exception = new Error('boom');
+
+      filter.catch(exception, mockHost);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(500);
+      const body = mockResponse.json.mock.calls[0][0];
+      expect(body.error).toBe('InternalServerError');
+    });
+  });
+
   describe('response formatting', () => {
     it('should format error response correctly', () => {
       const exception = new HttpException(

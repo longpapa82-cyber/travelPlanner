@@ -85,6 +85,10 @@
     "noErrors": "Hata bulunamadı",
     "loadMore": "Daha Fazla Yükle",
     "occurrences": "kez",
+    "loadFailed": "Hata günlükleri yüklenemedi",
+    "resolveFailed": "Çözüldü olarak işaretlenemedi",
+    "showingStale": "(son güncelleme {{time}})",
+    "retry": "Yeniden dene",
     "platform": "Platform"
   },
   "announcements": {

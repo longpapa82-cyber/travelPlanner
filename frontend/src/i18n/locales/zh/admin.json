@@ -85,6 +85,10 @@
     "noErrors": "无错误",
     "loadMore": "加载更多",
     "occurrences": "次",
+    "loadFailed": "加载错误日志失败",
+    "resolveFailed": "标记为已解决失败",
+    "showingStale": "(最后更新 {{time}})",
+    "retry": "重试",
     "platform": "平台"
   },
   "announcements": {

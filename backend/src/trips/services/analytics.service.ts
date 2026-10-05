@@ -23,6 +23,15 @@ export interface TravelTrend {
   topInterests: string[];
 }
 
+export interface DestinationRecommendation {
+  recommendedDuration: number;
+  recommendedTravelers: number;
+  bestMonths: number[];
+  budget?: string;
+  travelStyle?: string;
+  topActivities: string[];
+}
+
 export interface UserPreferenceStats {
   budgetDistribution: Record<string, number>;
   travelStyleDistribution: Record<string, number>;
@@ -35,10 +44,41 @@ export interface UserPreferenceStats {
 export class AnalyticsService {
   private readonly logger = new Logger(AnalyticsService.name);
 
+  /**
+   * In-memory TTL cache for the heavy aggregation endpoints.
+   * getPopularDestinations / getDestinationRecommendations full-load 3 months
+   * of trips (with itineraries) and aggregate in memory on every request —
+   * the prime suspect for production 504s. Results are user-independent
+   * aggregates, so a simple process-wide cache keyed by endpoint+params is
+   * safe. Error fallbacks are never cached.
+   */
+  private static readonly CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+  private readonly cache = new Map<
+    string,
+    { expiresAt: number; value: unknown }
+  >();
+
   constructor(
     @InjectRepository(Trip)
     private tripRepository: Repository<Trip>,
   ) {}
+
+  private getCached<T>(key: string): T | undefined {
+    const entry = this.cache.get(key);
+    if (!entry) return undefined;
+    if (Date.now() > entry.expiresAt) {
+      this.cache.delete(key);
+      return undefined;
+    }
+    return entry.value as T;
+  }
+
+  private setCached(key: string, value: unknown): void {
+    this.cache.set(key, {
+      value,
+      expiresAt: Date.now() + AnalyticsService.CACHE_TTL_MS,
+    });
+  }
 
   /**
    * 최근 3개월 여행 데이터를 기반으로 인기 여행지 분석
@@ -46,6 +86,10 @@ export class AnalyticsService {
   async getPopularDestinations(
     limit: number = 10,
   ): Promise<DestinationStats[]> {
+    const cacheKey = `popular-destinations:${limit}`;
+    const cached = this.getCached<DestinationStats[]>(cacheKey);
+    if (cached) return cached;
+
     const threeMonthsAgo = new Date();
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
@@ -130,7 +174,11 @@ export class AnalyticsService {
       }
 
       // 인기도 순으로 정렬
-      return stats.sort((a, b) => b.tripCount - a.tripCount).slice(0, limit);
+      const result = stats
+        .sort((a, b) => b.tripCount - a.tripCount)
+        .slice(0, limit);
+      this.setCached(cacheKey, result);
+      return result;
     } catch (error) {
       this.logger.error(
         `Failed to get popular destinations: ${getErrorMessage(error)}`,
@@ -296,14 +344,13 @@ export class AnalyticsService {
   /**
    * 특정 여행지에 대한 추천 정보
    */
-  async getDestinationRecommendations(destination: string): Promise<{
-    recommendedDuration: number;
-    recommendedTravelers: number;
-    bestMonths: number[];
-    budget?: string;
-    travelStyle?: string;
-    topActivities: string[];
-  }> {
+  async getDestinationRecommendations(
+    destination: string,
+  ): Promise<DestinationRecommendation> {
+    const cacheKey = `destination-recommendations:${destination.toLowerCase().trim()}`;
+    const cached = this.getCached<DestinationRecommendation>(cacheKey);
+    if (cached) return cached;
+
     const threeMonthsAgo = new Date();
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
@@ -323,12 +370,14 @@ export class AnalyticsService {
       );
 
       if (relevantTrips.length === 0) {
-        return {
+        const fallback: DestinationRecommendation = {
           recommendedDuration: 5,
           recommendedTravelers: 2,
           bestMonths: [],
           topActivities: [],
         };
+        this.setCached(cacheKey, fallback);
+        return fallback;
       }
 
       // 평균 여행 기간
@@ -399,7 +448,7 @@ export class AnalyticsService {
         .slice(0, 10)
         .map(([activity]) => activity);
 
-      return {
+      const result: DestinationRecommendation = {
         recommendedDuration,
         recommendedTravelers,
         bestMonths,
@@ -407,6 +456,8 @@ export class AnalyticsService {
         travelStyle,
         topActivities,
       };
+      this.setCached(cacheKey, result);
+      return result;
     } catch (error) {
       this.logger.error(
         `Failed to get destination recommendations: ${getErrorMessage(error)}`,

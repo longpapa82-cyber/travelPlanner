@@ -8,16 +8,36 @@ import { ErrorLog } from './entities/error-log.entity';
 import { kstMidnightUtc } from '../common/kst';
 
 /**
- * Internal / bot accounts to exclude from operator-facing stats and the member
- * list. hoonjae723@gmail.com is a real admin account, but the aisoftsale unified
- * admin dashboard logs in AS this account every ~10 minutes (server-side, UA
- * "node") to poll each service. That floods audit_logs with LOGIN events and
- * keeps its lastLoginAt/lastActiveAt pinned to "now", so it always sat at the
- * top of the member list and masked real user activity. Excluding it here keeps
- * "이용자 현황" honest. (The systemic fix — the dashboard using long-lived
- * refresh tokens instead of full re-login — lives in the aisoftsale-admin repo.)
+ * Internal / bot accounts to exclude from operator-facing ACTIVE stats (DAU/WAU)
+ * and the member list. The aisoftsale unified admin dashboard logs in AS an admin
+ * account every ~10 minutes (server-side, UA "node") to poll each service, which
+ * pins its lastLoginAt to "now" and inflates active counts by 1 ("오늘 활성 1"
+ * phantom). The operator also self-signs-up with these accounts to smoke-test.
+ *
+ * Kept in EXACT sync with the admin's memberFilter.ts (EXCLUDED_ADMIN_EMAILS) and
+ * myPet's 0083 migration so display layer and every source exclude the same set
+ * (CR-01). Exact email match only — never LIKE '%admin%' (would drop real users).
  */
-const INTERNAL_EMAILS = ['hoonjae723@gmail.com'];
+const INTERNAL_EMAILS = [
+  'longpapa82@gmail.com',
+  'hoonjae723@gmail.com',
+  'hoonjae072@gmail.com',
+];
+/** Synthetic uptime/app-review bots (e.g. reviewer@cloudtestlabaccounts.com). */
+const INTERNAL_EMAIL_DOMAIN = 'cloudtestlabaccounts.com';
+
+/**
+ * SQL WHERE fragment (+ params) that excludes internal/bot accounts from an
+ * active-user query. Applied identically to DAU, WAU, and the per-platform daily
+ * breakdown so the three never drift. A NULL email is kept (can't identify → don't
+ * silently drop a real row); an exact admin email or the test domain is excluded.
+ */
+const EXCLUDE_INTERNAL_SQL =
+  '(u.email IS NULL OR (u.email NOT IN (:...internalEmails) AND u.email NOT ILIKE :internalDomain))';
+const EXCLUDE_INTERNAL_PARAMS = {
+  internalEmails: INTERNAL_EMAILS,
+  internalDomain: `%@${INTERNAL_EMAIL_DOMAIN}`,
+};
 
 @Injectable()
 export class AdminService {
@@ -99,9 +119,7 @@ export class AdminService {
     const todayActive = await this.userRepository
       .createQueryBuilder('u')
       .where('u.lastLoginAt >= :today', { today })
-      .andWhere('(u.email IS NULL OR u.email NOT IN (:...internalEmails))', {
-        internalEmails: INTERNAL_EMAILS,
-      })
+      .andWhere(EXCLUDE_INTERNAL_SQL, EXCLUDE_INTERNAL_PARAMS)
       .getCount();
 
     const weekAgo = new Date();
@@ -110,9 +128,7 @@ export class AdminService {
     const weeklyActive = await this.userRepository
       .createQueryBuilder('u')
       .where('u.lastLoginAt >= :weekAgo', { weekAgo })
-      .andWhere('(u.email IS NULL OR u.email NOT IN (:...internalEmails))', {
-        internalEmails: INTERNAL_EMAILS,
-      })
+      .andWhere(EXCLUDE_INTERNAL_SQL, EXCLUDE_INTERNAL_PARAMS)
       .getCount();
 
     // Daily signups for last 30 days
@@ -196,6 +212,10 @@ export class AdminService {
         'android',
       )
       .where('u.lastLoginAt >= :thirtyDaysAgo', { thirtyDaysAgo })
+      // Same internal/bot exclusion as DAU/WAU so the daily breakdown agrees with
+      // the headline active counts (previously this query had no exclusion → its
+      // per-day totals were inflated by the admin poll login).
+      .andWhere(EXCLUDE_INTERNAL_SQL, EXCLUDE_INTERNAL_PARAMS)
       .groupBy("TO_CHAR(u.lastLoginAt AT TIME ZONE 'Asia/Seoul', 'YYYY-MM-DD')")
       .orderBy('date', 'ASC')
       .getRawMany();
@@ -232,10 +252,9 @@ export class AdminService {
 
     // Exclude internal/bot accounts (see INTERNAL_EMAILS) so automated dashboard
     // logins don't dominate the "최근 접속" ordering or mask real user activity.
-    qb.andWhere(
-      '(u.email IS NULL OR u.email NOT IN (:...internalEmails))',
-      { internalEmails: INTERNAL_EMAILS },
-    );
+    qb.andWhere('(u.email IS NULL OR u.email NOT IN (:...internalEmails))', {
+      internalEmails: INTERNAL_EMAILS,
+    });
 
     if (search) {
       qb.andWhere('(u.name ILIKE :search OR u.email ILIKE :search)', {
@@ -282,6 +301,16 @@ export class AdminService {
     return this.errorLogRepository.save(log);
   }
 
+  /**
+   * 사용자-기인 클라이언트 오류(4xx: 비밀번호 오입력 401, Throttler 429,
+   * malformed body 400 등)는 서버 결함이 아니므로 어드민 오류 피드·통계에서
+   * 기본 제외한다. 기록(all-exceptions.filter)은 전량 유지 — 숨길 뿐 지우지
+   * 않으며, getErrorLogs(includeClientErrors=true)로 언제든 조회 가능.
+   * httpStatus가 null인 행(순수 클라이언트 오류·SLOW 로그)은 계속 노출.
+   */
+  private static readonly EXCLUDE_CLIENT_4XX =
+    '(e.httpStatus IS NULL OR e.httpStatus < 400 OR e.httpStatus >= 500)';
+
   async getErrorLogStats(now: Date = new Date()) {
     // KST midnight (see getUserStats) so "오늘 오류" counts the Korean day.
     const today = kstMidnightUtc(now);
@@ -292,22 +321,26 @@ export class AdminService {
     const todayErrors = await this.errorLogRepository
       .createQueryBuilder('e')
       .where('e.createdAt >= :today', { today })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .getCount();
 
     const weeklyErrors = await this.errorLogRepository
       .createQueryBuilder('e')
       .where('e.createdAt >= :weekAgo', { weekAgo })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .getCount();
 
     const unresolvedErrors = await this.errorLogRepository
       .createQueryBuilder('e')
       .where('e.isResolved = false')
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .getCount();
 
     const affectedUsers = await this.errorLogRepository
       .createQueryBuilder('e')
       .select('COUNT(DISTINCT e.userId)', 'count')
       .where('e.createdAt >= :weekAgo', { weekAgo })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .getRawOne();
 
     // Top errors
@@ -318,6 +351,7 @@ export class AdminService {
       .addSelect('COUNT(*)', 'count')
       .addSelect('MAX(e.createdAt)', 'lastOccurrence')
       .where('e.createdAt >= :weekAgo', { weekAgo })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .groupBy('e.errorMessage')
       .addGroupBy('e.screen')
       .orderBy('count', 'DESC')
@@ -333,6 +367,7 @@ export class AdminService {
       .select("TO_CHAR(e.createdAt, 'YYYY-MM-DD HH24')", 'hour')
       .addSelect('COUNT(*)', 'count')
       .where('e.createdAt >= :dayAgo', { dayAgo })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .groupBy("TO_CHAR(e.createdAt, 'YYYY-MM-DD HH24')")
       .orderBy('hour', 'ASC')
       .getRawMany();
@@ -355,6 +390,7 @@ export class AdminService {
         'warning',
       )
       .where('e.createdAt >= :weekAgo', { weekAgo })
+      .andWhere(AdminService.EXCLUDE_CLIENT_4XX)
       .groupBy('e.platform')
       .getRawMany();
 
@@ -368,15 +404,16 @@ export class AdminService {
     };
 
     for (const row of platformBreakdownRaw) {
-      const key = row.platform || 'web';
-      if (platformBreakdown[key]) {
-        platformBreakdown[key] = {
-          total: parseInt(row.total, 10),
-          fatal: parseInt(row.fatal, 10),
-          error: parseInt(row.error, 10),
-          warning: parseInt(row.warning, 10),
-        };
-      }
+      // E08: platform이 null이거나 web/ios/android가 아닌 값(백그라운드 작업,
+      // UA 미상 등)은 모두 'web' 버킷으로 접는다. 과거 구현은 대입(=)이라 null
+      // 행과 web 행이 공존하면 뒤 행이 앞 행을 덮어써 합계가 손실됐다. 누적(+=)
+      // 으로 바꿔 같은 버킷으로 접히는 여러 행의 수치를 보존한다.
+      const key =
+        row.platform && platformBreakdown[row.platform] ? row.platform : 'web';
+      platformBreakdown[key].total += parseInt(row.total, 10);
+      platformBreakdown[key].fatal += parseInt(row.fatal, 10);
+      platformBreakdown[key].error += parseInt(row.error, 10);
+      platformBreakdown[key].warning += parseInt(row.warning, 10);
     }
 
     return {
@@ -396,10 +433,15 @@ export class AdminService {
     severity?: string,
     resolved?: boolean,
     platform?: string,
+    includeClientErrors = false,
   ) {
     const qb = this.errorLogRepository
       .createQueryBuilder('e')
       .orderBy('e.createdAt', 'DESC');
+
+    if (!includeClientErrors) {
+      qb.andWhere(AdminService.EXCLUDE_CLIENT_4XX);
+    }
 
     if (severity) {
       qb.andWhere('e.severity = :severity', { severity });

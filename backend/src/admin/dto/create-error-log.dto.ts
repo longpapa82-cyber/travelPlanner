@@ -70,7 +70,16 @@ export class CreateErrorLogDto {
   @MaxLength(500)
   errorMessage: string;
 
+  // E03: the global filter returns `message` as an array, and the frontend 5xx
+  // auto-reporter forwards that value here as `stackTrace`. Accept both string
+  // and string[] by normalizing an array into a newline-joined string BEFORE
+  // @IsString validation, so array-shaped reports are no longer rejected with
+  // 400 (which silently dropped the client-side device/app-version context of
+  // every 5xx). String clients are unaffected (pass-through).
   @IsOptional()
+  @Transform(({ value }) =>
+    Array.isArray(value) ? value.map((v) => String(v)).join('\n') : value,
+  )
   @IsString()
   @MaxLength(10000)
   stackTrace?: string;

@@ -68,6 +68,24 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         extra = rest;
       }
       error = exception.name;
+    } else if (
+      exception instanceof Error &&
+      exception.name === 'BadRequestError'
+    ) {
+      // Known non-Nest client errors → 400. body-parser (http-errors family)
+      // throws BadRequestError for malformed payloads (entity.parse.failed,
+      // request aborted, ...). These were previously misclassified as 500
+      // "An unexpected error occurred", so bot traffic posting broken JSON
+      // polluted error_logs as server faults. Response stays generic; the
+      // original message + stack go to the server log only.
+      status = HttpStatus.BAD_REQUEST;
+      message = 'Invalid request payload';
+      error = 'BadRequestError';
+
+      this.logger.warn(
+        `Client error (BadRequestError) on ${request.method} ${request.url}: ${exception.message}`,
+        exception.stack,
+      );
     } else {
       // Unknown/unhandled exceptions → 500
       status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -317,6 +335,8 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     'image processing failed': '이미지 처리에 실패했습니다.',
     // Share
     'invalid share token format': '유효하지 않은 공유 링크입니다.',
+    // body-parser / malformed payload (mapped to 400 above)
+    'invalid request payload': '잘못된 요청입니다. 입력 내용을 확인해주세요.',
     // General
     'an unexpected error occurred':
       '예기치 않은 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',

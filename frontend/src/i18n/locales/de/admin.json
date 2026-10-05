@@ -85,6 +85,10 @@
     "noErrors": "Keine Fehler gefunden",
     "loadMore": "Mehr laden",
     "occurrences": "mal",
+    "loadFailed": "Fehlerprotokolle konnten nicht geladen werden",
+    "resolveFailed": "Als gelöst markieren fehlgeschlagen",
+    "showingStale": "(zuletzt aktualisiert {{time}})",
+    "retry": "Erneut versuchen",
     "platform": "Plattform"
   },
   "announcements": {

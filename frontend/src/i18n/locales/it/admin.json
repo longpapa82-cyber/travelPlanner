@@ -85,6 +85,10 @@
     "noErrors": "Nessun errore trovato",
     "loadMore": "Carica altri",
     "occurrences": "volte",
+    "loadFailed": "Impossibile caricare i log degli errori",
+    "resolveFailed": "Impossibile contrassegnare come risolto",
+    "showingStale": "(ultimo aggiornamento {{time}})",
+    "retry": "Riprova",
     "platform": "Piattaforma"
   },
   "announcements": {

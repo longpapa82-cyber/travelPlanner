@@ -236,6 +236,8 @@ rsync -az --delete \
   --exclude='node_modules' \
   --exclude='.env' \
   --exclude='.env.production' \
+  --exclude='*.env' \
+  --exclude='docker-compose.admin.yml' \
   --exclude='.expo' \
   --exclude='dist' \
   --exclude='uploads' \

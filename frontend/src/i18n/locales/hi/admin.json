@@ -85,6 +85,10 @@
     "noErrors": "कोई त्रुटि नहीं मिली",
     "loadMore": "और लोड करें",
     "occurrences": "बार",
+    "loadFailed": "त्रुटि लॉग लोड करने में विफल",
+    "resolveFailed": "हल किया गया के रूप में चिह्नित करने में विफल",
+    "showingStale": "(अंतिम अपडेट {{time}})",
+    "retry": "पुनः प्रयास करें",
     "platform": "प्लेटफ़ॉर्म"
   },
   "announcements": {
