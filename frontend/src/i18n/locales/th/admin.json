@@ -85,6 +85,10 @@
     "noErrors": "ไม่พบข้อผิดพลาด",
     "loadMore": "โหลดเพิ่มเติม",
     "occurrences": "ครั้ง",
+    "loadFailed": "โหลดบันทึกข้อผิดพลาดไม่สำเร็จ",
+    "resolveFailed": "ทำเครื่องหมายว่าแก้ไขแล้วไม่สำเร็จ",
+    "showingStale": "(อัปเดตล่าสุด {{time}})",
+    "retry": "ลองอีกครั้ง",
     "platform": "แพลตฟอร์ม"
   },
   "announcements": {

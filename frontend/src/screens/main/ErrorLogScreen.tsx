@@ -39,12 +39,22 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [expandedLog, setExpandedLog] = useState<string | null>(null);
+  // E10: distinguish "query failed" from "no errors". Swallowing fetch errors
+  // made a failed load render the green "오류가 없습니다" empty state — the
+  // error-monitoring screen masking its own outage. Track failure + last
+  // successful load so the admin can tell stale data from fresh.
+  const [fetchError, setFetchError] = useState(false);
+  const [resolveError, setResolveError] = useState(false);
+  const [lastLoadedAt, setLastLoadedAt] = useState<Date | null>(null);
 
   const fetchStats = useCallback(async () => {
     try {
       const data = await apiService.getAdminErrorLogStats();
       setStats(data);
-    } catch { /* ignore */ }
+      return true;
+    } catch {
+      return false;
+    }
   }, []);
 
   const fetchLogs = useCallback(async (p = 1, reset = false) => {
@@ -59,7 +69,13 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
       setLogs(prev => reset ? data.logs : [...prev, ...data.logs]);
       setTotalPages(data.totalPages);
       setPage(p);
-    } catch { /* ignore */ } finally {
+      setFetchError(false);
+      setLastLoadedAt(new Date());
+    } catch {
+      // Do not clear existing logs — keep the last good data visible, but flag
+      // the failure so the UI can surface "load failed (showing stale)".
+      setFetchError(true);
+    } finally {
       setLoading(false);
       setRefreshing(false);
     }
@@ -77,8 +93,13 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await apiService.resolveErrorLog(id);
       setLogs(logs.map((l) => (l.id === id ? { ...l, isResolved: true } : l)));
+      setResolveError(false);
       fetchStats();
-    } catch { /* ignore */ }
+    } catch {
+      // E10: surface resolve failures instead of silently no-op'ing, so the
+      // admin doesn't believe an error was closed when it wasn't.
+      setResolveError(true);
+    }
   };
 
   const formatTime = (dateStr: string) => {
@@ -290,6 +311,20 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         ListHeaderComponent={
           <>
+            {(fetchError || resolveError) && (
+              <View style={styles.errorBanner}>
+                <Icon name="alert-circle-outline" size={18} color="#DC2626" />
+                <Text style={styles.errorBannerText}>
+                  {resolveError ? t('errors.resolveFailed') : t('errors.loadFailed')}
+                  {fetchError && lastLoadedAt
+                    ? ` ${t('errors.showingStale', { time: formatTime(lastLoadedAt.toISOString()) })}`
+                    : ''}
+                </Text>
+                <TouchableOpacity onPress={handleRefresh}>
+                  <Text style={styles.errorBannerRetry}>{t('errors.retry')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             {renderStatCards()}
             {renderPlatformBreakdown()}
             {renderTopErrors()}
@@ -299,6 +334,14 @@ const ErrorLogScreen: React.FC<Props> = ({ navigation }) => {
         ListEmptyComponent={
           loading ? (
             <ActivityIndicator style={{ padding: 40 }} color={theme.colors.primary} />
+          ) : fetchError ? (
+            <View style={{ padding: 40, alignItems: 'center' }}>
+              <Icon name="cloud-off-outline" size={40} color="#DC2626" />
+              <Text style={{ color: theme.colors.textSecondary, marginTop: 8 }}>{t('errors.loadFailed')}</Text>
+              <TouchableOpacity style={{ marginTop: 12 }} onPress={handleRefresh}>
+                <Text style={{ color: theme.colors.primary, fontWeight: '600' }}>{t('errors.retry')}</Text>
+              </TouchableOpacity>
+            </View>
           ) : (
             <View style={{ padding: 40, alignItems: 'center' }}>
               <Icon name="check-circle-outline" size={40} color="#10B981" />
@@ -383,6 +426,14 @@ const createStyles = (theme: any, isDark: boolean) =>
       alignItems: 'center', padding: 14, margin: 16,
       borderWidth: 1, borderRadius: 12,
     },
+    errorBanner: {
+      flexDirection: 'row', alignItems: 'center', gap: 8,
+      backgroundColor: isDark ? '#3F1D1D' : '#FEF2F2',
+      borderColor: '#DC2626', borderWidth: 1, borderRadius: 10,
+      paddingVertical: 10, paddingHorizontal: 12, margin: 16, marginBottom: 0,
+    },
+    errorBannerText: { flex: 1, color: '#DC2626', fontSize: 13 },
+    errorBannerRetry: { color: '#DC2626', fontWeight: '700', fontSize: 13 },
   });
 
 export default ErrorLogScreen;

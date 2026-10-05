@@ -85,7 +85,11 @@
     "platform": "Platform",
     "noErrors": "No errors found",
     "loadMore": "Load More",
-    "occurrences": "times"
+    "occurrences": "times",
+    "loadFailed": "Failed to load error logs",
+    "resolveFailed": "Failed to mark as resolved",
+    "showingStale": "(last updated {{time}})",
+    "retry": "Retry"
   },
   "announcements": {
     "title": "Announcements",

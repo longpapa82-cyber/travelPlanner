@@ -85,7 +85,11 @@
     "platform": "플랫폼",
     "noErrors": "오류가 없습니다",
     "loadMore": "더 보기",
-    "occurrences": "회"
+    "occurrences": "회",
+    "loadFailed": "오류 목록을 불러오지 못했습니다",
+    "resolveFailed": "해결 처리에 실패했습니다",
+    "showingStale": "(마지막 갱신 {{time}})",
+    "retry": "다시 시도"
   },
   "announcements": {
     "title": "공지사항",

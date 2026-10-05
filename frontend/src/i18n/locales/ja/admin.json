@@ -85,6 +85,10 @@
     "noErrors": "エラーはありません",
     "loadMore": "もっと見る",
     "occurrences": "回",
+    "loadFailed": "エラーログの読み込みに失敗しました",
+    "resolveFailed": "解決済みへの変更に失敗しました",
+    "showingStale": "(最終更新 {{time}})",
+    "retry": "再試行",
     "platform": "プラットフォーム"
   },
   "announcements": {

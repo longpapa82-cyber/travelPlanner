@@ -85,6 +85,10 @@
     "noErrors": "No se encontraron errores",
     "loadMore": "Cargar más",
     "occurrences": "veces",
+    "loadFailed": "No se pudieron cargar los registros de errores",
+    "resolveFailed": "No se pudo marcar como resuelto",
+    "showingStale": "(última actualización {{time}})",
+    "retry": "Reintentar",
     "platform": "Plataforma"
   },
   "announcements": {

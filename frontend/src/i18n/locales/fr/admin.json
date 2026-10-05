@@ -85,6 +85,10 @@
     "noErrors": "Aucune erreur trouvée",
     "loadMore": "Charger plus",
     "occurrences": "fois",
+    "loadFailed": "Échec du chargement des journaux d'erreurs",
+    "resolveFailed": "Échec du marquage comme résolu",
+    "showingStale": "(dernière mise à jour {{time}})",
+    "retry": "Réessayer",
     "platform": "Plateforme"
   },
   "announcements": {
