@@ -404,15 +404,16 @@ export class AdminService {
     };
 
     for (const row of platformBreakdownRaw) {
-      const key = row.platform || 'web';
-      if (platformBreakdown[key]) {
-        platformBreakdown[key] = {
-          total: parseInt(row.total, 10),
-          fatal: parseInt(row.fatal, 10),
-          error: parseInt(row.error, 10),
-          warning: parseInt(row.warning, 10),
-        };
-      }
+      // E08: platform이 null이거나 web/ios/android가 아닌 값(백그라운드 작업,
+      // UA 미상 등)은 모두 'web' 버킷으로 접는다. 과거 구현은 대입(=)이라 null
+      // 행과 web 행이 공존하면 뒤 행이 앞 행을 덮어써 합계가 손실됐다. 누적(+=)
+      // 으로 바꿔 같은 버킷으로 접히는 여러 행의 수치를 보존한다.
+      const key =
+        row.platform && platformBreakdown[row.platform] ? row.platform : 'web';
+      platformBreakdown[key].total += parseInt(row.total, 10);
+      platformBreakdown[key].fatal += parseInt(row.fatal, 10);
+      platformBreakdown[key].error += parseInt(row.error, 10);
+      platformBreakdown[key].warning += parseInt(row.warning, 10);
     }
 
     return {
