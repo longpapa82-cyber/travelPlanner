@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Notification, NotificationType } from './entities/notification.entity';
 import { User } from '../users/entities/user.entity';
+import { ErrorLogService } from '../common/services/error-log.service';
 
 interface ExpoPushMessage {
   to: string;
@@ -22,6 +23,12 @@ export class NotificationsService {
     private readonly notificationRepository: Repository<Notification>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    // E02: record push-delivery failures to error_logs. The Expo push send
+    // runs outside any HTTP request, so a failure here previously surfaced
+    // only in syslog — invisible to the admin error feed.
+    @Optional()
+    @Inject(ErrorLogService)
+    private readonly errorLogService?: ErrorLogService,
   ) {}
 
   async create(
@@ -181,6 +188,12 @@ export class NotificationsService {
       this.logger.log(`Push sent: ${messages.length} messages`);
     } catch (error) {
       this.logger.error('Failed to send push notifications', error);
+      void this.errorLogService?.record({
+        error,
+        source: 'Push sendPushNotifications',
+        routeName: 'push:expo-send',
+        severity: 'warning',
+      });
     }
   }
 }

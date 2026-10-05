@@ -21,9 +21,19 @@ import { detectPlatform } from '../utils/platform-detector';
 export class AllExceptionsFilter extends BaseExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
   private dataSource?: DataSource;
-  private errorLogCount = 0;
+  // E15: separate per-minute budgets by severity class so a user-attributable
+  // 4xx flood (bad-password 401, throttler 429) can no longer starve the budget
+  // and drop the real server-fault signal (5xx). 5xx gets its own guaranteed
+  // budget; 4xx shares the client budget. Suppressed counts are surfaced at
+  // window rollover so the admin knows the DB count understates reality during
+  // a storm (previously 100+ dropped silently — "DB건수=발생건수" was a lie).
+  private serverErrorCount = 0;
+  private clientErrorCount = 0;
+  private suppressedServer = 0;
+  private suppressedClient = 0;
   private errorLogWindowStart = Date.now();
-  private static readonly MAX_ERROR_LOGS_PER_MINUTE = 100;
+  private static readonly MAX_SERVER_LOGS_PER_MINUTE = 100;
+  private static readonly MAX_CLIENT_LOGS_PER_MINUTE = 100;
 
   setDataSource(ds: DataSource): void {
     this.dataSource = ds;
@@ -106,15 +116,31 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     // Persist important errors to ErrorLog (fire-and-forget, rate-limited)
     const now = Date.now();
     if (now - this.errorLogWindowStart > 60_000) {
-      this.errorLogCount = 0;
+      // E15: on window rollover, surface anything the budgets suppressed so a
+      // storm doesn't look quiet. WARN carries the dropped counts for SRE.
+      if (this.suppressedServer > 0 || this.suppressedClient > 0) {
+        this.logger.warn(
+          `[ErrorLogBudget] suppressed in last window: server=${this.suppressedServer} client=${this.suppressedClient} — DB counts understate actual errors`,
+        );
+      }
+      this.serverErrorCount = 0;
+      this.clientErrorCount = 0;
+      this.suppressedServer = 0;
+      this.suppressedClient = 0;
       this.errorLogWindowStart = now;
     }
-    if (
-      shouldLogError &&
-      this.dataSource?.isInitialized &&
-      this.errorLogCount < AllExceptionsFilter.MAX_ERROR_LOGS_PER_MINUTE
-    ) {
-      this.errorLogCount++;
+    const isServerError = status >= 500;
+    const underBudget = isServerError
+      ? this.serverErrorCount < AllExceptionsFilter.MAX_SERVER_LOGS_PER_MINUTE
+      : this.clientErrorCount < AllExceptionsFilter.MAX_CLIENT_LOGS_PER_MINUTE;
+    // Count suppression even when we won't persist, so the rollover WARN is accurate.
+    if (shouldLogError && this.dataSource?.isInitialized && !underBudget) {
+      if (isServerError) this.suppressedServer++;
+      else this.suppressedClient++;
+    }
+    if (shouldLogError && this.dataSource?.isInitialized && underBudget) {
+      if (isServerError) this.serverErrorCount++;
+      else this.clientErrorCount++;
       // Extract meaningful error message for logging
       let errorMessage: string;
       if (typeof message === 'string') {
