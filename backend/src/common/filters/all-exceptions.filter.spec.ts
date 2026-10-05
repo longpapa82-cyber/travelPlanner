@@ -220,8 +220,9 @@ describe('AllExceptionsFilter', () => {
 
   describe('rate limiting', () => {
     it('should respect rate limiting for error logs', async () => {
-      // Set limit to a small number for testing
-      (AllExceptionsFilter as any).MAX_ERROR_LOGS_PER_MINUTE = 2;
+      // E15: server-error budget is now separate from the client budget.
+      // Set the server limit small for testing.
+      (AllExceptionsFilter as any).MAX_SERVER_LOGS_PER_MINUTE = 2;
 
       const exception = new HttpException(
         'Server Error',

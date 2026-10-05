@@ -6,6 +6,7 @@ import { Trip, TripStatus } from './entities/trip.entity';
 import { AIService } from './services/ai.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/entities/notification.entity';
+import { ErrorLogService } from '../common/services/error-log.service';
 
 /**
  * TripStatusScheduler
@@ -27,6 +28,12 @@ export class TripStatusScheduler {
     @Optional()
     @Inject(NotificationsService)
     private notificationsService?: NotificationsService,
+    // E02: record cron failures to error_logs. Previously this scheduler's
+    // catch only hit the logger — a failed overnight status sweep left no row
+    // in the admin error feed (the "error_logs 0건 while jobs fail" black hole).
+    @Optional()
+    @Inject(ErrorLogService)
+    private readonly errorLogService?: ErrorLogService,
   ) {}
 
   /**
@@ -125,6 +132,12 @@ export class TripStatusScheduler {
         'Failed to update trip statuses',
         error instanceof Error ? error.stack : undefined,
       );
+      void this.errorLogService?.record({
+        error,
+        source: 'Cron tripStatusUpdate',
+        routeName: 'cron:trip-status',
+        severity: 'error',
+      });
     }
   }
 
